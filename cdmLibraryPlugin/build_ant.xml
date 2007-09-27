@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="plugin_export" name="build">
+	<target name="plugin_export">
+		<pde.exportPlugins destination="P:\eclipse\europaWS\eu.etaxonomy.cdmLibrary\dist" 
+			exportSource="false" 
+			exportType="directory" 
+			plugins="eu.etaxonomy.cdmLibrary" 
+			qualifier="200708170038" 
+			useJARFormat="true"/>
+	</target>
+</project>
