@@ -45,6 +45,8 @@ cdmlibrary/editCdm.spring.cfg.xml -text
 cdmlibrary/lib/antlr-2.7.6.jar -text
 cdmlibrary/lib/asm-attrs.jar -text
 cdmlibrary/lib/asm.jar -text
+cdmlibrary/lib/aspectjrt.jar -text
+cdmlibrary/lib/aspectjweaver.jar -text
 cdmlibrary/lib/cglib-2.1.3.jar -text
 cdmlibrary/lib/commons-collections-2.1.1.jar -text
 cdmlibrary/lib/commons-logging-1.0.4.jar -text
