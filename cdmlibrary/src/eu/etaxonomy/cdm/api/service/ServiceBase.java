@@ -1,19 +1,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import eu.etaxonomy.cdm.functiontest.SpringControl;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
 
 
 public abstract class ServiceBase implements IService, ApplicationContextAware {
