@@ -20,7 +20,7 @@ public class ListenerTest implements PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		String str = " Changed from " + evt.getOldValue() + " to " + evt.getNewValue();
-		logger.info("Jippie es gibt Ver�nderung: " + str);
+		logger.info("Jippie, changes found: " + str);
 
 	}
 

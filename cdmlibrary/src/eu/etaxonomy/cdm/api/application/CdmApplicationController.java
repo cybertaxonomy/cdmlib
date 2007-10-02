@@ -66,7 +66,7 @@ public class CdmApplicationController {
 	}
 	
 	private void setServices(){
-		//TODO ? ist das auch per SPRING möglich?
+		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameService");
 		agentService = (IAgentService)applicationContext.getBean("agentService");
 	}

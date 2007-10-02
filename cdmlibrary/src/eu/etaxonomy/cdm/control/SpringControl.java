@@ -53,8 +53,8 @@ public class SpringControl {
 	
 	public void testAppController(){
 		CdmApplicationController appCtr = new CdmApplicationController();
-		TaxonName tn = appCtr.getNameService().getNewTaxonName(Rank.SPECIES);
-		TaxonName tn3 = appCtr.getNameService().getNewTaxonName(Rank.SPECIES);
+		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
+		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
 		PropertyChangeListener listener = new ListenerTest();
 		tn.addPropertyChangeListener(listener);

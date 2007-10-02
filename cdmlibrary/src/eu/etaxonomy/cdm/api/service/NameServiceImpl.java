@@ -34,9 +34,9 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNewTaxonName()
 	 */
-	public TaxonName getNewTaxonName(Rank rank) {
+	public TaxonName createTaxonName(Rank rank) {
 		//TODO implement factory methods 
-		TaxonName tn = (TaxonName)this.appContext.getBean("taxonName");
+		TaxonName tn = (TaxonName) createCdmObject(TaxonName.class);
 		tn.setRank(rank);
 		return tn;
 		//return new TaxonName(new BotanicNameCacheStrategy());

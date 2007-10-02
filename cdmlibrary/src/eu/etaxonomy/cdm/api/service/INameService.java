@@ -8,7 +8,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 public interface INameService extends IService {
 
 	/**Factory method */
-	public abstract TaxonName getNewTaxonName(Rank rank);
+	public abstract TaxonName createTaxonName(Rank rank);
 	
 	public abstract TaxonName getTaxonNameById(Integer id);
 

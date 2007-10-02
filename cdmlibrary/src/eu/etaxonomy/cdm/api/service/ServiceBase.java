@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.etaxonomy.cdm.control.SpringControl;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
 
@@ -24,6 +25,11 @@ public abstract class ServiceBase implements IService, ApplicationContextAware {
 		this.appContext = appContext;
 	}
 	
+	protected VersionableEntity createCdmObject (Class clazz){
+		String beanId = "proto"+clazz.getSimpleName();
+		VersionableEntity ve = (VersionableEntity)this.appContext.getBean(beanId);
+		return ve;		
+	}
 	
 //	static final XmlBeanFactory factory() {
 //		String fileName = "cdmSpringConfig.xml";
