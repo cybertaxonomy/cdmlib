@@ -37,7 +37,6 @@ public class AgentServiceImpl implements IAgentService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getTeamById(java.lang.Integer)
 	 */
-	@Override
 	public Team getTeamById(Integer id) {
 		return (Team)agentDao.findById(id);
 	}
@@ -45,7 +44,6 @@ public class AgentServiceImpl implements IAgentService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IAgentService#saveTeam(eu.etaxonomy.cdm.model.agent.Team)
 	 */
-	@Override
 	public int saveTeam(Team team) {
 		return (Integer)agentDao.save(team);
 	}

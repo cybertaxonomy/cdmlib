@@ -34,7 +34,6 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNewTaxonName()
 	 */
-	@Override
 	public TaxonName getNewTaxonName(Rank rank) {
 		//TODO implement factory methods 
 		TaxonName tn = (TaxonName)this.appContext.getBean("taxonName");

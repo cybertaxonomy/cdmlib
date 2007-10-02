@@ -18,10 +18,9 @@ public class ListenerTest implements PropertyChangeListener {
 	/* (non-Javadoc)
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String str = " Changed from " + evt.getOldValue() + " to " + evt.getNewValue();
-		logger.info("Jippie es gibt Veränderung: " + str);
+		logger.info("Jippie es gibt Verï¿½nderung: " + str);
 
 	}
 

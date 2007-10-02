@@ -33,13 +33,12 @@ public class TaxonNameDaoHibernateImpl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.ITaxonNameDAO#getRelatedNames(java.lang.Integer)
 	 */
-	@Override
 	public List<TaxonName> getRelatedNames(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	@Override
+	
 	public List<TaxonName> getAllNames() {
 		List<TaxonName> list = ht().find("from TaxonName");
 		return list;

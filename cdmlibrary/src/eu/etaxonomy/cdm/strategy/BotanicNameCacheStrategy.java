@@ -18,7 +18,6 @@ public class BotanicNameCacheStrategy extends StrategyBase implements
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */
 	// PROTOTYPE implementation
-	@Override
 	public String getNameCache(VersionableEntity object) {
 		String result;
 		TaxonName tn = (TaxonName)object;
@@ -36,7 +35,6 @@ public class BotanicNameCacheStrategy extends StrategyBase implements
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
 	// PROTOTYPE implementation
-	@Override
 	public String getFullNameCache(VersionableEntity object) {
 		String result;
 		TaxonName tn = (TaxonName)object;
