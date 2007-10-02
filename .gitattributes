@@ -86,6 +86,8 @@ cdmlibrary/src/eu/etaxonomy/cdm/control/hibernate/CdmManager.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/control/hibernate/HibernateUtil.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/CdmChangeListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/MyLoadListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/common/Fact.java -text

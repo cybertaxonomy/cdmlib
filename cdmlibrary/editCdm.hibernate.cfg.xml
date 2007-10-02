@@ -52,7 +52,15 @@
         <!--  mapping class="eu.etaxonomy.cdm.model.publication.NomenclaturalReference"/>
         -->
 		
-		
-        
+		<!-- register new save-or-update event -->
+        <event type="save-or-update">
+            <listener class="eu.etaxonomy.cdm.event.CdmChangeListener"/>
+            <listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>
+        </event>		
+        <event type="load">
+            <listener class="eu.etaxonomy.cdm.event.MyLoadListener"/>
+            <listener class="org.hibernate.event.def.DefaultLoadEventListener"/>
+        </event>
+                
 	</session-factory>
 </hibernate-configuration>

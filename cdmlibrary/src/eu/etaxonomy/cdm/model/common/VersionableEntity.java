@@ -69,7 +69,8 @@ public abstract class VersionableEntity {
     }
 	
 //******* END ChangeSupport  *************************//
-	
+
+    
 	/*Default creator*/
 	public static String createdWhoDefault = "test";
 	

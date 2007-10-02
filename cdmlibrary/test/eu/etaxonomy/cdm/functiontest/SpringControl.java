@@ -56,6 +56,7 @@ public class SpringControl {
 		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
+		
 		PropertyChangeListener listener = new ListenerTest();
 		tn.addPropertyChangeListener(listener);
 		tn3.addPropertyChangeListener(listener);
@@ -70,9 +71,10 @@ public class SpringControl {
 		appCtr.getAgentService().saveTeam(team);
 		appCtr.getNameService().saveTaxonName(tn);
 		
-		List<TaxonName> tnList = appCtr.getNameService().getNamesByNameString("Abies alba");
+		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
+		System.out.print("GET PERSISTENT TAXA...");
 		for (TaxonName tn2: tnList){
-			System.out.print(tn2.getUuid()+";");
+			System.out.print("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
 		}
 		appCtr.close();
 	}

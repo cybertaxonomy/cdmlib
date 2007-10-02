@@ -43,6 +43,7 @@ public class CdmApplicationController {
 		setApplicationContext(new ClassPathXmlApplicationContext(fileName));
 		Object sf = (Object)applicationContext.containsBean("sessionFactory");
 		SessionFactory sf1 = (SessionFactory)applicationContext.getBean("sessionFactory");
+		
 		//TODO find out if DataSource is localHsqldb,
 		//if yes then find out if Server is running
 		//if not running, start server

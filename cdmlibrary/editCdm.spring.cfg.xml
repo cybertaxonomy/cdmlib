@@ -41,6 +41,7 @@
 		    	<value>eu.etaxonomy.cdm.model.common</value>
 		    </list>
 		</property>
+		
         <property name="annotatedClasses">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.name.TaxonName</value>
@@ -60,8 +61,23 @@
                 <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
+
+		<!-- register new save-or-update event -->
+        <property name="eventListeners">
+			<map>
+				<entry key="save-update"><ref local="saveListener" /></entry>
+				<!-- 
+				<entry key="post-load"><ref local="loadListener" /></entry>
+				 -->
+			</map>
+		</property>
+
     </bean>
 
+	<!-- Hibernate Event Listener Beans -->
+	<bean id="loadListener" class="eu.etaxonomy.cdm.event.MyLoadListener" />
+	<bean id="saveListener" class="eu.etaxonomy.cdm.event.CdmChangeListener" />
+	
 	<!-- CONTROL 
 	<bean id="appController" 
 			class="eu.etaxonomy.cdm.api.application.CdmApplicationController">
