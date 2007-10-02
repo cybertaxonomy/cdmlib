@@ -102,13 +102,19 @@
 	</bean>
  
  
-   	<bean  id="taxonName" 
+   	<bean  id="protoTaxonName" 
 			class="eu.etaxonomy.cdm.model.name.TaxonName" 
 			scope="prototype">
 		<property name="cacheStrategy" ref="botanicNameCacheStrategy"/>
 		<property name="year" value="2007"/> 
 	</bean>
- 
+   	<bean  id="etsttt" 
+			class="eu.etaxonomy.cdm.model.name.TaxonName" 
+			scope="prototype">
+		<property name="cacheStrategy" ref="protoTaxonName"/>
+		<property name="year" value="2007"/> 
+	</bean>
+	 
  	<bean id="taxonNameDao" 
 			class="eu.etaxonomy.cdm.persistence.dao.TaxonNameDaoHibernateImpl">
 			<!-- autowire="byType"-->
@@ -116,6 +122,7 @@
 	</bean>
 
 	<!--  ************ AOP ***********************  --> 
+	<!--
 	<bean id="changePropertyAspect" 
 			class="eu.etaxonomy.cdm.aspect.ChangePropertyAspect">
 	
@@ -132,22 +139,8 @@
 	   			pointcut-ref="afterSetPointcut"/>
 		</aop:aspect>
 	</aop:config>
+	-->
 	
-	<!--  aop:aspectj-autoproxy/-->
-	
-	<!-- ************ AOP *********************** >
-	<bean id="aspTest"
-		class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
-		<property name="parameterNames" value="setAuthorTeam"/>
-	</bean>
-
-   <aop:config>
-   	<aop:aspect ref="taxonName">
-   		<aop:after-returning
-   			method="firePropertyChange"
-   			pointcut-ref="aspTest"/>
-	</aop:aspect>
-   </aop:config-->
    
     <!-- ********* not used yet ********-->
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import eu.etaxonomy.cdm.control.SpringControl;
+import eu.etaxonomy.cdm.functiontest.SpringControl;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;

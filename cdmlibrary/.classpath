@@ -29,12 +29,8 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/Eigene Dateien/Downloads/hsqldb_1_8_0_7.zip"/>
 	<classpathentry kind="lib" path="lib/spring-aspects.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjlib-1.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjrt-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjtools-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjweaver-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/asm-commons-2.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjweaver.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

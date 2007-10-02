@@ -390,7 +390,7 @@ public class TaxonNameTest {
 		CdmApplicationController app = new CdmApplicationController();
 		INameService ns = app.getNameService();
 		
-		tn = ns.getNewTaxonName(Rank.SPECIES);
+		tn = ns.createTaxonName(Rank.SPECIES);
 		tn.setAuthorship(mAuthorship);
 		tn.setGenus(mGenus);
 		//tnDao = (ITaxonNameDAO)bf.getBean("tnDao");
