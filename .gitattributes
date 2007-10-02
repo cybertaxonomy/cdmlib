@@ -153,6 +153,8 @@ cdmlibrary/src/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
+cdmlibrary/test/eu/etaxonomy/cdm/functiontest/ListenerTest.java -text
+cdmlibrary/test/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/test/model/name/NameRelationshipTest.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/test/model/name/TaxonNameTest.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
