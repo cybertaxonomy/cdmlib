@@ -75,6 +75,9 @@
         <javac debug="true" srcdir="${dir.src}" 
                destdir="${dir.build}"
                classpathref="project.classpath"/>
+        <javac debug="true" srcdir="${dir.test}" 
+               destdir="${dir.build}"
+               classpathref="project.classpath"/>
     </target> 
 	
 	<!-- Copy metadata to build classpath -->
@@ -90,7 +93,6 @@
 	<!-- Copy configuration files to build classpath -->
 	<target name="copyConfigFiles">
 		<mkdir dir="${dir.build}"/>
-		<copy file="${hibernate.cfg}" todir="${dir.build}"/>
 		<copy file="${log4j.prop}" todir="${dir.build}"/>
 		<copy file="${spring.cfg}" todir="${dir.build}"/>
 	</target>

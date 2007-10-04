@@ -53,17 +53,22 @@ public class SpringControl {
 	
 	public void testAppController(){
 		CdmApplicationController appCtr = new CdmApplicationController();
+		logger.info("Create name objects...");
 		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
 		
+		logger.info("Test changeProperty listeners...");
+		// this is what the GUI would be doing. add change listeners to the model
 		PropertyChangeListener listener = new ListenerTest();
 		tn.addPropertyChangeListener(listener);
 		tn3.addPropertyChangeListener(listener);
+		// test listeners
 		tn.setGenus("tn1-Genus1");
 		tn3.setGenus("tn3-genus");
 		tn3.getGenus();
 		
+		logger.info("Create new Author team...");
 		Team team= new Team();
 		team.setShortName("AuthorTeam1");
 		tn.setAuthorTeam(team);
@@ -71,10 +76,11 @@ public class SpringControl {
 		appCtr.getAgentService().saveTeam(team);
 		appCtr.getNameService().saveTaxonName(tn);
 		
+		// load objects
+		logger.info("Load existing names from db...");
 		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
-		System.out.print("GET PERSISTENT TAXA...");
 		for (TaxonName tn2: tnList){
-			System.out.print("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
+			logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
 		}
 		appCtr.close();
 	}

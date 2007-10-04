@@ -36,12 +36,12 @@ cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmlibrary/.classpath -text
 cdmlibrary/.project -text
+cdmlibrary/archive/ChangePropertyAspect.java -text
 cdmlibrary/archive/editCdm.hibernate.cfg.xml -text
 cdmlibrary/build.xml -text
 cdmlibrary/dist/jar/cdmLibrary.jar -text
 cdmlibrary/dist/jar/cdmLibraryFat.jar -text
 cdmlibrary/dist/zip/cdmLibrary.zip -text
-cdmlibrary/editCdm.hibernate.cfg.xml -text
 cdmlibrary/editCdm.spring.cfg.xml -text
 cdmlibrary/lib/antlr-2.7.6.jar -text
 cdmlibrary/lib/asm-attrs.jar -text

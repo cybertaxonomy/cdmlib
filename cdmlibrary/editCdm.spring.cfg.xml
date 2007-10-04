@@ -65,10 +65,9 @@
 		<!-- register new save-or-update event -->
         <property name="eventListeners">
 			<map>
+			<!-- entry keys can be: post-load, save-update -->
 				<entry key="save-update"><ref local="saveListener" /></entry>
-				<!-- 
-				<entry key="post-load"><ref local="loadListener" /></entry>
-				 -->
+				<entry key="load"><ref local="loadListener" /></entry>
 			</map>
 		</property>
 
