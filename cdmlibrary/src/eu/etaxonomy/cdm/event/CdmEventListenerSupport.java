@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CdmEventListenerSupport implements ICdmEventListenerRegistration{
@@ -10,7 +11,7 @@ public abstract class CdmEventListenerSupport implements ICdmEventListenerRegist
 	 * listener registry
 	 */
 	//transient: not serialized
-	private transient List<ICdmEventListener> listener; // ICdmChangeListener
+	private transient List<ICdmEventListener> listener = new ArrayList(); // ICdmChangeListener
 	
 	/**
      * Adds a cdm event listener.

@@ -65,8 +65,9 @@
 		<!-- register new save-or-update event -->
         <property name="eventListeners">
 			<map>
-			<!-- entry keys can be: post-load, save-update -->
-				<entry key="save-update"><ref local="saveListener" /></entry>
+			<!-- entry keys can be: load, save, update, delete -->
+				<entry key="save"><ref local="insertListener" /></entry>
+				<entry key="update"><ref local="updateListener" /></entry>
 				<entry key="load"><ref local="loadListener" /></entry>
 			</map>
 		</property>
@@ -75,7 +76,9 @@
 
 	<!-- Hibernate Event Listener Beans -->
 	<bean id="loadListener" class="eu.etaxonomy.cdm.event.MyLoadListener" />
-	<bean id="saveListener" class="eu.etaxonomy.cdm.event.CdmChangeListener" />
+	<bean id="insertListener" class="eu.etaxonomy.cdm.event.PersistenceInsertListener" />
+	<bean id="updateListener" class="eu.etaxonomy.cdm.event.PersistenceUpdateListener" />
+	<bean id="saveOrUpdateListener" class="eu.etaxonomy.cdm.event.PersistenceChangeListener" />
 	
 	<!-- CONTROL 
 	<bean id="appController" 

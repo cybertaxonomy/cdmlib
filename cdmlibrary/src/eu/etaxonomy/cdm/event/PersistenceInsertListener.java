@@ -10,14 +10,9 @@
 package eu.etaxonomy.cdm.event;
 
 import org.apache.log4j.Logger;
-import java.util.*;
-
-import javax.persistence.*;
-import org.hibernate.event.*;
-import org.hibernate.event.def.DefaultSaveOrUpdateEventListener;
-
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonName;
+import org.hibernate.event.PostInsertEvent;
+import org.hibernate.event.PostInsertEventListener;
+import org.hibernate.event.def.DefaultSaveEventListener;
 
 
 
@@ -25,20 +20,21 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @author Markus Döring
  * @version 0.1
  */
-public class PersistenceChangeListener extends DefaultSaveOrUpdateEventListener implements SaveOrUpdateEventListener{
+public class PersistenceInsertListener extends DefaultSaveEventListener implements PostInsertEventListener{
 	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
     
-	public void onSaveOrUpdate(SaveOrUpdateEvent event){
-		super.onSaveOrUpdate(event);
+	public void onPostInsert(PostInsertEvent event) {
 		ICdmEventListenerRegistration cdmObj = (ICdmEventListenerRegistration) event.getEntity();
 		// iterate through listeners for this CDM object
 		ICdmEventListener[] listeners = cdmObj.getCdmEventListener();
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
 			l.onUpdate(cdmObj);
-	        logger.info("Send cdm update event to listener for CDM object " + cdmObj.toString());		
+	        logger.info("Send cdm insert event to listener for CDM object " + cdmObj.toString());		
 		}
-        logger.info("CDM object " + cdmObj.toString() + " saved or updated");		
-	}
+        logger.info("CDM object " + cdmObj.toString() + " inserted");		
+	}		
 
 }
+
+

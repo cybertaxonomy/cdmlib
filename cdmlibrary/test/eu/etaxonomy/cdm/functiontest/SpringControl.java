@@ -8,13 +8,14 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.event.ICdmEventListener;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
 
-
-import java.beans.PropertyChangeListener;
 import java.util.*;
+
+
 
 public class SpringControl {
 	static Logger logger = Logger.getLogger(SpringControl.class);
@@ -58,11 +59,11 @@ public class SpringControl {
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
 		
-		logger.info("Test changeProperty listeners...");
+		logger.info("Test CDM event listeners...");
 		// this is what the GUI would be doing. add change listeners to the model
-		PropertyChangeListener listener = new ListenerTest();
-		tn.addPropertyChangeListener(listener);
-		tn3.addPropertyChangeListener(listener);
+		ICdmEventListener listener = new ListenerTest();
+		tn.addCdmEventListener(listener);
+		tn3.addCdmEventListener(listener);
 		// test listeners
 		tn.setGenus("tn1-Genus1");
 		tn3.setGenus("tn3-genus");
@@ -75,7 +76,7 @@ public class SpringControl {
 		
 		appCtr.getAgentService().saveTeam(team);
 		appCtr.getNameService().saveTaxonName(tn);
-		
+
 		// load objects
 		logger.info("Load existing names from db...");
 		List<TaxonName> tnList = appCtr.getNameService().getAllNames();

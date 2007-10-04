@@ -14,7 +14,7 @@ import java.util.*;
 
 import javax.persistence.*;
 import org.hibernate.event.*;
-import org.hibernate.event.def.DefaultSaveOrUpdateEventListener;
+import org.hibernate.event.def.DefaultUpdateEventListener;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -25,11 +25,11 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @author Markus Döring
  * @version 0.1
  */
-public class PersistenceChangeListener extends DefaultSaveOrUpdateEventListener implements SaveOrUpdateEventListener{
+public class PersistenceUpdateListener extends DefaultUpdateEventListener implements PostUpdateEventListener{
 	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
     
-	public void onSaveOrUpdate(SaveOrUpdateEvent event){
-		super.onSaveOrUpdate(event);
+	public void onPostUpdate(PostUpdateEvent event) {
+		
 		ICdmEventListenerRegistration cdmObj = (ICdmEventListenerRegistration) event.getEntity();
 		// iterate through listeners for this CDM object
 		ICdmEventListener[] listeners = cdmObj.getCdmEventListener();
@@ -38,7 +38,8 @@ public class PersistenceChangeListener extends DefaultSaveOrUpdateEventListener 
 			l.onUpdate(cdmObj);
 	        logger.info("Send cdm update event to listener for CDM object " + cdmObj.toString());		
 		}
-        logger.info("CDM object " + cdmObj.toString() + " saved or updated");		
+        logger.info("CDM object " + cdmObj.toString() + " updated");		
 	}
 
 }
+
