@@ -14,6 +14,6 @@ public class MyLoadListener implements org.hibernate.event.LoadEventListener {
 	}
 	// this is the single method defined by the LoadEventListener interface
     public void onLoad(LoadEvent event, LoadEventListener.LoadType loadType){
-		logger.info("Load event caught: "+ event.getEntityClassName() + "EntityId: " + event.getEntityId());		
+		logger.info("Load event caught: "+ event.getEntityClassName() + "  EntityId: " + event.getEntityId());		
     }
 }

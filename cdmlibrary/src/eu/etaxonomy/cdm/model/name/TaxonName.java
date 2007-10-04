@@ -264,7 +264,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setAnamorphic(boolean newVal){
-		super.changeSupport.firePropertyChange("isAnamorphic", isAnamorphic, newVal);
 		isAnamorphic = newVal;
 		
 	}
@@ -274,7 +273,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setAtomised(boolean newVal){
-		super.changeSupport.firePropertyChange("isAtomised", isAtomised, newVal);
 		isAtomised = newVal;
 	}
 
@@ -283,7 +281,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setAuthorship(String newVal){
-		super.changeSupport.firePropertyChange("authorship", authorship, newVal);
 		authorship = newVal;
 	}
 
@@ -292,7 +289,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setAuthorTeam(Team newVal){
-		super.changeSupport.firePropertyChange("authorTeam", authorTeam, newVal);
 		authorTeam = newVal;
 	}
 
@@ -301,7 +297,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setBinomHybrid(boolean newVal){
-		super.changeSupport.firePropertyChange("isBinomHybrid", isBinomHybrid, newVal);
 		isBinomHybrid = newVal;
 	}
 
@@ -310,7 +305,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setCultivarGroup(boolean newVal){
-		super.changeSupport.firePropertyChange("isCultivarGroup", isCultivarGroup, newVal);
 		isCultivarGroup = newVal;
 	}
 
@@ -319,7 +313,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setCultivarName(String newVal){
-		super.changeSupport.firePropertyChange("cultivarName", cultivarName, newVal);
 		cultivarName = newVal;
 	}
 
@@ -328,7 +321,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setExAuthorTeam(Team newVal){
-		super.changeSupport.firePropertyChange("exAuthorTeam", exAuthorTeam, newVal);
 		exAuthorTeam = newVal;
 	}
 
@@ -345,7 +337,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setFullName(String newVal){
-		super.changeSupport.firePropertyChange("fullName", fullName, newVal);
 		fullName = newVal;
 	}
 
@@ -354,7 +345,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setGenus(String newVal){
-		super.changeSupport.firePropertyChange("genus", genus, newVal);
 		genus = newVal;
 	}
 
@@ -363,7 +353,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setHasProblem(boolean newVal){
-		super.changeSupport.firePropertyChange("hasProblem", hasProblem, newVal);
 		hasProblem = newVal;
 	}
 
@@ -372,7 +361,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setHybridFormula(boolean newVal){
-		super.changeSupport.firePropertyChange("isHybridFormula", isHybridFormula, newVal);
 		isHybridFormula = newVal;
 	}
 
@@ -381,7 +369,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setIdInSource(String newVal){
-		super.changeSupport.firePropertyChange("idInSource", idInSource, newVal);
 		idInSource = newVal;
 	}
 
@@ -390,7 +377,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setInfragenericEpithet(String newVal){
-		super.changeSupport.firePropertyChange("infragenericEpithet", infragenericEpithet, newVal);
 		infragenericEpithet = newVal;
 	}
 
@@ -399,7 +385,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setInfraSpecificEpithet(String newVal){
-		super.changeSupport.firePropertyChange("infraSpecificEpithet", infraSpecificEpithet, newVal);
 		infraSpecificEpithet = newVal;
 	}
 
@@ -408,7 +393,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setInverseNameRelation(ArrayList newVal){
-		super.changeSupport.firePropertyChange("inverseNameRelation", inverseNameRelation, newVal);
 		inverseNameRelation = newVal;
 	}
 
@@ -417,7 +401,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setMonomHybrid(boolean newVal){
-		super.changeSupport.firePropertyChange("isMonomHybrid", isMonomHybrid, newVal);
 		isMonomHybrid = newVal;
 	}
 
@@ -426,7 +409,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setName(String newVal){
-		super.changeSupport.firePropertyChange("name", name, newVal);
 		name = newVal;
 	}
 
@@ -435,7 +417,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setNameInSource(String newVal){
-		super.changeSupport.firePropertyChange("nameInSource", nameInSource, newVal);
 		nameInSource = newVal;
 	}
 
@@ -444,7 +425,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setNameRelation(ArrayList newVal){
-		super.changeSupport.firePropertyChange("nameRelation", nameRelation, newVal);
 		nameRelation = newVal;
 	}
 
@@ -453,7 +433,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setNomenclaturalCode(NomenclaturalCode newVal){
-		super.changeSupport.firePropertyChange("nomenclaturalCode", nomenclaturalCode, newVal);
 		nomenclaturalCode = newVal;
 	}
 
@@ -462,7 +441,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setNomenclaturalMicroReference(String newVal){
-		super.changeSupport.firePropertyChange("nomenclaturalMicroReference", nomenclaturalMicroReference, newVal);
 		nomenclaturalMicroReference = newVal;
 	}
 
@@ -471,7 +449,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setNomenclaturalReference(NomenclaturalReference newVal){
-		super.changeSupport.firePropertyChange("nomenclaturalReference", nomenclaturalReference, newVal);
 		nomenclaturalReference = newVal;
 	}
 
@@ -480,7 +457,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setRank(Rank newVal){
-		super.changeSupport.firePropertyChange("rank", rank, newVal);
 		rank = newVal;
 	}
 
@@ -489,7 +465,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setSource(Source newVal){
-		super.changeSupport.firePropertyChange("source", source, newVal);
 		source = newVal;
 	}
 
@@ -498,7 +473,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setSpecificEpithet(String newVal){
-		super.changeSupport.firePropertyChange("specificEpithet", specificEpithet, newVal);
 		specificEpithet = newVal;
 	}
 
@@ -507,7 +481,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setTrinomHybrid(boolean newVal){
-		super.changeSupport.firePropertyChange("isTrinomHybrid", isTrinomHybrid, newVal);
 		isTrinomHybrid = newVal;
 	}
 
@@ -525,7 +498,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setUninomial(String newVal){
-		super.changeSupport.firePropertyChange("uninomial", uninomial, newVal);
 		uninomial = newVal;
 	}
 
@@ -534,7 +506,6 @@ public class TaxonName extends IdentifiableEntity {
 	 * @param newVal
 	 */
 	public void setUnnamedNamePhrase(String newVal){
-		super.changeSupport.firePropertyChange("unnamedNamePhrase", unnamedNamePhrase, newVal);
 		unnamedNamePhrase = newVal;
 	}
 	

@@ -23,10 +23,10 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @author Markus Döring
  * @version 0.1
  */
-public class CdmChangeListener extends DefaultSaveOrUpdateEventListener implements SaveOrUpdateEventListener{
-	static Logger logger = Logger.getLogger(CdmChangeListener.class);
+public class PersistenceChangeListener extends DefaultSaveOrUpdateEventListener implements SaveOrUpdateEventListener{
+	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
     
-	public CdmChangeListener() {
+	public PersistenceChangeListener() {
 		logger.info("CdmChangeListener created");		
 	}
 

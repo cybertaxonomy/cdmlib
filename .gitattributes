@@ -84,8 +84,11 @@ cdmlibrary/src/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
-cdmlibrary/src/eu/etaxonomy/cdm/event/CdmChangeListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/CdmEventListenerSupport.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmChangeListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmEventListenerRegistration.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/MyLoadListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceChangeListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/common/Fact.java -text

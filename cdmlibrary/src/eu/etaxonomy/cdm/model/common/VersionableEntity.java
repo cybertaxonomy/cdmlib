@@ -12,8 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import eu.etaxonomy.cdm.event.CdmEventListenerSupport;
 import java.util.*;
 import javax.persistence.*;
 
@@ -24,53 +23,10 @@ import javax.persistence.*;
  * @created 15-Aug-2007 18:36:18
  */
 @MappedSuperclass
-public abstract class VersionableEntity {
+public abstract class VersionableEntity extends CdmEventListenerSupport{
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
-
-//****** ChangeSupport ***********************//	
-
-	
-	/**
-	 * support for changeListeners
-	 */
-	//transient: not serialized
-	protected transient PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-	
-	/**
-     * Adds a property-change listener.
-     * @param listener the listener
-     */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		if (listener == null) {
-            throw new IllegalArgumentException();
-        }  
-		changeSupport.addPropertyChangeListener(listener);
-	}
-	
-	/**
-     * Removes a property-change listener.
-     * @param listener the listener
-     */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		changeSupport.removePropertyChangeListener(listener);
-	}
 	
 	
-	/**
-     * Notificates all listeners to a model-change
-     * @param propertyName the property-id
-     * @param oldValue the old-value
-     * @param newValue the new value
-     */
-    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue){
-    	if (this.changeSupport.hasListeners(propertyName)) {
-            this.changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-        }
-    }
-	
-//******* END ChangeSupport  *************************//
-
-    
 	/*Default creator*/
 	public static String createdWhoDefault = "test";
 	
