@@ -36,6 +36,7 @@ cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmlibrary/.classpath -text
 cdmlibrary/.project -text
+cdmlibrary/archive/editCdm.hibernate.cfg.xml -text
 cdmlibrary/build.xml -text
 cdmlibrary/dist/jar/cdmLibrary.jar -text
 cdmlibrary/dist/jar/cdmLibraryFat.jar -text
