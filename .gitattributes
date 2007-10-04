@@ -82,7 +82,6 @@ cdmlibrary/src/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
-cdmlibrary/src/eu/etaxonomy/cdm/aspect/ChangePropertyAspect.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/CdmChangeListener.java -text
