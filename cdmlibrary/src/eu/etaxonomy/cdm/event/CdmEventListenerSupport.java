@@ -10,22 +10,22 @@ public abstract class CdmEventListenerSupport implements ICdmEventListenerRegist
 	 * listener registry
 	 */
 	//transient: not serialized
-	private transient List<ICdmChangeListener> listener; // ICdmChangeListener
+	private transient List<ICdmEventListener> listener; // ICdmChangeListener
 	
 	/**
      * Adds a cdm event listener.
      * @param listener the cdm event listener
      */
-	public void addCdmEventListener(ICdmChangeListener listener){
+	public void addCdmEventListener(ICdmEventListener listener){
 		this.listener.add(listener);
 	}
 
-	public void removeCdmEventListener(ICdmChangeListener listener){
+	public void removeCdmEventListener(ICdmEventListener listener){
 		this.listener.remove(listener);
 	}
 	
-	public ICdmChangeListener[] getCdmEventListener(){
-		return (ICdmChangeListener[]) listener.toArray();
+	public ICdmEventListener[] getCdmEventListener(){
+		return (ICdmEventListener[]) listener.toArray();
 	}
 	
 //******* END CDM Event Support  ******//

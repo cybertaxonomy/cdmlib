@@ -85,7 +85,7 @@ cdmlibrary/src/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/CdmEventListenerSupport.java -text
-cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmChangeListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmEventListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmEventListenerRegistration.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/MyLoadListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceChangeListener.java -text
