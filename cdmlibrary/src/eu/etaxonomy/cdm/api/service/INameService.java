@@ -12,7 +12,7 @@ public interface INameService extends IService {
 	
 	public abstract TaxonName getTaxonNameById(Integer id);
 
-	public abstract int saveTaxonName(TaxonName tn);
+	public abstract void saveTaxonName(TaxonName tn);
 
 	public abstract List getAllNames();
 

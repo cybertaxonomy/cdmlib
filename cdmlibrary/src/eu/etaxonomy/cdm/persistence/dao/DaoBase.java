@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
  */
 public abstract class DaoBase<T, ID extends Serializable> 
 		extends HibernateDaoSupport implements IDao<T, ID> {
+
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
 	protected Class<T> type;
@@ -27,6 +28,11 @@ public abstract class DaoBase<T, ID extends Serializable>
 	}
 	
 
+	public void saveOrUpdate(T transientObject) throws DataAccessException  {
+		HibernateTemplate ht = getHibernateTemplate();
+		ht.saveOrUpdate(transientObject);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
 	 */

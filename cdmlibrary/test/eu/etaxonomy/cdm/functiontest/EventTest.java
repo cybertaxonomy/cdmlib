@@ -13,7 +13,9 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IEventRegistrationService;
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.event.ICdmEventListener;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.*;
@@ -24,6 +26,9 @@ public class EventTest {
 
 	public void testCdmEvent(){
 		CdmApplicationController appCtr = new CdmApplicationController();
+		IAgentService AS = appCtr.getAgentService();
+		INameService NS = appCtr.getNameService();
+		IEventRegistrationService ERS = appCtr.getEventRegistrationService();
 		logger.info("Create name objects...");
 		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
@@ -33,10 +38,9 @@ public class EventTest {
 		ICdmEventListener listener = new ListenerTest();
 		tn.addCdmEventListener(listener);
 		tn3.addCdmEventListener(listener);
-		IEventRegistrationService eventRegistry = appCtr.getEventRegistrationService();
 		logger.info("Register listeners for Name and Team inserts...");
-		eventRegistry.addCdmEventListener(listener, TaxonName.class);
-		eventRegistry.addCdmEventListener(listener, Team.class);
+		ERS.addCdmEventListener(listener, TaxonName.class);
+		ERS.addCdmEventListener(listener, Team.class);
 		// test listeners
 		tn.setGenus("tn1-Genus1");
 		tn3.setGenus("tn3-genus");
@@ -48,15 +52,18 @@ public class EventTest {
 		tn.setAuthorTeam(team);
 		
 		logger.info("Save objects ...");
-		appCtr.getAgentService().saveTeam(team);
-		appCtr.getNameService().saveTaxonName(tn);
-		appCtr.getNameService().saveTaxonName(tn3);
+		AS.saveTeam(team);
+		NS.saveTaxonName(tn);
+		NS.saveTaxonName(tn3);
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
-		for (TaxonName tn2: tnList){
-			logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
+		List<TaxonName> tnList = NS.getAllNames();
+		for (TaxonName tn1: tnList){
+			tn1.addCdmEventListener(listener);
+			logger.info("FOUND NAME TO MODIFY: Genus "+ tn1.getGenus() + " UUID " + tn1.getUuid());
+			tn1.setSpecificEpithet("vulgaris");
+			NS.saveTaxonName(tn1);
 		}
 		appCtr.close();
 	}

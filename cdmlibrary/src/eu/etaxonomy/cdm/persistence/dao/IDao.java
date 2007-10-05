@@ -30,6 +30,9 @@ public interface IDao<T, ID extends Serializable> {
     public void update(T transientObject) 
         throws DataAccessException;
     
+	/** Persist the newInstance object into database */
+    public void saveOrUpdate(T transientObject);
+
     /** Remove an object from persistent storage in the database */
     public void delete(T persistentObject)
     	throws DataAccessException ;
