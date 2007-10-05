@@ -6,8 +6,8 @@ import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
 
 
-public class MyLoadListener implements org.hibernate.event.LoadEventListener {
-	static Logger logger = Logger.getLogger(MyLoadListener.class);
+public class PersistenceLoadListener implements org.hibernate.event.LoadEventListener {
+	static Logger logger = Logger.getLogger(PersistenceLoadListener.class);
 
 	// this is the single method defined by the LoadEventListener interface
     public void onLoad(LoadEvent event, LoadEventListener.LoadType loadType){

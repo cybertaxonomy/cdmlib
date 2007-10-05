@@ -87,10 +87,9 @@ cdmlibrary/src/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/CdmEventListenerSupport.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmEventListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/ICdmEventListenerRegistration.java -text
-cdmlibrary/src/eu/etaxonomy/cdm/event/MyLoadListener.java -text
-cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceChangeListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceDeleteListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceInsertListener.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceLoadListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceUpdateListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Team.java -text
