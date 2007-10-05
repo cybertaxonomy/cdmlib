@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
-public abstract class ServiceBase extends CdmEventListenerRegistrationSupport implements IService, ApplicationContextAware {
+public abstract class ServiceBase implements IService, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;

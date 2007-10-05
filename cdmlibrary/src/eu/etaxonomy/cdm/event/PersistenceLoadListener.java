@@ -11,6 +11,6 @@ public class PersistenceLoadListener implements org.hibernate.event.LoadEventLis
 
 	// this is the single method defined by the LoadEventListener interface
     public void onLoad(LoadEvent event, LoadEventListener.LoadType loadType){
-		logger.info("CDM load event caught: "+ event.getEntityClassName() + "  EntityId: " + event.getEntityId());		
+		logger.debug("CDM load event caught: "+ event.getEntityClassName() + "  EntityId: " + event.getEntityId());		
     }
 }

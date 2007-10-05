@@ -31,9 +31,9 @@ public class PersistenceDeleteListener extends DefaultDeleteEventListener implem
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
 			l.onUpdate(cdmObj);
-	        logger.info("Send cdm delete event to listener for CDM object " + cdmObj.toString());		
+	        logger.debug("Send cdm delete event to listener for CDM object " + cdmObj.toString());		
 		}
-        logger.info("CDM object " + cdmObj.toString() + " deleted");		
+        logger.debug("CDM object " + cdmObj.toString() + " deleted");		
 	}
 
 }

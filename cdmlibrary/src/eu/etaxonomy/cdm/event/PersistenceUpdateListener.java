@@ -31,9 +31,9 @@ public class PersistenceUpdateListener extends DefaultUpdateEventListener implem
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
 			l.onUpdate(cdmObj);
-	        logger.info("Send cdm update event to listener for CDM object " + cdmObj.toString());		
+	        logger.debug("Send cdm update event to listener for CDM object " + cdmObj.toString());		
 		}
-        logger.info("CDM object " + cdmObj.toString() + " updated");		
+        logger.debug("CDM object " + cdmObj.toString() + " updated");		
 	}
 
 }

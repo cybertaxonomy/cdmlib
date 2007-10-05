@@ -14,8 +14,7 @@ import org.hibernate.event.PostInsertEvent;
 import org.hibernate.event.PostInsertEventListener;
 import org.hibernate.event.def.DefaultSaveEventListener;
 
-import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.api.service.IEventRegistrationService;
 
 
 
@@ -26,21 +25,29 @@ import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
 public class PersistenceInsertListener extends DefaultSaveEventListener implements PostInsertEventListener{
 	static Logger logger = Logger.getLogger(PersistenceInsertListener.class);
     
-	private INameService nameService;
+	private IEventRegistrationService eventRegistrationService;
+
+	public IEventRegistrationService getEventRegistrationService() {
+		return eventRegistrationService;
+	}
+	public void setEventRegistrationService(
+			IEventRegistrationService eventRegistrationService) {
+		this.eventRegistrationService = eventRegistrationService;
+	}		
+
 
 	public void onPostInsert(PostInsertEvent event) {
 		Object cdmObj = event.getEntity();
 		// iterate through listeners for new CDM objects stored in the respective services
 		// FIXME: hardcoded for name service. get name service via Spring!
-		ICdmEventListener[] listeners = nameService.getCdmEventListener();
+		ICdmEventListener[] listeners = eventRegistrationService.getCdmEventListener(cdmObj.getClass());
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
 			l.onInsert(cdmObj);
-	        logger.info("Send cdm insert event to listener for CDM object " + cdmObj.toString());		
+	        logger.debug("Send cdm insert event to listener for CDM object " + cdmObj.toString());		
 		}
-        logger.info("CDM object " + cdmObj.toString() + " inserted");		
-	}		
-
+        logger.debug("CDM object '" + cdmObj.toString() + "' of class " + cdmObj.getClass().getSimpleName() + " inserted");		
+	}
 }
 
 

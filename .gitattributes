@@ -76,8 +76,10 @@ cdmlibrary/log4j.properties -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/DatabaseServiceImpl.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/api/service/EventRegistrationServiceImpl.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/api/service/IEventRegistrationService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
@@ -158,6 +160,7 @@ cdmlibrary/src/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
+cdmlibrary/test/eu/etaxonomy/cdm/functiontest/EventTest.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/functiontest/ListenerTest.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
 cdmlibrary/test/eu/etaxonomy/cdm/test/model/name/NameRelationshipTest.java -text

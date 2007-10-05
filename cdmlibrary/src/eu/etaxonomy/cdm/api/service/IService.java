@@ -15,6 +15,5 @@ import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
  *
  */
 @Transactional(propagation=Propagation.SUPPORTS)
-public interface IService extends ICdmEventListenerRegistration{
-	//FIXME: Does every service insert objects? If not, the ICdmEventListenerRegistration support should not be on ALL services.
+public interface IService{
 }
