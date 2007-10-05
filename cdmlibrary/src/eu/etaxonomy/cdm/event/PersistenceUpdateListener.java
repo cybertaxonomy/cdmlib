@@ -21,7 +21,7 @@ import org.hibernate.event.def.DefaultUpdateEventListener;
  * @version 0.1
  */
 public class PersistenceUpdateListener extends DefaultUpdateEventListener implements PostUpdateEventListener{
-	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
+	static Logger logger = Logger.getLogger(PersistenceUpdateListener.class);
     
 	public void onPostUpdate(PostUpdateEvent event) {
 		

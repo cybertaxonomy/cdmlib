@@ -66,8 +66,10 @@
         <property name="eventListeners">
 			<map>
 			<!-- entry keys can be: load, save, update, delete -->
-				<entry key="post-load"><ref local="loadListener" /></entry>
-				<entry key="post-insert"><ref local="insertListener" /></entry>
+			<!--
+			 	<entry key="post-load"><ref local="loadListener" /></entry>
+			 -->
+			 	<entry key="post-insert"><ref local="insertListener" /></entry>
 				<entry key="post-update"><ref local="updateListener" /></entry>
 				<entry key="post-delete"><ref local="deleteListener" /></entry>
 			</map>
@@ -100,8 +102,10 @@
     </bean>
 
 	<!-- Hibernate Event Listener Beans -->
+<!-- 	
 	<bean id="loadListener" class="eu.etaxonomy.cdm.event.PersistenceLoadListener" />
-	<bean id="insertListener" class="eu.etaxonomy.cdm.event.PersistenceInsertListener" />
+ -->	
+ 	<bean id="insertListener" class="eu.etaxonomy.cdm.event.PersistenceInsertListener" />
 	<bean id="updateListener" class="eu.etaxonomy.cdm.event.PersistenceUpdateListener" />
 	<bean id="deleteListener" class="eu.etaxonomy.cdm.event.PersistenceDeleteListener" />
 	

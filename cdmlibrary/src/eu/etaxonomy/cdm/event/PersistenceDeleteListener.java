@@ -21,7 +21,7 @@ import org.hibernate.event.def.DefaultDeleteEventListener;
  * @version 0.1
  */
 public class PersistenceDeleteListener extends DefaultDeleteEventListener implements PostDeleteEventListener{
-	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
+	static Logger logger = Logger.getLogger(PersistenceDeleteListener.class);
     
 	public void onPostDelete(PostDeleteEvent event) {
 		

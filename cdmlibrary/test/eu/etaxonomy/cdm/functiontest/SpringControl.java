@@ -59,7 +59,7 @@ public class SpringControl {
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
 		
-		logger.info("Test CDM event listeners...");
+		logger.info("Create Listeners for CDM persistence ...");
 		// this is what the GUI would be doing. add change listeners to the model
 		ICdmEventListener listener = new ListenerTest();
 		tn.addCdmEventListener(listener);
@@ -74,6 +74,7 @@ public class SpringControl {
 		team.setShortName("AuthorTeam1");
 		tn.setAuthorTeam(team);
 		
+		logger.info("Save objects ...");
 		appCtr.getAgentService().saveTeam(team);
 		appCtr.getNameService().saveTaxonName(tn);
 

@@ -21,7 +21,7 @@ import org.hibernate.event.def.DefaultSaveEventListener;
  * @version 0.1
  */
 public class PersistenceInsertListener extends DefaultSaveEventListener implements PostInsertEventListener{
-	static Logger logger = Logger.getLogger(PersistenceChangeListener.class);
+	static Logger logger = Logger.getLogger(PersistenceInsertListener.class);
     
 	public void onPostInsert(PostInsertEvent event) {
 		ICdmEventListenerRegistration cdmObj = (ICdmEventListenerRegistration) event.getEntity();
