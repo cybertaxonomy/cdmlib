@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.event;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CdmEventListenerSupport implements ICdmEventListenerRegistration{
+public abstract class CdmEventListenerRegistrationSupport implements ICdmEventListenerRegistration{
 
 	//****** CDM Event Support *****//	
 

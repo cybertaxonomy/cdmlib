@@ -14,6 +14,9 @@ import org.hibernate.event.PostInsertEvent;
 import org.hibernate.event.PostInsertEventListener;
 import org.hibernate.event.def.DefaultSaveEventListener;
 
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+
 
 
 /**
@@ -23,10 +26,13 @@ import org.hibernate.event.def.DefaultSaveEventListener;
 public class PersistenceInsertListener extends DefaultSaveEventListener implements PostInsertEventListener{
 	static Logger logger = Logger.getLogger(PersistenceInsertListener.class);
     
+	private INameService nameService;
+
 	public void onPostInsert(PostInsertEvent event) {
-		ICdmEventListenerRegistration cdmObj = (ICdmEventListenerRegistration) event.getEntity();
-		// iterate through listeners for this CDM object
-		ICdmEventListener[] listeners = cdmObj.getCdmEventListener();
+		Object cdmObj = event.getEntity();
+		// iterate through listeners for new CDM objects stored in the respective services
+		// FIXME: hardcoded for name service. get name service via Spring!
+		ICdmEventListener[] listeners = nameService.getCdmEventListener();
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
 			l.onInsert(cdmObj);

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.event.CdmEventListenerSupport;
+import eu.etaxonomy.cdm.event.CdmEventListenerRegistrationSupport;
 import java.util.*;
 import javax.persistence.*;
 
@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 15-Aug-2007 18:36:18
  */
 @MappedSuperclass
-public abstract class VersionableEntity extends CdmEventListenerSupport{
+public abstract class VersionableEntity extends CdmEventListenerRegistrationSupport{
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
 	
 	

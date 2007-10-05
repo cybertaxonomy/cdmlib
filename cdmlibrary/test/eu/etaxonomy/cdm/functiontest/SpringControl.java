@@ -77,13 +77,14 @@ public class SpringControl {
 		logger.info("Save objects ...");
 		appCtr.getAgentService().saveTeam(team);
 		appCtr.getNameService().saveTaxonName(tn);
+		appCtr.getNameService().saveTaxonName(tn3);
 
 		// load objects
 		logger.info("Load existing names from db...");
-		//List<TaxonName> tnList = appCtr.getNameService().getAllNames();
-		//for (TaxonName tn2: tnList){
-		//	logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
-		//}
+		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
+		for (TaxonName tn2: tnList){
+			logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
+		}
 		appCtr.close();
 	}
 	

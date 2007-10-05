@@ -3,10 +3,13 @@ package eu.etaxonomy.cdm.api.service;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import eu.etaxonomy.cdm.event.CdmEventListenerRegistrationSupport;
+import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
-public abstract class ServiceBase implements IService, ApplicationContextAware {
+public abstract class ServiceBase extends CdmEventListenerRegistrationSupport implements IService, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;
