@@ -9,11 +9,8 @@ import org.hibernate.event.LoadEventListener;
 public class MyLoadListener implements org.hibernate.event.LoadEventListener {
 	static Logger logger = Logger.getLogger(MyLoadListener.class);
 
-	public MyLoadListener() {
-		logger.info("MyLoadListener created");		
-	}
 	// this is the single method defined by the LoadEventListener interface
     public void onLoad(LoadEvent event, LoadEventListener.LoadType loadType){
-		logger.info("Load event caught: "+ event.getEntityClassName() + "  EntityId: " + event.getEntityId());		
+		logger.info("CDM load event caught: "+ event.getEntityClassName() + "  EntityId: " + event.getEntityId());		
     }
 }

@@ -79,10 +79,10 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
-		for (TaxonName tn2: tnList){
-			logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
-		}
+		//List<TaxonName> tnList = appCtr.getNameService().getAllNames();
+		//for (TaxonName tn2: tnList){
+		//	logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
+		//}
 		appCtr.close();
 	}
 	

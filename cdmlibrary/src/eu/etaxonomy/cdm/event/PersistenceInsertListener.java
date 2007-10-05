@@ -29,7 +29,7 @@ public class PersistenceInsertListener extends DefaultSaveEventListener implemen
 		ICdmEventListener[] listeners = cdmObj.getCdmEventListener();
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
-			l.onUpdate(cdmObj);
+			l.onInsert(cdmObj);
 	        logger.info("Send cdm insert event to listener for CDM object " + cdmObj.toString());		
 		}
         logger.info("CDM object " + cdmObj.toString() + " inserted");		

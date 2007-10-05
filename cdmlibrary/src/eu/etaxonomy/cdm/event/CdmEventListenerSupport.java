@@ -26,7 +26,11 @@ public abstract class CdmEventListenerSupport implements ICdmEventListenerRegist
 	}
 	
 	public ICdmEventListener[] getCdmEventListener(){
-		return (ICdmEventListener[]) listener.toArray();
+		if (listener.isEmpty()){
+			return new ICdmEventListener[0];			
+		}else{			
+			return (ICdmEventListener[]) listener.toArray();
+		}
 	}
 	
 //******* END CDM Event Support  ******//

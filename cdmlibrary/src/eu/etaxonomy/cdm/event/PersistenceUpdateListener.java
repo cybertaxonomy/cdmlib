@@ -10,14 +10,9 @@
 package eu.etaxonomy.cdm.event;
 
 import org.apache.log4j.Logger;
-import java.util.*;
-
-import javax.persistence.*;
 import org.hibernate.event.*;
 import org.hibernate.event.def.DefaultUpdateEventListener;
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 
 
 
