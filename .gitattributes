@@ -5,6 +5,8 @@ cdmLibraryPlugin/META-INF/MANIFEST.MF -text
 cdmLibraryPlugin/antlr-2.7.6.jar -text
 cdmLibraryPlugin/asm-attrs.jar -text
 cdmLibraryPlugin/asm.jar -text
+cdmLibraryPlugin/aspectjrt.jar -text
+cdmLibraryPlugin/aspectjweaver.jar -text
 cdmLibraryPlugin/build.properties -text
 cdmLibraryPlugin/build_ant.xml -text
 cdmLibraryPlugin/cdmLibrary.jar -text

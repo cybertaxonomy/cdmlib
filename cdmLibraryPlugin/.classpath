@@ -22,6 +22,8 @@
 	<classpathentry exported="true" kind="lib" path="spring.jar"/>
 	<classpathentry exported="true" kind="lib" path="xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmLibrary.jar" sourcepath="/edit_cdm/src"/>
+	<classpathentry kind="lib" path="aspectjrt.jar"/>
+	<classpathentry kind="lib" path="aspectjweaver.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="hsqldb.jar"/>
