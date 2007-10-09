@@ -97,6 +97,7 @@ cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceLoadListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/event/PersistenceUpdateListener.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/agent/Team.java -text
+cdmlibrary/src/eu/etaxonomy/cdm/model/common/CdmEntity.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/common/Fact.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/common/FactBase.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text

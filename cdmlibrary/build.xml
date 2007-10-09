@@ -101,10 +101,11 @@
 	<target name="distAsZip" depends="compile" 
 		           description="Builds an zip file containing jar and lib-directory. classpathes must be set in manifest.txt
 								jar is executable">
-		<delete file="${jar.name}.jar"/>
+		<delete file="${dist.jar}/${jar.name}.jar"/>
 	    <delete file="${dist.zip}/${jar.name}.zip"/>
+	    <mkdir dir="${dist.jar}" />
 	    <mkdir dir="${dist.zip}" />
-	    <jar jarfile="${jar.name}.jar"
+	    <jar jarfile="${dist.jar}/${jar.name}.jar"
 	         basedir="${dir.build}"
 	         manifest="zipManifest.txt" />
 	    <zip destfile="${dist.zip}/${jar.name}.zip">

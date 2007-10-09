@@ -1,11 +1,14 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.event.CdmEventListenerRegistrationSupport;
 import eu.etaxonomy.cdm.event.ICdmEventListener;
 import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
 
@@ -14,6 +17,7 @@ import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
  *
  */
 public class EventRegistrationServiceImpl extends ServiceBase implements IEventRegistrationService {
+	static Logger logger = Logger.getLogger(CdmEventListenerRegistrationSupport.class);
 
 	
 	/**
@@ -37,11 +41,13 @@ public class EventRegistrationServiceImpl extends ServiceBase implements IEventR
 	public void addCdmEventListener(ICdmEventListener listener, Class clazz) {
 		// TODO expand interface classes into implemented classes
 		if (!listenerMap.containsKey(clazz)){
-			// init the map key with an array list if not yet existing
-			listenerMap.put(clazz, new ArrayList<ICdmEventListener>());
+			// init the map key with a threadsafe array list if not yet existing
+			// see http://www.ibm.com/developerworks/library/j-jtp07265/
+			listenerMap.put(clazz, new CopyOnWriteArrayList<ICdmEventListener>());
 		}
 		// add listener to list
 		listenerMap.get(clazz).add(listener);
+		logger.debug(clazz.getSimpleName() + " listener added to "+this.toString());
 	}
 	public ICdmEventListener[] getCdmEventListener(Class clazz) {
 		if (listenerMap.containsKey(clazz)){
@@ -53,6 +59,7 @@ public class EventRegistrationServiceImpl extends ServiceBase implements IEventR
 	public void removeCdmEventListener(ICdmEventListener listener, Class clazz) {
 		// remove listener from list
 		listenerMap.get(clazz).remove(listener);		
+		logger.debug(clazz.getSimpleName() + " listener removed from "+this.toString());
 	}
 
 

@@ -9,9 +9,13 @@
 
 package eu.etaxonomy.cdm.event;
 
+import java.util.EventObject;
+
 import org.apache.log4j.Logger;
 import org.hibernate.event.*;
 import org.hibernate.event.def.DefaultUpdateEventListener;
+
+import eu.etaxonomy.cdm.model.common.CdmEntity;
 
 
 
@@ -25,15 +29,19 @@ public class PersistenceUpdateListener extends DefaultUpdateEventListener implem
     
 	public void onPostUpdate(PostUpdateEvent event) {
 		
-		ICdmEventListenerRegistration cdmObj = (ICdmEventListenerRegistration) event.getEntity();
+		CdmEntity cdmObj = (CdmEntity) event.getEntity();
 		// iterate through listeners for this CDM object
 		ICdmEventListener[] listeners = cdmObj.getCdmEventListener();
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
-			l.onUpdate(cdmObj);
+			l.onUpdate(createEvent(cdmObj));
 	        logger.debug("Send cdm update event to listener for CDM object " + cdmObj.toString());		
 		}
         logger.debug("CDM object " + cdmObj.toString() + " updated");		
+	}
+	
+	public EventObject createEvent(CdmEntity cdmObj){
+		return new EventObject(cdmObj);
 	}
 
 }

@@ -9,12 +9,15 @@
 
 package eu.etaxonomy.cdm.event;
 
+import java.util.EventObject;
+
 import org.apache.log4j.Logger;
 import org.hibernate.event.PostInsertEvent;
 import org.hibernate.event.PostInsertEventListener;
 import org.hibernate.event.def.DefaultSaveEventListener;
 
 import eu.etaxonomy.cdm.api.service.IEventRegistrationService;
+import eu.etaxonomy.cdm.model.common.CdmEntity;
 
 
 
@@ -37,16 +40,19 @@ public class PersistenceInsertListener extends DefaultSaveEventListener implemen
 
 
 	public void onPostInsert(PostInsertEvent event) {
-		Object cdmObj = event.getEntity();
+		CdmEntity cdmObj = (CdmEntity) event.getEntity();
 		// iterate through listeners for new CDM objects stored in the respective services
 		// FIXME: hardcoded for name service. get name service via Spring!
 		ICdmEventListener[] listeners = eventRegistrationService.getCdmEventListener(cdmObj.getClass());
 		for (ICdmEventListener l: listeners){
 			// send modified object as "event" to listener
-			l.onInsert(cdmObj);
+			l.onInsert(createEvent(cdmObj));
 	        logger.debug("Send cdm insert event to listener for CDM object " + cdmObj.toString());		
 		}
         logger.debug("CDM object '" + cdmObj.toString() + "' of class " + cdmObj.getClass().getSimpleName() + " inserted");		
+	}
+	public EventObject createEvent(CdmEntity cdmObj){
+		return new EventObject(cdmObj);
 	}
 }
 
