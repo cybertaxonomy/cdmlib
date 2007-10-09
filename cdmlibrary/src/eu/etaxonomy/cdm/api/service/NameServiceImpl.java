@@ -57,8 +57,9 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonName)
 	 */
-	public void saveTaxonName(TaxonName tn){
-		taxonNameDao.saveOrUpdate(tn);
+	public int saveTaxonName(TaxonName taxonName){
+		taxonNameDao.saveOrUpdate(taxonName);
+		return taxonName.getId();
 	}
 	
 	/* (non-Javadoc)
