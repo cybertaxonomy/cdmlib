@@ -75,6 +75,7 @@ cdmlibrary/lib/spring.jar -text
 cdmlibrary/lib/xercesImpl.jar -text
 cdmlibrary/lib/xml-apis.jar -text
 cdmlibrary/log4j.properties -text
+cdmlibrary/pom.xml -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlibrary/src/eu/etaxonomy/cdm/api/service/DatabaseServiceImpl.java -text
