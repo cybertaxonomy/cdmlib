@@ -37,6 +37,7 @@ cdmLibraryPlugin/spring.jar -text
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmlibrary/.classpath -text
+cdmlibrary/.externalToolBuilders/Ant_Cdm_Builder.launch -text
 cdmlibrary/.project -text
 cdmlibrary/.settings/org.eclipse.jdt.core.prefs -text
 cdmlibrary/.settings/org.eclipse.jdt.ui.prefs -text
