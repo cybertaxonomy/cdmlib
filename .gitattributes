@@ -38,6 +38,8 @@ cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmlibrary/.classpath -text
 cdmlibrary/.project -text
+cdmlibrary/.settings/org.eclipse.jdt.core.prefs -text
+cdmlibrary/.settings/org.eclipse.jdt.ui.prefs -text
 cdmlibrary/archive/ChangePropertyAspect.java -text
 cdmlibrary/archive/editCdm.hibernate.cfg.xml -text
 cdmlibrary/build.xml -text
