@@ -171,6 +171,6 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/name/NameRelationshipTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/name/TaxonNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
-cdmlibrary/test/extern/TestJarMain.java -text
+cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/zipManifest.txt -text
 docs/layers.graffle -text
