@@ -18,6 +18,8 @@ import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
 
 import org.apache.log4j.Logger;
 import java.util.*;
+
+import javax.management.DescriptorKey;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
