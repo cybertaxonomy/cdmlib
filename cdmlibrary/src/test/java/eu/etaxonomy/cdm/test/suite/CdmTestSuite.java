@@ -12,8 +12,8 @@ import eu.etaxonomy.cdm.test.model.name.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TaxonNameTest.class,
-    //NameRelationshipTest.class
+    TaxonNameTest.class
+    //, NameRelationshipTest.class
 })
 
 public class CdmTestSuite {
