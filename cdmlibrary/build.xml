@@ -29,7 +29,7 @@
 	<property name="dir.doc" value="doc"/>
 	<property name="dir.doc.api" value="${dir.doc}/api"/>
 	<property name="dir.doc.ref" value="${dir.doc}/reference"/>
-    <property name="dir.build" value="bin"/>
+    <property name="dir.build" value="target/classes"/>
 	
 	<!-- Distribution -->
 	<property name="dist.dir" value="dist" />
