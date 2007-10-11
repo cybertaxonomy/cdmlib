@@ -2,6 +2,7 @@ cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
 cdmlibrary/.project
 cdmlibrary/alt
+cdmlibrary/bin
 cdmlibrary/cdmLibrary.jar
 cdmlibrary/db
 cdmlibrary/dist/zip/cdmLibrary
@@ -13,6 +14,7 @@ cdmlibrary/lib/aspectjtools-1.5.3.jar
 cdmlibrary/lib/aspectjweaver-1.5.3.jar
 cdmlibrary/lib/old
 cdmlibrary/manifest.txt
+cdmlibrary/mavenInstall
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation
 cdmlibrary/src/org
 cdmlibrary/src/test
