@@ -177,3 +177,4 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/zipManifest.txt -text
 docs/layers.graffle -text
+docs/layers.png -text
