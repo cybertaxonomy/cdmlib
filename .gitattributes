@@ -47,7 +47,6 @@ cdmlibrary/build.xml -text
 cdmlibrary/dist/jar/cdmLibrary.jar -text
 cdmlibrary/dist/jar/cdmLibraryFat.jar -text
 cdmlibrary/dist/zip/cdmLibrary.zip -text
-cdmlibrary/editCdm.spring.cfg.xml -text
 cdmlibrary/lib/antlr-2.7.6.jar -text
 cdmlibrary/lib/asm-attrs.jar -text
 cdmlibrary/lib/asm.jar -text
@@ -168,6 +167,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation/TaxonNameValidator.java -text
+cdmlibrary/src/main/resources/editCdm.spring.cfg.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/EventTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/ListenerTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
