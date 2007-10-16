@@ -7,9 +7,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.*;
 
-
-
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TaxonNameTest.class

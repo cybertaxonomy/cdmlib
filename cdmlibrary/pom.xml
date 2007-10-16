@@ -29,6 +29,10 @@
 		          <includes>
 		            <include>**/*Test.java</include>
 		          </includes>
+		          <excludes>
+		            <exclude>**/EventTest.java</exclude>
+		            <exclude>**/ListenerTest.java</exclude>
+		          </excludes>
 		        </configuration>
 		      </plugin>
          </plugins>

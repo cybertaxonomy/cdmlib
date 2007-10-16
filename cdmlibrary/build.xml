@@ -24,12 +24,13 @@
     <property name="dir.src" value="src/main/java" />
     <property name="dir.test" value="src/test/java" />
     <property name="dir.etc" value="etc" />
-    <property name="dir.lib" value="lib" />
-    <property name="dir.jdbc" value="lib" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.jdbc" value="lib" />
 	<property name="dir.doc" value="doc"/>
 	<property name="dir.doc.api" value="${dir.doc}/api"/>
 	<property name="dir.doc.ref" value="${dir.doc}/reference"/>
     <property name="dir.build" value="target/classes"/>
+	<property name="dir.build.test" value="target/test-classes"/>
 	<property name="dir.resources" value="src/main/resources"/>
 	<property name="dir.test.resources" value="src/test/resources"/>
 		
@@ -73,13 +74,25 @@
     <target name="compile" depends="copyConfigFiles" 
     		description="compile all classes">
         <mkdir dir="${dir.build}"/>
-        <javac debug="true" srcdir="${dir.src}" 
+    	<mkdir dir="${dir.build.test}"/>
+    	<javac debug="true" srcdir="${dir.src}" 
                destdir="${dir.build}"
                classpathref="project.classpath"/>
         <javac debug="true" srcdir="${dir.test}" 
                destdir="${dir.build}"
                classpathref="project.classpath"/>
     </target> 
+	
+	<!-- Compile Java test source -->
+	<target name="compileTest" depends="copyConfigFilesTest" 
+	    		description="compile all test classes">
+	        <mkdir dir="${dir.build.test}"/>
+	    	<javac debug="true" srcdir="${dir.test}" 
+	               destdir="${dir.build.test}"
+	               classpathref="project.classpath"/>
+	</target> 
+		
+	
 	
 	<!-- Copy metadata to build classpath -->
 	<target name="copyMetaFiles">
@@ -94,6 +107,14 @@
 	<!-- Copy configuration files to build classpath -->
 	<target name="copyConfigFiles">
 		<mkdir dir="${dir.build}"/>
+		<copy file="${log4j.prop}" todir="${dir.build}"/>
+		<copy file="${spring.cfg}" todir="${dir.build}"/>
+	</target>
+	
+	
+	<!-- Copy test configuration files to build classpath -->
+	<target name="copyConfigFilesTest">
+		<mkdir dir="${dir.build.test}"/>
 		<copy file="${log4j.prop}" todir="${dir.build}"/>
 		<copy file="${spring.cfg}" todir="${dir.build}"/>
 	</target>
