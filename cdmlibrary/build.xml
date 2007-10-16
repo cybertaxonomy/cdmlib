@@ -30,7 +30,9 @@
 	<property name="dir.doc.api" value="${dir.doc}/api"/>
 	<property name="dir.doc.ref" value="${dir.doc}/reference"/>
     <property name="dir.build" value="target/classes"/>
-	
+	<property name="dir.resources" value="src/main/resources"/>
+	<property name="dir.test.resources" value="src/test/resources"/>
+		
 	<!-- Distribution -->
 	<property name="dist.dir" value="dist" />
 	<property name="dist.zip" value="${dist.dir}/zip" />
@@ -38,9 +40,8 @@
 	<property name="jar.name" value="${name2}"/>
 	
 	<!-- Configs -->
-	<property name="hibernate.cfg" value="editCdm.hibernate.cfg.xml"/>
-	<property name="spring.cfg" value="editCdm.spring.cfg.xml"/>
-	<property name="log4j.prop" value="log4j.properties"/>
+	<property name="spring.cfg" value="${dir.resources}/editCdm.spring.cfg.xml"/>
+	<property name="log4j.prop" value="${dir.resources}/log4j.properties"/>
 
 	
     <!-- Classpath declaration -->
