@@ -32,3 +32,4 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/publication
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/specimen
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/taxon
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/view
+cdmlibrary/target/test-classes
