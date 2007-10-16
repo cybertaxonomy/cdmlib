@@ -171,8 +171,8 @@ cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/EventTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/ListenerTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
-cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/name/NameRelationshipTest.java -text
-cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/model/name/TaxonNameTest.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/zipManifest.txt -text
