@@ -8,7 +8,6 @@ import java.util.EventObject;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.event.ICdmEventListener;
-import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
 
 /**
  * @author m.doering

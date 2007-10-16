@@ -7,19 +7,11 @@ import eu.etaxonomy.cdm.event.ICdmEventListener;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.*;
-
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IEventRegistrationService;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.event.ICdmEventListener;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.*;
+
 
 public class EventTest {
 	static Logger logger = Logger.getLogger(EventTest.class);

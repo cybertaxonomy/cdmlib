@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.test.model.name.*;
+import eu.etaxonomy.cdm.model.name.*;
 
 
 
