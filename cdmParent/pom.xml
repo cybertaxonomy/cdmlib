@@ -1,33 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>eu.etaxonomy.cdm</groupId>
-  <artifactId>cdmParent</artifactId>
-  <version>0.1</version>
-  <description>Parent project for all cdm projects</description>
-  <packaging>pom</packaging>
-  
-  <!-- the cdm internal repository -->
-  <repositories>
-    <repository>
-      <id>EditRepository</id>
-      <url>http://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
-    </repository>
-  </repositories>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-    </dependency>
-  </dependencies>
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.etaxonomy.cdm</groupId>
+	<artifactId>cdmParent</artifactId>
+	<version>0.1</version>
+	<description>Parent project for all cdm projects</description>
+	<url>http://wp5.e-taxonomy.eu</url>
+	<packaging>pom</packaging>
+
+	<mailingLists>
+		<mailingList>
+			<name>dev-edit</name>
+			<subscribe></subscribe>
+			<unsubscribe></unsubscribe>
+			<post>dev-edit@mnhn.fr</post>
+			<archive>https://webmail.mnhn.fr/wws/arc/dev-edit/</archive>
+		</mailingList>
+		<mailingList>
+			<name>cdm-edit</name>
+			<post>cdm-edit@mnhn.fr</post>
+			<archive>https://webmail.mnhn.fr/wws/arc/cdm-edit/</archive>
+		</mailingList>
+	</mailingLists>
+	<licenses>
+		<license>
+			<name>Mozilla Public License Version 1.1</name>
+			<url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>a.mueller2</id>
+			<name>
+				Andreas M&uuml;ller
+			</name>
+			<email>a.mueller [at] bgbm.org</email>
+			<organization>
+				Botanical Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org</organizationUrl>
+			<timezone>+2</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<url></url>
+		</developer>
+		<developer>
+			<name>
+				Markus D&ouml;ring
+			</name>
+			<email>m.doering [at] bgbm.org</email>
+			<organization>
+				Botanical Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org</organizationUrl>
+			<timezone>+2</timezone>
+			<url>http://www.bgbm.org/BGBM/staff/Wiss/Doering/</url>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Test-Contributor</name>
+		</contributor>
+	</contributors>
+	<issueManagement>
+		<system>Trac</system>
+		<url>http://dev.e-taxonomy.eu/trac/</url>
+	</issueManagement>
+
+	<!-- the cdm internal repository -->
+	<repositories>
+		<repository>
+			<id>EditRepository</id>
+			<url>http://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.15</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 </project>
