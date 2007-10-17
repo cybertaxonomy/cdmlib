@@ -2,6 +2,7 @@
 
 
 package eu.etaxonomy.cdm.functiontest;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.xml.XmlBeanFactory;

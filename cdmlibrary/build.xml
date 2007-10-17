@@ -25,7 +25,6 @@
     <property name="dir.test" value="src/test/java" />
     <property name="dir.etc" value="etc" />
 	<property name="dir.lib" value="lib" />
-	<property name="dir.jdbc" value="lib" />
 	<property name="dir.doc" value="doc"/>
 	<property name="dir.doc.api" value="${dir.doc}/api"/>
 	<property name="dir.doc.ref" value="${dir.doc}/reference"/>
@@ -47,10 +46,14 @@
 	
     <!-- Classpath declaration -->
     <path id="project.classpath">
-        <fileset dir="${dir.lib}">
+        <fileset dir="${dir.build}">
             <include name="**/*.jar"/>
             <include name="**/*.zip"/>
         </fileset>
+    	<fileset dir="${dir.build.test}">
+        	<include name="**/*.jar"/>
+        	<include name="**/*.zip"/>
+    	</fileset>
     </path>
 	
 
@@ -79,7 +82,7 @@
                destdir="${dir.build}"
                classpathref="project.classpath"/>
         <javac debug="true" srcdir="${dir.test}" 
-               destdir="${dir.build}"
+               destdir="${dir.build.test}"
                classpathref="project.classpath"/>
     </target> 
 	

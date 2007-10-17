@@ -5,16 +5,30 @@
 	  	<groupId>eu.etaxonomy.cdm</groupId>
 	  	<artifactId>cdmParent</artifactId>
 	  	<version>0.1</version>
-	  	<relativePath>.../parent/pom.xml</relativePath>
+	  	<relativePath>../cdmParent/pom.xml</relativePath>
   	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.etaxonomy.cdm</groupId>
 	<artifactId>cdmLibrary</artifactId>
-	<name>EDIT Common Data Model Library</name>
 	<version>0.2.3-Snapshot</version>
+	
+	<name>EDIT Common Data Model Library</name>
 	<description>EDIT cdm library</description>
-	<url>http://wp5.e-taxonomy.eu</url>
-  
+	<scm>
+        <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary</connection>
+        <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary</developerConnection>
+    	<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlibrary</url>
+  	</scm>
+
+  <!-- Enabling the use of FTP -->
+  <distributionManagement>
+    
+    <repository>
+      <id>ssh-repository</id>
+      <url>scpexe://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
+    </repository>
+  </distributionManagement>
+	
+	
   <build>
       <plugins>
          <plugin>
@@ -25,7 +39,7 @@
                     <target>1.5</target>
                     <excludes>
                         <!-- Example -->
-                        <exclude>**/*Point*.java</exclude>
+                        <exclude>**/*XXXsdfefef*.java</exclude>
                     </excludes>
                 </configuration>
              </plugin>
