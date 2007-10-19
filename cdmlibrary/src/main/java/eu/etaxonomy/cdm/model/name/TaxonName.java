@@ -10,21 +10,22 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.publication.NomenclaturalReference;
-import eu.etaxonomy.cdm.model.common.Source;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
+import java.util.ArrayList;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
-import java.util.*;
 
-import javax.management.DescriptorKey;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Source;
+import eu.etaxonomy.cdm.model.publication.NomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-
 
 /**
  * @author Andreas Mueller
