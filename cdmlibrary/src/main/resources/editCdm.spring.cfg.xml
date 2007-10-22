@@ -61,56 +61,7 @@
                 <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
-
-		<!-- register new save-or-update event -->
-        <property name="eventListeners">
-			<map>
-			<!-- entry keys can be: load, save, update, delete -->
-			<!--
-			 	<entry key="post-load"><ref local="loadListener" /></entry>
-			 -->
-			 	<entry key="post-insert"><ref local="insertListener" /></entry>
-				<entry key="post-update"><ref local="updateListener" /></entry>
-				<entry key="post-delete"><ref local="deleteListener" /></entry>
-			</map>
-		</property>
-<!-- 
-      config.setListener("auto-flush",new NoisyAutoFlushEventListener());
-      config.setListener("delete",new NoisyDeleteEventListener());
-      config.setListener("dirty-check",new NoisyDirtyCheckEventListener());
-      config.setListener("evict",new NoisyEvictEventListener());
-      config.setListener("flush-entity",new NoisyFlushEntityEventListener());
-      config.setListener("flush",new NoisyFlushEventListener());
-      config.setListener("load-collection",new NoisyInitializeCollectionEventListener());
-      config.setListener("load",new NoisyLoadEventListener());
-      config.setListener("lock",new NoisyLockEventListener());
-      config.setListener("merge",new NoisyMergeEventListener());
-      config.setListener("persist",new NoisyPersistEventListener());
-      config.setListener("post-delete",new NoisyPostDeleteEventListener());
-      config.setListener("post-insert",new NoisyPostInsertEventListener());
-      config.setListener("post-load",new NoisyPostLoadEventListener());
-      config.setListener("post-update",new NoisyPostUpdateEventListener());
-      config.setListener("pre-delete",new NoisyPreDeleteEventListener());
-      config.setListener("pre-insert",new NoisyPreInsertEventListener());
-      config.setListener("pre-load",new NoisyPreLoadEventListener());
-      config.setListener("pre-update",new NoisyPreUpdateEventListener());
-      config.setListener("refresh",new NoisyRefreshEventListener());
-      config.setListener("replicate",new NoisyReplicateEventListener());
-      config.setListener("save-update",new NoisySaveOrUpdateEventListener());
--->
-    </bean>
-
-	<!-- CDM EVENTS -->
-	<bean id="eventRegistrationService" 
-			class="eu.etaxonomy.cdm.api.service.EventRegistrationServiceImpl">
-	</bean>
-	<!-- <bean id="loadListener" class="eu.etaxonomy.cdm.event.PersistenceLoadListener" /> -->	
- 	<bean id="insertListener" class="eu.etaxonomy.cdm.event.PersistenceInsertListener">
-		<property name="eventRegistrationService" ref="eventRegistrationService"/>
- 	</bean>
-	<bean id="updateListener" class="eu.etaxonomy.cdm.event.PersistenceUpdateListener" />
-	<bean id="deleteListener" class="eu.etaxonomy.cdm.event.PersistenceDeleteListener" />
-	
+  </bean>
 
 	<!-- AGENT -->
 			

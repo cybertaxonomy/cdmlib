@@ -9,6 +9,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.aspect.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
@@ -58,6 +59,11 @@ public class SpringControl {
 		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
+		// setup listeners
+		PropertyChangeTest listener = new PropertyChangeTest();
+		tn.addPropertyChangeListener(listener);
+		tn3.addPropertyChangeListener(listener);
+
 		// test listeners
 		tn.setGenus("tn1-Genus1");
 		tn3.setGenus("tn3-genus");
@@ -65,6 +71,7 @@ public class SpringControl {
 		
 		logger.info("Create new Author team...");
 		Team team= new Team();
+		team.addPropertyChangeListener(listener);
 		team.setShortName("AuthorTeam1");
 		tn.setAuthorTeam(team);
 		

@@ -44,10 +44,8 @@ public aspect PropertyChangeAspect {
 
 
 	private Field getField( Signature signature ){
-
 		Field field = null;
-		System.out.println( "ASPECT> Getting the field name of ["+
-				signature.getName() + "]" );
+		//System.out.println( "ASPECT> Getting the field name of ["+signature.getName() + "]" );
 
 		try{
 			String methodName = signature.getName();
@@ -57,7 +55,6 @@ public aspect PropertyChangeAspect {
 			nsfe.printStackTrace();
 		}
 		return field;
-
 	}
 
 	void firePropertyChange( CdmBase b,
@@ -65,14 +62,13 @@ public aspect PropertyChangeAspect {
 			String oldval,
 			String newval) {
 
-		System.out.println( "ASPECTj> The property is [" + property + "]");
-		System.out.println( "ASPECTj> The old value is [" + oldval + "]");
-		System.out.println( "ASPECTj> The new value is [" + newval + "]");
+		//System.out.println( "ASPECTj> The property is [" + property + "]");
+		//System.out.println( "ASPECTj> The old value is [" + oldval + "]");
+		//System.out.println( "ASPECTj> The new value is [" + newval + "]");
 		b.firePropertyChange( property,
 				( oldval == null ) ?
 						oldval :
 							new String(oldval),
 							new String(newval));
-
 	}
 }

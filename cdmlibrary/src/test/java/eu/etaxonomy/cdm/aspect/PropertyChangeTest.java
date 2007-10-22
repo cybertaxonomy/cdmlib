@@ -5,19 +5,21 @@ package eu.etaxonomy.cdm.aspect;
 import java.beans.PropertyChangeEvent;
 	import java.beans.PropertyChangeListener;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 	public class PropertyChangeTest implements PropertyChangeListener {
-		private String lastPropValue;
+		static Logger logger = Logger.getLogger(PropertyChangeTest.class);
+		private Object lastPropValue;
 
 		public void propertyChange(PropertyChangeEvent e){
-		System.out.println("TEST> Property [" + (String)e.getPropertyName() 
+		logger.info("Property [" + (String)e.getPropertyName() 
 				+ "] changed from " + e.getOldValue() 
 				+ " to " + e.getNewValue());
-		lastPropValue = e.getNewValue() == null ? null : (String) e.getNewValue();
+		lastPropValue = e.getNewValue() == null ? null : e.getNewValue();
 		}
 
 		@Test
