@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<!--NOT IN USE, see editCdm.spring.cfg.xml$sessionFactory-->
+
+<hibernate-configuration>
+	<session-factory>
+	<!-- Database connection settings -->
+        <!--  
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://192.168.2.10/cdm_test</property>
+        <property name="connection.username">edit</property>
+        <property name="connection.password">wp5</property>
+		-->
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+		<!-- ... and make it nice -->
+        <property name="format_sql">false</property>
+		
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+		
+		
+		<!--  import generator information from package-info.java -->
+		
+		<mapping package="eu.etaxonomy.cdm.model.common"/>
+        
+        <mapping class="eu.etaxonomy.cdm.model.common.VersionableEntity"/>
+        <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableEntity"/>
+        
+        <mapping class="eu.etaxonomy.cdm.model.name.TaxonName"/>
+        <mapping class="eu.etaxonomy.cdm.model.name.NameRelationship"/>
+         
+         
+        <mapping class="eu.etaxonomy.cdm.model.agent.Team"/>
+        <!--  mapping class="eu.etaxonomy.cdm.model.publication.NomenclaturalReference"/>
+        -->
+		
+		<!-- register new save-or-update event -->
+        <event type="save-or-update">
+            <listener class="eu.etaxonomy.cdm.event.CdmChangeListener"/>
+            <listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>
+        </event>		
+        <event type="load">
+            <listener class="eu.etaxonomy.cdm.event.MyLoadListener"/>
+            <listener class="org.hibernate.event.def.DefaultLoadEventListener"/>
+        </event>
+                
+	</session-factory>
+</hibernate-configuration>

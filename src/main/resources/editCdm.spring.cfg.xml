@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ 	   http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	   http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" >
+   
+   <bean id="defaultDataSource" 
+   			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test"/>
+        <property name="username" value="edit"/>
+        <property name="password" value="wp5"/>
+  </bean>
+  
+  <bean id="localHsqldb" 
+  			class="eu.etaxonomy.cdm.database.LocalHsqldb" 
+  			init-method="init"
+  			destroy-method="destroy">
+        
+        <!-- property name="driverClassName" value="org.hsqldb.jdbcDriver"/-->
+        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
+        <!-- property name="dbName" value="cdm"/> -->
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <!--  <property name="dbPath" value="C:\tmp\cdmDb\"/> -->
+        <property name="startServer" value="true"/>
+        <property name="silent" value="true"/>
+  </bean>
+  
+  
+  <!-- HIBERNATE --> 
+  
+  <bean id="sessionFactory" 
+  			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="localHsqldb"/>
+        <property name="annotatedPackages">
+			<list>
+		    	<value>eu.etaxonomy.cdm.model.common</value>
+		    </list>
+		</property>
+		
+        <property name="annotatedClasses">
+			<list>
+		    	<value>eu.etaxonomy.cdm.model.name.TaxonName</value>
+		       	<value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
+		       	<value>eu.etaxonomy.cdm.model.common.VersionableEntity</value>
+		       	<value>eu.etaxonomy.cdm.model.common.IdentifiableEntity</value>
+		       	<value>eu.etaxonomy.cdm.model.agent.Team</value>
+		    </list>
+		</property>
+		<property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!-- prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+
+		<!-- register new save-or-update event -->
+        <property name="eventListeners">
+			<map>
+			<!-- entry keys can be: load, save, update, delete -->
+			<!--
+			 	<entry key="post-load"><ref local="loadListener" /></entry>
+			 -->
+			 	<entry key="post-insert"><ref local="insertListener" /></entry>
+				<entry key="post-update"><ref local="updateListener" /></entry>
+				<entry key="post-delete"><ref local="deleteListener" /></entry>
+			</map>
+		</property>
+<!-- 
+      config.setListener("auto-flush",new NoisyAutoFlushEventListener());
+      config.setListener("delete",new NoisyDeleteEventListener());
+      config.setListener("dirty-check",new NoisyDirtyCheckEventListener());
+      config.setListener("evict",new NoisyEvictEventListener());
+      config.setListener("flush-entity",new NoisyFlushEntityEventListener());
+      config.setListener("flush",new NoisyFlushEventListener());
+      config.setListener("load-collection",new NoisyInitializeCollectionEventListener());
+      config.setListener("load",new NoisyLoadEventListener());
+      config.setListener("lock",new NoisyLockEventListener());
+      config.setListener("merge",new NoisyMergeEventListener());
+      config.setListener("persist",new NoisyPersistEventListener());
+      config.setListener("post-delete",new NoisyPostDeleteEventListener());
+      config.setListener("post-insert",new NoisyPostInsertEventListener());
+      config.setListener("post-load",new NoisyPostLoadEventListener());
+      config.setListener("post-update",new NoisyPostUpdateEventListener());
+      config.setListener("pre-delete",new NoisyPreDeleteEventListener());
+      config.setListener("pre-insert",new NoisyPreInsertEventListener());
+      config.setListener("pre-load",new NoisyPreLoadEventListener());
+      config.setListener("pre-update",new NoisyPreUpdateEventListener());
+      config.setListener("refresh",new NoisyRefreshEventListener());
+      config.setListener("replicate",new NoisyReplicateEventListener());
+      config.setListener("save-update",new NoisySaveOrUpdateEventListener());
+-->
+    </bean>
+
+	<!-- CDM EVENTS -->
+	<bean id="eventRegistrationService" 
+			class="eu.etaxonomy.cdm.api.service.EventRegistrationServiceImpl">
+	</bean>
+	<!-- <bean id="loadListener" class="eu.etaxonomy.cdm.event.PersistenceLoadListener" /> -->	
+ 	<bean id="insertListener" class="eu.etaxonomy.cdm.event.PersistenceInsertListener">
+		<property name="eventRegistrationService" ref="eventRegistrationService"/>
+ 	</bean>
+	<bean id="updateListener" class="eu.etaxonomy.cdm.event.PersistenceUpdateListener" />
+	<bean id="deleteListener" class="eu.etaxonomy.cdm.event.PersistenceDeleteListener" />
+	
+
+	<!-- AGENT -->
+			
+	<bean id="agentService" 
+			class="eu.etaxonomy.cdm.api.service.AgentServiceImpl">
+		<property name="agentDao" ref="agentDao"/>
+	</bean>
+ 	
+ 	<bean id="agentDao" 
+			class="eu.etaxonomy.cdm.persistence.dao.AgentDaoHibernateImpl">
+			<!-- autowire="byType"-->
+	 	<property name="sessionFactory" ref="sessionFactory"/> 
+	</bean>
+
+
+	<!-- TAXON_NAME -->
+		
+	<bean id="nameService" 
+			class="eu.etaxonomy.cdm.api.service.NameServiceImpl">
+		<property name="taxonNameDao" ref="taxonNameDao"/>
+		<!--  property name="newTaxonName" ref="taxonName"></property-->
+		<!--  replaced-method name="getNewTaxonName" replacer="taxonName" />-->
+	</bean>
+ 
+	
+	<bean id="botanicNameCacheStrategy" 
+			class="eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy">
+	</bean>
+ 
+ 	<bean id="zooNameCacheStrategy" 
+			class="eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy">
+	</bean>
+ 
+ 	<bean id="taxonNameDao" 
+			class="eu.etaxonomy.cdm.persistence.dao.TaxonNameDaoHibernateImpl">
+			<!-- autowire="byType"-->
+	 	<property name="sessionFactory" ref="sessionFactory"/> 
+	</bean>
+
+ 
+   	<!-- CDM DOMAIN PROTOTYPE CLASSES -->
+   	<bean  id="protoTaxonName" 
+			class="eu.etaxonomy.cdm.model.name.TaxonName" 
+			scope="prototype">
+		<property name="cacheStrategy" ref="botanicNameCacheStrategy"/>
+		<property name="year" value="2007"/> 
+	</bean>
+	 
+
+
+
+
+
+	<!--  ************ AOP ***********************  --> 
+	<!--
+	<bean id="changePropertyAspect" 
+			class="eu.etaxonomy.cdm.aspect.ChangePropertyAspect">
+	
+	</bean>
+
+	<aop:config>
+	   	<aop:pointcut id="afterSetPointcut" 
+	   		expression="execution(* eu.etaxonomy.cdm.model.name.TaxonName.set*(..))"/>
+	   	
+	   	<aop:aspect id="cpa" ref="changePropertyAspect">
+	   		<aop:after-returning
+	   			method="afterSet"
+	   			arg-names="newValue"
+	   			pointcut-ref="afterSetPointcut"/>
+		</aop:aspect>
+	</aop:config>
+	-->
+	
+   
+    <!-- ********* not used yet ********-->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+  </beans>
