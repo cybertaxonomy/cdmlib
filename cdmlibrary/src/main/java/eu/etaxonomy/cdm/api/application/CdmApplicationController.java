@@ -18,7 +18,6 @@ import org.springframework.util.PathMatcher;
 
 import eu.etaxonomy.cdm.api.service.AgentServiceImpl;
 import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.IEventRegistrationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.NameServiceImpl;
 
@@ -32,7 +31,6 @@ public class CdmApplicationController {
 	private ClassPathXmlApplicationContext applicationContext;
 	private INameService nameService;
 	private IAgentService agentService;
-	private IEventRegistrationService eventRegistrationService;
 	private Server hsqldbServer;
 	
 	
@@ -72,7 +70,6 @@ public class CdmApplicationController {
 		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameService");
 		agentService = (IAgentService)applicationContext.getBean("agentService");
-		eventRegistrationService = (IEventRegistrationService)applicationContext.getBean("eventRegistrationService");
 	}
 	
 	/* Services */
@@ -82,10 +79,6 @@ public class CdmApplicationController {
 	
 	public final IAgentService getAgentService(){
 		return agentService;
-	}
-
-	public final IEventRegistrationService getEventRegistrationService(){
-		return eventRegistrationService;
 	}
 	
 }

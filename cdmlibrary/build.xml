@@ -32,6 +32,7 @@
 	<property name="dir.build.test" value="target/test-classes"/>
 	<property name="dir.resources" value="src/main/resources"/>
 	<property name="dir.test.resources" value="src/test/resources"/>
+	<property name="dir.maven.local" value="/Users/markus/.m2/repository"/>
 		
 	<!-- Distribution -->
 	<property name="dist.dir" value="dist" />
@@ -46,6 +47,12 @@
 	
     <!-- Classpath declaration -->
     <path id="project.classpath">
+    	<fileset dir="${dir.maven.local}">
+        	<include name="**/*.jar"/>
+        	<include name="**/**/*.jar"/>
+        	<include name="**/**/**/*.jar"/>
+    	</fileset>
+    	<!-- 
         <fileset dir="${dir.build}">
             <include name="**/*.jar"/>
             <include name="**/*.zip"/>
@@ -54,6 +61,7 @@
         	<include name="**/*.jar"/>
         	<include name="**/*.zip"/>
     	</fileset>
+    	-->
     </path>
 	
 

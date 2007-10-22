@@ -4,8 +4,6 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import eu.etaxonomy.cdm.event.CdmEventListenerRegistrationSupport;
-import eu.etaxonomy.cdm.event.ICdmEventListenerRegistration;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 

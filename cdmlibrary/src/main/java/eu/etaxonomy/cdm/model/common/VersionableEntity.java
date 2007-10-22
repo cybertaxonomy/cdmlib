@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @created 15-Aug-2007 18:36:18
  */
 @MappedSuperclass
-public abstract class VersionableEntity extends CdmEntity{
+public abstract class VersionableEntity extends CdmBase{
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
 	
 	
