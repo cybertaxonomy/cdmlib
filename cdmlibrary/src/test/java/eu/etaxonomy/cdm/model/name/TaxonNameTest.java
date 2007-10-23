@@ -388,7 +388,7 @@ public class TaxonNameTest {
 		//id = tnDao.save(tn);
 		nameServiceImpl = app.getNameService();
 		id = nameServiceImpl.saveTaxonName(tn);
-		logger.warn("id is " + id);
+		logger.info("id is " + id);
 	}
 
 	/**

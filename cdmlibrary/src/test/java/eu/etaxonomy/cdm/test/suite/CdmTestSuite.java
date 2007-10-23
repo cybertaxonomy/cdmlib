@@ -4,12 +4,14 @@ package eu.etaxonomy.cdm.test.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
+import  eu.etaxonomy.cdm.aspect.PropertyChangeTest;
 
 import eu.etaxonomy.cdm.model.name.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TaxonNameTest.class
+    TaxonNameTest.class,
+    PropertyChangeTest.class
     //, NameRelationshipTest.class
 })
 
@@ -23,7 +25,8 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
-             TaxonNameTest.class
+             TaxonNameTest.class, 
+             PropertyChangeTest.class
              //, NameRelationshipTest.class
 	    ); 
 	}
