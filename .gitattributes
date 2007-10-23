@@ -59,9 +59,9 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeBean.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/PropertyChangeBean.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text

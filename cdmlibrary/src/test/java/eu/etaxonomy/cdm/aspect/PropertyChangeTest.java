@@ -5,7 +5,9 @@ package eu.etaxonomy.cdm.aspect;
 import java.beans.PropertyChangeEvent;
 	import java.beans.PropertyChangeListener;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -44,5 +46,12 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 			}
 			
 		}
+
+		
+		@Before
+		public void updateDebugLevel(){
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+		}
+
 	}
 

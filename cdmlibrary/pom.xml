@@ -57,6 +57,9 @@
         <configuration>
             <source>1.5</source>
             <target>1.5</target>
+          <includes>
+            <include>**/PropertyChangeAspect.aj</include>
+          </includes>          
         </configuration>
         <executions>
           <execution>

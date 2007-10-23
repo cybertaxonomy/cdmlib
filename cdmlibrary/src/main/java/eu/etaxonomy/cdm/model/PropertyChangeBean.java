@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.aspectj;
+package eu.etaxonomy.cdm.model;
 
 import java.lang.annotation.*;
 
