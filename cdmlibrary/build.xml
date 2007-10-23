@@ -78,6 +78,8 @@
     <target name="clean" description="Clean the build directory">
         <delete dir="${dir.build}"/>
         <mkdir dir="${dir.build}"/>
+        <delete dir="${dir.build.test}"/>
+        <mkdir dir="${dir.build.test}"/>
     </target>
 	
 

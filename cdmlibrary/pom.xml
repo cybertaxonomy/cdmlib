@@ -23,9 +23,6 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
-          <excludes>
-            <exclude>**/*XXXsdfefef*.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -34,10 +31,6 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
-          <excludes>
-            <exclude>**/EventTest.java</exclude>
-            <exclude>**/ListenerTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -58,9 +51,30 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>aspectj-maven-plugin</artifactId>
+        <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+              <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.5.2a</version>
+    </dependency>
     <dependency>
       <groupId>com.sun.xml.rpc</groupId>
       <artifactId>jaxrpc-impl</artifactId>
@@ -128,5 +142,8 @@
       <url>scpexe://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
     </repository>
   </distributionManagement>
+<!--  
+  <aspectSourceDirectory>src/main/java/eu/etaxonomy/cdm/aspect</aspectSourceDirectory>
+-->
 </project>
 

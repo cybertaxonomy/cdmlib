@@ -7,7 +7,7 @@
 	   http://www.springframework.org/schema/aop
 	   http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" >
    
-   <bean id="defaultDataSource" 
+   <bean id="mysqlDataSource" 
    			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test"/>
@@ -15,7 +15,7 @@
         <property name="password" value="wp5"/>
   </bean>
   
-  <bean id="localHsqldb" 
+ 	<bean id="localDataSource" 
   			class="eu.etaxonomy.cdm.database.LocalHsqldb" 
   			init-method="init"
   			destroy-method="destroy">
@@ -35,7 +35,7 @@
   
   <bean id="sessionFactory" 
   			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="localHsqldb"/>
+  	<property name="dataSource" ref="mysqlDataSource"/>
         <property name="annotatedPackages">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.common</value>
@@ -54,9 +54,9 @@
 		<property name="hibernateProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <!-- prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop-->
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+<!--                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+-->                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
             </props>
