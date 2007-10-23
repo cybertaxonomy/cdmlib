@@ -58,8 +58,11 @@
             <source>1.5</source>
             <target>1.5</target>
           <includes>
+            <include>**/TaxonName.java</include>
             <include>**/PropertyChangeAspect.aj</include>
-          </includes>          
+            <include>**/PropertyChangeTest.java</include>
+<!--            <include>**/**.aj</include>
+-->          </includes>          
         </configuration>
         <executions>
           <execution>

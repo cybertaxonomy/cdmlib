@@ -47,9 +47,6 @@ cdmlibrary/.externalToolBuilders/Ant_Cdm_Builder.launch -text
 cdmlibrary/.settings/org.eclipse.jdt.core.prefs -text
 cdmlibrary/.settings/org.eclipse.jdt.ui.prefs -text
 cdmlibrary/build.xml -text
-cdmlibrary/dist/jar/cdmLibrary.jar -text
-cdmlibrary/dist/jar/cdmLibraryFat.jar -text
-cdmlibrary/dist/zip/cdmLibrary.zip -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text

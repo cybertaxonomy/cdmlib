@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 		private Object lastPropValue;
 
 		public void propertyChange(PropertyChangeEvent e){
-		logger.info("Property [" + (String)e.getPropertyName() 
+		logger.debug("Property [" + (String)e.getPropertyName() 
 				+ "] changed from " + e.getOldValue() 
 				+ " to " + e.getNewValue());
 		lastPropValue = e.getNewValue() == null ? null : e.getNewValue();
@@ -29,28 +29,20 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 			TaxonName b = new TaxonName();
 			b.addPropertyChangeListener(this);
 			b.setGenus("Abies");
-			if (lastPropValue != null){
 				assertEquals(b.getGenus(), lastPropValue);
-			}
 			b.setGenus("Picea");
-			if (lastPropValue != null){
 				assertEquals(b.getGenus(), lastPropValue);
-			}
 			b.setUninomial("Unipicea");
-			if (lastPropValue != null){
 				assertEquals(b.getUninomial(), lastPropValue);
-			}
 			b.setSpecificEpithet("vulgaris");
-			if (lastPropValue != null){
 				assertEquals(b.getSpecificEpithet(), lastPropValue);
-			}
 			
 		}
 
 		
 		@Before
 		public void updateDebugLevel(){
-			Logger.getRootLogger().setLevel(Level.DEBUG);
+			logger.setLevel(Level.DEBUG);
 		}
 
 	}
