@@ -18,15 +18,15 @@
  	<bean id="localDataSource" 
   			class="eu.etaxonomy.cdm.database.LocalHsqldb" 
   			init-method="init"
-  			destroy-method="destroy">
-        
+  			destroy-method="destroy"
+  			>
         <!-- property name="driverClassName" value="org.hsqldb.jdbcDriver"/-->
         <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
         <!-- property name="dbName" value="cdm"/> -->
         <property name="username" value="sa"/>
         <property name="password" value=""/>
         <!--  <property name="dbPath" value="C:\tmp\cdmDb\"/> -->
-        <property name="startServer" value="true"/>
+        <property name="startServer" value="false"/>
         <property name="silent" value="true"/>
   </bean>
   
@@ -35,7 +35,7 @@
   
   <bean id="sessionFactory" 
   			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-  	<property name="dataSource" ref="mysqlDataSource"/>
+  		<property name="dataSource" ref="mysqlDataSource"/>
         <property name="annotatedPackages">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.common</value>
