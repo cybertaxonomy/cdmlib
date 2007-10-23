@@ -1,4 +1,4 @@
-package eu.taxonomy.cdm.aspect;
+package eu.taxonomy.cdm.aspectj;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
