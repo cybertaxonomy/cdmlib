@@ -1,25 +1,13 @@
 package eu.etaxonomy.cdm.api.application;
 
-import java.sql.Connection;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.hsqldb.Server;
-import org.springframework.beans.BeansException;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate3.AbstractSessionFactoryBean;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
-import org.springframework.util.PathMatcher;
 
-import eu.etaxonomy.cdm.api.service.AgentServiceImpl;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.NameServiceImpl;
 
 /**
  * @author a.mueller
@@ -38,7 +26,7 @@ public class CdmApplicationController {
 	public CdmApplicationController() {
 		//logger.info("Start HSQLDB Server");
 		//startHsqldbServer();
-		logger.warn("Start CdmApplicationController");
+		logger.info("Start CdmApplicationController");
 		String fileName = "editCdm.spring.cfg.xml";
 		setApplicationContext(new ClassPathXmlApplicationContext(fileName));
 		Object sf = (Object)applicationContext.containsBean("sessionFactory");
