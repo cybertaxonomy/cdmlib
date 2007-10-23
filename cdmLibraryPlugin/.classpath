@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm.jar"/>
@@ -32,5 +33,6 @@
 	<classpathentry kind="lib" path="jaxb-impl-2.0-sources.jar"/>
 	<classpathentry kind="lib" path="spring-aspects.jar"/>
 	<classpathentry kind="lib" path="xercesImpl.jar"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
