@@ -32,8 +32,10 @@ cdmLibraryPlugin/junit-4.4.jar -text
 cdmLibraryPlugin/log4j-1.2.14.jar -text
 cdmLibraryPlugin/mysql-connector-java-3.1.14-bin.jar -text
 cdmLibraryPlugin/plugin.xml -text
+cdmLibraryPlugin/pom.xml -text
 cdmLibraryPlugin/spring-aspects.jar -text
 cdmLibraryPlugin/spring.jar -text
+cdmLibraryPlugin/src/test/java/eu/etaxonomy/cdm/aspect/PropertyChangeTest.java -text
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmParent/.classpath -text
