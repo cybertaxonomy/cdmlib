@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="plugin_export" name="build" basedir=".">
 	<property name="dist.dir" value="dist" />
-
 	<target name="plugin_export">
-		<pde.exportPlugins destination="P:\eclipse\europaWS\eu.etaxonomy.cdmLibrary\dist" 
+
+		<pde.exportPlugins destination="/Users/markus/eu.etaxonomy.cdmLibrary" 
 			exportSource="false" 
 			exportType="directory" 
 			plugins="eu.etaxonomy.cdmLibrary" 
