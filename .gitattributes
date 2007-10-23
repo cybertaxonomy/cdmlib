@@ -58,6 +58,8 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeBean.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Person.java -text
@@ -129,8 +131,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation/TaxonNameValidator.java -text
-cdmlibrary/src/main/java/eu/taxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
-cdmlibrary/src/main/java/eu/taxonomy/cdm/aspectj/PropertyChangeBean.java -text
 cdmlibrary/src/main/resources/editCdm.spring.cfg.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspect/PropertyChangeTest.java -text
