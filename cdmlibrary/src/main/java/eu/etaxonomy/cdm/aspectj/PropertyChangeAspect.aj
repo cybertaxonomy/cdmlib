@@ -2,30 +2,43 @@ package eu.etaxonomy.cdm.aspectj;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
 import org.aspectj.lang.Signature;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
 
+/**
+ * @author markus
+ * Aspect class that adds a firePropertyChange call to all setter methods 
+ * which names start with "set" and that belong to subclasses form CdmBase
+ * CdmBase defines the rest of the ProeprtyChangeSupport like listener registration 
+ */
 public aspect PropertyChangeAspect {
+	static Logger logger = Logger.getLogger(PropertyChangeAspect.class);
 
 	pointcut callSetter( CdmBase b ) : call( * CdmBase+.set*(..) ) && target( b );
 
 
+	/**
+	 * @param b
+	 * Around aspect that will be weaven into the original setter methods of the CdmBase derived classes
+	 */
 	void around( CdmBase b ) : callSetter( b )  {
-
-		String propertyName = getField( thisJoinPointStaticPart.getSignature() ).getName();
-		//System.out.println("ASPECT> The property is ["+propertyName+"]");
+		// get property that is set by setter method
+		Field property = getField( thisJoinPointStaticPart.getSignature() );
+		property.setAccessible(true);
+		String propertyName = property.getName();
+		logger.debug("The property is ["+propertyName+"]");
 		try {
-			String getmethodName = "get"+Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
-			//System.out.println("ASPECT> The get method is ["+getmethodName+"]");
-			Method getmethod = b.getClass().getMethod(getmethodName);
-			Object oldValue = getmethod.invoke(b);
+			// use property attribute directly, not through get method.
+			// get method might modify things, like setting a UUID when called for the first time.
+			// Also get methods for booleans start with "is" or "has"
+			Object oldValue = property.get(b);
 			proceed( b );
-			b.firePropertyChange( propertyName, oldValue, getmethod.invoke(b));
+			b.firePropertyChange( propertyName, oldValue, property.get(b));
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 			proceed( b );
@@ -36,16 +49,20 @@ public aspect PropertyChangeAspect {
 			e.printStackTrace();
 			proceed( b );
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			proceed( b );
 		}
 	}
 
 
+	/**
+	 * @param signature
+	 * Return the Field object that belongs to the signature of a setter method
+	 * Removes first 3 characters of method name to find property name
+	 */
 	private Field getField( Signature signature ){
 		Field field = null;
-		//System.out.println( "ASPECT> Getting the field name of ["+signature.getName() + "]" );
+		logger.debug( "Getting the field name of ["+signature.getName() + "]" );
 
 		try{
 			String methodName = signature.getName();
@@ -62,9 +79,10 @@ public aspect PropertyChangeAspect {
 			String oldval,
 			String newval) {
 
-		//System.out.println( "ASPECTj> The property is [" + property + "]");
-		//System.out.println( "ASPECTj> The old value is [" + oldval + "]");
-		//System.out.println( "ASPECTj> The new value is [" + newval + "]");
+		logger.debug( "The property is [" + property + "]");
+		logger.debug( "The old value is [" + oldval + "]");
+		logger.debug( "The new value is [" + newval + "]");
+		// call firePropertyChange in original class. Method defined in CdmBase superclass!
 		b.firePropertyChange( property,
 				( oldval == null ) ?
 						oldval :

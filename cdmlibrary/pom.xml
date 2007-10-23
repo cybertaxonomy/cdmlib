@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmLibrary</artifactId>
   <name>EDIT Common Data Model Library</name>
-  <version>0.2.3-Snapshot</version>
+  <version>0.2.3</version>
   <description>EDIT cdm library</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary</connection>
