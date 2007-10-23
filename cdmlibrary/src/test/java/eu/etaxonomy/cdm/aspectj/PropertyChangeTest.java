@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.aspect;
+package eu.etaxonomy.cdm.aspectj;
 
 	import static org.junit.Assert.*;
 

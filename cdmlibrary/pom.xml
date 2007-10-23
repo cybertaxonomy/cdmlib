@@ -61,8 +61,8 @@
             <include>**/TaxonName.java</include>
             <include>**/PropertyChangeAspect.aj</include>
             <include>**/PropertyChangeTest.java</include>
-<!--            <include>**/**.aj</include>
--->          </includes>          
+            <include>**/**.aj</include>
+          </includes>          
         </configuration>
         <executions>
           <execution>

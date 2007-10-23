@@ -132,7 +132,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -te
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation/TaxonNameValidator.java -text
 cdmlibrary/src/main/resources/editCdm.spring.cfg.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
-cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspect/PropertyChangeTest.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameTest.java -text

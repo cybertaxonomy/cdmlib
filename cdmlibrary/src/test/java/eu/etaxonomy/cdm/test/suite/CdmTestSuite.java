@@ -4,7 +4,8 @@ package eu.etaxonomy.cdm.test.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
-import  eu.etaxonomy.cdm.aspect.PropertyChangeTest;
+
+import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 
 import eu.etaxonomy.cdm.model.name.*;
 
