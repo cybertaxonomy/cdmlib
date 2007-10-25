@@ -7,9 +7,11 @@ cdmlibrary/.externalToolBuilders/org.eclipse.jdt.core.javabuilder.launch
 cdmlibrary/.externalToolBuilders/org.maven.ide.eclipse.maven2Builder.launch
 cdmlibrary/.project
 cdmlibrary/alt
+cdmlibrary/archive
 cdmlibrary/bin
 cdmlibrary/cdmLibrary.jar
 cdmlibrary/db
+cdmlibrary/dist
 cdmlibrary/edit_cdm.rar
 cdmlibrary/manifest.txt
 cdmlibrary/mavenInstall
