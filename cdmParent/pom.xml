@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>eu.etaxonomy.cdm</groupId>
+	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmParent</artifactId>
 	<version>0.1</version>
 	<description>Parent project for all cdm projects</description>
@@ -35,7 +35,7 @@
 		<developer>
 			<id>a.mueller2</id>
 			<name>
-				Andreas M&uuml;ller
+				Andreas Müller
 			</name>
 			<email>a.mueller [at] bgbm.org</email>
 			<organization>
@@ -50,7 +50,7 @@
 		</developer>
 		<developer>
 			<name>
-				Markus D&ouml;ring
+				Markus Döring
 			</name>
 			<email>m.doering [at] bgbm.org</email>
 			<organization>
@@ -86,15 +86,14 @@
 			<version>4.4</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.15</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<!--	<dependencyManagement>-->
+	<!---->
+	<!--	</dependencyManagement>-->
 
 </project>
