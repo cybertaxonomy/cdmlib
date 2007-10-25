@@ -2,6 +2,9 @@ cdmLibraryPlugin/dist/plugins/eu.etaxonomy.cdmLibrary_0.2.2.jar
 cdmLibraryPlugin/target
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
+cdmlibrary/.externalToolBuilders/org.eclipse.ajdt.core.ajbuilder.launch
+cdmlibrary/.externalToolBuilders/org.eclipse.jdt.core.javabuilder.launch
+cdmlibrary/.externalToolBuilders/org.maven.ide.eclipse.maven2Builder.launch
 cdmlibrary/.project
 cdmlibrary/alt
 cdmlibrary/bin
