@@ -35,6 +35,7 @@ cdmLibraryPlugin/plugin.xml -text
 cdmLibraryPlugin/pom.xml -text
 cdmLibraryPlugin/spring-aspects.jar -text
 cdmLibraryPlugin/spring.jar -text
+cdmLibraryPlugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmParent/.classpath -text
