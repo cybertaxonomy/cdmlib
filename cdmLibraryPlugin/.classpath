@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm.jar"/>
@@ -22,9 +22,7 @@
 	<classpathentry exported="true" kind="lib" path="mysql-connector-java-3.1.14-bin.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring.jar"/>
 	<classpathentry exported="true" kind="lib" path="xml-apis.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmLibrary.jar" sourcepath="/edit_cdm/src"/>
-	<classpathentry kind="lib" path="aspectjrt.jar"/>
-	<classpathentry kind="lib" path="aspectjweaver.jar"/>
+	<classpathentry exported="true" kind="lib" path="aspectjrt-1.5.2a.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="hsqldb.jar"/>
@@ -33,6 +31,6 @@
 	<classpathentry kind="lib" path="jaxb-impl-2.0-sources.jar"/>
 	<classpathentry kind="lib" path="spring-aspects.jar"/>
 	<classpathentry kind="lib" path="xercesImpl.jar"/>
-	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry exported="true" kind="lib" path="/cdmLibrary/target/classes"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
