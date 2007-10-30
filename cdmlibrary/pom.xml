@@ -11,18 +11,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cdmLibrary</artifactId>
 	<name>EDIT Common Data Model Library</name>
-	<version>0.2.3</version>
+	<version>0.2.4</version>
 	<description>EDIT cdm library</description>
 	<!-- UNDER WORK -->
 	<scm>
 		<connection>
-			scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary
+			scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/
 		</connection>
 		<developerConnection>
-			scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary
+			scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/
 		</developerConnection>
 		<url>
-			http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlibrary
+			http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlibrary/
 		</url>
 	</scm>
 	<build>
@@ -167,14 +167,7 @@
 			<version>2.7.1</version>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>ssh-repository</id>
-			<url>
-				scpexe://dev.e-taxonomy.eu/svn/trunk/javaLibraries
-			</url>
-		</repository>
-	</distributionManagement>
+
 	<!--  
 		<aspectSourceDirectory>src/main/java/eu/etaxonomy/cdm/aspect</aspectSourceDirectory>
 	-->
