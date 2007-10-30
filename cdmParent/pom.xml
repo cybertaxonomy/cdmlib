@@ -6,21 +6,32 @@
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmParent</artifactId>
 	<version>0.1</version>
-	<description>Parent project for all cdm projects</description>
+	<description>
+		Parent project for all EDIT common data model projects
+	</description>
 	<url>http://wp5.e-taxonomy.eu</url>
 	<packaging>pom</packaging>
-
 	<mailingLists>
 		<mailingList>
 			<name>dev-edit</name>
-			<subscribe></subscribe>
-			<unsubscribe></unsubscribe>
+			<subscribe>
+				https://webmail.mnhn.fr/wws/subrequest/dev-edit
+			</subscribe>
+			<unsubscribe>
+				https://webmail.mnhn.fr/wws/sigrequest/dev-edit
+			</unsubscribe>
 			<post>dev-edit@mnhn.fr</post>
 			<archive>https://webmail.mnhn.fr/wws/arc/dev-edit/</archive>
 		</mailingList>
 		<mailingList>
 			<name>cdm-edit</name>
 			<post>cdm-edit@mnhn.fr</post>
+			<subscribe>
+				https://webmail.mnhn.fr/wws/subrequest/cdm-edit
+			</subscribe>
+			<unsubscribe>
+				https://webmail.mnhn.fr/wws/sigrequest/cdm-edit
+			</unsubscribe>
 			<archive>https://webmail.mnhn.fr/wws/arc/cdm-edit/</archive>
 		</mailingList>
 	</mailingLists>
@@ -35,14 +46,14 @@
 		<developer>
 			<id>a.mueller2</id>
 			<name>
-				Andreas Müller
+				Andreas M&uuml;ller
 			</name>
 			<email>a.mueller [at] bgbm.org</email>
 			<organization>
 				Botanical Garden Botanical Museum Berlin
 			</organization>
 			<organizationUrl>http://www.bgbm.org</organizationUrl>
-			<timezone>+2</timezone>
+			<timezone>+1</timezone>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -50,14 +61,14 @@
 		</developer>
 		<developer>
 			<name>
-				Markus Döring
+				Markus D&ouml;ring
 			</name>
 			<email>m.doering [at] bgbm.org</email>
 			<organization>
 				Botanical Garden Botanical Museum Berlin
 			</organization>
 			<organizationUrl>http://www.bgbm.org</organizationUrl>
-			<timezone>+2</timezone>
+			<timezone>+1</timezone>
 			<url>http://www.bgbm.org/BGBM/staff/Wiss/Doering/</url>
 		</developer>
 	</developers>
@@ -71,6 +82,7 @@
 		<url>http://dev.e-taxonomy.eu/trac/</url>
 	</issueManagement>
 
+	<!-- **** REPOSITORIES **** -->
 	<!-- the cdm internal repository -->
 	<repositories>
 		<repository>
@@ -78,6 +90,97 @@
 			<url>http://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
 		</repository>
 	</repositories>
+
+	<!-- **** PLUGINS **** -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<locales>en, fr</locales>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!--  -->
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-scm</artifactId>
+				<version>1.0-alpha-5</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-manager-plexus</artifactId>
+				<version>1.0</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-provider-svnexe</artifactId>
+				<version>1.0</version>
+			</extension>
+			<!-- WebDAV plugin to upload snapshots -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+	</build>
+
+
+	<!--	 DISTRIBUTION MANAGEMENT -->
+	<distributionManagement>
+		<site>
+			<id>javaLibraries</id>
+			<url>
+				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries
+			</url>
+		</site>
+		<repository>
+			<id>javaLibraries</id>
+			<name>Edit Repository</name>
+			<url>
+				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries
+			</url>
+		</repository>
+
+		<!-- ***********  SSH2 ************ -->
+		<!--		<repository>-->
+		<!--			<id>javaLibraries</id>-->
+		<!--			<name>Edit Repository</name>-->
+		<!--			<url>-->
+		<!--				scp://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
+		<!--			</url>-->
+		<!--		</repository>-->
+
+		<!-- ************ WebDAV ************** -->
+		<!--		<repository>-->
+		<!--			<id>webdav.repo</id>-->
+		<!--			<name>Edit Repository WebDav</name>-->
+		<!--			<url>-->
+		<!--				dav:https://dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
+		<!--			</url>-->
+		<!--		</repository>-->
+
+		<!-- xxxx FTP - Repository - does work !! ****** -->
+		<!--		<repository>-->
+		<!--			<id>edit-repository</id>-->
+		<!--			<name>Edit test repository</name>-->
+		<!--			<url>file://C:\tmp\testRep\target\deploy</url>-->
+		<!--		</repository>-->
+
+	</distributionManagement>
+
+
+	<!-- **** DEPENDENCIES **** -->
 
 	<dependencies>
 		<dependency>
@@ -89,11 +192,20 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<!--			<version>1.2.15</version>-->
 		</dependency>
 	</dependencies>
-	<!--	<dependencyManagement>-->
-	<!---->
-	<!--	</dependencyManagement>-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.15</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+
 
 </project>
