@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -35,9 +36,15 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 				assertEquals(b.getUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
 				assertEquals(b.getSpecificEpithet(), lastPropValue);
-			
 		}
 
+		@Test
+		public void testPropertyChangeBoolean() {
+			TaxonName b = new TaxonName();
+			b.addPropertyChangeListener(this);
+			b.setAnamorphic(true);
+			assertEquals(b.isAnamorphic(), lastPropValue);
+		}
 		
 		@Before
 		public void updateDebugLevel(){
