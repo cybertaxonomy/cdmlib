@@ -1,5 +1,6 @@
 cdmLibraryPlugin/dist/plugins/eu.etaxonomy.cdmLibrary_0.2.2.jar
 cdmLibraryPlugin/target
+cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
 cdmlibrary/.externalToolBuilders/org.eclipse.ajdt.core.ajbuilder.launch
