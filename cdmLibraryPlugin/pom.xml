@@ -22,10 +22,15 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-
 		</plugins>
-
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>eu.etaxonomy</groupId>
+			<artifactId>cdmLibrary</artifactId>
+			<version>0.2.4</version>
+		</dependency>
+	</dependencies>
 
 
 </project>

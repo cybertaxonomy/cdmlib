@@ -9,6 +9,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -30,22 +31,13 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 			logger.debug("startTest");
 			b.addPropertyChangeListener(this);
 			b.setGenus("Abies");
-			//if (lastPropValue != null){
-				Assert.assertEquals(b.getGenus(), lastPropValue);
-			//}
+			Assert.assertEquals(b.getGenus(), lastPropValue);
 			b.setGenus("Picea");
-			if (lastPropValue != null){
-				assertEquals(b.getGenus(), lastPropValue);
-			}
+			assertEquals(b.getGenus(), lastPropValue);
 			b.setUninomial("Unipicea");
-			if (lastPropValue != null){
-				assertEquals(b.getUninomial(), lastPropValue);
-			}
+			assertEquals(b.getUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
-			if (lastPropValue != null){
-				assertEquals(b.getSpecificEpithet(), lastPropValue);
-			}
-			
+			assertEquals(b.getSpecificEpithet(), lastPropValue);
 		}
 
 		
@@ -53,6 +45,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 		public void updateDebugLevel(){
 			logger.setLevel(Level.DEBUG);
 		}
-
+		
 	}
 
