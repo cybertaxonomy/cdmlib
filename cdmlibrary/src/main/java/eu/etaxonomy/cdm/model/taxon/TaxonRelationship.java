@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:50
+ * @created 02-Nov-2007 19:18:44
  */
 public class TaxonRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(TaxonRelationship.class);
@@ -31,10 +31,10 @@ public class TaxonRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(ConceptRelationshipType newVal){
-		type = newVal;
+	public void setType(ConceptRelationshipType type){
+		;
 	}
 
 	public Taxon getFromTaxon(){
@@ -43,10 +43,10 @@ public class TaxonRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param fromTaxon
 	 */
-	public void setFromTaxon(Taxon newVal){
-		fromTaxon = newVal;
+	public void setFromTaxon(Taxon fromTaxon){
+		;
 	}
 
 	public Taxon getToTaxon(){
@@ -55,10 +55,10 @@ public class TaxonRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param toTaxon
 	 */
-	public void setToTaxon(Taxon newVal){
-		toTaxon = newVal;
+	public void setToTaxon(Taxon toTaxon){
+		;
 	}
 
 }

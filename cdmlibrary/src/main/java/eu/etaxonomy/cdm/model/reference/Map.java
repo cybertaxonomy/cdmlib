@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:26
+ * @created 02-Nov-2007 19:18:22
  */
 public class Map extends PublicationBase {
 	static Logger logger = Logger.getLogger(Map.class);

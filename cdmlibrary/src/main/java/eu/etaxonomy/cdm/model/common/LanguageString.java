@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:25
+ * @created 02-Nov-2007 19:18:21
  */
 public class LanguageString {
 	static Logger logger = Logger.getLogger(LanguageString.class);
@@ -30,10 +30,10 @@ public class LanguageString {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 	public char getText(){
@@ -42,10 +42,10 @@ public class LanguageString {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param text
 	 */
-	public void setText(char newVal){
-		text = newVal;
+	public void setText(char text){
+		;
 	}
 
 }

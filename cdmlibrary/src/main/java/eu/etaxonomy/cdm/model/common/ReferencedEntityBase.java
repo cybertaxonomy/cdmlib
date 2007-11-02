@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * abstract class for all objects that may have a reference
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:39
+ * @created 02-Nov-2007 19:18:34
  */
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
@@ -39,10 +39,10 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param citationMicroReference
 	 */
-	public void setCitationMicroReference(String newVal){
-		citationMicroReference = newVal;
+	public void setCitationMicroReference(String citationMicroReference){
+		;
 	}
 
 	public String getOriginalNameString(){
@@ -51,10 +51,10 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param originalNameString
 	 */
-	public void setOriginalNameString(String newVal){
-		originalNameString = newVal;
+	public void setOriginalNameString(String originalNameString){
+		;
 	}
 
 	@Transient

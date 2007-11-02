@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:23
+ * @created 02-Nov-2007 19:18:18
  */
 public class InProceedings extends SectionBase {
 	static Logger logger = Logger.getLogger(InProceedings.class);
@@ -28,10 +28,10 @@ public class InProceedings extends SectionBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inProceedings
 	 */
-	public void setInProceedings(Proceedings newVal){
-		inProceedings = newVal;
+	public void setInProceedings(Proceedings inProceedings){
+		;
 	}
 
 }

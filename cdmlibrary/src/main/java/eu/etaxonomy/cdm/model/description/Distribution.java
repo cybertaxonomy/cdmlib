@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * {type is "distribution"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:16
+ * @created 02-Nov-2007 19:18:10
  */
 public class Distribution extends FeatureBase {
 	static Logger logger = Logger.getLogger(Distribution.class);
@@ -36,10 +36,10 @@ public class Distribution extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param area
 	 */
-	public void setArea(NamedArea newVal){
-		area = newVal;
+	public void setArea(NamedArea area){
+		;
 	}
 
 	public PresenceAbsenceTermBase getStatus(){
@@ -48,10 +48,10 @@ public class Distribution extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param status
 	 */
-	public void setStatus(PresenceAbsenceTermBase newVal){
-		status = newVal;
+	public void setStatus(PresenceAbsenceTermBase status){
+		;
 	}
 
 }

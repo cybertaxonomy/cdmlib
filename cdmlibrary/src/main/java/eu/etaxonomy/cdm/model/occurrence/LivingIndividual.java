@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:26
+ * @created 02-Nov-2007 19:18:21
  */
 public class LivingIndividual extends Occurrence {
 	static Logger logger = Logger.getLogger(LivingIndividual.class);
@@ -29,10 +29,10 @@ public class LivingIndividual extends Occurrence {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param parents
 	 */
-	public void setParents(ArrayList newVal){
-		parents = newVal;
+	public void setParents(ArrayList parents){
+		;
 	}
 
 	public ArrayList getOffspring(){
@@ -41,10 +41,10 @@ public class LivingIndividual extends Occurrence {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param offspring
 	 */
-	public void setOffspring(ArrayList newVal){
-		offspring = newVal;
+	public void setOffspring(ArrayList offspring){
+		;
 	}
 
 }

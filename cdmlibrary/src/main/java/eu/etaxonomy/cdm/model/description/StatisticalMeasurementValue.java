@@ -16,15 +16,15 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:46
+ * @created 02-Nov-2007 19:18:40
  */
 public class StatisticalMeasurementValue extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 
 	@Description("")
 	private float value;
-	private StatisticalMeasure type;
 	private ArrayList modifiers;
+	private StatisticalMeasure type;
 
 	public StatisticalMeasure getType(){
 		return type;
@@ -32,10 +32,10 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(StatisticalMeasure newVal){
-		type = newVal;
+	public void setType(StatisticalMeasure type){
+		;
 	}
 
 	public ArrayList getModifiers(){
@@ -44,10 +44,10 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param modifiers
 	 */
-	public void setModifiers(ArrayList newVal){
-		modifiers = newVal;
+	public void setModifiers(ArrayList modifiers){
+		;
 	}
 
 	public float getValue(){
@@ -56,10 +56,10 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param value
 	 */
-	public void setValue(float newVal){
-		value = newVal;
+	public void setValue(float value){
+		;
 	}
 
 }

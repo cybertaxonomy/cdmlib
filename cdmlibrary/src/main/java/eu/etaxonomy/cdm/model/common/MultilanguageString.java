@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:29
+ * @created 02-Nov-2007 19:18:24
  */
 public class MultilanguageString {
 	static Logger logger = Logger.getLogger(MultilanguageString.class);
@@ -28,10 +28,10 @@ public class MultilanguageString {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param representations
 	 */
-	public void setRepresentations(ArrayList newVal){
-		representations = newVal;
+	public void setRepresentations(ArrayList representations){
+		;
 	}
 
 }

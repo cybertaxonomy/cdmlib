@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * be investigated.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:40
+ * @created 02-Nov-2007 19:18:35
  */
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);

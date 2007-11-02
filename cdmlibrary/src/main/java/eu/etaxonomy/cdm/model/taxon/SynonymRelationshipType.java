@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:48
+ * @created 02-Nov-2007 19:18:42
  */
 public class SynonymRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
@@ -30,10 +30,10 @@ public class SynonymRelationshipType extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(newVal){
-		initializationClassUri = newVal;
+	public void setInitializationClassUri(initializationClassUri){
+		;
 	}
 
 	public static final SynonymRelationshipType SYNONYM_OF(){

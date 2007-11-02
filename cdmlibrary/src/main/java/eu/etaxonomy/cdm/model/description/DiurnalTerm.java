@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:16
+ * @created 02-Nov-2007 19:18:11
  */
 public class DiurnalTerm extends Scope {
 	static Logger logger = Logger.getLogger(DiurnalTerm.class);

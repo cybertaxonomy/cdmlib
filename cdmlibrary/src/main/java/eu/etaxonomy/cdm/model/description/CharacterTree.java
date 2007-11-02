@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * define flat char. subsets for filtering purposes.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:11
+ * @created 02-Nov-2007 19:18:04
  */
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
@@ -31,10 +31,10 @@ public class CharacterTree extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param characters
 	 */
-	public void setCharacters(ArrayList newVal){
-		characters = newVal;
+	public void setCharacters(ArrayList characters){
+		;
 	}
 
 }

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:13
+ * @created 02-Nov-2007 19:18:06
  */
 public class Continent extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);

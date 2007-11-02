@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:06
+ * @created 02-Nov-2007 19:18:00
  */
 public class Article extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Article.class);
@@ -34,10 +34,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inJournal
 	 */
-	public void setInJournal(Journal newVal){
-		inJournal = newVal;
+	public void setInJournal(Journal inJournal){
+		;
 	}
 
 	public String getSeries(){
@@ -46,10 +46,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param series
 	 */
-	public void setSeries(String newVal){
-		series = newVal;
+	public void setSeries(String series){
+		;
 	}
 
 	public String getVolume(){
@@ -58,10 +58,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param volume
 	 */
-	public void setVolume(String newVal){
-		volume = newVal;
+	public void setVolume(String volume){
+		;
 	}
 
 	public String getPages(){
@@ -70,10 +70,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pages
 	 */
-	public void setPages(String newVal){
-		pages = newVal;
+	public void setPages(String pages){
+		;
 	}
 
 	/**

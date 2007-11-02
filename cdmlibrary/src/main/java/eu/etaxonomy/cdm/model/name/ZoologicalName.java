@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * Taxon name class for animals
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:54
+ * @created 02-Nov-2007 19:18:48
  */
 public class ZoologicalName extends NonViralName {
 	static Logger logger = Logger.getLogger(ZoologicalName.class);
@@ -31,10 +31,10 @@ public class ZoologicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param breed
 	 */
-	public void setBreed(String newVal){
-		breed = newVal;
+	public void setBreed(String breed){
+		;
 	}
 
 	@Transient

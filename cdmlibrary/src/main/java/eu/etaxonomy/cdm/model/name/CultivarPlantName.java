@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * DENOMINATION_CLASS ranks}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:13
+ * @created 02-Nov-2007 19:18:07
  */
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
@@ -33,10 +33,10 @@ public class CultivarPlantName extends BotanicalName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param cultivarName
 	 */
-	public void setCultivarName(String newVal){
-		cultivarName = newVal;
+	public void setCultivarName(String cultivarName){
+		;
 	}
 
 }

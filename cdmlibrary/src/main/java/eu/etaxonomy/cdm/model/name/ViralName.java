@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:54
+ * @created 02-Nov-2007 19:18:47
  */
 public class ViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(ViralName.class);
@@ -34,10 +34,10 @@ public class ViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param acronym
 	 */
-	public void setAcronym(String newVal){
-		acronym = newVal;
+	public void setAcronym(String acronym){
+		;
 	}
 
 }

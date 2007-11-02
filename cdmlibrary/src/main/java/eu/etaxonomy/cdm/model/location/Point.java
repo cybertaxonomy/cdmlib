@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:36
+ * @created 02-Nov-2007 19:18:31
  */
 public class Point extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Point.class);
@@ -36,10 +36,10 @@ public class Point extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param referenceSystem
 	 */
-	public void setReferenceSystem(ReferenceSystem newVal){
-		referenceSystem = newVal;
+	public void setReferenceSystem(ReferenceSystem referenceSystem){
+		;
 	}
 
 	public float getLongitude(){
@@ -48,10 +48,10 @@ public class Point extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param longitude
 	 */
-	public void setLongitude(float newVal){
-		longitude = newVal;
+	public void setLongitude(float longitude){
+		;
 	}
 
 	public float getLatitude(){
@@ -60,10 +60,10 @@ public class Point extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param latitude
 	 */
-	public void setLatitude(float newVal){
-		latitude = newVal;
+	public void setLatitude(float latitude){
+		;
 	}
 
 	public int getErrorRadius(){
@@ -72,10 +72,10 @@ public class Point extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param errorRadius
 	 */
-	public void setErrorRadius(int newVal){
-		errorRadius = newVal;
+	public void setErrorRadius(int errorRadius){
+		;
 	}
 
 }

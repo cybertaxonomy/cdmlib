@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:11
+ * @created 02-Nov-2007 19:18:05
  */
 public class CommonTaxonName extends FeatureBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
@@ -32,10 +32,10 @@ public class CommonTaxonName extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 	public String getName(){
@@ -44,10 +44,10 @@ public class CommonTaxonName extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 }

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:37
+ * @created 02-Nov-2007 19:18:32
  */
 public class PrintSeries extends PublicationBase {
 	static Logger logger = Logger.getLogger(PrintSeries.class);
@@ -29,10 +29,10 @@ public class PrintSeries extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param series
 	 */
-	public void setSeries(String newVal){
-		series = newVal;
+	public void setSeries(String series){
+		;
 	}
 
 }

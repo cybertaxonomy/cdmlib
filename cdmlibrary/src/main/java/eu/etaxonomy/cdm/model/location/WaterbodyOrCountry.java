@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * +/- current ISO codes. year given with each entry
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:54
+ * @created 02-Nov-2007 19:18:48
  */
 public class WaterbodyOrCountry extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
@@ -34,10 +34,10 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param continents
 	 */
-	public void setContinents(ArrayList newVal){
-		continents = newVal;
+	public void setContinents(ArrayList continents){
+		;
 	}
 
 	public String getIso2code(){
@@ -46,10 +46,10 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param iso2code
 	 */
-	public void setIso2code(String newVal){
-		iso2code = newVal;
+	public void setIso2code(String iso2code){
+		;
 	}
 
 	public TimePeriod getValidPeriod(){
@@ -58,10 +58,10 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param validPeriod
 	 */
-	public void setValidPeriod(TimePeriod newVal){
-		validPeriod = newVal;
+	public void setValidPeriod(TimePeriod validPeriod){
+		;
 	}
 
 	public static final WaterbodyOrCountry ARCTIC_OCEAN(){

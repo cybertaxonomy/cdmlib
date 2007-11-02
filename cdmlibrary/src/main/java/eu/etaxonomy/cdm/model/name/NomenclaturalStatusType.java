@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
  * CombinationInvalid
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:32
+ * @created 02-Nov-2007 19:18:27
  */
 public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
@@ -63,10 +63,10 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param ontologyClassUri
 	 */
-	public void setOntologyClassUri(newVal){
-		ontologyClassUri = newVal;
+	public void setOntologyClassUri(ontologyClassUri){
+		;
 	}
 
 	public boolean isInvalidType(){

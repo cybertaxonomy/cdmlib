@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * http://dublincore.org/documents/dcmi-terms/
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:41
+ * @created 02-Nov-2007 19:18:36
  */
 public class Rights extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Rights.class);
@@ -32,8 +32,8 @@ public class Rights extends VersionableEntity {
 	private String statement;
 	@Description("")
 	private String abbreviatedStatement;
-	private RightsTerm type;
 	private Language language;
+	private RightsTerm type;
 
 	public RightsTerm getType(){
 		return type;
@@ -41,10 +41,10 @@ public class Rights extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(RightsTerm newVal){
-		type = newVal;
+	public void setType(RightsTerm type){
+		;
 	}
 
 	public Language getLanguage(){
@@ -53,10 +53,10 @@ public class Rights extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 	public String getUri(){
@@ -65,10 +65,10 @@ public class Rights extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uri
 	 */
-	public void setUri(String newVal){
-		uri = newVal;
+	public void setUri(String uri){
+		;
 	}
 
 	public String getStatement(){
@@ -77,10 +77,10 @@ public class Rights extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param statement
 	 */
-	public void setStatement(String newVal){
-		statement = newVal;
+	public void setStatement(String statement){
+		;
 	}
 
 	public String getAbbreviatedStatement(){
@@ -89,10 +89,10 @@ public class Rights extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param abbreviatedStatement
 	 */
-	public void setAbbreviatedStatement(String newVal){
-		abbreviatedStatement = newVal;
+	public void setAbbreviatedStatement(String abbreviatedStatement){
+		;
 	}
 
 }

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:37
+ * @created 02-Nov-2007 19:18:31
  */
 public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
@@ -30,10 +30,10 @@ public class PreservationMethod extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(newVal){
-		initializationClassUri = newVal;
+	public void setInitializationClassUri(initializationClassUri){
+		;
 	}
 
 }

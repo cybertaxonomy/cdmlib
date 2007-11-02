@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:44
+ * @created 02-Nov-2007 19:18:39
  */
 public class Specimen extends Occurrence {
 	static Logger logger = Logger.getLogger(Specimen.class);
@@ -29,10 +29,10 @@ public class Specimen extends Occurrence {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param preservation
 	 */
-	public void setPreservation(PreservationMethod newVal){
-		preservation = newVal;
+	public void setPreservation(PreservationMethod preservation){
+		;
 	}
 
 	public Specimen getDerivedFrom(){
@@ -41,10 +41,10 @@ public class Specimen extends Occurrence {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param derivedFrom
 	 */
-	public void setDerivedFrom(Specimen newVal){
-		derivedFrom = newVal;
+	public void setDerivedFrom(Specimen derivedFrom){
+		;
 	}
 
 }

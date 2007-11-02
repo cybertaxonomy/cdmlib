@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:53
+ * @created 02-Nov-2007 19:18:47
  */
 @MappedSuperclass
 public abstract class VersionableEntity {
@@ -33,11 +33,11 @@ public abstract class VersionableEntity {
 	//time of last update for this object
 	@Description("time of last update for this object")
 	private Calendar updated;
+	private Person createdBy;
 	private ArrayList m_View;
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
 	private Person updatedBy;
-	private Person createdBy;
 
 	public ArrayList getM_View(){
 		return m_View;
@@ -45,10 +45,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param m_View
 	 */
-	public void setM_View(ArrayList newVal){
-		m_View = newVal;
+	public void setM_View(ArrayList m_View){
+		;
 	}
 
 	public VersionableEntity getNextVersion(){
@@ -57,10 +57,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nextVersion
 	 */
-	public void setNextVersion(VersionableEntity newVal){
-		nextVersion = newVal;
+	public void setNextVersion(VersionableEntity nextVersion){
+		;
 	}
 
 	public VersionableEntity getPreviousVersion(){
@@ -69,10 +69,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param previousVersion
 	 */
-	public void setPreviousVersion(VersionableEntity newVal){
-		previousVersion = newVal;
+	public void setPreviousVersion(VersionableEntity previousVersion){
+		;
 	}
 
 	public Person getUpdatedBy(){
@@ -81,10 +81,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param updatedBy
 	 */
-	public void setUpdatedBy(Person newVal){
-		updatedBy = newVal;
+	public void setUpdatedBy(Person updatedBy){
+		;
 	}
 
 	public Person getCreatedBy(){
@@ -93,10 +93,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param createdBy
 	 */
-	public void setCreatedBy(Person newVal){
-		createdBy = newVal;
+	public void setCreatedBy(Person createdBy){
+		;
 	}
 
 	public int getId(){
@@ -105,10 +105,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param id
 	 */
-	public void setId(int newVal){
-		id = newVal;
+	public void setId(int id){
+		;
 	}
 
 	public String getUuid(){
@@ -117,10 +117,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uuid
 	 */
-	public void setUuid(String newVal){
-		uuid = newVal;
+	public void setUuid(String uuid){
+		;
 	}
 
 	public Calendar getCreated(){
@@ -129,10 +129,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param created
 	 */
-	public void setCreated(Calendar newVal){
-		created = newVal;
+	public void setCreated(Calendar created){
+		;
 	}
 
 	public Calendar getUpdated(){
@@ -141,10 +141,10 @@ public abstract class VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param updated
 	 */
-	public void setUpdated(Calendar newVal){
-		updated = newVal;
+	public void setUpdated(Calendar updated){
+		;
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:20
+ * @created 02-Nov-2007 19:18:15
  */
 public class GenBankAccession extends VersionableEntity {
 	static Logger logger = Logger.getLogger(GenBankAccession.class);
@@ -32,10 +32,10 @@ public class GenBankAccession extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param accessionNumber
 	 */
-	public void setAccessionNumber(String newVal){
-		accessionNumber = newVal;
+	public void setAccessionNumber(String accessionNumber){
+		;
 	}
 
 	public String getUri(){
@@ -44,10 +44,10 @@ public class GenBankAccession extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uri
 	 */
-	public void setUri(String newVal){
-		uri = newVal;
+	public void setUri(String uri){
+		;
 	}
 
 }

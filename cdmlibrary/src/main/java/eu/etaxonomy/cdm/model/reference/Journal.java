@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:24
+ * @created 02-Nov-2007 19:18:20
  */
 public class Journal extends PublicationBase {
 	static Logger logger = Logger.getLogger(Journal.class);
@@ -29,10 +29,10 @@ public class Journal extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param issn
 	 */
-	public void setIssn(String newVal){
-		issn = newVal;
+	public void setIssn(String issn){
+		;
 	}
 
 }

@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:51
+ * @created 02-Nov-2007 19:18:45
  */
 public class Thesis extends PublicationBase {
 	static Logger logger = Logger.getLogger(Thesis.class);
@@ -29,10 +29,10 @@ public class Thesis extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param school
 	 */
-	public void setSchool(Institution newVal){
-		school = newVal;
+	public void setSchool(Institution school){
+		;
 	}
 
 }

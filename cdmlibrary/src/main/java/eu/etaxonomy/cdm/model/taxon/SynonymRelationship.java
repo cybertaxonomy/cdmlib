@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:47
+ * @created 02-Nov-2007 19:18:41
  */
 public class SynonymRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
@@ -31,10 +31,10 @@ public class SynonymRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param acceptedTaxon
 	 */
-	public void setAcceptedTaxon(Taxon newVal){
-		acceptedTaxon = newVal;
+	public void setAcceptedTaxon(Taxon acceptedTaxon){
+		;
 	}
 
 	public SynonymRelationshipType getType(){
@@ -43,10 +43,10 @@ public class SynonymRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(SynonymRelationshipType newVal){
-		type = newVal;
+	public void setType(SynonymRelationshipType type){
+		;
 	}
 
 	public Synonym getSynoynm(){
@@ -55,10 +55,10 @@ public class SynonymRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param synoynm
 	 */
-	public void setSynoynm(Synonym newVal){
-		synoynm = newVal;
+	public void setSynoynm(Synonym synoynm){
+		;
 	}
 
 }

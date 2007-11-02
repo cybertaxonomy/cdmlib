@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:52
+ * @created 02-Nov-2007 19:18:46
  */
 public class User {
 	static Logger logger = Logger.getLogger(User.class);
@@ -36,10 +36,10 @@ public class User {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param views
 	 */
-	public void setViews(ArrayList newVal){
-		views = newVal;
+	public void setViews(ArrayList views){
+		;
 	}
 
 	public String getName(){
@@ -48,10 +48,10 @@ public class User {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 	public String getEmail(){
@@ -60,10 +60,10 @@ public class User {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param email
 	 */
-	public void setEmail(String newVal){
-		email = newVal;
+	public void setEmail(String email){
+		;
 	}
 
 	public String getOpenID(){
@@ -72,10 +72,10 @@ public class User {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param openID
 	 */
-	public void setOpenID(String newVal){
-		openID = newVal;
+	public void setOpenID(String openID){
+		;
 	}
 
 	public Calendar getCreated(){
@@ -84,10 +84,10 @@ public class User {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param created
 	 */
-	public void setCreated(Calendar newVal){
-		created = newVal;
+	public void setCreated(Calendar created){
+		;
 	}
 
 }

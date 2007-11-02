@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * type has to be a "species" name}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:31
+ * @created 02-Nov-2007 19:18:26
  */
 public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
@@ -35,10 +35,10 @@ public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param typeSpecies
 	 */
-	public void setTypeSpecies(TaxonNameBase newVal){
-		typeSpecies = newVal;
+	public void setTypeSpecies(TaxonNameBase typeSpecies){
+		;
 	}
 
 	public boolean isRejectedType(){
@@ -47,10 +47,10 @@ public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isRejectedType
 	 */
-	public void setRejectedType(boolean newVal){
-		isRejectedType = newVal;
+	public void setRejectedType(boolean isRejectedType){
+		;
 	}
 
 	public boolean isConservedType(){
@@ -59,10 +59,10 @@ public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isConservedType
 	 */
-	public void setConservedType(boolean newVal){
-		isConservedType = newVal;
+	public void setConservedType(boolean isConservedType){
+		;
 	}
 
 }

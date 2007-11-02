@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:52
+ * @created 02-Nov-2007 19:18:46
  */
 public class TissueSample extends VersionableEntity {
 	static Logger logger = Logger.getLogger(TissueSample.class);
@@ -34,10 +34,10 @@ public class TissueSample extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param sampledFrom
 	 */
-	public void setSampledFrom(ObservationalUnit newVal){
-		sampledFrom = newVal;
+	public void setSampledFrom(ObservationalUnit sampledFrom){
+		;
 	}
 
 	public String getDescription(){
@@ -46,10 +46,10 @@ public class TissueSample extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(String newVal){
-		description = newVal;
+	public void setDescription(String description){
+		;
 	}
 
 	public Calendar getSamplingDate(){
@@ -58,10 +58,10 @@ public class TissueSample extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param samplingDate
 	 */
-	public void setSamplingDate(Calendar newVal){
-		samplingDate = newVal;
+	public void setSamplingDate(Calendar samplingDate){
+		;
 	}
 
 }

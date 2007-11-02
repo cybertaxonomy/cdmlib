@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:32
+ * @created 02-Nov-2007 19:18:27
  */
 public class NomenclaturalStatus extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
@@ -34,10 +34,10 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(NomenclaturalStatusType newVal){
-		type = newVal;
+	public void setType(NomenclaturalStatusType type){
+		;
 	}
 
 	public String getRuleConsidered(){
@@ -46,10 +46,10 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param ruleConsidered
 	 */
-	public void setRuleConsidered(String newVal){
-		ruleConsidered = newVal;
+	public void setRuleConsidered(String ruleConsidered){
+		;
 	}
 
 }

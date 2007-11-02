@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:33
+ * @created 02-Nov-2007 19:18:28
  */
 public class Observation extends Occurrence {
 	static Logger logger = Logger.getLogger(Observation.class);

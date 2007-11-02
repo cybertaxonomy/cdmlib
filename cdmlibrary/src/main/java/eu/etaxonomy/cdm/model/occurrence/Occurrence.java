@@ -13,15 +13,15 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Media;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:33
+ * @created 02-Nov-2007 19:18:28
  */
 public class Occurrence extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Occurrence.class);
@@ -33,10 +33,10 @@ public class Occurrence extends IdentifiableEntity {
 	@Description("Date on which this occurrence happened ")
 	private Calendar eventDate;
 	private ArrayList media;
-	private Collection collection;
 	private Point exactLocation;
 	private NamedArea namedArea;
 	private Team collector;
+	private Collection collection;
 
 	public Collection getCollection(){
 		return collection;
@@ -44,10 +44,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param collection
 	 */
-	public void setCollection(Collection newVal){
-		collection = newVal;
+	public void setCollection(Collection collection){
+		;
 	}
 
 	public Point getExactLocation(){
@@ -56,10 +56,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param exactLocation
 	 */
-	public void setExactLocation(Point newVal){
-		exactLocation = newVal;
+	public void setExactLocation(Point exactLocation){
+		;
 	}
 
 	public ArrayList getMedia(){
@@ -68,10 +68,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param media
 	 */
-	public void setMedia(ArrayList newVal){
-		media = newVal;
+	public void setMedia(ArrayList media){
+		;
 	}
 
 	public Team getCollector(){
@@ -80,10 +80,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param collector
 	 */
-	public void setCollector(Team newVal){
-		collector = newVal;
+	public void setCollector(Team collector){
+		;
 	}
 
 	public NamedArea getNamedArea(){
@@ -92,10 +92,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param namedArea
 	 */
-	public void setNamedArea(NamedArea newVal){
-		namedArea = newVal;
+	public void setNamedArea(NamedArea namedArea){
+		;
 	}
 
 	public String getLocality(){
@@ -104,10 +104,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param locality
 	 */
-	public void setLocality(String newVal){
-		locality = newVal;
+	public void setLocality(String locality){
+		;
 	}
 
 	public Calendar getEventDate(){
@@ -116,10 +116,10 @@ public class Occurrence extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param eventDate
 	 */
-	public void setEventDate(Calendar newVal){
-		eventDate = newVal;
+	public void setEventDate(Calendar eventDate){
+		;
 	}
 
 	public String generateTitle(){

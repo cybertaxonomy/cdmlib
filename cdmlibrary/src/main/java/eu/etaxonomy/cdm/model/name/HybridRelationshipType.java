@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * 
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:21
+ * @created 02-Nov-2007 19:18:16
  */
 public class HybridRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);

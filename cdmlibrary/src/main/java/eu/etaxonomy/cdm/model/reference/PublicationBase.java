@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:38
+ * @created 02-Nov-2007 19:18:33
  */
 public abstract class PublicationBase extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(PublicationBase.class);
@@ -31,10 +31,10 @@ public abstract class PublicationBase extends StrictReferenceBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param publisher
 	 */
-	public void setPublisher(String newVal){
-		publisher = newVal;
+	public void setPublisher(String publisher){
+		;
 	}
 
 	public String getPlacePublished(){
@@ -43,10 +43,10 @@ public abstract class PublicationBase extends StrictReferenceBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param placePublished
 	 */
-	public void setPlacePublished(String newVal){
-		placePublished = newVal;
+	public void setPlacePublished(String placePublished){
+		;
 	}
 
 }

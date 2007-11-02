@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:21
+ * @created 02-Nov-2007 19:18:17
  */
 @MappedSuperclass
 public abstract class IdentifiableEntity extends AnnotatableEntity {
@@ -37,10 +37,10 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param extensions
 	 */
-	public void setExtensions(ArrayList newVal){
-		extensions = newVal;
+	public void setExtensions(ArrayList extensions){
+		;
 	}
 
 	public ArrayList getRights(){
@@ -49,10 +49,10 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param rights
 	 */
-	public void setRights(ArrayList newVal){
-		rights = newVal;
+	public void setRights(ArrayList rights){
+		;
 	}
 
 	public String getLsid(){
@@ -61,10 +61,10 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param lsid
 	 */
-	public void setLsid(String newVal){
-		lsid = newVal;
+	public void setLsid(String lsid){
+		;
 	}
 
 	public String getTitleCache(){
@@ -73,10 +73,10 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param titleCache
 	 */
-	public void setTitleCache(String newVal){
-		titleCache = newVal;
+	public void setTitleCache(String titleCache){
+		;
 	}
 
 	public boolean getHasProtectedTitleCache(){
@@ -85,10 +85,10 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param hasProtectedTitleCache
 	 */
-	public void setHasProtectedTitleCache(boolean newVal){
-		hasProtectedTitleCache = newVal;
+	public void setHasProtectedTitleCache(boolean hasProtectedTitleCache){
+		;
 	}
 
 	@Transient

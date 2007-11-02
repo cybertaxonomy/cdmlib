@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * publisher is "institution" in BibTex ???
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:41
+ * @created 02-Nov-2007 19:18:36
  */
 public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);
@@ -30,10 +30,10 @@ public class Report extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param institution
 	 */
-	public void setInstitution(Institution newVal){
-		institution = newVal;
+	public void setInstitution(Institution institution){
+		;
 	}
 
 }

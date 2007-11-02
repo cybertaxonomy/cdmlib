@@ -16,13 +16,13 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:51
+ * @created 02-Nov-2007 19:18:45
  */
 public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
 
-	private Language language;
 	private java.util.ArrayList m_Paragraph;
+	private Language language;
 
 	public java.util.ArrayList getM_Paragraph(){
 		return m_Paragraph;
@@ -30,10 +30,10 @@ public class TextData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param m_Paragraph
 	 */
-	public void setM_Paragraph(java.util.ArrayList newVal){
-		m_Paragraph = newVal;
+	public void setM_Paragraph(java.util.ArrayList m_Paragraph){
+		;
 	}
 
 	public Language getLanguage(){
@@ -42,10 +42,10 @@ public class TextData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 }

@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:39
+ * @created 02-Nov-2007 19:18:34
  */
 public abstract class ReferenceBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
@@ -31,8 +31,8 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	//nomenclatural reference in a name this flag should be automatically set
 	@Description("flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a nomenclatural reference in a name this flag should be automatically set")
 	private boolean isNomenclaturallyRelevant;
-	private ArrayList referenceInSource;
 	private Team authorTeam;
+	private ArrayList referenceInSource;
 
 	public ArrayList getReferenceInSource(){
 		return referenceInSource;
@@ -40,10 +40,10 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param referenceInSource
 	 */
-	public void setReferenceInSource(ArrayList newVal){
-		referenceInSource = newVal;
+	public void setReferenceInSource(ArrayList referenceInSource){
+		;
 	}
 
 	public Team getAuthorTeam(){
@@ -52,10 +52,10 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param authorTeam
 	 */
-	public void setAuthorTeam(Team newVal){
-		authorTeam = newVal;
+	public void setAuthorTeam(Team authorTeam){
+		;
 	}
 
 	public String getUri(){
@@ -64,10 +64,10 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uri
 	 */
-	public void setUri(String newVal){
-		uri = newVal;
+	public void setUri(String uri){
+		;
 	}
 
 	public boolean isNomenclaturallyRelevant(){
@@ -76,10 +76,10 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isNomenclaturallyRelevant
 	 */
-	public void setNomenclaturallyRelevant(boolean newVal){
-		isNomenclaturallyRelevant = newVal;
+	public void setNomenclaturallyRelevant(boolean isNomenclaturallyRelevant){
+		;
 	}
 
 	/**

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:09
+ * @created 02-Nov-2007 19:18:02
  */
 public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Book.class);
@@ -31,10 +31,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param edition
 	 */
-	public void setEdition(String newVal){
-		edition = newVal;
+	public void setEdition(String edition){
+		;
 	}
 
 	public String getIsbn(){
@@ -43,10 +43,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isbn
 	 */
-	public void setIsbn(String newVal){
-		isbn = newVal;
+	public void setIsbn(String isbn){
+		;
 	}
 
 	/**

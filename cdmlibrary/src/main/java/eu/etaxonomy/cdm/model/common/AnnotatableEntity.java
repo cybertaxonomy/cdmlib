@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:05
+ * @created 02-Nov-2007 19:17:59
  */
 @MappedSuperclass
 public abstract class AnnotatableEntity extends VersionableEntity {
@@ -30,10 +30,10 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param markers
 	 */
-	public void setMarkers(ArrayList newVal){
-		markers = newVal;
+	public void setMarkers(ArrayList markers){
+		;
 	}
 
 	public ArrayList getAnnotations(){
@@ -42,10 +42,10 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param annotations
 	 */
-	public void setAnnotations(ArrayList newVal){
-		annotations = newVal;
+	public void setAnnotations(ArrayList annotations){
+		;
 	}
 
 }

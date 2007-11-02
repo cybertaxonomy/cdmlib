@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:17
+ * @created 02-Nov-2007 19:18:12
  */
 public abstract class EnumeratedTermBase extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
@@ -28,10 +28,10 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param enumeration
 	 */
-	public void setEnumeration(Enumeration newVal){
-		enumeration = newVal;
+	public void setEnumeration(Enumeration enumeration){
+		;
 	}
 
 }

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:22
+ * @created 02-Nov-2007 19:18:17
  */
 public class ImageFile extends MediaInstance {
 	static Logger logger = Logger.getLogger(ImageFile.class);
@@ -33,10 +33,10 @@ public class ImageFile extends MediaInstance {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param height
 	 */
-	public void setHeight(int newVal){
-		height = newVal;
+	public void setHeight(int height){
+		;
 	}
 
 	public int getWidth(){
@@ -45,10 +45,10 @@ public class ImageFile extends MediaInstance {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param width
 	 */
-	public void setWidth(int newVal){
-		width = newVal;
+	public void setWidth(int width){
+		;
 	}
 
 }

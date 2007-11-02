@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:38
+ * @created 02-Nov-2007 19:18:33
  */
 public class QuantitativeData extends FeatureBase {
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
@@ -29,10 +29,10 @@ public class QuantitativeData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param statisticalValues
 	 */
-	public void setStatisticalValues(ArrayList newVal){
-		statisticalValues = newVal;
+	public void setStatisticalValues(ArrayList statisticalValues){
+		;
 	}
 
 	public MeasurementUnit getUnit(){
@@ -41,10 +41,10 @@ public class QuantitativeData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param unit
 	 */
-	public void setUnit(MeasurementUnit newVal){
-		unit = newVal;
+	public void setUnit(MeasurementUnit unit){
+		;
 	}
 
 	@Transient

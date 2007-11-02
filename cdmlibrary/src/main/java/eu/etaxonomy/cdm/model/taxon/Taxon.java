@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:48
+ * @created 02-Nov-2007 19:18:42
  */
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
@@ -33,10 +33,10 @@ public class Taxon extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param taxonInSource
 	 */
-	public void setTaxonInSource(ArrayList newVal){
-		taxonInSource = newVal;
+	public void setTaxonInSource(ArrayList taxonInSource){
+		;
 	}
 
 	public ArrayList getDescriptions(){
@@ -45,10 +45,10 @@ public class Taxon extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param descriptions
 	 */
-	public void setDescriptions(ArrayList newVal){
-		descriptions = newVal;
+	public void setDescriptions(ArrayList descriptions){
+		;
 	}
 
 	public ArrayList getInverseSynonymRelations(){
@@ -57,10 +57,10 @@ public class Taxon extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inverseSynonymRelations
 	 */
-	public void setInverseSynonymRelations(ArrayList newVal){
-		inverseSynonymRelations = newVal;
+	public void setInverseSynonymRelations(ArrayList inverseSynonymRelations){
+		;
 	}
 
 	public ArrayList getTaxonRelations(){
@@ -69,10 +69,10 @@ public class Taxon extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param taxonRelations
 	 */
-	public void setTaxonRelations(ArrayList newVal){
-		taxonRelations = newVal;
+	public void setTaxonRelations(ArrayList taxonRelations){
+		;
 	}
 
 	public ArrayList getInverseTaxonRelations(){
@@ -81,10 +81,10 @@ public class Taxon extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inverseTaxonRelations
 	 */
-	public void setInverseTaxonRelations(ArrayList newVal){
-		inverseTaxonRelations = newVal;
+	public void setInverseTaxonRelations(ArrayList inverseTaxonRelations){
+		;
 	}
 
 }

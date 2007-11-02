@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:47
+ * @created 02-Nov-2007 19:18:41
  */
 public abstract class StrictReferenceBase extends ReferenceBase {
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
@@ -37,10 +37,10 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param title
 	 */
-	public void setTitle(String newVal){
-		title = newVal;
+	public void setTitle(String title){
+		;
 	}
 
 	public DateRange getDatePublished(){
@@ -49,10 +49,10 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param datePublished
 	 */
-	public void setDatePublished(DateRange newVal){
-		datePublished = newVal;
+	public void setDatePublished(DateRange datePublished){
+		;
 	}
 
 	/**

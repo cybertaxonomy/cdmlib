@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * Default iterator order should therefore be BreadthFirst (not DepthFirst)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:14
+ * @created 02-Nov-2007 19:18:08
  */
 public abstract class DefinedTermBase extends VersionableEntity {
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
@@ -35,11 +35,11 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	
 	Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.")
 	private static final int initializationClassUri;
-	private DefinedTermBase partOf;
-	private ArrayList includes;
 	private ArrayList representations;
 	private DefinedTermBase kindOf;
 	private ArrayList generalizationOf;
+	private DefinedTermBase partOf;
+	private ArrayList includes;
 	private java.util.ArrayList media;
 
 	public ArrayList getRepresentations(){
@@ -48,10 +48,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param representations
 	 */
-	public void setRepresentations(ArrayList newVal){
-		representations = newVal;
+	public void setRepresentations(ArrayList representations){
+		;
 	}
 
 	public DefinedTermBase getKindOf(){
@@ -60,10 +60,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param kindOf
 	 */
-	public void setKindOf(DefinedTermBase newVal){
-		kindOf = newVal;
+	public void setKindOf(DefinedTermBase kindOf){
+		;
 	}
 
 	public ArrayList getGeneralizationOf(){
@@ -72,10 +72,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param generalizationOf
 	 */
-	public void setGeneralizationOf(ArrayList newVal){
-		generalizationOf = newVal;
+	public void setGeneralizationOf(ArrayList generalizationOf){
+		;
 	}
 
 	public DefinedTermBase getPartOf(){
@@ -84,10 +84,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param partOf
 	 */
-	public void setPartOf(DefinedTermBase newVal){
-		partOf = newVal;
+	public void setPartOf(DefinedTermBase partOf){
+		;
 	}
 
 	public ArrayList getIncludes(){
@@ -96,10 +96,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param includes
 	 */
-	public void setIncludes(ArrayList newVal){
-		includes = newVal;
+	public void setIncludes(ArrayList includes){
+		;
 	}
 
 	public java.util.ArrayList getMedia(){
@@ -108,10 +108,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param media
 	 */
-	public void setMedia(java.util.ArrayList newVal){
-		media = newVal;
+	public void setMedia(java.util.ArrayList media){
+		;
 	}
 
 	public String getUri(){
@@ -120,10 +120,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uri
 	 */
-	public void setUri(String newVal){
-		uri = newVal;
+	public void setUri(String uri){
+		;
 	}
 
 	public getInitializationClassUri(){
@@ -132,10 +132,10 @@ public abstract class DefinedTermBase extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(newVal){
-		initializationClassUri = newVal;
+	public void setInitializationClassUri(initializationClassUri){
+		;
 	}
 
 	/**

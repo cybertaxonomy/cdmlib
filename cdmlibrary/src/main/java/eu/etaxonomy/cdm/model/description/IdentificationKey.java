@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * authored keys (incl. legacy data)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:22
+ * @created 02-Nov-2007 19:18:17
  */
 public class IdentificationKey extends Media VersionableEntity {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
@@ -33,10 +33,10 @@ public class IdentificationKey extends Media VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param coveredTaxa
 	 */
-	public void setCoveredTaxa(ArrayList newVal){
-		coveredTaxa = newVal;
+	public void setCoveredTaxa(ArrayList coveredTaxa){
+		;
 	}
 
 }

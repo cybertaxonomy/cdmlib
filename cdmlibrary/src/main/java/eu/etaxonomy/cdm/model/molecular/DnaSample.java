@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:16
+ * @created 02-Nov-2007 19:18:11
  */
 public class DnaSample extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DnaSample.class);
@@ -39,10 +39,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param sequences
 	 */
-	public void setSequences(ArrayList newVal){
-		sequences = newVal;
+	public void setSequences(ArrayList sequences){
+		;
 	}
 
 	public Collection getStoredAt(){
@@ -51,10 +51,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param storedAt
 	 */
-	public void setStoredAt(Collection newVal){
-		storedAt = newVal;
+	public void setStoredAt(Collection storedAt){
+		;
 	}
 
 	public TissueSample getExtractedFrom(){
@@ -63,10 +63,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param extractedFrom
 	 */
-	public void setExtractedFrom(TissueSample newVal){
-		extractedFrom = newVal;
+	public void setExtractedFrom(TissueSample extractedFrom){
+		;
 	}
 
 	public String getBankNumber(){
@@ -75,10 +75,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param bankNumber
 	 */
-	public void setBankNumber(String newVal){
-		bankNumber = newVal;
+	public void setBankNumber(String bankNumber){
+		;
 	}
 
 	public String getProductionNotes(){
@@ -87,10 +87,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param productionNotes
 	 */
-	public void setProductionNotes(String newVal){
-		productionNotes = newVal;
+	public void setProductionNotes(String productionNotes){
+		;
 	}
 
 	public Calendar getDateProduced(){
@@ -99,10 +99,10 @@ public class DnaSample extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param dateProduced
 	 */
-	public void setDateProduced(Calendar newVal){
-		dateProduced = newVal;
+	public void setDateProduced(Calendar dateProduced){
+		;
 	}
 
 	public String generateTitle(){

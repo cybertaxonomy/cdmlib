@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:45
+ * @created 02-Nov-2007 19:18:40
  */
 public class State extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(State.class);

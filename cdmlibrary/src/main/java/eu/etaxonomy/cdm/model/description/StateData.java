@@ -16,15 +16,15 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:46
+ * @created 02-Nov-2007 19:18:40
  */
 public class StateData extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StateData.class);
 
 	@Description("")
 	private String modifyingText;
-	private State state;
 	private ArrayList modifiers;
+	private State state;
 
 	public State getState(){
 		return state;
@@ -32,10 +32,10 @@ public class StateData extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param state
 	 */
-	public void setState(State newVal){
-		state = newVal;
+	public void setState(State state){
+		;
 	}
 
 	public ArrayList getModifiers(){
@@ -44,10 +44,10 @@ public class StateData extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param modifiers
 	 */
-	public void setModifiers(ArrayList newVal){
-		modifiers = newVal;
+	public void setModifiers(ArrayList modifiers){
+		;
 	}
 
 	public String getModifyingText(){
@@ -56,10 +56,10 @@ public class StateData extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param modifyingText
 	 */
-	public void setModifyingText(String newVal){
-		modifyingText = newVal;
+	public void setModifyingText(String modifyingText){
+		;
 	}
 
 }

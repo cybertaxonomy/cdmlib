@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * Extension instances.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:17
+ * @created 02-Nov-2007 19:18:13
  */
 public class Extension extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Extension.class);
@@ -34,10 +34,10 @@ public class Extension extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(ExtensionType newVal){
-		type = newVal;
+	public void setType(ExtensionType type){
+		;
 	}
 
 	public String getValue(){
@@ -46,10 +46,10 @@ public class Extension extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param value
 	 */
-	public void setValue(String newVal){
-		value = newVal;
+	public void setValue(String value){
+		;
 	}
 
 }

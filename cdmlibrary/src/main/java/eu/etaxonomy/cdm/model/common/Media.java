@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:27
+ * @created 02-Nov-2007 19:18:23
  */
 public class Media extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Media.class);
@@ -42,10 +42,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param instances
 	 */
-	public void setInstances(ArrayList newVal){
-		instances = newVal;
+	public void setInstances(ArrayList instances){
+		;
 	}
 
 	public Team getArtist(){
@@ -54,10 +54,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param artist
 	 */
-	public void setArtist(Team newVal){
-		artist = newVal;
+	public void setArtist(Team artist){
+		;
 	}
 
 	public ArrayList getRights(){
@@ -66,10 +66,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param rights
 	 */
-	public void setRights(ArrayList newVal){
-		rights = newVal;
+	public void setRights(ArrayList rights){
+		;
 	}
 
 	public MultilanguageString getTitle(){
@@ -78,10 +78,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param title
 	 */
-	public void setTitle(MultilanguageString newVal){
-		title = newVal;
+	public void setTitle(MultilanguageString title){
+		;
 	}
 
 	public Calendar getMediaCreated(){
@@ -90,10 +90,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param mediaCreated
 	 */
-	public void setMediaCreated(Calendar newVal){
-		mediaCreated = newVal;
+	public void setMediaCreated(Calendar mediaCreated){
+		;
 	}
 
 	public MultilanguageString getDescription(){
@@ -102,10 +102,10 @@ public class Media extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(MultilanguageString newVal){
-		description = newVal;
+	public void setDescription(MultilanguageString description){
+		;
 	}
 
 }

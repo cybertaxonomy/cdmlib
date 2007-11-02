@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:14
+ * @created 02-Nov-2007 19:18:08
  */
 public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
@@ -25,10 +25,10 @@ public class Description extends IdentifiableEntity {
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	@Description("in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.")
 	private String label;
+	private ArrayList features;
+	private ArrayList scopes;
 	private ArrayList sources;
 	private ArrayList geoScopes;
-	private ArrayList scopes;
-	private ArrayList features;
 
 	public ArrayList getSources(){
 		return sources;
@@ -36,10 +36,10 @@ public class Description extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param sources
 	 */
-	public void setSources(ArrayList newVal){
-		sources = newVal;
+	public void setSources(ArrayList sources){
+		;
 	}
 
 	public ArrayList getGeoScopes(){
@@ -48,10 +48,10 @@ public class Description extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param geoScopes
 	 */
-	public void setGeoScopes(ArrayList newVal){
-		geoScopes = newVal;
+	public void setGeoScopes(ArrayList geoScopes){
+		;
 	}
 
 	public ArrayList getScopes(){
@@ -60,10 +60,10 @@ public class Description extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param scopes
 	 */
-	public void setScopes(ArrayList newVal){
-		scopes = newVal;
+	public void setScopes(ArrayList scopes){
+		;
 	}
 
 	public ArrayList getFeatures(){
@@ -72,10 +72,10 @@ public class Description extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param features
 	 */
-	public void setFeatures(ArrayList newVal){
-		features = newVal;
+	public void setFeatures(ArrayList features){
+		;
 	}
 
 	public String getLabel(){
@@ -84,10 +84,10 @@ public class Description extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param label
 	 */
-	public void setLabel(String newVal){
-		label = newVal;
+	public void setLabel(String label){
+		;
 	}
 
 }

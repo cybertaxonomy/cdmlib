@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:47
+ * @created 02-Nov-2007 19:18:41
  */
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
@@ -28,10 +28,10 @@ public class Synonym extends TaxonBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param synoynmRelations
 	 */
-	public void setSynoynmRelations(ArrayList newVal){
-		synoynmRelations = newVal;
+	public void setSynoynmRelations(ArrayList synoynmRelations){
+		;
 	}
 
 }

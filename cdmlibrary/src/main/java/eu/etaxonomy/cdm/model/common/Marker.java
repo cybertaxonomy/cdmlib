@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * "flags" as a MarkerType.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:26
+ * @created 02-Nov-2007 19:18:22
  */
 public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);
@@ -33,10 +33,10 @@ public class Marker extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(MarkerType newVal){
-		type = newVal;
+	public void setType(MarkerType type){
+		;
 	}
 
 	public boolean getFlag(){
@@ -45,10 +45,10 @@ public class Marker extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param flag
 	 */
-	public void setFlag(boolean newVal){
-		flag = newVal;
+	public void setFlag(boolean flag){
+		;
 	}
 
 }

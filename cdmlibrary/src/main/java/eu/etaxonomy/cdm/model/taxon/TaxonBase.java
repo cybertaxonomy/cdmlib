@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * {unique name within view/treatment}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:48
+ * @created 02-Nov-2007 19:18:42
  */
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
@@ -34,10 +34,10 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(TaxonNameBase newVal){
-		name = newVal;
+	public void setName(TaxonNameBase name){
+		;
 	}
 
 	public boolean isDoubtful(){
@@ -46,10 +46,10 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isDoubtful
 	 */
-	public void setDoubtful(boolean newVal){
-		isDoubtful = newVal;
+	public void setDoubtful(boolean isDoubtful){
+		;
 	}
 
 }

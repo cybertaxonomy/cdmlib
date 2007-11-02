@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:42
+ * @created 02-Nov-2007 19:18:37
  */
 public abstract class SectionBase extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(SectionBase.class);
@@ -29,10 +29,10 @@ public abstract class SectionBase extends StrictReferenceBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pages
 	 */
-	public void setPages(String newVal){
-		pages = newVal;
+	public void setPages(String pages){
+		;
 	}
 
 	@Transient

@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * hybrid parent" or specific local identifiers.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:18
+ * @created 02-Nov-2007 19:18:13
  */
 public class ExtensionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);

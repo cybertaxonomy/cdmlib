@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:18
+ * @created 02-Nov-2007 19:18:13
  */
 public abstract class FeatureBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
@@ -39,10 +39,10 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param media
 	 */
-	public void setMedia(ArrayList newVal){
-		media = newVal;
+	public void setMedia(ArrayList media){
+		;
 	}
 
 	public FeatureType getType(){
@@ -51,10 +51,10 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(FeatureType newVal){
-		type = newVal;
+	public void setType(FeatureType type){
+		;
 	}
 
 	public ArrayList getModifiers(){
@@ -63,10 +63,10 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param modifiers
 	 */
-	public void setModifiers(ArrayList newVal){
-		modifiers = newVal;
+	public void setModifiers(ArrayList modifiers){
+		;
 	}
 
 	public String getModifyingText(){
@@ -75,10 +75,10 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param modifyingText
 	 */
-	public void setModifyingText(String newVal){
-		modifyingText = newVal;
+	public void setModifyingText(String modifyingText){
+		;
 	}
 
 	@Transient

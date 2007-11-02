@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * {only for typified names which have the "species" rank or below}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:44
+ * @created 02-Nov-2007 19:18:39
  */
 public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
@@ -32,10 +32,10 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITy
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param typeSpecimen
 	 */
-	public void setTypeSpecimen(ObservationalUnit newVal){
-		typeSpecimen = newVal;
+	public void setTypeSpecimen(ObservationalUnit typeSpecimen){
+		;
 	}
 
 	public TypeDesignationStatus getTypeStatus(){
@@ -44,10 +44,10 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITy
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param typeStatus
 	 */
-	public void setTypeStatus(TypeDesignationStatus newVal){
-		typeStatus = newVal;
+	public void setTypeStatus(TypeDesignationStatus typeStatus){
+		;
 	}
 
 }

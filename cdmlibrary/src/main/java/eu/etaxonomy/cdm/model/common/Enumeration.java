@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * (=class)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:17
+ * @created 02-Nov-2007 19:18:12
  */
 public class Enumeration extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Enumeration.class);
@@ -33,10 +33,10 @@ public class Enumeration extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isOrdinal
 	 */
-	public void setOrdinal(boolean newVal){
-		isOrdinal = newVal;
+	public void setOrdinal(boolean isOrdinal){
+		;
 	}
 
 }

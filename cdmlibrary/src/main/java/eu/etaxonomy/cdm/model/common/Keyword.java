@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * simple keywords. could be taxonomic scope, geographic scope or anything else
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:25
+ * @created 02-Nov-2007 19:18:20
  */
 public class Keyword extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Keyword.class);

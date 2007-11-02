@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:11
+ * @created 02-Nov-2007 19:18:05
  */
 public class Collection extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Collection.class);
@@ -38,10 +38,10 @@ public class Collection extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param institute
 	 */
-	public void setInstitute(Institution newVal){
-		institute = newVal;
+	public void setInstitute(Institution institute){
+		;
 	}
 
 	public String getCode(){
@@ -50,10 +50,10 @@ public class Collection extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param code
 	 */
-	public void setCode(String newVal){
-		code = newVal;
+	public void setCode(String code){
+		;
 	}
 
 	public String getCodeStandard(){
@@ -62,10 +62,10 @@ public class Collection extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param codeStandard
 	 */
-	public void setCodeStandard(String newVal){
-		codeStandard = newVal;
+	public void setCodeStandard(String codeStandard){
+		;
 	}
 
 	public String getName(){
@@ -74,10 +74,10 @@ public class Collection extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 	public String getTownOrLocation(){
@@ -86,10 +86,10 @@ public class Collection extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param townOrLocation
 	 */
-	public void setTownOrLocation(String newVal){
-		townOrLocation = newVal;
+	public void setTownOrLocation(String townOrLocation){
+		;
 	}
 
 	public String generateTitle(){

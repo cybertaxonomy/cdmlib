@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:40
+ * @created 02-Nov-2007 19:18:35
  */
 public abstract class ReferencedMedia extends Media implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedMedia.class);
@@ -32,10 +32,10 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param citation
 	 */
-	public void setCitation(ReferenceBase newVal){
-		citation = newVal;
+	public void setCitation(ReferenceBase citation){
+		;
 	}
 
 	public String getCitationMicroReference(){
@@ -44,10 +44,10 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param citationMicroReference
 	 */
-	public void setCitationMicroReference(String newVal){
-		citationMicroReference = newVal;
+	public void setCitationMicroReference(String citationMicroReference){
+		;
 	}
 
 	@Transient

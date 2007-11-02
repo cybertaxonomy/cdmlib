@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * maybe year is stored in IdentifiableEntity.titleCache
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:49
+ * @created 02-Nov-2007 19:18:43
  */
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
@@ -42,18 +42,18 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	@Description("this flag will be set to true if the parseName method was unable to successfully parse the name")
 	private boolean hasProblem = False;
+	private ArrayList typeDesignations;
+	private ArrayList nameInSource;
+	private ArrayList nameRelations;
+	private ArrayList status;
 	private Rank rank;
-	private ArrayList newCombinations;
-	private TaxonNameBase basionym;
 	/**
 	 * if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	 */
 	private INomenclaturalReference nomenclaturalReference;
-	private ArrayList typeDesignations;
-	private ArrayList nameInSource;
-	private ArrayList nameRelations;
+	private ArrayList newCombinations;
+	private TaxonNameBase basionym;
 	private ArrayList inverseNameRelations;
-	private ArrayList status;
 
 	public Rank getRank(){
 		return rank;
@@ -61,10 +61,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param rank
 	 */
-	public void setRank(Rank newVal){
-		rank = newVal;
+	public void setRank(Rank rank){
+		;
 	}
 
 	public ArrayList getNameRelations(){
@@ -73,10 +73,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nameRelations
 	 */
-	public void setNameRelations(ArrayList newVal){
-		nameRelations = newVal;
+	public void setNameRelations(ArrayList nameRelations){
+		;
 	}
 
 	public ArrayList getInverseNameRelations(){
@@ -85,10 +85,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inverseNameRelations
 	 */
-	public void setInverseNameRelations(ArrayList newVal){
-		inverseNameRelations = newVal;
+	public void setInverseNameRelations(ArrayList inverseNameRelations){
+		;
 	}
 
 	public ArrayList getTypeDesignations(){
@@ -97,10 +97,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param typeDesignations
 	 */
-	public void setTypeDesignations(ArrayList newVal){
-		typeDesignations = newVal;
+	public void setTypeDesignations(ArrayList typeDesignations){
+		;
 	}
 
 	public ArrayList getStatus(){
@@ -109,10 +109,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param status
 	 */
-	public void setStatus(ArrayList newVal){
-		status = newVal;
+	public void setStatus(ArrayList status){
+		;
 	}
 
 	public INomenclaturalReference getNomenclaturalReference(){
@@ -121,10 +121,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nomenclaturalReference
 	 */
-	public void setNomenclaturalReference(INomenclaturalReference newVal){
-		nomenclaturalReference = newVal;
+	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
+		;
 	}
 
 	public ArrayList getNameInSource(){
@@ -133,10 +133,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nameInSource
 	 */
-	public void setNameInSource(ArrayList newVal){
-		nameInSource = newVal;
+	public void setNameInSource(ArrayList nameInSource){
+		;
 	}
 
 	public ArrayList getNewCombinations(){
@@ -145,10 +145,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param newCombinations
 	 */
-	public void setNewCombinations(ArrayList newVal){
-		newCombinations = newVal;
+	public void setNewCombinations(ArrayList newCombinations){
+		;
 	}
 
 	public TaxonNameBase getBasionym(){
@@ -157,10 +157,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param basionym
 	 */
-	public void setBasionym(TaxonNameBase newVal){
-		basionym = newVal;
+	public void setBasionym(TaxonNameBase basionym){
+		;
 	}
 
 	public String getName(){
@@ -169,10 +169,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 	public String getAppendedPhrase(){
@@ -181,10 +181,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param appendedPhrase
 	 */
-	public void setAppendedPhrase(String newVal){
-		appendedPhrase = newVal;
+	public void setAppendedPhrase(String appendedPhrase){
+		;
 	}
 
 	public String getNomenclaturalMicroReference(){
@@ -193,10 +193,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nomenclaturalMicroReference
 	 */
-	public void setNomenclaturalMicroReference(String newVal){
-		nomenclaturalMicroReference = newVal;
+	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
+		;
 	}
 
 	public boolean getHasProblem(){
@@ -205,10 +205,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param hasProblem
 	 */
-	public void setHasProblem(boolean newVal){
-		hasProblem = newVal;
+	public void setHasProblem(boolean hasProblem){
+		;
 	}
 
 	@Transient

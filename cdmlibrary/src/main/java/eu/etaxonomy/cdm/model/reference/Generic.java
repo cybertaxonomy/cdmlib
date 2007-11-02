@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * reference type are not necessary here.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:20
+ * @created 02-Nov-2007 19:18:15
  */
 public class Generic extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Generic.class);
@@ -42,10 +42,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param publisher
 	 */
-	public void setPublisher(String newVal){
-		publisher = newVal;
+	public void setPublisher(String publisher){
+		;
 	}
 
 	public String getPlacePublished(){
@@ -54,10 +54,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param placePublished
 	 */
-	public void setPlacePublished(String newVal){
-		placePublished = newVal;
+	public void setPlacePublished(String placePublished){
+		;
 	}
 
 	public String getEditor(){
@@ -66,10 +66,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param editor
 	 */
-	public void setEditor(String newVal){
-		editor = newVal;
+	public void setEditor(String editor){
+		;
 	}
 
 	public String getSeries(){
@@ -78,10 +78,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param series
 	 */
-	public void setSeries(String newVal){
-		series = newVal;
+	public void setSeries(String series){
+		;
 	}
 
 	public String getVolume(){
@@ -90,10 +90,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param volume
 	 */
-	public void setVolume(String newVal){
-		volume = newVal;
+	public void setVolume(String volume){
+		;
 	}
 
 	public String getPages(){
@@ -102,10 +102,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pages
 	 */
-	public void setPages(String newVal){
-		pages = newVal;
+	public void setPages(String pages){
+		;
 	}
 
 	/**

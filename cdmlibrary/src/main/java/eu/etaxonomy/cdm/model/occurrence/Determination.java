@@ -18,15 +18,15 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:15
+ * @created 02-Nov-2007 19:18:10
  */
 public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
 
 	@Description("")
 	private Calendar identificationDate;
-	private Taxon taxon;
 	private Team identifierTeam;
+	private Taxon taxon;
 
 	public Taxon getTaxon(){
 		return taxon;
@@ -34,10 +34,10 @@ public class Determination extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param taxon
 	 */
-	public void setTaxon(Taxon newVal){
-		taxon = newVal;
+	public void setTaxon(Taxon taxon){
+		;
 	}
 
 	public Team getIdentifierTeam(){
@@ -46,10 +46,10 @@ public class Determination extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param identifierTeam
 	 */
-	public void setIdentifierTeam(Team newVal){
-		identifierTeam = newVal;
+	public void setIdentifierTeam(Team identifierTeam){
+		;
 	}
 
 	public Calendar getIdentificationDate(){
@@ -58,10 +58,10 @@ public class Determination extends AnnotatableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param identificationDate
 	 */
-	public void setIdentificationDate(Calendar newVal){
-		identificationDate = newVal;
+	public void setIdentificationDate(Calendar identificationDate){
+		;
 	}
 
 }

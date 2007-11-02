@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * never be changed
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:53
+ * @created 02-Nov-2007 19:18:47
  */
 public class View {
 	static Logger logger = Logger.getLogger(View.class);
@@ -35,10 +35,10 @@ public class View {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param superView
 	 */
-	public void setSuperView(java.util.ArrayList newVal){
-		superView = newVal;
+	public void setSuperView(java.util.ArrayList superView){
+		;
 	}
 
 	public ArrayList getUsers(){
@@ -47,10 +47,10 @@ public class View {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param users
 	 */
-	public void setUsers(ArrayList newVal){
-		users = newVal;
+	public void setUsers(ArrayList users){
+		;
 	}
 
 	public String getName(){
@@ -59,10 +59,10 @@ public class View {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 	public String getDescription(){
@@ -71,10 +71,10 @@ public class View {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(String newVal){
-		description = newVal;
+	public void setDescription(String description){
+		;
 	}
 
 }

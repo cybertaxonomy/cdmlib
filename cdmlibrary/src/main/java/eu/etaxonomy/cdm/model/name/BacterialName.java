@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * Taxon name class for bacteria
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:07
+ * @created 02-Nov-2007 19:18:01
  */
 public class BacterialName extends NonViralName {
 	static Logger logger = Logger.getLogger(BacterialName.class);
@@ -34,10 +34,10 @@ public class BacterialName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param subGenusAuthorship
 	 */
-	public void setSubGenusAuthorship(String newVal){
-		subGenusAuthorship = newVal;
+	public void setSubGenusAuthorship(String subGenusAuthorship){
+		;
 	}
 
 	public String getNameApprobation(){
@@ -46,10 +46,10 @@ public class BacterialName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param nameApprobation
 	 */
-	public void setNameApprobation(String newVal){
-		nameApprobation = newVal;
+	public void setNameApprobation(String nameApprobation){
+		;
 	}
 
 }

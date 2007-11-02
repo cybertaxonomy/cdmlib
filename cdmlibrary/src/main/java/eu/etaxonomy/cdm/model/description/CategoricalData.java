@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:10
+ * @created 02-Nov-2007 19:18:04
  */
 public class CategoricalData extends FeatureBase {
 	static Logger logger = Logger.getLogger(CategoricalData.class);
@@ -31,10 +31,10 @@ public class CategoricalData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param states
 	 */
-	public void setStates(java.util.ArrayList newVal){
-		states = newVal;
+	public void setStates(java.util.ArrayList states){
+		;
 	}
 
 	public boolean getOrderRelevant(){
@@ -43,10 +43,10 @@ public class CategoricalData extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param orderRelevant
 	 */
-	public void setOrderRelevant(boolean newVal){
-		orderRelevant = newVal;
+	public void setOrderRelevant(boolean orderRelevant){
+		;
 	}
 
 }

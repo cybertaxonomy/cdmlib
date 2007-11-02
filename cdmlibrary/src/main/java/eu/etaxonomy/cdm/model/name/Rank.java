@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/TaxonRank
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:38
+ * @created 02-Nov-2007 19:18:33
  */
 public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
@@ -34,10 +34,10 @@ public class Rank extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param m_TaxonNameBase
 	 */
-	public void setM_TaxonNameBase(ArrayList newVal){
-		m_TaxonNameBase = newVal;
+	public void setM_TaxonNameBase(ArrayList m_TaxonNameBase){
+		;
 	}
 
 	public getOntologyClassUri(){
@@ -46,10 +46,10 @@ public class Rank extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param ontologyClassUri
 	 */
-	public void setOntologyClassUri(newVal){
-		ontologyClassUri = newVal;
+	public void setOntologyClassUri(ontologyClassUri){
+		;
 	}
 
 	public static final Rank EMPIRE(){

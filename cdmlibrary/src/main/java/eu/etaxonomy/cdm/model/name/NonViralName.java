@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * Parentetical authorship is derived from basionym relationship.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:32
+ * @created 02-Nov-2007 19:18:27
  */
 public class NonViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(NonViralName.class);
@@ -50,10 +50,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param combinationAuthorTeam
 	 */
-	public void setCombinationAuthorTeam(Team newVal){
-		combinationAuthorTeam = newVal;
+	public void setCombinationAuthorTeam(Team combinationAuthorTeam){
+		;
 	}
 
 	public Team getExCombinationAuthorTeam(){
@@ -62,10 +62,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param exCombinationAuthorTeam
 	 */
-	public void setExCombinationAuthorTeam(Team newVal){
-		exCombinationAuthorTeam = newVal;
+	public void setExCombinationAuthorTeam(Team exCombinationAuthorTeam){
+		;
 	}
 
 	public String getUninomial(){
@@ -74,10 +74,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uninomial
 	 */
-	public void setUninomial(String newVal){
-		uninomial = newVal;
+	public void setUninomial(String uninomial){
+		;
 	}
 
 	public String getInfraGenericEpithet(){
@@ -86,10 +86,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param infraGenericEpithet
 	 */
-	public void setInfraGenericEpithet(String newVal){
-		infraGenericEpithet = newVal;
+	public void setInfraGenericEpithet(String infraGenericEpithet){
+		;
 	}
 
 	public String getSpecificEpithet(){
@@ -98,10 +98,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param specificEpithet
 	 */
-	public void setSpecificEpithet(String newVal){
-		specificEpithet = newVal;
+	public void setSpecificEpithet(String specificEpithet){
+		;
 	}
 
 	public String getInfraSpecificEpithet(){
@@ -110,10 +110,10 @@ public class NonViralName extends TaxonNameBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param infraSpecificEpithet
 	 */
-	public void setInfraSpecificEpithet(String newVal){
-		infraSpecificEpithet = newVal;
+	public void setInfraSpecificEpithet(String infraSpecificEpithet){
+		;
 	}
 
 	/**

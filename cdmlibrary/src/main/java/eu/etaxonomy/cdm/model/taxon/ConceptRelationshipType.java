@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:12
+ * @created 02-Nov-2007 19:18:05
  */
 public class ConceptRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
@@ -30,10 +30,10 @@ public class ConceptRelationshipType extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(newVal){
-		initializationClassUri = newVal;
+	public void setInitializationClassUri(initializationClassUri){
+		;
 	}
 
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){

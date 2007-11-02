@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * recordings available through the location attribute!
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:28
+ * @created 02-Nov-2007 19:18:23
  */
 public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);
@@ -41,10 +41,10 @@ public class MediaInstance extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param mimeType
 	 */
-	public void setMimeType(String newVal){
-		mimeType = newVal;
+	public void setMimeType(String mimeType){
+		;
 	}
 
 	public String getSuffix(){
@@ -53,10 +53,10 @@ public class MediaInstance extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param suffix
 	 */
-	public void setSuffix(String newVal){
-		suffix = newVal;
+	public void setSuffix(String suffix){
+		;
 	}
 
 	public String getUri(){
@@ -65,10 +65,10 @@ public class MediaInstance extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param uri
 	 */
-	public void setUri(String newVal){
-		uri = newVal;
+	public void setUri(String uri){
+		;
 	}
 
 	public int getSize(){
@@ -77,10 +77,10 @@ public class MediaInstance extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param size
 	 */
-	public void setSize(int newVal){
-		size = newVal;
+	public void setSize(int size){
+		;
 	}
 
 }

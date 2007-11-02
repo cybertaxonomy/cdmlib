@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:06
+ * @created 02-Nov-2007 19:17:59
  */
 public class Annotation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Annotation.class);
@@ -33,10 +33,10 @@ public class Annotation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param commentator
 	 */
-	public void setCommentator(Person newVal){
-		commentator = newVal;
+	public void setCommentator(Person commentator){
+		;
 	}
 
 	public Language getLanguage(){
@@ -45,10 +45,10 @@ public class Annotation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 	public String getNote(){
@@ -57,10 +57,10 @@ public class Annotation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param note
 	 */
-	public void setNote(String newVal){
-		note = newVal;
+	public void setNote(String note){
+		;
 	}
 
 }

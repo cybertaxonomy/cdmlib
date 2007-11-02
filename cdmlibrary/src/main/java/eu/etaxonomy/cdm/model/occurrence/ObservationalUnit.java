@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * part of a specimen or observation that is being described or determined.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:33
+ * @created 02-Nov-2007 19:18:28
  */
 public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
@@ -37,10 +37,10 @@ public class ObservationalUnit extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param determinations
 	 */
-	public void setDeterminations(ArrayList newVal){
-		determinations = newVal;
+	public void setDeterminations(ArrayList determinations){
+		;
 	}
 
 	public Occurrence getOccurence(){
@@ -49,10 +49,10 @@ public class ObservationalUnit extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param occurence
 	 */
-	public void setOccurence(Occurrence newVal){
-		occurence = newVal;
+	public void setOccurence(Occurrence occurence){
+		;
 	}
 
 	public ArrayList getDescriptions(){
@@ -61,10 +61,10 @@ public class ObservationalUnit extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param descriptions
 	 */
-	public void setDescriptions(ArrayList newVal){
-		descriptions = newVal;
+	public void setDescriptions(ArrayList descriptions){
+		;
 	}
 
 	public MultilanguageString getDefinition(){
@@ -73,10 +73,10 @@ public class ObservationalUnit extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param definition
 	 */
-	public void setDefinition(MultilanguageString newVal){
-		definition = newVal;
+	public void setDefinition(MultilanguageString definition){
+		;
 	}
 
 }

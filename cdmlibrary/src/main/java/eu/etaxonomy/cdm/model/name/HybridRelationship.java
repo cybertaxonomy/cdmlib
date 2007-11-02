@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:20
+ * @created 02-Nov-2007 19:18:16
  */
 public class HybridRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(HybridRelationship.class);
@@ -27,8 +27,8 @@ public class HybridRelationship extends ReferencedEntityBase {
 	@Description("The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in the note property.")
 	private String ruleConsidered;
 	private BotanicalName parentName;
-	private BotanicalName hybridName;
 	private HybridRelationshipType type;
+	private BotanicalName hybridName;
 
 	public HybridRelationshipType getType(){
 		return type;
@@ -36,10 +36,10 @@ public class HybridRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(HybridRelationshipType newVal){
-		type = newVal;
+	public void setType(HybridRelationshipType type){
+		;
 	}
 
 	public BotanicalName getParentName(){
@@ -48,10 +48,10 @@ public class HybridRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param parentName
 	 */
-	public void setParentName(BotanicalName newVal){
-		parentName = newVal;
+	public void setParentName(BotanicalName parentName){
+		;
 	}
 
 	public BotanicalName getHybridName(){
@@ -60,10 +60,10 @@ public class HybridRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param hybridName
 	 */
-	public void setHybridName(BotanicalName newVal){
-		hybridName = newVal;
+	public void setHybridName(BotanicalName hybridName){
+		;
 	}
 
 	public String getRuleConsidered(){
@@ -72,10 +72,10 @@ public class HybridRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param ruleConsidered
 	 */
-	public void setRuleConsidered(String newVal){
-		ruleConsidered = newVal;
+	public void setRuleConsidered(String ruleConsidered){
+		;
 	}
 
 }

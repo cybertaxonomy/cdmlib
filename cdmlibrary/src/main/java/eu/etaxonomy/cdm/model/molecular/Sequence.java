@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:43
+ * @created 02-Nov-2007 19:18:38
  */
 public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(Sequence.class);
@@ -42,9 +42,9 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	private String citationMicroReference;
 	private ReferenceBase publishedIn;
 	private ArrayList citations;
-	private ArrayList chromatograms;
 	private ArrayList genBankAccession;
 	private Locus locus;
+	private ArrayList chromatograms;
 
 	public Locus getLocus(){
 		return locus;
@@ -52,10 +52,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param locus
 	 */
-	public void setLocus(Locus newVal){
-		locus = newVal;
+	public void setLocus(Locus locus){
+		;
 	}
 
 	public ReferenceBase getPublishedIn(){
@@ -64,10 +64,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param publishedIn
 	 */
-	public void setPublishedIn(ReferenceBase newVal){
-		publishedIn = newVal;
+	public void setPublishedIn(ReferenceBase publishedIn){
+		;
 	}
 
 	public ArrayList getChromatograms(){
@@ -76,10 +76,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param chromatograms
 	 */
-	public void setChromatograms(ArrayList newVal){
-		chromatograms = newVal;
+	public void setChromatograms(ArrayList chromatograms){
+		;
 	}
 
 	public ArrayList getCitations(){
@@ -88,10 +88,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param citations
 	 */
-	public void setCitations(ArrayList newVal){
-		citations = newVal;
+	public void setCitations(ArrayList citations){
+		;
 	}
 
 	public ArrayList getGenBankAccession(){
@@ -100,10 +100,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param genBankAccession
 	 */
-	public void setGenBankAccession(ArrayList newVal){
-		genBankAccession = newVal;
+	public void setGenBankAccession(ArrayList genBankAccession){
+		;
 	}
 
 	public String getSequence(){
@@ -112,10 +112,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param sequence
 	 */
-	public void setSequence(String newVal){
-		sequence = newVal;
+	public void setSequence(String sequence){
+		;
 	}
 
 	public int getLength(){
@@ -124,10 +124,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param length
 	 */
-	public void setLength(int newVal){
-		length = newVal;
+	public void setLength(int length){
+		;
 	}
 
 	public Calendar getDateSequenced(){
@@ -136,10 +136,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param dateSequenced
 	 */
-	public void setDateSequenced(Calendar newVal){
-		dateSequenced = newVal;
+	public void setDateSequenced(Calendar dateSequenced){
+		;
 	}
 
 	public boolean isBarcode(){
@@ -148,10 +148,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isBarcode
 	 */
-	public void setBarcode(boolean newVal){
-		isBarcode = newVal;
+	public void setBarcode(boolean isBarcode){
+		;
 	}
 
 	public String getCitationMicroReference(){
@@ -160,10 +160,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param citationMicroReference
 	 */
-	public void setCitationMicroReference(String newVal){
-		citationMicroReference = newVal;
+	public void setCitationMicroReference(String citationMicroReference){
+		;
 	}
 
 	@Transient

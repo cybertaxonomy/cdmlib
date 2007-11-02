@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:29
+ * @created 02-Nov-2007 19:18:24
  */
 public class NamedArea extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
@@ -41,10 +41,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param source
 	 */
-	public void setSource(NamedAreaInSource newVal){
-		source = newVal;
+	public void setSource(NamedAreaInSource source){
+		;
 	}
 
 	public ArrayList getCountriesOrWaterbodies(){
@@ -53,10 +53,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param countriesOrWaterbodies
 	 */
-	public void setCountriesOrWaterbodies(ArrayList newVal){
-		countriesOrWaterbodies = newVal;
+	public void setCountriesOrWaterbodies(ArrayList countriesOrWaterbodies){
+		;
 	}
 
 	public NamedAreaType getType(){
@@ -65,10 +65,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(NamedAreaType newVal){
-		type = newVal;
+	public void setType(NamedAreaType type){
+		;
 	}
 
 	public NamedAreaLevel getLevel(){
@@ -77,10 +77,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param level
 	 */
-	public void setLevel(NamedAreaLevel newVal){
-		level = newVal;
+	public void setLevel(NamedAreaLevel level){
+		;
 	}
 
 	public String getDescription(){
@@ -89,10 +89,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(String newVal){
-		description = newVal;
+	public void setDescription(String description){
+		;
 	}
 
 	public TimePeriod getValidPeriod(){
@@ -101,10 +101,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param validPeriod
 	 */
-	public void setValidPeriod(TimePeriod newVal){
-		validPeriod = newVal;
+	public void setValidPeriod(TimePeriod validPeriod){
+		;
 	}
 
 	public Binary getShapeFile(){
@@ -113,10 +113,10 @@ public class NamedArea extends EnumeratedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param shapeFile
 	 */
-	public void setShapeFile(Binary newVal){
-		shapeFile = newVal;
+	public void setShapeFile(Binary shapeFile){
+		;
 	}
 
 }

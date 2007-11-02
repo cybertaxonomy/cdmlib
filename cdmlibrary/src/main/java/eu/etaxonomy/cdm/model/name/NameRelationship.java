@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:30
+ * @created 02-Nov-2007 19:18:26
  */
 public class NameRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NameRelationship.class);
@@ -36,10 +36,10 @@ public class NameRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param fromName
 	 */
-	public void setFromName(TaxonNameBase newVal){
-		fromName = newVal;
+	public void setFromName(TaxonNameBase fromName){
+		;
 	}
 
 	public NameRelationshipType getType(){
@@ -48,10 +48,10 @@ public class NameRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(NameRelationshipType newVal){
-		type = newVal;
+	public void setType(NameRelationshipType type){
+		;
 	}
 
 	public TaxonNameBase getToName(){
@@ -60,10 +60,10 @@ public class NameRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param toName
 	 */
-	public void setToName(TaxonNameBase newVal){
-		toName = newVal;
+	public void setToName(TaxonNameBase toName){
+		;
 	}
 
 	public String getRuleConsidered(){
@@ -72,10 +72,10 @@ public class NameRelationship extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param ruleConsidered
 	 */
-	public void setRuleConsidered(String newVal){
-		ruleConsidered = newVal;
+	public void setRuleConsidered(String ruleConsidered){
+		;
 	}
 
 }

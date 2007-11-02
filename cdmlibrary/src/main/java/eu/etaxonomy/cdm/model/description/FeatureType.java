@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/SpeciesProfileModel
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:19
+ * @created 02-Nov-2007 19:18:14
  */
 public class FeatureType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(FeatureType.class);
@@ -47,10 +47,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param recommendedModifierEnumeration
 	 */
-	public void setRecommendedModifierEnumeration(ArrayList newVal){
-		recommendedModifierEnumeration = newVal;
+	public void setRecommendedModifierEnumeration(ArrayList recommendedModifierEnumeration){
+		;
 	}
 
 	public ArrayList getRecommendedStatisticalMeasures(){
@@ -59,10 +59,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param recommendedStatisticalMeasures
 	 */
-	public void setRecommendedStatisticalMeasures(ArrayList newVal){
-		recommendedStatisticalMeasures = newVal;
+	public void setRecommendedStatisticalMeasures(ArrayList recommendedStatisticalMeasures){
+		;
 	}
 
 	public ArrayList getSupportedCategoricalEnumerations(){
@@ -71,10 +71,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportedCategoricalEnumerations
 	 */
-	public void setSupportedCategoricalEnumerations(ArrayList newVal){
-		supportedCategoricalEnumerations = newVal;
+	public void setSupportedCategoricalEnumerations(ArrayList supportedCategoricalEnumerations){
+		;
 	}
 
 	public boolean getSupportsQuantitativeData(){
@@ -83,10 +83,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsQuantitativeData
 	 */
-	public void setSupportsQuantitativeData(boolean newVal){
-		supportsQuantitativeData = newVal;
+	public void setSupportsQuantitativeData(boolean supportsQuantitativeData){
+		;
 	}
 
 	public boolean getSupportsTextData(){
@@ -95,10 +95,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsTextData
 	 */
-	public void setSupportsTextData(boolean newVal){
-		supportsTextData = newVal;
+	public void setSupportsTextData(boolean supportsTextData){
+		;
 	}
 
 	public boolean getSupportsDistribution(){
@@ -107,10 +107,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsDistribution
 	 */
-	public void setSupportsDistribution(boolean newVal){
-		supportsDistribution = newVal;
+	public void setSupportsDistribution(boolean supportsDistribution){
+		;
 	}
 
 	public boolean getSupportsIndividualAssociation(){
@@ -119,10 +119,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsIndividualAssociation
 	 */
-	public void setSupportsIndividualAssociation(boolean newVal){
-		supportsIndividualAssociation = newVal;
+	public void setSupportsIndividualAssociation(boolean supportsIndividualAssociation){
+		;
 	}
 
 	public boolean getSupportsTaxonInteraction(){
@@ -131,10 +131,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsTaxonInteraction
 	 */
-	public void setSupportsTaxonInteraction(boolean newVal){
-		supportsTaxonInteraction = newVal;
+	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction){
+		;
 	}
 
 	public boolean getSupportsCommonTaxonName(){
@@ -143,10 +143,10 @@ public class FeatureType extends DefinedTermBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param supportsCommonTaxonName
 	 */
-	public void setSupportsCommonTaxonName(boolean newVal){
-		supportsCommonTaxonName = newVal;
+	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName){
+		;
 	}
 
 	public static final FeatureType DISTRIBUTION(){

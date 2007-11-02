@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * reference, source, etc.)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:17
+ * @created 02-Nov-2007 19:18:12
  */
 public abstract class EntityInSourceBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(EntityInSourceBase.class);
@@ -32,10 +32,10 @@ public abstract class EntityInSourceBase extends ReferencedEntityBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param idInSource
 	 */
-	public void setIdInSource(String newVal){
-		idInSource = newVal;
+	public void setIdInSource(String idInSource){
+		;
 	}
 
 }

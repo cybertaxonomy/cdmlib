@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * FIXME
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:49
+ * @created 02-Nov-2007 19:18:43
  */
 public class TaxonInteraction extends FeatureBase {
 	static Logger logger = Logger.getLogger(TaxonInteraction.class);
@@ -33,10 +33,10 @@ public class TaxonInteraction extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param taxon2
 	 */
-	public void setTaxon2(TaxonBase newVal){
-		taxon2 = newVal;
+	public void setTaxon2(TaxonBase taxon2){
+		;
 	}
 
 	public MultilanguageString getDescription(){
@@ -45,10 +45,10 @@ public class TaxonInteraction extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(MultilanguageString newVal){
-		description = newVal;
+	public void setDescription(MultilanguageString description){
+		;
 	}
 
 }

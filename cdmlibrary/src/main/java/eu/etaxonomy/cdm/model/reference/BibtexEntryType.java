@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * Bibtex bibliography entries are split by types
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:07
+ * @created 02-Nov-2007 19:18:01
  */
 public class BibtexEntryType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(BibtexEntryType.class);

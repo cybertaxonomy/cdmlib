@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:08
+ * @created 02-Nov-2007 19:18:01
  */
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BibtexReference.class);
@@ -140,10 +140,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param crossref
 	 */
-	public void setCrossref(BibtexReference newVal){
-		crossref = newVal;
+	public void setCrossref(BibtexReference crossref){
+		;
 	}
 
 	public String getAuthor(){
@@ -152,10 +152,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param author
 	 */
-	public void setAuthor(String newVal){
-		author = newVal;
+	public void setAuthor(String author){
+		;
 	}
 
 	public String getJournal(){
@@ -164,10 +164,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param journal
 	 */
-	public void setJournal(String newVal){
-		journal = newVal;
+	public void setJournal(String journal){
+		;
 	}
 
 	public String getBooktitle(){
@@ -176,10 +176,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param booktitle
 	 */
-	public void setBooktitle(String newVal){
-		booktitle = newVal;
+	public void setBooktitle(String booktitle){
+		;
 	}
 
 	public String getChapter(){
@@ -188,10 +188,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param chapter
 	 */
-	public void setChapter(String newVal){
-		chapter = newVal;
+	public void setChapter(String chapter){
+		;
 	}
 
 	public String getTitle(){
@@ -200,10 +200,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param title
 	 */
-	public void setTitle(String newVal){
-		title = newVal;
+	public void setTitle(String title){
+		;
 	}
 
 	public String getSeries(){
@@ -212,10 +212,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param series
 	 */
-	public void setSeries(String newVal){
-		series = newVal;
+	public void setSeries(String series){
+		;
 	}
 
 	public String getEdition(){
@@ -224,10 +224,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param edition
 	 */
-	public void setEdition(String newVal){
-		edition = newVal;
+	public void setEdition(String edition){
+		;
 	}
 
 	public String getVolume(){
@@ -236,10 +236,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param volume
 	 */
-	public void setVolume(String newVal){
-		volume = newVal;
+	public void setVolume(String volume){
+		;
 	}
 
 	public String getNumber(){
@@ -248,10 +248,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param number
 	 */
-	public void setNumber(String newVal){
-		number = newVal;
+	public void setNumber(String number){
+		;
 	}
 
 	public String getPages(){
@@ -260,10 +260,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pages
 	 */
-	public void setPages(String newVal){
-		pages = newVal;
+	public void setPages(String pages){
+		;
 	}
 
 	public String getAnnote(){
@@ -272,10 +272,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param annote
 	 */
-	public void setAnnote(String newVal){
-		annote = newVal;
+	public void setAnnote(String annote){
+		;
 	}
 
 	public String getEditor(){
@@ -284,10 +284,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param editor
 	 */
-	public void setEditor(String newVal){
-		editor = newVal;
+	public void setEditor(String editor){
+		;
 	}
 
 	public String getInstitution(){
@@ -296,10 +296,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param institution
 	 */
-	public void setInstitution(String newVal){
-		institution = newVal;
+	public void setInstitution(String institution){
+		;
 	}
 
 	public String getSchool(){
@@ -308,10 +308,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param school
 	 */
-	public void setSchool(String newVal){
-		school = newVal;
+	public void setSchool(String school){
+		;
 	}
 
 	public String getOrganization(){
@@ -320,10 +320,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param organization
 	 */
-	public void setOrganization(String newVal){
-		organization = newVal;
+	public void setOrganization(String organization){
+		;
 	}
 
 	public String getPublisher(){
@@ -332,10 +332,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param publisher
 	 */
-	public void setPublisher(String newVal){
-		publisher = newVal;
+	public void setPublisher(String publisher){
+		;
 	}
 
 	public String getAddress(){
@@ -344,10 +344,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param address
 	 */
-	public void setAddress(String newVal){
-		address = newVal;
+	public void setAddress(String address){
+		;
 	}
 
 	public String getHowpublished(){
@@ -356,10 +356,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param howpublished
 	 */
-	public void setHowpublished(String newVal){
-		howpublished = newVal;
+	public void setHowpublished(String howpublished){
+		;
 	}
 
 	public String getType(){
@@ -368,10 +368,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param type
 	 */
-	public void setType(String newVal){
-		type = newVal;
+	public void setType(String type){
+		;
 	}
 
 	public String getMonth(){
@@ -380,10 +380,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param month
 	 */
-	public void setMonth(String newVal){
-		month = newVal;
+	public void setMonth(String month){
+		;
 	}
 
 	public String getYear(){
@@ -392,10 +392,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param year
 	 */
-	public void setYear(String newVal){
-		year = newVal;
+	public void setYear(String year){
+		;
 	}
 
 	public String getEprint(){
@@ -404,10 +404,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param eprint
 	 */
-	public void setEprint(String newVal){
-		eprint = newVal;
+	public void setEprint(String eprint){
+		;
 	}
 
 	public String getNote(){
@@ -416,10 +416,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param note
 	 */
-	public void setNote(String newVal){
-		note = newVal;
+	public void setNote(String note){
+		;
 	}
 
 	/**

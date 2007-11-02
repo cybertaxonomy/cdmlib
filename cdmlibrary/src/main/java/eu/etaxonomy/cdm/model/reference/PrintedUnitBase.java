@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:37
+ * @created 02-Nov-2007 19:18:32
  */
 public abstract class PrintedUnitBase extends PublicationBase {
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
@@ -34,10 +34,10 @@ public abstract class PrintedUnitBase extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param inSeries
 	 */
-	public void setInSeries(PrintSeries newVal){
-		inSeries = newVal;
+	public void setInSeries(PrintSeries inSeries){
+		;
 	}
 
 	public String getEditor(){
@@ -46,10 +46,10 @@ public abstract class PrintedUnitBase extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param editor
 	 */
-	public void setEditor(String newVal){
-		editor = newVal;
+	public void setEditor(String editor){
+		;
 	}
 
 	public String getVolume(){
@@ -58,10 +58,10 @@ public abstract class PrintedUnitBase extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param volume
 	 */
-	public void setVolume(String newVal){
-		volume = newVal;
+	public void setVolume(String volume){
+		;
 	}
 
 	public String getPages(){
@@ -70,10 +70,10 @@ public abstract class PrintedUnitBase extends PublicationBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pages
 	 */
-	public void setPages(String newVal){
-		pages = newVal;
+	public void setPages(String pages){
+		;
 	}
 
 }

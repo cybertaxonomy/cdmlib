@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * The region name of a DNA string. E.g. 18S, COX, etc.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:26
+ * @created 02-Nov-2007 19:18:21
  */
 public class Locus extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Locus.class);
@@ -33,10 +33,10 @@ public class Locus extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 	public String getDescription(){
@@ -45,10 +45,10 @@ public class Locus extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(String newVal){
-		description = newVal;
+	public void setDescription(String description){
+		;
 	}
 
 }

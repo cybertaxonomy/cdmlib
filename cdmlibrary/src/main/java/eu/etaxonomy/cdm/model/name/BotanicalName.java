@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * Taxon name class for plants
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:10
+ * @created 02-Nov-2007 19:18:04
  */
 public class BotanicalName extends NonViralName {
 	static Logger logger = Logger.getLogger(BotanicalName.class);
@@ -43,10 +43,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param parentRelationships
 	 */
-	public void setParentRelationships(ArrayList newVal){
-		parentRelationships = newVal;
+	public void setParentRelationships(ArrayList parentRelationships){
+		;
 	}
 
 	public ArrayList getChildRelationships(){
@@ -55,10 +55,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param childRelationships
 	 */
-	public void setChildRelationships(ArrayList newVal){
-		childRelationships = newVal;
+	public void setChildRelationships(ArrayList childRelationships){
+		;
 	}
 
 	public boolean isHybridFormula(){
@@ -67,10 +67,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isHybridFormula
 	 */
-	public void setHybridFormula(boolean newVal){
-		isHybridFormula = newVal;
+	public void setHybridFormula(boolean isHybridFormula){
+		;
 	}
 
 	public boolean isMonomHybrid(){
@@ -79,10 +79,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isMonomHybrid
 	 */
-	public void setMonomHybrid(boolean newVal){
-		isMonomHybrid = newVal;
+	public void setMonomHybrid(boolean isMonomHybrid){
+		;
 	}
 
 	public boolean isBinomHybrid(){
@@ -91,10 +91,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isBinomHybrid
 	 */
-	public void setBinomHybrid(boolean newVal){
-		isBinomHybrid = newVal;
+	public void setBinomHybrid(boolean isBinomHybrid){
+		;
 	}
 
 	public boolean isTrinomHybrid(){
@@ -103,10 +103,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isTrinomHybrid
 	 */
-	public void setTrinomHybrid(boolean newVal){
-		isTrinomHybrid = newVal;
+	public void setTrinomHybrid(boolean isTrinomHybrid){
+		;
 	}
 
 	public boolean isAnamorphic(){
@@ -115,10 +115,10 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isAnamorphic
 	 */
-	public void setAnamorphic(boolean newVal){
-		isAnamorphic = newVal;
+	public void setAnamorphic(boolean isAnamorphic){
+		;
 	}
 
 }

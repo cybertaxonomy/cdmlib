@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:28
+ * @created 02-Nov-2007 19:18:24
  */
 public class MovieFile extends ImageFile {
 	static Logger logger = Logger.getLogger(MovieFile.class);
@@ -30,10 +30,10 @@ public class MovieFile extends ImageFile {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param duration
 	 */
-	public void setDuration(int newVal){
-		duration = newVal;
+	public void setDuration(int duration){
+		;
 	}
 
 }

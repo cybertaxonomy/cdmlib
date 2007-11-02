@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * {type is "host" or "hybrid_parent"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:22
+ * @created 02-Nov-2007 19:18:18
  */
 public class IndividualsAssociation extends FeatureBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
@@ -33,10 +33,10 @@ public class IndividualsAssociation extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param observationalUnit2
 	 */
-	public void setObservationalUnit2(ObservationalUnit newVal){
-		observationalUnit2 = newVal;
+	public void setObservationalUnit2(ObservationalUnit observationalUnit2){
+		;
 	}
 
 	public MultilanguageString getDescription(){
@@ -45,10 +45,10 @@ public class IndividualsAssociation extends FeatureBase {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(MultilanguageString newVal){
-		description = newVal;
+	public void setDescription(MultilanguageString description){
+		;
 	}
 
 }

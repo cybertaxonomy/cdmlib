@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * workaround for enumerations
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:41
+ * @created 02-Nov-2007 19:18:36
  */
 public class Representation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Representation.class);
@@ -35,10 +35,10 @@ public class Representation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param language
 	 */
-	public void setLanguage(Language newVal){
-		language = newVal;
+	public void setLanguage(Language language){
+		;
 	}
 
 	public String getLabel(){
@@ -47,10 +47,10 @@ public class Representation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param label
 	 */
-	public void setLabel(String newVal){
-		label = newVal;
+	public void setLabel(String label){
+		;
 	}
 
 	public String getAbbreviatedLabel(){
@@ -59,10 +59,10 @@ public class Representation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param abbreviatedLabel
 	 */
-	public void setAbbreviatedLabel(String newVal){
-		abbreviatedLabel = newVal;
+	public void setAbbreviatedLabel(String abbreviatedLabel){
+		;
 	}
 
 	public String getDescription(){
@@ -71,10 +71,10 @@ public class Representation extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param description
 	 */
-	public void setDescription(String newVal){
-		description = newVal;
+	public void setDescription(String description){
+		;
 	}
 
 }
