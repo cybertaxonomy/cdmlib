@@ -59,6 +59,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/Description.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/PropertyChangeBean.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
+import eu.etaxonomy.cdm.model.Description;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
