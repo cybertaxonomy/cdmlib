@@ -11,14 +11,18 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * A single enumeration must only contain DefinedTerm instances of one kind
  * (=class)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:12
+ * @created 02-Nov-2007 19:36:06
  */
+@Entity
 public class Enumeration extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Enumeration.class);
 

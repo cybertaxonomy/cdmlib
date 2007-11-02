@@ -13,12 +13,16 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:08
+ * @created 02-Nov-2007 19:36:03
  */
+@Entity
 public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 

@@ -11,13 +11,17 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Taxon name class for animals
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:48
+ * @created 02-Nov-2007 19:36:41
  */
+@Entity
 public class ZoologicalName extends NonViralName {
 	static Logger logger = Logger.getLogger(ZoologicalName.class);
 

@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * This class contains the measurement units such as "centimeter" or "degree
  * Celsius"
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:22
+ * @created 02-Nov-2007 19:36:15
  */
+@Entity
 public class MeasurementUnit extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(MeasurementUnit.class);
 

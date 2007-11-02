@@ -13,13 +13,17 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.common.MultilanguageString;
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * {type is "host" or "hybrid_parent"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:18
+ * @created 02-Nov-2007 19:36:11
  */
+@Entity
 public class IndividualsAssociation extends FeatureBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
 

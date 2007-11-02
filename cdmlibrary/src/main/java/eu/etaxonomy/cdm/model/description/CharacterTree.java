@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Character trees arrange concepts and characters. They may also be used to
  * define flat char. subsets for filtering purposes.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:04
+ * @created 02-Nov-2007 19:36:00
  */
+@Entity
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
 

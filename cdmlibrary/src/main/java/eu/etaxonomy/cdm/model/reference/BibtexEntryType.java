@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Bibtex bibliography entries are split by types
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:01
+ * @created 02-Nov-2007 19:35:56
  */
+@Entity
 public class BibtexEntryType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(BibtexEntryType.class);
 

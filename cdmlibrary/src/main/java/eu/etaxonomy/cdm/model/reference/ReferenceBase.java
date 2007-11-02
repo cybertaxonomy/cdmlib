@@ -13,14 +13,18 @@ package eu.etaxonomy.cdm.model.reference;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * A year() method is required to get the year of publication out of the
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:34
+ * @created 02-Nov-2007 19:36:27
  */
+@Entity
 public abstract class ReferenceBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
 

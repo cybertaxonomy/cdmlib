@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * The list should be extensible at runtime through configuration. This needs to
@@ -41,8 +44,9 @@ import org.apache.log4j.Logger;
  * LaterValidatedByName
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:26
+ * @created 02-Nov-2007 19:36:19
  */
+@Entity
 public class NameRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 

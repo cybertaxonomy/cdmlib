@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * An author team may exist for itself or may be built with the persons who belong
@@ -19,8 +22,9 @@ import org.apache.log4j.Logger;
  * {At least one otf the attributes shortName or fullName must exist.}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:44
+ * @created 02-Nov-2007 19:36:38
  */
+@Entity
 public class Team extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Team.class);
 

@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * abstract class for all objects that may have a reference
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:34
+ * @created 02-Nov-2007 19:36:27
  */
+@Entity
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 

@@ -11,14 +11,18 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * A year() method is required to get the year of publication out of the
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:41
+ * @created 02-Nov-2007 19:36:34
  */
+@Entity
 public abstract class StrictReferenceBase extends ReferenceBase {
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
 

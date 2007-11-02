@@ -13,13 +13,17 @@ package eu.etaxonomy.cdm.model.taxon;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * {unique name within view/treatment}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:42
+ * @created 02-Nov-2007 19:36:36
  */
+@Entity
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 

@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * This class is to represent all references which cannot be clearly assigned to a
@@ -18,8 +21,9 @@ import org.apache.log4j.Logger;
  * reference type are not necessary here.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:15
+ * @created 02-Nov-2007 19:36:08
  */
+@Entity
 public class Generic extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Generic.class);
 

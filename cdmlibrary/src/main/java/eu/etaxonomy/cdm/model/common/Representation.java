@@ -11,13 +11,17 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * workaround for enumerations
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:36
+ * @created 02-Nov-2007 19:36:29
  */
+@Entity
 public class Representation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Representation.class);
 

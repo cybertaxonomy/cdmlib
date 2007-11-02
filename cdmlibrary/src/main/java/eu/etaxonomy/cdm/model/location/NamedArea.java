@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:24
+ * @created 02-Nov-2007 19:36:17
  */
+@Entity
 public class NamedArea extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
 

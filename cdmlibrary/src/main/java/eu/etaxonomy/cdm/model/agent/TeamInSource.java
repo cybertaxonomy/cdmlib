@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.EntityInSourceBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:45
+ * @created 02-Nov-2007 19:36:38
  */
+@Entity
 public class TeamInSource extends EntityInSourceBase {
 	static Logger logger = Logger.getLogger(TeamInSource.class);
 

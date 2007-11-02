@@ -14,6 +14,9 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * taken from TDWG & VCard
@@ -21,8 +24,9 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/ContactDetails#Address
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:17:59
+ * @created 02-Nov-2007 19:35:54
  */
+@Entity
 public class Address extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Address.class);
 

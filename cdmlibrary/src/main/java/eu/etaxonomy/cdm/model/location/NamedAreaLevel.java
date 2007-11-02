@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Controlled vocabulary to diferenctiate levels of areas such as province, state,
  * etc.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:25
+ * @created 02-Nov-2007 19:36:18
  */
+@Entity
 public class NamedAreaLevel extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NamedAreaLevel.class);
 

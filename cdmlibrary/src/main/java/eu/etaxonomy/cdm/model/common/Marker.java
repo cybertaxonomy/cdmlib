@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * This class aims to make available some "flags" for identifiable entities in a
@@ -18,8 +21,9 @@ import org.apache.log4j.Logger;
  * "flags" as a MarkerType.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:22
+ * @created 02-Nov-2007 19:36:15
  */
+@Entity
 public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);
 

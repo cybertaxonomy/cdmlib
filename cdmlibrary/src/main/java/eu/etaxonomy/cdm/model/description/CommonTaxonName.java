@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:05
+ * @created 02-Nov-2007 19:36:00
  */
+@Entity
 public class CommonTaxonName extends FeatureBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
 

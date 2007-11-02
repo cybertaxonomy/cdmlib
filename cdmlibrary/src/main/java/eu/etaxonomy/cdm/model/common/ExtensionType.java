@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data
@@ -18,8 +21,9 @@ import org.apache.log4j.Logger;
  * hybrid parent" or specific local identifiers.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:13
+ * @created 02-Nov-2007 19:36:06
  */
+@Entity
 public class ExtensionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);
 

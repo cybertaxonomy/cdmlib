@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:17:58
+ * @created 02-Nov-2007 19:35:54
  */
+@Entity
 public class AbsenceTerm extends PresenceAbsenceTermBase {
 	static Logger logger = Logger.getLogger(AbsenceTerm.class);
 

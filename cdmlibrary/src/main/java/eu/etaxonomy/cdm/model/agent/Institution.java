@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * http://rs.tdwg.org/ontology/voc/Institution.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:18
+ * @created 02-Nov-2007 19:36:12
  */
+@Entity
 public class Institution extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Institution.class);
 

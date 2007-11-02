@@ -11,14 +11,18 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * metadata for an external file such as images, phylogenetic trees, or audio
  * recordings available through the location attribute!
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:23
+ * @created 02-Nov-2007 19:36:16
  */
+@Entity
 public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);
 

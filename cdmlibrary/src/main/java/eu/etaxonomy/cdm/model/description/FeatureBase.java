@@ -15,12 +15,16 @@ import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:13
+ * @created 02-Nov-2007 19:36:07
  */
+@Entity
 public abstract class FeatureBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
 

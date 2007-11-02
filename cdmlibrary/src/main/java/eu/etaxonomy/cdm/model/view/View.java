@@ -11,14 +11,18 @@ package eu.etaxonomy.cdm.model.view;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * use ARCHIVE view/dataset to maintain an archive. All members of that view will
  * never be changed
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:47
+ * @created 02-Nov-2007 19:36:40
  */
+@Entity
 public class View {
 	static Logger logger = Logger.getLogger(View.class);
 

@@ -16,13 +16,17 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:28
+ * @created 02-Nov-2007 19:36:22
  */
+@Entity
 public class Occurrence extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Occurrence.class);
 

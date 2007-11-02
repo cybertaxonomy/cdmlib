@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * kind of format used for structuring text. E.g. xml schema namespace, rdf, or
  * any other format
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:45
+ * @created 02-Nov-2007 19:36:38
  */
+@Entity
 public class TextFormat extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(TextFormat.class);
 

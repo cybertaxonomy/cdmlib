@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:27
+ * @created 02-Nov-2007 19:36:20
  */
+@Entity
 public class NomenclaturalStatus extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
 

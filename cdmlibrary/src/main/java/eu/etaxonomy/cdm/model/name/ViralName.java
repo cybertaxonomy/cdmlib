@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * use name attribute for the entire virus name!
@@ -19,8 +22,9 @@ import org.apache.log4j.Logger;
  * http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:47
+ * @created 02-Nov-2007 19:36:41
  */
+@Entity
 public class ViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(ViralName.class);
 

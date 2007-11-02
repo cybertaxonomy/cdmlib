@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * This list should be extensible at runtime through configuration. This needs to
@@ -19,8 +22,9 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/TaxonRank
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:33
+ * @created 02-Nov-2007 19:36:26
  */
+@Entity
 public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 

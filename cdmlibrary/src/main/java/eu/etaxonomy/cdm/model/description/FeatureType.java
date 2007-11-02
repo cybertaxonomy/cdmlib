@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * NEEDS TO BE COMPLEMENTED
@@ -20,8 +23,9 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/SpeciesProfileModel
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:14
+ * @created 02-Nov-2007 19:36:07
  */
+@Entity
 public class FeatureType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(FeatureType.class);
 

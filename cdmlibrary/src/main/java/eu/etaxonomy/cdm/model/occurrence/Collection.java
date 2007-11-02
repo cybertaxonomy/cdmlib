@@ -13,12 +13,16 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:05
+ * @created 02-Nov-2007 19:36:00
  */
+@Entity
 public class Collection extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Collection.class);
 

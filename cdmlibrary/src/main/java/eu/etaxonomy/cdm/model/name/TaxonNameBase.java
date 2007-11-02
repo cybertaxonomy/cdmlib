@@ -15,6 +15,9 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of the any
@@ -22,8 +25,9 @@ import org.apache.log4j.Logger;
  * maybe year is stored in IdentifiableEntity.titleCache
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:43
+ * @created 02-Nov-2007 19:36:36
  */
+@Entity
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 

@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Reference systems for coordinates also according to OGC (Open Geographical
@@ -20,8 +23,9 @@ import org.apache.log4j.Logger;
  * be investigated.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:35
+ * @created 02-Nov-2007 19:36:29
  */
+@Entity
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
 

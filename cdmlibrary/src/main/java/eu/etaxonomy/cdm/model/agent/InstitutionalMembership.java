@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:19
+ * @created 02-Nov-2007 19:36:12
  */
+@Entity
 public class InstitutionalMembership extends VersionableEntity {
 	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
 

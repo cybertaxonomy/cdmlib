@@ -13,13 +13,17 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * {only for typified names which have the "species" rank or below}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:39
+ * @created 02-Nov-2007 19:36:32
  */
+@Entity
 public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 

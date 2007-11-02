@@ -11,14 +11,18 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Marker types similar to dynamically defined attributes. These  content types
  * like "IS_DOUBTFUL", "COMPLETE"  or specific local flags.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:22
+ * @created 02-Nov-2007 19:36:15
  */
+@Entity
 public class MarkerType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MarkerType.class);
 

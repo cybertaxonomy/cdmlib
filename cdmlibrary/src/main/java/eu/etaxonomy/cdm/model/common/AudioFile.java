@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:00
+ * @created 02-Nov-2007 19:35:56
  */
+@Entity
 public class AudioFile extends MediaInstance {
 	static Logger logger = Logger.getLogger(AudioFile.class);
 

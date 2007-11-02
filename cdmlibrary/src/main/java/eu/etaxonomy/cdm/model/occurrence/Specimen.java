@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:39
+ * @created 02-Nov-2007 19:36:32
  */
+@Entity
 public class Specimen extends Occurrence {
 	static Logger logger = Logger.getLogger(Specimen.class);
 

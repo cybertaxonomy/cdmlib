@@ -14,13 +14,17 @@ import eu.etaxonomy.cdm.model.common.MultilanguageString;
 import eu.etaxonomy.cdm.model.description.Description;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * part of a specimen or observation that is being described or determined.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:28
+ * @created 02-Nov-2007 19:36:21
  */
+@Entity
 public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 

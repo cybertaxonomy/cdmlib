@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import org.apache.log4j.Logger;
+import eu.etaxonomy.cdm.model.Description;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  * Taxon name class for all non viral taxa.
  * Parentetical authorship is derived from basionym relationship.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:18:27
+ * @created 02-Nov-2007 19:36:21
  */
+@Entity
 public class NonViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(NonViralName.class);
 
