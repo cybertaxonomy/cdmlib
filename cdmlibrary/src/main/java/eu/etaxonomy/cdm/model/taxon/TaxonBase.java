@@ -7,35 +7,37 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.publication.PublicationBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import etaxonomy.cdm.model.name.TaxonNameBase;
+import etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
 
 /**
- * @author Andreas Mueller
+ * {unique name within view/treatment}
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:14
+ * @created 02-Nov-2007 18:15:21
  */
-@Entity
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 
+	//The assignement to the Taxon or to the Synonym class is not definitive
+	@Description("The assignement to the Taxon or to the Synonym class is not definitive")
 	private boolean isDoubtful;
-	private PublicationBase sec;
-	private TaxonName name;
+	private TaxonNameBase name;
 
-	public TaxonName getName(){
+	public TaxonNameBase getName(){
 		return name;
 	}
 
-	public PublicationBase getSec(){
-		return sec;
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setName(TaxonNameBase newVal){
+		name = newVal;
 	}
 
 	public boolean isDoubtful(){
@@ -48,22 +50,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 */
 	public void setDoubtful(boolean newVal){
 		isDoubtful = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setName(TaxonName newVal){
-		name = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setSec(PublicationBase newVal){
-		sec = newVal;
 	}
 
 }

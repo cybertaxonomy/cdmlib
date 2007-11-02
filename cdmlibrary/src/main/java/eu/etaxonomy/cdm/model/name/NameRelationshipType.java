@@ -7,14 +7,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.name;
+package etaxonomy.cdm.model.name;
 
 
+import etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
- * Nomenclatural status are also included.
- * 
  * The list should be extensible at runtime through configuration. This needs to
  * be investigated.
  * 
@@ -22,122 +21,128 @@ import org.apache.log4j.Logger;
  * Subgroups are:
  * ================
  * 
- * Typification:
- * -------------------
- * Type
- * ConservedType
- * RejectedType
- * SameType
- * LectoType
- * NeoType
- * 
- * 
- * Hyprid:
- * -----------------------
- * FirstParent
- * SecondParent
- * FemaleParent
- * MaleParent
- * 
  * 
  * Illegitimate:
  * ------------------------
- * Illegitimate,
- * Superfluous,
  * LaterHomonym,
  * TreatedAsLaterHomonym,
- * RejectedInFavour,
- * Rejected,
- * UtiqueRejected,
- * ConservedProp,
- * OrthographyConservedProp
+ * RejectedInFavour
  * 
  * Legitimate:
  * ------------------------
- * Legitimate,
- * Basionym,
  * ReplacedSynonym,
- * Novum,
  * AlternativeName,
- * Alternativ,
  * ConservedAgainst,
- * Conserved,
- * OrthographyConserved,
- * RejectedProp,
- * UtiqueRejectedProp
+ * OrthographyConserved
  * 
  * Invalid:
  * -----------------------------------
- * Invalid,
- * Nudum,
- * Provisional,
- * CombinationInvalid,
  * ValidatedByName,
  * LaterValidatedByName
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:09
+ * @created 02-Nov-2007 18:15:03
  */
-public enum NameRelationshipType {
-	ORTHOGRAPHIC_VARIANT,
-	AMBIGUOUS,
-	DOUBTFUL,
-	CONFUSUM,
-	TYPE,
-	CONSERVED_TYPE,
-	REJECTED_TYPE,
-	SAME_TYPE,
-	LECTOTYPE,
-	NEOTYPE,
-	FIRST_PARENT,
-	SECOND_PARENT,
-	FEMALE_PARENT,
-	MALE_PARENT,
-	ILLEGITIMATE,
-	LATER_HOMONYM,
-	SUPERFLUOUS,
-	REJECTED_IN_FAVOR,
-	TREATED_AS_LATER_HOMONYM,
-	REJECTED,
-	UTIQUE_REJECTED,
-	CONSERVED_PROP,
-	ORTHOGRAPHY_CONSERVED_PROP,
-	LEGITIMATE,
-	ALTERNATIVE,
-	UTIQUE_REJECTED_PROP,
-	ORTHOGRAPHY_CONSERVED,
-	REJECTED_PROP,
-	CONSERVED,
-	CONSERVED_AGAINST,
-	ALTERNATIVE_NAME,
-	BASIONYM,
-	NOVUM,
-	REPLACED_SYNONYM,
-	SANCTIONED,
-	INVALID,
-	NUDUM,
-	COMBINATION_INVALID,
-	PROVISIONAL,
-	VALIDATED_BY_NAME,
-	LATER_VALIDATED_BY_NAME;
+public class NameRelationshipType extends EnumeratedTermBase {
+	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
-	public boolean isHybridType(){
-		return false;
+	@Description("")
+	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm;
+
+	public getInitializationClassUri(){
+		return initializationClassUri;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setInitializationClassUri(newVal){
+		initializationClassUri = newVal;
 	}
 
 	public boolean isInvalidType(){
+		//True, if enum is of type:
+		//Invalid,
+		//Nudum,
+		//Provisional,
+		//CombinationInvalid,
+		//ValidatedByName,
+		//LaterValidatedByName
+
 		return false;
 	}
 
 	public boolean isLegitimateType(){
-		return false;
-	}
+		//True, if enum is of type:
+		//Legitimate,
+		//Basionym,
+		//ReplacedSynonym,
+		//Novum,
+		//AlternativeName,
+		//Alternativ,
+		//ConservedAgainst,
+		//Conserved,
+		//OrthographyConserved,
+		//RejectedProp,
+		//UtiqueRejectedProp
 
-	public boolean isTypificationType(){
 		return false;
 	}
 
 	public boolean isIllegitimateType(){
+		//True, if enum is of type:
+		//Illegitimate,
+		//Superfluous,
+		//LaterHomonym,
+		//TreatedAsLaterHomonym,
+		//RejectedInFavour,
+		//Rejected,
+		//UtiqueRejected,
+		//ConservedProp,
+		//OrthographyConservedProp
+
 		return false;
 	}
+
+	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
+		return null;
+	}
+
+	public static final NameRelationshipType REJECTED_IN_FAVOUR(){
+		return null;
+	}
+
+	public static final NameRelationshipType LATER_HOMONYM(){
+		return null;
+	}
+
+	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
+		return null;
+	}
+
+	public static final NameRelationshipType ALTERNATIVE_NAME(){
+		return null;
+	}
+
+	public static final NameRelationshipType BASIONYM(){
+		return null;
+	}
+
+	public static final NameRelationshipType REPLACED_SYNONYM(){
+		return null;
+	}
+
+	public static final NameRelationshipType CONSERVED_AGAINST(){
+		return null;
+	}
+
+	public static final NameRelationshipType VALIDATED_BY_NAME(){
+		return null;
+	}
+
+	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
+		return null;
+	}
+
 }

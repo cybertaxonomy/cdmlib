@@ -7,24 +7,53 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package etaxonomy.cdm.model.taxon;
 
 
+import etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:13
+ * @created 02-Nov-2007 18:15:20
  */
-public enum SynonymRelationshipType {
-	SYNONYM_OF,
-	PRO_PARTE_SYNONYM_OF,
-	PARTIAL_SYNONYM_OF,
-	HOMOTYPIC_SYNONYM_OF,
-	HETEROTYPIC_SYNONYM_OF,
-	PRO_PARTE_AND_HOMOTYPIC_SYNONYM_OF,
-	PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF,
-	PARTIAL_AND_HOMOTYPIC_SYNONYM_OF,
-	PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
+public class SynonymRelationshipType extends EnumeratedTermBase {
+	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
+
+	@Description("")
+	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm;
+
+	public getInitializationClassUri(){
+		return initializationClassUri;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setInitializationClassUri(newVal){
+		initializationClassUri = newVal;
+	}
+
+	public static final SynonymRelationshipType SYNONYM_OF(){
+		return null;
+	}
+
+	public static final SynonymRelationshipType PRO_PARTE_SYNONYM_OF(){
+		return null;
+	}
+
+	public static final SynonymRelationshipType PARTIAL_SYNONYM_OF(){
+		return null;
+	}
+
+	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
+		return null;
+	}
+
+	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
+		return null;
+	}
+
 }

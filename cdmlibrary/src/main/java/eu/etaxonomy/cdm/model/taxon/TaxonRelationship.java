@@ -7,40 +7,23 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.publication.PublicationBase;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
 
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:16
+ * @created 02-Nov-2007 18:15:23
  */
-@Entity
-public class TaxonRelationship extends VersionableEntity {
+public class TaxonRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(TaxonRelationship.class);
 
-	private PublicationBase citation;
-	private AcceptedTaxon fromTaxon;
-	private AcceptedTaxon toTaxon;
 	private ConceptRelationshipType type;
-
-	public PublicationBase getCitation(){
-		return citation;
-	}
-
-	public AcceptedTaxon getFromTaxon(){
-		return fromTaxon;
-	}
-
-	public AcceptedTaxon getToTaxon(){
-		return toTaxon;
-	}
+	private Taxon fromTaxon;
+	private Taxon toTaxon;
 
 	public ConceptRelationshipType getType(){
 		return type;
@@ -50,32 +33,32 @@ public class TaxonRelationship extends VersionableEntity {
 	 * 
 	 * @param newVal
 	 */
-	public void setCitation(PublicationBase newVal){
-		citation = newVal;
+	public void setType(ConceptRelationshipType newVal){
+		type = newVal;
+	}
+
+	public Taxon getFromTaxon(){
+		return fromTaxon;
 	}
 
 	/**
 	 * 
 	 * @param newVal
 	 */
-	public void setFromTaxon(AcceptedTaxon newVal){
+	public void setFromTaxon(Taxon newVal){
 		fromTaxon = newVal;
 	}
 
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setToTaxon(AcceptedTaxon newVal){
-		toTaxon = newVal;
+	public Taxon getToTaxon(){
+		return toTaxon;
 	}
 
 	/**
 	 * 
 	 * @param newVal
 	 */
-	public void setType(ConceptRelationshipType newVal){
-		type = newVal;
+	public void setToTaxon(Taxon newVal){
+		toTaxon = newVal;
 	}
 
 }

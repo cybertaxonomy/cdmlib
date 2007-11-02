@@ -7,33 +7,34 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
 
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:13
+ * @created 02-Nov-2007 18:15:20
  */
-@Entity
-public class SynonymRelationship extends VersionableEntity {
+public class SynonymRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
 
-	private AcceptedTaxon acceptedTaxon;
+	private Synonym synoynm;
+	private Taxon acceptedTaxon;
 	private SynonymRelationshipType type;
-	private SynonymTaxon synoynm;
 
-	public AcceptedTaxon getAcceptedTaxon(){
+	public Taxon getAcceptedTaxon(){
 		return acceptedTaxon;
 	}
 
-	public SynonymTaxon getSynoynm(){
-		return synoynm;
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setAcceptedTaxon(Taxon newVal){
+		acceptedTaxon = newVal;
 	}
 
 	public SynonymRelationshipType getType(){
@@ -44,24 +45,20 @@ public class SynonymRelationship extends VersionableEntity {
 	 * 
 	 * @param newVal
 	 */
-	public void setAcceptedTaxon(AcceptedTaxon newVal){
-		acceptedTaxon = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setSynoynm(SynonymTaxon newVal){
-		synoynm = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
 	public void setType(SynonymRelationshipType newVal){
 		type = newVal;
+	}
+
+	public Synonym getSynoynm(){
+		return synoynm;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setSynoynm(Synonym newVal){
+		synoynm = newVal;
 	}
 
 }

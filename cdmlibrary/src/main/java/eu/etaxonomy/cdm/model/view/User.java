@@ -7,43 +7,28 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.view;
+package etaxonomy.cdm.model.view;
 
 
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
 
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:18
+ * @created 02-Nov-2007 18:15:25
  */
-@Entity
 public class User {
 	static Logger logger = Logger.getLogger(User.class);
 
-	private int created;
-	private String email;
+	@Description("")
 	private String name;
+	@Description("")
+	private String email;
+	@Description("")
 	private String openID;
+	@Description("")
+	private Calendar created;
 	private ArrayList views;
-
-	public int getCreated(){
-		return created;
-	}
-
-	public String getEmail(){
-		return email;
-	}
-
-	public String getName(){
-		return name;
-	}
-
-	public String getOpenID(){
-		return openID;
-	}
 
 	public ArrayList getViews(){
 		return views;
@@ -53,16 +38,12 @@ public class User {
 	 * 
 	 * @param newVal
 	 */
-	public void setCreated(int newVal){
-		created = newVal;
+	public void setViews(ArrayList newVal){
+		views = newVal;
 	}
 
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setEmail(String newVal){
-		email = newVal;
+	public String getName(){
+		return name;
 	}
 
 	/**
@@ -73,6 +54,22 @@ public class User {
 		name = newVal;
 	}
 
+	public String getEmail(){
+		return email;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setEmail(String newVal){
+		email = newVal;
+	}
+
+	public String getOpenID(){
+		return openID;
+	}
+
 	/**
 	 * 
 	 * @param newVal
@@ -81,12 +78,16 @@ public class User {
 		openID = newVal;
 	}
 
+	public Calendar getCreated(){
+		return created;
+	}
+
 	/**
 	 * 
 	 * @param newVal
 	 */
-	public void setViews(ArrayList newVal){
-		views = newVal;
+	public void setCreated(Calendar newVal){
+		created = newVal;
 	}
 
 }

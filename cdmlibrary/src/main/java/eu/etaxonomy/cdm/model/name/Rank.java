@@ -7,92 +7,293 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.name;
+package etaxonomy.cdm.model.name;
 
 
+import etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
- * The list should be extensible at runtime through configuration. This needs to
+ * This list should be extensible at runtime through configuration. This needs to
  * be investigated.
- * @author Andreas Mueller
+ * http://rs.tdwg.org/ontology/voc/TaxonRank
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:11
+ * @created 02-Nov-2007 18:15:12
  */
-public enum Rank {
-	EMPIRE,
-	DOMAIN,
-	SUPER_KINGDOM,
-	KINGDOM,
-	SUBKINGDOM,
-	INFRAKINGDOM,
-	SUPERPHYLUM,
-	PHYLUM,
-	SUBPHYLUM,
-	INFRAPHYLUM,
-	SUPERDIVISION,
-	DIVISION,
-	SUBDIVISION,
-	INFRADIVISION,
-	SUPERCLASS,
-	CLASS,
-	SUBCLASS,
-	INFRACLASS,
-	SUPERORDER,
-	ORDER,
-	SUBORDER,
-	INFRAORDER,
-	SUPERFAMILY,
-	FAMILY,
-	SUBFAMILY,
-	INFRAFAMILY,
-	SUPERTRIBE,
-	TRIBE,
-	SUBTRIBE,
-	INFRATRIBE,
-	SUPRAGENERIC_TAXON,
-	GENUS,
-	SUBGENUS,
-	INFRAGENUS,
-	SECTION,
-	SUBSECTION,
-	SERIES,
-	SUBSERIES,
-	SPECIES_AGGREGATE,
-	INFRAGENERIC_TAXON,
-	SPECIES,
-	SUBSPECIFIC_AGGREGATE,
-	SUBSPECIES,
-	INFRASPECIES,
-	VARIETY,
-	BIO_VARIETY,
-	PATHO_VARIETY,
-	SUB_VARIETY,
-	SUB_SUB_VARIETY,
-	FORM,
-	SPECIAL_FORM,
-	SUBFORM,
-	SUBSUBFORM,
-	INFRASPECIFIC_TAXON,
-	CANDIDATE,
-	DENOMINATION_CLASS,
-	GRAFT_CHIMAERA,
-	CULTIVAR_GROUP,
-	GREX,
-	CONVAR,
-	CULTIVAR;
+public class Rank extends EnumeratedTermBase {
+	static Logger logger = Logger.getLogger(Rank.class);
 
-//	private ArrayList m_TaxonName;
-//
-//	public ArrayList getM_TaxonName(){
-//		return m_TaxonName;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param newVal
-//	 */
-//	public void setM_TaxonName(ArrayList newVal){
-//		m_TaxonName = newVal;
-//	}
+	@Description("")
+	private static final int ontologyClassUri = http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm;
+	private ArrayList m_TaxonNameBase;
+
+	public ArrayList getM_TaxonNameBase(){
+		return m_TaxonNameBase;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setM_TaxonNameBase(ArrayList newVal){
+		m_TaxonNameBase = newVal;
+	}
+
+	public getOntologyClassUri(){
+		return ontologyClassUri;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setOntologyClassUri(newVal){
+		ontologyClassUri = newVal;
+	}
+
+	public static final Rank EMPIRE(){
+		return null;
+	}
+
+	public static final Rank DOMAIN(){
+		return null;
+	}
+
+	public static final Rank SUPER_KINGDOM(){
+		return null;
+	}
+
+	public static final Rank KINGDOM(){
+		return null;
+	}
+
+	public static final Rank SUBKINGDOM(){
+		return null;
+	}
+
+	public static final Rank INFRAKINGDOM(){
+		return null;
+	}
+
+	public static final Rank SUPERPHYLUM(){
+		return null;
+	}
+
+	public static final Rank PHYLUM(){
+		return null;
+	}
+
+	public static final Rank SUBPHYLUM(){
+		return null;
+	}
+
+	public static final Rank INFRAPHYLUM(){
+		return null;
+	}
+
+	public static final Rank SUPERDIVISION(){
+		return null;
+	}
+
+	public static final Rank DIVISION(){
+		return null;
+	}
+
+	public static final Rank SUBDIVISION(){
+		return null;
+	}
+
+	public static final Rank INFRADIVISION(){
+		return null;
+	}
+
+	public static final Rank SUPERCLASS(){
+		return null;
+	}
+
+	public static final Rank CLASS(){
+		return null;
+	}
+
+	public static final Rank SUBCLASS(){
+		return null;
+	}
+
+	public static final Rank INFRACLASS(){
+		return null;
+	}
+
+	public static final Rank SUPERORDER(){
+		return null;
+	}
+
+	public static final Rank ORDER(){
+		return null;
+	}
+
+	public static final Rank SUBORDER(){
+		return null;
+	}
+
+	public static final Rank INFRAORDER(){
+		return null;
+	}
+
+	public static final Rank SUPERFAMILY(){
+		return null;
+	}
+
+	public static final Rank FAMILY(){
+		return null;
+	}
+
+	public static final Rank SUBFAMILY(){
+		return null;
+	}
+
+	public static final Rank INFRAFAMILY(){
+		return null;
+	}
+
+	public static final Rank SUPERTRIBE(){
+		return null;
+	}
+
+	public static final Rank TRIBE(){
+		return null;
+	}
+
+	public static final Rank SUBTRIBE(){
+		return null;
+	}
+
+	public static final Rank INFRATRIBE(){
+		return null;
+	}
+
+	public static final Rank SUPRAGENERIC_TAXON(){
+		return null;
+	}
+
+	public static final Rank GENUS(){
+		return null;
+	}
+
+	public static final Rank SUBGENUS(){
+		return null;
+	}
+
+	public static final Rank INFRAGENUS(){
+		return null;
+	}
+
+	public static final Rank SECTION(){
+		return null;
+	}
+
+	public static final Rank SUBSECTION(){
+		return null;
+	}
+
+	public static final Rank SERIES(){
+		return null;
+	}
+
+	public static final Rank SUBSERIES(){
+		return null;
+	}
+
+	public static final Rank SPECIES_AGGREGATE(){
+		return null;
+	}
+
+	public static final Rank INFRAGENERIC_TAXON(){
+		return null;
+	}
+
+	public static final Rank SPECIES(){
+		return null;
+	}
+
+	public static final Rank SUBSPECIFIC_AGGREGATE(){
+		return null;
+	}
+
+	public static final Rank SUBSPECIES(){
+		return null;
+	}
+
+	public static final Rank INFRASPECIES(){
+		return null;
+	}
+
+	public static final Rank VARIETY(){
+		return null;
+	}
+
+	public static final Rank BIO_VARIETY(){
+		return null;
+	}
+
+	public static final Rank PATHO_VARIETY(){
+		return null;
+	}
+
+	public static final Rank SUBVARIETY(){
+		return null;
+	}
+
+	public static final Rank SUBSUBVARIETY(){
+		return null;
+	}
+
+	public static final Rank CONVAR(){
+		return null;
+	}
+
+	public static final Rank FORM(){
+		return null;
+	}
+
+	public static final Rank SPECIAL_FORM(){
+		return null;
+	}
+
+	public static final Rank SUBFORM(){
+		return null;
+	}
+
+	public static final Rank SUBSUBFORM(){
+		return null;
+	}
+
+	public static final Rank INFRASPECIFIC_TAXON(){
+		return null;
+	}
+
+	public static final Rank CANDIDATE(){
+		return null;
+	}
+
+	public static final Rank DENOMINATION_CLASS(){
+		return null;
+	}
+
+	public static final Rank GREX(){
+		return null;
+	}
+
+	public static final Rank GRAFT_CHIMAERA(){
+		return null;
+	}
+
+	public static final Rank CULTIVAR_GROUP(){
+		return null;
+	}
+
+	public static final Rank CULTIVAR(){
+		return null;
+	}
+
 }

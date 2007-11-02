@@ -7,37 +7,30 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.agent;
+package etaxonomy.cdm.model.agent;
 
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
 
 /**
- * This author team class note explains everything there is to authors and
- * includes explanation why certain attributes have been dropped or are dealt with
- * elsewhere.
- * @author Andreas Mueller
+ * An author team may exist for itself or may be built with the persons who belong
+ * to it.
+ * {At least one otf the attributes shortName or fullName must exist.}
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:16
+ * @created 02-Nov-2007 18:15:23
  */
-@Entity
 public class Team extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Team.class);
 
-	private String fullName;
-	private String shortName;
+	//An abreviated name for the team (e. g. in case of nomenclatural authorteams).
+	//A non abreviated name for the team (e. g. in case of some bibliographical references)
+	@Description("An abreviated name for the team (e. g. in case of nomenclatural authorteams).
+	A non abreviated name for the team (e. g. in case of some bibliographical references)")
+	private String originalCitation;
+	private ArrayList teamInSource;
 	private java.util.ArrayList teamMembers;
-
-	public String getFullName(){
-		return fullName;
-	}
-
-	public String getShortName(){
-		return shortName;
-	}
 
 	public java.util.ArrayList getTeamMembers(){
 		return teamMembers;
@@ -47,24 +40,32 @@ public class Team extends VersionableEntity {
 	 * 
 	 * @param newVal
 	 */
-	public void setFullName(String newVal){
-		fullName = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setShortName(String newVal){
-		shortName = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
 	public void setTeamMembers(java.util.ArrayList newVal){
 		teamMembers = newVal;
+	}
+
+	public ArrayList getTeamInSource(){
+		return teamInSource;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setTeamInSource(ArrayList newVal){
+		teamInSource = newVal;
+	}
+
+	public String getOriginalCitation(){
+		return originalCitation;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setOriginalCitation(String newVal){
+		originalCitation = newVal;
 	}
 
 }

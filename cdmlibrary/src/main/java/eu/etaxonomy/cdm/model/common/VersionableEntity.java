@@ -7,102 +7,40 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package etaxonomy.cdm.model.common;
 
 
+import etaxonomy.cdm.model.agent.Person;
+import etaxonomy.cdm.model.view.View;
 import org.apache.log4j.Logger;
 
-import java.util.*;
-import javax.persistence.*;
-
-
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:18
+ * @created 02-Nov-2007 18:15:25
  */
 @MappedSuperclass
-public abstract class VersionableEntity extends CdmBase{
+public abstract class VersionableEntity {
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
-	
-	
-	/*Default creator*/
-	public static String createdWhoDefault = "test";
-	
-	private Calendar createdWhen;
-	private String createdWho;
+
+	@Description("")
 	private int id;
-	private String notes;
-	private Calendar updatedWhen;
-	private String updatedWho;
 	//the globally unique identifier
+	@Description("the globally unique identifier")
 	private String uuid;
+	@Description("")
+	private Calendar created;
+	//time of last update for this object
+	@Description("time of last update for this object")
+	private Calendar updated;
 	private ArrayList m_View;
-
-	public Calendar getCreatedWhen(){
-		if (createdWhen == null){
-			createdWhen = Calendar.getInstance();
-		}
-		return createdWhen;
-	}
-
-	public String getCreatedWho(){
-		if (createdWho == null){
-			createdWho = createdWhoDefault;
-		}
-		return createdWho;
-	}
-
-	@Id @GeneratedValue(generator="system-increment")
-	public int getId(){
-		return id;
-	}
+	private VersionableEntity nextVersion;
+	private VersionableEntity previousVersion;
+	private Person updatedBy;
+	private Person createdBy;
 
 	public ArrayList getM_View(){
 		return m_View;
-	}
-
-	public String getNotes(){
-		return notes;
-	}
-
-	public Calendar getUpdatedWhen(){
-		return updatedWhen;
-	}
-
-	public String getUpdatedWho(){
-		return updatedWho;
-	}
-
-	public String getUuid(){
-		if (uuid == null){
-			uuid = UUID.randomUUID().toString();
-		}
-		return uuid;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setCreatedWhen(Calendar newVal){
-		createdWhen = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setCreatedWho(String newVal){
-		createdWho = newVal;
-	}
-
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setId(int newVal){
-		id = newVal;
 	}
 
 	/**
@@ -113,28 +51,68 @@ public abstract class VersionableEntity extends CdmBase{
 		m_View = newVal;
 	}
 
-	/**
-	 * 
-	 * @param newVal
-	 */
-	public void setNotes(String newVal){
-		notes = newVal;
+	public VersionableEntity getNextVersion(){
+		return nextVersion;
 	}
 
 	/**
 	 * 
 	 * @param newVal
 	 */
-	public void setUpdatedWhen(Calendar newVal){
-		updatedWhen = newVal;
+	public void setNextVersion(VersionableEntity newVal){
+		nextVersion = newVal;
+	}
+
+	public VersionableEntity getPreviousVersion(){
+		return previousVersion;
 	}
 
 	/**
 	 * 
 	 * @param newVal
 	 */
-	public void setUpdatedWho(String newVal){
-		updatedWho = newVal;
+	public void setPreviousVersion(VersionableEntity newVal){
+		previousVersion = newVal;
+	}
+
+	public Person getUpdatedBy(){
+		return updatedBy;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setUpdatedBy(Person newVal){
+		updatedBy = newVal;
+	}
+
+	public Person getCreatedBy(){
+		return createdBy;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setCreatedBy(Person newVal){
+		createdBy = newVal;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setId(int newVal){
+		id = newVal;
+	}
+
+	public String getUuid(){
+		return uuid;
 	}
 
 	/**
@@ -144,6 +122,45 @@ public abstract class VersionableEntity extends CdmBase{
 	public void setUuid(String newVal){
 		uuid = newVal;
 	}
-	
+
+	public Calendar getCreated(){
+		return created;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setCreated(Calendar newVal){
+		created = newVal;
+	}
+
+	public Calendar getUpdated(){
+		return updated;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setUpdated(Calendar newVal){
+		updated = newVal;
+	}
+
+	/**
+	 * based on created
+	 */
+	@Transient
+	public Calendar getValidFrom(){
+		return null;
+	}
+
+	/**
+	 * based on updated
+	 */
+	@Transient
+	public Calendar getValidTo(){
+		return null;
+	}
 
 }

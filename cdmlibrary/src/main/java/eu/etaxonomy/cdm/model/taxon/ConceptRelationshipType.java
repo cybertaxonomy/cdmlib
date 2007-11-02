@@ -7,50 +7,173 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package etaxonomy.cdm.model.taxon;
 
 
+import etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
- * @author Andreas Mueller
+ * @author m.doering
  * @version 1.0
- * @created 15-Aug-2007 18:36:02
+ * @created 02-Nov-2007 18:14:41
  */
-public enum ConceptRelationshipType {
-	TAXONOMICALLY_INCLUDED_IN,
-	MISAPPLIED_NAME_FOR,
-	INVALID_DESIGNATION_FOR,
-	CONTRADICTION,
-	CONGRUENT_TO,
-	INCLUDED_IN,
-	CONGRUENT_TO_OR_INCLUDED_IN,
-	INCLUDES,
-	CONGRUENT_TO_OR_INCLUDES,
-	INCLUDED_IN_OR_INCLUDES,
-	CONGRUENT_TO_OR_INCLUDED_IN_OR_INCLUDES,
-	OVERLAPS,
-	CONGRUENT_TO_OR_OVERLAPS,
-	INCLUDED_IN_OR_OVERLAPS,
-	CONGRUENT_TO_OR_INCLUDED_IN_OR_OVERLAPS,
-	INCLUDES_OR_OVERLAPS,
-	CONGRUENT_TO_OR_INCLUDES_OR_OVERLAPS,
-	INCLUDED_IN_OR_INCLUDES_OR_OVERLAPS,
-	DOES_NOT_EXCLUDE,
-	EXCLUDES,
-	CONGRUENT_TO_OR_EXCLUDES,
-	INCLUDED_IN_OR_EXCLUDES,
-	CONGRUENT_TO_OR_INCLUDED_IN_OR_EXCLUDES,
-	INCLUDES_OR_EXCLUDES,
-	CONGRUENT_TO_OR_INCLUDES_OR_EXCLUDES,
-	INCLUDED_IN_OR_INCLUDES_OR_EXCLUDES,
-	DOES_NOT_OVERLAP,
-	OVERLAPS_OR_EXCLUDES,
-	CONGRUENT_TO_OR_OVERLAPS_OR_EXCLUDES,
-	INCLUDED_IN_OR_OVERLAPS_OR_EXCLUDES,
-	DOES_NOT_INCLUDE,
-	INCLUDES_OR_OVERLAPS_OR_EXCLUDES,
-	NOT_INCLUDED_IN,
-	NOT_CONGRUENT_TO,
-	ALL_RELATIONSHIPS
+public class ConceptRelationshipType extends EnumeratedTermBase {
+	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
+
+	@Description("")
+	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm;
+
+	public getInitializationClassUri(){
+		return initializationClassUri;
+	}
+
+	/**
+	 * 
+	 * @param newVal
+	 */
+	public void setInitializationClassUri(newVal){
+		initializationClassUri = newVal;
+	}
+
+	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType MISAPPLIED_NAME_FOR(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INVALID_DESIGNATION_FOR(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONTRADICTION(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDED_IN(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_INCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDED_IN_OR_INCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDED_IN_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDES_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDES_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_INCLUDES_OR_OVERLAPS(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType DOES_NOT_EXCLUDE(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDED_IN_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDES_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_INCLUDES_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_INCLUDES_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType DOES_NOT_OVERLAP(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType OVERLAPS_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType CONGRUENT_TO_OR_OVERLAPS_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDED_IN_OR_OVERLAPS_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType DOES_NOT_INCLUDE(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType INCLUDES_OR_OVERLAPS_OR_EXCLUDES(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType NOT_INCLUDED_IN(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType NOT_CONGRUENT_TO(){
+		return null;
+	}
+
+	public static final ConceptRelationshipType ALL_RELATIONSHIPS(){
+		return null;
+	}
+
 }
