@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.location.NamedArea;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:44
+ * @created 02-Nov-2007 18:43:14
  */
 public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);

@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.location;
+package eu.etaxonomy.cdm.model.location;
 
 
-import etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:42
+ * @created 02-Nov-2007 18:43:13
  */
 public class Continent extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);

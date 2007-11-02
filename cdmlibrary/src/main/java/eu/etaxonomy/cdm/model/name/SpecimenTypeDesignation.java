@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.name;
 
 
-import etaxonomy.cdm.model.occurrence.ObservationalUnit;
-import etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 
 /**
  * {only for typified names which have the "species" rank or below}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:17
+ * @created 02-Nov-2007 18:43:44
  */
 public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * http://dublincore.org/documents/dcmi-terms/
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:15
+ * @created 02-Nov-2007 18:43:41
  */
 public class Rights extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Rights.class);

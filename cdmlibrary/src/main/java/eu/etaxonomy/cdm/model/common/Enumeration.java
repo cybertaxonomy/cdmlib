@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * (=class)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:47
+ * @created 02-Nov-2007 18:43:17
  */
 public class Enumeration extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Enumeration.class);

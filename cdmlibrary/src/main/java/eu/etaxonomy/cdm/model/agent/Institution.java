@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.agent;
+package eu.etaxonomy.cdm.model.agent;
 
 
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * http://rs.tdwg.org/ontology/voc/Institution.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:54
+ * @created 02-Nov-2007 18:43:23
  */
 public class Institution extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Institution.class);

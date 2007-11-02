@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * Taxon name class for bacteria
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:35
+ * @created 02-Nov-2007 18:43:07
  */
 public class BacterialName extends NonViralName {
 	static Logger logger = Logger.getLogger(BacterialName.class);

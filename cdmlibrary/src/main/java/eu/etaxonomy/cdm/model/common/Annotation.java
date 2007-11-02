@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
-import etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:34
+ * @created 02-Nov-2007 18:43:06
  */
 public class Annotation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Annotation.class);

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.view;
+package eu.etaxonomy.cdm.model.view;
 
 
 import org.apache.log4j.Logger;
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * never be changed
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:26
+ * @created 02-Nov-2007 18:43:53
  */
 public class View {
 	static Logger logger = Logger.getLogger(View.class);

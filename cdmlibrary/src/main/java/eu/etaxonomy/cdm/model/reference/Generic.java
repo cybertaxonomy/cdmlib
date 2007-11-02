@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.reference;
+package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * reference type are not necessary here.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:50
+ * @created 02-Nov-2007 18:43:20
  */
 public class Generic extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Generic.class);

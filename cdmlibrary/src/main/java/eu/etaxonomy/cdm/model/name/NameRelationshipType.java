@@ -7,10 +7,10 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.name;
 
 
-import etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
  * LaterValidatedByName
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:03
+ * @created 02-Nov-2007 18:43:31
  */
 public class NameRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);

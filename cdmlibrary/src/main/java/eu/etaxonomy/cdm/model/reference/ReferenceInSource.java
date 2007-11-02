@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.reference;
+package eu.etaxonomy.cdm.model.reference;
 
 
-import etaxonomy.cdm.model.common.EntityInSourceBase;
+import eu.etaxonomy.cdm.model.common.EntityInSourceBase;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:13
+ * @created 02-Nov-2007 18:43:40
  */
 public class ReferenceInSource extends EntityInSourceBase {
 	static Logger logger = Logger.getLogger(ReferenceInSource.class);

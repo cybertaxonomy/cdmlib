@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.location;
+package eu.etaxonomy.cdm.model.location;
 
 
-import etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 /**
  * +/- current ISO codes. year given with each entry
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:27
+ * @created 02-Nov-2007 18:43:54
  */
 public class WaterbodyOrCountry extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);

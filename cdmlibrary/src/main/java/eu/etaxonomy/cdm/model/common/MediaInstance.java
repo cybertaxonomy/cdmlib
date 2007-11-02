@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * recordings available through the location attribute!
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:00
+ * @created 02-Nov-2007 18:43:28
  */
 public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);

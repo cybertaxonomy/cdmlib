@@ -7,12 +7,12 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.taxon.Taxon;
-import etaxonomy.cdm.model.common.Media;
-import etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.Media;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * authored keys (incl. legacy data)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:52
+ * @created 02-Nov-2007 18:43:22
  */
 public class IdentificationKey extends Media VersionableEntity {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);

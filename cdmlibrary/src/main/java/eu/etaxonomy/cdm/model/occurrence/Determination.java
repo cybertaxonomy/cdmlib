@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.occurrence;
+package eu.etaxonomy.cdm.model.occurrence;
 
 
-import etaxonomy.cdm.model.taxon.Taxon;
-import etaxonomy.cdm.model.agent.Team;
-import etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:45
+ * @created 02-Nov-2007 18:43:15
  */
 public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);

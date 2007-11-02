@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.agent;
+package eu.etaxonomy.cdm.model.agent;
 
 
-import etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:41
+ * @created 02-Nov-2007 18:43:12
  */
 public class Contact extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Contact.class);

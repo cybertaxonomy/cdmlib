@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
-import etaxonomy.cdm.model.reference.ReferenceBase;
-import etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:13
+ * @created 02-Nov-2007 18:43:40
  */
 public abstract class ReferencedMedia extends Media implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedMedia.class);

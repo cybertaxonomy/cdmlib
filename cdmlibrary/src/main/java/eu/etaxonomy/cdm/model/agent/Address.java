@@ -7,12 +7,12 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.agent;
+package eu.etaxonomy.cdm.model.agent;
 
 
-import etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import etaxonomy.cdm.model.location.Point;
-import etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/ContactDetails#Address
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:33
+ * @created 02-Nov-2007 18:43:05
  */
 public class Address extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Address.class);

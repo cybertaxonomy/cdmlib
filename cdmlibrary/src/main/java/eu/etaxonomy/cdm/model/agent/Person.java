@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.agent;
+package eu.etaxonomy.cdm.model.agent;
 
 
-import etaxonomy.cdm.model.common.Keyword;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * http://rs.tdwg.org/ontology/voc/Person.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:07
+ * @created 02-Nov-2007 18:43:34
  */
 public class Person extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Person.class);

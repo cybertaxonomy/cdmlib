@@ -7,11 +7,11 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.reference;
+package eu.etaxonomy.cdm.model.reference;
 
 
-import etaxonomy.cdm.model.agent.Team;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:12
+ * @created 02-Nov-2007 18:43:39
  */
 public abstract class ReferenceBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ReferenceBase.class);

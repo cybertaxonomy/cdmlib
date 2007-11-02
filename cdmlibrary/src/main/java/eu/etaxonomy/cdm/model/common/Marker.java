@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * "flags" as a MarkerType.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:58
+ * @created 02-Nov-2007 18:43:26
  */
 public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);

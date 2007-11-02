@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.molecular;
+package eu.etaxonomy.cdm.model.molecular;
 
 
-import etaxonomy.cdm.model.common.ReferencedMedia;
+import eu.etaxonomy.cdm.model.common.ReferencedMedia;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:08
+ * @created 02-Nov-2007 18:43:35
  */
 public class PhylogeneticTree extends ReferencedMedia {
 	static Logger logger = Logger.getLogger(PhylogeneticTree.class);

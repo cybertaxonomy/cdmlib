@@ -7,10 +7,10 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.location;
+package eu.etaxonomy.cdm.model.location;
 
 
-import etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * be investigated.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:14
+ * @created 02-Nov-2007 18:43:40
  */
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);

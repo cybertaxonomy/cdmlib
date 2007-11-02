@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Language;
 import org.apache.log4j.Logger;
 
 /**
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:40
+ * @created 02-Nov-2007 18:43:11
  */
 public class CommonTaxonName extends FeatureBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);

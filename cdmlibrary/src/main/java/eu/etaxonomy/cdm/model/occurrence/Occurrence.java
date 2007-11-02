@@ -7,21 +7,21 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.occurrence;
+package eu.etaxonomy.cdm.model.occurrence;
 
 
-import etaxonomy.cdm.model.location.Point;
-import etaxonomy.cdm.model.agent.Team;
-import etaxonomy.cdm.model.location.NamedArea;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
-import etaxonomy.cdm.model.common.Media;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Media;
 import org.apache.log4j.Logger;
 
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:06
+ * @created 02-Nov-2007 18:43:33
  */
 public class Occurrence extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Occurrence.class);

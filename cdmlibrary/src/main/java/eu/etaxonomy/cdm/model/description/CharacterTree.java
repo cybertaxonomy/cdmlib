@@ -7,10 +7,10 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * define flat char. subsets for filtering purposes.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:40
+ * @created 02-Nov-2007 18:43:11
  */
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);

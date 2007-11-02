@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.common.MultilanguageString;
-import etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.common.MultilanguageString;
+import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import org.apache.log4j.Logger;
 
 /**
  * {type is "host" or "hybrid_parent"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:53
+ * @created 02-Nov-2007 18:43:22
  */
 public class IndividualsAssociation extends FeatureBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);

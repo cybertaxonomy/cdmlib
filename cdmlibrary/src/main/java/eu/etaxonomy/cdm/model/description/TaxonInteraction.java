@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.common.MultilanguageString;
-import etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.common.MultilanguageString;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import org.apache.log4j.Logger;
 
 /**
  * FIXME
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:21
+ * @created 02-Nov-2007 18:43:49
  */
 public class TaxonInteraction extends FeatureBase {
 	static Logger logger = Logger.getLogger(TaxonInteraction.class);

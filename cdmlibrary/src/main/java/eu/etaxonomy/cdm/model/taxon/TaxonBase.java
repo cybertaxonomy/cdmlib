@@ -7,18 +7,18 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.model.taxon;
 
 
-import etaxonomy.cdm.model.name.TaxonNameBase;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * {unique name within view/treatment}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:21
+ * @created 02-Nov-2007 18:43:48
  */
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);

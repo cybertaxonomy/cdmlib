@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:46
+ * @created 02-Nov-2007 18:43:16
  */
 public class DiurnalTerm extends Scope {
 	static Logger logger = Logger.getLogger(DiurnalTerm.class);

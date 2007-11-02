@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.model.taxon;
 
 
-import etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:20
+ * @created 02-Nov-2007 18:43:48
  */
 public class SynonymRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);

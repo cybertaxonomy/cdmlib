@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.reference;
+package eu.etaxonomy.cdm.model.reference;
 
 
-import etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Institution;
 import org.apache.log4j.Logger;
 
 /**
  * publisher is "institution" in BibTex ???
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:14
+ * @created 02-Nov-2007 18:43:41
  */
 public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);

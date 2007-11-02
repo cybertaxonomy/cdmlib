@@ -7,17 +7,17 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.name;
 
 
-import etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:04
+ * @created 02-Nov-2007 18:43:32
  */
 public class NomenclaturalStatus extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);

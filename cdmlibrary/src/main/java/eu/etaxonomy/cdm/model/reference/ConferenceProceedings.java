@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.reference;
+package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:14:41
+ * @created 02-Nov-2007 18:43:12
  */
 public class ConferenceProceedings extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(ConferenceProceedings.class);

@@ -7,16 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.description;
+package eu.etaxonomy.cdm.model.description;
 
 
-import etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:19
+ * @created 02-Nov-2007 18:43:46
  */
 public class StatisticalMeasurementValue extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);

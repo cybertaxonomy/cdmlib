@@ -7,13 +7,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.name;
 
 
-import etaxonomy.cdm.model.reference.INomenclaturalReference;
-import etaxonomy.cdm.model.reference.StrictReferenceBase;
-import etaxonomy.cdm.model.common.IReferencedEntity;
-import etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 /**
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * maybe year is stored in IdentifiableEntity.titleCache
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:15:22
+ * @created 02-Nov-2007 18:43:49
  */
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
