@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/Institution.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:23
+ * @created 02-Nov-2007 19:18:18
  */
 public class Institution extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Institution.class);
@@ -37,10 +37,10 @@ public class Institution extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param contact
 	 */
-	public void setContact(Contact newVal){
-		contact = newVal;
+	public void setContact(Contact contact){
+		;
 	}
 
 	public ArrayList getTypes(){
@@ -49,10 +49,10 @@ public class Institution extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param types
 	 */
-	public void setTypes(ArrayList newVal){
-		types = newVal;
+	public void setTypes(ArrayList types){
+		;
 	}
 
 	public Institution getIsPartOf(){
@@ -61,10 +61,10 @@ public class Institution extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param isPartOf
 	 */
-	public void setIsPartOf(Institution newVal){
-		isPartOf = newVal;
+	public void setIsPartOf(Institution isPartOf){
+		;
 	}
 
 	public String getCode(){
@@ -73,10 +73,10 @@ public class Institution extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param code
 	 */
-	public void setCode(String newVal){
-		code = newVal;
+	public void setCode(String code){
+		;
 	}
 
 	public String getName(){
@@ -85,10 +85,10 @@ public class Institution extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param name
 	 */
-	public void setName(String newVal){
-		name = newVal;
+	public void setName(String name){
+		;
 	}
 
 }

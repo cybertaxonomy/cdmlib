@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:23
+ * @created 02-Nov-2007 19:18:19
  */
 public class InstitutionalMembership extends VersionableEntity {
 	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
@@ -41,10 +41,10 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param institute
 	 */
-	public void setInstitute(Institution newVal){
-		institute = newVal;
+	public void setInstitute(Institution institute){
+		;
 	}
 
 	public TimePeriod getPeriod(){
@@ -53,10 +53,10 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param period
 	 */
-	public void setPeriod(TimePeriod newVal){
-		period = newVal;
+	public void setPeriod(TimePeriod period){
+		;
 	}
 
 	public String getDepartment(){
@@ -65,10 +65,10 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param department
 	 */
-	public void setDepartment(String newVal){
-		department = newVal;
+	public void setDepartment(String department){
+		;
 	}
 
 	public String getRole(){
@@ -77,10 +77,10 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param role
 	 */
-	public void setRole(String newVal){
-		role = newVal;
+	public void setRole(String role){
+		;
 	}
 
 }

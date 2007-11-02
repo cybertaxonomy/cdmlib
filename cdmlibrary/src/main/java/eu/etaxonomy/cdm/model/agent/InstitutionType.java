@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/InstitutionType
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:24
+ * @created 02-Nov-2007 19:18:19
  */
 public class InstitutionType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(InstitutionType.class);

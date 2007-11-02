@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/Person.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:34
+ * @created 02-Nov-2007 19:18:29
  */
 public class Person extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Person.class);
@@ -53,10 +53,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param institutionalMemberships
 	 */
-	public void setInstitutionalMemberships(ArrayList newVal){
-		institutionalMemberships = newVal;
+	public void setInstitutionalMemberships(ArrayList institutionalMemberships){
+		;
 	}
 
 	public ArrayList getPersonInSources(){
@@ -65,10 +65,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param personInSources
 	 */
-	public void setPersonInSources(ArrayList newVal){
-		personInSources = newVal;
+	public void setPersonInSources(ArrayList personInSources){
+		;
 	}
 
 	public ArrayList getKeywords(){
@@ -77,10 +77,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param keywords
 	 */
-	public void setKeywords(ArrayList newVal){
-		keywords = newVal;
+	public void setKeywords(ArrayList keywords){
+		;
 	}
 
 	public Contact getContact(){
@@ -89,10 +89,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param contact
 	 */
-	public void setContact(Contact newVal){
-		contact = newVal;
+	public void setContact(Contact contact){
+		;
 	}
 
 	public String getPrefix(){
@@ -101,10 +101,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param prefix
 	 */
-	public void setPrefix(String newVal){
-		prefix = newVal;
+	public void setPrefix(String prefix){
+		;
 	}
 
 	public String getFirstname(){
@@ -113,10 +113,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param firstname
 	 */
-	public void setFirstname(String newVal){
-		firstname = newVal;
+	public void setFirstname(String firstname){
+		;
 	}
 
 	public String getLastname(){
@@ -125,10 +125,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param lastname
 	 */
-	public void setLastname(String newVal){
-		lastname = newVal;
+	public void setLastname(String lastname){
+		;
 	}
 
 	public String getSuffix(){
@@ -137,10 +137,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param suffix
 	 */
-	public void setSuffix(String newVal){
-		suffix = newVal;
+	public void setSuffix(String suffix){
+		;
 	}
 
 	public TimePeriod getLifespan(){
@@ -149,10 +149,10 @@ public class Person extends IdentifiableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param lifespan
 	 */
-	public void setLifespan(TimePeriod newVal){
-		lifespan = newVal;
+	public void setLifespan(TimePeriod lifespan){
+		;
 	}
 
 }

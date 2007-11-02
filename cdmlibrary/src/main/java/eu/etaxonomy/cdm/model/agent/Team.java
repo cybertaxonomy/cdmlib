@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * {At least one otf the attributes shortName or fullName must exist.}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:50
+ * @created 02-Nov-2007 19:18:44
  */
 public class Team extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Team.class);
@@ -38,10 +38,10 @@ public class Team extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param teamMembers
 	 */
-	public void setTeamMembers(java.util.ArrayList newVal){
-		teamMembers = newVal;
+	public void setTeamMembers(java.util.ArrayList teamMembers){
+		;
 	}
 
 	public ArrayList getTeamInSource(){
@@ -50,10 +50,10 @@ public class Team extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param teamInSource
 	 */
-	public void setTeamInSource(ArrayList newVal){
-		teamInSource = newVal;
+	public void setTeamInSource(ArrayList teamInSource){
+		;
 	}
 
 	public String getOriginalCitation(){
@@ -62,10 +62,10 @@ public class Team extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param originalCitation
 	 */
-	public void setOriginalCitation(String newVal){
-		originalCitation = newVal;
+	public void setOriginalCitation(String originalCitation){
+		;
 	}
 
 }

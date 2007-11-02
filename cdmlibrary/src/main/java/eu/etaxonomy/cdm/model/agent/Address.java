@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/ContactDetails#Address
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:05
+ * @created 02-Nov-2007 19:17:59
  */
 public class Address extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Address.class);
@@ -41,8 +41,8 @@ public class Address extends VersionableEntity {
 	//Region/State
 	@Description("Region/State")
 	private String region;
-	private Point location;
 	private WaterbodyOrCountry country;
+	private Point location;
 
 	public WaterbodyOrCountry getCountry(){
 		return country;
@@ -50,10 +50,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param country
 	 */
-	public void setCountry(WaterbodyOrCountry newVal){
-		country = newVal;
+	public void setCountry(WaterbodyOrCountry country){
+		;
 	}
 
 	public Point getLocation(){
@@ -62,10 +62,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param location
 	 */
-	public void setLocation(Point newVal){
-		location = newVal;
+	public void setLocation(Point location){
+		;
 	}
 
 	public String getPobox(){
@@ -74,10 +74,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param pobox
 	 */
-	public void setPobox(String newVal){
-		pobox = newVal;
+	public void setPobox(String pobox){
+		;
 	}
 
 	public String getStreet(){
@@ -86,10 +86,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param street
 	 */
-	public void setStreet(String newVal){
-		street = newVal;
+	public void setStreet(String street){
+		;
 	}
 
 	public String getPostcode(){
@@ -98,10 +98,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param postcode
 	 */
-	public void setPostcode(String newVal){
-		postcode = newVal;
+	public void setPostcode(String postcode){
+		;
 	}
 
 	public String getLocality(){
@@ -110,10 +110,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param locality
 	 */
-	public void setLocality(String newVal){
-		locality = newVal;
+	public void setLocality(String locality){
+		;
 	}
 
 	public String getRegion(){
@@ -122,10 +122,10 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param region
 	 */
-	public void setRegion(String newVal){
-		region = newVal;
+	public void setRegion(String region){
+		;
 	}
 
 }

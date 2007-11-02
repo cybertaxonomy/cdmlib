@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 18:43:12
+ * @created 02-Nov-2007 19:18:06
  */
 public class Contact extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Contact.class);
@@ -38,10 +38,10 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param addresses
 	 */
-	public void setAddresses(ArrayList newVal){
-		addresses = newVal;
+	public void setAddresses(ArrayList addresses){
+		;
 	}
 
 	public String getEmail(){
@@ -50,10 +50,10 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param email
 	 */
-	public void setEmail(String newVal){
-		email = newVal;
+	public void setEmail(String email){
+		;
 	}
 
 	public String getUrl(){
@@ -62,10 +62,10 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param url
 	 */
-	public void setUrl(String newVal){
-		url = newVal;
+	public void setUrl(String url){
+		;
 	}
 
 	public String getPhone(){
@@ -74,10 +74,10 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param phone
 	 */
-	public void setPhone(String newVal){
-		phone = newVal;
+	public void setPhone(String phone){
+		;
 	}
 
 	public String getFax(){
@@ -86,10 +86,10 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * 
-	 * @param newVal
+	 * @param fax
 	 */
-	public void setFax(String newVal){
-		fax = newVal;
+	public void setFax(String fax){
+		;
 	}
 
 }
