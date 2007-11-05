@@ -26,7 +26,7 @@ import javax.persistence.*;
  * @created 02-Nov-2007 19:36:10
  */
 @Entity
-public class IdentificationKey extends Media VersionableEntity {
+public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
 
 	private ArrayList coveredTaxa;
