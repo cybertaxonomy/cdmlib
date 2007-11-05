@@ -54,14 +54,4 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 		;
 	}
 
-	@Transient
-	public String getCitation(){
-		return "";
-	}
-
-	@Transient
-	public StrictReferenceBase getCitation(){
-		return null;
-	}
-
 }

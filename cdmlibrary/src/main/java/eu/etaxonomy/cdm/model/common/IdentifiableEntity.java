@@ -31,37 +31,13 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	//if true titleCache will not be automatically generated/updated
 	@Description("if true titleCache will not be automatically generated/updated")
 	private boolean hasProtectedTitleCache;
-	private ArrayList rights;
-	private ArrayList extensions;
+	private ArrayList<Rights> rights;
+	private ArrayList<Extension> extensions;
 
-	public ArrayList getExtensions(){
-		return extensions;
-	}
-
-	/**
-	 * 
-	 * @param extensions
-	 */
-	public void setExtensions(ArrayList extensions){
-		;
-	}
-
-	public ArrayList getRights(){
-		return rights;
-	}
-
-	/**
-	 * 
-	 * @param rights
-	 */
-	public void setRights(ArrayList rights){
-		;
-	}
 
 	public String getLsid(){
 		return lsid;
 	}
-
 	/**
 	 * 
 	 * @param lsid
@@ -73,17 +49,12 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	public String getTitleCache(){
 		return titleCache;
 	}
-
 	/**
 	 * 
 	 * @param titleCache
 	 */
 	public void setTitleCache(String titleCache){
 		;
-	}
-
-	public boolean getHasProtectedTitleCache(){
-		return hasProtectedTitleCache;
 	}
 
 	/**
@@ -93,28 +64,38 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	public void setHasProtectedTitleCache(boolean hasProtectedTitleCache){
 		;
 	}
+	public boolean hasProtectedTitleCache(){
+		return hasProtectedTitleCache;
+	}
 
+	
 	@Transient
 	public String getTitle(){
 		return "";
 	}
-
 	public abstract String generateTitle();
 
-	public boolean hasProtectedTitleCache(){
-		return false;
+	
+
+
+	public ArrayList<Rights> getRights(){
+		return rights;
+	}
+	/**
+	 * 
+	 * @param rights
+	 */
+	public void addRights(Rights right){
+
+	}
+	public void removeRights(Rights right){
+
 	}
 
-	@Transient
-	public Extension[] getExtensions(){
-		return null;
+	
+	public ArrayList<Extension> getExtensions(){
+		return extensions;
 	}
-
-	@Transient
-	public Marker[] getMarkers(){
-		return null;
-	}
-
 	/**
 	 * 
 	 * @param extension
@@ -122,28 +103,11 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	public void addExtension(Extension extension){
 
 	}
-
-	/**
-	 * 
-	 * @param marker
-	 */
-	public void addMarker(Marker marker){
-
-	}
-
 	/**
 	 * 
 	 * @param extension
 	 */
 	public void removeExtension(Extension extension){
-
-	}
-
-	/**
-	 * 
-	 * @param marker
-	 */
-	public void removeMarker(Marker marker){
 
 	}
 

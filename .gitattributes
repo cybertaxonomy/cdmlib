@@ -60,7 +60,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/Description.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/PropertyChangeBean.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Institution.java -text
@@ -74,7 +73,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -t
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/AudioFile.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/DatePeriodTerm.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTermBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/EntityInSourceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/EnumeratedTermBase.java -text
@@ -99,6 +97,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedMedia.java -tex
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Representation.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Rights.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/RightsTerm.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/TimePeriod.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/VersionableEntity.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/AbsenceTerm.java -text

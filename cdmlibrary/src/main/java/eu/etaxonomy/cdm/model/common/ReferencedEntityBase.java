@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -30,9 +31,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	//publication.
 	//{if the citationMicroReference exists then there must be also a reference}
 
-	@Description("Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a publication.
-	{if the citationMicroReference exists then there must be also a reference}
-	")
+	@Description("Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a publication. {if the citationMicroReference exists then there must be also a reference} ")
 	private String citationMicroReference;
 	@Description("")
 	private String originalNameString;
@@ -62,13 +61,9 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	}
 
 	@Transient
-	public String getCitation(){
-		return "";
-	}
-
-	@Transient
-	public StrictReferenceBase getCitation(){
+	public ReferenceBase getCitation(){
 		return null;
 	}
+
 
 }

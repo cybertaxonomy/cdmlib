@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import javax.persistence.Transient;
+
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -22,9 +25,6 @@ import eu.etaxonomy.cdm.model.Description;
 public interface IReferencedEntity {
 
 	@Transient
-	public StrictReferenceBase getCitation();
-
-	@Transient
-	public String getCitation();
+	public ReferenceBase getCitation();
 
 }

@@ -30,13 +30,12 @@ public class Team extends VersionableEntity {
 
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams).
 	//A non abreviated name for the team (e. g. in case of some bibliographical references)
-	@Description("An abreviated name for the team (e. g. in case of nomenclatural authorteams).
-	A non abreviated name for the team (e. g. in case of some bibliographical references)")
+	@Description("An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g. in case of some bibliographical references)")
 	private String originalCitation;
 	private ArrayList teamInSource;
-	private java.util.ArrayList teamMembers;
+	private ArrayList teamMembers;
 
-	public java.util.ArrayList getTeamMembers(){
+	public ArrayList getTeamMembers(){
 		return teamMembers;
 	}
 
@@ -44,7 +43,7 @@ public class Team extends VersionableEntity {
 	 * 
 	 * @param teamMembers
 	 */
-	public void setTeamMembers(java.util.ArrayList teamMembers){
+	public void setTeamMembers(ArrayList teamMembers){
 		;
 	}
 

@@ -31,7 +31,7 @@ public class Institution extends IdentifiableEntity {
 	private String code;
 	@Description("")
 	private String name;
-	private ArrayList types;
+	private ArrayList<InstitutionType> types;
 	private Institution isPartOf;
 	private Contact contact;
 
@@ -47,7 +47,7 @@ public class Institution extends IdentifiableEntity {
 		;
 	}
 
-	public ArrayList getTypes(){
+	public ArrayList<InstitutionType> getTypes(){
 		return types;
 	}
 
@@ -55,7 +55,7 @@ public class Institution extends IdentifiableEntity {
 	 * 
 	 * @param types
 	 */
-	public void setTypes(ArrayList types){
+	public void setTypes(ArrayList<InstitutionType> types){
 		;
 	}
 
@@ -93,6 +93,12 @@ public class Institution extends IdentifiableEntity {
 	 */
 	public void setName(String name){
 		;
+	}
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

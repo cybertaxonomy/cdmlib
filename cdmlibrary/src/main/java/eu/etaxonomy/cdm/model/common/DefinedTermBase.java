@@ -35,10 +35,8 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	//
 	//Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our
 	//own ontology.
-	@Description("The RDF ontology source defining the terms to be loaded when a database is created for the first time.
-	
-	Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.")
-	private static final int initializationClassUri;
+	@Description("The RDF ontology source defining the terms to be loaded when a database is created for the first time. Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.")
+	private static String initializationClassUri;
 	private ArrayList representations;
 	private DefinedTermBase kindOf;
 	private ArrayList generalizationOf;
@@ -130,7 +128,7 @@ public abstract class DefinedTermBase extends VersionableEntity {
 		;
 	}
 
-	public getInitializationClassUri(){
+	public String getInitializationClassUri(){
 		return initializationClassUri;
 	}
 
@@ -138,7 +136,7 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	 * 
 	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(initializationClassUri){
+	public void setInitializationClassUri(String initializationClassUri){
 		;
 	}
 
@@ -147,7 +145,7 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	 * @param uri
 	 */
 	@Transient
-	public static defined terms getDefinedTermByUri(String uri){
+	public static DefinedTermBase getDefinedTermByUri(String uri){
 		return null;
 	}
 

@@ -34,9 +34,9 @@ public class Contact extends VersionableEntity {
 	private String phone;
 	@Description("")
 	private String fax;
-	private ArrayList addresses;
+	private ArrayList<Address> addresses;
 
-	public ArrayList getAddresses(){
+	public ArrayList<Address> getAddresses(){
 		return addresses;
 	}
 
@@ -44,7 +44,7 @@ public class Contact extends VersionableEntity {
 	 * 
 	 * @param addresses
 	 */
-	public void setAddresses(ArrayList addresses){
+	public void setAddresses(ArrayList<Address> addresses){
 		;
 	}
 

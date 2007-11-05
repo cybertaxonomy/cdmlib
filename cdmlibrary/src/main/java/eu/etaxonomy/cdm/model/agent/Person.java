@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -43,8 +45,7 @@ public class Person extends IdentifiableEntity {
 	//The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date.
 	//Alternative suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as
 	//appropriate) is prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
-	@Description("The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date.
-	Alternative suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known")
+	@Description("The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date. Alternative suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known")
 	private TimePeriod lifespan;
 	private ArrayList institutionalMemberships;
 	private Contact contact;
@@ -157,6 +158,11 @@ public class Person extends IdentifiableEntity {
 	 */
 	public void setLifespan(TimePeriod lifespan){
 		;
+	}
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

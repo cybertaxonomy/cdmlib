@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 02-Nov-2007 19:36:40
  */
 @MappedSuperclass
-public abstract class VersionableEntity {
+public abstract class VersionableEntity extends CdmBase{
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
 
 	@Description("")
@@ -33,26 +33,14 @@ public abstract class VersionableEntity {
 	private String uuid;
 	@Description("")
 	private Calendar created;
+	private Person createdBy;
 	//time of last update for this object
 	@Description("time of last update for this object")
 	private Calendar updated;
-	private Person createdBy;
-	private ArrayList m_View;
+	private Person updatedBy;
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
-	private Person updatedBy;
 
-	public ArrayList getM_View(){
-		return m_View;
-	}
-
-	/**
-	 * 
-	 * @param m_View
-	 */
-	public void setM_View(ArrayList m_View){
-		;
-	}
 
 	public VersionableEntity getNextVersion(){
 		return nextVersion;

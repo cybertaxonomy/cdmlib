@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
