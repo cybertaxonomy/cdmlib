@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.INonViralNameDao;
 
 /**
  * @author Andreas Mueller
@@ -30,7 +30,7 @@ public class TaxonNameTest {
 
 	private static TaxonName tn;
 	private static int id;
-	private static ITaxonNameDao tnDao;
+	private static INonViralNameDao tnDao;
 	private static INameService nameServiceImpl;
 	private static String mAuthorship = "authorship";
 	private static String mGenus = "genus";
@@ -413,7 +413,7 @@ public class TaxonNameTest {
 
 	
 	//Used by Spring to setup test
-	public void setTaxonNameDAO(ITaxonNameDao tnDao){
+	public void setTaxonNameDAO(INonViralNameDao tnDao){
 		this.tnDao = tnDao;
 	}
 	

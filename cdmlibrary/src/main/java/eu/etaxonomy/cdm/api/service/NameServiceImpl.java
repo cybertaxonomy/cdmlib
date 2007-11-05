@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.INonViralNameDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
 import java.util.List;
@@ -14,29 +14,29 @@ import java.util.List;
 public class NameServiceImpl extends ServiceBase implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
-	private ITaxonNameDao taxonNameDao;
+	private INonViralNameDao nonViralNameDao;
 	
 	/**
 	 * @return the taxonNameDao
 	 */
-	public ITaxonNameDao getTaxonNameDao() {
-		return taxonNameDao;
+	public INonViralNameDao getTaxonNameDao() {
+		return nonViralNameDao;
 	}
 
 	/**
-	 * @param taxonNameDao the taxonNameDao to set
+	 * @param nonViralNameDao the taxonNameDao to set
 	 */
-	public void setTaxonNameDao(ITaxonNameDao taxonNameDao) {
-		this.taxonNameDao = taxonNameDao;
+	public void setTaxonNameDao(INonViralNameDao nonViralNameDao) {
+		this.nonViralNameDao = nonViralNameDao;
 	}
 
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNewTaxonName()
 	 */
-	public TaxonName createTaxonName(Rank rank) {
+	public NonViralName createNonViralName(Rank rank) {
 		//TODO implement factory methods 
-		TaxonName tn = (TaxonName) createCdmObject(TaxonName.class);
+		NonViralName tn = (NonViralName) createCdmObject(NonViralName.class);
 		tn.setRank(rank);
 		return tn;
 		//return new TaxonName(new BotanicNameCacheStrategy());
@@ -46,8 +46,8 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTaxonNameById(java.lang.Integer)
 	 */
-	public TaxonName getTaxonNameById(Integer id){
-		TaxonName tn = taxonNameDao.findById(id);
+	public NonViralName getNonViralNameById(Integer id) {
+		NonViralName tn = nonViralNameDao.findById(id);
 		if (tn != null) {
 			logger.info("getTaxonNameById: UUID: " + tn.getUuid());
 		}
@@ -57,8 +57,8 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonName)
 	 */
-	public int saveTaxonName(TaxonName taxonName){
-		taxonNameDao.saveOrUpdate(taxonName);
+	public int saveNonViralName(NonViralName taxonName) {
+		nonViralNameDao.saveOrUpdate(taxonName);
 		return taxonName.getId();
 	}
 	
@@ -66,14 +66,14 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getAllNames()
 	 */
 	public List getAllNames(){
-		return taxonNameDao.getAllNames();
+		return nonViralNameDao.getAllNames();
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNamesByName(java.lang.String)
 	 */
 	public List getNamesByNameString(String name){
-		return taxonNameDao.getNamesByName(name);
+		return nonViralNameDao.getNamesByName(name);
 	}
-	
+
 }

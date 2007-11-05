@@ -26,7 +26,7 @@ public class SpringControl {
 		ClassPathResource cpr = new ClassPathResource(fileName);
 		
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
-		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
+		INonViralNameDao tnDao = (INonViralNameDao)bf.getBean("tnDao");
 		TaxonName tn = tnDao.findById(1);
 		List<TaxonName> tnList = tnDao.getAllNames();
 		
@@ -44,7 +44,7 @@ public class SpringControl {
 			System.out.println(o[i]);
 		}
 		
-		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
+		INonViralNameDao tnDao = (INonViralNameDao) appContext.getBean( "tnDao" );
 		TaxonName tn = tnDao.findById(1);
 		List<TaxonName> tnList = tnDao.getNamesByName(tn.getName());
 		for (TaxonName tn2: tnList){

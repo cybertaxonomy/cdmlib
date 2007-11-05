@@ -3,22 +3,22 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 
 public interface INameService extends IService {
 
-	/**Returns a new TaxonName object */
-	public abstract TaxonName createTaxonName(Rank rank);
+	/**Returns a new NonViralName object */
+	public abstract NonViralName createNonViralName(Rank rank);
 	
-	public abstract TaxonName getTaxonNameById(Integer id);
+	public abstract NonViralName getNonViralNameById(Integer id);
 
 	/**
-	 * Saves a TaxonName. If the TaxonName is already persisted,
+	 * Saves a NonViralName. If the NonViralName is already persisted,
 	 * it is updated, otherwise it is saved as a new object.
 	 * @param taxonName
-	 * @return the TaxonNames Id
+	 * @return the NonViralNames Id
 	 */
-	public abstract int saveTaxonName(TaxonName taxonName);
+	public abstract int saveNonViralName(NonViralName taxonName);
 
 	public abstract List getAllNames();
 
