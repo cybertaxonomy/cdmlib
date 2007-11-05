@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class Database extends PublicationBase {
 	static Logger logger = Logger.getLogger(Database.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

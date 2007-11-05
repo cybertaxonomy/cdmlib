@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.common.MultilanguageString;
 import eu.etaxonomy.cdm.model.description.Description;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
@@ -29,13 +28,13 @@ public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 
 	//Description defining the Observational unit in the context of the original Occurrence
-	@Description("Description defining the Observational unit in the context of the original Occurrence")
+	@eu.etaxonomy.cdm.model.Description("Description defining the Observational unit in the context of the original Occurrence")
 	private MultilanguageString definition;
 	private ArrayList descriptions;
-	private ArrayList determinations;
+	private ArrayList<Determination> determinations;
 	private Occurrence occurence;
 
-	public ArrayList getDeterminations(){
+	public ArrayList<Determination> getDeterminations(){
 		return determinations;
 	}
 
@@ -81,6 +80,12 @@ public class ObservationalUnit extends IdentifiableEntity {
 	 */
 	public void setDefinition(MultilanguageString definition){
 		;
+	}
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

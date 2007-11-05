@@ -51,19 +51,8 @@ public class NameRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
 	@Description("")
-	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm;
+	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm";
 
-	public getInitializationClassUri(){
-		return initializationClassUri;
-	}
-
-	/**
-	 * 
-	 * @param initializationClassUri
-	 */
-	public void setInitializationClassUri(initializationClassUri){
-		;
-	}
 
 	public boolean isInvalidType(){
 		//True, if enum is of type:

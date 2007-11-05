@@ -98,9 +98,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 		return "";
 	}
 
-	@Transient
-	public String getYear(){
-		return "";
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

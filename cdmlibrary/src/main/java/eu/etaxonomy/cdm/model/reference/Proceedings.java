@@ -40,4 +40,10 @@ public class Proceedings extends PrintedUnitBase {
 		;
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

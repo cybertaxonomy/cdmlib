@@ -39,4 +39,10 @@ public class Journal extends PublicationBase {
 		;
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

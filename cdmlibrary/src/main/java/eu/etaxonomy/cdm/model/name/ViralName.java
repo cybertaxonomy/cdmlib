@@ -44,4 +44,10 @@ public class ViralName extends TaxonNameBase {
 		;
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

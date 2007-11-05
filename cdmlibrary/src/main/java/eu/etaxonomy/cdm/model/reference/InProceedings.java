@@ -38,4 +38,10 @@ public class InProceedings extends SectionBase {
 		;
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

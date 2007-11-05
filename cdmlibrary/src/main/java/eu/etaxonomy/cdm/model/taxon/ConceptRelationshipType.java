@@ -26,9 +26,9 @@ public class ConceptRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 
 	@Description("")
-	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm;
+	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
 
-	public getInitializationClassUri(){
+	public String getInitializationClassUri(){
 		return initializationClassUri;
 	}
 
@@ -36,7 +36,7 @@ public class ConceptRelationshipType extends EnumeratedTermBase {
 	 * 
 	 * @param initializationClassUri
 	 */
-	public void setInitializationClassUri(initializationClassUri){
+	public void setInitializationClassUri(String initializationClassUri){
 		;
 	}
 

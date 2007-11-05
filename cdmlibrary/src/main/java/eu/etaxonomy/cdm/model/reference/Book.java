@@ -71,9 +71,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 		return "";
 	}
 
-	@Transient
-	public String getYear(){
-		return "";
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -129,4 +129,10 @@ public class NonViralName extends TaxonNameBase {
 		return "";
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

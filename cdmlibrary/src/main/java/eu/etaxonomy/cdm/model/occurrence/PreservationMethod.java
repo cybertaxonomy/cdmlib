@@ -26,18 +26,7 @@ public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
 
 	@Description("")
-	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm;
+	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm";
 
-	public getInitializationClassUri(){
-		return initializationClassUri;
-	}
-
-	/**
-	 * 
-	 * @param initializationClassUri
-	 */
-	public void setInitializationClassUri(initializationClassUri){
-		;
-	}
 
 }

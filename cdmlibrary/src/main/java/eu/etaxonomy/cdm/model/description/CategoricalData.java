@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -27,9 +29,9 @@ public class CategoricalData extends FeatureBase {
 	//whether the sequence of ordered states is important
 	@Description("whether the sequence of ordered states is important")
 	private boolean orderRelevant;
-	private java.util.ArrayList states;
+	private ArrayList<State> states;
 
-	public java.util.ArrayList getStates(){
+	public ArrayList<State> getStates(){
 		return states;
 	}
 
@@ -37,7 +39,7 @@ public class CategoricalData extends FeatureBase {
 	 * 
 	 * @param states
 	 */
-	public void setStates(java.util.ArrayList states){
+	public void setStates(ArrayList<State> states){
 		;
 	}
 

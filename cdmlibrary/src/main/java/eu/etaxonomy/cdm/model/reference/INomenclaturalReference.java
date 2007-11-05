@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 
@@ -28,6 +30,6 @@ public interface INomenclaturalReference {
 	public String getNomenclaturalCitation();
 
 	@Transient
-	public String getYear();
+	public int getYear();
 
 }

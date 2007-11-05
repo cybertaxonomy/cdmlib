@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.description.Description;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
@@ -89,6 +88,12 @@ public class Taxon extends TaxonBase {
 	 */
 	public void setInverseTaxonRelations(ArrayList inverseTaxonRelations){
 		;
+	}
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

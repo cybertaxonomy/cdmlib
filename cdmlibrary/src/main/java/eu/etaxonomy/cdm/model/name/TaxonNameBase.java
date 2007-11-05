@@ -40,12 +40,11 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	//Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or
 	//tables or any other element of a publication.
 	//{only if a nomenclatural reference exists}
-	@Description("Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or tables or any other element of a publication.
-	{only if a nomenclatural reference exists}")
+	@Description("Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or tables or any other element of a publication.	{only if a nomenclatural reference exists}")
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	@Description("this flag will be set to true if the parseName method was unable to successfully parse the name")
-	private boolean hasProblem = False;
+	private boolean hasProblem = false;
 	private ArrayList typeDesignations;
 	private ArrayList nameInSource;
 	private ArrayList nameRelations;
@@ -227,7 +226,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	@Transient
 	public String[] getProblems(){
-		return "";
+		return null;
 	}
 
 	/**

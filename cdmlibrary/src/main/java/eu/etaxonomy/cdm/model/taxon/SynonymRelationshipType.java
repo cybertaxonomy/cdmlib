@@ -26,19 +26,8 @@ public class SynonymRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	@Description("")
-	private static final int initializationClassUri = http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm;
+	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
 
-	public getInitializationClassUri(){
-		return initializationClassUri;
-	}
-
-	/**
-	 * 
-	 * @param initializationClassUri
-	 */
-	public void setInitializationClassUri(initializationClassUri){
-		;
-	}
 
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return null;

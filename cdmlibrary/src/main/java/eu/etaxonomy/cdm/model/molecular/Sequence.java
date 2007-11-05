@@ -170,18 +170,14 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 		;
 	}
 
-	@Transient
-	public StrictReferenceBase getCitation(){
-		return null;
-	}
-
-	@Transient
-	public String getCitation(){
-		return "";
-	}
-
 	public String generateTitle(){
 		return "";
+	}
+
+
+	public ReferenceBase getCitation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

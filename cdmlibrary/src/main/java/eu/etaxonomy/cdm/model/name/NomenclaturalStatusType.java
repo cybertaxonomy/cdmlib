@@ -59,17 +59,17 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
 	@Description("")
-	private static final int ontologyClassUri = http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus;
+	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus";
 
-	public getOntologyClassUri(){
-		return ontologyClassUri;
+	public String getInitializationClassUri(){
+		return initializationClassUri;
 	}
 
 	/**
 	 * 
 	 * @param ontologyClassUri
 	 */
-	public void setOntologyClassUri(ontologyClassUri){
+	public void setInitializationClassUri(String initializationClassUri){
 		;
 	}
 

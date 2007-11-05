@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class Map extends PublicationBase {
 	static Logger logger = Logger.getLogger(Map.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

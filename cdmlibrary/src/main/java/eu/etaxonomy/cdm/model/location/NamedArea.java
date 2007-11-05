@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.MediaInstance;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -33,7 +36,7 @@ public class NamedArea extends EnumeratedTermBase {
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
 	@Description("Binary shape definition for user's defined area as polygon")
-	private Binary shapeFile;
+	private MediaInstance shapeFile;
 	private NamedAreaInSource source;
 	private ArrayList countriesOrWaterbodies;
 	private NamedAreaType type;
@@ -111,7 +114,7 @@ public class NamedArea extends EnumeratedTermBase {
 		;
 	}
 
-	public Binary getShapeFile(){
+	public MediaInstance getShapeFile(){
 		return shapeFile;
 	}
 
@@ -119,7 +122,7 @@ public class NamedArea extends EnumeratedTermBase {
 	 * 
 	 * @param shapeFile
 	 */
-	public void setShapeFile(Binary shapeFile){
+	public void setShapeFile(MediaInstance shapeFile){
 		;
 	}
 

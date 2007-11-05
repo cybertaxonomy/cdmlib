@@ -39,4 +39,10 @@ public class PrintSeries extends PublicationBase {
 		;
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

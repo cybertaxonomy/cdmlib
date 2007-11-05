@@ -29,7 +29,7 @@ public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 
 	@Description("")
-	private static final int ontologyClassUri = http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm;
+	private static String ontologyClassUri = "http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm";
 	private ArrayList m_TaxonNameBase;
 
 	public ArrayList getM_TaxonNameBase(){
@@ -44,7 +44,7 @@ public class Rank extends EnumeratedTermBase {
 		;
 	}
 
-	public getOntologyClassUri(){
+	public String getOntologyClassUri(){
 		return ontologyClassUri;
 	}
 
@@ -52,7 +52,7 @@ public class Rank extends EnumeratedTermBase {
 	 * 
 	 * @param ontologyClassUri
 	 */
-	public void setOntologyClassUri(ontologyClassUri){
+	public void setOntologyClassUri(String ontologyClassUri){
 		;
 	}
 

@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -31,9 +33,8 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	private String title;
 	//The date range assigned to the reference.
 	//ISO Date range like. Flexible, year can be left out, etc
-	@Description("The date range assigned to the reference.
-	ISO Date range like. Flexible, year can be left out, etc")
-	private DateRange datePublished;
+	@Description("The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc")
+	private TimePeriod datePublished;
 
 	public String getTitle(){
 		return title;
@@ -47,7 +48,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 		;
 	}
 
-	public DateRange getDatePublished(){
+	public TimePeriod getDatePublished(){
 		return datePublished;
 	}
 
@@ -55,7 +56,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	 * 
 	 * @param datePublished
 	 */
-	public void setDatePublished(DateRange datePublished){
+	public void setDatePublished(TimePeriod datePublished){
 		;
 	}
 

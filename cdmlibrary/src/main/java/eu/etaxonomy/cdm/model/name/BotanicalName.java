@@ -28,13 +28,13 @@ public class BotanicalName extends NonViralName {
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
 	//hybrid name  may not have either an authorteam nor other name components. 
 	@Description("if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A hybrid name  may not have either an authorteam nor other name components. ")
-	private boolean isHybridFormula = False;
+	private boolean isHybridFormula = false;
 	@Description("")
-	private boolean isMonomHybrid = False;
+	private boolean isMonomHybrid = false;
 	@Description("")
-	private boolean isBinomHybrid = False;
+	private boolean isBinomHybrid = false;
 	@Description("")
-	private boolean isTrinomHybrid = False;
+	private boolean isTrinomHybrid = false;
 	//Only for fungi: to indicate that the type of the name is asexual or not
 	@Description("Only for fungi: to indicate that the type of the name is asexual or not")
 	private boolean isAnamorphic;

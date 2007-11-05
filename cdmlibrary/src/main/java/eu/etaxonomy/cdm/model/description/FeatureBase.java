@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -61,7 +62,7 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 		;
 	}
 
-	public ArrayList getModifiers(){
+	public ArrayList<Modifier> getModifiers(){
 		return modifiers;
 	}
 
@@ -69,7 +70,7 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 	 * 
 	 * @param modifiers
 	 */
-	public void setModifiers(ArrayList modifiers){
+	public void setModifiers(ArrayList<Modifier> modifiers){
 		;
 	}
 
@@ -85,13 +86,9 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 		;
 	}
 
-	@Transient
-	public String getCitation(){
-		return "";
-	}
 
 	@Transient
-	public StrictReferenceBase getCitation(){
+	public ReferenceBase getCitation(){
 		return null;
 	}
 

@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class WebPage extends PublicationBase {
 	static Logger logger = Logger.getLogger(WebPage.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

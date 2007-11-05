@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class Patent extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(Patent.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

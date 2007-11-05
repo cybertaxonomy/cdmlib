@@ -53,22 +53,22 @@ public class QuantitativeData extends FeatureBase {
 
 	@Transient
 	public float getMin(){
-		return null;
+		return 0;
 	}
 
 	@Transient
 	public float getMax(){
-		return null;
+		return 0;
 	}
 
 	@Transient
 	public float getTypicalLowerBoundary(){
-		return null;
+		return 0;
 	}
 
 	@Transient
 	public float getTypicalUpperBoundary(){
-		return null;
+		return 0;
 	}
 
 }

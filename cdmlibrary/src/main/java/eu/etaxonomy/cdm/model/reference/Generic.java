@@ -131,8 +131,14 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	}
 
 	@Transient
-	public String getYear(){
-		return "";
+	public int getYear(){
+		return 0;
+	}
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

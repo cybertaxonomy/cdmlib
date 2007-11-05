@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class CdDvd extends PublicationBase {
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

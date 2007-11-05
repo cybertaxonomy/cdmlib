@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
@@ -27,7 +26,7 @@ public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
-	@Description("in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.")
+	@eu.etaxonomy.cdm.model.Description("in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.")
 	private String label;
 	private ArrayList features;
 	private ArrayList scopes;
@@ -92,6 +91,12 @@ public class Description extends IdentifiableEntity {
 	 */
 	public void setLabel(String label){
 		;
+	}
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

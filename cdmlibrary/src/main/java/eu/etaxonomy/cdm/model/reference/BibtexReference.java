@@ -29,8 +29,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private String author;
 	//The journal or magazine the work was published in
 
-	@Description("The journal or magazine the work was published in 
-	")
+	@Description("The journal or magazine the work was published in ")
 	private String journal;
 	//The title of the book, if only part of it is being cited
 	@Description("The title of the book, if only part of it is being cited")
@@ -40,101 +39,81 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private String chapter;
 	//The title of the work
 
-	@Description("The title of the work 
-	")
+	@Description("The title of the work")
 	private String title;
 	//The series of books the book was published in (e.g. "The Hardy Boys")
 
-	@Description("The series of books the book was published in (e.g. "The Hardy Boys") 
-	")
+	@Description("The series of books the book was published in (e.g. 'The Hardy Boys') ")
 	private String series;
 	//The edition of a book, long form (such as "first" or "second")
-	@Description("The edition of a book, long form (such as "first" or "second")")
+	@Description("The edition of a book, long form (such as 'first' or 'second')")
 	private String edition;
 	//The volume of a journal or multi-volume book
 
-	@Description("The volume of a journal or multi-volume book 
-	")
+	@Description("The volume of a journal or multi-volume book ")
 	private String volume;
 	//The "number" of a journal, magazine, or tech-report, if applicable. (Most publications have a "volume", but no "number"
 	//field.)
 	//
 
-	@Description("The "number" of a journal, magazine, or tech-report, if applicable. (Most publications have a "volume", but no "number" field.) 
-	
-	")
+	@Description("The 'number' of a journal, magazine, or tech-report, if applicable. (Most publications have a 'volume', but no 'number' field.) ")
 	private String number;
 	//Page numbers, separated either by commas or double-hyphens
 
-	@Description("Page numbers, separated either by commas or double-hyphens 
-	")
+	@Description("Page numbers, separated either by commas or double-hyphens")
 	private String pages;
 	//An annotation for annotated bibliography styles (not typical)
 	@Description("An annotation for annotated bibliography styles (not typical)")
 	private String annote;
 	//The name(s) of the editor(s)
 
-	@Description("The name(s) of the editor(s) 
-	")
+	@Description("The name(s) of the editor(s) ")
 	private String editor;
 	//The institution that was involved in the publishing, but not necessarily the publisher
 
-	@Description("The institution that was involved in the publishing, but not necessarily the publisher 
-	")
+	@Description("The institution that was involved in the publishing, but not necessarily the publisher")
 	private String institution;
 	//The school where the thesis was written 
 	@Description("The school where the thesis was written ")
 	private String school;
 	//The conference sponsor
 
-	@Description("The conference sponsor 
-	")
+	@Description("The conference sponsor")
 	private String organization;
 	//The publisher's name
 	//
 
-	@Description("The publisher's name 
-	
-	")
+	@Description("The publisher's name")
 	private String publisher;
 	//Publisher's address (usually just the city, but can be the full address for lesser-known publishers)
 	@Description("Publisher's address (usually just the city, but can be the full address for lesser-known publishers)")
 	private String address;
 	//How it was published, if the publishing method is nonstandard
 
-	@Description("How it was published, if the publishing method is nonstandard 
-	")
+	@Description("How it was published, if the publishing method is nonstandard ")
 	private String howpublished;
 	//The type of tech-report, for example, "Research Note"
 	//
 
-	@Description("The type of tech-report, for example, "Research Note" 
-	
-	")
+	@Description("The type of tech-report, for example, 'Research Note' ")
 	private String type;
 	//The month of publication (or, if unpublished, the month of creation)
 	//
 
-	@Description("The month of publication (or, if unpublished, the month of creation) 
-	
-	")
+	@Description("The month of publication (or, if unpublished, the month of creation) ")
 	private String month;
 	//The year of publication (or, if unpublished, the year of creation)
 
-	@Description("The year of publication (or, if unpublished, the year of creation) 
-	")
+	@Description("The year of publication. If unpublished, the year of creation")
 	private String year;
 	//A specification of an electronic publication, often a preprint or a technical report
 
-	@Description("A specification of an electronic publication, often a preprint or a technical report 
-	")
+	@Description("A specification of an electronic publication, often a preprint or a technical report ")
 	private String eprint;
 	//Miscellaneous extra information
 	//
 
-	@Description("Miscellaneous extra information 
-	
-	")
+	@Description("Miscellaneous extra information ")
 	private String note;
 	private BibtexReference crossref;
 
@@ -390,8 +369,9 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		;
 	}
 
-	public String getYear(){
-		return year;
+	public int getYear(){
+		return 0;
+		//return year;
 	}
 
 	/**
@@ -444,14 +424,12 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		return "";
 	}
 
-	@Transient
-	public int getYear(){
-		return 0;
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	@Transient
-	public String getYear(){
-		return "";
-	}
 
 }

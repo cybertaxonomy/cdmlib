@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class PersonalCommunication extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(PersonalCommunication.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

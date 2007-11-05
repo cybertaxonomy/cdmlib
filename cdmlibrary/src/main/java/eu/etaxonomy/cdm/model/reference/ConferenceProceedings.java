@@ -24,4 +24,10 @@ import javax.persistence.*;
 public class ConferenceProceedings extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(ConferenceProceedings.class);
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
