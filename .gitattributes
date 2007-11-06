@@ -233,9 +233,7 @@ cdmlibrary/zipManifest.txt -text
 docs/layers.graffle -text
 docs/layers.png -text
 updateSite/.project -text
-updateSite/features/eu.etaxonomy.cdmLibrary_0.2.4.jar -text
 updateSite/index.html -text
-updateSite/plugins/eu.etaxonomy.cdmLibrary_0.2.4.jar -text
 updateSite/site.xml -text
 updateSite/web/site.css -text
 updateSite/web/site.xsl -text
