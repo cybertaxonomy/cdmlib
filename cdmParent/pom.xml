@@ -138,28 +138,29 @@
 
 	<!--	 DISTRIBUTION MANAGEMENT -->
 	<distributionManagement>
-		<site>
-			<id>javaLibraries</id>
-			<url>
-				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries
-			</url>
-		</site>
-		<repository>
-			<id>javaLibraries</id>
-			<name>Edit Repository</name>
-			<url>
-				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries
-			</url>
-		</repository>
+<!--		<site>-->
+<!--			<id>javaLibraries</id>-->
+<!--			<url>-->
+<!--				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
+<!--			</url>-->
+<!--		</site>-->
+<!--		<repository>-->
+<!--			<id>javaLibraries</id>-->
+<!--			<name>Edit Repository</name>-->
+<!--			<url>-->
+<!--				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
+<!--			</url>-->
+<!--		</repository>-->
+<!--		-->
 
-		<!-- ***********  SSH2 ************ -->
-		<!--		<repository>-->
-		<!--			<id>javaLibraries</id>-->
-		<!--			<name>Edit Repository</name>-->
-		<!--			<url>-->
-		<!--				scp://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
-		<!--			</url>-->
-		<!--		</repository>-->
+<!--		 ***********  SSH2 ************ -->
+				<repository>
+					<id>javaLibraries</id>
+					<name>Edit Repository</name>
+					<url>
+						sftp://edit@192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
+					</url>
+				</repository>
 
 		<!-- ************ WebDAV ************** -->
 		<!--		<repository>-->
