@@ -92,6 +92,7 @@ src/main/resources/log4j.properties -text
 src/site/site.xml -text
 src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
+src/test/java/eu/etaxonomy/cdm/functiontest/TestDatabase.java -text
 src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -text
 src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameTest.java -text
 src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

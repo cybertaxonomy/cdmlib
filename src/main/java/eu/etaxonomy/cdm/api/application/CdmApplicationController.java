@@ -7,6 +7,7 @@ import org.hsqldb.Server;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
 
 /**
@@ -19,6 +20,8 @@ public class CdmApplicationController {
 	private ClassPathXmlApplicationContext applicationContext;
 	private INameService nameService;
 	private IAgentService agentService;
+	private IDatabaseService databaseService;
+	
 	private Server hsqldbServer;
 	
 	
@@ -58,15 +61,19 @@ public class CdmApplicationController {
 		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameService");
 		agentService = (IAgentService)applicationContext.getBean("agentService");
+		databaseService = (IDatabaseService)applicationContext.getBean("databaseService");
 	}
 	
 	/* Services */
 	public final INameService getNameService(){
-		return nameService;
+		return this.nameService;
 	}
 	
 	public final IAgentService getAgentService(){
-		return agentService;
+		return this.agentService;
 	}
 	
+	public final IDatabaseService getDatabaseService(){
+		return this.databaseService;
+	}
 }

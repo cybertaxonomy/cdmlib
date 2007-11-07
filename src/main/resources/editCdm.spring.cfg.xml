@@ -6,6 +6,13 @@
  	   http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 	   http://www.springframework.org/schema/aop
 	   http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" >
+
+
+  <!-- Database --> 
+  			
+	<bean id="databaseService" 
+			class="eu.etaxonomy.cdm.api.service.DatabaseServiceImpl">
+	</bean>
    
    <bean id="mysqlDataSource" 
    			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -110,31 +117,6 @@
 		<property name="year" value="2007"/> 
 	</bean>
 	 
-
-
-
-
-
-	<!--  ************ AOP ***********************  --> 
-	<!--
-	<bean id="changePropertyAspect" 
-			class="eu.etaxonomy.cdm.aspect.ChangePropertyAspect">
-	
-	</bean>
-
-	<aop:config>
-	   	<aop:pointcut id="afterSetPointcut" 
-	   		expression="execution(* eu.etaxonomy.cdm.model.name.TaxonName.set*(..))"/>
-	   	
-	   	<aop:aspect id="cpa" ref="changePropertyAspect">
-	   		<aop:after-returning
-	   			method="afterSet"
-	   			arg-names="newValue"
-	   			pointcut-ref="afterSetPointcut"/>
-		</aop:aspect>
-	</aop:config>
-	-->
-	
    
     <!-- ********* not used yet ********-->
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
