@@ -140,45 +140,20 @@
 
 	<!--	 DISTRIBUTION MANAGEMENT -->
 	<distributionManagement>
-		<!--		<site>-->
-		<!--			<id>javaLibraries</id>-->
-		<!--			<url>-->
-		<!--				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
-		<!--			</url>-->
-		<!--		</site>-->
-		<!--		<repository>-->
-		<!--			<id>javaLibraries</id>-->
-		<!--			<name>Edit Repository</name>-->
-		<!--			<url>-->
-		<!--				scm:svn:https://a.mueller@dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
-		<!--			</url>-->
-		<!--		</repository>-->
-		<!--		-->
+				<site>
+					<id>edit-wp5</id>
+					<url>
+						scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/site
+					</url>
+				</site>
 
-		<!--		 ***********  SSH2 ************ -->
 		<repository>
 			<id>edit-wp5</id>
-			<name>Edit Repository</name>
+			<name>Edit Maven Repository</name>
 			<url>
 				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
 			</url>
 		</repository>
-
-		<!-- ************ WebDAV ************** -->
-		<!--		<repository>-->
-		<!--			<id>webdav.repo</id>-->
-		<!--			<name>Edit Repository WebDav</name>-->
-		<!--			<url>-->
-		<!--				dav:https://dev.e-taxonomy.eu/svn/trunk/javaLibraries-->
-		<!--			</url>-->
-		<!--		</repository>-->
-
-		<!-- xxxx FTP - Repository - does work !! ****** -->
-		<!--		<repository>-->
-		<!--			<id>edit-repository</id>-->
-		<!--			<name>Edit test repository</name>-->
-		<!--			<url>file://C:\tmp\testRep\target\deploy</url>-->
-		<!--		</repository>-->
 
 	</distributionManagement>
 
