@@ -1,4 +1,11 @@
 * text=auto !eol
+cdmLibraryFeature/.project -text
+cdmLibraryFeature/build.properties -text
+cdmLibraryFeature/dist/features/eu.etaxonomy.cdmLibrary_0.2.4.jar -text
+cdmLibraryFeature/dist/features/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
+cdmLibraryFeature/dist/plugins/eu.etaxonomy.cdmLibrary_0.2.4.jar -text
+cdmLibraryFeature/dist/plugins/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
+cdmLibraryFeature/feature.xml -text
 cdmLibraryPlugin/.classpath -text
 cdmLibraryPlugin/.project -text
 cdmLibraryPlugin/META-INF/MANIFEST.MF -text
