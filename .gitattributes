@@ -42,6 +42,13 @@ cdmLibraryPlugin/spring.jar -text
 cdmLibraryPlugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
+cdmLibraryUpdateSite/.project -text
+cdmLibraryUpdateSite/features/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
+cdmLibraryUpdateSite/index.html -text
+cdmLibraryUpdateSite/plugins/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
+cdmLibraryUpdateSite/site.xml -text
+cdmLibraryUpdateSite/web/site.css -text
+cdmLibraryUpdateSite/web/site.xsl -text
 cdmParent/.classpath -text
 cdmParent/.project -text
 cdmParent/mavenInstall.bat -text

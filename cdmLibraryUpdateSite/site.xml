@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="file:///P:\eclipse\europaWS\CdmLibrary UpdateSite">
+      Eine schöne Update Site
+   </description>
+   <feature url="features/eu.etaxonomy.cdmLibrary_0.2.5.jar" id="eu.etaxonomy.cdmLibrary" version="0.2.5">
+      <category name="cdmLibrary"/>
+   </feature>
+   <category-def name="cdmLibrary" label="cdmLibrary">
+      <description>
+         cdmLibrary Feature
+      </description>
+   </category-def>
+</site>
