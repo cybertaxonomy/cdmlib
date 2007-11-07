@@ -52,7 +52,7 @@ public class NonViralName extends TaxonNameBase {
 	private Team exCombinationAuthorTeam;
 
 	public NonViralName(Rank rank) {
-		this.setRank(rank);
+		super(rank);
 	}
 
 
@@ -136,8 +136,8 @@ public class NonViralName extends TaxonNameBase {
 	public String getFullAuthorship(){
 		return "";
 	}
-	public setFullAuthorship(String fullAuthorship){
-		fullAuthorship=fullAuthorship;
+	public void setFullAuthorship(String fullAuthorship){
+		this.fullAuthorship=fullAuthorship;
 	}
 
 	@Override

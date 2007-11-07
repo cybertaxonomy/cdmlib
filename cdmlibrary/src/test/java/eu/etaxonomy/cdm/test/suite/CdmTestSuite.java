@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.model.name.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TaxonNameTest.class,
+    NonViralNameTest.class,
     PropertyChangeTest.class
     //, NameRelationshipTest.class
 })
@@ -26,7 +26,7 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
-             TaxonNameTest.class, 
+        		NonViralNameTest.class, 
              PropertyChangeTest.class
              //, NameRelationshipTest.class
 	    ); 

@@ -58,6 +58,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	private TaxonNameBase basionym;
 	private ArrayList inverseNameRelations;
 
+	protected TaxonNameBase(Rank rank) {
+		setRank(rank);
+	}
+
 	public Rank getRank(){
 		return rank;
 	}
