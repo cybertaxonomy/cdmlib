@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary
-Bundle-Version: 0.2.4
+Bundle-Version: 0.2.5
 Bundle-ClassPath: cdmLibrary.jar,
  aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
@@ -32,18 +32,39 @@ Bundle-ClassPath: cdmLibrary.jar,
  jaxb-impl-2.0.jar,
  jaxb-impl-2.0-sources.jar
 Bundle-Vendor: EDIT
-Export-Package: eu.etaxonomy.cdm.api.application,
- eu.etaxonomy.cdm.api.service,
- eu.etaxonomy.cdm.aspectj,
- eu.etaxonomy.cdm.database,
+Export-Package: eu.etaxonomy.cdm.api.application;uses:="eu.etaxonomy.cdm.api.service,org.springframework.context.support",
+ eu.etaxonomy.cdm.api.service;
+  uses:="eu.etaxonomy.cdm.persistence.dao,
+   org.apache.log4j,
+   eu.etaxonomy.cdm.model.name,
+   org.springframework.context,
+   eu.etaxonomy.cdm.database,
+   eu.etaxonomy.cdm.model.agent,
+   eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.aspectj;
+  uses:="org.apache.log4j,
+   org.aspectj.lang,
+   org.aspectj.runtime.internal,
+   eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.database;uses:="org.hsqldb,org.springframework.jdbc.datasource",
  eu.etaxonomy.cdm.model,
- eu.etaxonomy.cdm.model.agent,
- eu.etaxonomy.cdm.model.common,
- eu.etaxonomy.cdm.model.name,
- eu.etaxonomy.cdm.model.publication,
- eu.etaxonomy.cdm.model.specimen,
- eu.etaxonomy.cdm.model.taxon,
- eu.etaxonomy.cdm.model.view,
- eu.etaxonomy.cdm.persistence.dao,
- eu.etaxonomy.cdm.strategy,
- eu.etaxonomy.cdm.validation
+ eu.etaxonomy.cdm.model.agent;uses:="org.apache.log4j,eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.model.common;uses:="org.apache.log4j",
+ eu.etaxonomy.cdm.model.name;
+  uses:="org.apache.log4j,
+   eu.etaxonomy.cdm.model.specimen,
+   eu.etaxonomy.cdm.model.publication,
+   eu.etaxonomy.cdm.strategy,
+   eu.etaxonomy.cdm.model.agent,
+   eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.model.publication;uses:="org.apache.log4j,eu.etaxonomy.cdm.model.agent,eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.model.specimen;uses:="org.apache.log4j,eu.etaxonomy.cdm.model.agent,eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.model.taxon;
+  uses:="org.apache.log4j,
+   eu.etaxonomy.cdm.model.name,
+   eu.etaxonomy.cdm.model.publication,
+   eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.model.view;uses:="org.apache.log4j",
+ eu.etaxonomy.cdm.persistence.dao;uses:="org.apache.log4j,org.springframework.orm.hibernate3.support,eu.etaxonomy.cdm.model.name",
+ eu.etaxonomy.cdm.strategy;uses:="eu.etaxonomy.cdm.model.common",
+ eu.etaxonomy.cdm.validation;uses:="org.springframework.validation"
