@@ -20,7 +20,7 @@ public class TestDatabase {
 		
 		IDatabaseService dbService = appCtr.getDatabaseService();
 		
-		dbService.getDriverClassName();
+		logger.info(dbService.getDriverClassName());
 		
 		
 		appCtr.close();

@@ -12,6 +12,8 @@
   			
 	<bean id="databaseService" 
 			class="eu.etaxonomy.cdm.api.service.DatabaseServiceImpl">
+<!--	 	<property name="dataSource" ref="mysqlDataSource"/>-->
+	 	<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
    
    <bean id="mysqlDataSource" 
