@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -155,10 +157,10 @@
 
 		<!--		 ***********  SSH2 ************ -->
 		<repository>
-			<id>javaLibraries</id>
+			<id>edit-wp5</id>
 			<name>Edit Repository</name>
 			<url>
-				sftp://edit@192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
+				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
 			</url>
 		</repository>
 
