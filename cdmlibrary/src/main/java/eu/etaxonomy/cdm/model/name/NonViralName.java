@@ -51,6 +51,12 @@ public class NonViralName extends TaxonNameBase {
 	 */
 	private Team exCombinationAuthorTeam;
 
+	public NonViralName(Rank rank) {
+		this.setRank(rank);
+	}
+
+
+	
 	public Team getCombinationAuthorTeam(){
 		return combinationAuthorTeam;
 	}

@@ -27,8 +27,8 @@ public class SpringControl {
 		
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
 		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
-		NonViralName tn = tnDao.findById(1);
-		List<NonViralName> tnList = tnDao.getAllNames();
+		TaxonNameBase tn = tnDao.findById(1);
+		List<TaxonNameBase> tnList = tnDao.getAllNames();
 		
 		logger.warn(tn.getUuid());
 	}
@@ -45,9 +45,9 @@ public class SpringControl {
 		}
 		
 		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
-		NonViralName tn = tnDao.findById(1);
-		List<NonViralName> tnList = tnDao.getNamesByName(tn.getName());
-		for (NonViralName tn2: tnList){
+		TaxonNameBase tn = tnDao.findById(1);
+		List<TaxonNameBase> tnList = tnDao.getNamesByName(tn.getName());
+		for (TaxonNameBase tn2: tnList){
 			System.out.print(tn2.getUuid()+";");
 		}
 		appContext.close();
@@ -56,8 +56,8 @@ public class SpringControl {
 	public void testAppController(){
 		CdmApplicationController appCtr = new CdmApplicationController();
 		logger.info("Create name objects...");
-		NonViralName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
-		NonViralName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
+		NonViralName tn = new NonViralName(Rank.SPECIES());
+		BotanicalName tn3 = new BotanicalName(Rank.SPECIES());
 		
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
@@ -72,8 +72,8 @@ public class SpringControl {
 		logger.info("Create new Author team...");
 		Team team= new Team();
 		team.addPropertyChangeListener(listener);
-		team.setShortName("AuthorTeam1");
-		tn.setAuthorTeam(team);
+		team.setOriginalCitation("AuthorTeam1");
+		tn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
 		appCtr.getAgentService().saveTeam(team);
@@ -82,9 +82,9 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<NonViralName> tnList = appCtr.getNameService().getAllNames();
-		for (NonViralName tn2: tnList){
-			logger.info("Genus: "+ tn2.getUninomial() + " UUID: " + tn2.getUuid()+";");
+		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames();
+		for (TaxonNameBase tn2: tnList){
+			logger.info("Title: "+ tn2.getTitle() + " UUID: " + tn2.getUuid()+";");
 		}
 		appCtr.close();
 	}

@@ -41,6 +41,10 @@ public class BotanicalName extends NonViralName {
 	private ArrayList parentRelationships;
 	private ArrayList childRelationships;
 
+	public BotanicalName(Rank rank) {
+		super(rank);
+	}
+
 	public ArrayList getParentRelationships(){
 		return parentRelationships;
 	}

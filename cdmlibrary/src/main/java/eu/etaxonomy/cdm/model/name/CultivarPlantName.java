@@ -31,6 +31,10 @@ public class CultivarPlantName extends BotanicalName {
 	@Description("the caracteristical name of the cultivar")
 	private String cultivarName;
 
+	public CultivarPlantName(Rank rank) {
+		super(rank);
+	}
+
 	public String getCultivarName(){
 		return cultivarName;
 	}

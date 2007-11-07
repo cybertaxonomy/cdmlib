@@ -29,6 +29,10 @@ public class ZoologicalName extends NonViralName {
 	@Description("Name of the breed of an animal")
 	private String breed;
 
+	public ZoologicalName(Rank rank) {
+		super(rank);
+	}
+
 	public String getBreed(){
 		return breed;
 	}

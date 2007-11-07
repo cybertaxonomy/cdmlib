@@ -32,6 +32,10 @@ public class BacterialName extends NonViralName {
 	@Description("Approbation of name according to approved list, validation list,or validly published, paper in IJSB after 1980")
 	private String nameApprobation;
 
+	public BacterialName(Rank rank) {
+		super(rank);
+	}
+
 	public String getSubGenusAuthorship(){
 		return subGenusAuthorship;
 	}

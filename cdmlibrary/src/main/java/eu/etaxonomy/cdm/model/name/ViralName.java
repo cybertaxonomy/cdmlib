@@ -32,6 +32,10 @@ public class ViralName extends TaxonNameBase {
 	@Description("The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus")
 	private String acronym;
 
+	public ViralName(Rank rank) {
+		super(rank);
+	}
+
 	public String getAcronym(){
 		return acronym;
 	}
