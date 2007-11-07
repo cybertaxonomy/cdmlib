@@ -223,8 +223,8 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/AgentDaoHibernateImpl.
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/DaoBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAgentDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IDao.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/INonViralNameDao.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/NonViralNameDaoHibernateImpl.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonNameDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonNameDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
@@ -237,7 +237,6 @@ cdmlibrary/src/site/site.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -text
-cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/zipManifest.txt -text

@@ -26,9 +26,9 @@ public class SpringControl {
 		ClassPathResource cpr = new ClassPathResource(fileName);
 		
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
-		INonViralNameDao tnDao = (INonViralNameDao)bf.getBean("tnDao");
-		TaxonName tn = tnDao.findById(1);
-		List<TaxonName> tnList = tnDao.getAllNames();
+		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
+		NonViralName tn = tnDao.findById(1);
+		List<NonViralName> tnList = tnDao.getAllNames();
 		
 		logger.warn(tn.getUuid());
 	}
@@ -44,10 +44,10 @@ public class SpringControl {
 			System.out.println(o[i]);
 		}
 		
-		INonViralNameDao tnDao = (INonViralNameDao) appContext.getBean( "tnDao" );
-		TaxonName tn = tnDao.findById(1);
-		List<TaxonName> tnList = tnDao.getNamesByName(tn.getName());
-		for (TaxonName tn2: tnList){
+		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
+		NonViralName tn = tnDao.findById(1);
+		List<NonViralName> tnList = tnDao.getNamesByName(tn.getName());
+		for (NonViralName tn2: tnList){
 			System.out.print(tn2.getUuid()+";");
 		}
 		appContext.close();
@@ -56,8 +56,8 @@ public class SpringControl {
 	public void testAppController(){
 		CdmApplicationController appCtr = new CdmApplicationController();
 		logger.info("Create name objects...");
-		TaxonName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
-		TaxonName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
+		NonViralName tn = appCtr.getNameService().createTaxonName(Rank.SPECIES);
+		NonViralName tn3 = appCtr.getNameService().createTaxonName(Rank.SPECIES);
 		
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
@@ -65,9 +65,9 @@ public class SpringControl {
 		tn3.addPropertyChangeListener(listener);
 
 		// test listeners
-		tn.setGenus("tn1-Genus1");
-		tn3.setGenus("tn3-genus");
-		tn3.getGenus();
+		tn.setUninomial("tn1-Genus1");
+		tn3.setUninomial("tn3-genus");
+		tn3.getUninomial();
 		
 		logger.info("Create new Author team...");
 		Team team= new Team();
@@ -82,9 +82,9 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonName> tnList = appCtr.getNameService().getAllNames();
-		for (TaxonName tn2: tnList){
-			logger.info("Genus: "+ tn2.getGenus() + " UUID: " + tn2.getUuid()+";");
+		List<NonViralName> tnList = appCtr.getNameService().getAllNames();
+		for (NonViralName tn2: tnList){
+			logger.info("Genus: "+ tn2.getUninomial() + " UUID: " + tn2.getUuid()+";");
 		}
 		appCtr.close();
 	}

@@ -39,6 +39,9 @@ public class NonViralName extends TaxonNameBase {
 	//Species subdivision epithet
 	@Description("Species subdivision epithet")
 	private String infraSpecificEpithet;
+	//Full authorship string
+	@Description("Full authorship string")
+	private String fullAuthorship;
 	/**
 	 * Author team that published the present combination
 	 */
@@ -124,9 +127,11 @@ public class NonViralName extends TaxonNameBase {
 	 * returns concatenated und formated authorteams including basionym and
 	 * combination authors 
 	 */
-	@Transient
 	public String getFullAuthorship(){
 		return "";
+	}
+	public setFullAuthorship(String fullAuthorship){
+		fullAuthorship=fullAuthorship;
 	}
 
 	@Override

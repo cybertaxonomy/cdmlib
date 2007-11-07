@@ -13,50 +13,50 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.mueller
  *
  */
-public class NonViralNameDaoHibernateImpl 
-			extends DaoBase<NonViralName, Integer> implements INonViralNameDao {
-	static Logger logger = Logger.getLogger(NonViralNameDaoHibernateImpl.class);
+public class TaxonNameDaoHibernateImpl 
+			extends DaoBase<TaxonNameBase, Integer> implements ITaxonNameDao {
+	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
 
 	/**
 	 * 
 	 */
-	public NonViralNameDaoHibernateImpl() {
-		super(NonViralName.class); 
+	public TaxonNameDaoHibernateImpl() {
+		super(TaxonNameBase.class); 
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.ITaxonNameDAO#getRelatedNames(java.lang.Integer)
 	 */
-	public List<NonViralName> getRelatedNames(Integer id) {
+	public List<TaxonNameBase> getRelatedNames(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	
-	public List<NonViralName> getAllNames() {
-		List<NonViralName> list = ht().find("from NonViralName");
+	public List<TaxonNameBase> getAllNames() {
+		List<TaxonNameBase> list = ht().find("from TaxonNameBase");
 		return list;
 	}
 	
 	
-	public List<NonViralName> getNamesByName(String name) {
-		List<NonViralName> list = ht().find("from NonViralName tn where tn.name=?", name);
+	public List<TaxonNameBase> getNamesByName(String name) {
+		List<TaxonNameBase> list = ht().find("from TaxonNameBase tn where tn.name=?", name);
 		return list;
 	}
 
 	//TODO test
-	public NonViralName getDataSource(){
+	public TaxonNameBase getDataSource(){
 		return null;
 	}
 
 	//TODO test
-	public void setDataSource(NonViralName tn){
+	public void setDataSource(TaxonNameBase tn){
 		
 	}
     
