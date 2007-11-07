@@ -1,0 +1,162 @@
+<!--
+
+	cdmLibrary ANT build script.
+
+-->
+
+<project name="cmd" default="compile" basedir=".">
+
+    <!-- ################################################################## -->
+    <!-- ################## Property definitions ########################## -->
+    <!-- ################################################################## -->
+
+ 	<!-- Name of project and version, used to create filenames -->
+	<property name="name" value="Taxonomic Common Data Model"/>
+	<property name="name2" value="cdmLibrary"/>
+	<property name="version.major" value="1"/>
+	<property name="version.minor" value="0"/>
+	<property name="version.micro" value="0"/>
+    <property name="version.full" value="${version.major}.${version.minor}.${version.micro}"/>
+    <property name="version.major_minor" value="${version.major}.${version.minor}"/>
+    <property name="fullname" value="${name}-${version.full}"/>
+
+    <!-- Various SCM-controlled directories -->
+    <property name="dir.src" value="src/main/java" />
+    <property name="dir.test" value="src/test/java" />
+    <property name="dir.etc" value="etc" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.doc" value="doc"/>
+	<property name="dir.doc.api" value="${dir.doc}/api"/>
+	<property name="dir.doc.ref" value="${dir.doc}/reference"/>
+    <property name="dir.build" value="target/classes"/>
+	<property name="dir.build.test" value="target/test-classes"/>
+	<property name="dir.resources" value="src/main/resources"/>
+	<property name="dir.test.resources" value="src/test/resources"/>
+<!--	<property name="dir.maven.local" value="/Users/markus/.m2/repository"/>	-->
+<!--	<property name="dir.maven.local" value="C:\Dokumente und Einstellungen\a.mueller\.m2\repository\"/>-->
+	<property name="dir.maven.local" value="${user.home}${file.separator}.m2${file.separator}repository${file.separator}"/>
+		
+	
+	<!-- Distribution -->
+	<property name="dist.dir" value="dist" />
+	<property name="dist.zip" value="${dist.dir}/zip" />
+	<property name="dist.jar" value="${dist.dir}/jar" />
+	<property name="jar.name" value="${name2}"/>
+	
+	<!-- Configs -->
+	<property name="spring.cfg" value="${dir.resources}/editCdm.spring.cfg.xml"/>
+	<property name="log4j.prop" value="${dir.resources}/log4j.properties"/>
+
+	
+    <!-- Classpath declaration -->
+    <path id="project.classpath">
+    	<fileset dir="${dir.maven.local}">
+        	<include name="**/*.jar"/>
+        	<include name="**/**/*.jar"/>
+        	<include name="**/**/**/*.jar"/>
+    	</fileset>
+    	<fileset dir="${dir.build}">
+    		<include name="**\*.class"/>
+    	</fileset>
+    	<fileset dir="${dir.build.test}">
+    		<include name="**\*.class"/>
+    	</fileset>
+    	
+    <!--	<fileset dir="${dir.build}">
+        	<include name="**/*.jar"/>
+        	<include name="**/*.zip"/>
+        </fileset>
+    	-->
+    	<fileset dir="${dir.build.test}">
+    		<include name="eu.etaxonomy.cdm.test.suite"/>
+    	</fileset>
+    	
+    	
+    </path>
+	
+
+    <!-- Useful shortcuts -->
+    <patternset id="meta.files">
+       	<exclude name="**/org/bgbm/berlinmodel/hibernate/*.xml"/> <!-- by Andreas can be deleted-->
+    	<include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+    </patternset>
+    
+<!-- xxxxxxxxxxxx  TARGETS xxxxxxxxxxxxxxxxxxxxxxxxxxx -->	
+	
+    <!-- Clean up -->
+    <target name="clean" description="Clean the build directory">
+        <delete dir="${dir.build}"/>
+        <mkdir dir="${dir.build}"/>
+        <delete dir="${dir.build.test}"/>
+        <mkdir dir="${dir.build.test}"/>
+    </target>
+	
+
+    <!-- Compile Java source -->
+    <target name="compile" depends="copyConfigFiles" 
+    		description="compile all classes">
+        <mkdir dir="${dir.build}"/>
+    	<mkdir dir="${dir.build.test}"/>
+    	<javac debug="true" srcdir="${dir.src}" 
+               destdir="${dir.build}"
+               classpathref="project.classpath"/>
+        <javac debug="true" srcdir="${dir.test}" 
+               destdir="${dir.build.test}"
+               classpathref="project.classpath"/>
+    </target> 
+	
+	<!-- Compile Java test source -->
+	<target name="compileTest" depends="copyConfigFilesTest" 
+	    		description="compile all test classes">
+	        <mkdir dir="${dir.build.test}"/>
+	    	<javac debug="true" srcdir="${dir.test}" 
+	               destdir="${dir.build.test}"
+	               classpathref="project.classpath"/>
+	</target> 
+		
+	
+	
+	<!-- Copy metadata to build classpath -->
+	<target name="copyMetaFiles">
+		<mkdir dir="${dir.build}"/>
+	    <copy todir="${dir.build}">
+	    	<fileset dir="${dir.src}">
+	        	<patternset refid="meta.files"/>
+	        </fileset>
+	    </copy>
+	</target>
+	
+	<!-- Copy configuration files to build classpath -->
+	<target name="copyConfigFiles">
+		<mkdir dir="${dir.build}"/>
+		<copy file="${log4j.prop}" todir="${dir.build}"/>
+		<copy file="${spring.cfg}" todir="${dir.build}"/>
+	</target>
+	
+	
+	<!-- Copy test configuration files to build classpath -->
+	<target name="copyConfigFilesTest">
+		<mkdir dir="${dir.build.test}"/>
+		<copy file="${log4j.prop}" todir="${dir.build}"/>
+		<copy file="${spring.cfg}" todir="${dir.build}"/>
+	</target>
+	
+	<!-- Distribute as ZIP-File -->
+	<target name="distAsZip" depends="compile" 
+		           description="Builds an zip file containing jar and lib-directory. classpathes must be set in manifest.txt
+								jar is executable">
+		<delete file="${dist.jar}/${jar.name}.jar"/>
+	    <delete file="${dist.zip}/${jar.name}.zip"/>
+	    <mkdir dir="${dist.jar}" />
+	    <mkdir dir="${dist.zip}" />
+	    <jar jarfile="${dist.jar}/${jar.name}.jar"
+	         basedir="${dir.build}"
+	         manifest="zipManifest.txt" />
+	    <zip destfile="${dist.zip}/${jar.name}.zip">
+	      <fileset dir="." includes="${dir.lib}/*" />
+	      <fileset dir="." includes="${jar.name}.jar" />
+	    </zip>
+	</target>
+
+</project>
