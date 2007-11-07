@@ -41,6 +41,7 @@ cdmParent/.classpath -text
 cdmParent/.project -text
 cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
+cdmParent/settings.xml -text
 cdmlibrary/.classpath -text
 cdmlibrary/.externalToolBuilders/Ant_Cdm_Builder.launch -text
 cdmlibrary/.settings/org.eclipse.jdt.core.prefs -text
