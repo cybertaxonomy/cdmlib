@@ -84,7 +84,7 @@ public class SpringControl {
 		logger.info("Load existing names from db...");
 		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames();
 		for (TaxonNameBase tn2: tnList){
-			logger.info("Title: "+ tn2.getTitle() + " UUID: " + tn2.getUuid()+";");
+			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
 		appCtr.close();
 	}

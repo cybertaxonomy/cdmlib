@@ -11,7 +11,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 	public class PropertyChangeTest implements PropertyChangeListener {
 		static Logger logger = Logger.getLogger(PropertyChangeTest.class);
@@ -26,12 +28,12 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 		@Test
 		public void testPropertyChange() {
-			TaxonName b = new TaxonName();
+			NonViralName b = new NonViralName(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
-			b.setGenus("Abies");
-				assertEquals(b.getGenus(), lastPropValue);
-			b.setGenus("Picea");
-				assertEquals(b.getGenus(), lastPropValue);
+			b.setUninomial("Abies");
+				assertEquals(b.getUninomial(), lastPropValue);
+			b.setUninomial("Picea");
+				assertEquals(b.getUninomial(), lastPropValue);
 			b.setUninomial("Unipicea");
 				assertEquals(b.getUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
@@ -40,7 +42,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 		@Test
 		public void testPropertyChangeBoolean() {
-			TaxonName b = new TaxonName();
+			BotanicalName b = new BotanicalName(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setAnamorphic(true);
 			assertEquals(b.isAnamorphic(), lastPropValue);

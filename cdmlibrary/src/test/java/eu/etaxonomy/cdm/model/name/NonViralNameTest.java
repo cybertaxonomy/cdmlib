@@ -19,8 +19,8 @@ public class NonViralNameTest {
 	private static int id;
 	private static ITaxonNameDao tnDao;
 	private static INameService nameServiceImpl;
-	private static String mAuthorship = "authorship";
-	private static String mGenus = "genus";
+	private static String authorship = "authorship";
+	private static String genus = "genus";
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -29,8 +29,8 @@ public class NonViralNameTest {
 		INameService ns = app.getNameService();
 		
 		tn = new NonViralName(Rank.SPECIES());
-		tn.setAuthorshipCache(mAuthorship);
-		tn.setUninomial(mGenus);
+		tn.setAuthorshipCache(authorship);
+		tn.setUninomial(genus);
 		nameServiceImpl = app.getNameService();
 		id = nameServiceImpl.saveTaxonName(tn);
 		logger.info("id is " + id);
@@ -115,8 +115,8 @@ public class NonViralNameTest {
 	}
 
 	@Test
-	public void testGetFullAuthorship() {
-		Assert.assertEquals("etwas stimmt hier nicht", mAuthorship, tn.getFullAuthorship());
+	public void testGetAuthorshipCache() {
+		Assert.assertEquals("etwas stimmt hier nicht", authorship, tn.getAuthorshipCache());
 	}
 
 }
