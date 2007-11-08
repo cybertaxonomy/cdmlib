@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:35
  */
 @Entity
-public class MultilanguageString {
+public class MultilanguageString extends VersionableEntity{
 	static Logger logger = Logger.getLogger(MultilanguageString.class);
 	private ArrayList representations;
 

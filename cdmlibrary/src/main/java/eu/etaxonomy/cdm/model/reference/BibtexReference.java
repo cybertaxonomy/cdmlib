@@ -23,6 +23,7 @@ import javax.persistence.*;
 @Entity
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BibtexReference.class);
+	private BibtexEntryType type;
 	//The journal or magazine the work was published in
 	private String journal;
 	//The title of the book, if only part of it is being cited
@@ -59,7 +60,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	//How it was published, if the publishing method is nonstandard
 	private String howpublished;
 	//The type of tech-report, for example, "Research Note"
-	private String type;
+	private String reportType;
 	//The month of publication (or, if unpublished, the month of creation)
 	private String month;
 	//The year of publication (or, if unpublished, the year of creation)
@@ -286,16 +287,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.howpublished = howpublished;
 	}
 
-	public String getType(){
-		return this.type;
+	public String getReportType(){
+		return this.reportType;
 	}
 
 	/**
 	 * 
 	 * @param type    type
 	 */
-	public void setType(String type){
-		this.type = type;
+	public void setReportType(String type){
+		this.reportType = type;
 	}
 
 	public String getMonth(){
@@ -367,6 +368,14 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	@Override
 	public String generateTitle(){
 		return "";
+	}
+
+	public BibtexEntryType getType() {
+		return type;
+	}
+
+	public void setType(BibtexEntryType type) {
+		this.type = type;
 	}
 
 }

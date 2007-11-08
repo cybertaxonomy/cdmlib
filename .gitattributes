@@ -117,9 +117,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/CharacterTree.java -
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Description.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionInSource.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/DescriptiveConcept.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/DiurnalTerm.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/FeatureBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/FeatureType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/IdentificationKey.java -text
@@ -131,7 +129,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermB
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Scope.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/SeasonalTerm.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Sex.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Stage.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/State.java -text

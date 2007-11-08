@@ -24,20 +24,9 @@ import javax.persistence.*;
 @Entity
 public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
-	private java.util.ArrayList m_Paragraph;
+	private ArrayList<Paragraph> paragraphs;
 	private Language language;
 
-	public java.util.ArrayList getM_Paragraph(){
-		return this.m_Paragraph;
-	}
-
-	/**
-	 * 
-	 * @param m_Paragraph    m_Paragraph
-	 */
-	public void setM_Paragraph(java.util.ArrayList m_Paragraph){
-		this.m_Paragraph = m_Paragraph;
-	}
 
 	public Language getLanguage(){
 		return this.language;
@@ -49,6 +38,17 @@ public class TextData extends FeatureBase {
 	 */
 	public void setLanguage(Language language){
 		this.language = language;
+	}
+
+	public ArrayList<Paragraph> getParagraphs() {
+		return paragraphs;
+	}
+
+	public void addParagraph(Paragraph paragraph) {
+		this.paragraphs.add(paragraph);
+	}
+	public void removeParagraph(Paragraph paragraph) {
+		this.paragraphs.remove(paragraph);
 	}
 
 }
