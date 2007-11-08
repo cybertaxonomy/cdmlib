@@ -32,6 +32,7 @@ public class NameRelationship extends ReferencedEntityBase {
 	private NameRelationshipType type;
 	private TaxonNameBase toName;
 
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public TaxonNameBase getFromName(){
 		return this.fromName;
 	}
@@ -56,6 +57,7 @@ public class NameRelationship extends ReferencedEntityBase {
 		this.type = type;
 	}
 
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public TaxonNameBase getToName(){
 		return this.toName;
 	}

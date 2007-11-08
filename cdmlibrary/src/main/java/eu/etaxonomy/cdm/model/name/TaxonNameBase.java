@@ -16,6 +16,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -31,7 +33,7 @@ import javax.persistence.*;
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
-	private String name;
+	private String nameCache;
 	//Non-atomised addition to a name not ruled by a nomenclatural code
 	private String appendedPhrase;
 	//Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or
@@ -39,21 +41,35 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	private ArrayList typeDesignations;
-	private ArrayList nameInSource;
-	private ArrayList nameRelations;
-	private ArrayList status;
+	private ArrayList<ITypeDesignation> typeDesignations;
+	private ArrayList<NameInSource> nameInSource;
+	private ArrayList<NameRelationship> nameRelations;
+	private ArrayList<NomenclaturalStatus> status;
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
 	private ArrayList newCombinations;
 	private TaxonNameBase basionym;
-	private ArrayList inverseNameRelations;
+	private ArrayList<NameRelationship> inverseNameRelations;
 
+	protected INameCacheStrategy cacheStrategy;
+
+	
+	// CONSTRUCTORS
+	
 	public TaxonNameBase(Rank rank) {
 		this.setRank(rank);
 	}
 
+	//TODO for PROTOTYPE
+	@Transient
+	public INameCacheStrategy getCacheStrategy() {
+		return cacheStrategy;
+	}
+	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
+		this.cacheStrategy = cacheStrategy;
+	}
+	
 	public Rank getRank(){
 		return this.rank;
 	}
@@ -163,7 +179,11 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	}
 
 	public String getName(){
-		return this.name;
+		if (nameCache == null){ 
+			return cacheStrategy.getNameCache(this);
+		}else{
+			return nameCache;
+		}
 	}
 
 	/**
@@ -171,7 +191,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	 * @param name    name
 	 */
 	public void setName(String name){
-		this.name = name;
+		this.nameCache = name;
 	}
 
 	public String getAppendedPhrase(){

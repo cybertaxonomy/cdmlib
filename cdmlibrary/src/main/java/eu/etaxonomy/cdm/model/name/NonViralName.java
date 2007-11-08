@@ -38,13 +38,14 @@ public class NonViralName extends TaxonNameBase {
 	private Team combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
 	private Team exCombinationAuthorTeam;
-
+	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 
 	public NonViralName(Rank rank) {
 		super(rank);
 	}
 
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
 	public Team getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
@@ -57,6 +58,7 @@ public class NonViralName extends TaxonNameBase {
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
 	public Team getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
@@ -80,6 +82,7 @@ public class NonViralName extends TaxonNameBase {
 	public void setUninomial(String uninomial){
 		this.uninomial = uninomial;
 	}
+
 
 	public String getInfraGenericEpithet(){
 		return this.infraGenericEpithet;
@@ -117,20 +120,15 @@ public class NonViralName extends TaxonNameBase {
 		this.infraSpecificEpithet = infraSpecificEpithet;
 	}
 
+	@Override
+	public String generateTitle(){
+		return cacheStrategy.getFullNameCache(this);
+	}
+
 	/**
 	 * returns concatenated und formated authorteams including basionym and
 	 * combination authors
 	 */
-	@Transient
-	public String getFullAuthorship(){
-		return "";
-	}
-
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 	public String getAuthorshipCache() {
 		return authorshipCache;
 	}

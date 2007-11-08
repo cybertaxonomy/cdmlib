@@ -44,9 +44,4 @@ public class ZoologicalName extends NonViralName {
 		this.breed = breed;
 	}
 
-	@Transient
-	public String getFullAuthorship(){
-		return "";
-	}
-
 }

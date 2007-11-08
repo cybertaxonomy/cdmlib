@@ -23,10 +23,10 @@ import javax.persistence.*;
 @MappedSuperclass
 public abstract class AnnotatableEntity extends VersionableEntity {
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
-	private ArrayList markers;
-	private ArrayList annotations;
+	private ArrayList<Marker> markers;
+	private ArrayList<Annotation> annotations;
 
-	@Transient
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Marker> getMarkers(){
 		return this.markers;
 	}
@@ -47,6 +47,7 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	}
 
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Annotation> getAnnotations(){
 		return this.annotations;
 	}

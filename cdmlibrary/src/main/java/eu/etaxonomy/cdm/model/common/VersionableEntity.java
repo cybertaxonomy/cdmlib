@@ -85,10 +85,10 @@ public abstract class VersionableEntity extends CdmBase {
 		this.createdBy = createdBy;
 	}
 
+	@Id @GeneratedValue(generator="system-increment")
 	public int getId(){
 		return this.id;
 	}
-
 	/**
 	 * 
 	 * @param id    id
@@ -98,9 +98,11 @@ public abstract class VersionableEntity extends CdmBase {
 	}
 
 	public String getUuid(){
+		if (this.uuid == null){
+			this.uuid = UUID.randomUUID().toString();
+		}
 		return this.uuid;
 	}
-
 	/**
 	 * 
 	 * @param uuid    uuid
@@ -110,9 +112,11 @@ public abstract class VersionableEntity extends CdmBase {
 	}
 
 	public Calendar getCreated(){
+		if (this.created == null){
+			this.created = Calendar.getInstance();
+		}
 		return this.created;
 	}
-
 	/**
 	 * 
 	 * @param created    created

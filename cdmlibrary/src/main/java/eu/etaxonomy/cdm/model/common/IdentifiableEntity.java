@@ -42,8 +42,17 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 		this.lsid = lsid;
 	}
 
+	public abstract String generateTitle();
+
 	public String getTitleCache(){
-		return this.titleCache;
+		if (hasProtectedTitleCache){
+			return this.titleCache;			
+		}
+		// is title dirty, i.e. equal NULL?
+		if (titleCache == null){
+			this.titleCache = generateTitle();
+		}
+		return titleCache;
 	}
 
 	/**
@@ -52,6 +61,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	 */
 	public void setTitleCache(String titleCache){
 		this.titleCache = titleCache;
+		this.setHasProtectedTitleCache(true);
 	}
 
 	/**
@@ -66,14 +76,9 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 		return false;
 	}
 
-	@Transient
-	public String getTitle(){
-		return "";
-	}
 
-	public abstract String generateTitle();
-
-	public ArrayList<Rights> getRights(){
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+public ArrayList<Rights> getRights(){
 		return this.rights;
 	}
 
@@ -94,6 +99,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	}
 
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Extension> getExtensions(){
 		return this.extensions;
 	}
