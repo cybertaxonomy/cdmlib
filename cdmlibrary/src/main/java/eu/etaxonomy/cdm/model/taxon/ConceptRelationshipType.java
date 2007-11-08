@@ -21,7 +21,6 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:17
  */
-@Entity
 public class ConceptRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";

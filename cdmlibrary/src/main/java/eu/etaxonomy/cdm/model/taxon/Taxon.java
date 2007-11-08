@@ -20,7 +20,6 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
-@Entity
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private ArrayList descriptions;

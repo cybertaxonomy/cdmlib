@@ -23,12 +23,15 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
-@Entity
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	//The assignement to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
 	private TaxonNameBase name;
+	/**
+	 * The concept reference
+	 */
+	public ReferenceBase sec;
 
 	public TaxonNameBase getName(){
 		return this.name;
