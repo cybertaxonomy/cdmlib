@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -31,7 +32,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	/**
 	 * The concept reference
 	 */
-	public ReferenceBase sec;
+	private ReferenceBase sec;
 
 	public TaxonNameBase getName(){
 		return this.name;
@@ -55,6 +56,14 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 */
 	public void setDoubtful(boolean isDoubtful){
 		this.isDoubtful = isDoubtful;
+	}
+
+	public ReferenceBase getSec() {
+		return sec;
+	}
+
+	public void setSec(ReferenceBase sec) {
+		this.sec = sec;
 	}
 
 }
