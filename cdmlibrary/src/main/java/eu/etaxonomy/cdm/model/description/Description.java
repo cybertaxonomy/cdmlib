@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import java.util.*;
@@ -26,12 +27,12 @@ public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	private String label;
-	private ArrayList features;
+	private ArrayList<FeatureBase> features;
 	private ArrayList scopes;
-	private ArrayList sources;
+	private ArrayList<ReferenceBase> sources;
 	private ArrayList geoScopes;
 
-	public ArrayList getSources(){
+	public ArrayList<ReferenceBase> getSources(){
 		return this.sources;
 	}
 
@@ -39,8 +40,11 @@ public class Description extends IdentifiableEntity {
 	 * 
 	 * @param sources    sources
 	 */
-	public void setSources(ArrayList sources){
-		this.sources = sources;
+	public void addSource(ReferenceBase source){
+		this.sources.add(source);
+	}
+	public void removeSource(ReferenceBase source){
+		this.sources.remove(source);
 	}
 
 	public ArrayList getGeoScopes(){
@@ -67,7 +71,7 @@ public class Description extends IdentifiableEntity {
 		this.scopes = scopes;
 	}
 
-	public ArrayList getFeatures(){
+	public ArrayList<FeatureBase> getFeatures(){
 		return this.features;
 	}
 
@@ -75,8 +79,11 @@ public class Description extends IdentifiableEntity {
 	 * 
 	 * @param features    features
 	 */
-	public void setFeatures(ArrayList features){
-		this.features = features;
+	public void addFeature(FeatureBase feature){
+		this.features.add(feature);
+	}
+	public void removeFeature(FeatureBase feature){
+		this.features.remove(feature);
 	}
 
 	public String getLabel(){

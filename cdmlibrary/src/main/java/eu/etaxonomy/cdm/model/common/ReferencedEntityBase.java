@@ -29,6 +29,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	//publication. {if the citationMicroReference exists then there must be also a reference}
 	private String citationMicroReference;
 	private String originalNameString;
+	private ReferenceBase citation;
 
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
@@ -54,9 +55,12 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 	}
 
-	@Transient
 	public ReferenceBase getCitation(){
-		return null;
+		return this.citation;
+	}
+
+	public void setCitation(ReferenceBase citation) {
+		this.citation = citation;
 	}
 
 }

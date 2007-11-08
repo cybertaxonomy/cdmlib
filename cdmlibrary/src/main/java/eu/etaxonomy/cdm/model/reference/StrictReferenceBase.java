@@ -64,9 +64,12 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 		return "";
 	}
 
+	/**
+	 * transform the datePublished into a string representation for a year
+	 */
 	@Transient
 	public String getYear(){
-		return null;
+		return getDatePublished().toString();
 	}
 
 }

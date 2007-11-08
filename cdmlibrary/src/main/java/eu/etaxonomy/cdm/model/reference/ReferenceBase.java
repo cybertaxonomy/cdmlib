@@ -33,9 +33,9 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	//nomenclatural reference in a name this flag should be automatically set
 	private boolean isNomenclaturallyRelevant;
 	private Team authorTeam;
-	private ArrayList referenceInSource;
+	private ArrayList<ReferenceInSource> referenceInSource;
 
-	public ArrayList getReferenceInSource(){
+	public ArrayList<ReferenceInSource> getReferenceInSource(){
 		return this.referenceInSource;
 	}
 
@@ -91,5 +91,7 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	public String getCitation(){
 		return "";
 	}
+	
+	public abstract String getYear();
 
 }

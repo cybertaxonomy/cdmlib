@@ -23,8 +23,6 @@ import javax.persistence.*;
 @Entity
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BibtexReference.class);
-	//The name(s) of the author(s) (in the case of more than one author, separated by and)
-	private String author;
 	//The journal or magazine the work was published in
 	private String journal;
 	//The title of the book, if only part of it is being cited
@@ -82,18 +80,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 */
 	public void setCrossref(BibtexReference crossref){
 		this.crossref = crossref;
-	}
-
-	public String getAuthor(){
-		return this.author;
-	}
-
-	/**
-	 * 
-	 * @param author    author
-	 */
-	public void setAuthor(String author){
-		this.author = author;
 	}
 
 	public String getJournal(){
