@@ -36,8 +36,12 @@ public class DatabaseServiceImpl extends HibernateDaoSupport implements IDatabas
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DbType, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	public boolean connectToDatabase(DbType dbType, String url,
-			String username, String password, int port) {
-		// TODO Auto-generated method stub
+						String username, String password, int port) {
+		DriverManagerDataSource aDataSource = getDataSource();
+		aDataSource.setDriverClassName(dbType.getDriverClassName());
+		aDataSource.setUsername(username);
+		aDataSource.setPassword(password);
+		aDataSource.setUrl(url);
 		return false;
 	}
 	

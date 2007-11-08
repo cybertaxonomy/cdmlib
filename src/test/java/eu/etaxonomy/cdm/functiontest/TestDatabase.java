@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.database.DbType;
 
 
 
@@ -20,6 +21,7 @@ public class TestDatabase {
 		
 		IDatabaseService dbService = appCtr.getDatabaseService();
 		
+		logger.info(DbType.MySQL.getDriverClassName());
 		logger.info(dbService.getDriverClassName());
 		logger.info(dbService.getUrl());
 		logger.info(dbService.getUsername());
