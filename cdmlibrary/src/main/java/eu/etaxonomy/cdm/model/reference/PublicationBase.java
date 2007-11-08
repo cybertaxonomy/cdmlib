@@ -18,39 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:26
+ * @created 08-Nov-2007 13:06:46
  */
 @Entity
 public abstract class PublicationBase extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(PublicationBase.class);
-
-	@Description("")
 	private String publisher;
-	@Description("")
 	private String placePublished;
 
 	public String getPublisher(){
-		return publisher;
+		return this.publisher;
 	}
 
 	/**
 	 * 
-	 * @param publisher
+	 * @param publisher    publisher
 	 */
 	public void setPublisher(String publisher){
-		;
+		this.publisher = publisher;
 	}
 
 	public String getPlacePublished(){
-		return placePublished;
+		return this.placePublished;
 	}
 
 	/**
 	 * 
-	 * @param placePublished
+	 * @param placePublished    placePublished
 	 */
 	public void setPlacePublished(String placePublished){
-		;
+		this.placePublished = placePublished;
 	}
 
 }

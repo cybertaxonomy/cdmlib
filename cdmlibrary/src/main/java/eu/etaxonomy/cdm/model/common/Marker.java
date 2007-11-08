@@ -21,38 +21,36 @@ import javax.persistence.*;
  * "flags" as a MarkerType.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:15
+ * @created 08-Nov-2007 13:06:33
  */
 @Entity
 public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);
-
-	@Description("")
 	private boolean flag;
 	private MarkerType type;
 
 	public MarkerType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(MarkerType type){
-		;
+		this.type = type;
 	}
 
 	public boolean getFlag(){
-		return flag;
+		return this.flag;
 	}
 
 	/**
 	 * 
-	 * @param flag
+	 * @param flag    flag
 	 */
 	public void setFlag(boolean flag){
-		;
+		this.flag = flag;
 	}
 
 }

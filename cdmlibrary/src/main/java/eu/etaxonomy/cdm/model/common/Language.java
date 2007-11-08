@@ -17,14 +17,11 @@ import javax.persistence.*;
 
 /**
  * list of languages according to current internet best practices as given by IANA
- * or ISO codes.
- * 
- * http://www.ietf.org/rfc/rfc4646.txt
- * http://www.loc.gov/standards/iso639-2/php/English_list.php
- * 
+ * or ISO codes.  http://www.ietf.org/rfc/rfc4646.txt http://www.loc.
+ * gov/standards/iso639-2/php/English_list.php
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:13
+ * @created 08-Nov-2007 13:06:31
  */
 @Entity
 public class Language extends DefinedTermBase {

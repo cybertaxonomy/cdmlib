@@ -20,80 +20,75 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:01
+ * @created 08-Nov-2007 13:06:18
  */
 @Entity
 public class Contact extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Contact.class);
-
-	@Description("")
 	private String email;
-	@Description("")
 	private String url;
-	@Description("")
 	private String phone;
-	@Description("")
 	private String fax;
 	private ArrayList<Address> addresses;
 
 	public ArrayList<Address> getAddresses(){
-		return addresses;
+		return this.addresses;
 	}
 
 	/**
 	 * 
-	 * @param addresses
+	 * @param addresses    addresses
 	 */
 	public void setAddresses(ArrayList<Address> addresses){
-		;
+		this.addresses = addresses;
 	}
 
 	public String getEmail(){
-		return email;
+		return this.email;
 	}
 
 	/**
 	 * 
-	 * @param email
+	 * @param email    email
 	 */
 	public void setEmail(String email){
-		;
+		this.email = email;
 	}
 
 	public String getUrl(){
-		return url;
+		return this.url;
 	}
 
 	/**
 	 * 
-	 * @param url
+	 * @param url    url
 	 */
 	public void setUrl(String url){
-		;
+		this.url = url;
 	}
 
 	public String getPhone(){
-		return phone;
+		return this.phone;
 	}
 
 	/**
 	 * 
-	 * @param phone
+	 * @param phone    phone
 	 */
 	public void setPhone(String phone){
-		;
+		this.phone = phone;
 	}
 
 	public String getFax(){
-		return fax;
+		return this.fax;
 	}
 
 	/**
 	 * 
-	 * @param fax
+	 * @param fax    fax
 	 */
 	public void setFax(String fax){
-		;
+		this.fax = fax;
 	}
 
 }

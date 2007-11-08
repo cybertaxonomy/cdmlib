@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -22,38 +20,36 @@ import javax.persistence.*;
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:00
+ * @created 08-Nov-2007 13:06:17
  */
 @Entity
 public class CommonTaxonName extends FeatureBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
-
-	@Description("")
 	private String name;
 	private Language language;
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 }

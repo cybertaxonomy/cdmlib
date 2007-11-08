@@ -18,37 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:26
+ * @created 08-Nov-2007 13:06:46
  */
 @Entity
 public class QuantitativeData extends FeatureBase {
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
-
 	private MeasurementUnit unit;
 	private ArrayList statisticalValues;
 
 	public ArrayList getStatisticalValues(){
-		return statisticalValues;
+		return this.statisticalValues;
 	}
 
 	/**
 	 * 
-	 * @param statisticalValues
+	 * @param statisticalValues    statisticalValues
 	 */
 	public void setStatisticalValues(ArrayList statisticalValues){
-		;
+		this.statisticalValues = statisticalValues;
 	}
 
 	public MeasurementUnit getUnit(){
-		return unit;
+		return this.unit;
 	}
 
 	/**
 	 * 
-	 * @param unit
+	 * @param unit    unit
 	 */
 	public void setUnit(MeasurementUnit unit){
-		;
+		this.unit = unit;
 	}
 
 	@Transient

@@ -19,67 +19,63 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:24
+ * @created 08-Nov-2007 13:06:44
  */
 @Entity
 public class Point extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Point.class);
-
-	@Description("")
 	private float longitude;
-	@Description("")
 	private float latitude;
 	//in Meters
-	@Description("in Meters")
 	private int errorRadius;
 	private ReferenceSystem referenceSystem;
 
 	public ReferenceSystem getReferenceSystem(){
-		return referenceSystem;
+		return this.referenceSystem;
 	}
 
 	/**
 	 * 
-	 * @param referenceSystem
+	 * @param referenceSystem    referenceSystem
 	 */
 	public void setReferenceSystem(ReferenceSystem referenceSystem){
-		;
+		this.referenceSystem = referenceSystem;
 	}
 
 	public float getLongitude(){
-		return longitude;
+		return this.longitude;
 	}
 
 	/**
 	 * 
-	 * @param longitude
+	 * @param longitude    longitude
 	 */
 	public void setLongitude(float longitude){
-		;
+		this.longitude = longitude;
 	}
 
 	public float getLatitude(){
-		return latitude;
+		return this.latitude;
 	}
 
 	/**
 	 * 
-	 * @param latitude
+	 * @param latitude    latitude
 	 */
 	public void setLatitude(float latitude){
-		;
+		this.latitude = latitude;
 	}
 
 	public int getErrorRadius(){
-		return errorRadius;
+		return this.errorRadius;
 	}
 
 	/**
 	 * 
-	 * @param errorRadius
+	 * @param errorRadius    errorRadius
 	 */
 	public void setErrorRadius(int errorRadius){
-		;
+		this.errorRadius = errorRadius;
 	}
 
 }

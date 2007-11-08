@@ -29,7 +29,7 @@ public class NonViralNameTest {
 		INameService ns = app.getNameService();
 		
 		tn = new NonViralName(Rank.SPECIES());
-		tn.setFullAuthorship(mAuthorship);
+		tn.setAuthorshipCache(mAuthorship);
 		tn.setUninomial(mGenus);
 		nameServiceImpl = app.getNameService();
 		id = nameServiceImpl.saveTaxonName(tn);

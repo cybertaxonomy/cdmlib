@@ -20,122 +20,117 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:40
+ * @created 08-Nov-2007 13:07:01
  */
 @MappedSuperclass
-public abstract class VersionableEntity extends CdmBase{
+public abstract class VersionableEntity extends CdmBase {
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
-
-	@Description("")
 	private int id;
 	//the globally unique identifier
-	@Description("the globally unique identifier")
 	private String uuid;
-	@Description("")
 	private Calendar created;
 	private Person createdBy;
 	//time of last update for this object
-	@Description("time of last update for this object")
 	private Calendar updated;
 	private Person updatedBy;
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
-
+	private ArrayList m_View;
 
 	public VersionableEntity getNextVersion(){
-		return nextVersion;
+		return this.nextVersion;
 	}
 
 	/**
 	 * 
-	 * @param nextVersion
+	 * @param nextVersion    nextVersion
 	 */
 	public void setNextVersion(VersionableEntity nextVersion){
-		;
+		this.nextVersion = nextVersion;
 	}
 
 	public VersionableEntity getPreviousVersion(){
-		return previousVersion;
+		return this.previousVersion;
 	}
 
 	/**
 	 * 
-	 * @param previousVersion
+	 * @param previousVersion    previousVersion
 	 */
 	public void setPreviousVersion(VersionableEntity previousVersion){
-		;
+		this.previousVersion = previousVersion;
 	}
 
 	public Person getUpdatedBy(){
-		return updatedBy;
+		return this.updatedBy;
 	}
 
 	/**
 	 * 
-	 * @param updatedBy
+	 * @param updatedBy    updatedBy
 	 */
 	public void setUpdatedBy(Person updatedBy){
-		;
+		this.updatedBy = updatedBy;
 	}
 
 	public Person getCreatedBy(){
-		return createdBy;
+		return this.createdBy;
 	}
 
 	/**
 	 * 
-	 * @param createdBy
+	 * @param createdBy    createdBy
 	 */
 	public void setCreatedBy(Person createdBy){
-		;
+		this.createdBy = createdBy;
 	}
 
 	public int getId(){
-		return id;
+		return this.id;
 	}
 
 	/**
 	 * 
-	 * @param id
+	 * @param id    id
 	 */
 	public void setId(int id){
-		;
+		this.id = id;
 	}
 
 	public String getUuid(){
-		return uuid;
+		return this.uuid;
 	}
 
 	/**
 	 * 
-	 * @param uuid
+	 * @param uuid    uuid
 	 */
 	public void setUuid(String uuid){
-		;
+		this.uuid = uuid;
 	}
 
 	public Calendar getCreated(){
-		return created;
+		return this.created;
 	}
 
 	/**
 	 * 
-	 * @param created
+	 * @param created    created
 	 */
 	public void setCreated(Calendar created){
-		;
+		this.created = created;
 	}
 
 	public Calendar getUpdated(){
-		return updated;
+		return this.updated;
 	}
 
 	/**
 	 * 
-	 * @param updated
+	 * @param updated    updated
 	 */
 	public void setUpdated(Calendar updated){
-		;
+		this.updated = updated;
 	}
 
 	/**

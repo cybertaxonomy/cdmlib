@@ -19,14 +19,11 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:25
+ * @created 08-Nov-2007 13:06:44
  */
 @Entity
 public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm";
-
 
 }

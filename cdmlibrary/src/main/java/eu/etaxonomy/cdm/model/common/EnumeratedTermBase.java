@@ -18,24 +18,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:06
+ * @created 08-Nov-2007 13:06:23
  */
 @Entity
 public abstract class EnumeratedTermBase extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
-
 	private Enumeration enumeration;
 
 	public Enumeration getEnumeration(){
-		return enumeration;
+		return this.enumeration;
 	}
 
 	/**
 	 * 
-	 * @param enumeration
+	 * @param enumeration    enumeration
 	 */
 	public void setEnumeration(Enumeration enumeration){
-		;
+		this.enumeration = enumeration;
 	}
 
 }

@@ -18,94 +18,97 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:10
+ * @created 08-Nov-2007 13:06:27
  */
 @MappedSuperclass
 public abstract class IdentifiableEntity extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
-
-	@Description("")
 	private String lsid;
-	@Description("")
 	private String titleCache;
 	//if true titleCache will not be automatically generated/updated
-	@Description("if true titleCache will not be automatically generated/updated")
 	private boolean hasProtectedTitleCache;
 	private ArrayList<Rights> rights;
 	private ArrayList<Extension> extensions;
 
-
 	public String getLsid(){
-		return lsid;
+		return this.lsid;
 	}
+
 	/**
 	 * 
-	 * @param lsid
+	 * @param lsid    lsid
 	 */
 	public void setLsid(String lsid){
-		;
+		this.lsid = lsid;
 	}
 
 	public String getTitleCache(){
-		return titleCache;
+		return this.titleCache;
 	}
+
 	/**
 	 * 
-	 * @param titleCache
+	 * @param titleCache    titleCache
 	 */
 	public void setTitleCache(String titleCache){
-		;
+		this.titleCache = titleCache;
 	}
 
 	/**
 	 * 
-	 * @param hasProtectedTitleCache
+	 * @param hasProtectedTitleCache    hasProtectedTitleCache
 	 */
 	public void setHasProtectedTitleCache(boolean hasProtectedTitleCache){
-		;
-	}
-	public boolean hasProtectedTitleCache(){
-		return hasProtectedTitleCache;
+		this.hasProtectedTitleCache = hasProtectedTitleCache;
 	}
 
-	
+	public boolean hasProtectedTitleCache(){
+		return false;
+	}
+
 	@Transient
 	public String getTitle(){
 		return "";
 	}
+
 	public abstract String generateTitle();
 
-	
-
-
 	public ArrayList<Rights> getRights(){
-		return rights;
+		return this.rights;
 	}
+
 	/**
-	 * 
 	 * @param rights
+	 * 
+	 * @param right
 	 */
 	public void addRights(Rights right){
 
 	}
+
+	/**
+	 * 
+	 * @param right
+	 */
 	public void removeRights(Rights right){
 
 	}
 
-	
 	public ArrayList<Extension> getExtensions(){
-		return extensions;
+		return this.extensions;
 	}
+
 	/**
 	 * 
-	 * @param extension
+	 * @param extension    extension
 	 */
 	public void addExtension(Extension extension){
 
 	}
+
 	/**
 	 * 
-	 * @param extension
+	 * @param extension    extension
 	 */
 	public void removeExtension(Extension extension){
 

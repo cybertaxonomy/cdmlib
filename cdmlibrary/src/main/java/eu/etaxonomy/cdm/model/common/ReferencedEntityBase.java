@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -21,49 +20,43 @@ import javax.persistence.*;
  * abstract class for all objects that may have a reference
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:27
+ * @created 08-Nov-2007 13:06:47
  */
 @Entity
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
-
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
-	//publication.
-	//{if the citationMicroReference exists then there must be also a reference}
-
-	@Description("Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a publication. {if the citationMicroReference exists then there must be also a reference} ")
+	//publication. {if the citationMicroReference exists then there must be also a reference}
 	private String citationMicroReference;
-	@Description("")
 	private String originalNameString;
 
 	public String getCitationMicroReference(){
-		return citationMicroReference;
+		return this.citationMicroReference;
 	}
 
 	/**
 	 * 
-	 * @param citationMicroReference
+	 * @param citationMicroReference    citationMicroReference
 	 */
 	public void setCitationMicroReference(String citationMicroReference){
-		;
+		this.citationMicroReference = citationMicroReference;
 	}
 
 	public String getOriginalNameString(){
-		return originalNameString;
+		return this.originalNameString;
 	}
 
 	/**
 	 * 
-	 * @param originalNameString
+	 * @param originalNameString    originalNameString
 	 */
 	public void setOriginalNameString(String originalNameString){
-		;
+		this.originalNameString = originalNameString;
 	}
 
 	@Transient
 	public ReferenceBase getCitation(){
 		return null;
 	}
-
 
 }

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -23,26 +22,20 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:31
+ * @created 08-Nov-2007 13:06:51
  */
 @Entity
 public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(Sequence.class);
-
 	//the sequence as a string of base pairs. 5'->3'
-	@Description("the sequence as a string of base pairs. 5'->3'")
 	private String sequence;
 	//should be calculated in case sequence is set
-	@Description("should be calculated in case sequence is set")
 	private int length;
 	//should be calculated in case sequence is set
-	@Description("should be calculated in case sequence is set")
 	private Calendar dateSequenced;
 	//should be calculated in case sequence is set
-	@Description("should be calculated in case sequence is set")
 	private boolean isBarcode;
 	//the sequence as a string of base pairs. 5'->3'
-	@Description("the sequence as a string of base pairs. 5'->3'")
 	private String citationMicroReference;
 	private ReferenceBase publishedIn;
 	private ArrayList citations;
@@ -51,132 +44,131 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	private ArrayList chromatograms;
 
 	public Locus getLocus(){
-		return locus;
+		return this.locus;
 	}
 
 	/**
 	 * 
-	 * @param locus
+	 * @param locus    locus
 	 */
 	public void setLocus(Locus locus){
-		;
+		this.locus = locus;
 	}
 
 	public ReferenceBase getPublishedIn(){
-		return publishedIn;
+		return this.publishedIn;
 	}
 
 	/**
 	 * 
-	 * @param publishedIn
+	 * @param publishedIn    publishedIn
 	 */
 	public void setPublishedIn(ReferenceBase publishedIn){
-		;
+		this.publishedIn = publishedIn;
 	}
 
 	public ArrayList getChromatograms(){
-		return chromatograms;
+		return this.chromatograms;
 	}
 
 	/**
 	 * 
-	 * @param chromatograms
+	 * @param chromatograms    chromatograms
 	 */
 	public void setChromatograms(ArrayList chromatograms){
-		;
+		this.chromatograms = chromatograms;
 	}
 
 	public ArrayList getCitations(){
-		return citations;
+		return this.citations;
 	}
 
 	/**
 	 * 
-	 * @param citations
+	 * @param citations    citations
 	 */
 	public void setCitations(ArrayList citations){
-		;
+		this.citations = citations;
 	}
 
 	public ArrayList getGenBankAccession(){
-		return genBankAccession;
+		return this.genBankAccession;
 	}
 
 	/**
 	 * 
-	 * @param genBankAccession
+	 * @param genBankAccession    genBankAccession
 	 */
 	public void setGenBankAccession(ArrayList genBankAccession){
-		;
+		this.genBankAccession = genBankAccession;
 	}
 
 	public String getSequence(){
-		return sequence;
+		return this.sequence;
 	}
 
 	/**
 	 * 
-	 * @param sequence
+	 * @param sequence    sequence
 	 */
 	public void setSequence(String sequence){
-		;
+		this.sequence = sequence;
 	}
 
 	public int getLength(){
-		return length;
+		return this.length;
 	}
 
 	/**
 	 * 
-	 * @param length
+	 * @param length    length
 	 */
 	public void setLength(int length){
-		;
+		this.length = length;
 	}
 
 	public Calendar getDateSequenced(){
-		return dateSequenced;
+		return this.dateSequenced;
 	}
 
 	/**
 	 * 
-	 * @param dateSequenced
+	 * @param dateSequenced    dateSequenced
 	 */
 	public void setDateSequenced(Calendar dateSequenced){
-		;
+		this.dateSequenced = dateSequenced;
 	}
 
 	public boolean isBarcode(){
-		return isBarcode;
+		return this.isBarcode;
 	}
 
 	/**
 	 * 
-	 * @param isBarcode
+	 * @param isBarcode    isBarcode
 	 */
 	public void setBarcode(boolean isBarcode){
-		;
+		this.isBarcode = isBarcode;
 	}
 
 	public String getCitationMicroReference(){
-		return citationMicroReference;
+		return this.citationMicroReference;
 	}
 
 	/**
 	 * 
-	 * @param citationMicroReference
+	 * @param citationMicroReference    citationMicroReference
 	 */
 	public void setCitationMicroReference(String citationMicroReference){
-		;
+		this.citationMicroReference = citationMicroReference;
 	}
 
 	public String generateTitle(){
 		return "";
 	}
 
-
-	public ReferenceBase getCitation() {
-		// TODO Auto-generated method stub
+	@Transient
+	public ReferenceBase getCitation(){
 		return null;
 	}
 

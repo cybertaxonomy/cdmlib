@@ -18,37 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:32
+ * @created 08-Nov-2007 13:06:52
  */
 @Entity
 public class Specimen extends Occurrence {
 	static Logger logger = Logger.getLogger(Specimen.class);
-
 	private PreservationMethod preservation;
 	private Specimen derivedFrom;
 
 	public PreservationMethod getPreservation(){
-		return preservation;
+		return this.preservation;
 	}
 
 	/**
 	 * 
-	 * @param preservation
+	 * @param preservation    preservation
 	 */
 	public void setPreservation(PreservationMethod preservation){
-		;
+		this.preservation = preservation;
 	}
 
 	public Specimen getDerivedFrom(){
-		return derivedFrom;
+		return this.derivedFrom;
 	}
 
 	/**
 	 * 
-	 * @param derivedFrom
+	 * @param derivedFrom    derivedFrom
 	 */
 	public void setDerivedFrom(Specimen derivedFrom){
-		;
+		this.derivedFrom = derivedFrom;
 	}
 
 }

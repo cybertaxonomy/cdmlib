@@ -18,38 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:14
+ * @created 08-Nov-2007 13:06:32
  */
 @Entity
 public class LanguageString {
 	static Logger logger = Logger.getLogger(LanguageString.class);
-
-	@Description("")
 	private char text;
 	private Language language;
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 	public char getText(){
-		return text;
+		return this.text;
 	}
 
 	/**
 	 * 
-	 * @param text
+	 * @param text    text
 	 */
 	public void setText(char text){
-		;
+		this.text = text;
 	}
 
 }

@@ -18,25 +18,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:31
+ * @created 08-Nov-2007 13:06:51
  */
 @Entity
 public abstract class SectionBase extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(SectionBase.class);
-
-	@Description("")
 	private String pages;
 
 	public String getPages(){
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * 
-	 * @param pages
+	 * @param pages    pages
 	 */
 	public void setPages(String pages){
-		;
+		this.pages = pages;
 	}
 
 	@Transient

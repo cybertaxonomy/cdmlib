@@ -20,80 +20,75 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:00
+ * @created 08-Nov-2007 13:06:16
  */
 @Entity
 public class Collection extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Collection.class);
-
-	@Description("")
 	private String code;
-	@Description("")
 	private String codeStandard;
-	@Description("")
 	private String name;
-	@Description("")
 	private String townOrLocation;
 	private Institution institute;
 
 	public Institution getInstitute(){
-		return institute;
+		return this.institute;
 	}
 
 	/**
 	 * 
-	 * @param institute
+	 * @param institute    institute
 	 */
 	public void setInstitute(Institution institute){
-		;
+		this.institute = institute;
 	}
 
 	public String getCode(){
-		return code;
+		return this.code;
 	}
 
 	/**
 	 * 
-	 * @param code
+	 * @param code    code
 	 */
 	public void setCode(String code){
-		;
+		this.code = code;
 	}
 
 	public String getCodeStandard(){
-		return codeStandard;
+		return this.codeStandard;
 	}
 
 	/**
 	 * 
-	 * @param codeStandard
+	 * @param codeStandard    codeStandard
 	 */
 	public void setCodeStandard(String codeStandard){
-		;
+		this.codeStandard = codeStandard;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	public String getTownOrLocation(){
-		return townOrLocation;
+		return this.townOrLocation;
 	}
 
 	/**
 	 * 
-	 * @param townOrLocation
+	 * @param townOrLocation    townOrLocation
 	 */
 	public void setTownOrLocation(String townOrLocation){
-		;
+		this.townOrLocation = townOrLocation;
 	}
 
 	public String generateTitle(){

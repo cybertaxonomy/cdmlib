@@ -20,85 +20,81 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/Institution.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:12
+ * @created 08-Nov-2007 13:06:29
  */
 @Entity
 public class Institution extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Institution.class);
-
 	//Acronym, code or initialism by which the insitution is generally known
-	@Description("Acronym, code or initialism by which the insitution is generally known")
 	private String code;
-	@Description("")
 	private String name;
 	private ArrayList<InstitutionType> types;
 	private Institution isPartOf;
 	private Contact contact;
 
 	public Contact getContact(){
-		return contact;
+		return this.contact;
 	}
 
 	/**
 	 * 
-	 * @param contact
+	 * @param contact    contact
 	 */
 	public void setContact(Contact contact){
-		;
+		this.contact = contact;
 	}
 
 	public ArrayList<InstitutionType> getTypes(){
-		return types;
+		return this.types;
 	}
 
 	/**
 	 * 
-	 * @param types
+	 * @param types    types
 	 */
 	public void setTypes(ArrayList<InstitutionType> types){
-		;
+		this.types = types;
 	}
 
 	public Institution getIsPartOf(){
-		return isPartOf;
+		return this.isPartOf;
 	}
 
 	/**
 	 * 
-	 * @param isPartOf
+	 * @param isPartOf    isPartOf
 	 */
 	public void setIsPartOf(Institution isPartOf){
-		;
+		this.isPartOf = isPartOf;
 	}
 
 	public String getCode(){
-		return code;
+		return this.code;
 	}
 
 	/**
 	 * 
-	 * @param code
+	 * @param code    code
 	 */
 	public void setCode(String code){
-		;
+		this.code = code;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

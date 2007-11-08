@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.model.location;
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -22,52 +21,49 @@ import javax.persistence.*;
  * +/- current ISO codes. year given with each entry
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:41
+ * @created 08-Nov-2007 13:07:02
  */
 @Entity
 public class WaterbodyOrCountry extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
-
-	@Description("")
 	private String iso2code;
-	@Description("")
 	private TimePeriod validPeriod;
 	private ArrayList continents;
 
 	public ArrayList getContinents(){
-		return continents;
+		return this.continents;
 	}
 
 	/**
 	 * 
-	 * @param continents
+	 * @param continents    continents
 	 */
 	public void setContinents(ArrayList continents){
-		;
+		this.continents = continents;
 	}
 
 	public String getIso2code(){
-		return iso2code;
+		return this.iso2code;
 	}
 
 	/**
 	 * 
-	 * @param iso2code
+	 * @param iso2code    iso2code
 	 */
 	public void setIso2code(String iso2code){
-		;
+		this.iso2code = iso2code;
 	}
 
 	public TimePeriod getValidPeriod(){
-		return validPeriod;
+		return this.validPeriod;
 	}
 
 	/**
 	 * 
-	 * @param validPeriod
+	 * @param validPeriod    validPeriod
 	 */
 	public void setValidPeriod(TimePeriod validPeriod){
-		;
+		this.validPeriod = validPeriod;
 	}
 
 	public static final WaterbodyOrCountry ARCTIC_OCEAN(){

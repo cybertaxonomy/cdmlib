@@ -16,42 +16,38 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * use name attribute for the entire virus name!
- * 
- * examples see ICTVdb:
- * http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
+ * use name attribute for the entire virus name!  examples see ICTVdb: http://www.
+ * ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:41
+ * @created 08-Nov-2007 13:07:02
  */
 @Entity
 public class ViralName extends TaxonNameBase {
-	static Logger logger = Logger.getLogger(ViralName.class);
-
-	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
-	@Description("The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus")
-	private String acronym;
-
 	public ViralName(Rank rank) {
 		super(rank);
+		// TODO Auto-generated constructor stub
 	}
 
+	static Logger logger = Logger.getLogger(ViralName.class);
+	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
+	private String acronym;
+
 	public String getAcronym(){
-		return acronym;
+		return this.acronym;
 	}
 
 	/**
 	 * 
-	 * @param acronym
+	 * @param acronym    acronym
 	 */
 	public void setAcronym(String acronym){
-		;
+		this.acronym = acronym;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

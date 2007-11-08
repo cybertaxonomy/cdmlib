@@ -21,38 +21,36 @@ import javax.persistence.*;
  * {type is "host" or "hybrid_parent"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:11
+ * @created 08-Nov-2007 13:06:28
  */
 @Entity
 public class IndividualsAssociation extends FeatureBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
-
-	@Description("")
 	private MultilanguageString description;
 	private ObservationalUnit observationalUnit2;
 
 	public ObservationalUnit getObservationalUnit2(){
-		return observationalUnit2;
+		return this.observationalUnit2;
 	}
 
 	/**
 	 * 
-	 * @param observationalUnit2
+	 * @param observationalUnit2    observationalUnit2
 	 */
 	public void setObservationalUnit2(ObservationalUnit observationalUnit2){
-		;
+		this.observationalUnit2 = observationalUnit2;
 	}
 
 	public MultilanguageString getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(MultilanguageString description){
-		;
+		this.description = description;
 	}
 
 }

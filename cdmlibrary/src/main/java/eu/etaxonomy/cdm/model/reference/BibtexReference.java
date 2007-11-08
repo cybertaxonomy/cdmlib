@@ -18,392 +18,346 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:57
+ * @created 08-Nov-2007 13:06:12
  */
 @Entity
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BibtexReference.class);
-
 	//The name(s) of the author(s) (in the case of more than one author, separated by and)
-	@Description("The name(s) of the author(s) (in the case of more than one author, separated by and)")
 	private String author;
 	//The journal or magazine the work was published in
-
-	@Description("The journal or magazine the work was published in ")
 	private String journal;
 	//The title of the book, if only part of it is being cited
-	@Description("The title of the book, if only part of it is being cited")
 	private String booktitle;
 	//The chapter number
-	@Description("The chapter number")
 	private String chapter;
 	//The title of the work
-
-	@Description("The title of the work")
 	private String title;
 	//The series of books the book was published in (e.g. "The Hardy Boys")
-
-	@Description("The series of books the book was published in (e.g. 'The Hardy Boys') ")
 	private String series;
 	//The edition of a book, long form (such as "first" or "second")
-	@Description("The edition of a book, long form (such as 'first' or 'second')")
 	private String edition;
 	//The volume of a journal or multi-volume book
-
-	@Description("The volume of a journal or multi-volume book ")
 	private String volume;
 	//The "number" of a journal, magazine, or tech-report, if applicable. (Most publications have a "volume", but no "number"
 	//field.)
-	//
-
-	@Description("The 'number' of a journal, magazine, or tech-report, if applicable. (Most publications have a 'volume', but no 'number' field.) ")
 	private String number;
 	//Page numbers, separated either by commas or double-hyphens
-
-	@Description("Page numbers, separated either by commas or double-hyphens")
 	private String pages;
 	//An annotation for annotated bibliography styles (not typical)
-	@Description("An annotation for annotated bibliography styles (not typical)")
 	private String annote;
 	//The name(s) of the editor(s)
-
-	@Description("The name(s) of the editor(s) ")
 	private String editor;
 	//The institution that was involved in the publishing, but not necessarily the publisher
-
-	@Description("The institution that was involved in the publishing, but not necessarily the publisher")
 	private String institution;
-	//The school where the thesis was written 
-	@Description("The school where the thesis was written ")
+	//The school where the thesis was written
 	private String school;
 	//The conference sponsor
-
-	@Description("The conference sponsor")
 	private String organization;
 	//The publisher's name
-	//
-
-	@Description("The publisher's name")
 	private String publisher;
 	//Publisher's address (usually just the city, but can be the full address for lesser-known publishers)
-	@Description("Publisher's address (usually just the city, but can be the full address for lesser-known publishers)")
 	private String address;
 	//How it was published, if the publishing method is nonstandard
-
-	@Description("How it was published, if the publishing method is nonstandard ")
 	private String howpublished;
 	//The type of tech-report, for example, "Research Note"
-	//
-
-	@Description("The type of tech-report, for example, 'Research Note' ")
 	private String type;
 	//The month of publication (or, if unpublished, the month of creation)
-	//
-
-	@Description("The month of publication (or, if unpublished, the month of creation) ")
 	private String month;
 	//The year of publication (or, if unpublished, the year of creation)
-
-	@Description("The year of publication. If unpublished, the year of creation")
 	private String year;
 	//A specification of an electronic publication, often a preprint or a technical report
-
-	@Description("A specification of an electronic publication, often a preprint or a technical report ")
 	private String eprint;
 	//Miscellaneous extra information
-	//
-
-	@Description("Miscellaneous extra information ")
 	private String note;
 	private BibtexReference crossref;
 
 	public BibtexReference getCrossref(){
-		return crossref;
+		return this.crossref;
 	}
 
 	/**
 	 * 
-	 * @param crossref
+	 * @param crossref    crossref
 	 */
 	public void setCrossref(BibtexReference crossref){
-		;
+		this.crossref = crossref;
 	}
 
 	public String getAuthor(){
-		return author;
+		return this.author;
 	}
 
 	/**
 	 * 
-	 * @param author
+	 * @param author    author
 	 */
 	public void setAuthor(String author){
-		;
+		this.author = author;
 	}
 
 	public String getJournal(){
-		return journal;
+		return this.journal;
 	}
 
 	/**
 	 * 
-	 * @param journal
+	 * @param journal    journal
 	 */
 	public void setJournal(String journal){
-		;
+		this.journal = journal;
 	}
 
 	public String getBooktitle(){
-		return booktitle;
+		return this.booktitle;
 	}
 
 	/**
 	 * 
-	 * @param booktitle
+	 * @param booktitle    booktitle
 	 */
 	public void setBooktitle(String booktitle){
-		;
+		this.booktitle = booktitle;
 	}
 
 	public String getChapter(){
-		return chapter;
+		return this.chapter;
 	}
 
 	/**
 	 * 
-	 * @param chapter
+	 * @param chapter    chapter
 	 */
 	public void setChapter(String chapter){
-		;
+		this.chapter = chapter;
 	}
 
 	public String getTitle(){
-		return title;
+		return this.title;
 	}
 
 	/**
 	 * 
-	 * @param title
+	 * @param title    title
 	 */
 	public void setTitle(String title){
-		;
+		this.title = title;
 	}
 
 	public String getSeries(){
-		return series;
+		return this.series;
 	}
 
 	/**
 	 * 
-	 * @param series
+	 * @param series    series
 	 */
 	public void setSeries(String series){
-		;
+		this.series = series;
 	}
 
 	public String getEdition(){
-		return edition;
+		return this.edition;
 	}
 
 	/**
 	 * 
-	 * @param edition
+	 * @param edition    edition
 	 */
 	public void setEdition(String edition){
-		;
+		this.edition = edition;
 	}
 
 	public String getVolume(){
-		return volume;
+		return this.volume;
 	}
 
 	/**
 	 * 
-	 * @param volume
+	 * @param volume    volume
 	 */
 	public void setVolume(String volume){
-		;
+		this.volume = volume;
 	}
 
 	public String getNumber(){
-		return number;
+		return this.number;
 	}
 
 	/**
 	 * 
-	 * @param number
+	 * @param number    number
 	 */
 	public void setNumber(String number){
-		;
+		this.number = number;
 	}
 
 	public String getPages(){
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * 
-	 * @param pages
+	 * @param pages    pages
 	 */
 	public void setPages(String pages){
-		;
+		this.pages = pages;
 	}
 
 	public String getAnnote(){
-		return annote;
+		return this.annote;
 	}
 
 	/**
 	 * 
-	 * @param annote
+	 * @param annote    annote
 	 */
 	public void setAnnote(String annote){
-		;
+		this.annote = annote;
 	}
 
 	public String getEditor(){
-		return editor;
+		return this.editor;
 	}
 
 	/**
 	 * 
-	 * @param editor
+	 * @param editor    editor
 	 */
 	public void setEditor(String editor){
-		;
+		this.editor = editor;
 	}
 
 	public String getInstitution(){
-		return institution;
+		return this.institution;
 	}
 
 	/**
 	 * 
-	 * @param institution
+	 * @param institution    institution
 	 */
 	public void setInstitution(String institution){
-		;
+		this.institution = institution;
 	}
 
 	public String getSchool(){
-		return school;
+		return this.school;
 	}
 
 	/**
 	 * 
-	 * @param school
+	 * @param school    school
 	 */
 	public void setSchool(String school){
-		;
+		this.school = school;
 	}
 
 	public String getOrganization(){
-		return organization;
+		return this.organization;
 	}
 
 	/**
 	 * 
-	 * @param organization
+	 * @param organization    organization
 	 */
 	public void setOrganization(String organization){
-		;
+		this.organization = organization;
 	}
 
 	public String getPublisher(){
-		return publisher;
+		return this.publisher;
 	}
 
 	/**
 	 * 
-	 * @param publisher
+	 * @param publisher    publisher
 	 */
 	public void setPublisher(String publisher){
-		;
+		this.publisher = publisher;
 	}
 
 	public String getAddress(){
-		return address;
+		return this.address;
 	}
 
 	/**
 	 * 
-	 * @param address
+	 * @param address    address
 	 */
 	public void setAddress(String address){
-		;
+		this.address = address;
 	}
 
 	public String getHowpublished(){
-		return howpublished;
+		return this.howpublished;
 	}
 
 	/**
 	 * 
-	 * @param howpublished
+	 * @param howpublished    howpublished
 	 */
 	public void setHowpublished(String howpublished){
-		;
+		this.howpublished = howpublished;
 	}
 
 	public String getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(String type){
-		;
+		this.type = type;
 	}
 
 	public String getMonth(){
-		return month;
+		return this.month;
 	}
 
 	/**
 	 * 
-	 * @param month
+	 * @param month    month
 	 */
 	public void setMonth(String month){
-		;
+		this.month = month;
 	}
 
-	public int getYear(){
-		return 0;
-		//return year;
+	public String getYear(){
+		return this.year;
 	}
 
 	/**
 	 * 
-	 * @param year
+	 * @param year    year
 	 */
 	public void setYear(String year){
-		;
+		this.year = year;
 	}
 
 	public String getEprint(){
-		return eprint;
+		return this.eprint;
 	}
 
 	/**
 	 * 
-	 * @param eprint
+	 * @param eprint    eprint
 	 */
 	public void setEprint(String eprint){
-		;
+		this.eprint = eprint;
 	}
 
 	public String getNote(){
-		return note;
+		return this.note;
 	}
 
 	/**
 	 * 
-	 * @param note
+	 * @param note    note
 	 */
 	public void setNote(String note){
-		;
+		this.note = note;
 	}
 
 	/**
@@ -424,12 +378,9 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		return "";
 	}
 
-
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
-
 
 }

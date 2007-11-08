@@ -19,24 +19,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:24
+ * @created 08-Nov-2007 13:06:43
  */
 @Entity
 public class PhylogeneticTree extends ReferencedMedia {
 	static Logger logger = Logger.getLogger(PhylogeneticTree.class);
-
 	private ArrayList usedSequences;
 
 	public ArrayList getUsedSequences(){
-		return usedSequences;
+		return this.usedSequences;
 	}
 
 	/**
 	 * 
-	 * @param usedSequences
+	 * @param usedSequences    usedSequences
 	 */
 	public void setUsedSequences(ArrayList usedSequences){
-		;
+		this.usedSequences = usedSequences;
 	}
 
 }

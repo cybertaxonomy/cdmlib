@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -23,29 +22,23 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/Person.rdf
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:23
+ * @created 08-Nov-2007 13:06:42
  */
 @Entity
 public class Person extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Person.class);
-
 	//e.g. the title
-	@Description("e.g. the title")
 	private String prefix;
 	//All other names not included in the surname. May be just initials, all forenames in full or a combination of expanded
 	//names and initials.
-	@Description("All other names not included in the surname. May be just initials, all forenames in full or a combination of expanded names and initials.")
 	private String firstname;
 	//A hereditary name common to all members of a family, as distinct from a given name or forename
-	@Description("A hereditary name common to all members of a family, as distinct from a given name or forename")
 	private String lastname;
 	//e.g. junior
-	@Description("e.g. junior")
 	private String suffix;
-	//The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date.
-	//Alternative suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as
-	//appropriate) is prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
-	@Description("The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date. Alternative suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known")
+	//The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date. Alternative
+	//suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
+	//prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
 	private TimePeriod lifespan;
 	private ArrayList institutionalMemberships;
 	private Contact contact;
@@ -53,116 +46,116 @@ public class Person extends IdentifiableEntity {
 	private ArrayList keywords;
 
 	public ArrayList getInstitutionalMemberships(){
-		return institutionalMemberships;
+		return this.institutionalMemberships;
 	}
 
 	/**
 	 * 
-	 * @param institutionalMemberships
+	 * @param institutionalMemberships    institutionalMemberships
 	 */
 	public void setInstitutionalMemberships(ArrayList institutionalMemberships){
-		;
+		this.institutionalMemberships = institutionalMemberships;
 	}
 
 	public ArrayList getPersonInSources(){
-		return personInSources;
+		return this.personInSources;
 	}
 
 	/**
 	 * 
-	 * @param personInSources
+	 * @param personInSources    personInSources
 	 */
 	public void setPersonInSources(ArrayList personInSources){
-		;
+		this.personInSources = personInSources;
 	}
 
 	public ArrayList getKeywords(){
-		return keywords;
+		return this.keywords;
 	}
 
 	/**
 	 * 
-	 * @param keywords
+	 * @param keywords    keywords
 	 */
 	public void setKeywords(ArrayList keywords){
-		;
+		this.keywords = keywords;
 	}
 
 	public Contact getContact(){
-		return contact;
+		return this.contact;
 	}
 
 	/**
 	 * 
-	 * @param contact
+	 * @param contact    contact
 	 */
 	public void setContact(Contact contact){
-		;
+		this.contact = contact;
 	}
 
 	public String getPrefix(){
-		return prefix;
+		return this.prefix;
 	}
 
 	/**
 	 * 
-	 * @param prefix
+	 * @param prefix    prefix
 	 */
 	public void setPrefix(String prefix){
-		;
+		this.prefix = prefix;
 	}
 
 	public String getFirstname(){
-		return firstname;
+		return this.firstname;
 	}
 
 	/**
 	 * 
-	 * @param firstname
+	 * @param firstname    firstname
 	 */
 	public void setFirstname(String firstname){
-		;
+		this.firstname = firstname;
 	}
 
 	public String getLastname(){
-		return lastname;
+		return this.lastname;
 	}
 
 	/**
 	 * 
-	 * @param lastname
+	 * @param lastname    lastname
 	 */
 	public void setLastname(String lastname){
-		;
+		this.lastname = lastname;
 	}
 
 	public String getSuffix(){
-		return suffix;
+		return this.suffix;
 	}
 
 	/**
 	 * 
-	 * @param suffix
+	 * @param suffix    suffix
 	 */
 	public void setSuffix(String suffix){
-		;
+		this.suffix = suffix;
 	}
 
 	public TimePeriod getLifespan(){
-		return lifespan;
+		return this.lifespan;
 	}
 
 	/**
 	 * 
-	 * @param lifespan
+	 * @param lifespan    lifespan
 	 */
 	public void setLifespan(TimePeriod lifespan){
-		;
+		this.lifespan = lifespan;
 	}
+
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

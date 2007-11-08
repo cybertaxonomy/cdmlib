@@ -18,80 +18,75 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:40
+ * @created 08-Nov-2007 13:07:01
  */
 @Entity
 public class User {
 	static Logger logger = Logger.getLogger(User.class);
-
-	@Description("")
 	private String name;
-	@Description("")
 	private String email;
-	@Description("")
 	private String openID;
-	@Description("")
 	private Calendar created;
 	private ArrayList views;
 
 	public ArrayList getViews(){
-		return views;
+		return this.views;
 	}
 
 	/**
 	 * 
-	 * @param views
+	 * @param views    views
 	 */
 	public void setViews(ArrayList views){
-		;
+		this.views = views;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	public String getEmail(){
-		return email;
+		return this.email;
 	}
 
 	/**
 	 * 
-	 * @param email
+	 * @param email    email
 	 */
 	public void setEmail(String email){
-		;
+		this.email = email;
 	}
 
 	public String getOpenID(){
-		return openID;
+		return this.openID;
 	}
 
 	/**
 	 * 
-	 * @param openID
+	 * @param openID    openID
 	 */
 	public void setOpenID(String openID){
-		;
+		this.openID = openID;
 	}
 
 	public Calendar getCreated(){
-		return created;
+		return this.created;
 	}
 
 	/**
 	 * 
-	 * @param created
+	 * @param created    created
 	 */
 	public void setCreated(Calendar created){
-		;
+		this.created = created;
 	}
 
 }

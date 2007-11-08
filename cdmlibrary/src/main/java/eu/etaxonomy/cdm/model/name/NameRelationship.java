@@ -20,66 +20,64 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:19
+ * @created 08-Nov-2007 13:06:37
  */
 @Entity
 public class NameRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NameRelationship.class);
-
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
-	@Description("The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in the note property.")
 	private String ruleConsidered;
 	private TaxonNameBase fromName;
 	private NameRelationshipType type;
 	private TaxonNameBase toName;
 
 	public TaxonNameBase getFromName(){
-		return fromName;
+		return this.fromName;
 	}
 
 	/**
 	 * 
-	 * @param fromName
+	 * @param fromName    fromName
 	 */
 	public void setFromName(TaxonNameBase fromName){
-		;
+		this.fromName = fromName;
 	}
 
 	public NameRelationshipType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(NameRelationshipType type){
-		;
+		this.type = type;
 	}
 
 	public TaxonNameBase getToName(){
-		return toName;
+		return this.toName;
 	}
 
 	/**
 	 * 
-	 * @param toName
+	 * @param toName    toName
 	 */
 	public void setToName(TaxonNameBase toName){
-		;
+		this.toName = toName;
 	}
 
 	public String getRuleConsidered(){
-		return ruleConsidered;
+		return this.ruleConsidered;
 	}
 
 	/**
 	 * 
-	 * @param ruleConsidered
+	 * @param ruleConsidered    ruleConsidered
 	 */
 	public void setRuleConsidered(String ruleConsidered){
-		;
+		this.ruleConsidered = ruleConsidered;
 	}
 
 }

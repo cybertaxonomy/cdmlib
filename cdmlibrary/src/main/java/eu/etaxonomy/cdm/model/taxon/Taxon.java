@@ -18,12 +18,11 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:35
+ * @created 08-Nov-2007 13:06:56
  */
 @Entity
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
-
 	private ArrayList descriptions;
 	private ArrayList inverseSynonymRelations;
 	private ArrayList taxonInSource;
@@ -31,69 +30,68 @@ public class Taxon extends TaxonBase {
 	private ArrayList inverseTaxonRelations;
 
 	public ArrayList getTaxonInSource(){
-		return taxonInSource;
+		return this.taxonInSource;
 	}
 
 	/**
 	 * 
-	 * @param taxonInSource
+	 * @param taxonInSource    taxonInSource
 	 */
 	public void setTaxonInSource(ArrayList taxonInSource){
-		;
+		this.taxonInSource = taxonInSource;
 	}
 
 	public ArrayList getDescriptions(){
-		return descriptions;
+		return this.descriptions;
 	}
 
 	/**
 	 * 
-	 * @param descriptions
+	 * @param descriptions    descriptions
 	 */
 	public void setDescriptions(ArrayList descriptions){
-		;
+		this.descriptions = descriptions;
 	}
 
 	public ArrayList getInverseSynonymRelations(){
-		return inverseSynonymRelations;
+		return this.inverseSynonymRelations;
 	}
 
 	/**
 	 * 
-	 * @param inverseSynonymRelations
+	 * @param inverseSynonymRelations    inverseSynonymRelations
 	 */
 	public void setInverseSynonymRelations(ArrayList inverseSynonymRelations){
-		;
+		this.inverseSynonymRelations = inverseSynonymRelations;
 	}
 
 	public ArrayList getTaxonRelations(){
-		return taxonRelations;
+		return this.taxonRelations;
 	}
 
 	/**
 	 * 
-	 * @param taxonRelations
+	 * @param taxonRelations    taxonRelations
 	 */
 	public void setTaxonRelations(ArrayList taxonRelations){
-		;
+		this.taxonRelations = taxonRelations;
 	}
 
 	public ArrayList getInverseTaxonRelations(){
-		return inverseTaxonRelations;
+		return this.inverseTaxonRelations;
 	}
 
 	/**
 	 * 
-	 * @param inverseTaxonRelations
+	 * @param inverseTaxonRelations    inverseTaxonRelations
 	 */
 	public void setInverseTaxonRelations(ArrayList inverseTaxonRelations){
-		;
+		this.inverseTaxonRelations = inverseTaxonRelations;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

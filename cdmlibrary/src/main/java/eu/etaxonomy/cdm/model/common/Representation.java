@@ -19,66 +19,62 @@ import javax.persistence.*;
  * workaround for enumerations
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:29
+ * @created 08-Nov-2007 13:06:49
  */
 @Entity
 public class Representation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Representation.class);
-
-	@Description("")
 	private String label;
-	@Description("")
 	private String abbreviatedLabel;
-	@Description("")
 	private String description;
 	private Language language;
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 	public String getLabel(){
-		return label;
+		return this.label;
 	}
 
 	/**
 	 * 
-	 * @param label
+	 * @param label    label
 	 */
 	public void setLabel(String label){
-		;
+		this.label = label;
 	}
 
 	public String getAbbreviatedLabel(){
-		return abbreviatedLabel;
+		return this.abbreviatedLabel;
 	}
 
 	/**
 	 * 
-	 * @param abbreviatedLabel
+	 * @param abbreviatedLabel    abbreviatedLabel
 	 */
 	public void setAbbreviatedLabel(String abbreviatedLabel){
-		;
+		this.abbreviatedLabel = abbreviatedLabel;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(String description){
-		;
+		this.description = description;
 	}
 
 }

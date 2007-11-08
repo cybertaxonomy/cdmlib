@@ -18,66 +18,62 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:55
+ * @created 08-Nov-2007 13:06:10
  */
 @Entity
 public class Article extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Article.class);
-
-	@Description("")
 	private String series;
-	@Description("")
 	private String volume;
-	@Description("")
 	private String pages;
 	private Journal inJournal;
 
 	public Journal getInJournal(){
-		return inJournal;
+		return this.inJournal;
 	}
 
 	/**
 	 * 
-	 * @param inJournal
+	 * @param inJournal    inJournal
 	 */
 	public void setInJournal(Journal inJournal){
-		;
+		this.inJournal = inJournal;
 	}
 
 	public String getSeries(){
-		return series;
+		return this.series;
 	}
 
 	/**
 	 * 
-	 * @param series
+	 * @param series    series
 	 */
 	public void setSeries(String series){
-		;
+		this.series = series;
 	}
 
 	public String getVolume(){
-		return volume;
+		return this.volume;
 	}
 
 	/**
 	 * 
-	 * @param volume
+	 * @param volume    volume
 	 */
 	public void setVolume(String volume){
-		;
+		this.volume = volume;
 	}
 
 	public String getPages(){
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * 
-	 * @param pages
+	 * @param pages    pages
 	 */
 	public void setPages(String pages){
-		;
+		this.pages = pages;
 	}
 
 	/**
@@ -99,9 +95,8 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

@@ -20,39 +20,36 @@ import javax.persistence.*;
  * The region name of a DNA string. E.g. 18S, COX, etc.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:14
+ * @created 08-Nov-2007 13:06:32
  */
 @Entity
 public class Locus extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Locus.class);
-
-	@Description("")
 	private String name;
-	@Description("")
 	private String description;
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(String description){
-		;
+		this.description = description;
 	}
 
 }

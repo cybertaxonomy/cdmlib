@@ -17,45 +17,41 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * fact attribute contains the concrete occurrence term like "Extinct"
- * This allows all terms to enter the database and classify them basically
- * according to class hierarchy of distribution.
- * 
- * {validInRegion mandatory}
- * {type is "distribution"}
+ * fact attribute contains the concrete occurrence term like "Extinct" This allows
+ * all terms to enter the database and classify them basically according to class
+ * hierarchy of distribution.  {validInRegion mandatory} {type is "distribution"}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:04
+ * @created 08-Nov-2007 13:06:21
  */
 @Entity
 public class Distribution extends FeatureBase {
 	static Logger logger = Logger.getLogger(Distribution.class);
-
 	private NamedArea area;
 	private PresenceAbsenceTermBase status;
 
 	public NamedArea getArea(){
-		return area;
+		return this.area;
 	}
 
 	/**
 	 * 
-	 * @param area
+	 * @param area    area
 	 */
 	public void setArea(NamedArea area){
-		;
+		this.area = area;
 	}
 
 	public PresenceAbsenceTermBase getStatus(){
-		return status;
+		return this.status;
 	}
 
 	/**
 	 * 
-	 * @param status
+	 * @param status    status
 	 */
 	public void setStatus(PresenceAbsenceTermBase status){
-		;
+		this.status = status;
 	}
 
 }

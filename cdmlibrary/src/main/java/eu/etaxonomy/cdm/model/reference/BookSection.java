@@ -18,24 +18,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:58
+ * @created 08-Nov-2007 13:06:14
  */
 @Entity
 public class BookSection extends SectionBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BookSection.class);
-
 	private Book inBook;
 
 	public Book getInBook(){
-		return inBook;
+		return this.inBook;
 	}
 
 	/**
 	 * 
-	 * @param inBook
+	 * @param inBook    inBook
 	 */
 	public void setInBook(Book inBook){
-		;
+		this.inBook = inBook;
 	}
 
 	/**
@@ -57,9 +56,8 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

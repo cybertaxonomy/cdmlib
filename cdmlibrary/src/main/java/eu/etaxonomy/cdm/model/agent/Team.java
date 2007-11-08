@@ -18,57 +18,54 @@ import javax.persistence.*;
 
 /**
  * An author team may exist for itself or may be built with the persons who belong
- * to it.
- * {At least one otf the attributes shortName or fullName must exist.}
+ * to it. {At least one otf the attributes shortName or fullName must exist.}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:38
+ * @created 08-Nov-2007 13:06:58
  */
 @Entity
 public class Team extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Team.class);
-
-	//An abreviated name for the team (e. g. in case of nomenclatural authorteams).
-	//A non abreviated name for the team (e. g. in case of some bibliographical references)
-	@Description("An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g. in case of some bibliographical references)")
+	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
+	//in case of some bibliographical references)
 	private String originalCitation;
 	private ArrayList teamInSource;
 	private ArrayList teamMembers;
 
 	public ArrayList getTeamMembers(){
-		return teamMembers;
+		return this.teamMembers;
 	}
 
 	/**
 	 * 
-	 * @param teamMembers
+	 * @param teamMembers    teamMembers
 	 */
 	public void setTeamMembers(ArrayList teamMembers){
-		;
+		this.teamMembers = teamMembers;
 	}
 
 	public ArrayList getTeamInSource(){
-		return teamInSource;
+		return this.teamInSource;
 	}
 
 	/**
 	 * 
-	 * @param teamInSource
+	 * @param teamInSource    teamInSource
 	 */
 	public void setTeamInSource(ArrayList teamInSource){
-		;
+		this.teamInSource = teamInSource;
 	}
 
 	public String getOriginalCitation(){
-		return originalCitation;
+		return this.originalCitation;
 	}
 
 	/**
 	 * 
-	 * @param originalCitation
+	 * @param originalCitation    originalCitation
 	 */
 	public void setOriginalCitation(String originalCitation){
-		;
+		this.originalCitation = originalCitation;
 	}
 
 }

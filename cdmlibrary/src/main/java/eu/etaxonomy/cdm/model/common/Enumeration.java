@@ -20,27 +20,25 @@ import javax.persistence.*;
  * (=class)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:06
+ * @created 08-Nov-2007 13:06:23
  */
 @Entity
 public class Enumeration extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Enumeration.class);
-
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
-	@Description("The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale = ordinal")
 	private boolean isOrdinal;
 
 	public boolean isOrdinal(){
-		return isOrdinal;
+		return this.isOrdinal;
 	}
 
 	/**
 	 * 
-	 * @param isOrdinal
+	 * @param isOrdinal    isOrdinal
 	 */
 	public void setOrdinal(boolean isOrdinal){
-		;
+		this.isOrdinal = isOrdinal;
 	}
 
 }

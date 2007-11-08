@@ -21,39 +21,37 @@ import javax.persistence.*;
  * {unique name within view/treatment}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:36
+ * @created 08-Nov-2007 13:06:56
  */
 @Entity
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
-
 	//The assignement to the Taxon or to the Synonym class is not definitive
-	@Description("The assignement to the Taxon or to the Synonym class is not definitive")
 	private boolean isDoubtful;
 	private TaxonNameBase name;
 
 	public TaxonNameBase getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(TaxonNameBase name){
-		;
+		this.name = name;
 	}
 
 	public boolean isDoubtful(){
-		return isDoubtful;
+		return this.isDoubtful;
 	}
 
 	/**
 	 * 
-	 * @param isDoubtful
+	 * @param isDoubtful    isDoubtful
 	 */
 	public void setDoubtful(boolean isDoubtful){
-		;
+		this.isDoubtful = isDoubtful;
 	}
 
 }

@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
@@ -24,17 +24,14 @@ import javax.persistence.*;
  * type figures are observations with at least a figure object in media
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:22
+ * @created 08-Nov-2007 13:06:41
  */
 @Entity
 public class Occurrence extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Occurrence.class);
-
-	//Locality name (as free text) where this occurrence happened 
-	@Description("Locality name (as free text) where this occurrence happened ")
+	//Locality name (as free text) where this occurrence happened
 	private String locality;
-	//Date on which this occurrence happened 
-	@Description("Date on which this occurrence happened ")
+	//Date on which this occurrence happened
 	private Calendar eventDate;
 	private ArrayList media;
 	private Point exactLocation;
@@ -43,87 +40,87 @@ public class Occurrence extends IdentifiableEntity {
 	private Collection collection;
 
 	public Collection getCollection(){
-		return collection;
+		return this.collection;
 	}
 
 	/**
 	 * 
-	 * @param collection
+	 * @param collection    collection
 	 */
 	public void setCollection(Collection collection){
-		;
+		this.collection = collection;
 	}
 
 	public Point getExactLocation(){
-		return exactLocation;
+		return this.exactLocation;
 	}
 
 	/**
 	 * 
-	 * @param exactLocation
+	 * @param exactLocation    exactLocation
 	 */
 	public void setExactLocation(Point exactLocation){
-		;
+		this.exactLocation = exactLocation;
 	}
 
 	public ArrayList getMedia(){
-		return media;
+		return this.media;
 	}
 
 	/**
 	 * 
-	 * @param media
+	 * @param media    media
 	 */
 	public void setMedia(ArrayList media){
-		;
+		this.media = media;
 	}
 
 	public Team getCollector(){
-		return collector;
+		return this.collector;
 	}
 
 	/**
 	 * 
-	 * @param collector
+	 * @param collector    collector
 	 */
 	public void setCollector(Team collector){
-		;
+		this.collector = collector;
 	}
 
 	public NamedArea getNamedArea(){
-		return namedArea;
+		return this.namedArea;
 	}
 
 	/**
 	 * 
-	 * @param namedArea
+	 * @param namedArea    namedArea
 	 */
 	public void setNamedArea(NamedArea namedArea){
-		;
+		this.namedArea = namedArea;
 	}
 
 	public String getLocality(){
-		return locality;
+		return this.locality;
 	}
 
 	/**
 	 * 
-	 * @param locality
+	 * @param locality    locality
 	 */
 	public void setLocality(String locality){
-		;
+		this.locality = locality;
 	}
 
 	public Calendar getEventDate(){
-		return eventDate;
+		return this.eventDate;
 	}
 
 	/**
 	 * 
-	 * @param eventDate
+	 * @param eventDate    eventDate
 	 */
 	public void setEventDate(Calendar eventDate){
-		;
+		this.eventDate = eventDate;
 	}
 
 	public String generateTitle(){

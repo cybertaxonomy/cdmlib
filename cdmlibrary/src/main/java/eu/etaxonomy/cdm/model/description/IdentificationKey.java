@@ -12,35 +12,32 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.common.Media;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
 /**
- * Dichotomous or multifurcating
- * authored keys (incl. legacy data)
+ * Dichotomous or multifurcating authored keys (incl. legacy data)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:10
+ * @created 08-Nov-2007 13:06:28
  */
 @Entity
 public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
-
 	private ArrayList coveredTaxa;
 
 	public ArrayList getCoveredTaxa(){
-		return coveredTaxa;
+		return this.coveredTaxa;
 	}
 
 	/**
 	 * 
-	 * @param coveredTaxa
+	 * @param coveredTaxa    coveredTaxa
 	 */
 	public void setCoveredTaxa(ArrayList coveredTaxa){
-		;
+		this.coveredTaxa = coveredTaxa;
 	}
 
 }

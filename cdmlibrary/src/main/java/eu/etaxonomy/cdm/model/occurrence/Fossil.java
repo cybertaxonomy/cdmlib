@@ -18,7 +18,7 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:08
+ * @created 08-Nov-2007 13:06:25
  */
 @Entity
 public class Fossil extends Specimen {

@@ -17,133 +17,126 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * Taxon name class for all non viral taxa.
- * Parentetical authorship is derived from basionym relationship.
+ * Taxon name class for all non viral taxa. Parentetical authorship is derived
+ * from basionym relationship.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:21
+ * @created 08-Nov-2007 13:06:39
  */
 @Entity
 public class NonViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(NonViralName.class);
-
 	//The suprageneric or the genus name
-	@Description("The suprageneric or the genus name")
 	private String uninomial;
 	//Genus subdivision epithet
-	@Description("Genus subdivision epithet")
 	private String infraGenericEpithet;
 	//species epithet
-	@Description("species epithet")
 	private String specificEpithet;
 	//Species subdivision epithet
-	@Description("Species subdivision epithet")
 	private String infraSpecificEpithet;
-	//Full authorship string
-	@Description("Full authorship string")
-	private String fullAuthorship;
-	/**
-	 * Author team that published the present combination
-	 */
+	//Author team that published the present combination
 	private Team combinationAuthorTeam;
-	/**
-	 * Author team that contributed to the publication of the present combination
-	 */
+	//Author team that contributed to the publication of the present combination
 	private Team exCombinationAuthorTeam;
+
+	private String authorshipCache;
 
 	public NonViralName(Rank rank) {
 		super(rank);
 	}
 
-
-	
 	public Team getCombinationAuthorTeam(){
-		return combinationAuthorTeam;
+		return this.combinationAuthorTeam;
 	}
 
 	/**
 	 * 
-	 * @param combinationAuthorTeam
+	 * @param combinationAuthorTeam    combinationAuthorTeam
 	 */
 	public void setCombinationAuthorTeam(Team combinationAuthorTeam){
-		;
+		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
 	public Team getExCombinationAuthorTeam(){
-		return exCombinationAuthorTeam;
+		return this.exCombinationAuthorTeam;
 	}
 
 	/**
 	 * 
-	 * @param exCombinationAuthorTeam
+	 * @param exCombinationAuthorTeam    exCombinationAuthorTeam
 	 */
 	public void setExCombinationAuthorTeam(Team exCombinationAuthorTeam){
-		;
+		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
 	public String getUninomial(){
-		return uninomial;
+		return this.uninomial;
 	}
 
 	/**
 	 * 
-	 * @param uninomial
+	 * @param uninomial    uninomial
 	 */
 	public void setUninomial(String uninomial){
-		;
+		this.uninomial = uninomial;
 	}
 
 	public String getInfraGenericEpithet(){
-		return infraGenericEpithet;
+		return this.infraGenericEpithet;
 	}
 
 	/**
 	 * 
-	 * @param infraGenericEpithet
+	 * @param infraGenericEpithet    infraGenericEpithet
 	 */
 	public void setInfraGenericEpithet(String infraGenericEpithet){
-		;
+		this.infraGenericEpithet = infraGenericEpithet;
 	}
 
 	public String getSpecificEpithet(){
-		return specificEpithet;
+		return this.specificEpithet;
 	}
 
 	/**
 	 * 
-	 * @param specificEpithet
+	 * @param specificEpithet    specificEpithet
 	 */
 	public void setSpecificEpithet(String specificEpithet){
-		;
+		this.specificEpithet = specificEpithet;
 	}
 
 	public String getInfraSpecificEpithet(){
-		return infraSpecificEpithet;
+		return this.infraSpecificEpithet;
 	}
 
 	/**
 	 * 
-	 * @param infraSpecificEpithet
+	 * @param infraSpecificEpithet    infraSpecificEpithet
 	 */
 	public void setInfraSpecificEpithet(String infraSpecificEpithet){
-		;
+		this.infraSpecificEpithet = infraSpecificEpithet;
 	}
 
 	/**
 	 * returns concatenated und formated authorteams including basionym and
-	 * combination authors 
+	 * combination authors
 	 */
+	@Transient
 	public String getFullAuthorship(){
 		return "";
 	}
-	public void setFullAuthorship(String fullAuthorship){
-		this.fullAuthorship=fullAuthorship;
-	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
+	}
+
+	public String getAuthorshipCache() {
+		return authorshipCache;
+	}
+
+	public void setAuthorshipCache(String authorshipCache) {
+		this.authorshipCache = authorshipCache;
 	}
 
 }

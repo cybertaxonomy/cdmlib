@@ -20,93 +20,89 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:05
+ * @created 08-Nov-2007 13:06:22
  */
 @Entity
 public class DnaSample extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DnaSample.class);
-
-	@Description("")
 	private String bankNumber;
 	//Notes on extraction, purification or amplification process
-	@Description("Notes on extraction, purification or amplification process")
 	private String productionNotes;
-	@Description("")
 	private Calendar dateProduced;
 	private ArrayList sequences;
 	private TissueSample extractedFrom;
 	private Collection storedAt;
 
 	public ArrayList getSequences(){
-		return sequences;
+		return this.sequences;
 	}
 
 	/**
 	 * 
-	 * @param sequences
+	 * @param sequences    sequences
 	 */
 	public void setSequences(ArrayList sequences){
-		;
+		this.sequences = sequences;
 	}
 
 	public Collection getStoredAt(){
-		return storedAt;
+		return this.storedAt;
 	}
 
 	/**
 	 * 
-	 * @param storedAt
+	 * @param storedAt    storedAt
 	 */
 	public void setStoredAt(Collection storedAt){
-		;
+		this.storedAt = storedAt;
 	}
 
 	public TissueSample getExtractedFrom(){
-		return extractedFrom;
+		return this.extractedFrom;
 	}
 
 	/**
 	 * 
-	 * @param extractedFrom
+	 * @param extractedFrom    extractedFrom
 	 */
 	public void setExtractedFrom(TissueSample extractedFrom){
-		;
+		this.extractedFrom = extractedFrom;
 	}
 
 	public String getBankNumber(){
-		return bankNumber;
+		return this.bankNumber;
 	}
 
 	/**
 	 * 
-	 * @param bankNumber
+	 * @param bankNumber    bankNumber
 	 */
 	public void setBankNumber(String bankNumber){
-		;
+		this.bankNumber = bankNumber;
 	}
 
 	public String getProductionNotes(){
-		return productionNotes;
+		return this.productionNotes;
 	}
 
 	/**
 	 * 
-	 * @param productionNotes
+	 * @param productionNotes    productionNotes
 	 */
 	public void setProductionNotes(String productionNotes){
-		;
+		this.productionNotes = productionNotes;
 	}
 
 	public Calendar getDateProduced(){
-		return dateProduced;
+		return this.dateProduced;
 	}
 
 	/**
 	 * 
-	 * @param dateProduced
+	 * @param dateProduced    dateProduced
 	 */
 	public void setDateProduced(Calendar dateProduced){
-		;
+		this.dateProduced = dateProduced;
 	}
 
 	public String generateTitle(){

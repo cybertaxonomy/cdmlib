@@ -13,53 +13,59 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:54
+ * @created 08-Nov-2007 13:06:10
  */
 @MappedSuperclass
 public abstract class AnnotatableEntity extends VersionableEntity {
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
-
 	private ArrayList markers;
 	private ArrayList annotations;
 
-	
 	@Transient
 	public ArrayList<Marker> getMarkers(){
-		return markers;
+		return this.markers;
 	}
+
 	/**
 	 * 
-	 * @param marker
+	 * @param marker    marker
 	 */
 	public void addMarker(Marker marker){
 
 	}
+
 	/**
 	 * 
-	 * @param marker
+	 * @param marker    marker
 	 */
 	public void removeMarker(Marker marker){
 
 	}
 
-	
-
 	public ArrayList<Annotation> getAnnotations(){
-		return annotations;
+		return this.annotations;
 	}
+
 	/**
-	 * 
 	 * @param annotations
+	 * 
+	 * @param annotation
 	 */
 	public void addAnnotations(Annotation annotation){
+
 	}
+
+	/**
+	 * 
+	 * @param annotation
+	 */
 	public void removeAnnotations(Annotation annotation){
+
 	}
 
 }

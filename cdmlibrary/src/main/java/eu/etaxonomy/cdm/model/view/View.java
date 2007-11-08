@@ -20,65 +20,62 @@ import javax.persistence.*;
  * never be changed
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:40
+ * @created 08-Nov-2007 13:07:01
  */
 @Entity
 public class View {
 	static Logger logger = Logger.getLogger(View.class);
-
-	@Description("")
 	private String name;
-	@Description("")
 	private String description;
 	private ArrayList users;
 	private java.util.ArrayList superView;
 
 	public java.util.ArrayList getSuperView(){
-		return superView;
+		return this.superView;
 	}
 
 	/**
 	 * 
-	 * @param superView
+	 * @param superView    superView
 	 */
 	public void setSuperView(java.util.ArrayList superView){
-		;
+		this.superView = superView;
 	}
 
 	public ArrayList getUsers(){
-		return users;
+		return this.users;
 	}
 
 	/**
 	 * 
-	 * @param users
+	 * @param users    users
 	 */
 	public void setUsers(ArrayList users){
-		;
+		this.users = users;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(String description){
-		;
+		this.description = description;
 	}
 
 }

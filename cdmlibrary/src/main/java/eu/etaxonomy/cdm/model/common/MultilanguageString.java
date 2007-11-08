@@ -18,24 +18,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:17
+ * @created 08-Nov-2007 13:06:35
  */
 @Entity
 public class MultilanguageString {
 	static Logger logger = Logger.getLogger(MultilanguageString.class);
-
 	private ArrayList representations;
 
 	public ArrayList getRepresentations(){
-		return representations;
+		return this.representations;
 	}
 
 	/**
 	 * 
-	 * @param representations
+	 * @param representations    representations
 	 */
 	public void setRepresentations(ArrayList representations){
-		;
+		this.representations = representations;
 	}
 
 }

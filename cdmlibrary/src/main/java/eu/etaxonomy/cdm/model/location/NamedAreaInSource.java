@@ -19,7 +19,7 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:18
+ * @created 08-Nov-2007 13:06:36
  */
 @Entity
 public class NamedAreaInSource extends EntityInSourceBase {

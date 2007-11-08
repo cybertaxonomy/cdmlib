@@ -23,7 +23,7 @@ import javax.persistence.*;
  * dependencies are expressed here as well.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:04
+ * @created 08-Nov-2007 13:06:21
  */
 @Entity
 public class DescriptiveConcept extends VersionableEntity {

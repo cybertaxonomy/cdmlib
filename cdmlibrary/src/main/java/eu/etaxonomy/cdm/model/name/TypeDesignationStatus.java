@@ -21,25 +21,23 @@ import javax.persistence.*;
  * be investigated.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:39
+ * @created 08-Nov-2007 13:07:00
  */
 @Entity
 public class TypeDesignationStatus extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName#NomencalturalTypeTypeTerm";
 
 	public String getInitializationClassUri(){
-		return initializationClassUri;
+		return this.initializationClassUri;
 	}
 
 	/**
 	 * 
-	 * @param initializationClassUri
+	 * @param initializationClassUri    initializationClassUri
 	 */
 	public void setInitializationClassUri(String initializationClassUri){
-		;
+		this.initializationClassUri = initializationClassUri;
 	}
 
 	public static final TypeDesignationStatus HOLOTYPE(){

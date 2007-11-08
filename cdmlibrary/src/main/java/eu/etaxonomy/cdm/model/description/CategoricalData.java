@@ -12,47 +12,43 @@ package eu.etaxonomy.cdm.model.description;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
 import java.util.*;
 import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:59
+ * @created 08-Nov-2007 13:06:15
  */
 @Entity
 public class CategoricalData extends FeatureBase {
 	static Logger logger = Logger.getLogger(CategoricalData.class);
-
 	//whether the sequence of ordered states is important
-	@Description("whether the sequence of ordered states is important")
 	private boolean orderRelevant;
 	private ArrayList<State> states;
 
 	public ArrayList<State> getStates(){
-		return states;
+		return this.states;
 	}
 
 	/**
 	 * 
-	 * @param states
+	 * @param states    states
 	 */
 	public void setStates(ArrayList<State> states){
-		;
+		this.states = states;
 	}
 
 	public boolean getOrderRelevant(){
-		return orderRelevant;
+		return this.orderRelevant;
 	}
 
 	/**
 	 * 
-	 * @param orderRelevant
+	 * @param orderRelevant    orderRelevant
 	 */
 	public void setOrderRelevant(boolean orderRelevant){
-		;
+		this.orderRelevant = orderRelevant;
 	}
 
 }

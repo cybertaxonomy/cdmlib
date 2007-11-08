@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -20,38 +19,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:28
+ * @created 08-Nov-2007 13:06:48
  */
 @Entity
 public abstract class ReferencedMedia extends Media implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedMedia.class);
-
-	@Description("")
 	private String citationMicroReference;
 	private ReferenceBase citation;
 
 	public ReferenceBase getCitation(){
-		return citation;
+		return this.citation;
 	}
 
 	/**
 	 * 
-	 * @param citation
+	 * @param citation    citation
 	 */
 	public void setCitation(ReferenceBase citation){
-		;
+		this.citation = citation;
 	}
 
 	public String getCitationMicroReference(){
-		return citationMicroReference;
+		return this.citationMicroReference;
 	}
 
 	/**
 	 * 
-	 * @param citationMicroReference
+	 * @param citationMicroReference    citationMicroReference
 	 */
 	public void setCitationMicroReference(String citationMicroReference){
-		;
+		this.citationMicroReference = citationMicroReference;
 	}
 
 }

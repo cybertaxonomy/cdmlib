@@ -19,14 +19,12 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:03
+ * @created 08-Nov-2007 13:06:20
  */
 @Entity
 public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
-
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
-	@eu.etaxonomy.cdm.model.Description("in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.")
 	private String label;
 	private ArrayList features;
 	private ArrayList scopes;
@@ -34,69 +32,68 @@ public class Description extends IdentifiableEntity {
 	private ArrayList geoScopes;
 
 	public ArrayList getSources(){
-		return sources;
+		return this.sources;
 	}
 
 	/**
 	 * 
-	 * @param sources
+	 * @param sources    sources
 	 */
 	public void setSources(ArrayList sources){
-		;
+		this.sources = sources;
 	}
 
 	public ArrayList getGeoScopes(){
-		return geoScopes;
+		return this.geoScopes;
 	}
 
 	/**
 	 * 
-	 * @param geoScopes
+	 * @param geoScopes    geoScopes
 	 */
 	public void setGeoScopes(ArrayList geoScopes){
-		;
+		this.geoScopes = geoScopes;
 	}
 
 	public ArrayList getScopes(){
-		return scopes;
+		return this.scopes;
 	}
 
 	/**
 	 * 
-	 * @param scopes
+	 * @param scopes    scopes
 	 */
 	public void setScopes(ArrayList scopes){
-		;
+		this.scopes = scopes;
 	}
 
 	public ArrayList getFeatures(){
-		return features;
+		return this.features;
 	}
 
 	/**
 	 * 
-	 * @param features
+	 * @param features    features
 	 */
 	public void setFeatures(ArrayList features){
-		;
+		this.features = features;
 	}
 
 	public String getLabel(){
-		return label;
+		return this.label;
 	}
 
 	/**
 	 * 
-	 * @param label
+	 * @param label    label
 	 */
 	public void setLabel(String label){
-		;
+		this.label = label;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

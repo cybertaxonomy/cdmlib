@@ -18,85 +18,80 @@ import javax.persistence.*;
 /**
  * Typically, rights information includes a statement about various property
  * rights associated with the resource, including intellectual property rights.
- * http://purl.org/dc/elements/1.1/rights
- * 
- * http://dublincore.org/documents/dcmi-terms/
+ * http://purl.org/dc/elements/1.1/rights  http://dublincore.org/documents/dcmi-
+ * terms/
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:30
+ * @created 08-Nov-2007 13:06:49
  */
 @Entity
 public class Rights extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Rights.class);
-
 	//external location of copyright text
-	@Description("external location of copyright text")
 	private String uri;
-	@Description("")
 	private String statement;
-	@Description("")
 	private String abbreviatedStatement;
 	private Language language;
 	private RightsTerm type;
 
 	public RightsTerm getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(RightsTerm type){
-		;
+		this.type = type;
 	}
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 	public String getUri(){
-		return uri;
+		return this.uri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void setUri(String uri){
-		;
+		this.uri = uri;
 	}
 
 	public String getStatement(){
-		return statement;
+		return this.statement;
 	}
 
 	/**
 	 * 
-	 * @param statement
+	 * @param statement    statement
 	 */
 	public void setStatement(String statement){
-		;
+		this.statement = statement;
 	}
 
 	public String getAbbreviatedStatement(){
-		return abbreviatedStatement;
+		return this.abbreviatedStatement;
 	}
 
 	/**
 	 * 
-	 * @param abbreviatedStatement
+	 * @param abbreviatedStatement    abbreviatedStatement
 	 */
 	public void setAbbreviatedStatement(String abbreviatedStatement){
-		;
+		this.abbreviatedStatement = abbreviatedStatement;
 	}
 
 }

@@ -20,26 +20,24 @@ import javax.persistence.*;
  * reference, source, etc.)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:05
+ * @created 08-Nov-2007 13:06:22
  */
 @Entity
 public abstract class EntityInSourceBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(EntityInSourceBase.class);
-
 	//The object's ID in the source, where the alternative string comes from
-	@Description("The object's ID in the source, where the alternative string comes from")
 	private String idInSource;
 
 	public String getIdInSource(){
-		return idInSource;
+		return this.idInSource;
 	}
 
 	/**
 	 * 
-	 * @param idInSource
+	 * @param idInSource    idInSource
 	 */
 	public void setIdInSource(String idInSource){
-		;
+		this.idInSource = idInSource;
 	}
 
 }

@@ -21,7 +21,7 @@ import javax.persistence.*;
  * "maximum", "often", "probably"
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:16
+ * @created 08-Nov-2007 13:06:35
  */
 @Entity
 public class Modifier extends EnumeratedTermBase {

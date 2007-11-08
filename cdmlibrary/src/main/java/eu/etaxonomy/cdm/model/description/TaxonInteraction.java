@@ -21,38 +21,36 @@ import javax.persistence.*;
  * FIXME
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:36
+ * @created 08-Nov-2007 13:06:57
  */
 @Entity
 public class TaxonInteraction extends FeatureBase {
 	static Logger logger = Logger.getLogger(TaxonInteraction.class);
-
-	@Description("")
 	private MultilanguageString description;
 	private TaxonBase taxon2;
 
 	public TaxonBase getTaxon2(){
-		return taxon2;
+		return this.taxon2;
 	}
 
 	/**
 	 * 
-	 * @param taxon2
+	 * @param taxon2    taxon2
 	 */
 	public void setTaxon2(TaxonBase taxon2){
-		;
+		this.taxon2 = taxon2;
 	}
 
 	public MultilanguageString getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(MultilanguageString description){
-		;
+		this.description = description;
 	}
 
 }

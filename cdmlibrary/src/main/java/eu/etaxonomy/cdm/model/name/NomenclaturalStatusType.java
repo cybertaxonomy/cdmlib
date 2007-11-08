@@ -18,59 +18,33 @@ import javax.persistence.*;
 
 /**
  * The list should be extensible at runtime through configuration. This needs to
- * be investigated.
- * 
- * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm
- * 
- * Subgroups are:
- * ================
- * 
- * Illegitimate:
- * ------------------------
- * Illegitimate,
- * Superfluous,
- * Rejected,
- * UtiqueRejected,
- * ConservedProp,
- * OrthographyConservedProp
- * 
- * Legitimate:
- * ------------------------
- * Legitimate,
- * Novum,
- * Alternativ,
- * Conserved,
- * OrthographyConserved,
- * RejectedProp,
- * UtiqueRejectedProp
- * 
- * Invalid:
- * -----------------------------------
- * Invalid,
- * Nudum,
- * Provisional,
- * CombinationInvalid
+ * be investigated.  http://rs.tdwg.org/ontology/voc/TaxonName.
+ * rdf#NomenclaturalNoteTypeTerm  Subgroups are: ================  Illegitimate: --
+ * ---------------------- Illegitimate, Superfluous, Rejected, UtiqueRejected,
+ * ConservedProp, OrthographyConservedProp  Legitimate: ------------------------
+ * Legitimate, Novum, Alternativ, Conserved, OrthographyConserved, RejectedProp,
+ * UtiqueRejectedProp  Invalid: ----------------------------------- Invalid, Nudum,
+ * Provisional, CombinationInvalid
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:20
+ * @created 08-Nov-2007 13:06:39
  */
 @Entity
 public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus";
 
 	public String getInitializationClassUri(){
-		return initializationClassUri;
+		return this.initializationClassUri;
 	}
 
 	/**
-	 * 
 	 * @param ontologyClassUri
+	 * 
+	 * @param initializationClassUri
 	 */
 	public void setInitializationClassUri(String initializationClassUri){
-		;
+		this.initializationClassUri = initializationClassUri;
 	}
 
 	public boolean isInvalidType(){

@@ -20,40 +20,38 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:20
+ * @created 08-Nov-2007 13:06:39
  */
 @Entity
 public class NomenclaturalStatus extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
-
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
-	@Description("The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in the note property.")
 	private String ruleConsidered;
 	private NomenclaturalStatusType type;
 
 	public NomenclaturalStatusType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(NomenclaturalStatusType type){
-		;
+		this.type = type;
 	}
 
 	public String getRuleConsidered(){
-		return ruleConsidered;
+		return this.ruleConsidered;
 	}
 
 	/**
 	 * 
-	 * @param ruleConsidered
+	 * @param ruleConsidered    ruleConsidered
 	 */
 	public void setRuleConsidered(String ruleConsidered){
-		;
+		this.ruleConsidered = ruleConsidered;
 	}
 
 }

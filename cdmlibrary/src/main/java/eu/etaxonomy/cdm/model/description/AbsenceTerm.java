@@ -18,7 +18,7 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:54
+ * @created 08-Nov-2007 13:06:08
  */
 @Entity
 public class AbsenceTerm extends PresenceAbsenceTermBase {

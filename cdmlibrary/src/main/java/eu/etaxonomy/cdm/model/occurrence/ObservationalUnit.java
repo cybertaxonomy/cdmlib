@@ -21,71 +21,68 @@ import javax.persistence.*;
  * part of a specimen or observation that is being described or determined.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:21
+ * @created 08-Nov-2007 13:06:41
  */
 @Entity
 public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
-
 	//Description defining the Observational unit in the context of the original Occurrence
-	@eu.etaxonomy.cdm.model.Description("Description defining the Observational unit in the context of the original Occurrence")
 	private MultilanguageString definition;
 	private ArrayList descriptions;
 	private ArrayList<Determination> determinations;
 	private Occurrence occurence;
 
 	public ArrayList<Determination> getDeterminations(){
-		return determinations;
+		return this.determinations;
 	}
 
 	/**
 	 * 
-	 * @param determinations
+	 * @param determinations    determinations
 	 */
 	public void setDeterminations(ArrayList determinations){
-		;
+		this.determinations = determinations;
 	}
 
 	public Occurrence getOccurence(){
-		return occurence;
+		return this.occurence;
 	}
 
 	/**
 	 * 
-	 * @param occurence
+	 * @param occurence    occurence
 	 */
 	public void setOccurence(Occurrence occurence){
-		;
+		this.occurence = occurence;
 	}
 
 	public ArrayList getDescriptions(){
-		return descriptions;
+		return this.descriptions;
 	}
 
 	/**
 	 * 
-	 * @param descriptions
+	 * @param descriptions    descriptions
 	 */
 	public void setDescriptions(ArrayList descriptions){
-		;
+		this.descriptions = descriptions;
 	}
 
 	public MultilanguageString getDefinition(){
-		return definition;
+		return this.definition;
 	}
 
 	/**
 	 * 
-	 * @param definition
+	 * @param definition    definition
 	 */
 	public void setDefinition(MultilanguageString definition){
-		;
+		this.definition = definition;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

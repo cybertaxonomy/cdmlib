@@ -20,72 +20,66 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:12
+ * @created 08-Nov-2007 13:06:30
  */
 @Entity
 public class InstitutionalMembership extends VersionableEntity {
 	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
-
 	//Time period a person belonged to the institution
-	@Description("Time period a person belonged to the institution")
 	private TimePeriod period;
 	//Department of the institution this person was working in
-	@Description("Department of the institution this person was working in")
 	private String department;
 	//Role this person had in the institution
-	@Description("Role this person had in the institution")
 	private String role;
-	/**
-	 * current institute the person belongs to
-	 */
+	//current institute the person belongs to
 	private Institution institute;
 
 	public Institution getInstitute(){
-		return institute;
+		return this.institute;
 	}
 
 	/**
 	 * 
-	 * @param institute
+	 * @param institute    institute
 	 */
 	public void setInstitute(Institution institute){
-		;
+		this.institute = institute;
 	}
 
 	public TimePeriod getPeriod(){
-		return period;
+		return this.period;
 	}
 
 	/**
 	 * 
-	 * @param period
+	 * @param period    period
 	 */
 	public void setPeriod(TimePeriod period){
-		;
+		this.period = period;
 	}
 
 	public String getDepartment(){
-		return department;
+		return this.department;
 	}
 
 	/**
 	 * 
-	 * @param department
+	 * @param department    department
 	 */
 	public void setDepartment(String department){
-		;
+		this.department = department;
 	}
 
 	public String getRole(){
-		return role;
+		return this.role;
 	}
 
 	/**
 	 * 
-	 * @param role
+	 * @param role    role
 	 */
 	public void setRole(String role){
-		;
+		this.role = role;
 	}
 
 }

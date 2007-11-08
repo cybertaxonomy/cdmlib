@@ -19,7 +19,7 @@ import javax.persistence.*;
  * simple keywords. could be taxonomic scope, geographic scope or anything else
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:13
+ * @created 08-Nov-2007 13:06:31
  */
 @Entity
 public class Keyword extends EnumeratedTermBase {

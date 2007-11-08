@@ -21,7 +21,7 @@ import javax.persistence.*;
  * Celsius"
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:15
+ * @created 08-Nov-2007 13:06:34
  */
 @Entity
 public class MeasurementUnit extends EnumeratedTermBase {

@@ -22,68 +22,65 @@ import javax.persistence.*;
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:27
+ * @created 08-Nov-2007 13:06:47
  */
 @Entity
 public abstract class ReferenceBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
-
-	//URIs like DOIs, LSIDs or Handles for this reference 
-	@Description("URIs like DOIs, LSIDs or Handles for this reference ")
+	//URIs like DOIs, LSIDs or Handles for this reference
 	private String uri;
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
-	@Description("flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a nomenclatural reference in a name this flag should be automatically set")
 	private boolean isNomenclaturallyRelevant;
 	private Team authorTeam;
 	private ArrayList referenceInSource;
 
 	public ArrayList getReferenceInSource(){
-		return referenceInSource;
+		return this.referenceInSource;
 	}
 
 	/**
 	 * 
-	 * @param referenceInSource
+	 * @param referenceInSource    referenceInSource
 	 */
 	public void setReferenceInSource(ArrayList referenceInSource){
-		;
+		this.referenceInSource = referenceInSource;
 	}
 
 	public Team getAuthorTeam(){
-		return authorTeam;
+		return this.authorTeam;
 	}
 
 	/**
 	 * 
-	 * @param authorTeam
+	 * @param authorTeam    authorTeam
 	 */
 	public void setAuthorTeam(Team authorTeam){
-		;
+		this.authorTeam = authorTeam;
 	}
 
 	public String getUri(){
-		return uri;
+		return this.uri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void setUri(String uri){
-		;
+		this.uri = uri;
 	}
 
 	public boolean isNomenclaturallyRelevant(){
-		return isNomenclaturallyRelevant;
+		return this.isNomenclaturallyRelevant;
 	}
 
 	/**
 	 * 
-	 * @param isNomenclaturallyRelevant
+	 * @param isNomenclaturallyRelevant    isNomenclaturallyRelevant
 	 */
 	public void setNomenclaturallyRelevant(boolean isNomenclaturallyRelevant){
-		;
+		this.isNomenclaturallyRelevant = isNomenclaturallyRelevant;
 	}
 
 	/**

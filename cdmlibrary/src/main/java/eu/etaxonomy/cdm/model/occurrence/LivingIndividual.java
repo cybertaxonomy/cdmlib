@@ -18,37 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:14
+ * @created 08-Nov-2007 13:06:32
  */
 @Entity
 public class LivingIndividual extends Occurrence {
 	static Logger logger = Logger.getLogger(LivingIndividual.class);
-
 	private ArrayList parents;
 	private ArrayList offspring;
 
 	public ArrayList getParents(){
-		return parents;
+		return this.parents;
 	}
 
 	/**
 	 * 
-	 * @param parents
+	 * @param parents    parents
 	 */
 	public void setParents(ArrayList parents){
-		;
+		this.parents = parents;
 	}
 
 	public ArrayList getOffspring(){
-		return offspring;
+		return this.offspring;
 	}
 
 	/**
 	 * 
-	 * @param offspring
+	 * @param offspring    offspring
 	 */
 	public void setOffspring(ArrayList offspring){
-		;
+		this.offspring = offspring;
 	}
 
 }

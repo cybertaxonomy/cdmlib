@@ -19,97 +19,91 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:16
+ * @created 08-Nov-2007 13:06:34
  */
 @Entity
 public class Media extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Media.class);
-
-	@Description("")
 	private MultilanguageString title;
 	//creation date of the media (not of the record)
-	@Description("creation date of the media (not of the record)")
 	private Calendar mediaCreated;
-	@Description("")
 	private MultilanguageString description;
-	/**
-	 * A single medium such as a picture can have multiple representations in files.
-	 * Common are multiple resolutions or file formats for images for example
-	 */
+	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
+	//formats for images for example
 	private ArrayList instances;
 	private ArrayList rights;
 	private Team artist;
 
 	public ArrayList getInstances(){
-		return instances;
+		return this.instances;
 	}
 
 	/**
 	 * 
-	 * @param instances
+	 * @param instances    instances
 	 */
 	public void setInstances(ArrayList instances){
-		;
+		this.instances = instances;
 	}
 
 	public Team getArtist(){
-		return artist;
+		return this.artist;
 	}
 
 	/**
 	 * 
-	 * @param artist
+	 * @param artist    artist
 	 */
 	public void setArtist(Team artist){
-		;
+		this.artist = artist;
 	}
 
 	public ArrayList getRights(){
-		return rights;
+		return this.rights;
 	}
 
 	/**
 	 * 
-	 * @param rights
+	 * @param rights    rights
 	 */
 	public void setRights(ArrayList rights){
-		;
+		this.rights = rights;
 	}
 
 	public MultilanguageString getTitle(){
-		return title;
+		return this.title;
 	}
 
 	/**
 	 * 
-	 * @param title
+	 * @param title    title
 	 */
 	public void setTitle(MultilanguageString title){
-		;
+		this.title = title;
 	}
 
 	public Calendar getMediaCreated(){
-		return mediaCreated;
+		return this.mediaCreated;
 	}
 
 	/**
 	 * 
-	 * @param mediaCreated
+	 * @param mediaCreated    mediaCreated
 	 */
 	public void setMediaCreated(Calendar mediaCreated){
-		;
+		this.mediaCreated = mediaCreated;
 	}
 
 	public MultilanguageString getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(MultilanguageString description){
-		;
+		this.description = description;
 	}
 
 }

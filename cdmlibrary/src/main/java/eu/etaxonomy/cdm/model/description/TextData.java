@@ -19,37 +19,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:38
+ * @created 08-Nov-2007 13:06:59
  */
 @Entity
 public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
-
 	private java.util.ArrayList m_Paragraph;
 	private Language language;
 
 	public java.util.ArrayList getM_Paragraph(){
-		return m_Paragraph;
+		return this.m_Paragraph;
 	}
 
 	/**
 	 * 
-	 * @param m_Paragraph
+	 * @param m_Paragraph    m_Paragraph
 	 */
 	public void setM_Paragraph(java.util.ArrayList m_Paragraph){
-		;
+		this.m_Paragraph = m_Paragraph;
 	}
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 }

@@ -19,51 +19,49 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:33
+ * @created 08-Nov-2007 13:06:53
  */
 @Entity
 public class StateData extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StateData.class);
-
-	@Description("")
 	private String modifyingText;
 	private ArrayList modifiers;
 	private State state;
 
 	public State getState(){
-		return state;
+		return this.state;
 	}
 
 	/**
 	 * 
-	 * @param state
+	 * @param state    state
 	 */
 	public void setState(State state){
-		;
+		this.state = state;
 	}
 
 	public ArrayList getModifiers(){
-		return modifiers;
+		return this.modifiers;
 	}
 
 	/**
 	 * 
-	 * @param modifiers
+	 * @param modifiers    modifiers
 	 */
 	public void setModifiers(ArrayList modifiers){
-		;
+		this.modifiers = modifiers;
 	}
 
 	public String getModifyingText(){
-		return modifyingText;
+		return this.modifyingText;
 	}
 
 	/**
 	 * 
-	 * @param modifyingText
+	 * @param modifyingText    modifyingText
 	 */
 	public void setModifyingText(String modifyingText){
-		;
+		this.modifyingText = modifyingText;
 	}
 
 }

@@ -19,39 +19,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:08
+ * @created 08-Nov-2007 13:06:25
  */
 @Entity
 public class GenBankAccession extends VersionableEntity {
 	static Logger logger = Logger.getLogger(GenBankAccession.class);
-
-	@Description("")
 	private String accessionNumber;
-	@Description("")
 	private String uri;
 
 	public String getAccessionNumber(){
-		return accessionNumber;
+		return this.accessionNumber;
 	}
 
 	/**
 	 * 
-	 * @param accessionNumber
+	 * @param accessionNumber    accessionNumber
 	 */
 	public void setAccessionNumber(String accessionNumber){
-		;
+		this.accessionNumber = accessionNumber;
 	}
 
 	public String getUri(){
-		return uri;
+		return this.uri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void setUri(String uri){
-		;
+		this.uri = uri;
 	}
 
 }

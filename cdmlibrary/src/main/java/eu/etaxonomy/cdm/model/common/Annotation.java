@@ -19,52 +19,50 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:55
+ * @created 08-Nov-2007 13:06:10
  */
 @Entity
 public class Annotation extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Annotation.class);
-
 	//Human annotation
-	@Description("Human annotation")
 	private String note;
 	private Language language;
 	private Person commentator;
 
 	public Person getCommentator(){
-		return commentator;
+		return this.commentator;
 	}
 
 	/**
 	 * 
-	 * @param commentator
+	 * @param commentator    commentator
 	 */
 	public void setCommentator(Person commentator){
-		;
+		this.commentator = commentator;
 	}
 
 	public Language getLanguage(){
-		return language;
+		return this.language;
 	}
 
 	/**
 	 * 
-	 * @param language
+	 * @param language    language
 	 */
 	public void setLanguage(Language language){
-		;
+		this.language = language;
 	}
 
 	public String getNote(){
-		return note;
+		return this.note;
 	}
 
 	/**
 	 * 
-	 * @param note
+	 * @param note    note
 	 */
 	public void setNote(String note){
-		;
+		this.note = note;
 	}
 
 }

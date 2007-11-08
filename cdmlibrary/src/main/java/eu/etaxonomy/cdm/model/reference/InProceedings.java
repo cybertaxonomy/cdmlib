@@ -18,30 +18,28 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:11
+ * @created 08-Nov-2007 13:06:29
  */
 @Entity
 public class InProceedings extends SectionBase {
 	static Logger logger = Logger.getLogger(InProceedings.class);
-
 	private Proceedings inProceedings;
 
 	public Proceedings getInProceedings(){
-		return inProceedings;
+		return this.inProceedings;
 	}
 
 	/**
 	 * 
-	 * @param inProceedings
+	 * @param inProceedings    inProceedings
 	 */
 	public void setInProceedings(Proceedings inProceedings){
-		;
+		this.inProceedings = inProceedings;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

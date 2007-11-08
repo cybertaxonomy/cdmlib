@@ -18,41 +18,38 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:10
+ * @created 08-Nov-2007 13:06:28
  */
 @Entity
 public class ImageFile extends MediaInstance {
 	static Logger logger = Logger.getLogger(ImageFile.class);
-
 	//image height in pixel
-	@Description("image height in pixel")
 	private int height;
 	//image width in pixel
-	@Description("image width in pixel")
 	private int width;
 
 	public int getHeight(){
-		return height;
+		return this.height;
 	}
 
 	/**
 	 * 
-	 * @param height
+	 * @param height    height
 	 */
 	public void setHeight(int height){
-		;
+		this.height = height;
 	}
 
 	public int getWidth(){
-		return width;
+		return this.width;
 	}
 
 	/**
 	 * 
-	 * @param width
+	 * @param width    width
 	 */
 	public void setWidth(int width){
-		;
+		this.width = width;
 	}
 
 }

@@ -21,7 +21,7 @@ import javax.persistence.*;
  * hybrid parent" or specific local identifiers.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:06
+ * @created 08-Nov-2007 13:06:23
  */
 @Entity
 public class ExtensionType extends DefinedTermBase {

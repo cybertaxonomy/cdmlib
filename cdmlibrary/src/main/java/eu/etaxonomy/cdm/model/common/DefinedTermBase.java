@@ -16,133 +16,127 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * workaround for enumerations, base type according to TDWG.
- * 
- * For linear ordering use partOf relation and BreadthFirst.
- * Default iterator order should therefore be BreadthFirst (not DepthFirst)
+ * workaround for enumerations, base type according to TDWG.  For linear ordering
+ * use partOf relation and BreadthFirst. Default iterator order should therefore
+ * be BreadthFirst (not DepthFirst)
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:03
+ * @created 08-Nov-2007 13:06:19
  */
 @Entity
 public abstract class DefinedTermBase extends VersionableEntity {
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
-
 	//URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!
-	@Description("URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!")
 	private String uri;
-	//The RDF ontology source defining the terms to be loaded when a database is created for the first time.
-	//
-	//Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our
-	//own ontology.
-	@Description("The RDF ontology source defining the terms to be loaded when a database is created for the first time. Software can go and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.")
+	//The RDF ontology source defining the terms to be loaded when a database is created for the first time.  Software can go
+	//and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.
 	private static String initializationClassUri;
-	private ArrayList representations;
+	private ArrayList<Representation> representations;
 	private DefinedTermBase kindOf;
-	private ArrayList generalizationOf;
+	private ArrayList<DefinedTermBase> generalizationOf;
 	private DefinedTermBase partOf;
-	private ArrayList includes;
-	private java.util.ArrayList media;
+	private ArrayList<DefinedTermBase> includes;
+	private ArrayList<Media> media;
 
-	public ArrayList getRepresentations(){
-		return representations;
+	public ArrayList<Representation> getRepresentations(){
+		return this.representations;
 	}
 
 	/**
 	 * 
-	 * @param representations
+	 * @param representations    representations
 	 */
 	public void setRepresentations(ArrayList representations){
-		;
+		this.representations = representations;
 	}
 
 	public DefinedTermBase getKindOf(){
-		return kindOf;
+		return this.kindOf;
 	}
 
 	/**
 	 * 
-	 * @param kindOf
+	 * @param kindOf    kindOf
 	 */
 	public void setKindOf(DefinedTermBase kindOf){
-		;
+		this.kindOf = kindOf;
 	}
 
-	public ArrayList getGeneralizationOf(){
-		return generalizationOf;
+	public ArrayList<DefinedTermBase> getGeneralizationOf(){
+		return this.generalizationOf;
 	}
 
 	/**
 	 * 
-	 * @param generalizationOf
+	 * @param generalizationOf    generalizationOf
 	 */
 	public void setGeneralizationOf(ArrayList generalizationOf){
-		;
+		this.generalizationOf = generalizationOf;
 	}
 
 	public DefinedTermBase getPartOf(){
-		return partOf;
+		return this.partOf;
 	}
 
 	/**
 	 * 
-	 * @param partOf
+	 * @param partOf    partOf
 	 */
 	public void setPartOf(DefinedTermBase partOf){
-		;
+		this.partOf = partOf;
 	}
 
-	public ArrayList getIncludes(){
-		return includes;
+	public ArrayList<DefinedTermBase> getIncludes(){
+		return this.includes;
 	}
 
 	/**
 	 * 
-	 * @param includes
+	 * @param includes    includes
 	 */
 	public void setIncludes(ArrayList includes){
-		;
+		this.includes = includes;
 	}
 
-	public java.util.ArrayList getMedia(){
-		return media;
+	public ArrayList<Media> getMedia(){
+		return this.media;
 	}
 
 	/**
 	 * 
-	 * @param media
+	 * @param media    media
 	 */
-	public void setMedia(java.util.ArrayList media){
-		;
+	public void setMedia(ArrayList media){
+		this.media = media;
 	}
 
 	public String getUri(){
-		return uri;
+		return this.uri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void setUri(String uri){
-		;
+		this.uri = uri;
 	}
 
 	public String getInitializationClassUri(){
-		return initializationClassUri;
+		return this.initializationClassUri;
 	}
 
 	/**
 	 * 
-	 * @param initializationClassUri
+	 * @param initializationClassUri    initializationClassUri
 	 */
 	public void setInitializationClassUri(String initializationClassUri){
-		;
+		this.initializationClassUri = initializationClassUri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	@Transient
 	public static DefinedTermBase getDefinedTermByUri(String uri){
@@ -153,7 +147,7 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	 * add new terms from a vocabulary to which uri points. By default this is the
 	 * initializationClassUri
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void addTermsFromInitializationClass(String uri){
 

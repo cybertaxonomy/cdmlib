@@ -18,32 +18,29 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:26
+ * @created 08-Nov-2007 13:06:45
  */
 @Entity
 public class Proceedings extends PrintedUnitBase {
 	static Logger logger = Logger.getLogger(Proceedings.class);
-
 	//The conference sponsor
-	@Description("The conference sponsor")
 	private String organization;
 
 	public String getOrganization(){
-		return organization;
+		return this.organization;
 	}
 
 	/**
 	 * 
-	 * @param organization
+	 * @param organization    organization
 	 */
 	public void setOrganization(String organization){
-		;
+		this.organization = organization;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

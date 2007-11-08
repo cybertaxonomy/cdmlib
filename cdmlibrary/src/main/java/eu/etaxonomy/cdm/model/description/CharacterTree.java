@@ -21,24 +21,23 @@ import javax.persistence.*;
  * define flat char. subsets for filtering purposes.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:00
+ * @created 08-Nov-2007 13:06:16
  */
 @Entity
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
-
 	private ArrayList characters;
 
 	public ArrayList getCharacters(){
-		return characters;
+		return this.characters;
 	}
 
 	/**
 	 * 
-	 * @param characters
+	 * @param characters    characters
 	 */
 	public void setCharacters(ArrayList characters){
-		;
+		this.characters = characters;
 	}
 
 }

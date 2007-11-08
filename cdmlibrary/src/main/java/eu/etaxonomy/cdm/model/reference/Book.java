@@ -18,39 +18,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:58
+ * @created 08-Nov-2007 13:06:13
  */
 @Entity
 public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Book.class);
-
-	@Description("")
 	private String edition;
-	@Description("")
 	private String isbn;
 
 	public String getEdition(){
-		return edition;
+		return this.edition;
 	}
 
 	/**
 	 * 
-	 * @param edition
+	 * @param edition    edition
 	 */
 	public void setEdition(String edition){
-		;
+		this.edition = edition;
 	}
 
 	public String getIsbn(){
-		return isbn;
+		return this.isbn;
 	}
 
 	/**
 	 * 
-	 * @param isbn
+	 * @param isbn    isbn
 	 */
 	public void setIsbn(String isbn){
-		;
+		this.isbn = isbn;
 	}
 
 	/**
@@ -72,9 +69,8 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

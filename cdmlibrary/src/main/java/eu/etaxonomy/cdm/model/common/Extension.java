@@ -22,38 +22,36 @@ import javax.persistence.*;
  * Extension instances.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:06
+ * @created 08-Nov-2007 13:06:23
  */
 @Entity
 public class Extension extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Extension.class);
-
-	@Description("")
 	private String value;
 	private ExtensionType type;
 
 	public ExtensionType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(ExtensionType type){
-		;
+		this.type = type;
 	}
 
 	public String getValue(){
-		return value;
+		return this.value;
 	}
 
 	/**
 	 * 
-	 * @param value
+	 * @param value    value
 	 */
 	public void setValue(String value){
-		;
+		this.value = value;
 	}
 
 }

@@ -20,30 +20,28 @@ import javax.persistence.*;
  * publisher is "institution" in BibTex ???
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:29
+ * @created 08-Nov-2007 13:06:49
  */
 @Entity
 public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);
-
 	private Institution institution;
 
 	public Institution getInstitution(){
-		return institution;
+		return this.institution;
 	}
 
 	/**
 	 * 
-	 * @param institution
+	 * @param institution    institution
 	 */
 	public void setInstitution(Institution institution){
-		;
+		this.institution = institution;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

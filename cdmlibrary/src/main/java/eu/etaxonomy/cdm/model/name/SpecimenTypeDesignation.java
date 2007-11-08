@@ -21,37 +21,36 @@ import javax.persistence.*;
  * {only for typified names which have the "species" rank or below}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:32
+ * @created 08-Nov-2007 13:06:52
  */
 @Entity
 public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
-
 	private ObservationalUnit typeSpecimen;
 	private TypeDesignationStatus typeStatus;
 
 	public ObservationalUnit getTypeSpecimen(){
-		return typeSpecimen;
+		return this.typeSpecimen;
 	}
 
 	/**
 	 * 
-	 * @param typeSpecimen
+	 * @param typeSpecimen    typeSpecimen
 	 */
 	public void setTypeSpecimen(ObservationalUnit typeSpecimen){
-		;
+		this.typeSpecimen = typeSpecimen;
 	}
 
 	public TypeDesignationStatus getTypeStatus(){
-		return typeStatus;
+		return this.typeStatus;
 	}
 
 	/**
 	 * 
-	 * @param typeStatus
+	 * @param typeStatus    typeStatus
 	 */
 	public void setTypeStatus(TypeDesignationStatus typeStatus){
-		;
+		this.typeStatus = typeStatus;
 	}
 
 }

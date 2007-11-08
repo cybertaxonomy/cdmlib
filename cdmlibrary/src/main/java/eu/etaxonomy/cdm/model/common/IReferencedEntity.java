@@ -13,14 +13,13 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:12
+ * @created 08-Nov-2007 13:06:30
  */
 public interface IReferencedEntity {
 

@@ -20,71 +20,66 @@ import javax.persistence.*;
  * recordings available through the location attribute!
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:16
+ * @created 08-Nov-2007 13:06:34
  */
 @Entity
 public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);
-
-	//http://www.iana.org/assignments/media-types/
-	@Description("http://www.iana.org/assignments/media-types/")
+	//http://www.iana.org/assignments/media-types
 	private String mimeType;
 	//filename suffix defining the media-type as an alternative to the proper MIME type
-	@Description("filename suffix defining the media-type as an alternative to the proper MIME type")
 	private String suffix;
 	//where the media file is stored
-	@Description("where the media file is stored")
 	private String uri;
 	//in bytes
-	@Description("in bytes")
 	private int size;
 
 	public String getMimeType(){
-		return mimeType;
+		return this.mimeType;
 	}
 
 	/**
 	 * 
-	 * @param mimeType
+	 * @param mimeType    mimeType
 	 */
 	public void setMimeType(String mimeType){
-		;
+		this.mimeType = mimeType;
 	}
 
 	public String getSuffix(){
-		return suffix;
+		return this.suffix;
 	}
 
 	/**
 	 * 
-	 * @param suffix
+	 * @param suffix    suffix
 	 */
 	public void setSuffix(String suffix){
-		;
+		this.suffix = suffix;
 	}
 
 	public String getUri(){
-		return uri;
+		return this.uri;
 	}
 
 	/**
 	 * 
-	 * @param uri
+	 * @param uri    uri
 	 */
 	public void setUri(String uri){
-		;
+		this.uri = uri;
 	}
 
 	public int getSize(){
-		return size;
+		return this.size;
 	}
 
 	/**
 	 * 
-	 * @param size
+	 * @param size    size
 	 */
 	public void setSize(int size){
-		;
+		this.size = size;
 	}
 
 }

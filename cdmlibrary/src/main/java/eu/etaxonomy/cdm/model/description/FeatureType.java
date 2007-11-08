@@ -18,139 +18,131 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * NEEDS TO BE COMPLEMENTED
- * SPM / TDWG
- * http://rs.tdwg.org/ontology/voc/SpeciesProfileModel
+ * NEEDS TO BE COMPLEMENTED SPM / TDWG http://rs.tdwg.
+ * org/ontology/voc/SpeciesProfileModel
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:07
+ * @created 08-Nov-2007 13:06:24
  */
 @Entity
 public class FeatureType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(FeatureType.class);
-
-	@Description("")
 	private boolean supportsQuantitativeData;
-	@Description("")
 	private boolean supportsTextData;
-	@Description("")
 	private boolean supportsDistribution;
-	@Description("")
 	private boolean supportsIndividualAssociation;
-	@Description("")
 	private boolean supportsTaxonInteraction;
-	@Description("")
 	private boolean supportsCommonTaxonName;
 	private ArrayList recommendedModifierEnumeration;
 	private ArrayList recommendedStatisticalMeasures;
 	private ArrayList supportedCategoricalEnumerations;
 
 	public ArrayList getRecommendedModifierEnumeration(){
-		return recommendedModifierEnumeration;
+		return this.recommendedModifierEnumeration;
 	}
 
 	/**
 	 * 
-	 * @param recommendedModifierEnumeration
+	 * @param recommendedModifierEnumeration    recommendedModifierEnumeration
 	 */
 	public void setRecommendedModifierEnumeration(ArrayList recommendedModifierEnumeration){
-		;
+		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
 
 	public ArrayList getRecommendedStatisticalMeasures(){
-		return recommendedStatisticalMeasures;
+		return this.recommendedStatisticalMeasures;
 	}
 
 	/**
 	 * 
-	 * @param recommendedStatisticalMeasures
+	 * @param recommendedStatisticalMeasures    recommendedStatisticalMeasures
 	 */
 	public void setRecommendedStatisticalMeasures(ArrayList recommendedStatisticalMeasures){
-		;
+		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
 	}
 
 	public ArrayList getSupportedCategoricalEnumerations(){
-		return supportedCategoricalEnumerations;
+		return this.supportedCategoricalEnumerations;
 	}
 
 	/**
 	 * 
-	 * @param supportedCategoricalEnumerations
+	 * @param supportedCategoricalEnumerations    supportedCategoricalEnumerations
 	 */
 	public void setSupportedCategoricalEnumerations(ArrayList supportedCategoricalEnumerations){
-		;
+		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
 	}
 
 	public boolean getSupportsQuantitativeData(){
-		return supportsQuantitativeData;
+		return this.supportsQuantitativeData;
 	}
 
 	/**
 	 * 
-	 * @param supportsQuantitativeData
+	 * @param supportsQuantitativeData    supportsQuantitativeData
 	 */
 	public void setSupportsQuantitativeData(boolean supportsQuantitativeData){
-		;
+		this.supportsQuantitativeData = supportsQuantitativeData;
 	}
 
 	public boolean getSupportsTextData(){
-		return supportsTextData;
+		return this.supportsTextData;
 	}
 
 	/**
 	 * 
-	 * @param supportsTextData
+	 * @param supportsTextData    supportsTextData
 	 */
 	public void setSupportsTextData(boolean supportsTextData){
-		;
+		this.supportsTextData = supportsTextData;
 	}
 
 	public boolean getSupportsDistribution(){
-		return supportsDistribution;
+		return this.supportsDistribution;
 	}
 
 	/**
 	 * 
-	 * @param supportsDistribution
+	 * @param supportsDistribution    supportsDistribution
 	 */
 	public void setSupportsDistribution(boolean supportsDistribution){
-		;
+		this.supportsDistribution = supportsDistribution;
 	}
 
 	public boolean getSupportsIndividualAssociation(){
-		return supportsIndividualAssociation;
+		return this.supportsIndividualAssociation;
 	}
 
 	/**
 	 * 
-	 * @param supportsIndividualAssociation
+	 * @param supportsIndividualAssociation    supportsIndividualAssociation
 	 */
 	public void setSupportsIndividualAssociation(boolean supportsIndividualAssociation){
-		;
+		this.supportsIndividualAssociation = supportsIndividualAssociation;
 	}
 
 	public boolean getSupportsTaxonInteraction(){
-		return supportsTaxonInteraction;
+		return this.supportsTaxonInteraction;
 	}
 
 	/**
 	 * 
-	 * @param supportsTaxonInteraction
+	 * @param supportsTaxonInteraction    supportsTaxonInteraction
 	 */
 	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction){
-		;
+		this.supportsTaxonInteraction = supportsTaxonInteraction;
 	}
 
 	public boolean getSupportsCommonTaxonName(){
-		return supportsCommonTaxonName;
+		return this.supportsCommonTaxonName;
 	}
 
 	/**
 	 * 
-	 * @param supportsCommonTaxonName
+	 * @param supportsCommonTaxonName    supportsCommonTaxonName
 	 */
 	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName){
-		;
+		this.supportsCommonTaxonName = supportsCommonTaxonName;
 	}
 
 	public static final FeatureType DISTRIBUTION(){

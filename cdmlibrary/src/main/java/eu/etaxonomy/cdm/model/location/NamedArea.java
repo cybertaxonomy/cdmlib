@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.location;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-
+import eu.etaxonomy.cdm.model.common.MediaInstance;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -22,20 +21,16 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:17
+ * @created 08-Nov-2007 13:06:36
  */
 @Entity
 public class NamedArea extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
-
 	//description of this area
-	@Description("description of this area")
 	private String description;
 	//description of time valid context of this area. e.g. year range
-	@Description("description of time valid context of this area. e.g. year range")
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
-	@Description("Binary shape definition for user's defined area as polygon")
 	private MediaInstance shapeFile;
 	private NamedAreaInSource source;
 	private ArrayList countriesOrWaterbodies;
@@ -43,87 +38,87 @@ public class NamedArea extends EnumeratedTermBase {
 	private NamedAreaLevel level;
 
 	public NamedAreaInSource getSource(){
-		return source;
+		return this.source;
 	}
 
 	/**
 	 * 
-	 * @param source
+	 * @param source    source
 	 */
 	public void setSource(NamedAreaInSource source){
-		;
+		this.source = source;
 	}
 
 	public ArrayList getCountriesOrWaterbodies(){
-		return countriesOrWaterbodies;
+		return this.countriesOrWaterbodies;
 	}
 
 	/**
 	 * 
-	 * @param countriesOrWaterbodies
+	 * @param countriesOrWaterbodies    countriesOrWaterbodies
 	 */
 	public void setCountriesOrWaterbodies(ArrayList countriesOrWaterbodies){
-		;
+		this.countriesOrWaterbodies = countriesOrWaterbodies;
 	}
 
 	public NamedAreaType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(NamedAreaType type){
-		;
+		this.type = type;
 	}
 
 	public NamedAreaLevel getLevel(){
-		return level;
+		return this.level;
 	}
 
 	/**
 	 * 
-	 * @param level
+	 * @param level    level
 	 */
 	public void setLevel(NamedAreaLevel level){
-		;
+		this.level = level;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(String description){
-		;
+		this.description = description;
 	}
 
 	public TimePeriod getValidPeriod(){
-		return validPeriod;
+		return this.validPeriod;
 	}
 
 	/**
 	 * 
-	 * @param validPeriod
+	 * @param validPeriod    validPeriod
 	 */
 	public void setValidPeriod(TimePeriod validPeriod){
-		;
+		this.validPeriod = validPeriod;
 	}
 
 	public MediaInstance getShapeFile(){
-		return shapeFile;
+		return this.shapeFile;
 	}
 
 	/**
 	 * 
-	 * @param shapeFile
+	 * @param shapeFile    shapeFile
 	 */
 	public void setShapeFile(MediaInstance shapeFile){
-		;
+		this.shapeFile = shapeFile;
 	}
 
 }

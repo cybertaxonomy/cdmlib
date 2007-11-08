@@ -25,197 +25,189 @@ import javax.persistence.*;
  * maybe year is stored in IdentifiableEntity.titleCache
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:36
+ * @created 08-Nov-2007 13:06:57
  */
 @Entity
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
-
 	//The scientific name without author strings and year
-	@Description("The scientific name without author strings and year")
 	private String name;
 	//Non-atomised addition to a name not ruled by a nomenclatural code
-	@Description("Non-atomised addition to a name not ruled by a nomenclatural code")
 	private String appendedPhrase;
 	//Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or
-	//tables or any other element of a publication.
-	//{only if a nomenclatural reference exists}
-	@Description("Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or tables or any other element of a publication.	{only if a nomenclatural reference exists}")
+	//tables or any other element of a publication. {only if a nomenclatural reference exists}
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
-	@Description("this flag will be set to true if the parseName method was unable to successfully parse the name")
 	private boolean hasProblem = false;
 	private ArrayList typeDesignations;
 	private ArrayList nameInSource;
 	private ArrayList nameRelations;
 	private ArrayList status;
 	private Rank rank;
-	/**
-	 * if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
-	 */
+	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
 	private ArrayList newCombinations;
 	private TaxonNameBase basionym;
 	private ArrayList inverseNameRelations;
 
-	protected TaxonNameBase(Rank rank) {
-		setRank(rank);
+	public TaxonNameBase(Rank rank) {
+		this.setRank(rank);
 	}
 
 	public Rank getRank(){
-		return rank;
+		return this.rank;
 	}
 
 	/**
 	 * 
-	 * @param rank
+	 * @param rank    rank
 	 */
 	public void setRank(Rank rank){
-		;
+		this.rank = rank;
 	}
 
 	public ArrayList getNameRelations(){
-		return nameRelations;
+		return this.nameRelations;
 	}
 
 	/**
 	 * 
-	 * @param nameRelations
+	 * @param nameRelations    nameRelations
 	 */
 	public void setNameRelations(ArrayList nameRelations){
-		;
+		this.nameRelations = nameRelations;
 	}
 
 	public ArrayList getInverseNameRelations(){
-		return inverseNameRelations;
+		return this.inverseNameRelations;
 	}
 
 	/**
 	 * 
-	 * @param inverseNameRelations
+	 * @param inverseNameRelations    inverseNameRelations
 	 */
 	public void setInverseNameRelations(ArrayList inverseNameRelations){
-		;
+		this.inverseNameRelations = inverseNameRelations;
 	}
 
 	public ArrayList getTypeDesignations(){
-		return typeDesignations;
+		return this.typeDesignations;
 	}
 
 	/**
 	 * 
-	 * @param typeDesignations
+	 * @param typeDesignations    typeDesignations
 	 */
 	public void setTypeDesignations(ArrayList typeDesignations){
-		;
+		this.typeDesignations = typeDesignations;
 	}
 
 	public ArrayList getStatus(){
-		return status;
+		return this.status;
 	}
 
 	/**
 	 * 
-	 * @param status
+	 * @param status    status
 	 */
 	public void setStatus(ArrayList status){
-		;
+		this.status = status;
 	}
 
 	public INomenclaturalReference getNomenclaturalReference(){
-		return nomenclaturalReference;
+		return this.nomenclaturalReference;
 	}
 
 	/**
 	 * 
-	 * @param nomenclaturalReference
+	 * @param nomenclaturalReference    nomenclaturalReference
 	 */
 	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
-		;
+		this.nomenclaturalReference = nomenclaturalReference;
 	}
 
 	public ArrayList getNameInSource(){
-		return nameInSource;
+		return this.nameInSource;
 	}
 
 	/**
 	 * 
-	 * @param nameInSource
+	 * @param nameInSource    nameInSource
 	 */
 	public void setNameInSource(ArrayList nameInSource){
-		;
+		this.nameInSource = nameInSource;
 	}
 
 	public ArrayList getNewCombinations(){
-		return newCombinations;
+		return this.newCombinations;
 	}
 
 	/**
 	 * 
-	 * @param newCombinations
+	 * @param newCombinations    newCombinations
 	 */
 	public void setNewCombinations(ArrayList newCombinations){
-		;
+		this.newCombinations = newCombinations;
 	}
 
 	public TaxonNameBase getBasionym(){
-		return basionym;
+		return this.basionym;
 	}
 
 	/**
 	 * 
-	 * @param basionym
+	 * @param basionym    basionym
 	 */
 	public void setBasionym(TaxonNameBase basionym){
-		;
+		this.basionym = basionym;
 	}
 
 	public String getName(){
-		return name;
+		return this.name;
 	}
 
 	/**
 	 * 
-	 * @param name
+	 * @param name    name
 	 */
 	public void setName(String name){
-		;
+		this.name = name;
 	}
 
 	public String getAppendedPhrase(){
-		return appendedPhrase;
+		return this.appendedPhrase;
 	}
 
 	/**
 	 * 
-	 * @param appendedPhrase
+	 * @param appendedPhrase    appendedPhrase
 	 */
 	public void setAppendedPhrase(String appendedPhrase){
-		;
+		this.appendedPhrase = appendedPhrase;
 	}
 
 	public String getNomenclaturalMicroReference(){
-		return nomenclaturalMicroReference;
+		return this.nomenclaturalMicroReference;
 	}
 
 	/**
 	 * 
-	 * @param nomenclaturalMicroReference
+	 * @param nomenclaturalMicroReference    nomenclaturalMicroReference
 	 */
 	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-		;
+		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 	}
 
 	public boolean getHasProblem(){
-		return hasProblem;
+		return this.hasProblem;
 	}
 
 	/**
 	 * 
-	 * @param hasProblem
+	 * @param hasProblem    hasProblem
 	 */
 	public void setHasProblem(boolean hasProblem){
-		;
+		this.hasProblem = hasProblem;
 	}
 
 	@Transient
@@ -225,7 +217,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	@Transient
 	public String getCitationString(){
-		return "";
+		return null;
 	}
 
 	@Transient
@@ -244,7 +236,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	/**
 	 * 
-	 * @param fullname
+	 * @param fullname    fullname
 	 */
 	public boolean parseName(String fullname){
 		return false;

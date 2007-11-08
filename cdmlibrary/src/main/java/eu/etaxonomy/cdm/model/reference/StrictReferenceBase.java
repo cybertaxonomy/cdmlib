@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 import java.util.*;
 import javax.persistence.*;
 
@@ -22,42 +21,38 @@ import javax.persistence.*;
  * datePublished field
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:34
+ * @created 08-Nov-2007 13:06:54
  */
 @Entity
 public abstract class StrictReferenceBase extends ReferenceBase {
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
-
 	//Title of the reference
-	@Description("Title of the reference")
 	private String title;
-	//The date range assigned to the reference.
-	//ISO Date range like. Flexible, year can be left out, etc
-	@Description("The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc")
+	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
 	private TimePeriod datePublished;
 
 	public String getTitle(){
-		return title;
+		return this.title;
 	}
 
 	/**
 	 * 
-	 * @param title
+	 * @param title    title
 	 */
 	public void setTitle(String title){
-		;
+		this.title = title;
 	}
 
 	public TimePeriod getDatePublished(){
-		return datePublished;
+		return this.datePublished;
 	}
 
 	/**
 	 * 
-	 * @param datePublished
+	 * @param datePublished    datePublished
 	 */
 	public void setDatePublished(TimePeriod datePublished){
-		;
+		this.datePublished = datePublished;
 	}
 
 	/**
@@ -70,8 +65,8 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	}
 
 	@Transient
-	public int getYear(){
-		return 0;
+	public String getYear(){
+		return null;
 	}
 
 }

@@ -20,52 +20,49 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:39
+ * @created 08-Nov-2007 13:07:00
  */
 @Entity
 public class TissueSample extends VersionableEntity {
 	static Logger logger = Logger.getLogger(TissueSample.class);
-
-	@Description("")
 	private String description;
-	@Description("")
 	private Calendar samplingDate;
 	private ObservationalUnit sampledFrom;
 
 	public ObservationalUnit getSampledFrom(){
-		return sampledFrom;
+		return this.sampledFrom;
 	}
 
 	/**
 	 * 
-	 * @param sampledFrom
+	 * @param sampledFrom    sampledFrom
 	 */
 	public void setSampledFrom(ObservationalUnit sampledFrom){
-		;
+		this.sampledFrom = sampledFrom;
 	}
 
 	public String getDescription(){
-		return description;
+		return this.description;
 	}
 
 	/**
 	 * 
-	 * @param description
+	 * @param description    description
 	 */
 	public void setDescription(String description){
-		;
+		this.description = description;
 	}
 
 	public Calendar getSamplingDate(){
-		return samplingDate;
+		return this.samplingDate;
 	}
 
 	/**
 	 * 
-	 * @param samplingDate
+	 * @param samplingDate    samplingDate
 	 */
 	public void setSamplingDate(Calendar samplingDate){
-		;
+		this.samplingDate = samplingDate;
 	}
 
 }

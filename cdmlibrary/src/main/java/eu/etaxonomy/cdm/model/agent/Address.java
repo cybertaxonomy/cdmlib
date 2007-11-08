@@ -19,116 +19,109 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * taken from TDWG & VCard
- * 
- * http://rs.tdwg.org/ontology/voc/ContactDetails#Address
+ * taken from TDWG & VCard  http://rs.tdwg.
+ * org/ontology/voc/ContactDetails#Address
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:35:54
+ * @created 08-Nov-2007 13:06:09
  */
 @Entity
 public class Address extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Address.class);
-
 	//Post Office Box
-	@Description("Post Office Box")
 	private String pobox;
 	//including number
-	@Description("including number")
 	private String street;
-	@Description("")
 	private String postcode;
 	//town,locality,suburb
-	@Description("town,locality,suburb")
 	private String locality;
 	//Region/State
-	@Description("Region/State")
 	private String region;
 	private WaterbodyOrCountry country;
 	private Point location;
 
 	public WaterbodyOrCountry getCountry(){
-		return country;
+		return this.country;
 	}
 
 	/**
 	 * 
-	 * @param country
+	 * @param country    country
 	 */
 	public void setCountry(WaterbodyOrCountry country){
-		;
+		this.country = country;
 	}
 
 	public Point getLocation(){
-		return location;
+		return this.location;
 	}
 
 	/**
 	 * 
-	 * @param location
+	 * @param location    location
 	 */
 	public void setLocation(Point location){
-		;
+		this.location = location;
 	}
 
 	public String getPobox(){
-		return pobox;
+		return this.pobox;
 	}
 
 	/**
 	 * 
-	 * @param pobox
+	 * @param pobox    pobox
 	 */
 	public void setPobox(String pobox){
-		;
+		this.pobox = pobox;
 	}
 
 	public String getStreet(){
-		return street;
+		return this.street;
 	}
 
 	/**
 	 * 
-	 * @param street
+	 * @param street    street
 	 */
 	public void setStreet(String street){
-		;
+		this.street = street;
 	}
 
 	public String getPostcode(){
-		return postcode;
+		return this.postcode;
 	}
 
 	/**
 	 * 
-	 * @param postcode
+	 * @param postcode    postcode
 	 */
 	public void setPostcode(String postcode){
-		;
+		this.postcode = postcode;
 	}
 
 	public String getLocality(){
-		return locality;
+		return this.locality;
 	}
 
 	/**
 	 * 
-	 * @param locality
+	 * @param locality    locality
 	 */
 	public void setLocality(String locality){
-		;
+		this.locality = locality;
 	}
 
 	public String getRegion(){
-		return region;
+		return this.region;
 	}
 
 	/**
 	 * 
-	 * @param region
+	 * @param region    region
 	 */
 	public void setRegion(String region){
-		;
+		this.region = region;
 	}
 
 }

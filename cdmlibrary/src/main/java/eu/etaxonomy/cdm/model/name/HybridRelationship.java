@@ -20,66 +20,64 @@ import javax.persistence.*;
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:09
+ * @created 08-Nov-2007 13:06:26
  */
 @Entity
 public class HybridRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(HybridRelationship.class);
-
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
-	@Description("The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in the note property.")
 	private String ruleConsidered;
 	private BotanicalName parentName;
 	private HybridRelationshipType type;
 	private BotanicalName hybridName;
 
 	public HybridRelationshipType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(HybridRelationshipType type){
-		;
+		this.type = type;
 	}
 
 	public BotanicalName getParentName(){
-		return parentName;
+		return this.parentName;
 	}
 
 	/**
 	 * 
-	 * @param parentName
+	 * @param parentName    parentName
 	 */
 	public void setParentName(BotanicalName parentName){
-		;
+		this.parentName = parentName;
 	}
 
 	public BotanicalName getHybridName(){
-		return hybridName;
+		return this.hybridName;
 	}
 
 	/**
 	 * 
-	 * @param hybridName
+	 * @param hybridName    hybridName
 	 */
 	public void setHybridName(BotanicalName hybridName){
-		;
+		this.hybridName = hybridName;
 	}
 
 	public String getRuleConsidered(){
-		return ruleConsidered;
+		return this.ruleConsidered;
 	}
 
 	/**
 	 * 
-	 * @param ruleConsidered
+	 * @param ruleConsidered    ruleConsidered
 	 */
 	public void setRuleConsidered(String ruleConsidered){
-		;
+		this.ruleConsidered = ruleConsidered;
 	}
 
 }

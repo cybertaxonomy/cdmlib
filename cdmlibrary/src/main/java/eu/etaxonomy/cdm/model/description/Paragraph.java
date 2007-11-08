@@ -19,38 +19,36 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:22
+ * @created 08-Nov-2007 13:06:42
  */
 @Entity
 public class Paragraph extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Paragraph.class);
-
-	@Description("")
 	private String content;
 	private TextFormat format;
 
 	public TextFormat getFormat(){
-		return format;
+		return this.format;
 	}
 
 	/**
 	 * 
-	 * @param format
+	 * @param format    format
 	 */
 	public void setFormat(TextFormat format){
-		;
+		this.format = format;
 	}
 
 	public String getContent(){
-		return content;
+		return this.content;
 	}
 
 	/**
 	 * 
-	 * @param content
+	 * @param content    content
 	 */
 	public void setContent(String content){
-		;
+		this.content = content;
 	}
 
 }

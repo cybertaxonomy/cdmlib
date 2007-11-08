@@ -19,30 +19,28 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:39
+ * @created 08-Nov-2007 13:06:59
  */
 @Entity
 public class Thesis extends PublicationBase {
 	static Logger logger = Logger.getLogger(Thesis.class);
-
 	private Institution school;
 
 	public Institution getSchool(){
-		return school;
+		return this.school;
 	}
 
 	/**
 	 * 
-	 * @param school
+	 * @param school    school
 	 */
 	public void setSchool(Institution school){
-		;
+		this.school = school;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

@@ -19,30 +19,29 @@ import javax.persistence.*;
  * Taxon name class for animals
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:41
+ * @created 08-Nov-2007 13:07:03
  */
 @Entity
 public class ZoologicalName extends NonViralName {
-	static Logger logger = Logger.getLogger(ZoologicalName.class);
-
-	//Name of the breed of an animal
-	@Description("Name of the breed of an animal")
-	private String breed;
-
 	public ZoologicalName(Rank rank) {
 		super(rank);
+		// TODO Auto-generated constructor stub
 	}
 
+	static Logger logger = Logger.getLogger(ZoologicalName.class);
+	//Name of the breed of an animal
+	private String breed;
+
 	public String getBreed(){
-		return breed;
+		return this.breed;
 	}
 
 	/**
 	 * 
-	 * @param breed
+	 * @param breed    breed
 	 */
 	public void setBreed(String breed){
-		;
+		this.breed = breed;
 	}
 
 	@Transient

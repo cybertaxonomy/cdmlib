@@ -18,66 +18,62 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:25
+ * @created 08-Nov-2007 13:06:45
  */
 @Entity
 public abstract class PrintedUnitBase extends PublicationBase {
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
-
-	@Description("")
 	private String editor;
-	@Description("")
 	private String volume;
-	@Description("")
 	private String pages;
 	private PrintSeries inSeries;
 
 	public PrintSeries getInSeries(){
-		return inSeries;
+		return this.inSeries;
 	}
 
 	/**
 	 * 
-	 * @param inSeries
+	 * @param inSeries    inSeries
 	 */
 	public void setInSeries(PrintSeries inSeries){
-		;
+		this.inSeries = inSeries;
 	}
 
 	public String getEditor(){
-		return editor;
+		return this.editor;
 	}
 
 	/**
 	 * 
-	 * @param editor
+	 * @param editor    editor
 	 */
 	public void setEditor(String editor){
-		;
+		this.editor = editor;
 	}
 
 	public String getVolume(){
-		return volume;
+		return this.volume;
 	}
 
 	/**
 	 * 
-	 * @param volume
+	 * @param volume    volume
 	 */
 	public void setVolume(String volume){
-		;
+		this.volume = volume;
 	}
 
 	public String getPages(){
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * 
-	 * @param pages
+	 * @param pages    pages
 	 */
 	public void setPages(String pages){
-		;
+		this.pages = pages;
 	}
 
 }

@@ -18,42 +18,39 @@ import javax.persistence.*;
 
 /**
  * This list should be extensible at runtime through configuration. This needs to
- * be investigated.
- * http://rs.tdwg.org/ontology/voc/TaxonRank
+ * be investigated. http://rs.tdwg.org/ontology/voc/TaxonRank
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:26
+ * @created 08-Nov-2007 13:06:46
  */
 @Entity
 public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
-
-	@Description("")
 	private static String ontologyClassUri = "http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm";
 	private ArrayList m_TaxonNameBase;
 
 	public ArrayList getM_TaxonNameBase(){
-		return m_TaxonNameBase;
+		return this.m_TaxonNameBase;
 	}
 
 	/**
 	 * 
-	 * @param m_TaxonNameBase
+	 * @param m_TaxonNameBase    m_TaxonNameBase
 	 */
 	public void setM_TaxonNameBase(ArrayList m_TaxonNameBase){
-		;
+		this.m_TaxonNameBase = m_TaxonNameBase;
 	}
 
 	public String getOntologyClassUri(){
-		return ontologyClassUri;
+		return this.ontologyClassUri;
 	}
 
 	/**
 	 * 
-	 * @param ontologyClassUri
+	 * @param ontologyClassUri    ontologyClassUri
 	 */
 	public void setOntologyClassUri(String ontologyClassUri){
-		;
+		this.ontologyClassUri = ontologyClassUri;
 	}
 
 	public static final Rank EMPIRE(){

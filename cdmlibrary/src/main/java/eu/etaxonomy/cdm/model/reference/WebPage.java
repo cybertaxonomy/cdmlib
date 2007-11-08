@@ -18,16 +18,15 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:41
+ * @created 08-Nov-2007 13:07:03
  */
 @Entity
 public class WebPage extends PublicationBase {
 	static Logger logger = Logger.getLogger(WebPage.class);
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

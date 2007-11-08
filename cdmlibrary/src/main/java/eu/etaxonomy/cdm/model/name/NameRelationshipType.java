@@ -18,41 +18,19 @@ import javax.persistence.*;
 
 /**
  * The list should be extensible at runtime through configuration. This needs to
- * be investigated.
- * 
- * 
- * Subgroups are:
- * ================
- * 
- * 
- * Illegitimate:
- * ------------------------
- * LaterHomonym,
- * TreatedAsLaterHomonym,
- * RejectedInFavour
- * 
- * Legitimate:
- * ------------------------
- * ReplacedSynonym,
- * AlternativeName,
- * ConservedAgainst,
- * OrthographyConserved
- * 
- * Invalid:
- * -----------------------------------
- * ValidatedByName,
- * LaterValidatedByName
+ * be investigated.   Subgroups are: ================   Illegitimate: -------------
+ * ----------- LaterHomonym, TreatedAsLaterHomonym, RejectedInFavour  Legitimate: -
+ * ----------------------- ReplacedSynonym, AlternativeName, ConservedAgainst,
+ * OrthographyConserved  Invalid: -----------------------------------
+ * ValidatedByName, LaterValidatedByName
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:19
+ * @created 08-Nov-2007 13:06:38
  */
 @Entity
 public class NameRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm";
-
 
 	public boolean isInvalidType(){
 		//True, if enum is of type:

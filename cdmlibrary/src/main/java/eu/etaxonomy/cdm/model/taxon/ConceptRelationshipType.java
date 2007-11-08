@@ -19,25 +19,23 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:01
+ * @created 08-Nov-2007 13:06:17
  */
 @Entity
 public class ConceptRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
 
 	public String getInitializationClassUri(){
-		return initializationClassUri;
+		return this.initializationClassUri;
 	}
 
 	/**
 	 * 
-	 * @param initializationClassUri
+	 * @param initializationClassUri    initializationClassUri
 	 */
 	public void setInitializationClassUri(String initializationClassUri){
-		;
+		this.initializationClassUri = initializationClassUri;
 	}
 
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){

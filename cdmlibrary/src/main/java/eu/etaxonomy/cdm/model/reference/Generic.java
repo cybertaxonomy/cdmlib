@@ -21,95 +21,88 @@ import javax.persistence.*;
  * reference type are not necessary here.
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:08
+ * @created 08-Nov-2007 13:06:26
  */
 @Entity
 public class Generic extends StrictReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(Generic.class);
-
-	@Description("")
 	private String publisher;
-	@Description("")
 	private String placePublished;
-	@Description("")
 	private String editor;
-	@Description("")
 	private String series;
-	@Description("")
 	private String volume;
-	@Description("")
 	private String pages;
 
 	public String getPublisher(){
-		return publisher;
+		return this.publisher;
 	}
 
 	/**
 	 * 
-	 * @param publisher
+	 * @param publisher    publisher
 	 */
 	public void setPublisher(String publisher){
-		;
+		this.publisher = publisher;
 	}
 
 	public String getPlacePublished(){
-		return placePublished;
+		return this.placePublished;
 	}
 
 	/**
 	 * 
-	 * @param placePublished
+	 * @param placePublished    placePublished
 	 */
 	public void setPlacePublished(String placePublished){
-		;
+		this.placePublished = placePublished;
 	}
 
 	public String getEditor(){
-		return editor;
+		return this.editor;
 	}
 
 	/**
 	 * 
-	 * @param editor
+	 * @param editor    editor
 	 */
 	public void setEditor(String editor){
-		;
+		this.editor = editor;
 	}
 
 	public String getSeries(){
-		return series;
+		return this.series;
 	}
 
 	/**
 	 * 
-	 * @param series
+	 * @param series    series
 	 */
 	public void setSeries(String series){
-		;
+		this.series = series;
 	}
 
 	public String getVolume(){
-		return volume;
+		return this.volume;
 	}
 
 	/**
 	 * 
-	 * @param volume
+	 * @param volume    volume
 	 */
 	public void setVolume(String volume){
-		;
+		this.volume = volume;
 	}
 
 	public String getPages(){
-		return pages;
+		return this.pages;
 	}
 
 	/**
 	 * 
-	 * @param pages
+	 * @param pages    pages
 	 */
 	public void setPages(String pages){
-		;
+		this.pages = pages;
 	}
 
 	/**
@@ -130,15 +123,9 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 		return "";
 	}
 
-	@Transient
-	public int getYear(){
-		return 0;
-	}
-
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

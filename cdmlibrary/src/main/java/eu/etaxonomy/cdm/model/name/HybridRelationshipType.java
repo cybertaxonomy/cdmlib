@@ -19,10 +19,9 @@ import javax.persistence.*;
 /**
  * The list should be extensible at runtime through configuration. This needs to
  * be investigated.
- * 
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:09
+ * @created 08-Nov-2007 13:06:27
  */
 @Entity
 public class HybridRelationshipType extends EnumeratedTermBase {

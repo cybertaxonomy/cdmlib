@@ -18,30 +18,28 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:34
+ * @created 08-Nov-2007 13:06:55
  */
 @Entity
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
-
 	private ArrayList synoynmRelations;
 
 	public ArrayList getSynoynmRelations(){
-		return synoynmRelations;
+		return this.synoynmRelations;
 	}
 
 	/**
 	 * 
-	 * @param synoynmRelations
+	 * @param synoynmRelations    synoynmRelations
 	 */
 	public void setSynoynmRelations(ArrayList synoynmRelations){
-		;
+		this.synoynmRelations = synoynmRelations;
 	}
 
 	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateTitle(){
+		return "";
 	}
 
 }

@@ -19,50 +19,49 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:35
+ * @created 08-Nov-2007 13:06:55
  */
 @Entity
 public class SynonymRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
-
 	private Synonym synoynm;
 	private Taxon acceptedTaxon;
 	private SynonymRelationshipType type;
 
 	public Taxon getAcceptedTaxon(){
-		return acceptedTaxon;
+		return this.acceptedTaxon;
 	}
 
 	/**
 	 * 
-	 * @param acceptedTaxon
+	 * @param acceptedTaxon    acceptedTaxon
 	 */
 	public void setAcceptedTaxon(Taxon acceptedTaxon){
-		;
+		this.acceptedTaxon = acceptedTaxon;
 	}
 
 	public SynonymRelationshipType getType(){
-		return type;
+		return this.type;
 	}
 
 	/**
 	 * 
-	 * @param type
+	 * @param type    type
 	 */
 	public void setType(SynonymRelationshipType type){
-		;
+		this.type = type;
 	}
 
 	public Synonym getSynoynm(){
-		return synoynm;
+		return this.synoynm;
 	}
 
 	/**
 	 * 
-	 * @param synoynm
+	 * @param synoynm    synoynm
 	 */
 	public void setSynoynm(Synonym synoynm){
-		;
+		this.synoynm = synoynm;
 	}
 
 }

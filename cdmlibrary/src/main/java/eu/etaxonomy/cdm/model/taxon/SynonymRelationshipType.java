@@ -19,15 +19,12 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:35
+ * @created 08-Nov-2007 13:06:55
  */
 @Entity
 public class SynonymRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
-
-	@Description("")
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
-
 
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return null;

@@ -21,52 +21,49 @@ import javax.persistence.*;
  * type has to be a "species" name}
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:19
+ * @created 08-Nov-2007 13:06:38
  */
 @Entity
 public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
-
-	@Description("")
 	private boolean isRejectedType;
-	@Description("")
 	private boolean isConservedType;
 	private TaxonNameBase typeSpecies;
 
 	public TaxonNameBase getTypeSpecies(){
-		return typeSpecies;
+		return this.typeSpecies;
 	}
 
 	/**
 	 * 
-	 * @param typeSpecies
+	 * @param typeSpecies    typeSpecies
 	 */
 	public void setTypeSpecies(TaxonNameBase typeSpecies){
-		;
+		this.typeSpecies = typeSpecies;
 	}
 
 	public boolean isRejectedType(){
-		return isRejectedType;
+		return this.isRejectedType;
 	}
 
 	/**
 	 * 
-	 * @param isRejectedType
+	 * @param isRejectedType    isRejectedType
 	 */
 	public void setRejectedType(boolean isRejectedType){
-		;
+		this.isRejectedType = isRejectedType;
 	}
 
 	public boolean isConservedType(){
-		return isConservedType;
+		return this.isConservedType;
 	}
 
 	/**
 	 * 
-	 * @param isConservedType
+	 * @param isConservedType    isConservedType
 	 */
 	public void setConservedType(boolean isConservedType){
-		;
+		this.isConservedType = isConservedType;
 	}
 
 }

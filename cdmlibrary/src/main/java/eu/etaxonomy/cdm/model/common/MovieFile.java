@@ -18,26 +18,24 @@ import javax.persistence.*;
 /**
  * @author m.doering
  * @version 1.0
- * @created 02-Nov-2007 19:36:17
+ * @created 08-Nov-2007 13:06:35
  */
 @Entity
 public class MovieFile extends ImageFile {
 	static Logger logger = Logger.getLogger(MovieFile.class);
-
 	//Length of movie in seconds
-	@Description("Length of movie in seconds")
 	private int duration;
 
 	public int getDuration(){
-		return duration;
+		return this.duration;
 	}
 
 	/**
 	 * 
-	 * @param duration
+	 * @param duration    duration
 	 */
 	public void setDuration(int duration){
-		;
+		this.duration = duration;
 	}
 
 }
