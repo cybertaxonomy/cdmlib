@@ -73,7 +73,6 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.reference = reference;
 	}
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<View> getSuperViews() {
 		return superViews;
 	}

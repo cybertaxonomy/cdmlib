@@ -26,7 +26,6 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	private ArrayList<Marker> markers;
 	private ArrayList<Annotation> annotations;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Marker> getMarkers(){
 		return this.markers;
 	}
@@ -47,7 +46,6 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	}
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Annotation> getAnnotations(){
 		return this.annotations;
 	}

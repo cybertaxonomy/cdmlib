@@ -77,7 +77,6 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	}
 
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 public ArrayList<Rights> getRights(){
 		return this.rights;
 	}
@@ -99,7 +98,6 @@ public ArrayList<Rights> getRights(){
 
 	}
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	public ArrayList<Extension> getExtensions(){
 		return this.extensions;
 	}

@@ -40,10 +40,10 @@ public class Person extends IdentifiableEntity {
 	//suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
 	//prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
 	private TimePeriod lifespan;
-	private ArrayList institutionalMemberships;
+	private ArrayList<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
-	private ArrayList personInSources;
-	private ArrayList keywords;
+	private ArrayList<PersonInSource> personInSources;
+	private ArrayList<Keyword> keywords;
 
 	public ArrayList getInstitutionalMemberships(){
 		return this.institutionalMemberships;

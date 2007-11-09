@@ -39,15 +39,17 @@
         <property name="annotatedPackages">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.common</value>
-				<value>eu.etaxonomy.cdm.model.name</value>
-				<value>eu.etaxonomy.cdm.model.agent</value>
 			</list>
 		</property>
 		
         <property name="annotatedClasses">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.name.TaxonNameBase</value>
-		       	<value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
+				<value>eu.etaxonomy.cdm.model.name.NonViralName</value>
+				<value>eu.etaxonomy.cdm.model.name.BotanicalName</value>
+				<value>eu.etaxonomy.cdm.model.name.BacterialName</value>
+				<value>eu.etaxonomy.cdm.model.name.ZoologicalName</value>
+				<value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
 				<value>eu.etaxonomy.cdm.model.common.CdmBase</value>
 				<value>eu.etaxonomy.cdm.model.common.VersionableEntity</value>
 				<value>eu.etaxonomy.cdm.model.common.AnnotatableEntity</value>
