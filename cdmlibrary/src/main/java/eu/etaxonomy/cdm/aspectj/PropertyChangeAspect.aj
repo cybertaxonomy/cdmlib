@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.Signature;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

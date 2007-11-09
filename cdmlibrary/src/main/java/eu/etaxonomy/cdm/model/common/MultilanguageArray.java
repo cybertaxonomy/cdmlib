@@ -25,4 +25,11 @@ public class MultilanguageArray extends ArrayList<LanguageString>{
 		super.add(ls);
 		return ls;
 	}
+	public void removeText(Language lang){
+		super.remove(getText(lang));
+	}
+	public LanguageString getText(Language lang){
+		// FIXME: ...
+		return super.get(0);
+	}
 }

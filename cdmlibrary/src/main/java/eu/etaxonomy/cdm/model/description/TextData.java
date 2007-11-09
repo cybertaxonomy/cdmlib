@@ -51,4 +51,12 @@ public class TextData extends FeatureBase {
 		this.texts.remove(ls);
 	}
 
+	public TextFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(TextFormat format) {
+		this.format = format;
+	}
+
 }

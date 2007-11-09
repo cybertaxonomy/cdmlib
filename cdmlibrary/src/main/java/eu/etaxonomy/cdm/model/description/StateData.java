@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MultilanguageArray;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -24,9 +26,9 @@ import javax.persistence.*;
 @Entity
 public class StateData extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StateData.class);
-	private String modifyingText;
-	private ArrayList modifiers;
 	private State state;
+	private ArrayList<Modifier> modifiers;
+	private MultilanguageArray modifyingText;
 
 	public State getState(){
 		return this.state;
@@ -40,7 +42,7 @@ public class StateData extends VersionableEntity {
 		this.state = state;
 	}
 
-	public ArrayList getModifiers(){
+	public ArrayList<Modifier> getModifiers(){
 		return this.modifiers;
 	}
 
@@ -48,11 +50,14 @@ public class StateData extends VersionableEntity {
 	 * 
 	 * @param modifiers    modifiers
 	 */
-	public void setModifiers(ArrayList modifiers){
-		this.modifiers = modifiers;
+	public void addModifier(Modifier modifier){
+		this.modifiers.add(modifier);
+	}
+	public void removeModifier(Modifier modifier){
+		this.modifiers.remove(modifier);
 	}
 
-	public String getModifyingText(){
+	public MultilanguageArray getModifyingText(){
 		return this.modifyingText;
 	}
 
@@ -60,8 +65,11 @@ public class StateData extends VersionableEntity {
 	 * 
 	 * @param modifyingText    modifyingText
 	 */
-	public void setModifyingText(String modifyingText){
-		this.modifyingText = modifyingText;
+	public void addModifyingText(String text, Language lang){
+		this.modifyingText.addText(text, lang);
+	}
+	public void removeModifyingText(Language lang){
+		this.modifyingText.removeText(lang);
 	}
 
 }
