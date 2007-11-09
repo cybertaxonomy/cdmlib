@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.view;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -23,37 +27,15 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:01
  */
 @Entity
-public class View {
+public class View extends CdmBase implements IReferencedEntity{
 	static Logger logger = Logger.getLogger(View.class);
 	private String name;
 	private String description;
-	private ArrayList users;
-	private java.util.ArrayList superView;
-
-	public java.util.ArrayList getSuperView(){
-		return this.superView;
-	}
-
-	/**
-	 * 
-	 * @param superView    superView
-	 */
-	public void setSuperView(java.util.ArrayList superView){
-		this.superView = superView;
-	}
-
-	public ArrayList getUsers(){
-		return this.users;
-	}
-
-	/**
-	 * 
-	 * @param users    users
-	 */
-	public void setUsers(ArrayList users){
-		this.users = users;
-	}
-
+	private ReferenceBase reference;
+	private ArrayList<View> superViews;
+	private ArrayList<CdmBase> members;
+	private ArrayList<CdmBase> nonMembers;
+	
 	public String getName(){
 		return this.name;
 	}
@@ -76,6 +58,57 @@ public class View {
 	 */
 	public void setDescription(String description){
 		this.description = description;
+	}
+
+	@Transient
+	public ReferenceBase getCitation() {
+		return getReference();
+	}
+
+	public ReferenceBase getReference() {
+		return reference;
+	}
+
+	public void setReference(ReferenceBase reference) {
+		this.reference = reference;
+	}
+
+	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	public ArrayList<View> getSuperViews() {
+		return superViews;
+	}
+
+	public void addSuperView(View superView) {
+		this.superViews.add(superView);
+	}
+	public void removeSuperView(View superView) {
+		this.superViews.remove(superView);
+	}
+
+	public ArrayList<CdmBase> getMembers() {
+		return members;
+	}
+	public void setMembers(ArrayList<CdmBase> members) {
+		this.members = members;
+	}
+	public void addMember(CdmBase member) {
+		this.members.add(member);
+	}
+	public void removeMember(CdmBase member) {
+		this.members.remove(member);
+	}
+
+	public ArrayList<CdmBase> getNonMembers() {
+		return nonMembers;
+	}
+	public void setNonMembers(ArrayList<CdmBase> nonMembers) {
+		this.nonMembers = nonMembers;
+	}
+	public void addNonMember(CdmBase member) {
+		this.nonMembers.add(member);
+	}
+	public void removeNonMember(CdmBase member) {
+		this.nonMembers.remove(member);
 	}
 
 }

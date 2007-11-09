@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 
 public abstract class CdmBase {
-
+	
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

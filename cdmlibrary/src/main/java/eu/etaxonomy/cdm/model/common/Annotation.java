@@ -23,6 +23,10 @@ import javax.persistence.*;
  */
 @Entity
 public class Annotation extends LanguageString {
+	public Annotation(String text, Language lang) {
+		super(text, lang);
+	}
+
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;

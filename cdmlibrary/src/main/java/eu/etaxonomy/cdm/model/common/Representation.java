@@ -23,6 +23,10 @@ import javax.persistence.*;
  */
 @Entity
 public class Representation extends LanguageString {
+	public Representation(String text, Language lang) {
+		super(text, lang);
+	}
+
 	static Logger logger = Logger.getLogger(Representation.class);
 	private String label;
 	private String abbreviatedLabel;

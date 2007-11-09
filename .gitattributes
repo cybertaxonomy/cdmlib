@@ -213,7 +213,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/taxon/Taxon.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonInSource.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/view/User.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/AgentDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/DaoBase.java -text

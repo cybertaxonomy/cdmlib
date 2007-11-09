@@ -35,7 +35,6 @@ public abstract class VersionableEntity extends CdmBase {
 	private Person updatedBy;
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
-	private ArrayList m_View;
 
 	public VersionableEntity getNextVersion(){
 		return this.nextVersion;
