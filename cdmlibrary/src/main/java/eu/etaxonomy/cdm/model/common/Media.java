@@ -24,10 +24,10 @@ import javax.persistence.*;
 @Entity
 public class Media extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Media.class);
-	private MultilanguageString title;
+	private MultilanguageArray title;
 	//creation date of the media (not of the record)
 	private Calendar mediaCreated;
-	private MultilanguageString description;
+	private MultilanguageArray description;
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
 	private ArrayList instances;
@@ -70,7 +70,7 @@ public class Media extends AnnotatableEntity {
 		this.rights = rights;
 	}
 
-	public MultilanguageString getTitle(){
+	public MultilanguageArray getTitle(){
 		return this.title;
 	}
 
@@ -78,7 +78,7 @@ public class Media extends AnnotatableEntity {
 	 * 
 	 * @param title    title
 	 */
-	public void setTitle(MultilanguageString title){
+	public void setTitle(MultilanguageArray title){
 		this.title = title;
 	}
 
@@ -94,7 +94,7 @@ public class Media extends AnnotatableEntity {
 		this.mediaCreated = mediaCreated;
 	}
 
-	public MultilanguageString getDescription(){
+	public MultilanguageArray getDescription(){
 		return this.description;
 	}
 
@@ -102,7 +102,7 @@ public class Media extends AnnotatableEntity {
 	 * 
 	 * @param description    description
 	 */
-	public void setDescription(MultilanguageString description){
+	public void setDescription(MultilanguageArray description){
 		this.description = description;
 	}
 

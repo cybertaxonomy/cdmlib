@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import java.util.*;
@@ -28,23 +30,22 @@ public class Description extends IdentifiableEntity {
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	private String label;
 	private ArrayList<FeatureBase> features;
-	private ArrayList scopes;
-	private ArrayList<ReferenceBase> sources;
-	private ArrayList geoScopes;
+	private ArrayList<Scope> scopes;
+	private ReferenceBase source;
+	private ArrayList<NamedArea> geoScopes;
+	private ArrayList<ObservationalUnit> observationalUnits;
+	private Taxon taxon;
 
-	public ArrayList<ReferenceBase> getSources(){
-		return this.sources;
+	public ReferenceBase getSource(){
+		return this.source;
 	}
 
 	/**
 	 * 
-	 * @param sources    sources
+	 * @param source    sources
 	 */
-	public void addSource(ReferenceBase source){
-		this.sources.add(source);
-	}
-	public void removeSource(ReferenceBase source){
-		this.sources.remove(source);
+	public void setSource(ReferenceBase source){
+		this.source= source;
 	}
 
 	public ArrayList getGeoScopes(){
@@ -101,6 +102,26 @@ public class Description extends IdentifiableEntity {
 	@Override
 	public String generateTitle(){
 		return "";
+	}
+
+	public ArrayList<ObservationalUnit> getObservationalUnit() {
+		return observationalUnits;
+	}
+
+	public void addObservationalUnit(ObservationalUnit observationalUnit) {
+		this.observationalUnits.add(observationalUnit);
+	}
+
+	public void removeObservationalUnit(ObservationalUnit observationalUnit) {
+		this.observationalUnits.remove(observationalUnit);
+	}
+
+	public Taxon getTaxon() {
+		return taxon;
+	}
+
+	public void setTaxon(Taxon taxon) {
+		this.taxon = taxon;
 	}
 
 }

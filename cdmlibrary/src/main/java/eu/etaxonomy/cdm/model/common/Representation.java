@@ -22,24 +22,11 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class Representation extends VersionableEntity {
+public class Representation extends LanguageString {
 	static Logger logger = Logger.getLogger(Representation.class);
 	private String label;
 	private String abbreviatedLabel;
-	private String description;
-	private Language language;
 
-	public Language getLanguage(){
-		return this.language;
-	}
-
-	/**
-	 * 
-	 * @param language    language
-	 */
-	public void setLanguage(Language language){
-		this.language = language;
-	}
 
 	public String getLabel(){
 		return this.label;
@@ -63,18 +50,6 @@ public class Representation extends VersionableEntity {
 	 */
 	public void setAbbreviatedLabel(String abbreviatedLabel){
 		this.abbreviatedLabel = abbreviatedLabel;
-	}
-
-	public String getDescription(){
-		return this.description;
-	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
-	public void setDescription(String description){
-		this.description = description;
 	}
 
 }

@@ -14,6 +14,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.MultilanguageArray;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+
 import org.apache.log4j.Logger;
 import java.util.*;
 import javax.persistence.*;
@@ -24,15 +27,15 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:24
  */
 @Entity
-public abstract class FeatureBase extends AnnotatableEntity implements IReferencedEntity {
+public abstract class FeatureBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
-	private String modifyingText;
-	private ArrayList media;
 	//type, category of information. In structured descriptions characters
 	private FeatureType type;
-	private ArrayList modifiers;
+	private ArrayList<Modifier> modifiers;
+	private MultilanguageArray modifyingText;
+	private ArrayList<Media> media;
 
-	public ArrayList getMedia(){
+	public ArrayList<Media> getMedia(){
 		return this.media;
 	}
 
@@ -40,8 +43,11 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 	 * 
 	 * @param media    media
 	 */
-	public void setMedia(ArrayList media){
-		this.media = media;
+	public void addMedia(Media media){
+		this.media.add(media);
+	}
+	public void removeMedia(Media media){
+		this.media.remove(media);
 	}
 
 	public FeatureType getType(){
@@ -68,7 +74,7 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 		this.modifiers = modifiers;
 	}
 
-	public String getModifyingText(){
+	public MultilanguageArray getModifyingText(){
 		return this.modifyingText;
 	}
 
@@ -76,13 +82,8 @@ public abstract class FeatureBase extends AnnotatableEntity implements IReferenc
 	 * 
 	 * @param modifyingText    modifyingText
 	 */
-	public void setModifyingText(String modifyingText){
+	public void setModifyingText(MultilanguageArray modifyingText){
 		this.modifyingText = modifyingText;
-	}
-
-	@Transient
-	public ReferenceBase getCitation(){
-		return null;
 	}
 
 }

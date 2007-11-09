@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
-import eu.etaxonomy.cdm.model.common.MultilanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageArray;
 import eu.etaxonomy.cdm.model.description.Description;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
@@ -27,7 +27,7 @@ import javax.persistence.*;
 public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 	//Description defining the Observational unit in the context of the original Occurrence
-	private MultilanguageString definition;
+	private MultilanguageArray definition;
 	private ArrayList descriptions;
 	private ArrayList<Determination> determinations;
 	private Occurrence occurence;
@@ -68,7 +68,7 @@ public class ObservationalUnit extends IdentifiableEntity {
 		this.descriptions = descriptions;
 	}
 
-	public MultilanguageString getDefinition(){
+	public MultilanguageArray getDefinition(){
 		return this.definition;
 	}
 
@@ -76,7 +76,7 @@ public class ObservationalUnit extends IdentifiableEntity {
 	 * 
 	 * @param definition    definition
 	 */
-	public void setDefinition(MultilanguageString definition){
+	public void setDefinition(MultilanguageArray definition){
 		this.definition = definition;
 	}
 

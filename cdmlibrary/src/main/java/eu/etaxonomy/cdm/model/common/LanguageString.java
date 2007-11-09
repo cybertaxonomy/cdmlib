@@ -23,8 +23,13 @@ import javax.persistence.*;
 @Entity
 public class LanguageString  extends VersionableEntity{
 	static Logger logger = Logger.getLogger(LanguageString.class);
-	private char text;
+	private String text;
 	private Language language;
+
+	public LanguageString(String text, Language lang) {
+		this.setLanguage(lang);
+		this.setText(text);
+	}
 
 	public Language getLanguage(){
 		return this.language;
@@ -38,15 +43,10 @@ public class LanguageString  extends VersionableEntity{
 		this.language = language;
 	}
 
-	public char getText(){
+	public String getText(){
 		return this.text;
 	}
-
-	/**
-	 * 
-	 * @param text    text
-	 */
-	public void setText(char text){
+	private void setText(String text) {
 		this.text = text;
 	}
 

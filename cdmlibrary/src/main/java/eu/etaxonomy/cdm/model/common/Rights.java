@@ -25,15 +25,18 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class Rights extends VersionableEntity {
+public class Rights extends LanguageString {
 	static Logger logger = Logger.getLogger(Rights.class);
 	//external location of copyright text
 	private String uri;
-	private String statement;
-	private String abbreviatedStatement;
-	private Language language;
+	private String abbreviatedText;
 	private RightsTerm type;
 
+	public Rights(String text, Language lang) {
+		super(text, lang);
+	}
+
+	
 	public RightsTerm getType(){
 		return this.type;
 	}
@@ -46,17 +49,6 @@ public class Rights extends VersionableEntity {
 		this.type = type;
 	}
 
-	public Language getLanguage(){
-		return this.language;
-	}
-
-	/**
-	 * 
-	 * @param language    language
-	 */
-	public void setLanguage(Language language){
-		this.language = language;
-	}
 
 	public String getUri(){
 		return this.uri;
@@ -70,28 +62,17 @@ public class Rights extends VersionableEntity {
 		this.uri = uri;
 	}
 
-	public String getStatement(){
-		return this.statement;
-	}
 
-	/**
-	 * 
-	 * @param statement    statement
-	 */
-	public void setStatement(String statement){
-		this.statement = statement;
-	}
-
-	public String getAbbreviatedStatement(){
-		return this.abbreviatedStatement;
+	public String getAbbreviatedText(){
+		return this.abbreviatedText;
 	}
 
 	/**
 	 * 
 	 * @param abbreviatedStatement    abbreviatedStatement
 	 */
-	public void setAbbreviatedStatement(String abbreviatedStatement){
-		this.abbreviatedStatement = abbreviatedStatement;
+	public void setAbbreviatedText(String abbreviatedStatement){
+		this.abbreviatedText = abbreviatedStatement;
 	}
 
 }

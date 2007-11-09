@@ -103,7 +103,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Media.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MediaInstance.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MovieFile.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageArray.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageString.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedMedia.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Representation.java -text
@@ -125,7 +124,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/IdentificationKey.ja
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/Paragraph.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text

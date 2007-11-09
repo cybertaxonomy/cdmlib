@@ -22,11 +22,9 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Annotation extends VersionableEntity {
+public class Annotation extends LanguageString {
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
-	private String note;
-	private Language language;
 	private Person commentator;
 
 	public Person getCommentator(){
@@ -39,30 +37,6 @@ public class Annotation extends VersionableEntity {
 	 */
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
-	}
-
-	public Language getLanguage(){
-		return this.language;
-	}
-
-	/**
-	 * 
-	 * @param language    language
-	 */
-	public void setLanguage(Language language){
-		this.language = language;
-	}
-
-	public String getNote(){
-		return this.note;
-	}
-
-	/**
-	 * 
-	 * @param note    note
-	 */
-	public void setNote(String note){
-		this.note = note;
 	}
 
 }
