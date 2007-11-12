@@ -25,31 +25,30 @@ import javax.persistence.*;
  */
 @Entity
 public class StateData extends VersionableEntity {
+	public StateData() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	static Logger logger = Logger.getLogger(StateData.class);
 	private State state;
-	private ArrayList<Modifier> modifiers;
+	private Set<Modifier> modifiers;
 	private MultilanguageArray modifyingText;
 
+	
 	public State getState(){
 		return this.state;
 	}
-
-	/**
-	 * 
-	 * @param state    state
-	 */
 	public void setState(State state){
 		this.state = state;
 	}
+	
 
-	public ArrayList<Modifier> getModifiers(){
+	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-
-	/**
-	 * 
-	 * @param modifiers    modifiers
-	 */
+	public void setModifiers(Set<Modifier> modifiers) {
+		this.modifiers = modifiers;
+	}
 	public void addModifier(Modifier modifier){
 		this.modifiers.add(modifier);
 	}
@@ -57,19 +56,18 @@ public class StateData extends VersionableEntity {
 		this.modifiers.remove(modifier);
 	}
 
+
 	public MultilanguageArray getModifyingText(){
 		return this.modifyingText;
 	}
-
-	/**
-	 * 
-	 * @param modifyingText    modifyingText
-	 */
+	public void setModifyingText(MultilanguageArray modifyingText) {
+		this.modifyingText = modifyingText;
+	}
 	public void addModifyingText(String text, Language lang){
 		this.modifyingText.add(text, lang);
 	}
 	public void removeModifyingText(Language lang){
-		this.modifyingText.removeText(lang);
+		this.modifyingText.remove(lang);
 	}
 
 }
