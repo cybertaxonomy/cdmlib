@@ -22,11 +22,16 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 public abstract class AnnotatableEntity extends VersionableEntity {
-	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
-	private ArrayList<Marker> markers;
-	private ArrayList<Annotation> annotations;
+	public AnnotatableEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-	public ArrayList<Marker> getMarkers(){
+	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
+	private Set<Marker> markers;
+	private Set<Annotation> annotations;
+
+	public Set<Marker> getMarkers(){
 		return this.markers;
 	}
 
@@ -46,7 +51,7 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	}
 
-	public ArrayList<Annotation> getAnnotations(){
+	public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}
 
@@ -65,6 +70,14 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	 */
 	public void removeAnnotations(Annotation annotation){
 
+	}
+
+	public void setMarkers(Set<Marker> markers) {
+		this.markers = markers;
+	}
+
+	public void setAnnotations(Set<Annotation> annotations) {
+		this.annotations = annotations;
 	}
 
 }

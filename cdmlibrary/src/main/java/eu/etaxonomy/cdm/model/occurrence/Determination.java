@@ -54,6 +54,7 @@ public class Determination extends AnnotatableEntity {
 		this.identifierTeam = identifierTeam;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Calendar getIdentificationDate(){
 		return this.identificationDate;
 	}

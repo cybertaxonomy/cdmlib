@@ -24,14 +24,19 @@ import javax.persistence.*;
  */
 @Entity
 public class Contact extends VersionableEntity {
+	public Contact() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(Contact.class);
 	private String email;
 	private String url;
 	private String phone;
 	private String fax;
-	private ArrayList<Address> addresses;
+	private Set<Address> addresses;
 
-	public ArrayList<Address> getAddresses(){
+	public Set<Address> getAddresses(){
 		return this.addresses;
 	}
 
@@ -39,8 +44,14 @@ public class Contact extends VersionableEntity {
 	 * 
 	 * @param addresses    addresses
 	 */
-	public void setAddresses(ArrayList<Address> addresses){
+	public void setAddresses(Set<Address> addresses){
 		this.addresses = addresses;
+	}
+	public void addAddress(Address address){
+		this.addresses.add(address);
+	}
+	public void removeAddress(Address address){
+		this.addresses.remove(address);
 	}
 
 	public String getEmail(){

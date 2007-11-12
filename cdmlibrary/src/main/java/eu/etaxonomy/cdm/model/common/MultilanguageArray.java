@@ -20,15 +20,15 @@ import org.apache.log4j.Logger;
 public class MultilanguageArray extends ArrayList<LanguageString>{
 	static Logger logger = Logger.getLogger(MultilanguageArray.class);
 
-	public LanguageString addText(String text, Language lang){
+	public LanguageString add(String text, Language lang){
 		LanguageString ls = new LanguageString(text, lang);
 		super.add(ls);
 		return ls;
 	}
-	public void removeText(Language lang){
-		super.remove(getText(lang));
+	public void remove(Language lang){
+		super.remove(get(lang));
 	}
-	public LanguageString getText(Language lang){
+	public LanguageString get(Language lang){
 		// FIXME: ...
 		return super.get(0);
 	}

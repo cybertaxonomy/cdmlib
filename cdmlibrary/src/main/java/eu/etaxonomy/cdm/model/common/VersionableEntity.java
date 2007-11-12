@@ -24,6 +24,12 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 public abstract class VersionableEntity extends CdmBase {
+	public VersionableEntity() {
+		super();
+		this.uuid = UUID.randomUUID().toString();
+		this.created = Calendar.getInstance();
+	}
+
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
 	private int id;
 	//the globally unique identifier
@@ -60,6 +66,7 @@ public abstract class VersionableEntity extends CdmBase {
 		this.previousVersion = previousVersion;
 	}
 
+	@ManyToOne
 	public Person getUpdatedBy(){
 		return this.updatedBy;
 	}
@@ -72,6 +79,7 @@ public abstract class VersionableEntity extends CdmBase {
 		this.updatedBy = updatedBy;
 	}
 
+	@ManyToOne
 	public Person getCreatedBy(){
 		return this.createdBy;
 	}
@@ -97,9 +105,6 @@ public abstract class VersionableEntity extends CdmBase {
 	}
 
 	public String getUuid(){
-		if (this.uuid == null){
-			this.uuid = UUID.randomUUID().toString();
-		}
 		return this.uuid;
 	}
 	/**
@@ -110,10 +115,8 @@ public abstract class VersionableEntity extends CdmBase {
 		this.uuid = uuid;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Calendar getCreated(){
-		if (this.created == null){
-			this.created = Calendar.getInstance();
-		}
 		return this.created;
 	}
 	/**
@@ -124,6 +127,7 @@ public abstract class VersionableEntity extends CdmBase {
 		this.created = created;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Calendar getUpdated(){
 		return this.updated;
 	}

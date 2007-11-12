@@ -93,6 +93,7 @@ public class DnaSample extends IdentifiableEntity {
 		this.productionNotes = productionNotes;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Calendar getDateProduced(){
 		return this.dateProduced;
 	}

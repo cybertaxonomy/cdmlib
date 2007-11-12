@@ -22,7 +22,13 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:34
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends AnnotatableEntity {
+	public Media() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(Media.class);
 	private MultilanguageArray title;
 	//creation date of the media (not of the record)
@@ -30,46 +36,46 @@ public class Media extends AnnotatableEntity {
 	private MultilanguageArray description;
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
-	private ArrayList instances;
-	private ArrayList rights;
+	private Set<MediaInstance> instances;
+	private Set<Rights> rights;
 	private Team artist;
 
-	public ArrayList getInstances(){
+	public Set<MediaInstance> getInstances(){
 		return this.instances;
 	}
-
-	/**
-	 * 
-	 * @param instances    instances
-	 */
-	public void setInstances(ArrayList instances){
+	public void setInstances(Set<MediaInstance> instances){
 		this.instances = instances;
 	}
+	public void addInstance(MediaInstance instance){
+		this.instances.add(instance);
+	}
+	public void removeInstance(MediaInstance instance){
+		this.instances.remove(instance);
+	}
 
+	
 	public Team getArtist(){
 		return this.artist;
 	}
-
-	/**
-	 * 
-	 * @param artist    artist
-	 */
 	public void setArtist(Team artist){
 		this.artist = artist;
 	}
 
-	public ArrayList getRights(){
+
+	public Set getRights(){
 		return this.rights;
 	}
-
-	/**
-	 * 
-	 * @param rights    rights
-	 */
-	public void setRights(ArrayList rights){
+	public void setRights(Set rights){
 		this.rights = rights;
 	}
+	public void addRights(Rights rights){
+		this.rights.add(rights);
+	}
+	public void removeRights(Rights rights){
+		this.rights.remove(rights);
+	}
 
+	
 	public MultilanguageArray getTitle(){
 		return this.title;
 	}
@@ -82,6 +88,7 @@ public class Media extends AnnotatableEntity {
 		this.title = title;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Calendar getMediaCreated(){
 		return this.mediaCreated;
 	}
@@ -97,13 +104,17 @@ public class Media extends AnnotatableEntity {
 	public MultilanguageArray getDescription(){
 		return this.description;
 	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
 	public void setDescription(MultilanguageArray description){
 		this.description = description;
+	}
+	public void addDescription(LanguageString description){
+		this.description.add(description);
+	}
+	public void addDescription(String text, Language lang){
+		this.description.add(text, lang);
+	}
+	public void removeDescription(Language lang){
+		this.description.remove(lang);
 	}
 
 }

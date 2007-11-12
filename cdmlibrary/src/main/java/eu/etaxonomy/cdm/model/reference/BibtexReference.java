@@ -21,6 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:12
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	static Logger logger = Logger.getLogger(BibtexReference.class);
 	private BibtexEntryType type;

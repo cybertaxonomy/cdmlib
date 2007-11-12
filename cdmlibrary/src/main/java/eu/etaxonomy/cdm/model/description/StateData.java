@@ -66,7 +66,7 @@ public class StateData extends VersionableEntity {
 	 * @param modifyingText    modifyingText
 	 */
 	public void addModifyingText(String text, Language lang){
-		this.modifyingText.addText(text, lang);
+		this.modifyingText.add(text, lang);
 	}
 	public void removeModifyingText(Language lang){
 		this.modifyingText.removeText(lang);

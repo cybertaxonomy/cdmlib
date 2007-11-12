@@ -24,6 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:54
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase extends ReferenceBase {
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	//Title of the reference

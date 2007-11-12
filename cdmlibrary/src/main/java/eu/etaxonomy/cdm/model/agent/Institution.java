@@ -24,11 +24,16 @@ import javax.persistence.*;
  */
 @Entity
 public class Institution extends IdentifiableEntity {
+	public Institution() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(Institution.class);
 	//Acronym, code or initialism by which the insitution is generally known
 	private String code;
 	private String name;
-	private ArrayList<InstitutionType> types;
+	private Set<InstitutionType> types;
 	private Institution isPartOf;
 	private Contact contact;
 
@@ -44,15 +49,21 @@ public class Institution extends IdentifiableEntity {
 		this.contact = contact;
 	}
 
-	public ArrayList<InstitutionType> getTypes(){
+	public Set<InstitutionType> getTypes(){
 		return this.types;
+	}
+	public void addTypes(InstitutionType t){
+		this.types.add(t);
+	}
+	public void removeTypes(InstitutionType t){
+		this.types.remove(t);
 	}
 
 	/**
 	 * 
 	 * @param types    types
 	 */
-	public void setTypes(ArrayList<InstitutionType> types){
+	public void setTypes(Set<InstitutionType> types){
 		this.types = types;
 	}
 

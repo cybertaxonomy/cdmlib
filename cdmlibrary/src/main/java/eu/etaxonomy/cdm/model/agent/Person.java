@@ -26,6 +26,11 @@ import javax.persistence.*;
  */
 @Entity
 public class Person extends IdentifiableEntity {
+	public Person() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
 	static Logger logger = Logger.getLogger(Person.class);
 	//e.g. the title
 	private String prefix;
@@ -40,12 +45,12 @@ public class Person extends IdentifiableEntity {
 	//suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
 	//prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
 	private TimePeriod lifespan;
-	private ArrayList<InstitutionalMembership> institutionalMemberships;
+	private Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
-	private ArrayList<PersonInSource> personInSources;
-	private ArrayList<Keyword> keywords;
+	private Set<PersonInSource> personInSources;
+	private Set<Keyword> keywords;
 
-	public ArrayList getInstitutionalMemberships(){
+	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
 
@@ -53,33 +58,38 @@ public class Person extends IdentifiableEntity {
 	 * 
 	 * @param institutionalMemberships    institutionalMemberships
 	 */
-	public void setInstitutionalMemberships(ArrayList institutionalMemberships){
+	public void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
 		this.institutionalMemberships = institutionalMemberships;
 	}
 
-	public ArrayList getPersonInSources(){
+	public Set<PersonInSource> getPersonInSources(){
 		return this.personInSources;
 	}
-
-	/**
-	 * 
-	 * @param personInSources    personInSources
-	 */
-	public void setPersonInSources(ArrayList personInSources){
+	public void addPersonInSource(PersonInSource personInSource){
+		this.personInSources.add(personInSource);
+	}
+	public void removePersonInSource(PersonInSource personInSource){
+		this.personInSources.remove(personInSource);
+	}
+	public void setPersonInSources(Set<PersonInSource> personInSources){
 		this.personInSources = personInSources;
 	}
 
-	public ArrayList getKeywords(){
+
+	public Set<Keyword> getKeywords(){
 		return this.keywords;
 	}
-
-	/**
-	 * 
-	 * @param keywords    keywords
-	 */
-	public void setKeywords(ArrayList keywords){
+	public void setKeywords(Set<Keyword> keywords){
 		this.keywords = keywords;
 	}
+	public void addKeyword(Keyword keyword){
+		this.keywords.add(keyword);
+	}
+	public void removeKeyword(Keyword keyword){
+		this.keywords.remove(keyword);
+	}
+
+
 
 	public Contact getContact(){
 		return this.contact;

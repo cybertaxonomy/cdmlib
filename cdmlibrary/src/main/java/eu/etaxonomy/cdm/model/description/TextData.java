@@ -45,7 +45,7 @@ public class TextData extends FeatureBase {
 	}
 
 	public void addText(String text, Language lang) {
-		this.texts.addText(text, lang);
+		this.texts.add(text, lang);
 	}
 	public void removeText(LanguageString ls) {
 		this.texts.remove(ls);

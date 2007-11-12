@@ -18,7 +18,7 @@ import javax.persistence.*;
 /**
  * This class aims to make available more "attributes" for identifiable entities
  * in a flexible way. Application developers (and even users) can define their own
- * "attrributes" as an ExtensionType and add data to Identifiable instances via
+ * "attributes" as an ExtensionType and add data to Identifiable instances via
  * Extension instances.
  * @author m.doering
  * @version 1.0
@@ -29,7 +29,9 @@ public class Extension extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Extension.class);
 	private String value;
 	private ExtensionType type;
+	private IdentifiableEntity identifiableEntity;
 
+	@ManyToOne
 	public ExtensionType getType(){
 		return this.type;
 	}

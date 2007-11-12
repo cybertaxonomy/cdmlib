@@ -25,14 +25,19 @@ import javax.persistence.*;
  */
 @Entity
 public class Team extends VersionableEntity {
+	public Team() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(Team.class);
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
 	private String originalCitation;
-	private ArrayList teamInSource;
-	private ArrayList teamMembers;
+	private Set<TeamInSource> teamInSource;
+	private ArrayList<Person> teamMembers;
 
-	public ArrayList getTeamMembers(){
+	public ArrayList<Person> getTeamMembers(){
 		return this.teamMembers;
 	}
 
@@ -40,22 +45,24 @@ public class Team extends VersionableEntity {
 	 * 
 	 * @param teamMembers    teamMembers
 	 */
-	public void setTeamMembers(ArrayList teamMembers){
+	public void setTeamMembers(ArrayList<Person> teamMembers){
 		this.teamMembers = teamMembers;
 	}
 
-	public ArrayList getTeamInSource(){
+	public Set<TeamInSource> getTeamInSource(){
 		return this.teamInSource;
 	}
-
-	/**
-	 * 
-	 * @param teamInSource    teamInSource
-	 */
-	public void setTeamInSource(ArrayList teamInSource){
+	public void setTeamInSource(Set<TeamInSource> teamInSource){
 		this.teamInSource = teamInSource;
 	}
+	public void addTeamInSource(TeamInSource teamInSource){
+		this.teamInSource.add(teamInSource);
+	}
+	public void removeTeamInSource(TeamInSource teamInSource){
+		this.teamInSource.remove(teamInSource);
+	}
 
+	
 	public String getOriginalCitation(){
 		return this.originalCitation;
 	}

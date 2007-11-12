@@ -4,8 +4,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 
+import javax.persistence.MappedSuperclass;
+
+
 public abstract class CdmBase {
 	
+	public CdmBase() {
+		// TODO Auto-generated constructor stub
+	}
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

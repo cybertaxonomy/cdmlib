@@ -23,6 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:34
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);
 	//http://www.iana.org/assignments/media-types

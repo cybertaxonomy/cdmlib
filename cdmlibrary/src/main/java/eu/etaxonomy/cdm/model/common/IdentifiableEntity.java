@@ -22,13 +22,17 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 public abstract class IdentifiableEntity extends AnnotatableEntity {
+	public IdentifiableEntity() {
+		super();
+	}
+
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 	private String lsid;
 	private String titleCache;
 	//if true titleCache will not be automatically generated/updated
-	private boolean hasProtectedTitleCache;
-	private ArrayList<Rights> rights;
-	private ArrayList<Extension> extensions;
+	private boolean protectedTitleCache;
+	private Set<Rights> rights;
+	private Set<Extension> extensions;
 
 	public String getLsid(){
 		return this.lsid;
@@ -45,7 +49,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	public abstract String generateTitle();
 
 	public String getTitleCache(){
-		if (hasProtectedTitleCache){
+		if (protectedTitleCache){
 			return this.titleCache;			
 		}
 		// is title dirty, i.e. equal NULL?
@@ -61,24 +65,16 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	 */
 	public void setTitleCache(String titleCache){
 		this.titleCache = titleCache;
-		this.setHasProtectedTitleCache(true);
+		this.setProtectedTitleCache(true);
 	}
 
-	/**
-	 * 
-	 * @param hasProtectedTitleCache    hasProtectedTitleCache
-	 */
-	public void setHasProtectedTitleCache(boolean hasProtectedTitleCache){
-		this.hasProtectedTitleCache = hasProtectedTitleCache;
-	}
-
-	public boolean hasProtectedTitleCache(){
-		return false;
-	}
-
-
-public ArrayList<Rights> getRights(){
+	@OneToMany
+	public Set<Rights> getRights(){
 		return this.rights;
+	}
+
+	public void setRights(Set<Rights> rights) {
+		this.rights = rights;
 	}
 
 	/**
@@ -87,7 +83,7 @@ public ArrayList<Rights> getRights(){
 	 * @param right
 	 */
 	public void addRights(Rights right){
-
+		this.rights.add(right);
 	}
 
 	/**
@@ -95,11 +91,16 @@ public ArrayList<Rights> getRights(){
 	 * @param right
 	 */
 	public void removeRights(Rights right){
-
+		this.rights.remove(right);
 	}
 
-	public ArrayList<Extension> getExtensions(){
+	@OneToMany(mappedBy="identifiableEntity")
+	public Set<Extension> getExtensions(){
 		return this.extensions;
+	}
+
+	public void setExtensions(Set<Extension> extensions) {
+		this.extensions = extensions;
 	}
 
 	/**
@@ -107,7 +108,7 @@ public ArrayList<Rights> getRights(){
 	 * @param extension    extension
 	 */
 	public void addExtension(Extension extension){
-
+		this.extensions.add(extension);
 	}
 
 	/**
@@ -115,7 +116,15 @@ public ArrayList<Rights> getRights(){
 	 * @param extension    extension
 	 */
 	public void removeExtension(Extension extension){
+		this.extensions.remove(extension);
+	}
 
+	public boolean isProtectedTitleCache() {
+		return protectedTitleCache;
+	}
+
+	public void setProtectedTitleCache(boolean protectedTitleCache) {
+		this.protectedTitleCache = protectedTitleCache;
 	}
 
 }

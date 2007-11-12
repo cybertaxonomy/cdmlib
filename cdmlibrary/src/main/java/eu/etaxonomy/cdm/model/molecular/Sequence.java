@@ -127,6 +127,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 		this.length = length;
 	}
 
+	@Temporal(TemporalType.DATE)
 	public Calendar getDateSequenced(){
 		return this.dateSequenced;
 	}

@@ -30,6 +30,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:57
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year

@@ -27,6 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:41
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Occurrence extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Occurrence.class);
 	//Locality name (as free text) where this occurrence happened
@@ -111,6 +112,7 @@ public class Occurrence extends IdentifiableEntity {
 		this.locality = locality;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	public Calendar getEventDate(){
 		return this.eventDate;
 	}
