@@ -5,11 +5,16 @@ package eu.etaxonomy.cdm.database;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
+import eu.etaxonomy.cdm.database.types.IDatabaseType;
+import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
+
 /**
  * @author a.mueller
  *
  */
-public enum DatabaseType {
+public enum DatabaseEnum {
 	MySQL(1), 
 	HSqlDb(2),
 	SqlServer(3)
@@ -19,7 +24,7 @@ public enum DatabaseType {
 	 * Constructor
 	 * @param i
 	 */
-	private DatabaseType(int i) {
+	private DatabaseEnum(int i) {
 		if (i == 1){
 			this.dbType = new MySQLDatabaseType();
 		}else if (i == 2){
@@ -31,7 +36,7 @@ public enum DatabaseType {
 	
 	
 	//Logger
-	private static final Logger logger = Logger.getLogger(DatabaseType.class);
+	private static final Logger logger = Logger.getLogger(DatabaseEnum.class);
 	protected IDatabaseType dbType;
 	
 	public String getDriverClassName(){

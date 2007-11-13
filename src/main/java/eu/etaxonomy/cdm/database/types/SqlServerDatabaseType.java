@@ -1,34 +1,24 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.database;
+package eu.etaxonomy.cdm.database.types;
+
 
 /**
  * @author a.mueller
  *
  */
-class SqlServerDatabaseType extends AbstractDatabaseType {
+public class SqlServerDatabaseType extends AbstractDatabaseType {
 
-	//typeName
 	protected String typeName = "SQL Server";
-   
-	//class
 	protected String classString = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
-    
-	//url
     protected String urlString = "jdbc:microsoft:sqlserver://";
-    
-    //port
     private int defaultPort = 1433;
-    
-    //connection String
 	public String getConnectionString(String server, String database, int port){
 		return urlString + server + ":" + port + ";databaseName=" + database+";SelectMethod=cursor";
     }
 	
-  
- 
-    
+	//Constructor
     public SqlServerDatabaseType() {
 		super();
 		super.typeName = typeName;
@@ -36,8 +26,5 @@ class SqlServerDatabaseType extends AbstractDatabaseType {
 		super.urlString = urlString;
 		super.defaultPort = defaultPort;
 	}
-
-
-
 
 }

@@ -16,7 +16,7 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import eu.etaxonomy.cdm.database.DatabaseType;
+import eu.etaxonomy.cdm.database.DatabaseEnum;
 
 /**
  * @author a.mueller
@@ -27,9 +27,9 @@ public class DatabaseServiceHibernateImpl extends HibernateDaoSupport implements
 	
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseType, java.lang.String, java.lang.String, java.lang.String, int)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseEnum, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
-	public boolean connectToDatabase(DatabaseType databaseType, String url,
+	public boolean connectToDatabase(DatabaseEnum databaseEnum, String url,
 						String username, String password, int port) {
 		DriverManagerDataSource aDataSource = getDataSource();
 		SessionFactory aSessionFactory =  getSessionFactory();
@@ -43,7 +43,7 @@ public class DatabaseServiceHibernateImpl extends HibernateDaoSupport implements
 //		s.flush();
 		
 		//change connection
-		aDataSource.setDriverClassName(databaseType.getDriverClassName());
+		aDataSource.setDriverClassName(databaseEnum.getDriverClassName());
 		aDataSource.setUsername(username);
 		aDataSource.setPassword(password);
 		aDataSource.setUrl(url);

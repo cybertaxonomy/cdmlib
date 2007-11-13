@@ -1,13 +1,14 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.database;
+package eu.etaxonomy.cdm.database.types;
+
 
 /**
  * @author a.mueller
  *
  */
-class HSqlDbDatabaseType extends AbstractDatabaseType {
+public class HSqlDbDatabaseType extends AbstractDatabaseType {
 
 	//typeName
 	protected String typeName = "Hypersonic SQL DB (HSqlDb)";

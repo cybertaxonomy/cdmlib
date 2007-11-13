@@ -1,13 +1,14 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.database;
+package eu.etaxonomy.cdm.database.types;
+
 
 /**
  * @author a.mueller
  *
  */
-class MySQLDatabaseType extends AbstractDatabaseType {
+public class MySQLDatabaseType extends AbstractDatabaseType {
 
 	//typeName
 	protected String typeName = "MySQL";
