@@ -3,6 +3,9 @@
  */
 package eu.etaxonomy.cdm.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
@@ -15,8 +18,8 @@ import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
  *
  */
 public enum DatabaseEnum {
-	MySQL(1), 
-	HSqlDb(2),
+	HSqlDb(1),
+	MySQL(2), 
 	SqlServer(3)
 	;
 
@@ -25,29 +28,49 @@ public enum DatabaseEnum {
 	 * @param i
 	 */
 	private DatabaseEnum(int i) {
-		if (i == 1){
-			this.dbType = new MySQLDatabaseType();
-		}else if (i == 2){
-			this.dbType = new HSqlDbDatabaseType();
-		}else if (i == 3){
-			this.dbType = new SqlServerDatabaseType();
-		}
+		switch(i)
+        {
+        	case 1:
+        		this.dbType = new HSqlDbDatabaseType(); break;
+        	case 2:
+        		this.dbType = new MySQLDatabaseType(); break;
+        	case 3:
+            	this.dbType = new SqlServerDatabaseType(); break;
+            default:
+                //TODO Exception
+        }
 	}
 	
-	
-	//Logger
+ 	//Logger
 	private static final Logger logger = Logger.getLogger(DatabaseEnum.class);
 	protected IDatabaseType dbType;
 	
+	   
+    /**
+     * @return
+     */
+    public String getName(){
+    	return dbType.getName();
+    }
+    
+	/**
+	 * @return
+	 */
 	public String getDriverClassName(){
 		return dbType.getClassString();
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getUrl(){
 		return dbType.getUrlString();
 	}
 	   
-    private int getDefaultPort(){
+    /**
+     * @return
+     */
+    public int getDefaultPort(){
     	return dbType.getDefaultPort();
     }
 
@@ -76,6 +99,18 @@ public enum DatabaseEnum {
     	logger.debug("Connection String: " + result);	
         return result;
     }
+    
+    /**
+     * Returns a List of all available DatabaseEnums.
+     * @return List of DatabaseEnums
+     */
+    public static List<DatabaseEnum> getAllTypes(){
+    	List<DatabaseEnum> result = new ArrayList<DatabaseEnum>();
+    	for (DatabaseEnum dbEnum : DatabaseEnum.values())
+    		result.add(dbEnum);
+    	return result;
+    }
+
  
 	
 	
