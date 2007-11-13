@@ -27,18 +27,18 @@
 	</scm>
 	<build>
 		<plugins>
-<!--			<plugin>-->
-<!--				<artifactId>maven-clean-plugin</artifactId>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>auto-clean</id>-->
-<!--						<phase>validate</phase>-->
-<!--						<goals>-->
-<!--							<goal>clean</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+			<!--			<plugin>-->
+			<!--				<artifactId>maven-clean-plugin</artifactId>-->
+			<!--				<executions>-->
+			<!--					<execution>-->
+			<!--						<id>auto-clean</id>-->
+			<!--						<phase>validate</phase>-->
+			<!--						<goals>-->
+			<!--							<goal>clean</goal>-->
+			<!--						</goals>-->
+			<!--					</execution>-->
+			<!--				</executions>-->
+			<!--			</plugin>-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -101,6 +101,24 @@
 		</plugins>
 	</build>
 	<dependencies>
+
+		<dependency>
+			<groupId>com.microsoft.jdbcdriver</groupId>
+			<artifactId>mssqlserver</artifactId>
+			<version>2000.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.jdbcdriver</groupId>
+			<artifactId>msutil</artifactId>
+			<version>2000.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.jdbcdriver</groupId>
+			<artifactId>msbase</artifactId>
+			<version>2000.3</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>

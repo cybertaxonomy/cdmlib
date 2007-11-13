@@ -15,6 +15,15 @@
 	 	<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
    
+      
+   <bean id="sqlServerDataSource" 
+   			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.microsoft.jdbc.sqlserver.SQLServerDriver"/>
+        <property name="url" value="jdbc:microsoft:sqlserver://LAPTOPHP:1433;DataBase=cdmTest"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="sa"/>
+  </bean>
+   
    <bean id="mysqlDataSource" 
    			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -43,7 +52,7 @@
   
   <bean id="sessionFactory" 
   			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-  		<property name="dataSource" ref="mysqlDataSource"/>
+  		<property name="dataSource" ref="sqlServerDataSource"/>
         <property name="annotatedPackages">
 			<list>
 		    	<value>eu.etaxonomy.cdm.model.common</value>
@@ -62,9 +71,11 @@
 		<property name="hibernateProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">update</prop>
-                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-<!--                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
--->                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                 <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+<!--             <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>-->
+<!--             <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>-->
+               
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
             </props>

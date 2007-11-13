@@ -21,7 +21,6 @@ public class TestDatabase {
 		
 		IDatabaseService dbService = appCtr.getDatabaseService();
 		
-		logger.info(DbType.MySQL.getDriverClassName());
 		logger.info(dbService.getDriverClassName());
 		logger.info(dbService.getUrl());
 		logger.info(dbService.getUsername());

@@ -7,7 +7,7 @@
 /pom.xml -text
 src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
-src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceImpl.java -text
+src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text

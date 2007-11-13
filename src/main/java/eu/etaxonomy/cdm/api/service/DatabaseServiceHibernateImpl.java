@@ -28,8 +28,8 @@ import eu.etaxonomy.cdm.database.DbType;
  * @author a.mueller
  *
  */
-public class DatabaseServiceImpl extends HibernateDaoSupport implements IDatabaseService {
-	private static final Logger logger = Logger.getLogger(DatabaseServiceImpl.class);
+public class DatabaseServiceHibernateImpl extends HibernateDaoSupport implements IDatabaseService {
+	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	
 	
 	/* (non-Javadoc)
