@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
@@ -46,7 +47,7 @@ public class StateData extends VersionableEntity {
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-	public void setModifiers(Set<Modifier> modifiers) {
+	private void setModifiers(Set<Modifier> modifiers) {
 		this.modifiers = modifiers;
 	}
 	public void addModifier(Modifier modifier){
@@ -60,11 +61,14 @@ public class StateData extends VersionableEntity {
 	public MultilanguageSet getModifyingText(){
 		return this.modifyingText;
 	}
-	public void setModifyingText(MultilanguageSet modifyingText) {
+	private void setModifyingText(MultilanguageSet modifyingText) {
 		this.modifyingText = modifyingText;
 	}
 	public void addModifyingText(String text, Language lang){
 		this.modifyingText.add(text, lang);
+	}
+	public void addModifyingText(LanguageString text){
+		this.modifyingText.add(text);
 	}
 	public void removeModifyingText(Language lang){
 		this.modifyingText.remove(lang);

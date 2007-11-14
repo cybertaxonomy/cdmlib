@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import org.apache.log4j.Logger;
@@ -44,13 +46,17 @@ public class IndividualsAssociation extends FeatureBase {
 	public MultilanguageSet getDescription(){
 		return this.description;
 	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
-	public void setDescription(MultilanguageSet description){
+	private void setDescription(MultilanguageSet description){
 		this.description = description;
+	}
+	public void addDescription(LanguageString description){
+		this.description.add(description);
+	}
+	public void addDescription(String text, Language lang){
+		this.description.add(text, lang);
+	}
+	public void removeDescription(Language lang){
+		this.description.remove(lang);
 	}
 
 }
