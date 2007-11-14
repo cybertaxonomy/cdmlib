@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageArray;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -27,29 +27,29 @@ import javax.persistence.*;
 @Entity
 public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
-	private MultilanguageArray texts;
+	private MultilanguageSet texts;
 	private TextFormat format;
 
 
-	/**
-	 * @return
-	 * returns distinct list of languages/translations that exist for this text
-	 */
-	public ArrayList<Language> getLanguages(){
-		// for ls in this.MultilanguageArray
-		return null;
-	}
 
-	public MultilanguageArray getTexts() {
+
+	public MultilanguageSet getTexts() {
 		return texts;
 	}
-
+	private void setTexts(MultilanguageSet texts) {
+		this.texts = texts;
+	}
 	public void addText(String text, Language lang) {
 		this.texts.add(text, lang);
 	}
-	public void removeText(LanguageString ls) {
-		this.texts.remove(ls);
+	public void addText(LanguageString text) {
+		this.texts.add(text);
 	}
+	public void removeText(Language lang) {
+		this.texts.remove(lang);
+	}
+	
+	
 
 	public TextFormat getFormat() {
 		return format;

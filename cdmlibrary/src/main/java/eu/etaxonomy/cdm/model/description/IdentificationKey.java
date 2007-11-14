@@ -26,18 +26,19 @@ import javax.persistence.*;
 @Entity
 public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
-	private ArrayList coveredTaxa;
-
-	public ArrayList getCoveredTaxa(){
-		return this.coveredTaxa;
+	private Set<Taxon> coveredTaxa;
+	public Set<Taxon> getCoveredTaxa() {
+		return coveredTaxa;
 	}
-
-	/**
-	 * 
-	 * @param coveredTaxa    coveredTaxa
-	 */
-	public void setCoveredTaxa(ArrayList coveredTaxa){
+	private void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
+	public void addCoveredTaxon(Taxon taxon) {
+		this.coveredTaxa.add(taxon);
+	}
+	public void removeCoveredTaxon(Taxon taxon) {
+		this.coveredTaxa.remove(taxon);
+	}
+
 
 }

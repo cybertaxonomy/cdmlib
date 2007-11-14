@@ -25,43 +25,34 @@ import javax.persistence.*;
 public class StatisticalMeasurementValue extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 	private float value;
-	private ArrayList modifiers;
+	private Set<Modifier> modifiers;
 	private StatisticalMeasure type;
 
 	public StatisticalMeasure getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(StatisticalMeasure type){
 		this.type = type;
 	}
 
-	public ArrayList getModifiers(){
-		return this.modifiers;
-	}
-
-	/**
-	 * 
-	 * @param modifiers    modifiers
-	 */
-	public void setModifiers(ArrayList modifiers){
-		this.modifiers = modifiers;
-	}
 
 	public float getValue(){
 		return this.value;
 	}
-
-	/**
-	 * 
-	 * @param value    value
-	 */
 	public void setValue(float value){
 		this.value = value;
+	}
+	public Set<Modifier> getModifiers() {
+		return modifiers;
+	}
+	private void setModifiers(Set<Modifier> modifiers) {
+		this.modifiers = modifiers;
+	}
+	public void addModifier(Modifier modifier) {
+		this.modifiers.add(modifier);
+	}
+	public void removeModifier(Modifier modifier) {
+		this.modifiers.remove(modifier);
 	}
 
 }

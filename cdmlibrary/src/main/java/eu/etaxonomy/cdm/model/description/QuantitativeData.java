@@ -24,28 +24,29 @@ import javax.persistence.*;
 public class QuantitativeData extends FeatureBase {
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
 	private MeasurementUnit unit;
-	private ArrayList statisticalValues;
+	private Set<StatisticalMeasurementValue> statisticalValues;
+	
 
-	public ArrayList getStatisticalValues(){
-		return this.statisticalValues;
+	public Set<StatisticalMeasurementValue> getStatisticalValues() {
+		return statisticalValues;
 	}
-
-	/**
-	 * 
-	 * @param statisticalValues    statisticalValues
-	 */
-	public void setStatisticalValues(ArrayList statisticalValues){
+	private void setStatisticalValues(
+			Set<StatisticalMeasurementValue> statisticalValues) {
 		this.statisticalValues = statisticalValues;
 	}
+	public void addStatisticalValue(
+			StatisticalMeasurementValue statisticalValue) {
+		this.statisticalValues.add(statisticalValue);
+	}
+	public void removeStatisticalValue(
+			StatisticalMeasurementValue statisticalValue) {
+		this.statisticalValues.remove(statisticalValue);
+	}
 
+	
 	public MeasurementUnit getUnit(){
 		return this.unit;
 	}
-
-	/**
-	 * 
-	 * @param unit    unit
-	 */
 	public void setUnit(MeasurementUnit unit){
 		this.unit = unit;
 	}

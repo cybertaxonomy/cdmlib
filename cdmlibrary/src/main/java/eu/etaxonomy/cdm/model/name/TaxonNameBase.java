@@ -42,16 +42,18 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	private ArrayList<ITypeDesignation> typeDesignations;
-	private ArrayList<NameInSource> nameInSource;
-	private ArrayList<NameRelationship> nameRelations;
-	private ArrayList<NomenclaturalStatus> status;
+	private Set<ITypeDesignation> typeDesignations;
+	private Set<NameInSource> nameInSource;
+	private Set<NameRelationship> nameRelations;
+	// name relations are bidirectional! Keep track of the inverse too
+	private Set<NameRelationship> inverseNameRelations;
+	private Set<NomenclaturalStatus> status;
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
-	private ArrayList newCombinations;
+	private Set<TaxonNameBase> newCombinations;
+	// bidrectional with newCombinations. Keep congruent
 	private TaxonNameBase basionym;
-	private ArrayList<NameRelationship> inverseNameRelations;
 
 	protected INameCacheStrategy cacheStrategy;
 
@@ -61,6 +63,115 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	public TaxonNameBase(Rank rank) {
 		this.setRank(rank);
 	}
+
+	
+	// properties
+	public String getNameCache() {
+		return nameCache;
+	}
+	public void setNameCache(String nameCache) {
+		this.nameCache = nameCache;
+	}
+
+
+
+	public Set<ITypeDesignation> getTypeDesignations() {
+		return typeDesignations;
+	}
+	private void setTypeDesignations(Set<ITypeDesignation> typeDesignations) {
+		this.typeDesignations = typeDesignations;
+	}
+	public void addTypeDesignation(ITypeDesignation typeDesignation) {
+		this.typeDesignations.add(typeDesignation);
+	}
+	public void removeTypeDesignation(ITypeDesignation typeDesignation) {
+		this.typeDesignations.remove(typeDesignation);
+	}
+
+
+
+	public Set<NameInSource> getNameInSource() {
+		return nameInSource;
+	}
+	private void setNameInSource(Set<NameInSource> nameInSource) {
+		this.nameInSource = nameInSource;
+	}
+	public void addNameInSource(NameInSource nameInSource) {
+		this.nameInSource.add(nameInSource);
+	}
+	public void removeNameInSource(NameInSource nameInSource) {
+		this.nameInSource.remove(nameInSource);
+	}
+
+
+
+	public Set<NameRelationship> getNameRelations() {
+		return nameRelations;
+	}
+	private void setNameRelations(Set<NameRelationship> nameRelations) {
+		this.nameRelations = nameRelations;
+	}
+
+
+	public Set<NameRelationship> getInverseNameRelations() {
+		return inverseNameRelations;
+	}
+	private void setInverseNameRelations(Set<NameRelationship> inverseNameRelations) {
+		this.inverseNameRelations = inverseNameRelations;
+	}
+
+	
+	public void addNameRelation(NameRelationship nameRelation) {
+		// checks whether this is a normal relation or an inverse one 
+		// and adds it to the appropiate set
+		//this.inverseNameRelations
+		this.nameRelations.add(nameRelation);
+	}
+	public void removeNameRelation(NameRelationship nameRelation) {
+		// this.inverseNameRelations
+		this.nameRelations.remove(nameRelation);
+	}
+
+	
+
+	public Set<NomenclaturalStatus> getStatus() {
+		return status;
+	}
+	private void setStatus(Set<NomenclaturalStatus> status) {
+		this.status = status;
+	}
+	public void addStatus(NomenclaturalStatus status) {
+		this.status.add(status);
+	}
+	public void removeStatus(NomenclaturalStatus status) {
+		this.status.remove(status);
+	}
+
+
+
+	public Set<TaxonNameBase> getNewCombinations() {
+		return newCombinations;
+	}
+	private void setNewCombinations(Set<TaxonNameBase> newCombinations) {
+		this.newCombinations = newCombinations;
+	}
+	public void addNewCombination(TaxonNameBase newCombination) {
+		// TODO: add basionym relation too!
+		this.newCombinations.add(newCombination);
+	}
+	public void removeNewCombination(TaxonNameBase newCombination) {
+		this.newCombinations.remove(newCombination);
+	}
+
+	public TaxonNameBase getBasionym(){
+		return this.basionym;
+	}
+	public void setBasionym(TaxonNameBase basionym){
+		// TODO: add newCombination relation too!
+		this.basionym = basionym;
+	}
+
+
 
 	//TODO for PROTOTYPE
 	@Transient
@@ -83,54 +194,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 		this.rank = rank;
 	}
 
-	public ArrayList getNameRelations(){
-		return this.nameRelations;
-	}
-
-	/**
-	 * 
-	 * @param nameRelations    nameRelations
-	 */
-	public void setNameRelations(ArrayList nameRelations){
-		this.nameRelations = nameRelations;
-	}
-
-	public ArrayList getInverseNameRelations(){
-		return this.inverseNameRelations;
-	}
-
-	/**
-	 * 
-	 * @param inverseNameRelations    inverseNameRelations
-	 */
-	public void setInverseNameRelations(ArrayList inverseNameRelations){
-		this.inverseNameRelations = inverseNameRelations;
-	}
-
-	public ArrayList getTypeDesignations(){
-		return this.typeDesignations;
-	}
-
-	/**
-	 * 
-	 * @param typeDesignations    typeDesignations
-	 */
-	public void setTypeDesignations(ArrayList typeDesignations){
-		this.typeDesignations = typeDesignations;
-	}
-
-	public ArrayList getStatus(){
-		return this.status;
-	}
-
-	/**
-	 * 
-	 * @param status    status
-	 */
-	public void setStatus(ArrayList status){
-		this.status = status;
-	}
-
 	public INomenclaturalReference getNomenclaturalReference(){
 		return this.nomenclaturalReference;
 	}
@@ -143,41 +206,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 		this.nomenclaturalReference = nomenclaturalReference;
 	}
 
-	public ArrayList getNameInSource(){
-		return this.nameInSource;
-	}
-
-	/**
-	 * 
-	 * @param nameInSource    nameInSource
-	 */
-	public void setNameInSource(ArrayList nameInSource){
-		this.nameInSource = nameInSource;
-	}
-
-	public ArrayList getNewCombinations(){
-		return this.newCombinations;
-	}
-
-	/**
-	 * 
-	 * @param newCombinations    newCombinations
-	 */
-	public void setNewCombinations(ArrayList newCombinations){
-		this.newCombinations = newCombinations;
-	}
-
-	public TaxonNameBase getBasionym(){
-		return this.basionym;
-	}
-
-	/**
-	 * 
-	 * @param basionym    basionym
-	 */
-	public void setBasionym(TaxonNameBase basionym){
-		this.basionym = basionym;
-	}
 
 	public String getName(){
 		if (nameCache == null){ 

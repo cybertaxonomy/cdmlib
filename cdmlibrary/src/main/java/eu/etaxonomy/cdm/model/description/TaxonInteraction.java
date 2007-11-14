@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.MultilanguageArray;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -26,7 +26,7 @@ import javax.persistence.*;
 @Entity
 public class TaxonInteraction extends FeatureBase {
 	static Logger logger = Logger.getLogger(TaxonInteraction.class);
-	private MultilanguageArray description;
+	private MultilanguageSet description;
 	private TaxonBase taxon2;
 
 	public TaxonBase getTaxon2(){
@@ -41,7 +41,7 @@ public class TaxonInteraction extends FeatureBase {
 		this.taxon2 = taxon2;
 	}
 
-	public MultilanguageArray getDescription(){
+	public MultilanguageSet getDescription(){
 		return this.description;
 	}
 
@@ -49,7 +49,7 @@ public class TaxonInteraction extends FeatureBase {
 	 * 
 	 * @param description    description
 	 */
-	public void setDescription(MultilanguageArray description){
+	public void setDescription(MultilanguageSet description){
 		this.description = description;
 	}
 

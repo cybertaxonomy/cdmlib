@@ -10,12 +10,17 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
-import eu.etaxonomy.cdm.model.common.MultilanguageArray;
-import eu.etaxonomy.cdm.model.description.Description;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import java.util.Set;
+
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
-import java.util.*;
-import javax.persistence.*;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.description.Description;
 
 /**
  * part of a specimen or observation that is being described or determined.
@@ -27,59 +32,36 @@ import javax.persistence.*;
 public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 	//Description defining the Observational unit in the context of the original Occurrence
-	private MultilanguageArray definition;
-	private ArrayList descriptions;
-	private ArrayList<Determination> determinations;
+	private MultilanguageSet definition;
+	private Set<Description> descriptions;
+	private Set<Determination> determinations;
 	private Occurrence occurence;
 
-	public ArrayList<Determination> getDeterminations(){
-		return this.determinations;
-	}
-
-	/**
-	 * 
-	 * @param determinations    determinations
-	 */
-	public void setDeterminations(ArrayList determinations){
-		this.determinations = determinations;
-	}
 
 	public Occurrence getOccurence(){
 		return this.occurence;
 	}
-
-	/**
-	 * 
-	 * @param occurence    occurence
-	 */
 	public void setOccurence(Occurrence occurence){
 		this.occurence = occurence;
 	}
 
-	public ArrayList getDescriptions(){
-		return this.descriptions;
-	}
 
-	/**
-	 * 
-	 * @param descriptions    descriptions
-	 */
-	public void setDescriptions(ArrayList descriptions){
-		this.descriptions = descriptions;
-	}
-
-	public MultilanguageArray getDefinition(){
+	public MultilanguageSet getDefinition(){
 		return this.definition;
 	}
-
-	/**
-	 * 
-	 * @param definition    definition
-	 */
-	public void setDefinition(MultilanguageArray definition){
+	private void setDefinition(MultilanguageSet definition){
 		this.definition = definition;
 	}
-
+	public void addDefinition(LanguageString definition){
+		this.definition.add(definition);
+	}
+	public void addDefinition(String text, Language lang){
+		this.definition.add(text, lang);
+	}
+	public void removeDefinition(Language lang){
+		this.definition.remove(lang);
+	}
+	
 	@Override
 	public String generateTitle(){
 		return "";

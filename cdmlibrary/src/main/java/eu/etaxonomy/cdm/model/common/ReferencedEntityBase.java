@@ -24,6 +24,11 @@ import javax.persistence.*;
  */
 @Entity
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
+	public ReferencedEntityBase() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
 	//publication. {if the citationMicroReference exists then there must be also a reference}

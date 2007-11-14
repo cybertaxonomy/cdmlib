@@ -23,31 +23,36 @@ import javax.persistence.*;
 @Entity
 public class LivingIndividual extends Occurrence {
 	static Logger logger = Logger.getLogger(LivingIndividual.class);
-	private ArrayList parents;
-	private ArrayList offspring;
-
-	public ArrayList getParents(){
-		return this.parents;
+	private Set<LivingIndividual> parents;
+	private Set<LivingIndividual> offspring;
+	
+	
+	public Set<LivingIndividual> getParents() {
+		return parents;
 	}
-
-	/**
-	 * 
-	 * @param parents    parents
-	 */
-	public void setParents(ArrayList parents){
+	private void setParents(Set<LivingIndividual> parents) {
 		this.parents = parents;
 	}
-
-	public ArrayList getOffspring(){
-		return this.offspring;
+	public void addParents(LivingIndividual parent) {
+		this.parents.add(parent);
 	}
-
-	/**
-	 * 
-	 * @param offspring    offspring
-	 */
-	public void setOffspring(ArrayList offspring){
+	public void removeParents(LivingIndividual parent) {
+		this.parents.remove(parent);
+	}
+	
+	
+	public Set<LivingIndividual> getOffspring() {
+		return offspring;
+	}
+	private void setOffspring(Set<LivingIndividual> offspring) {
 		this.offspring = offspring;
 	}
+	public void addOffspring(LivingIndividual offspring) {
+		this.offspring.add(offspring);
+	}
+	public void removeOffspring(LivingIndividual offspring) {
+		this.offspring.remove(offspring);
+	}
+
 
 }

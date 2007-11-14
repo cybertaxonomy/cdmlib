@@ -55,7 +55,9 @@
 				<value>eu.etaxonomy.cdm.model.common.AnnotatableEntity</value>
 				<value>eu.etaxonomy.cdm.model.common.IdentifiableEntity</value>
 		       	<value>eu.etaxonomy.cdm.model.agent.Team</value>
-		    </list>
+				<value>eu.etaxonomy.cdm.model.agent.Person</value>
+				<value>eu.etaxonomy.cdm.model.common.ReferencedEntityBase</value>
+			</list>
 		</property>
 		<property name="hibernateProperties">
             <props>

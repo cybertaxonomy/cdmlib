@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.MultilanguageArray;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
 import org.apache.log4j.Logger;
@@ -31,18 +33,17 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
 	//type, category of information. In structured descriptions characters
 	private FeatureType type;
-	private ArrayList<Modifier> modifiers;
-	private MultilanguageArray modifyingText;
-	private ArrayList<Media> media;
+	private Set<Modifier> modifiers;
+	private MultilanguageSet modifyingText;
+	private Set<Media> media;
 
-	public ArrayList<Media> getMedia(){
+	
+	public Set<Media> getMedia(){
 		return this.media;
 	}
-
-	/**
-	 * 
-	 * @param media    media
-	 */
+	private void setMedia(Set<Media> media) {
+		this.media = media;
+	}
 	public void addMedia(Media media){
 		this.media.add(media);
 	}
@@ -50,40 +51,42 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 		this.media.remove(media);
 	}
 
+
 	public FeatureType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(FeatureType type){
 		this.type = type;
 	}
 
-	public ArrayList<Modifier> getModifiers(){
+	
+	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-
-	/**
-	 * 
-	 * @param modifiers    modifiers
-	 */
-	public void setModifiers(ArrayList<Modifier> modifiers){
+	private void setModifiers(Set<Modifier> modifiers){
 		this.modifiers = modifiers;
 	}
+	public void addModifier(Modifier modifier){
+		this.modifiers.add(modifier);
+	}
+	public void removeModifier(Modifier modifier){
+		this.modifiers.remove(modifier);
+	}
 
-	public MultilanguageArray getModifyingText(){
+	
+	public MultilanguageSet getModifyingText(){
 		return this.modifyingText;
 	}
-
-	/**
-	 * 
-	 * @param modifyingText    modifyingText
-	 */
-	public void setModifyingText(MultilanguageArray modifyingText){
+	private void setModifyingText(MultilanguageSet modifyingText){
 		this.modifyingText = modifyingText;
 	}
-
+	public void addModifyingText(LanguageString description){
+		this.modifyingText.add(description);
+	}
+	public void addModifyingText(String text, Language lang){
+		this.modifyingText.add(text, lang);
+	}
+	public void removeModifyingText(Language lang){
+		this.modifyingText.remove(lang);
+	}
 }

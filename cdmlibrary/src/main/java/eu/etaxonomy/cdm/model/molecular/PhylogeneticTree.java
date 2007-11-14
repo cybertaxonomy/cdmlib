@@ -24,18 +24,18 @@ import javax.persistence.*;
 @Entity
 public class PhylogeneticTree extends ReferencedMedia {
 	static Logger logger = Logger.getLogger(PhylogeneticTree.class);
-	private ArrayList usedSequences;
-
-	public ArrayList getUsedSequences(){
-		return this.usedSequences;
+	private Set<Sequence> usedSequences;
+	public Set<Sequence> getUsedSequences() {
+		return usedSequences;
 	}
-
-	/**
-	 * 
-	 * @param usedSequences    usedSequences
-	 */
-	public void setUsedSequences(ArrayList usedSequences){
+	private void setUsedSequences(Set<Sequence> usedSequences) {
 		this.usedSequences = usedSequences;
+	}
+	public void addUsedSequences(Sequence usedSequence) {
+		this.usedSequences.add(usedSequence);
+	}
+	public void removeUsedSequences(Sequence usedSequence) {
+		this.usedSequences.remove(usedSequence);
 	}
 
 }

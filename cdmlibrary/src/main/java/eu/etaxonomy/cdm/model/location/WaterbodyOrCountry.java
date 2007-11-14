@@ -28,18 +28,21 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	private String iso2code;
 	private TimePeriod validPeriod;
-	private ArrayList continents;
+	private Set<Continent> continents;
 
-	public ArrayList getContinents(){
-		return this.continents;
+
+	public Set<Continent> getContinents() {
+		return continents;
 	}
 
-	/**
-	 * 
-	 * @param continents    continents
-	 */
-	public void setContinents(ArrayList continents){
+	public void setContinents(Set<Continent> continents) {
 		this.continents = continents;
+	}
+	private void addContinents(Continent continent) {
+		this.continents.add(continent);
+	}
+	public void removeContinents(Continent continent) {
+		this.continents.remove(continent);
 	}
 
 	public String getIso2code(){

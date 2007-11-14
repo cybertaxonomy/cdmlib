@@ -30,10 +30,10 @@ public class Media extends AnnotatableEntity {
 	}
 
 	static Logger logger = Logger.getLogger(Media.class);
-	private MultilanguageArray title;
+	private MultilanguageSet title;
 	//creation date of the media (not of the record)
 	private Calendar mediaCreated;
-	private MultilanguageArray description;
+	private MultilanguageSet description;
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
 	private Set<MediaInstance> instances;
@@ -76,7 +76,7 @@ public class Media extends AnnotatableEntity {
 	}
 
 	
-	public MultilanguageArray getTitle(){
+	public MultilanguageSet getTitle(){
 		return this.title;
 	}
 
@@ -84,7 +84,7 @@ public class Media extends AnnotatableEntity {
 	 * 
 	 * @param title    title
 	 */
-	public void setTitle(MultilanguageArray title){
+	public void setTitle(MultilanguageSet title){
 		this.title = title;
 	}
 
@@ -101,10 +101,10 @@ public class Media extends AnnotatableEntity {
 		this.mediaCreated = mediaCreated;
 	}
 
-	public MultilanguageArray getDescription(){
+	public MultilanguageSet getDescription(){
 		return this.description;
 	}
-	public void setDescription(MultilanguageArray description){
+	private void setDescription(MultilanguageSet description){
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){

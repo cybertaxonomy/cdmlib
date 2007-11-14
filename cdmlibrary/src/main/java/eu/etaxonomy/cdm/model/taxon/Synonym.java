@@ -22,19 +22,22 @@ import javax.persistence.*;
  */
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
-	private ArrayList synoynmRelations;
+	private Set<SynonymRelationship> synoynmRelations;
 
-	public ArrayList getSynoynmRelations(){
-		return this.synoynmRelations;
+
+	public Set<SynonymRelationship> getSynoynmRelations() {
+		return synoynmRelations;
 	}
-
-	/**
-	 * 
-	 * @param synoynmRelations    synoynmRelations
-	 */
-	public void setSynoynmRelations(ArrayList synoynmRelations){
+	private void setSynoynmRelations(Set<SynonymRelationship> synoynmRelations) {
 		this.synoynmRelations = synoynmRelations;
 	}
+	public void addSynoynmRelations(SynonymRelationship synoynmRelation) {
+		this.synoynmRelations.add(synoynmRelation);
+	}
+	public void removeSynoynmRelations(SynonymRelationship synoynmRelation) {
+		this.synoynmRelations.remove(synoynmRelation);
+	}
+
 
 	@Override
 	public String generateTitle(){

@@ -34,7 +34,7 @@ public class Occurrence extends IdentifiableEntity {
 	private String locality;
 	//Date on which this occurrence happened
 	private Calendar eventDate;
-	private ArrayList media;
+	private Set<Media> media;
 	private Point exactLocation;
 	private NamedArea namedArea;
 	private Team collector;
@@ -64,18 +64,22 @@ public class Occurrence extends IdentifiableEntity {
 		this.exactLocation = exactLocation;
 	}
 
-	public ArrayList getMedia(){
-		return this.media;
-	}
+	
 
-	/**
-	 * 
-	 * @param media    media
-	 */
-	public void setMedia(ArrayList media){
+	public Set<Media> getMedia() {
+		return media;
+	}
+	private void setMedia(Set<Media> media) {
 		this.media = media;
 	}
+	public void addMedia(Media media) {
+		this.media.add(media);
+	}
+	public void removeMedia(Media media) {
+		this.media.remove(media);
+	}
 
+	
 	public Team getCollector(){
 		return this.collector;
 	}

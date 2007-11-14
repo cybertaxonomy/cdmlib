@@ -32,9 +32,9 @@ public class View extends CdmBase implements IReferencedEntity{
 	private String name;
 	private String description;
 	private ReferenceBase reference;
-	private ArrayList<View> superViews;
-	private ArrayList<CdmBase> members;
-	private ArrayList<CdmBase> nonMembers;
+	private Set<View> superViews;
+	private Set<CdmBase> members;
+	private Set<CdmBase> nonMembers;
 	
 	public String getName(){
 		return this.name;
@@ -72,22 +72,26 @@ public class View extends CdmBase implements IReferencedEntity{
 	public void setReference(ReferenceBase reference) {
 		this.reference = reference;
 	}
+	
 
-	public ArrayList<View> getSuperViews() {
+	public Set<View> getSuperViews() {
 		return superViews;
 	}
-
+	public void setSuperViews(Set<View> superViews) {
+		this.superViews = superViews;
+	}
 	public void addSuperView(View superView) {
 		this.superViews.add(superView);
 	}
 	public void removeSuperView(View superView) {
 		this.superViews.remove(superView);
 	}
+	
 
-	public ArrayList<CdmBase> getMembers() {
+	public Set<CdmBase> getMembers() {
 		return members;
 	}
-	public void setMembers(ArrayList<CdmBase> members) {
+	private void setMembers(Set<CdmBase> members) {
 		this.members = members;
 	}
 	public void addMember(CdmBase member) {
@@ -97,10 +101,11 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.members.remove(member);
 	}
 
-	public ArrayList<CdmBase> getNonMembers() {
+	
+	public Set<CdmBase> getNonMembers() {
 		return nonMembers;
 	}
-	public void setNonMembers(ArrayList<CdmBase> nonMembers) {
+	private void setNonMembers(Set<CdmBase> nonMembers) {
 		this.nonMembers = nonMembers;
 	}
 	public void addNonMember(CdmBase member) {

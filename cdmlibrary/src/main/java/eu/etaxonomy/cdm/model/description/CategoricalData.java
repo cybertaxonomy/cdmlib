@@ -22,6 +22,10 @@ import javax.persistence.*;
  */
 @Entity
 public class CategoricalData extends FeatureBase {
+	public CategoricalData() {
+		super();
+	}
+
 	static Logger logger = Logger.getLogger(CategoricalData.class);
 	//whether the sequence of ordered states is important
 	private boolean orderRelevant;
@@ -30,13 +34,14 @@ public class CategoricalData extends FeatureBase {
 	public ArrayList<State> getStates(){
 		return this.states;
 	}
-
-	/**
-	 * 
-	 * @param states    states
-	 */
-	public void setStates(ArrayList<State> states){
+	private void setStates(ArrayList<State> states){
 		this.states = states;
+	}
+	public void addState(State state){
+		this.states.add(state);
+	}
+	public void removeState(State state){
+		this.states.remove(state);
 	}
 
 	public boolean getOrderRelevant(){

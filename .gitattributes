@@ -102,7 +102,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Media.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MediaInstance.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MovieFile.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageArray.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageSet.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedMedia.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Representation.java -text

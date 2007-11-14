@@ -29,11 +29,11 @@ public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	private String label;
-	private ArrayList<FeatureBase> features;
-	private ArrayList<Scope> scopes;
+	private Set<FeatureBase> features;
+	private Set<Scope> scopes;
+	private Set<NamedArea> geoScopes;
 	private ReferenceBase source;
-	private ArrayList<NamedArea> geoScopes;
-	private ArrayList<ObservationalUnit> observationalUnits;
+	private Set<ObservationalUnit> observationalUnits;
 	private Taxon taxon;
 
 	public ReferenceBase getSource(){
@@ -48,38 +48,40 @@ public class Description extends IdentifiableEntity {
 		this.source= source;
 	}
 
-	public ArrayList getGeoScopes(){
+	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
-
-	/**
-	 * 
-	 * @param geoScopes    geoScopes
-	 */
-	public void setGeoScopes(ArrayList geoScopes){
+	private void setGeoScopes(Set<NamedArea> geoScopes){
 		this.geoScopes = geoScopes;
 	}
+	public void addGeoScope(NamedArea geoScope){
+		this.geoScopes.add(geoScope);
+	}
+	public void removeGeoScope(NamedArea geoScope){
+		this.geoScopes.remove(geoScope);
+	}
 
-	public ArrayList getScopes(){
+	
+	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
-
-	/**
-	 * 
-	 * @param scopes    scopes
-	 */
-	public void setScopes(ArrayList scopes){
+	private void setScopes(Set<Scope> scopes){
 		this.scopes = scopes;
 	}
-
-	public ArrayList<FeatureBase> getFeatures(){
-		return this.features;
+	public void addScope(Scope scope){
+		this.scopes.add(scope);
+	}
+	public void removeScope(Scope scope){
+		this.scopes.remove(scope);
 	}
 
-	/**
-	 * 
-	 * @param features    features
-	 */
+	
+	public Set<FeatureBase> getFeatures(){
+		return this.features;
+	}
+	public void setFeatures(Set<FeatureBase> features) {
+		this.features = features;
+	}
 	public void addFeature(FeatureBase feature){
 		this.features.add(feature);
 	}
@@ -87,14 +89,10 @@ public class Description extends IdentifiableEntity {
 		this.features.remove(feature);
 	}
 
+	
 	public String getLabel(){
 		return this.label;
 	}
-
-	/**
-	 * 
-	 * @param label    label
-	 */
 	public void setLabel(String label){
 		this.label = label;
 	}
@@ -104,22 +102,24 @@ public class Description extends IdentifiableEntity {
 		return "";
 	}
 
-	public ArrayList<ObservationalUnit> getObservationalUnit() {
+
+	public Set<ObservationalUnit> getObservationalUnits() {
 		return observationalUnits;
 	}
-
+	public void setObservationalUnits(Set<ObservationalUnit> observationalUnits) {
+		this.observationalUnits = observationalUnits;
+	}
 	public void addObservationalUnit(ObservationalUnit observationalUnit) {
 		this.observationalUnits.add(observationalUnit);
 	}
-
 	public void removeObservationalUnit(ObservationalUnit observationalUnit) {
 		this.observationalUnits.remove(observationalUnit);
 	}
-
+	
+	
 	public Taxon getTaxon() {
 		return taxon;
 	}
-
 	public void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 	}

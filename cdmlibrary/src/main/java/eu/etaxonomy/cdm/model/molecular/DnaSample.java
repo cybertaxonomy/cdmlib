@@ -29,20 +29,25 @@ public class DnaSample extends IdentifiableEntity {
 	//Notes on extraction, purification or amplification process
 	private String productionNotes;
 	private Calendar dateProduced;
-	private ArrayList sequences;
+	private Set<Sequence> sequences;
 	private TissueSample extractedFrom;
 	private Collection storedAt;
 
-	public ArrayList getSequences(){
-		return this.sequences;
+
+	
+
+	public Set<Sequence> getSequences() {
+		return sequences;
 	}
 
-	/**
-	 * 
-	 * @param sequences    sequences
-	 */
-	public void setSequences(ArrayList sequences){
+	private void setSequences(Set<Sequence> sequences) {
 		this.sequences = sequences;
+	}
+	public void addSequences(Sequence sequence) {
+		this.sequences.add(sequence);
+	}
+	public void removeSequences(Sequence sequence) {
+		this.sequences.remove(sequence);
 	}
 
 	public Collection getStoredAt(){

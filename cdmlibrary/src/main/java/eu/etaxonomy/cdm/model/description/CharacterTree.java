@@ -26,9 +26,9 @@ import javax.persistence.*;
 @Entity
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
-	private ArrayList characters;
+	private Set characters;
 
-	public ArrayList getCharacters(){
+	public Set getCharacters(){
 		return this.characters;
 	}
 
@@ -36,7 +36,7 @@ public class CharacterTree extends VersionableEntity {
 	 * 
 	 * @param characters    characters
 	 */
-	public void setCharacters(ArrayList characters){
+	public void setCharacters(Set characters){
 		this.characters = characters;
 	}
 

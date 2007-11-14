@@ -27,31 +27,7 @@ import javax.persistence.*;
 public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 	private static String ontologyClassUri = "http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm";
-	private ArrayList m_TaxonNameBase;
 
-	public ArrayList getM_TaxonNameBase(){
-		return this.m_TaxonNameBase;
-	}
-
-	/**
-	 * 
-	 * @param m_TaxonNameBase    m_TaxonNameBase
-	 */
-	public void setM_TaxonNameBase(ArrayList m_TaxonNameBase){
-		this.m_TaxonNameBase = m_TaxonNameBase;
-	}
-
-	public String getOntologyClassUri(){
-		return this.ontologyClassUri;
-	}
-
-	/**
-	 * 
-	 * @param ontologyClassUri    ontologyClassUri
-	 */
-	public void setOntologyClassUri(String ontologyClassUri){
-		this.ontologyClassUri = ontologyClassUri;
-	}
 
 	public static final Rank EMPIRE(){
 		return null;

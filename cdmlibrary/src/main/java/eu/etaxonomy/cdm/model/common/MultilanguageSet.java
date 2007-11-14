@@ -10,15 +10,15 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.ArrayList;
-
+import java.util.AbstractSet;
 import org.apache.log4j.Logger;
 
 /**
  * @author markus
  * Special array that takes care that all LanguageString elements habe a unique language
  */
-public class MultilanguageArray extends ArrayList<LanguageString>{
-	static Logger logger = Logger.getLogger(MultilanguageArray.class);
+public class MultilanguageSet extends ArrayList<LanguageString>{
+	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 
 	public LanguageString add(String text, Language lang){
 		LanguageString ls = new LanguageString(text, lang);

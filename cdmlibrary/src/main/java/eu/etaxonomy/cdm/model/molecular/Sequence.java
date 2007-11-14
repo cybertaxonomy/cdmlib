@@ -38,10 +38,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	//the sequence as a string of base pairs. 5'->3'
 	private String citationMicroReference;
 	private ReferenceBase publishedIn;
-	private ArrayList citations;
-	private ArrayList genBankAccession;
+	private Set<ReferenceBase> citations;
+	private Set<GenBankAccession> genBankAccession;
 	private Locus locus;
-	private ArrayList chromatograms;
+	private Set<Media> chromatograms;
 
 	public Locus getLocus(){
 		return this.locus;
@@ -67,42 +67,53 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 		this.publishedIn = publishedIn;
 	}
 
-	public ArrayList getChromatograms(){
-		return this.chromatograms;
+
+	
+	public Set<ReferenceBase> getCitations() {
+		return citations;
 	}
 
-	/**
-	 * 
-	 * @param chromatograms    chromatograms
-	 */
-	public void setChromatograms(ArrayList chromatograms){
-		this.chromatograms = chromatograms;
-	}
-
-	public ArrayList getCitations(){
-		return this.citations;
-	}
-
-	/**
-	 * 
-	 * @param citations    citations
-	 */
-	public void setCitations(ArrayList citations){
+	private void setCitations(Set<ReferenceBase> citations) {
 		this.citations = citations;
 	}
-
-	public ArrayList getGenBankAccession(){
-		return this.genBankAccession;
+	public void addCitation(ReferenceBase citation) {
+		this.citations.add(citation);
+	}
+	public void removeCitation(ReferenceBase citation) {
+		this.citations.remove(citation);
 	}
 
-	/**
-	 * 
-	 * @param genBankAccession    genBankAccession
-	 */
-	public void setGenBankAccession(ArrayList genBankAccession){
+	
+	public Set<GenBankAccession> getGenBankAccession() {
+		return genBankAccession;
+	}
+
+	private void setGenBankAccession(Set<GenBankAccession> genBankAccession) {
 		this.genBankAccession = genBankAccession;
 	}
+	public void addGenBankAccession(GenBankAccession genBankAccession) {
+		this.genBankAccession.add(genBankAccession);
+	}
+	public void removeGenBankAccession(GenBankAccession genBankAccession) {
+		this.genBankAccession.remove(genBankAccession);
+	}
 
+	
+	public Set<Media> getChromatograms() {
+		return chromatograms;
+	}
+
+	private void setChromatograms(Set<Media> chromatograms) {
+		this.chromatograms = chromatograms;
+	}
+	public void addChromatogram(Media chromatogram) {
+		this.chromatograms.add(chromatogram);
+	}
+	public void removeChromatogram(Media chromatogram) {
+		this.chromatograms.remove(chromatogram);
+	}
+
+	
 	public String getSequence(){
 		return this.sequence;
 	}

@@ -33,116 +33,114 @@ public class FeatureType extends DefinedTermBase {
 	private boolean supportsIndividualAssociation;
 	private boolean supportsTaxonInteraction;
 	private boolean supportsCommonTaxonName;
-	private ArrayList recommendedModifierEnumeration;
-	private ArrayList recommendedStatisticalMeasures;
-	private ArrayList supportedCategoricalEnumerations;
+	private Set<Enumeration> recommendedModifierEnumeration;
+	private Set<StatisticalMeasure> recommendedStatisticalMeasures;
+	private Set<Enumeration> supportedCategoricalEnumerations;
 
-	public ArrayList getRecommendedModifierEnumeration(){
-		return this.recommendedModifierEnumeration;
+
+
+	
+	
+	public boolean isSupportsQuantitativeData() {
+		return supportsQuantitativeData;
 	}
 
-	/**
-	 * 
-	 * @param recommendedModifierEnumeration    recommendedModifierEnumeration
-	 */
-	public void setRecommendedModifierEnumeration(ArrayList recommendedModifierEnumeration){
-		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
-	}
-
-	public ArrayList getRecommendedStatisticalMeasures(){
-		return this.recommendedStatisticalMeasures;
-	}
-
-	/**
-	 * 
-	 * @param recommendedStatisticalMeasures    recommendedStatisticalMeasures
-	 */
-	public void setRecommendedStatisticalMeasures(ArrayList recommendedStatisticalMeasures){
-		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
-	}
-
-	public ArrayList getSupportedCategoricalEnumerations(){
-		return this.supportedCategoricalEnumerations;
-	}
-
-	/**
-	 * 
-	 * @param supportedCategoricalEnumerations    supportedCategoricalEnumerations
-	 */
-	public void setSupportedCategoricalEnumerations(ArrayList supportedCategoricalEnumerations){
-		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
-	}
-
-	public boolean getSupportsQuantitativeData(){
-		return this.supportsQuantitativeData;
-	}
-
-	/**
-	 * 
-	 * @param supportsQuantitativeData    supportsQuantitativeData
-	 */
-	public void setSupportsQuantitativeData(boolean supportsQuantitativeData){
+	public void setSupportsQuantitativeData(boolean supportsQuantitativeData) {
 		this.supportsQuantitativeData = supportsQuantitativeData;
 	}
 
-	public boolean getSupportsTextData(){
-		return this.supportsTextData;
+	public boolean isSupportsTextData() {
+		return supportsTextData;
 	}
 
-	/**
-	 * 
-	 * @param supportsTextData    supportsTextData
-	 */
-	public void setSupportsTextData(boolean supportsTextData){
+	public void setSupportsTextData(boolean supportsTextData) {
 		this.supportsTextData = supportsTextData;
 	}
 
-	public boolean getSupportsDistribution(){
-		return this.supportsDistribution;
+	public boolean isSupportsDistribution() {
+		return supportsDistribution;
 	}
 
-	/**
-	 * 
-	 * @param supportsDistribution    supportsDistribution
-	 */
-	public void setSupportsDistribution(boolean supportsDistribution){
+	public void setSupportsDistribution(boolean supportsDistribution) {
 		this.supportsDistribution = supportsDistribution;
 	}
 
-	public boolean getSupportsIndividualAssociation(){
-		return this.supportsIndividualAssociation;
+	public boolean isSupportsIndividualAssociation() {
+		return supportsIndividualAssociation;
 	}
 
-	/**
-	 * 
-	 * @param supportsIndividualAssociation    supportsIndividualAssociation
-	 */
-	public void setSupportsIndividualAssociation(boolean supportsIndividualAssociation){
+	public void setSupportsIndividualAssociation(
+			boolean supportsIndividualAssociation) {
 		this.supportsIndividualAssociation = supportsIndividualAssociation;
 	}
 
-	public boolean getSupportsTaxonInteraction(){
-		return this.supportsTaxonInteraction;
+	public boolean isSupportsTaxonInteraction() {
+		return supportsTaxonInteraction;
 	}
 
-	/**
-	 * 
-	 * @param supportsTaxonInteraction    supportsTaxonInteraction
-	 */
-	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction){
+	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction) {
 		this.supportsTaxonInteraction = supportsTaxonInteraction;
 	}
 
-	public boolean getSupportsCommonTaxonName(){
-		return this.supportsCommonTaxonName;
+	public boolean isSupportsCommonTaxonName() {
+		return supportsCommonTaxonName;
 	}
 
-	/**
-	 * 
-	 * @param supportsCommonTaxonName    supportsCommonTaxonName
-	 */
-	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName){
+	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName) {
 		this.supportsCommonTaxonName = supportsCommonTaxonName;
+	}
+
+	public Set<Enumeration> getRecommendedModifierEnumeration() {
+		return recommendedModifierEnumeration;
+	}
+
+	private void setRecommendedModifierEnumeration(
+			Set<Enumeration> recommendedModifierEnumeration) {
+		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
+	}
+
+	public void addRecommendedModifierEnumeration(
+			Enumeration recommendedModifierEnumeration) {
+		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
+	}
+	public void removeRecommendedModifierEnumeration(
+			Enumeration recommendedModifierEnumeration) {
+		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
+	}
+
+	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
+		return recommendedStatisticalMeasures;
+	}
+
+	private void setRecommendedStatisticalMeasures(
+			Set<StatisticalMeasure> recommendedStatisticalMeasures) {
+		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
+	}
+
+	public void addRecommendedStatisticalMeasure(
+			StatisticalMeasure recommendedStatisticalMeasure) {
+		this.recommendedStatisticalMeasures.add(recommendedStatisticalMeasure);
+	}
+	public void removeRecommendedStatisticalMeasure(
+			StatisticalMeasure recommendedStatisticalMeasure) {
+		this.recommendedStatisticalMeasures.remove(recommendedStatisticalMeasure);
+	}
+
+	public Set<Enumeration> getSupportedCategoricalEnumerations() {
+		return supportedCategoricalEnumerations;
+	}
+
+	private void setSupportedCategoricalEnumerations(
+			Set<Enumeration> supportedCategoricalEnumerations) {
+		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
+	}
+	public void addSupportedCategoricalEnumeration(
+			Enumeration supportedCategoricalEnumeration) {
+		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
+	}
+	public void removeSupportedCategoricalEnumeration(
+			Enumeration supportedCategoricalEnumeration) {
+		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
 	public static final FeatureType DISTRIBUTION(){

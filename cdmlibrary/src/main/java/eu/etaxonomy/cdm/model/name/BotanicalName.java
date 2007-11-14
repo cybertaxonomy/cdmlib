@@ -32,36 +32,44 @@ public class BotanicalName extends NonViralName {
 	private boolean isTrinomHybrid = false;
 	//Only for fungi: to indicate that the type of the name is asexual or not
 	private boolean isAnamorphic;
-	private ArrayList parentRelationships;
-	private ArrayList childRelationships;
+	private Set<HybridRelationship> parentRelationships;
+	private Set<HybridRelationship> childRelationships;
 
 	public BotanicalName(Rank rank) {
 		super(rank);
 	}
 
-	public ArrayList getParentRelationships(){
-		return this.parentRelationships;
-	}
+	
 
-	/**
-	 * 
-	 * @param parentRelationships    parentRelationships
-	 */
-	public void setParentRelationships(ArrayList parentRelationships){
+	public Set<HybridRelationship> getParentRelationships() {
+		return parentRelationships;
+	}
+	private void setParentRelationships(Set<HybridRelationship> parentRelationships) {
 		this.parentRelationships = parentRelationships;
 	}
-
-	public ArrayList getChildRelationships(){
-		return this.childRelationships;
+	public void addParentRelationships(HybridRelationship parentRelationship) {
+		this.parentRelationships.add(parentRelationship);
+	}
+	public void removeParentRelationships(HybridRelationship parentRelationship) {
+		this.parentRelationships.remove(parentRelationship);
 	}
 
-	/**
-	 * 
-	 * @param childRelationships    childRelationships
-	 */
-	public void setChildRelationships(ArrayList childRelationships){
+
+
+	public Set<HybridRelationship> getChildRelationships() {
+		return childRelationships;
+	}
+	private void setChildRelationships(Set<HybridRelationship> childRelationships) {
 		this.childRelationships = childRelationships;
 	}
+	public void addChildRelationship(HybridRelationship childRelationship) {
+		this.childRelationships.add(childRelationship);
+	}
+	public void removeChildRelationship(HybridRelationship childRelationship) {
+		this.childRelationships.remove(childRelationship);
+	}
+
+
 
 	public boolean isHybridFormula(){
 		return this.isHybridFormula;
