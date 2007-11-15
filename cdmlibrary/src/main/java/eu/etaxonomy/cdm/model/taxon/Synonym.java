@@ -25,10 +25,11 @@ public class Synonym extends TaxonBase {
 	private Set<SynonymRelationship> synoynmRelations;
 
 
+	@OneToMany
 	public Set<SynonymRelationship> getSynoynmRelations() {
 		return synoynmRelations;
 	}
-	private void setSynoynmRelations(Set<SynonymRelationship> synoynmRelations) {
+	protected void setSynoynmRelations(Set<SynonymRelationship> synoynmRelations) {
 		this.synoynmRelations = synoynmRelations;
 	}
 	public void addSynoynmRelations(SynonymRelationship synoynmRelation) {

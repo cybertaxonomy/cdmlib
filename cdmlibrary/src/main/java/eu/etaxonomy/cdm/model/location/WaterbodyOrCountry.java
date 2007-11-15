@@ -31,6 +31,7 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	private Set<Continent> continents;
 
 
+	@OneToMany
 	public Set<Continent> getContinents() {
 		return continents;
 	}
@@ -38,7 +39,7 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	public void setContinents(Set<Continent> continents) {
 		this.continents = continents;
 	}
-	private void addContinents(Continent continent) {
+	protected void addContinents(Continent continent) {
 		this.continents.add(continent);
 	}
 	public void removeContinents(Continent continent) {

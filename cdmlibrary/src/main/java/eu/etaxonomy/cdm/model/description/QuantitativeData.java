@@ -27,10 +27,11 @@ public class QuantitativeData extends FeatureBase {
 	private Set<StatisticalMeasurementValue> statisticalValues;
 	
 
+	@OneToMany
 	public Set<StatisticalMeasurementValue> getStatisticalValues() {
 		return statisticalValues;
 	}
-	private void setStatisticalValues(
+	protected void setStatisticalValues(
 			Set<StatisticalMeasurementValue> statisticalValues) {
 		this.statisticalValues = statisticalValues;
 	}

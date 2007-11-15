@@ -42,6 +42,7 @@ public class StateData extends VersionableEntity {
 	}
 	
 
+	@OneToMany
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}

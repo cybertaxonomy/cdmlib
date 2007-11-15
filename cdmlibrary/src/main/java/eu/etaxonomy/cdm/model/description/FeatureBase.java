@@ -38,10 +38,11 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	private Set<Media> media;
 
 	
+	@OneToMany
 	public Set<Media> getMedia(){
 		return this.media;
 	}
-	private void setMedia(Set<Media> media) {
+	protected void setMedia(Set<Media> media) {
 		this.media = media;
 	}
 	public void addMedia(Media media){
@@ -60,10 +61,11 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	}
 
 	
+	@OneToMany
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-	private void setModifiers(Set<Modifier> modifiers){
+	protected void setModifiers(Set<Modifier> modifiers){
 		this.modifiers = modifiers;
 	}
 	public void addModifier(Modifier modifier){
@@ -77,7 +79,7 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	public MultilanguageSet getModifyingText(){
 		return this.modifyingText;
 	}
-	private void setModifyingText(MultilanguageSet modifyingText){
+	protected void setModifyingText(MultilanguageSet modifyingText){
 		this.modifyingText = modifyingText;
 	}
 	public void addModifyingText(LanguageString description){

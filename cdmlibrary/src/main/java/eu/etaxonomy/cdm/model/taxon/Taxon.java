@@ -28,10 +28,11 @@ public class Taxon extends TaxonBase {
 	private Set<TaxonRelationship> inverseTaxonRelations;
 
 
+	@OneToMany
 	public Set<Description> getDescriptions() {
 		return descriptions;
 	}
-	private void setDescriptions(Set<Description> descriptions) {
+	protected void setDescriptions(Set<Description> descriptions) {
 		this.descriptions = descriptions;
 	}
 	public void addDescriptions(Description description) {
@@ -42,19 +43,21 @@ public class Taxon extends TaxonBase {
 	}
 
 
+	@OneToMany
 	public Set<SynonymRelationship> getInverseSynonymRelations() {
 		return inverseSynonymRelations;
 	}
-	private void setInverseSynonymRelations(
+	protected void setInverseSynonymRelations(
 			Set<SynonymRelationship> inverseSynonymRelations) {
 		this.inverseSynonymRelations = inverseSynonymRelations;
 	}
 
 
+	@OneToMany
 	public Set<TaxonRelationship> getTaxonRelations() {
 		return taxonRelations;
 	}
-	private void setTaxonRelations(Set<TaxonRelationship> taxonRelations) {
+	protected void setTaxonRelations(Set<TaxonRelationship> taxonRelations) {
 		this.taxonRelations = taxonRelations;
 	}
 	public void addTaxonRelations(TaxonRelationship taxonRelation) {
@@ -65,10 +68,11 @@ public class Taxon extends TaxonBase {
 	}
 
 
+	@OneToMany
 	public Set<TaxonRelationship> getInverseTaxonRelations() {
 		return inverseTaxonRelations;
 	}
-	private void setInverseTaxonRelations(
+	protected void setInverseTaxonRelations(
 			Set<TaxonRelationship> inverseTaxonRelations) {
 		this.inverseTaxonRelations = inverseTaxonRelations;
 	}

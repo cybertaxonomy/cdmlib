@@ -28,10 +28,12 @@ import javax.persistence.*;
 public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
 	private Set<Taxon> coveredTaxa;
+	
+	@OneToMany
 	public Set<Taxon> getCoveredTaxa() {
 		return coveredTaxa;
 	}
-	private void setCoveredTaxa(Set<Taxon> coveredTaxa) {
+	protected void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
 	public void addCoveredTaxon(Taxon taxon) {

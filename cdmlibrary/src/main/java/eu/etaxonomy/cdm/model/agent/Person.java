@@ -49,6 +49,7 @@ public class Person extends IdentifiableEntity {
 	private Contact contact;
 	private Set<Keyword> keywords;
 
+	@OneToMany
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
@@ -62,6 +63,7 @@ public class Person extends IdentifiableEntity {
 	}
 
 
+	@OneToMany
 	public Set<Keyword> getKeywords(){
 		return this.keywords;
 	}

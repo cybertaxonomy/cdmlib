@@ -47,6 +47,7 @@ public class Description extends IdentifiableEntity {
 		this.source= source;
 	}
 
+	@OneToMany
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
@@ -61,6 +62,7 @@ public class Description extends IdentifiableEntity {
 	}
 
 	
+	@OneToMany
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
@@ -75,6 +77,7 @@ public class Description extends IdentifiableEntity {
 	}
 
 	
+	@OneToMany
 	public Set<FeatureBase> getFeatures(){
 		return this.features;
 	}
@@ -102,6 +105,7 @@ public class Description extends IdentifiableEntity {
 	}
 
 
+	@OneToMany
 	public Set<ObservationalUnit> getObservationalUnits() {
 		return observationalUnits;
 	}

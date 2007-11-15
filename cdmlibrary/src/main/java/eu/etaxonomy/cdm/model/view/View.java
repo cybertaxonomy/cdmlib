@@ -74,10 +74,11 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 	
 
+	@OneToMany
 	public Set<View> getSuperViews() {
 		return superViews;
 	}
-	public void setSuperViews(Set<View> superViews) {
+	protected void setSuperViews(Set<View> superViews) {
 		this.superViews = superViews;
 	}
 	public void addSuperView(View superView) {
@@ -88,10 +89,11 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 	
 
+	@OneToMany
 	public Set<CdmBase> getMembers() {
 		return members;
 	}
-	private void setMembers(Set<CdmBase> members) {
+	protected void setMembers(Set<CdmBase> members) {
 		this.members = members;
 	}
 	public void addMember(CdmBase member) {
@@ -102,10 +104,11 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 
 	
+	@OneToMany
 	public Set<CdmBase> getNonMembers() {
 		return nonMembers;
 	}
-	private void setNonMembers(Set<CdmBase> nonMembers) {
+	protected void setNonMembers(Set<CdmBase> nonMembers) {
 		this.nonMembers = nonMembers;
 	}
 	public void addNonMember(CdmBase member) {

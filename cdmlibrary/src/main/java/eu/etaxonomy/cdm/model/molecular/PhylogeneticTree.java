@@ -25,10 +25,12 @@ import javax.persistence.*;
 public class PhylogeneticTree extends ReferencedMedia {
 	static Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	private Set<Sequence> usedSequences;
+	
+	@OneToMany
 	public Set<Sequence> getUsedSequences() {
 		return usedSequences;
 	}
-	private void setUsedSequences(Set<Sequence> usedSequences) {
+	protected void setUsedSequences(Set<Sequence> usedSequences) {
 		this.usedSequences = usedSequences;
 	}
 	public void addUsedSequences(Sequence usedSequence) {

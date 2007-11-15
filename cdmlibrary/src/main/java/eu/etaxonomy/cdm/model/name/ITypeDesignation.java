@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import javax.persistence.MappedSuperclass;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 
@@ -18,6 +20,7 @@ import eu.etaxonomy.cdm.model.Description;
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
+@MappedSuperclass
 public interface ITypeDesignation {
 
 }

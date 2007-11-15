@@ -41,10 +41,11 @@ public class BotanicalName extends NonViralName {
 
 	
 
+	@OneToMany
 	public Set<HybridRelationship> getParentRelationships() {
 		return parentRelationships;
 	}
-	private void setParentRelationships(Set<HybridRelationship> parentRelationships) {
+	protected void setParentRelationships(Set<HybridRelationship> parentRelationships) {
 		this.parentRelationships = parentRelationships;
 	}
 	public void addParentRelationships(HybridRelationship parentRelationship) {
@@ -56,10 +57,11 @@ public class BotanicalName extends NonViralName {
 
 
 
+	@OneToMany
 	public Set<HybridRelationship> getChildRelationships() {
 		return childRelationships;
 	}
-	private void setChildRelationships(Set<HybridRelationship> childRelationships) {
+	protected void setChildRelationships(Set<HybridRelationship> childRelationships) {
 		this.childRelationships = childRelationships;
 	}
 	public void addChildRelationship(HybridRelationship childRelationship) {

@@ -74,10 +74,11 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 
 
+	@OneToMany
 	public Set<ITypeDesignation> getTypeDesignations() {
 		return typeDesignations;
 	}
-	private void setTypeDesignations(Set<ITypeDesignation> typeDesignations) {
+	protected void setTypeDesignations(Set<ITypeDesignation> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}
 	public void addTypeDesignation(ITypeDesignation typeDesignation) {
@@ -89,18 +90,20 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 
 
+	@OneToMany
 	public Set<NameRelationship> getNameRelations() {
 		return nameRelations;
 	}
-	private void setNameRelations(Set<NameRelationship> nameRelations) {
+	protected void setNameRelations(Set<NameRelationship> nameRelations) {
 		this.nameRelations = nameRelations;
 	}
 
 
+	@OneToMany
 	public Set<NameRelationship> getInverseNameRelations() {
 		return inverseNameRelations;
 	}
-	private void setInverseNameRelations(Set<NameRelationship> inverseNameRelations) {
+	protected void setInverseNameRelations(Set<NameRelationship> inverseNameRelations) {
 		this.inverseNameRelations = inverseNameRelations;
 	}
 
@@ -118,10 +121,11 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 	
 
+	@OneToMany
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
 	}
-	private void setStatus(Set<NomenclaturalStatus> status) {
+	protected void setStatus(Set<NomenclaturalStatus> status) {
 		this.status = status;
 	}
 	public void addStatus(NomenclaturalStatus status) {
@@ -133,10 +137,11 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 
 
+	@OneToMany
 	public Set<TaxonNameBase> getNewCombinations() {
 		return newCombinations;
 	}
-	private void setNewCombinations(Set<TaxonNameBase> newCombinations) {
+	protected void setNewCombinations(Set<TaxonNameBase> newCombinations) {
 		this.newCombinations = newCombinations;
 	}
 	public void addNewCombination(TaxonNameBase newCombination) {

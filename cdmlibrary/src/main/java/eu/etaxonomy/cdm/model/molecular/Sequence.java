@@ -69,11 +69,12 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 
 
 	
+	@OneToMany
 	public Set<ReferenceBase> getCitations() {
 		return citations;
 	}
 
-	private void setCitations(Set<ReferenceBase> citations) {
+	protected void setCitations(Set<ReferenceBase> citations) {
 		this.citations = citations;
 	}
 	public void addCitation(ReferenceBase citation) {
@@ -84,11 +85,12 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	}
 
 	
+	@OneToMany
 	public Set<GenBankAccession> getGenBankAccession() {
 		return genBankAccession;
 	}
 
-	private void setGenBankAccession(Set<GenBankAccession> genBankAccession) {
+	protected void setGenBankAccession(Set<GenBankAccession> genBankAccession) {
 		this.genBankAccession = genBankAccession;
 	}
 	public void addGenBankAccession(GenBankAccession genBankAccession) {
@@ -99,11 +101,12 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	}
 
 	
+	@OneToMany
 	public Set<Media> getChromatograms() {
 		return chromatograms;
 	}
 
-	private void setChromatograms(Set<Media> chromatograms) {
+	protected void setChromatograms(Set<Media> chromatograms) {
 		this.chromatograms = chromatograms;
 	}
 	public void addChromatogram(Media chromatogram) {

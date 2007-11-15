@@ -41,10 +41,13 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	public void setValue(float value){
 		this.value = value;
 	}
+	
+	
+	@OneToMany
 	public Set<Modifier> getModifiers() {
 		return modifiers;
 	}
-	private void setModifiers(Set<Modifier> modifiers) {
+	protected void setModifiers(Set<Modifier> modifiers) {
 		this.modifiers = modifiers;
 	}
 	public void addModifier(Modifier modifier) {

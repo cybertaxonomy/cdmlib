@@ -90,11 +90,12 @@ public class FeatureType extends DefinedTermBase {
 		this.supportsCommonTaxonName = supportsCommonTaxonName;
 	}
 
+	@OneToMany
 	public Set<Enumeration> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
-	private void setRecommendedModifierEnumeration(
+	protected void setRecommendedModifierEnumeration(
 			Set<Enumeration> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
@@ -108,11 +109,12 @@ public class FeatureType extends DefinedTermBase {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
+	@OneToMany
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
 	}
 
-	private void setRecommendedStatisticalMeasures(
+	protected void setRecommendedStatisticalMeasures(
 			Set<StatisticalMeasure> recommendedStatisticalMeasures) {
 		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
 	}
@@ -126,11 +128,12 @@ public class FeatureType extends DefinedTermBase {
 		this.recommendedStatisticalMeasures.remove(recommendedStatisticalMeasure);
 	}
 
+	@OneToMany
 	public Set<Enumeration> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
-	private void setSupportedCategoricalEnumerations(
+	protected void setSupportedCategoricalEnumerations(
 			Set<Enumeration> supportedCategoricalEnumerations) {
 		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
 	}

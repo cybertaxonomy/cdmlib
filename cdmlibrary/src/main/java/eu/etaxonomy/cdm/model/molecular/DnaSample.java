@@ -36,11 +36,12 @@ public class DnaSample extends IdentifiableEntity {
 
 	
 
+	@OneToMany
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
 
-	private void setSequences(Set<Sequence> sequences) {
+	protected void setSequences(Set<Sequence> sequences) {
 		this.sequences = sequences;
 	}
 	public void addSequences(Sequence sequence) {

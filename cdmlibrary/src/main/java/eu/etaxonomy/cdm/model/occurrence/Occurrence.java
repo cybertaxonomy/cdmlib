@@ -66,10 +66,11 @@ public class Occurrence extends IdentifiableEntity {
 
 	
 
+	@OneToMany
 	public Set<Media> getMedia() {
 		return media;
 	}
-	private void setMedia(Set<Media> media) {
+	protected void setMedia(Set<Media> media) {
 		this.media = media;
 	}
 	public void addMedia(Media media) {

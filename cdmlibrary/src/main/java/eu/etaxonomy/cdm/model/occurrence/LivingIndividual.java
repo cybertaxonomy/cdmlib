@@ -27,10 +27,11 @@ public class LivingIndividual extends Occurrence {
 	private Set<LivingIndividual> offspring;
 	
 	
+	@OneToMany
 	public Set<LivingIndividual> getParents() {
 		return parents;
 	}
-	private void setParents(Set<LivingIndividual> parents) {
+	protected void setParents(Set<LivingIndividual> parents) {
 		this.parents = parents;
 	}
 	public void addParents(LivingIndividual parent) {
@@ -41,10 +42,11 @@ public class LivingIndividual extends Occurrence {
 	}
 	
 	
+	@OneToMany
 	public Set<LivingIndividual> getOffspring() {
 		return offspring;
 	}
-	private void setOffspring(Set<LivingIndividual> offspring) {
+	protected void setOffspring(Set<LivingIndividual> offspring) {
 		this.offspring = offspring;
 	}
 	public void addOffspring(LivingIndividual offspring) {

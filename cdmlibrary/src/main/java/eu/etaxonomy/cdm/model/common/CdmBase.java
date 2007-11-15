@@ -5,12 +5,15 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class CdmBase implements Serializable{
 	
 	public CdmBase() {

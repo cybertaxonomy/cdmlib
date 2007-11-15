@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os, sys
 
-modelDir="/Users/markus/workspace/cdmlibrary/src/main/java/eu/etaxonomy/cdm/model"
+modelDir="src/main/java/eu/etaxonomy/cdm/model"
 modelPackage="eu.etaxonomy.cdm.model"
 
 print"<list>"

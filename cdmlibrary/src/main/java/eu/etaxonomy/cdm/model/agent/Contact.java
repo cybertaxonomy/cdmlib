@@ -35,6 +35,9 @@ public class Contact extends VersionableEntity {
 	private String phone;
 	private String fax;
 	private Set<Address> addresses;
+	
+	
+	@OneToMany
 	public Set<Address> getAddresses(){
 		return this.addresses;
 	}

@@ -44,6 +44,9 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	private DefinedTermBase partOf;
 	private Set<DefinedTermBase> includes;
 	private Set<Media> media;
+	
+	
+	@OneToMany
 	public Set<Representation> getRepresentations(){
 		return this.representations;
 	}
@@ -70,6 +73,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		this.kindOf = kindOf;
 	}
 
+	@OneToMany
 	public Set<DefinedTermBase> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
@@ -95,6 +99,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		this.partOf = partOf;
 	}
 
+	@OneToMany
 	public Set<DefinedTermBase> getIncludes(){
 		return this.includes;
 	}
@@ -109,6 +114,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 
+	@OneToMany
 	public Set<Media> getMedia(){
 		return this.media;
 	}

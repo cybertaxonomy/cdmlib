@@ -49,6 +49,7 @@ public class Institution extends IdentifiableEntity {
 		this.contact = contact;
 	}
 
+	@OneToMany
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}

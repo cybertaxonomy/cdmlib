@@ -40,6 +40,7 @@ public class Media extends AnnotatableEntity {
 	private Set<Rights> rights;
 	private Team artist;
 
+	@OneToMany
 	public Set<MediaInstance> getInstances(){
 		return this.instances;
 	}
