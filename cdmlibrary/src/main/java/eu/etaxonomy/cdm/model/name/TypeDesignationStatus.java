@@ -28,17 +28,6 @@ public class TypeDesignationStatus extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName#NomencalturalTypeTypeTerm";
 
-	public String getInitializationClassUri(){
-		return this.initializationClassUri;
-	}
-
-	/**
-	 * 
-	 * @param initializationClassUri    initializationClassUri
-	 */
-	public void setInitializationClassUri(String initializationClassUri){
-		this.initializationClassUri = initializationClassUri;
-	}
 
 	public static final TypeDesignationStatus HOLOTYPE(){
 		return null;

@@ -141,6 +141,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		this.uri = uri;
 	}
 
+	@Transient
 	public String getInitializationClassUri(){
 		return this.initializationClassUri;
 	}

@@ -34,19 +34,6 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus";
 
-	public String getInitializationClassUri(){
-		return this.initializationClassUri;
-	}
-
-	/**
-	 * @param ontologyClassUri
-	 * 
-	 * @param initializationClassUri
-	 */
-	public void setInitializationClassUri(String initializationClassUri){
-		this.initializationClassUri = initializationClassUri;
-	}
-
 	public boolean isInvalidType(){
 		//True, if enum is of type:
 		//Invalid,

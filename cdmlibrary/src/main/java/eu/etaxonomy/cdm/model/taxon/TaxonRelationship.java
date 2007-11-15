@@ -22,6 +22,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
  */
+@Entity
 public class TaxonRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(TaxonRelationship.class);
 	private ConceptRelationshipType type;

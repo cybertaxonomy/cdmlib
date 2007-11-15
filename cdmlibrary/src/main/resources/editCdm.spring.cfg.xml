@@ -127,7 +127,7 @@
         		<value>eu.etaxonomy.cdm.model.name.CultivarPlantName</value>
         		<value>eu.etaxonomy.cdm.model.name.HybridRelationship</value>
         		<value>eu.etaxonomy.cdm.model.name.HybridRelationshipType</value>
-        		<value>eu.etaxonomy.cdm.model.name.ITypeDesignation</value>
+        		<value>eu.etaxonomy.cdm.model.name.TypeDesignationBase</value>
         		<value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
         		<value>eu.etaxonomy.cdm.model.name.NameRelationshipType</value>
         		<value>eu.etaxonomy.cdm.model.name.NameTypeDesignation</value>

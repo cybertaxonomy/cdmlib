@@ -20,6 +20,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
+@Entity
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
 	private Set<SynonymRelationship> synoynmRelations;
