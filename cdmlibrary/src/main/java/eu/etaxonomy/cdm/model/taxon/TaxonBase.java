@@ -13,9 +13,11 @@ package eu.etaxonomy.cdm.model.taxon;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,14 +28,13 @@ import javax.persistence.*;
  */
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
-	//The assignement to the Taxon or to the Synonym class is not definitive
+	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
 	private TaxonNameBase name;
 	/**
 	 * The concept reference
 	 */
 	private ReferenceBase sec;
-
 	public TaxonNameBase getName(){
 		return this.name;
 	}

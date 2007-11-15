@@ -32,22 +32,9 @@ public class NamedArea extends EnumeratedTermBase {
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
 	private MediaInstance shapeFile;
-	private NamedAreaInSource source;
 	private Set<WaterbodyOrCountry> countriesOrWaterbodies;
 	private NamedAreaType type;
 	private NamedAreaLevel level;
-
-	public NamedAreaInSource getSource(){
-		return this.source;
-	}
-
-	/**
-	 * 
-	 * @param source    source
-	 */
-	public void setSource(NamedAreaInSource source){
-		this.source = source;
-	}
 
 
 	public NamedAreaType getType(){
@@ -98,6 +85,7 @@ public class NamedArea extends EnumeratedTermBase {
 		this.validPeriod = validPeriod;
 	}
 
+	@ManyToOne
 	public MediaInstance getShapeFile(){
 		return this.shapeFile;
 	}

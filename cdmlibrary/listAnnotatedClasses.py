@@ -1,0 +1,17 @@
+#!/usr/bin/python
+import os, sys
+
+modelDir="/Users/markus/workspace/cdmlibrary/src/main/java/eu/etaxonomy/cdm/model"
+modelPackage="eu.etaxonomy.cdm.model"
+
+print"<list>"
+for path,dirs,files in os.walk(modelDir):
+    if path <> modelDir:
+        package = "%s.%s"%(modelPackage, path[len(modelDir)+1:])
+    else:
+        package = modelPackage
+    for f in files: 
+        if f.endswith(".java"):
+            print "<value>%s.%s</value>" %(package, f[:-5])
+print"</list>"
+

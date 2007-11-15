@@ -29,8 +29,6 @@ public class Extension extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Extension.class);
 	private String value;
 	private ExtensionType type;
-	private IdentifiableEntity identifiableEntity;
-
 	@ManyToOne
 	public ExtensionType getType(){
 		return this.type;

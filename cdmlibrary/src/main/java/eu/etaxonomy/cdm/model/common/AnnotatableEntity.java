@@ -30,7 +30,6 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
 	private Set<Marker> markers;
 	private Set<Annotation> annotations;
-
 	public Set<Marker> getMarkers(){
 		return this.markers;
 	}

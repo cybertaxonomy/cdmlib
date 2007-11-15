@@ -24,7 +24,6 @@ public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<Description> descriptions;
 	private Set<SynonymRelationship> inverseSynonymRelations;
-	private Set<TaxonInSource> taxonInSource;
 	private Set<TaxonRelationship> taxonRelations;
 	private Set<TaxonRelationship> inverseTaxonRelations;
 
@@ -49,20 +48,6 @@ public class Taxon extends TaxonBase {
 	private void setInverseSynonymRelations(
 			Set<SynonymRelationship> inverseSynonymRelations) {
 		this.inverseSynonymRelations = inverseSynonymRelations;
-	}
-
-
-	public Set<TaxonInSource> getTaxonInSource() {
-		return taxonInSource;
-	}
-	private void setTaxonInSource(Set<TaxonInSource> taxonInSource) {
-		this.taxonInSource = taxonInSource;
-	}
-	public void addTaxonInSource(TaxonInSource taxonInSource) {
-		this.taxonInSource.add(taxonInSource);
-	}
-	public void removeTaxonInSource(TaxonInSource taxonInSource) {
-		this.taxonInSource.remove(taxonInSource);
 	}
 
 

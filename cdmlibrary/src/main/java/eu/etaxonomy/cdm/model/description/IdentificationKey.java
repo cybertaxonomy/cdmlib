@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Media;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -36,7 +37,7 @@ public class IdentificationKey extends Media {
 	public void addCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.add(taxon);
 	}
-	public void removeCoveredTaxon(Taxon taxon) {
+	public void removeCoveredTaxon(IdentifiableEntity taxon) {
 		this.coveredTaxa.remove(taxon);
 	}
 

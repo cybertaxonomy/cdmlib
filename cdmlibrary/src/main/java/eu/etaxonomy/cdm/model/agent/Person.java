@@ -47,7 +47,6 @@ public class Person extends IdentifiableEntity {
 	private TimePeriod lifespan;
 	private Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
-	private Set<PersonInSource> personInSources;
 	private Set<Keyword> keywords;
 
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
@@ -60,19 +59,6 @@ public class Person extends IdentifiableEntity {
 	 */
 	public void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
 		this.institutionalMemberships = institutionalMemberships;
-	}
-
-	public Set<PersonInSource> getPersonInSources(){
-		return this.personInSources;
-	}
-	public void addPersonInSource(PersonInSource personInSource){
-		this.personInSources.add(personInSource);
-	}
-	public void removePersonInSource(PersonInSource personInSource){
-		this.personInSources.remove(personInSource);
-	}
-	public void setPersonInSources(Set<PersonInSource> personInSources){
-		this.personInSources = personInSources;
 	}
 
 

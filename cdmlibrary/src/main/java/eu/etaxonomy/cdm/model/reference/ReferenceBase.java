@@ -33,20 +33,6 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	//nomenclatural reference in a name this flag should be automatically set
 	private boolean isNomenclaturallyRelevant;
 	private Team authorTeam;
-	private Set<ReferenceInSource> referenceInSource;
-
-	public Set<ReferenceInSource> getReferenceInSource(){
-		return this.referenceInSource;
-	}
-	private void setReferenceInSource(Set<ReferenceInSource> referenceInSource){
-		this.referenceInSource = referenceInSource;
-	}
-	public void addReferenceInSource(ReferenceInSource referenceInSource){
-		this.referenceInSource.add(referenceInSource);
-	}
-	public void removeReferenceInSource(ReferenceInSource referenceInSource){
-		this.referenceInSource.remove(referenceInSource);
-	}
 
 	
 	public Team getAuthorTeam(){

@@ -43,7 +43,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
 	private Set<ITypeDesignation> typeDesignations;
-	private Set<NameInSource> nameInSource;
 	private Set<NameRelationship> nameRelations;
 	// name relations are bidirectional! Keep track of the inverse too
 	private Set<NameRelationship> inverseNameRelations;
@@ -86,21 +85,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	}
 	public void removeTypeDesignation(ITypeDesignation typeDesignation) {
 		this.typeDesignations.remove(typeDesignation);
-	}
-
-
-
-	public Set<NameInSource> getNameInSource() {
-		return nameInSource;
-	}
-	private void setNameInSource(Set<NameInSource> nameInSource) {
-		this.nameInSource = nameInSource;
-	}
-	public void addNameInSource(NameInSource nameInSource) {
-		this.nameInSource.add(nameInSource);
-	}
-	public void removeNameInSource(NameInSource nameInSource) {
-		this.nameInSource.remove(nameInSource);
 	}
 
 

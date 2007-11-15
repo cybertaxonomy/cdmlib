@@ -26,7 +26,6 @@ public class GenBankAccession extends VersionableEntity {
 	static Logger logger = Logger.getLogger(GenBankAccession.class);
 	private String accessionNumber;
 	private String uri;
-
 	public String getAccessionNumber(){
 		return this.accessionNumber;
 	}

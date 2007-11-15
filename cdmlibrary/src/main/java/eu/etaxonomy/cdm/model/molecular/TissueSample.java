@@ -28,7 +28,6 @@ public class TissueSample extends VersionableEntity {
 	private String description;
 	private Calendar samplingDate;
 	private ObservationalUnit sampledFrom;
-
 	public ObservationalUnit getSampledFrom(){
 		return this.sampledFrom;
 	}

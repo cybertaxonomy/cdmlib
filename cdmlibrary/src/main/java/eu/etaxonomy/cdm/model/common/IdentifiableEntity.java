@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
-import java.util.*;
+
+import java.util.Set;
+
 import javax.persistence.*;
 
 /**
@@ -21,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:27
  */
 @MappedSuperclass
-public abstract class IdentifiableEntity extends AnnotatableEntity {
+public abstract class IdentifiableEntity extends AnnotatableEntity implements IOriginalSource {
 	public IdentifiableEntity() {
 		super();
 	}
@@ -33,6 +35,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 	private boolean protectedTitleCache;
 	private Set<Rights> rights;
 	private Set<Extension> extensions;
+	private Set<OriginalSource> sources;
 
 	public String getLsid(){
 		return this.lsid;
@@ -94,7 +97,8 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 		this.rights.remove(right);
 	}
 
-	@OneToMany(mappedBy="identifiableEntity")
+	// (mappedBy="identifiableEntity")
+	@OneToMany
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
@@ -125,6 +129,24 @@ public abstract class IdentifiableEntity extends AnnotatableEntity {
 
 	public void setProtectedTitleCache(boolean protectedTitleCache) {
 		this.protectedTitleCache = protectedTitleCache;
+	}
+
+
+	@OneToOne		
+	public Set<OriginalSource> getSources() {
+		return this.sources;		
+	}
+
+	protected void setSources(Set<OriginalSource> sources) {
+		this.sources = sources;		
+	}
+
+	public void addSource(OriginalSource source) {
+		this.sources.add(source);		
+	}
+
+	public void removeSource(OriginalSource source) {
+		this.sources.remove(source);		
 	}
 
 }

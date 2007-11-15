@@ -33,7 +33,6 @@ public class InstitutionalMembership extends VersionableEntity {
 	private String role;
 	//current institute the person belongs to
 	private Institution institute;
-
 	public Institution getInstitute(){
 		return this.institute;
 	}

@@ -22,11 +22,25 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:22
  */
+
 @Entity
-public abstract class EntityInSourceBase extends ReferencedEntityBase {
-	static Logger logger = Logger.getLogger(EntityInSourceBase.class);
+public class OriginalSource extends ReferencedEntityBase {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 0L;
+	static Logger logger = Logger.getLogger(EntityInSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
+	private IdentifiableEntity identifiableEntity;
+
+	package IdentifiableEntity IdentifiableEntity getIdentifiableEntity() {
+		return identifiableEntity;
+	}
+
+	package void setIdentifiableEntity(IdentifiableEntity identifiableEntity) {
+		this.identifiableEntity = identifiableEntity;
+	}
 
 	public String getIdInSource(){
 		return this.idInSource;

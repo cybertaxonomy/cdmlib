@@ -27,7 +27,6 @@ public class Locus extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Locus.class);
 	private String name;
 	private String description;
-
 	public String getName(){
 		return this.name;
 	}

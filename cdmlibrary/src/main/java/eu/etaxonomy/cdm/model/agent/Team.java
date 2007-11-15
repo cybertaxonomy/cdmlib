@@ -34,9 +34,7 @@ public class Team extends VersionableEntity {
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
 	private String originalCitation;
-	private Set<TeamInSource> teamInSource;
 	private ArrayList<Person> teamMembers;
-
 	public ArrayList<Person> getTeamMembers(){
 		return this.teamMembers;
 	}
@@ -47,19 +45,6 @@ public class Team extends VersionableEntity {
 	 */
 	public void setTeamMembers(ArrayList<Person> teamMembers){
 		this.teamMembers = teamMembers;
-	}
-
-	public Set<TeamInSource> getTeamInSource(){
-		return this.teamInSource;
-	}
-	public void setTeamInSource(Set<TeamInSource> teamInSource){
-		this.teamInSource = teamInSource;
-	}
-	public void addTeamInSource(TeamInSource teamInSource){
-		this.teamInSource.add(teamInSource);
-	}
-	public void removeTeamInSource(TeamInSource teamInSource){
-		this.teamInSource.remove(teamInSource);
 	}
 
 	

@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+
+import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 
@@ -24,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-public abstract class DefinedTermBase extends VersionableEntity {
+public abstract class DefinedTermBase extends VersionableEntity{
 	public DefinedTermBase() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -42,7 +44,6 @@ public abstract class DefinedTermBase extends VersionableEntity {
 	private DefinedTermBase partOf;
 	private Set<DefinedTermBase> includes;
 	private Set<Media> media;
-
 	public Set<Representation> getRepresentations(){
 		return this.representations;
 	}

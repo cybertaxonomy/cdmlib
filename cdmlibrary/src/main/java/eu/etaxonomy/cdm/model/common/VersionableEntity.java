@@ -31,7 +31,6 @@ public abstract class VersionableEntity extends CdmBase {
 	}
 
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
-	private int id;
 	//the globally unique identifier
 	private String uuid;
 	private Calendar created;
@@ -90,18 +89,6 @@ public abstract class VersionableEntity extends CdmBase {
 	 */
 	public void setCreatedBy(Person createdBy){
 		this.createdBy = createdBy;
-	}
-
-	@Id @GeneratedValue(generator="system-increment")
-	public int getId(){
-		return this.id;
-	}
-	/**
-	 * 
-	 * @param id    id
-	 */
-	public void setId(int id){
-		this.id = id;
 	}
 
 	public String getUuid(){

@@ -3,16 +3,21 @@ package eu.etaxonomy.cdm.model.common;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeEvent;
+import java.io.Serializable;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 
-public abstract class CdmBase {
+@MappedSuperclass
+public abstract class CdmBase implements Serializable{
 	
 	public CdmBase() {
 		// TODO Auto-generated constructor stub
 	}
 	private PropertyChangeSupport support = new PropertyChangeSupport(this);
+	private int id;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		support.addPropertyChangeListener(listener);
@@ -51,6 +56,20 @@ public abstract class CdmBase {
 	}
 	public void firePropertyChange(PropertyChangeEvent evt) {
 		support.firePropertyChange(evt);
+	}
+
+	@Id
+	@GeneratedValue(generator = "system-increment")
+	public int getId() {
+		return this.id;
+	}
+
+	/**
+	 * 
+	 * @param id    id
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

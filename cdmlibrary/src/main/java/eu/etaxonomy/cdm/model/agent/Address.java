@@ -39,7 +39,6 @@ public class Address extends VersionableEntity {
 	private String region;
 	private WaterbodyOrCountry country;
 	private Point location;
-
 	public WaterbodyOrCountry getCountry(){
 		return this.country;
 	}

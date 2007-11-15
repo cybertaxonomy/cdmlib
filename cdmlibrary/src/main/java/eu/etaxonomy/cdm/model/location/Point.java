@@ -29,7 +29,6 @@ public class Point extends VersionableEntity {
 	//in Meters
 	private int errorRadius;
 	private ReferenceSystem referenceSystem;
-
 	public ReferenceSystem getReferenceSystem(){
 		return this.referenceSystem;
 	}

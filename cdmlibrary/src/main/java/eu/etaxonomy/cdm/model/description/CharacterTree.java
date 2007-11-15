@@ -27,7 +27,6 @@ import javax.persistence.*;
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
 	private Set characters;
-
 	public Set getCharacters(){
 		return this.characters;
 	}

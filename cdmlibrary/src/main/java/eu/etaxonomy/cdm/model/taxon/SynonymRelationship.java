@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -24,10 +25,10 @@ import javax.persistence.*;
 public class SynonymRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
 	private Synonym synoynm;
-	private Taxon acceptedTaxon;
+	private IdentifiableEntity acceptedTaxon;
 	private SynonymRelationshipType type;
 
-	public Taxon getAcceptedTaxon(){
+	public IdentifiableEntity getAcceptedTaxon(){
 		return this.acceptedTaxon;
 	}
 
@@ -35,7 +36,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	 * 
 	 * @param acceptedTaxon    acceptedTaxon
 	 */
-	public void setAcceptedTaxon(Taxon acceptedTaxon){
+	public void setAcceptedTaxon(IdentifiableEntity acceptedTaxon){
 		this.acceptedTaxon = acceptedTaxon;
 	}
 

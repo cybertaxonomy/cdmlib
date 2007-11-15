@@ -28,7 +28,6 @@ public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);
 	private boolean flag;
 	private MarkerType type;
-
 	public MarkerType getType(){
 		return this.type;
 	}

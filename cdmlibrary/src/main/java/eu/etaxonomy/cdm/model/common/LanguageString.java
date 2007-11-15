@@ -25,7 +25,6 @@ public class LanguageString  extends VersionableEntity{
 	static Logger logger = Logger.getLogger(LanguageString.class);
 	private String text;
 	private Language language;
-
 	public LanguageString(String text, Language lang) {
 		this.setLanguage(lang);
 		this.setText(text);
