@@ -89,6 +89,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Enumeration.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Extension.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/Figure.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/IOriginalSource.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ImageFile.java -text

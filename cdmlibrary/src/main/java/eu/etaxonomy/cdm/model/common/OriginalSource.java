@@ -29,18 +29,18 @@ public class OriginalSource extends ReferencedEntityBase {
 	 * 
 	 */
 	private static final long serialVersionUID = 0L;
-	static Logger logger = Logger.getLogger(EntityInSource.class);
+	static Logger logger = Logger.getLogger(OriginalSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
-	private IdentifiableEntity identifiableEntity;
-
-	package IdentifiableEntity IdentifiableEntity getIdentifiableEntity() {
-		return identifiableEntity;
-	}
-
-	package void setIdentifiableEntity(IdentifiableEntity identifiableEntity) {
-		this.identifiableEntity = identifiableEntity;
-	}
+//	private IdentifiableEntity identifiableEntity;
+//
+//	package IdentifiableEntity IdentifiableEntity getIdentifiableEntity() {
+//		return identifiableEntity;
+//	}
+//
+//	package void setIdentifiableEntity(IdentifiableEntity identifiableEntity) {
+//		this.identifiableEntity = identifiableEntity;
+//	}
 
 	public String getIdInSource(){
 		return this.idInSource;
