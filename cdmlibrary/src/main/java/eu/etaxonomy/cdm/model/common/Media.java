@@ -63,10 +63,11 @@ public class Media extends AnnotatableEntity {
 	}
 
 
-	public Set getRights(){
+	@ManyToMany
+	public Set<Rights> getRights(){
 		return this.rights;
 	}
-	public void setRights(Set rights){
+	protected void setRights(Set<Rights> rights){
 		this.rights = rights;
 	}
 	public void addRights(Rights rights){

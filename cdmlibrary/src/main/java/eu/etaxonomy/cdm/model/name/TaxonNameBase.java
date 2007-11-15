@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -183,8 +184,8 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 		this.rank = rank;
 	}
 
-	public INomenclaturalReference getNomenclaturalReference(){
-		return this.nomenclaturalReference;
+	public ReferenceBase getNomenclaturalReference(){
+		return (ReferenceBase) this.nomenclaturalReference;
 	}
 
 	/**

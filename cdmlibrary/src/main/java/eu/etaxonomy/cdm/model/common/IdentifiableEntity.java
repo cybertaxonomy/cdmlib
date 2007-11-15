@@ -22,7 +22,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
-@MappedSuperclass
+//@MappedSuperclass
+@Entity
 public abstract class IdentifiableEntity extends AnnotatableEntity implements IOriginalSource {
 	public IdentifiableEntity() {
 		super();
@@ -71,7 +72,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 		this.setProtectedTitleCache(true);
 	}
 
-	@OneToMany
+	@ManyToMany
 	public Set<Rights> getRights(){
 		return this.rights;
 	}

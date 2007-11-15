@@ -80,6 +80,7 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 		return "";
 	}
 	
+	@Transient
 	public abstract String getYear();
 
 }
