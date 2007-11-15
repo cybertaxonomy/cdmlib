@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:52
  */
 @Entity
-public class SpecimenTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
+public class SpecimenTypeDesignation extends TypeDesignationBase {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 	private ObservationalUnit typeSpecimen;
 	private TypeDesignationStatus typeStatus;

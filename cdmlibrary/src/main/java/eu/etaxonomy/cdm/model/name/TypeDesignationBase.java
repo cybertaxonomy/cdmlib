@@ -9,18 +9,11 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import javax.persistence.Entity;
 
-import javax.persistence.MappedSuperclass;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
-import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
-
-/**
- * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:31
- */
-@MappedSuperclass
-public interface ITypeDesignation {
+@Entity
+public abstract class TypeDesignationBase extends ReferencedEntityBase {
 
 }

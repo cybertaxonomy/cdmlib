@@ -42,7 +42,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	private Set<ITypeDesignation> typeDesignations;
+	private Set<TypeDesignationBase> typeDesignations;
 	private Set<NameRelationship> nameRelations;
 	// name relations are bidirectional! Keep track of the inverse too
 	private Set<NameRelationship> inverseNameRelations;
@@ -75,16 +75,16 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 
 
 	@OneToMany
-	public Set<ITypeDesignation> getTypeDesignations() {
+	public Set<TypeDesignationBase> getTypeDesignations() {
 		return typeDesignations;
 	}
-	protected void setTypeDesignations(Set<ITypeDesignation> typeDesignations) {
+	protected void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}
-	public void addTypeDesignation(ITypeDesignation typeDesignation) {
+	public void addTypeDesignation(TypeDesignationBase typeDesignation) {
 		this.typeDesignations.add(typeDesignation);
 	}
-	public void removeTypeDesignation(ITypeDesignation typeDesignation) {
+	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
 		this.typeDesignations.remove(typeDesignation);
 	}
 

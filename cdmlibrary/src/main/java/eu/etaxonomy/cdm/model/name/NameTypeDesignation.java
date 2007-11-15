@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:38
  */
 @Entity
-public class NameTypeDesignation extends ReferencedEntityBase implements ITypeDesignation {
+public class NameTypeDesignation extends TypeDesignationBase {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	private boolean isRejectedType;
 	private boolean isConservedType;
