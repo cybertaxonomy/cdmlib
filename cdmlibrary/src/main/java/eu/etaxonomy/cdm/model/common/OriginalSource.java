@@ -25,22 +25,11 @@ import javax.persistence.*;
 
 @Entity
 public class OriginalSource extends ReferencedEntityBase {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 0L;
 	static Logger logger = Logger.getLogger(OriginalSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
-//	private IdentifiableEntity identifiableEntity;
-//
-//	package IdentifiableEntity IdentifiableEntity getIdentifiableEntity() {
-//		return identifiableEntity;
-//	}
-//
-//	package void setIdentifiableEntity(IdentifiableEntity identifiableEntity) {
-//		this.identifiableEntity = identifiableEntity;
-//	}
+	private AnnotatableEntity parent;
+
 
 	public String getIdInSource(){
 		return this.idInSource;
@@ -52,6 +41,15 @@ public class OriginalSource extends ReferencedEntityBase {
 	 */
 	public void setIdInSource(String idInSource){
 		this.idInSource = idInSource;
+	}
+
+	protected AnnotatableEntity getParent() {
+		return parent;
+	}
+
+	@ManyToOne		
+	protected void setParent(AnnotatableEntity parent) {
+		this.parent = parent;
 	}
 
 }

@@ -132,7 +132,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	}
 
 
-	@OneToOne		
+	@OneToMany(mappedBy="parent")		
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
 	}
