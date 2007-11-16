@@ -1,10 +1,10 @@
 package eu.etaxonomy.cdm.api.service;
 
-import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.Agent;
 
 public interface IAgentService extends IService {
-	public abstract Team getTeamById(Integer id);
+	public abstract Agent getAgentById(Integer id);
 
-	public abstract int saveTeam(Team team);
+	public abstract int saveAgent(Agent agent);
 
 }

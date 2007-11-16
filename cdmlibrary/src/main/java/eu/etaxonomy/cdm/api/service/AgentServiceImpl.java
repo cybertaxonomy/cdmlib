@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.api.service;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dao.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
@@ -34,18 +35,13 @@ public class AgentServiceImpl implements IAgentService {
 		this.agentDao = agentDao;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getTeamById(java.lang.Integer)
-	 */
-	public Team getTeamById(Integer id) {
+
+	public Agent getAgentById(Integer id) {
 		return (Team)agentDao.findById(id);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IAgentService#saveTeam(eu.etaxonomy.cdm.model.agent.Team)
-	 */
-	public int saveTeam(Team team) {
-		return (Integer)agentDao.save(team);
+	public int saveAgent(Agent agent) {
+		return (Integer)agentDao.save(agent);
 	}
 
 }

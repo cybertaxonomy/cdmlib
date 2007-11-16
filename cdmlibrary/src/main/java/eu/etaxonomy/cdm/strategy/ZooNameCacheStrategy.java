@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.strategy;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -35,12 +36,12 @@ public class ZooNameCacheStrategy extends StrategyBase implements
 		if (tn.getYear() != null) {
 			result = (" " + tn.getYear()).trim();	
 		}
-		Team team= tn.getCombinationAuthorTeam();
+		Agent team= tn.getCombinationAuthorTeam();
 		if (team != null){
 			if (tn.getYear() != null) {
 				result = ",";	
 			} 
-			result += " " + tn.getCombinationAuthorTeam().getOriginalCitation();
+			result += " " + team.getTitleCache();
 		}
 		return result;
 	}

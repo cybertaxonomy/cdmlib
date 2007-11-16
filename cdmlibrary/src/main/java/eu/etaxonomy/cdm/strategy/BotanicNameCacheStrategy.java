@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.strategy;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -39,9 +40,9 @@ public class BotanicNameCacheStrategy extends StrategyBase implements
 		String result;
 		NonViralName tn = (NonViralName)object;
 		result = getNameCache(object);
-		Team team= tn.getCombinationAuthorTeam();
-		if (team != null){
-			result += " " + tn.getCombinationAuthorTeam().getOriginalCitation();
+		Agent agent= tn.getCombinationAuthorTeam();
+		if (agent != null){
+			result += " " + agent.getTitleCache();
 		}
 		return result;
 	}

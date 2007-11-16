@@ -10,6 +10,7 @@ import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
@@ -69,14 +70,14 @@ public class SpringControl {
 		tn3.setUninomial("tn3-genus");
 		tn3.getUninomial();
 		
-		logger.info("Create new Author team...");
-		Team team= new Team();
+		logger.info("Create new Author agent...");
+		Agent team= new Agent();
 		team.addPropertyChangeListener(listener);
-		team.setOriginalCitation("AuthorTeam1");
+		team.setTitleCache("AuthorAgent1");
 		tn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
-		appCtr.getAgentService().saveTeam(team);
+		appCtr.getAgentService().saveAgent(team);
 		appCtr.getNameService().saveTaxonName(tn);
 		appCtr.getNameService().saveTaxonName(tn3);
 
