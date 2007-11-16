@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:29
  */
 @Entity
-public class Institution extends IdentifiableEntity {
+public class Institution extends Agent {
 	public Institution() {
 		super();
 		// TODO Auto-generated constructor stub

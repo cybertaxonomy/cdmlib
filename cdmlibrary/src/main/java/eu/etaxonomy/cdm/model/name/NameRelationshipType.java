@@ -32,6 +32,7 @@ public class NameRelationshipType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm";
 
+	@Transient
 	public boolean isInvalidType(){
 		//True, if enum is of type:
 		//Invalid,
@@ -44,6 +45,7 @@ public class NameRelationshipType extends EnumeratedTermBase {
 		return false;
 	}
 
+	@Transient
 	public boolean isLegitimateType(){
 		//True, if enum is of type:
 		//Legitimate,
@@ -61,6 +63,7 @@ public class NameRelationshipType extends EnumeratedTermBase {
 		return false;
 	}
 
+	@Transient
 	public boolean isIllegitimateType(){
 		//True, if enum is of type:
 		//Illegitimate,

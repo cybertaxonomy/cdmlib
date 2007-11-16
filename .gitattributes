@@ -73,6 +73,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/Description.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Institution.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/InstitutionType.java -text

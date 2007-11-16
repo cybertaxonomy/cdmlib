@@ -34,6 +34,7 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus";
 
+	@Transient
 	public boolean isInvalidType(){
 		//True, if enum is of type:
 		//Invalid,
@@ -46,6 +47,7 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 		return false;
 	}
 
+	@Transient
 	public boolean isLegitimateType(){
 		//True, if enum is of type:
 		//Legitimate,
@@ -63,6 +65,7 @@ public class NomenclaturalStatusType extends EnumeratedTermBase {
 		return false;
 	}
 
+	@Transient
 	public boolean isIllegitimateType(){
 		//True, if enum is of type:
 		//Illegitimate,

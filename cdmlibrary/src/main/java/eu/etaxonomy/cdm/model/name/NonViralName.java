@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -35,9 +36,9 @@ public class NonViralName extends TaxonNameBase {
 	//Species subdivision epithet
 	private String infraSpecificEpithet;
 	//Author team that published the present combination
-	private Team combinationAuthorTeam;
+	private Agent combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
-	private Team exCombinationAuthorTeam;
+	private Agent exCombinationAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 
@@ -46,7 +47,7 @@ public class NonViralName extends TaxonNameBase {
 	}
 
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
-	public Team getCombinationAuthorTeam(){
+	public Agent getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
 
@@ -54,12 +55,12 @@ public class NonViralName extends TaxonNameBase {
 	 * 
 	 * @param combinationAuthorTeam    combinationAuthorTeam
 	 */
-	public void setCombinationAuthorTeam(Team combinationAuthorTeam){
+	public void setCombinationAuthorTeam(Agent combinationAuthorTeam){
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
-	public Team getExCombinationAuthorTeam(){
+	public Agent getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
 
@@ -67,7 +68,7 @@ public class NonViralName extends TaxonNameBase {
 	 * 
 	 * @param exCombinationAuthorTeam    exCombinationAuthorTeam
 	 */
-	public void setExCombinationAuthorTeam(Team exCombinationAuthorTeam){
+	public void setExCombinationAuthorTeam(Agent exCombinationAuthorTeam){
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 

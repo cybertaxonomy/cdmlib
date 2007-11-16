@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:42
  */
 @Entity
-public class Person extends IdentifiableEntity {
+public class Person extends Agent {
 	public Person() {
 		super();
 		// TODO Auto-generated constructor stub

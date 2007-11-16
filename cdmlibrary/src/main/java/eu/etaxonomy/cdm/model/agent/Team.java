@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:58
  */
 @Entity
-public class Team extends VersionableEntity {
+public class Team extends Agent {
 	public Team() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -33,7 +33,6 @@ public class Team extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Team.class);
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
-	private String originalCitation;
 	private ArrayList<Person> teamMembers;
 	public ArrayList<Person> getTeamMembers(){
 		return this.teamMembers;
@@ -45,19 +44,6 @@ public class Team extends VersionableEntity {
 	 */
 	public void setTeamMembers(ArrayList<Person> teamMembers){
 		this.teamMembers = teamMembers;
-	}
-
-	
-	public String getOriginalCitation(){
-		return this.originalCitation;
-	}
-
-	/**
-	 * 
-	 * @param originalCitation    originalCitation
-	 */
-	public void setOriginalCitation(String originalCitation){
-		this.originalCitation = originalCitation;
 	}
 
 }

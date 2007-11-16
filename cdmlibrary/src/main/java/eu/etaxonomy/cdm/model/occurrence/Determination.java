@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -28,7 +29,7 @@ import javax.persistence.*;
 public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
 	private Calendar identificationDate;
-	private Team identifierTeam;
+	private Agent identifierTeam;
 	private IdentifiableEntity taxon;
 
 	public IdentifiableEntity getTaxon(){
@@ -43,7 +44,7 @@ public class Determination extends AnnotatableEntity {
 		this.taxon = taxon;
 	}
 
-	public Team getIdentifierTeam(){
+	public Agent getIdentifierTeam(){
 		return this.identifierTeam;
 	}
 
@@ -51,7 +52,7 @@ public class Determination extends AnnotatableEntity {
 	 * 
 	 * @param identifierTeam    identifierTeam
 	 */
-	public void setIdentifierTeam(Team identifierTeam){
+	public void setIdentifierTeam(Agent identifierTeam){
 		this.identifierTeam = identifierTeam;
 	}
 

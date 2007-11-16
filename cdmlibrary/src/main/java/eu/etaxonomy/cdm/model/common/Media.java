@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -38,7 +39,7 @@ public class Media extends AnnotatableEntity {
 	//formats for images for example
 	private Set<MediaInstance> instances;
 	private Set<Rights> rights;
-	private Team artist;
+	private Agent artist;
 
 	@OneToMany
 	public Set<MediaInstance> getInstances(){
@@ -55,10 +56,10 @@ public class Media extends AnnotatableEntity {
 	}
 
 	
-	public Team getArtist(){
+	public Agent getArtist(){
 		return this.artist;
 	}
-	public void setArtist(Team artist){
+	public void setArtist(Agent artist){
 		this.artist = artist;
 	}
 

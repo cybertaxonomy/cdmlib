@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -37,7 +38,7 @@ public class Occurrence extends IdentifiableEntity {
 	private Set<Media> media;
 	private Point exactLocation;
 	private NamedArea namedArea;
-	private Team collector;
+	private Agent collector;
 	private Collection collection;
 
 	public Collection getCollection(){
@@ -81,7 +82,7 @@ public class Occurrence extends IdentifiableEntity {
 	}
 
 	
-	public Team getCollector(){
+	public Agent getCollector(){
 		return this.collector;
 	}
 
@@ -89,7 +90,7 @@ public class Occurrence extends IdentifiableEntity {
 	 * 
 	 * @param collector    collector
 	 */
-	public void setCollector(Team collector){
+	public void setCollector(Agent collector){
 		this.collector = collector;
 	}
 

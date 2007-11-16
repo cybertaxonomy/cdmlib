@@ -77,7 +77,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 		return this.rights;
 	}
 
-	public void setRights(Set<Rights> rights) {
+	protected void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
 
@@ -104,7 +104,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 		return this.extensions;
 	}
 
-	public void setExtensions(Set<Extension> extensions) {
+	protected void setExtensions(Set<Extension> extensions) {
 		this.extensions = extensions;
 	}
 

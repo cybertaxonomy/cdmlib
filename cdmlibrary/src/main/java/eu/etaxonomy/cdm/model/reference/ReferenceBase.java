@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
@@ -32,10 +33,10 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
 	private boolean isNomenclaturallyRelevant;
-	private Team authorTeam;
+	private Agent authorTeam;
 
 	
-	public Team getAuthorTeam(){
+	public Agent getAuthorTeam(){
 		return this.authorTeam;
 	}
 
@@ -43,7 +44,7 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	 * 
 	 * @param authorTeam    authorTeam
 	 */
-	public void setAuthorTeam(Team authorTeam){
+	public void setAuthorTeam(Agent authorTeam){
 		this.authorTeam = authorTeam;
 	}
 
