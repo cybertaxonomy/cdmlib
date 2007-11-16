@@ -184,7 +184,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/Book.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/BookSection.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/CdDvd.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/ConferenceProceedings.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/Database.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/DigitalRepository.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/Generic.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/INomenclaturalReference.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/reference/InProceedings.java -text

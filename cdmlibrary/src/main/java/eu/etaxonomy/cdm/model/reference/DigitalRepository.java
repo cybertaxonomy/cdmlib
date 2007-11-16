@@ -21,8 +21,8 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-public class Database extends PublicationBase {
-	static Logger logger = Logger.getLogger(Database.class);
+public class DigitalRepository extends PublicationBase {
+	static Logger logger = Logger.getLogger(DigitalRepository.class);
 
 	@Override
 	public String generateTitle(){
