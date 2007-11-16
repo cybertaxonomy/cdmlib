@@ -24,9 +24,8 @@ import javax.persistence.*;
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<Description> descriptions;
-	private Set<SynonymRelationship> inverseSynonymRelations;
+	private Set<SynonymRelationship> synonymRelations;
 	private Set<TaxonRelationship> taxonRelations;
-	private Set<TaxonRelationship> inverseTaxonRelations;
 
 
 	@OneToMany
@@ -45,12 +44,17 @@ public class Taxon extends TaxonBase {
 
 
 	@OneToMany
-	public Set<SynonymRelationship> getInverseSynonymRelations() {
-		return inverseSynonymRelations;
+	public Set<SynonymRelationship> getSynonymRelations() {
+		return synonymRelations;
 	}
-	protected void setInverseSynonymRelations(
-			Set<SynonymRelationship> inverseSynonymRelations) {
-		this.inverseSynonymRelations = inverseSynonymRelations;
+	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
+		this.synonymRelations = synonymRelations;
+	}
+	public void addSynonymRelation(SynonymRelationship synonymRelation) {
+		this.synonymRelations.add(synonymRelation);
+	}
+	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
+		this.synonymRelations.remove(synonymRelation);
 	}
 
 
@@ -61,21 +65,22 @@ public class Taxon extends TaxonBase {
 	protected void setTaxonRelations(Set<TaxonRelationship> taxonRelations) {
 		this.taxonRelations = taxonRelations;
 	}
-	public void addTaxonRelations(TaxonRelationship taxonRelation) {
+	public void addTaxonRelation(TaxonRelationship taxonRelation) {
 		this.taxonRelations.add(taxonRelation);
 	}
-	public void removeTaxonRelations(TaxonRelationship taxonRelation) {
+	public void removeTaxonRelation(TaxonRelationship taxonRelation) {
 		this.taxonRelations.remove(taxonRelation);
 	}
 
-
-	@OneToMany
-	public Set<TaxonRelationship> getInverseTaxonRelations() {
-		return inverseTaxonRelations;
+	@Transient
+	public Set<TaxonRelationship> getIncomingTaxonRelations() {
+		// FIXME: filter relations
+		return taxonRelations;
 	}
-	protected void setInverseTaxonRelations(
-			Set<TaxonRelationship> inverseTaxonRelations) {
-		this.inverseTaxonRelations = inverseTaxonRelations;
+	@Transient
+	public Set<TaxonRelationship> getOutgoingTaxonRelations() {
+		// FIXME: filter relations
+		return taxonRelations;
 	}
 
 

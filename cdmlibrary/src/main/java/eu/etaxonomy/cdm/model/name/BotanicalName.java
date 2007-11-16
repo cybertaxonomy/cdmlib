@@ -32,8 +32,7 @@ public class BotanicalName extends NonViralName {
 	private boolean isTrinomHybrid = false;
 	//Only for fungi: to indicate that the type of the name is asexual or not
 	private boolean isAnamorphic;
-	private Set<HybridRelationship> parentRelationships;
-	private Set<HybridRelationship> childRelationships;
+	private Set<HybridRelationship> hybridRelationships;
 
 	public BotanicalName(Rank rank) {
 		super(rank);
@@ -42,33 +41,28 @@ public class BotanicalName extends NonViralName {
 	
 
 	@OneToMany
+	public Set<HybridRelationship> getHybridRelationships() {
+		return hybridRelationships;
+	}
+	protected void setHybridRelationships(Set<HybridRelationship> relationships) {
+		this.hybridRelationships = relationships;
+	}
+	public void addHybridRelationship(HybridRelationship relationship) {
+		this.hybridRelationships.add(relationship);
+	}
+	public void removeHybridRelationship(HybridRelationship relationship) {
+		this.hybridRelationships.remove(relationship);
+	}
+
+	@Transient
 	public Set<HybridRelationship> getParentRelationships() {
-		return parentRelationships;
+		// FIXME: filter relations
+		return hybridRelationships;
 	}
-	protected void setParentRelationships(Set<HybridRelationship> parentRelationships) {
-		this.parentRelationships = parentRelationships;
-	}
-	public void addParentRelationships(HybridRelationship parentRelationship) {
-		this.parentRelationships.add(parentRelationship);
-	}
-	public void removeParentRelationships(HybridRelationship parentRelationship) {
-		this.parentRelationships.remove(parentRelationship);
-	}
-
-
-
-	@OneToMany
+	@Transient
 	public Set<HybridRelationship> getChildRelationships() {
-		return childRelationships;
-	}
-	protected void setChildRelationships(Set<HybridRelationship> childRelationships) {
-		this.childRelationships = childRelationships;
-	}
-	public void addChildRelationship(HybridRelationship childRelationship) {
-		this.childRelationships.add(childRelationship);
-	}
-	public void removeChildRelationship(HybridRelationship childRelationship) {
-		this.childRelationships.remove(childRelationship);
+		// FIXME: filter relations
+		return hybridRelationships;
 	}
 
 

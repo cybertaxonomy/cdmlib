@@ -28,17 +28,50 @@ public class Enumeration extends DefinedTermBase {
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
+	protected ArrayList<EnumeratedTermBase> terms;
+	//The enumeration/vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
+	// Software can go and grap these terms incl labels and description. 
+	// UUID needed? Furhter vocs can be setup through our own ontology.
+	private String enumerationUri;
 
+	
 	public boolean isOrdinal(){
 		return this.isOrdinal;
 	}
-
-	/**
-	 * 
-	 * @param isOrdinal    isOrdinal
-	 */
 	public void setOrdinal(boolean isOrdinal){
 		this.isOrdinal = isOrdinal;
 	}
 
+	
+	public ArrayList<EnumeratedTermBase> getTerms() {
+		return terms;
+	}
+	protected void setTerms(ArrayList<EnumeratedTermBase> terms) {
+		this.terms = terms;
+	}
+	public void addTerm(EnumeratedTermBase term) {
+		term.setEnumeration(this);
+	}
+	public void removeTerm(EnumeratedTermBase term) {
+		term.setEnumeration(null);
+	}
+	
+	
+	public String getEnumerationUri() {
+		return enumerationUri;
+	}
+	public void setEnumerationUri(String enumerationUri) {
+		this.enumerationUri = enumerationUri;
+	}
+
+	/**
+	 * add new terms from a vocabulary to which uri points.
+	 * 
+	 * @param uri    uri
+	 */
+	public void loadTerms(String uri){
+
+	}
+
+	
 }

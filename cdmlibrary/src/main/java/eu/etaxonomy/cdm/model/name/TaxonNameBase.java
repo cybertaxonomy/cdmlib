@@ -45,8 +45,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	private boolean hasProblem = false;
 	private Set<TypeDesignationBase> typeDesignations;
 	private Set<NameRelationship> nameRelations;
-	// name relations are bidirectional! Keep track of the inverse too
-	private Set<NameRelationship> inverseNameRelations;
 	private Set<NomenclaturalStatus> status;
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
@@ -98,17 +96,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	protected void setNameRelations(Set<NameRelationship> nameRelations) {
 		this.nameRelations = nameRelations;
 	}
-
-
-	@OneToMany
-	public Set<NameRelationship> getInverseNameRelations() {
-		return inverseNameRelations;
-	}
-	protected void setInverseNameRelations(Set<NameRelationship> inverseNameRelations) {
-		this.inverseNameRelations = inverseNameRelations;
-	}
-
-	
 	public void addNameRelation(NameRelationship nameRelation) {
 		// checks whether this is a normal relation or an inverse one 
 		// and adds it to the appropiate set
@@ -118,6 +105,18 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	public void removeNameRelation(NameRelationship nameRelation) {
 		// this.inverseNameRelations
 		this.nameRelations.remove(nameRelation);
+	}
+	
+	
+	@Transient
+	public Set<NameRelationship> getIncomingNameRelations() {
+		// FIXME: filter relations
+		return nameRelations;
+	}
+	@Transient
+	public Set<NameRelationship> getOutgoingNameRelations() {
+		// FIXME: filter relations
+		return nameRelations;
 	}
 
 	

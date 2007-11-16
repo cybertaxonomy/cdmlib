@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -24,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:27
  */
 @Entity
-public class HybridRelationshipType extends EnumeratedTermBase {
+public class HybridRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
 	public static final HybridRelationshipType FIRST_PARENT(){

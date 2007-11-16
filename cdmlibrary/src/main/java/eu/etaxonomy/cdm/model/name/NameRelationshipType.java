@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -28,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:38
  */
 @Entity
-public class NameRelationshipType extends EnumeratedTermBase {
+public class NameRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm";
 

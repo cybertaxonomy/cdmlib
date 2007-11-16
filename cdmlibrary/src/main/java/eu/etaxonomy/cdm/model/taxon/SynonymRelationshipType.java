@@ -10,21 +10,21 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
-import java.util.*;
-import javax.persistence.*;
+
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
+ * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @Entity
-public class SynonymRelationshipType extends EnumeratedTermBase {
+public class SynonymRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
-	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
 
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return null;

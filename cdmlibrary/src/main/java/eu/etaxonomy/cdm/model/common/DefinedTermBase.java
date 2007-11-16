@@ -26,18 +26,15 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends VersionableEntity{
 	public DefinedTermBase() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 	//URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!
 	private String uri;
-	//The RDF ontology source defining the terms to be loaded when a database is created for the first time.  Software can go
-	//and grap these terms incl labels and description. UUID needed? Furhter vocs can be setup through our own ontology.
-	private static String initializationClassUri;
 	private Set<Representation> representations;
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf;
@@ -60,7 +57,17 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		this.representations.remove(representation);
 	}
 
-	
+	@Transient
+	public Representation getRepresentation(Language lang) {
+		for (Representation repr : representations){
+			if (repr.getLanguage() == lang){
+				return repr;
+			}
+		}
+		return null;
+	}
+
+
 	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
@@ -141,19 +148,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		this.uri = uri;
 	}
 
-	@Transient
-	public String getInitializationClassUri(){
-		return this.initializationClassUri;
-	}
-
-	/**
-	 * 
-	 * @param initializationClassUri    initializationClassUri
-	 */
-	public void setInitializationClassUri(String initializationClassUri){
-		this.initializationClassUri = initializationClassUri;
-	}
-
+	
 	/**
 	 * 
 	 * @param uri    uri
@@ -161,16 +156,6 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	@Transient
 	public static DefinedTermBase getDefinedTermByUri(String uri){
 		return null;
-	}
-
-	/**
-	 * add new terms from a vocabulary to which uri points. By default this is the
-	 * initializationClassUri
-	 * 
-	 * @param uri    uri
-	 */
-	public void addTermsFromInitializationClass(String uri){
-
 	}
 
 }
