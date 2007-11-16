@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -29,10 +30,10 @@ import javax.persistence.*;
 public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
 	private Calendar identificationDate;
-	private Agent identifierTeam;
-	private IdentifiableEntity taxon;
+	private Agent determiner;
+	private Taxon taxon;
 
-	public IdentifiableEntity getTaxon(){
+	public Taxon getTaxon(){
 		return this.taxon;
 	}
 
@@ -40,21 +41,10 @@ public class Determination extends AnnotatableEntity {
 	 * 
 	 * @param taxon    taxon
 	 */
-	public void setTaxon(IdentifiableEntity taxon){
+	public void setTaxon(Taxon taxon){
 		this.taxon = taxon;
 	}
 
-	public Agent getIdentifierTeam(){
-		return this.identifierTeam;
-	}
-
-	/**
-	 * 
-	 * @param identifierTeam    identifierTeam
-	 */
-	public void setIdentifierTeam(Agent identifierTeam){
-		this.identifierTeam = identifierTeam;
-	}
 
 	@Temporal(TemporalType.DATE)
 	public Calendar getIdentificationDate(){
@@ -67,6 +57,14 @@ public class Determination extends AnnotatableEntity {
 	 */
 	public void setIdentificationDate(Calendar identificationDate){
 		this.identificationDate = identificationDate;
+	}
+
+	protected Agent getDeterminer() {
+		return determiner;
+	}
+
+	protected void setDeterminer(Agent determiner) {
+		this.determiner = determiner;
 	}
 
 }

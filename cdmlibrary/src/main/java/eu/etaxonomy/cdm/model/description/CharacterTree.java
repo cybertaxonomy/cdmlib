@@ -32,13 +32,14 @@ public class CharacterTree extends VersionableEntity {
 	public Set<FeatureType> getCharacters(){
 		return this.characters;
 	}
-
-	/**
-	 * 
-	 * @param characters    characters
-	 */
-	public void setCharacters(Set<FeatureType> characters){
+	protected void setCharacters(Set<FeatureType> characters){
 		this.characters = characters;
+	}
+	public void addCharacter(FeatureType character){
+		this.characters.add(character);
+	}
+	public void removeCharacter(FeatureType character){
+		this.characters.remove(character);
 	}
 
 }

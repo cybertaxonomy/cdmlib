@@ -22,8 +22,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
-//@MappedSuperclass
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class IdentifiableEntity extends AnnotatableEntity implements IOriginalSource {
 	public IdentifiableEntity() {
 		super();

@@ -20,7 +20,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:32
  */
-@Entity
+@MappedSuperclass
 public class LanguageString  extends VersionableEntity{
 	static Logger logger = Logger.getLogger(LanguageString.class);
 	private String text;

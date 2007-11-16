@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.ArrayList;
 import java.util.AbstractSet;
+
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 
 /**
  * @author markus
  * Special array that takes care that all LanguageString elements habe a unique language
  */
+@Entity
 public class MultilanguageSet extends ArrayList<LanguageString>{
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 

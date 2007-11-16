@@ -32,7 +32,7 @@ public class NamedArea extends EnumeratedTermBase {
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
 	private MediaInstance shapeFile;
-	private Set<WaterbodyOrCountry> countriesOrWaterbodies;
+	private Set<WaterbodyOrCountry> waterbodiesOrCountries;
 	private NamedAreaType type;
 	private NamedAreaLevel level;
 
@@ -98,17 +98,17 @@ public class NamedArea extends EnumeratedTermBase {
 		this.shapeFile = shapeFile;
 	}
 
-	private void setCountriesOrWaterbodies(
-			Set<WaterbodyOrCountry> countriesOrWaterbodies) {
-		this.countriesOrWaterbodies = countriesOrWaterbodies;
+	protected void setWaterbodiesOrCountries(
+			Set<WaterbodyOrCountry> waterbodiesOrCountries) {
+		this.waterbodiesOrCountries = waterbodiesOrCountries;
 	}
-	public void addCountryOrWaterbody(
-			WaterbodyOrCountry countryOrWaterbody) {
-		this.countriesOrWaterbodies.add(countryOrWaterbody);
+	public void addWaterbodyOrCountry(
+			WaterbodyOrCountry waterbodyOrCountry) {
+		this.waterbodiesOrCountries.add(waterbodyOrCountry);
 	}
-	public void removeCountryOrWaterbody(
-			WaterbodyOrCountry countryOrWaterbody) {
-		this.countriesOrWaterbodies.remove(countryOrWaterbody);
+	public void removeWaterbodyOrCountry(
+			WaterbodyOrCountry waterbodyOrCountry) {
+		this.waterbodiesOrCountries.remove(waterbodyOrCountry);
 	}
 
 }

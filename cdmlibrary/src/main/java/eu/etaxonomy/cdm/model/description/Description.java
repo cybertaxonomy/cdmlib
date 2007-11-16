@@ -51,7 +51,7 @@ public class Description extends IdentifiableEntity {
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
-	private void setGeoScopes(Set<NamedArea> geoScopes){
+	protected void setGeoScopes(Set<NamedArea> geoScopes){
 		this.geoScopes = geoScopes;
 	}
 	public void addGeoScope(NamedArea geoScope){
@@ -66,7 +66,7 @@ public class Description extends IdentifiableEntity {
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
-	private void setScopes(Set<Scope> scopes){
+	protected void setScopes(Set<Scope> scopes){
 		this.scopes = scopes;
 	}
 	public void addScope(Scope scope){
@@ -81,7 +81,7 @@ public class Description extends IdentifiableEntity {
 	public Set<FeatureBase> getFeatures(){
 		return this.features;
 	}
-	public void setFeatures(Set<FeatureBase> features) {
+	protected void setFeatures(Set<FeatureBase> features) {
 		this.features = features;
 	}
 	public void addFeature(FeatureBase feature){
@@ -109,7 +109,7 @@ public class Description extends IdentifiableEntity {
 	public Set<ObservationalUnit> getObservationalUnits() {
 		return observationalUnits;
 	}
-	public void setObservationalUnits(Set<ObservationalUnit> observationalUnits) {
+	protected void setObservationalUnits(Set<ObservationalUnit> observationalUnits) {
 		this.observationalUnits = observationalUnits;
 	}
 	public void addObservationalUnit(ObservationalUnit observationalUnit) {

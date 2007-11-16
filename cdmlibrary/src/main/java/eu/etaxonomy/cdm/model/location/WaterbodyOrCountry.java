@@ -36,10 +36,10 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 		return continents;
 	}
 
-	public void setContinents(Set<Continent> continents) {
+	protected void setContinents(Set<Continent> continents) {
 		this.continents = continents;
 	}
-	protected void addContinents(Continent continent) {
+	public void addContinents(Continent continent) {
 		this.continents.add(continent);
 	}
 	public void removeContinents(Continent continent) {

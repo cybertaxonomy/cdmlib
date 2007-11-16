@@ -45,7 +45,7 @@ public class Media extends AnnotatableEntity {
 	public Set<MediaInstance> getInstances(){
 		return this.instances;
 	}
-	public void setInstances(Set<MediaInstance> instances){
+	protected void setInstances(Set<MediaInstance> instances){
 		this.instances = instances;
 	}
 	public void addInstance(MediaInstance instance){
@@ -107,7 +107,7 @@ public class Media extends AnnotatableEntity {
 	public MultilanguageSet getDescription(){
 		return this.description;
 	}
-	private void setDescription(MultilanguageSet description){
+	protected void setDescription(MultilanguageSet description){
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
