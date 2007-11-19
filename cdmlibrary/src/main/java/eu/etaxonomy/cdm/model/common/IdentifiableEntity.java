@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -34,9 +35,9 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	private String titleCache;
 	//if true titleCache will not be automatically generated/updated
 	private boolean protectedTitleCache;
-	private Set<Rights> rights;
-	private Set<Extension> extensions;
-	private Set<OriginalSource> sources;
+	private Set<Rights> rights = new HashSet();
+	private Set<Extension> extensions = new HashSet();
+	private Set<OriginalSource> sources = new HashSet();
 
 	public String getLsid(){
 		return this.lsid;

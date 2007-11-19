@@ -31,16 +31,20 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public DefinedTermBase() {
 		super();
 	}
+	public DefinedTermBase(String englishTerm) {
+		this();
+		this.addRepresentation(new Representation(englishTerm, Language.ENGLISH()) );
+	}
 
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 	//URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!
 	private String uri;
-	private Set<Representation> representations;
+	private Set<Representation> representations = new HashSet();
 	private DefinedTermBase kindOf;
-	private Set<DefinedTermBase> generalizationOf;
+	private Set<DefinedTermBase> generalizationOf = new HashSet();
 	private DefinedTermBase partOf;
-	private Set<DefinedTermBase> includes;
-	private Set<Media> media;
+	private Set<DefinedTermBase> includes = new HashSet();
+	private Set<Media> media = new HashSet();
 	
 	
 	@OneToMany

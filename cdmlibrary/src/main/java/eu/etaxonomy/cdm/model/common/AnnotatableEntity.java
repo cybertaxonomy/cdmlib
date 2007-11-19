@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -28,8 +29,8 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	}
 
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
-	private Set<Marker> markers;
-	private Set<Annotation> annotations;
+	private Set<Marker> markers = new HashSet();
+	private Set<Annotation> annotations = new HashSet();
 	
 	
 	@OneToMany

@@ -25,4 +25,11 @@ import javax.persistence.*;
 public class Keyword extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Keyword.class);
 
+	public Keyword() {
+		super();
+	}
+
+	public Keyword(String englishTerm) {
+		super(englishTerm);
+	}
 }

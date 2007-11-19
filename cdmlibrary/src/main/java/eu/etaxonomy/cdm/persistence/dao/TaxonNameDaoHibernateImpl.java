@@ -49,19 +49,15 @@ public class TaxonNameDaoHibernateImpl
 		List<TaxonNameBase> list = ht().find("from TaxonNameBase tn where tn.name=?", name);
 		return list;
 	}
-
-	//TODO test
-	public TaxonNameBase getDataSource(){
-		return null;
-	}
-
-	//TODO test
-	public void setDataSource(TaxonNameBase tn){
-		
-	}
-    
+	
 	private HibernateTemplate ht(){
 		return getHibernateTemplate();
+	}
+
+	@Override
+	public List<TaxonNameBase> find(String queryString) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

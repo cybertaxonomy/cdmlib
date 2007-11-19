@@ -23,13 +23,17 @@ import javax.persistence.*;
 @Entity
 @Table(name="EnumeratedTerm")
 public abstract class EnumeratedTermBase extends DefinedTermBase {
-	public EnumeratedTermBase() {
-		super();
-	}
-
 	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
 	private Enumeration enumeration;
 
+	public EnumeratedTermBase() {
+		super();
+	}
+	public EnumeratedTermBase(String englishTerm) {
+		super(englishTerm);
+	}
+
+	
 	public Enumeration getEnumeration(){
 		return this.enumeration;
 	}
@@ -43,7 +47,7 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 			this.enumeration.terms.remove(this);
 		}
 		if (newEnumeration!= null) { 
-			this.enumeration.terms.add(this);
+			newEnumeration.terms.add(this);
 		}
 		this.enumeration = newEnumeration;		
 	}

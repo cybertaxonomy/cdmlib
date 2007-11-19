@@ -17,6 +17,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.common.Enumeration;
 
 /**
  * an data access interface that all data access classes implement
@@ -50,20 +51,13 @@ public interface IDao<T, ID> {
 //********************************************//	
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#find(java.lang.String, java.lang.Object[])
-	 */
-	public List find(String queryString, Object[] args);
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#find(java.lang.String)
-	 */
-	public List find(String queryString);
-
+	public List<T> find(String queryString);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#exists(java.io.Serializable)
 	 */
 	public Boolean exists(ID id);
+
+	public List<T> list100();
 
 }

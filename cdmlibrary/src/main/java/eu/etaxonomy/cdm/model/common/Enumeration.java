@@ -28,7 +28,7 @@ public class Enumeration extends DefinedTermBase {
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
-	protected ArrayList<EnumeratedTermBase> terms;
+	protected List<EnumeratedTermBase> terms = new ArrayList();
 	//The enumeration/vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Furhter vocs can be setup through our own ontology.
@@ -43,10 +43,10 @@ public class Enumeration extends DefinedTermBase {
 	}
 
 	
-	public ArrayList<EnumeratedTermBase> getTerms() {
+	public List<EnumeratedTermBase> getTerms() {
 		return terms;
 	}
-	protected void setTerms(ArrayList<EnumeratedTermBase> terms) {
+	protected void setTerms(List<EnumeratedTermBase> terms) {
 		this.terms = terms;
 	}
 	public void addTerm(EnumeratedTermBase term) {

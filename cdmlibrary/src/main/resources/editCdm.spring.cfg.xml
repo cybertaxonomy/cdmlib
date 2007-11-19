@@ -239,7 +239,12 @@
 	 	<property name="sessionFactory" ref="sessionFactory"/> 
 	</bean>
 	 
-
+ 	<!-- COMMON -->
+ 	<bean id="EnumerationDao" 
+ 		class="eu.etaxonomy.cdm.persistence.dao.EnumerationDaoHibernateImpl">
+ 		<property name="sessionFactory" ref="sessionFactory"/> 
+ 	</bean>
+ 	
    
     <!-- ********* not used yet ********-->
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

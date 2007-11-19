@@ -31,14 +31,14 @@ public class Media extends AnnotatableEntity {
 	}
 
 	static Logger logger = Logger.getLogger(Media.class);
-	private MultilanguageSet title;
+	private MultilanguageSet title = new MultilanguageSet();
 	//creation date of the media (not of the record)
 	private Calendar mediaCreated;
-	private MultilanguageSet description;
+	private MultilanguageSet description = new MultilanguageSet();
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
-	private Set<MediaInstance> instances;
-	private Set<Rights> rights;
+	private Set<MediaInstance> instances = new HashSet();
+	private Set<Rights> rights = new HashSet();
 	private Agent artist;
 
 	@OneToMany

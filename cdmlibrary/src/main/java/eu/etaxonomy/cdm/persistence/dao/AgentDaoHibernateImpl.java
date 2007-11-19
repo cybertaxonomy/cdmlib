@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
@@ -12,5 +14,11 @@ public class AgentDaoHibernateImpl extends DaoBase<Agent, Integer> implements IA
 	 */
 	public AgentDaoHibernateImpl() {
 		super(Agent.class); 
+	}
+
+	@Override
+	public List<Agent> find(String queryString) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 @Entity
@@ -40,6 +41,7 @@ public abstract class CdmBase implements Serializable{
 		support.removePropertyChangeListener(listener);
 	}
 
+	@Transient
 	public void hasListeners(String propertyName) {
 		support.hasListeners(propertyName);
 	}

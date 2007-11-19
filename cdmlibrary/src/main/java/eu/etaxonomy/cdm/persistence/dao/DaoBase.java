@@ -66,21 +66,7 @@ public abstract class DaoBase<T, ID extends Serializable>
 //********************************************//	
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#find(java.lang.String, java.lang.Object[])
-	 */
-	public List find(String queryString, Object[] args) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#find(java.lang.String)
-	 */
-	public List find(String queryString) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract List<T> find(String queryString);
 
 
 
@@ -92,5 +78,10 @@ public abstract class DaoBase<T, ID extends Serializable>
 		return null;
 	}
 
+	public List<T> list100() {
+		HibernateTemplate ht = getHibernateTemplate();
+		ht.setMaxResults(100);
+		return ht.loadAll(type); 
+	}
 
 }
