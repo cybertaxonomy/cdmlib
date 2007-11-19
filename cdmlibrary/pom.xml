@@ -130,17 +130,15 @@
       <version>2.5-rc2</version>
     </dependency>
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>2.5-rc2</version>
+    </dependency>
+    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.7.1</version>
     </dependency>
-    <!--     
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-mock</artifactId>
-      <version>2.0.6</version>
-    </dependency>
--->
   </dependencies>
 </project>
 
