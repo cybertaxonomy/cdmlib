@@ -1,19 +1,18 @@
 package eu.etaxonomy.cdm.persistence.dao;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.CdmUnitTestBase;
-import eu.etaxonomy.cdm.model.common.*;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.Keyword;
 
 public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	@Autowired

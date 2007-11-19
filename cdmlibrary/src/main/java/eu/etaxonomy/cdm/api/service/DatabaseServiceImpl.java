@@ -3,12 +3,15 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import org.springframework.stereotype.Service;
+
 import eu.etaxonomy.cdm.database.DbType;
 
 /**
  * @author a.mueller
  *
  */
+@Service
 public class DatabaseServiceImpl implements IDatabaseService {
 
 	/* (non-Javadoc)

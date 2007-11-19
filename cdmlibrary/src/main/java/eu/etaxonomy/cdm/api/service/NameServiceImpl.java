@@ -1,7 +1,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.*;
@@ -12,25 +14,13 @@ import java.util.List;
 
 
 
+@Service
 public class NameServiceImpl extends ServiceBase implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
+	@Autowired
 	private ITaxonNameDao taxonNameDao;
 	
-	/**
-	 * @return the taxonNameDao
-	 */
-	public ITaxonNameDao getTaxonNameDao() {
-		return taxonNameDao;
-	}
-
-	/**
-	 * @param taxonNameDao the taxonNameDao to set
-	 */
-	public void setTaxonNameDao(ITaxonNameDao taxonNameDao) {
-		this.taxonNameDao = taxonNameDao;
-	}
-
 
 
 	/* (non-Javadoc)
