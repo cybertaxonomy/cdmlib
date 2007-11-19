@@ -209,8 +209,10 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -te
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/AgentDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/DaoBase.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/EnumerationDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAgentDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IEnumerationDAO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonNameDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonNameDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text
