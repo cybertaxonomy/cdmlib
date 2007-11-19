@@ -220,6 +220,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
+cdmlibrary/src/main/resources/editCdm-spring-cfg-test.xml -text
 cdmlibrary/src/main/resources/editCdm.spring.cfg.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/site/site.xml -text
