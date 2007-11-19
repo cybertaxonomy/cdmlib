@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+               
+  
+	<!-- AGENT -->
+			
+	<bean id="agentService" 
+			class="eu.etaxonomy.cdm.api.service.AgentServiceImpl">
+		<property name="agentDao" ref="agentDao"/>
+	</bean>
+ 	
+ 	<bean id="agentDao" 
+			class="eu.etaxonomy.cdm.persistence.dao.AgentDaoHibernateImpl">
+			<!-- autowire="byType"-->
+	 	<property name="sessionFactory" ref="sessionFactory"/> 
+	</bean>
+
+
+	<!-- TAXON_NAME -->
+		
+	<bean id="nameService" 
+			class="eu.etaxonomy.cdm.api.service.NameServiceImpl">
+		<property name="taxonNameDao" ref="taxonNameDao"/>
+	</bean>
+ 
+	
+	<bean id="botanicNameCacheStrategy" 
+			class="eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy">
+	</bean>
+ 
+ 	<bean id="zooNameCacheStrategy" 
+			class="eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy">
+	</bean>
+ 
+ 	<bean id="taxonNameDao" 
+ 		class="eu.etaxonomy.cdm.persistence.dao.TaxonNameDaoHibernateImpl">
+			<!-- autowire="byType"-->
+	 	<property name="sessionFactory" ref="sessionFactory"/> 
+	</bean>
+	 
+ 	<!-- COMMON -->
+ 	<bean id="EnumerationDao" 
+ 		class="eu.etaxonomy.cdm.persistence.dao.EnumerationDaoHibernateImpl">
+ 		<property name="sessionFactory" ref="sessionFactory"/> 
+ 	</bean>
+ 	
+  </beans>
