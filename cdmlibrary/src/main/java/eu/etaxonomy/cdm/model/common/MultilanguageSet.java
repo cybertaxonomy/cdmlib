@@ -18,9 +18,9 @@ import org.apache.log4j.Logger;
 
 /**
  * @author markus
- * Special array that takes care that all LanguageString elements habe a unique language
+ * Special array that takes care that all LanguageString elements have a unique language
  */
-@Entity
+//@Entity
 public class MultilanguageSet extends ArrayList<LanguageString>{
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 

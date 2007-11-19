@@ -43,6 +43,7 @@ public class Enumeration extends DefinedTermBase {
 	}
 
 	
+	@OneToMany(mappedBy="enumeration")
 	public List<EnumeratedTermBase> getTerms() {
 		return terms;
 	}

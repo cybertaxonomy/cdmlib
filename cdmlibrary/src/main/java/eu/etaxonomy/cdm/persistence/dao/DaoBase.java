@@ -10,12 +10,14 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 
 /**
  * @author a.mueller
  *
  */
+@Repository
 public abstract class DaoBase<T, ID extends Serializable> 
 		extends HibernateDaoSupport implements IDao<T, ID> {
 

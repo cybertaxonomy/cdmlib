@@ -9,7 +9,6 @@
     
     <context:annotation-config/>
     
-    <import resource="servicedao.xml"/>
     <import resource="sessionfactory.xml"/>
     
     <bean id="mysqlDataSource" 

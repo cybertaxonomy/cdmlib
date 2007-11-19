@@ -72,6 +72,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 
+	@ManyToOne
 	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
@@ -98,6 +99,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 
+	@ManyToOne
 	public DefinedTermBase getPartOf(){
 		return this.partOf;
 	}

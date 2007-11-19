@@ -34,6 +34,7 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 	}
 
 	
+	@ManyToOne
 	public Enumeration getEnumeration(){
 		return this.enumeration;
 	}
