@@ -9,8 +9,7 @@
     
     <context:annotation-config/>
 
-    <context:component-scan base-package="eu.taxonomy.cdm.api"/>
-    <context:component-scan base-package="eu.taxonomy.cdm.persistence"/>
+    <context:component-scan base-package="eu.taxonomy.cdm"/>
     
     
 <bean id="sessionFactory" 
