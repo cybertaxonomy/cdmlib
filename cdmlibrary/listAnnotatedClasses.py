@@ -11,7 +11,7 @@ for path,dirs,files in os.walk(modelDir):
     else:
         package = modelPackage
     for f in files: 
-        if f.endswith(".java"):
+        if f.endswith(".java") and f <> "package-info.java":
             print "<value>%s.%s</value>" %(package, f[:-5])
 print"</list>"
 
