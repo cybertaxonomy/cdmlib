@@ -10,32 +10,15 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.CdmUnitTestBase;
 import eu.etaxonomy.cdm.model.common.*;
 
 public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
-	private static IEnumerationDAO dao;
-	private static Enumeration myStaticEnum = new Enumeration();
+	@Autowired
+	private IEnumerationDAO dao;
 	private Enumeration enumeration;
-
-	public static IEnumerationDAO getDao() {
-		return dao;
-	}
-
-	// to be set by spring
-	public static void setDao(IEnumerationDAO dao) {
-		EnumerationDaoHibernateImplTest.dao = dao;
-	}
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		String [] repres = {"real","fake","original"};
-		for (String r : repres){
-			Keyword term = new Keyword(r);
-			myStaticEnum.addTerm(term);			
-		}
-	}
 
 	@Before
 	// generate enumeration for every test to play with

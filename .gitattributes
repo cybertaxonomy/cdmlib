@@ -52,7 +52,6 @@ cdmParent/.project -text
 cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
 cdmParent/settings.xml -text
-cdmlibrary/build.xml -text
 cdmlibrary/listAnnotatedClasses.py -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
@@ -220,7 +219,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
-cdmlibrary/src/main/resources/applicationContext-test.xml -text
 cdmlibrary/src/main/resources/applicationContext.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/main/resources/servicedao.xml -text
@@ -234,7 +232,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/EnumerationDaoHibernateImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
-cdmlibrary/zipManifest.txt -text
+cdmlibrary/src/test/resources/applicationContext-test.xml -text
 docs/layers.graffle -text
 docs/layers.png -text
 updateSite/.project -text

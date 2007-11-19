@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 //ApplicationContext will be loaded from "/applicationContext.xml" and "/applicationContext-test.xml"
 //in the root of the classpath
-@ContextConfiguration(locations={"applicationContext-test.xml"})
+@ContextConfiguration(locations={"/applicationContext-test.xml"})
 public abstract class CdmUnitTestBase{
 	
 }
