@@ -12,6 +12,7 @@ import org.hibernate.criterion.Expression;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @author a.mueller
  *
  */
+@Repository
 public class TaxonNameDaoHibernateImpl 
 			extends DaoBase<TaxonNameBase, Integer> implements ITaxonNameDao {
 	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);

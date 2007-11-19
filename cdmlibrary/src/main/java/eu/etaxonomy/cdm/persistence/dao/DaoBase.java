@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
  * @author a.mueller
  *
  */
-@Repository
 public abstract class DaoBase<T, ID extends Serializable> 
 		extends HibernateDaoSupport implements IDao<T, ID> {
 
