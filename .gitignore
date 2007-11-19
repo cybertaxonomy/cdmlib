@@ -6,10 +6,6 @@ cdmParent/target
 cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
-cdmlibrary/.externalToolBuilders/Maven[!!-~]compile.launch
-cdmlibrary/.externalToolBuilders/org.eclipse.ajdt.core.ajbuilder.launch
-cdmlibrary/.externalToolBuilders/org.eclipse.jdt.core.javabuilder.launch
-cdmlibrary/.externalToolBuilders/org.maven.ide.eclipse.maven2Builder.launch
 cdmlibrary/.project
 cdmlibrary/alt
 cdmlibrary/archive
