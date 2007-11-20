@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.api.service;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -13,7 +14,7 @@ import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 import java.util.List;
 
 
-
+@Service
 public class NameServiceImpl extends ServiceBase implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	

@@ -6,13 +6,15 @@ import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
+import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 
 import eu.etaxonomy.cdm.model.name.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     NonViralNameTest.class,
-    PropertyChangeTest.class
+    PropertyChangeTest.class,
+    DatabaseEnumTest.class
     //, NameRelationshipTest.class
 })
 
@@ -27,7 +29,8 @@ public class CdmTestSuite {
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
         		NonViralNameTest.class, 
-             PropertyChangeTest.class
+             PropertyChangeTest.class,
+             DatabaseEnumTest.class
              //, NameRelationshipTest.class
 	    ); 
 	}

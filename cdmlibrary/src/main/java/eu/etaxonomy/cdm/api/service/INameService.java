@@ -4,6 +4,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.*;
 
+
 public interface INameService extends IService {
 
 	public abstract TaxonNameBase getTaxonNameById(Integer id);

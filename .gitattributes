@@ -56,7 +56,7 @@ cdmlibrary/listAnnotatedClasses.py -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceImpl.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
@@ -64,8 +64,14 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DbType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/MySQLDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/OdbcDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SqlServerDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/Description.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
@@ -225,7 +231,9 @@ cdmlibrary/src/main/resources/sessionfactory.xml -text
 cdmlibrary/src/site/site.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/CdmUnitTestBase.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/SpringControl.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/functiontest/TestDatabase.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/EnumerationDaoHibernateImplTest.java -text

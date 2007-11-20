@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
  * @author a.mueller
  *
  */
+@Service
 public class AgentServiceImpl implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
