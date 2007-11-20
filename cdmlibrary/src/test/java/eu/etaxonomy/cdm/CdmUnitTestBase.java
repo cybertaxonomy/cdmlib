@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 //ApplicationContext will be loaded from "/applicationContext.xml" and "/applicationContext-test.xml"
 //in the root of the classpath
 @ContextConfiguration(locations={"/applicationContext-test.xml"})
-@TransactionConfiguration(transactionManager="testTransactionManager", defaultRollback=false)
+@TransactionConfiguration(defaultRollback=false)
 @Transactional
 public abstract class CdmUnitTestBase{
 	

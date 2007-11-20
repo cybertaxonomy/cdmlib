@@ -34,7 +34,7 @@ public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implem
 	
 	protected Session getSession(){
 		Session s = factory.getCurrentSession();
-		s.beginTransaction();
+		//s.beginTransaction();
 		return s;
 	}
 	
