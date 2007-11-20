@@ -89,7 +89,7 @@
 	<repositories>
 		<repository>
 			<id>EditRepository</id>
-			<url>http://dev.e-taxonomy.eu/svn/trunk/javaLibraries</url>
+			<url>http://dev.e-taxonomy.eu/svn/maven</url>
 		</repository>
 	</repositories>
 
