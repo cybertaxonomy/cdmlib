@@ -11,19 +11,15 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
 /**
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T, ID extends Serializable> implements IDao<T, ID> {
+public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implements IDao<T, ID> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
