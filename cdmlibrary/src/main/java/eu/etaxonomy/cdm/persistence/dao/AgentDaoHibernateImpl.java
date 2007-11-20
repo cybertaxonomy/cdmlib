@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.agent.Agent;
 
 
+@Repository
 public class AgentDaoHibernateImpl extends DaoBase<Agent, Integer> implements IAgentDao{
 	private static final Logger logger = Logger.getLogger(AgentDaoHibernateImpl.class);
 

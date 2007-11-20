@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @author a.mueller
  *
  */
+@Repository
 public class TaxonNameDaoHibernateImpl 
 			extends DaoBase<TaxonNameBase, Integer> implements ITaxonNameDao {
 	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);

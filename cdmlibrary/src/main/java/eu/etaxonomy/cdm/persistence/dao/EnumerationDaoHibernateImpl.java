@@ -11,6 +11,7 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
 
 
 
+@Repository
 public class EnumerationDaoHibernateImpl extends DaoBase<Enumeration, Integer> implements IEnumerationDAO {
 	private static final Logger logger = Logger.getLogger(EnumerationDaoHibernateImpl.class);
 

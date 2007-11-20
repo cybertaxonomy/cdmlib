@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
  * @author a.mueller
  *
  */
-@Component
 public abstract class DaoBase<T, ID extends Serializable> implements IDao<T, ID> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);

@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Enumeration;
 
 /**
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T, ID extends Serializable> {
+public interface IDao<T extends CdmBase, ID extends Serializable> {
 	public void saveOrUpdate(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)

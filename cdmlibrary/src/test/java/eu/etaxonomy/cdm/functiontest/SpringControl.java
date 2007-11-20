@@ -29,7 +29,7 @@ public class SpringControl {
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
 		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.getAllNames();
+		List<TaxonNameBase> tnList = tnDao.list(1000);
 		
 		logger.warn(tn.getUuid());
 	}

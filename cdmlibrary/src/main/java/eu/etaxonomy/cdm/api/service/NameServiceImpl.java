@@ -45,7 +45,7 @@ public class NameServiceImpl extends ServiceBase implements INameService {
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getAllNames()
 	 */
 	public List getAllNames(){
-		return taxonNameDao.getAllNames();
+		return taxonNameDao.list(1000);
 	}
 	
 	/* (non-Javadoc)
