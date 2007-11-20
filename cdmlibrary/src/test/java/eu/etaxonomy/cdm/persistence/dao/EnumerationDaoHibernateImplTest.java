@@ -10,10 +10,12 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import eu.etaxonomy.cdm.CdmUnitTestBase;
 import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.Keyword;
+
 
 public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	static Logger logger = Logger.getLogger(EnumerationDaoHibernateImplTest.class);
