@@ -53,6 +53,12 @@ public interface IDao<T extends CdmBase, ID extends Serializable> {
 //********************************************//	
 	
 	
+	/**
+	 * @param queryString
+	 * @return List<T extends CdmBase>
+	 * list object by searching on their title/lable.
+	 * common.Identifyable.getTitleCache if existing
+	 */
 	public List<T> find(String queryString);
 
 	public Boolean exists(ID id);

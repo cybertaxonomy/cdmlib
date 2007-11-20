@@ -33,9 +33,7 @@ public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implem
 	}
 	
 	protected Session getSession(){
-		Session s = factory.getCurrentSession();
-		//s.beginTransaction();
-		return s;
+		return factory.getCurrentSession();
 	}
 	
 	
@@ -56,15 +54,16 @@ public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implem
 	}
 
 	public T findById(Integer id) throws DataAccessException {
-		// TODO Auto-generated method stub
-		return null;
+		return (T) getSession().get(type, id);
 	}
 
 
 	
-	public Boolean exists(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean exists(ID id) {
+		if (findById(id)==null){
+			return false;
+		}
+		return true;
 	}
 
 
@@ -73,5 +72,9 @@ public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implem
 		return null;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.IDao#find(java.lang.String)
+	 */
 	public abstract List<T> find(String queryString);
 }
