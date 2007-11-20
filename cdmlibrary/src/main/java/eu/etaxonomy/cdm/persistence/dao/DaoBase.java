@@ -26,6 +26,7 @@ public abstract class DaoBase<T, ID extends Serializable>
 	
 	public DaoBase(Class<T> type){
 		this.type = type;
+		logger.debug("DAO of type [" + type.getSimpleName() + "] created");
 	}
 	
 

@@ -41,29 +41,22 @@ public abstract class VersionableEntity extends CdmBase {
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
 
+	@Transient
 	public VersionableEntity getNextVersion(){
 		return this.nextVersion;
 	}
-
-	/**
-	 * 
-	 * @param nextVersion    nextVersion
-	 */
 	public void setNextVersion(VersionableEntity nextVersion){
 		this.nextVersion = nextVersion;
 	}
 
+	@Transient
 	public VersionableEntity getPreviousVersion(){
 		return this.previousVersion;
 	}
-
-	/**
-	 * 
-	 * @param previousVersion    previousVersion
-	 */
 	public void setPreviousVersion(VersionableEntity previousVersion){
 		this.previousVersion = previousVersion;
 	}
+
 
 	@ManyToOne
 	public Person getUpdatedBy(){

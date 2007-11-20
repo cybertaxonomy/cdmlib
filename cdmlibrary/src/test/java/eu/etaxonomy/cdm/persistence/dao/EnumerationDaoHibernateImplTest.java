@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.Keyword;
 
 public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
+	static Logger logger = Logger.getLogger(EnumerationDaoHibernateImplTest.class);
+
 	@Autowired
 	private IEnumerationDAO dao;
 	private Enumeration enumeration;
@@ -22,6 +25,7 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	@Before
 	// generate enumeration for every test to play with
 	public void onSetUp() throws Exception {
+		logger.debug(EnumerationDaoHibernateImplTest.class.getSimpleName() + " setup()");
 		this.enumeration = new Enumeration();
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){

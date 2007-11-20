@@ -16,4 +16,10 @@
         <property name="username" value="edit"/>
         <property name="password" value="wp5"/>
     </bean>
+    
+    
+    
+    <bean id="enumerationDao" class="eu.etaxonomy.cdm.persistence.dao.EnumerationDaoHibernateImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
 </beans>

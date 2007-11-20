@@ -43,11 +43,11 @@ public class OriginalSource extends ReferencedEntityBase {
 		this.idInSource = idInSource;
 	}
 
-	protected IdentifiableEntity getParent() {
+	@ManyToOne		
+	public IdentifiableEntity getParent() {
 		return parent;
 	}
 
-	@ManyToOne		
 	protected void setParent(IdentifiableEntity parent) {
 		this.parent = parent;
 	}
