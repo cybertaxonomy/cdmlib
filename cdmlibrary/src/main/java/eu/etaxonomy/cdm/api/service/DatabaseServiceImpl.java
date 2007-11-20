@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.database.DbType;
  * @author a.mueller
  *
  */
-@Service
+
 public class DatabaseServiceImpl implements IDatabaseService {
 
 	/* (non-Javadoc)

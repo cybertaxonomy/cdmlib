@@ -14,7 +14,6 @@ import java.util.List;
 
 
 
-@Service
 public class NameServiceImpl extends ServiceBase implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	

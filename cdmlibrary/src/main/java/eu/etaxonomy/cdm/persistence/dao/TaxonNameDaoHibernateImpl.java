@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @author a.mueller
  *
  */
-@Repository
 public class TaxonNameDaoHibernateImpl 
 			extends DaoBase<TaxonNameBase, Integer> implements ITaxonNameDao {
 	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
@@ -41,20 +40,11 @@ public class TaxonNameDaoHibernateImpl
 	}
 	
 	
-	public List<TaxonNameBase> getAllNames() {
-		List<TaxonNameBase> list = ht().find("from TaxonNameBase");
-		return list;
-	}
-	
-	
 	public List<TaxonNameBase> getNamesByName(String name) {
-		List<TaxonNameBase> list = ht().find("from TaxonNameBase tn where tn.name=?", name);
+		List<TaxonNameBase> list = this.find(name);
 		return list;
 	}
 	
-	private HibernateTemplate ht(){
-		return getHibernateTemplate();
-	}
 
 	@Override
 	public List<TaxonNameBase> find(String queryString) {

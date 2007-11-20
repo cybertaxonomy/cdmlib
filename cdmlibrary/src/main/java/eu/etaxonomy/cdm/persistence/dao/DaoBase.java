@@ -7,83 +7,76 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+
+import eu.etaxonomy.cdm.model.common.Enumeration;
 
 
 /**
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T, ID extends Serializable> 
-		extends HibernateDaoSupport implements IDao<T, ID> {
+@Component
+public abstract class DaoBase<T, ID extends Serializable> implements IDao<T, ID> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
+	@Autowired
+	private SessionFactory factory;
 	protected Class<T> type;
 	
 	public DaoBase(Class<T> type){
 		this.type = type;
-		logger.debug("DAO of type [" + type.getSimpleName() + "] created");
+		logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
 	}
 	
-
+	protected Session getSession(){
+		Session s = factory.getCurrentSession();
+		s.beginTransaction();
+		return s;
+	}
+	
+	
 	public void saveOrUpdate(T transientObject) throws DataAccessException  {
-		HibernateTemplate ht = getHibernateTemplate();
-		ht.saveOrUpdate(transientObject);
+		getSession().saveOrUpdate(transientObject);
+	}
+
+	public Serializable save(T newInstance) throws DataAccessException {
+		return getSession().save(newInstance);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
-	 */
-	public ID save(T newInstance) throws DataAccessException  {
-		HibernateTemplate ht = getHibernateTemplate();
-		return (ID)ht.save(newInstance);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#update(java.lang.Object)
-	 */
 	public void update(T transientObject) throws DataAccessException {
-		//TODO update kommt in einem O/R-Mapping eigentlich gar nich vor!!
-		getHibernateTemplate().update(transientObject);
+		getSession().update(transientObject);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#delete(java.lang.Object)
-	 */
 	public void delete(T persistentObject) throws DataAccessException {
-		getHibernateTemplate().delete(persistentObject);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#findById(java.io.Serializable)
-	 */
-	public T findById(ID id) throws DataAccessException {
-		return (T)getHibernateTemplate().get(type,id);
+		getSession().delete(persistentObject);
 	}
 
-//********************************************//	
-	
-	
-	public abstract List<T> find(String queryString);
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#exists(java.io.Serializable)
-	 */
-	public Boolean exists(ID id) {
+	public T findById(Integer id) throws DataAccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<T> list100() {
-		HibernateTemplate ht = getHibernateTemplate();
-		ht.setMaxResults(100);
-		return ht.loadAll(type); 
+
+	
+	public Boolean exists(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+
+	public List<T> list(Integer limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public abstract List<T> find(String queryString);
 }

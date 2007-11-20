@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -8,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.Enumeration;
 
-@Repository
-public class EnumerationDaoHibernateImpl extends DaoBase<Enumeration, Integer> 
-implements IEnumerationDAO {
+
+
+public class EnumerationDaoHibernateImpl extends DaoBase<Enumeration, Integer> implements IEnumerationDAO {
 	private static final Logger logger = Logger.getLogger(EnumerationDaoHibernateImpl.class);
 
 	public EnumerationDaoHibernateImpl() {

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,13 +26,13 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T, ID> {
+public interface IDao<T, ID extends Serializable> {
 	public void saveOrUpdate(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
 	 */
-	public ID save(T newInstance) throws DataAccessException;
+	public Serializable save(T newInstance) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#update(java.lang.Object)
@@ -53,11 +54,8 @@ public interface IDao<T, ID> {
 	
 	public List<T> find(String queryString);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#exists(java.io.Serializable)
-	 */
 	public Boolean exists(ID id);
 
-	public List<T> list100();
+	public List<T> list(Integer limit);
 
 }
