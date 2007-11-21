@@ -39,7 +39,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.bgbm.model.Annotation</value>
-                <value>org.bgbm.model.Artist</value>
+                <value>org.bgbm.model.Band</value>
                 <value>org.bgbm.model.Label</value>
                 <value>org.bgbm.model.MetaBase</value>
                 <value>org.bgbm.model.Person</value>
