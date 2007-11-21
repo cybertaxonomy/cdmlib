@@ -3,6 +3,7 @@ package org.bgbm.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -28,7 +29,7 @@ public class Label extends MetaBase {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy="label")
+	@OneToMany(mappedBy="label", cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	public Set<Record> getRecords() {
 		return records;
 	}

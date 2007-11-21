@@ -33,14 +33,15 @@ public class Track extends MetaBase {
 	public void setDuration(double duration) {
 		this.duration = duration;
 	}
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	
+	@ManyToOne
 	public Record getRecord() {
 		return record;
 	}
 	public void setRecord(Record record) {
 		this.record = record;
 	}
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
 	public Band getArtist() {
 		return artist;
 	}

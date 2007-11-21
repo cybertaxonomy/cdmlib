@@ -29,7 +29,7 @@ public class Person extends MetaBase{
 	private String lastname;
 	private Set<Band> bands;
 	
-	@ManyToMany(cascade=CascadeType.PERSIST)
+	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	public Set<Band> getBands() {
 		return bands;
 	}

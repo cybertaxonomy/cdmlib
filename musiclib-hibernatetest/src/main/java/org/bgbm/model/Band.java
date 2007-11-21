@@ -32,7 +32,7 @@ public class Band extends MetaBase {
 		this.name = name;
 	}
 
-	@ManyToMany(cascade=CascadeType.PERSIST, mappedBy="bands")
+	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, mappedBy="bands")
 	public Set<Person> getMusicians() {
 		return musicians;
 	}

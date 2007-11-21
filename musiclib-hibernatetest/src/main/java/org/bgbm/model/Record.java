@@ -26,7 +26,7 @@ public class Record extends MetaBase {
 	}
 
 	
-	@OneToMany(cascade=CascadeType.PERSIST, mappedBy="record")
+	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, mappedBy="record")
 	public List<Track> getTracks() {
 		return tracks;
 	}
@@ -50,7 +50,7 @@ public class Record extends MetaBase {
 	public void setPublicationDate(Calendar publicationDate) {
 		this.publicationDate = publicationDate;
 	}
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	public Label getLabel() {
 		return label;
 	}
