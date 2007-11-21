@@ -4,6 +4,6 @@
 		name="system-increment", 
 		strategy = "increment"
 )
-package eu.etaxonomy.cdm.model.common;
+package org.bgbm.model;
 
 import org.hibernate.annotations.GenericGenerator;	

@@ -12,7 +12,7 @@
     <bean id="mysqlDataSource" 
         class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/musiclib_hibernatetest"/>
         <property name="username" value="edit"/>
         <property name="password" value="wp5"/>
     </bean>

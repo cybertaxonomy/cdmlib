@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package org.bgbm.model;
 
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -22,23 +22,22 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Annotation extends LanguageString {
-	public Annotation(String text, Language lang) {
-		super(text, lang);
-	}
-
+public class Annotation extends MetaBase{
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;
+	private String note;
 
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	
 	public Person getCommentator(){
 		return this.commentator;
 	}
-
-	/**
-	 * 
-	 * @param commentator    commentator
-	 */
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
 	}
