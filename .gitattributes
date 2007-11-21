@@ -260,6 +260,7 @@ musiclib-hibernatetest/src/main/resources/applicationContext.xml -text
 musiclib-hibernatetest/src/main/resources/log4j.properties -text
 musiclib-hibernatetest/src/main/resources/sessionfactory.xml -text
 musiclib-hibernatetest/src/site/site.xml -text
+musiclib-hibernatetest/src/test/java/org/bgbm/persistence/dao/RecordDaoImplTest.java -text
 musiclib-hibernatetest/target/mvn-eclipse-cache.properties -text
 updateSite/.project -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.2.5.jar -text

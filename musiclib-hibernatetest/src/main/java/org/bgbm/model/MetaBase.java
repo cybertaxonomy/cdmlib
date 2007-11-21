@@ -13,9 +13,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.log4j.Logger;
+
 @MappedSuperclass
 //@Inheritance(strategy=InheritanceType.JOINED)
 public abstract class MetaBase {
+	static Logger logger = Logger.getLogger(MetaBase.class);
+
 	private int id;
 	private String uuid;
 	private Calendar created;

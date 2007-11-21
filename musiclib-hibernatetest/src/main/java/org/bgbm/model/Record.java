@@ -22,8 +22,13 @@ public class Record extends MetaBase {
 	public List<Track> getTracks() {
 		return tracks;
 	}
-	public void setTracks(List<Track> tracks) {
+	protected void setTracks(List<Track> tracks) {
 		this.tracks = tracks;
+	}
+	public void addTrack(String title, Artist artist, double d){
+		Track track=new Track(title,artist,d);
+		track.setRecord(this);
+		this.tracks.add(track);
 	}
 	public String getTitle() {
 		return title;

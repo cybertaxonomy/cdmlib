@@ -19,6 +19,10 @@ public class Artist extends MetaBase {
 	//private Set<Record> records = new HashSet();
 	private Set<Person> musicians;
 
+	public Artist(String title) {
+		name=title;
+	}
+
 	public String getName() {
 		return name;
 	}

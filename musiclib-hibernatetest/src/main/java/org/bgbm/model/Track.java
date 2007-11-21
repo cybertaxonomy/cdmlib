@@ -10,9 +10,16 @@ import org.apache.log4j.Logger;
 public class Track extends MetaBase {
 	static Logger logger = Logger.getLogger(Track.class);
 	private String name;
-	private float duration;
+	private double duration;
 	private Record record;
 	private Artist artist;
+	
+	public Track(String title, Artist artist2, double duration) {
+		this.name=title;
+		this.artist=artist2;
+		this.duration=duration;
+	}
+	
 	
 	public String getName() {
 		return name;
@@ -20,10 +27,10 @@ public class Track extends MetaBase {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public float getDuration() {
+	public double getDuration() {
 		return duration;
 	}
-	public void setDuration(float duration) {
+	public void setDuration(double duration) {
 		this.duration = duration;
 	}
 	@ManyToOne(cascade=CascadeType.PERSIST)
