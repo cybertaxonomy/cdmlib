@@ -50,6 +50,7 @@ public class RecordDaoImplTest {
 	public void testSave() {
 		logger.info(this.record.toString());
 		dao.save(this.label);
+		dao.save(this.artist);
 		dao.save(this.record);
 		this.record.addTrack("beat me (reprise)", artist, 3.34);
 		logger.info(this.record.toString());

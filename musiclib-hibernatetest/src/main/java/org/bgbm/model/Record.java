@@ -50,6 +50,7 @@ public class Record extends MetaBase {
 	public void setPublicationDate(Calendar publicationDate) {
 		this.publicationDate = publicationDate;
 	}
+	
 	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
 	public Label getLabel() {
 		return label;
