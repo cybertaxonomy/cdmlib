@@ -258,7 +258,6 @@ musiclib-hibernatetest/src/main/java/org/bgbm/persistence/dao/IDao.java -text
 musiclib-hibernatetest/src/main/java/org/bgbm/persistence/dao/RecordDaoImpl.java -text
 musiclib-hibernatetest/src/main/resources/applicationContext.xml -text
 musiclib-hibernatetest/src/main/resources/log4j.properties -text
-musiclib-hibernatetest/src/main/resources/sessionfactory.xml -text
 musiclib-hibernatetest/src/site/site.xml -text
 musiclib-hibernatetest/src/test/java/org/bgbm/persistence/dao/RecordDaoImplTest.java -text
 musiclib-hibernatetest/target/mvn-eclipse-cache.properties -text
