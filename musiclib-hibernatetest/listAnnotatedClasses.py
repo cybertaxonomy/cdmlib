@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import os, sys
 
-modelDir="src/main/java/eu/etaxonomy/cdm/model"
-modelPackage="eu.etaxonomy.cdm.model"
+modelDir="src/main/java/org/bgbm/model"
+modelPackage="org.bgbm.model"
 
 print"<list>"
 for path,dirs,files in os.walk(modelDir):
