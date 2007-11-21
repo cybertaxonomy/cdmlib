@@ -54,7 +54,9 @@ public class Occurrence extends IdentifiableEntity {
 	private Integer absoluteElevation;
 	// distance in meter from the surface when colecting. E.g. 10m below the ground or lake surface or 20m in the canope
 	private Integer relativeElevation;
-	
+	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
+	// in conjunction with titleCache which serves as the "citation" string for this object
+	private String description;
 
 	public Collection getCollection(){
 		return this.collection;
@@ -220,6 +222,14 @@ public class Occurrence extends IdentifiableEntity {
 
 	public void setRelativeElevation(Integer relativeElevation) {
 		this.relativeElevation = relativeElevation;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }
