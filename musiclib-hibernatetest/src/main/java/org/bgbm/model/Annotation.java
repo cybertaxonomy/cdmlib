@@ -10,9 +10,7 @@
 package org.bgbm.model;
 
 
-import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
