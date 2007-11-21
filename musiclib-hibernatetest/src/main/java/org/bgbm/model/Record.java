@@ -2,7 +2,10 @@ package org.bgbm.model;
 
 import java.util.*;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
 
@@ -10,11 +13,12 @@ import org.apache.log4j.Logger;
 public class Record extends MetaBase {
 	static Logger logger = Logger.getLogger(Record.class);
 
-	private List<Track> tracks new ArrayList();
+	private List<Track> tracks = new ArrayList();
 	private String title;
 	private Calendar publicationDate;
 	private Label label;
 	
+	@OneToMany(cascade=CascadeType.PERSIST, mappedBy="record")
 	public List<Track> getTracks() {
 		return tracks;
 	}
@@ -33,6 +37,7 @@ public class Record extends MetaBase {
 	public void setPublicationDate(Calendar publicationDate) {
 		this.publicationDate = publicationDate;
 	}
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	public Label getLabel() {
 		return label;
 	}

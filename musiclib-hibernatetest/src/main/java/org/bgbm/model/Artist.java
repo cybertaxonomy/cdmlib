@@ -3,7 +3,11 @@ package org.bgbm.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
 
@@ -12,7 +16,7 @@ public class Artist extends MetaBase {
 	static Logger logger = Logger.getLogger(Artist.class);
 
 	private String name;
-	private Set<Record> records = new HashSet();
+	//private Set<Record> records = new HashSet();
 	private Set<Person> musicians;
 
 	public String getName() {
@@ -23,14 +27,7 @@ public class Artist extends MetaBase {
 		this.name = name;
 	}
 
-	public Set<Record> getRecords() {
-		return records;
-	}
-
-	public void setRecords(Set<Record> records) {
-		this.records = records;
-	}
-
+	@ManyToMany(cascade=CascadeType.PERSIST)
 	public Set<Person> getMusicians() {
 		return musicians;
 	}

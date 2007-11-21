@@ -1,6 +1,8 @@
 package org.bgbm.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.apache.log4j.Logger;
 
@@ -24,12 +26,14 @@ public class Track extends MetaBase {
 	public void setDuration(float duration) {
 		this.duration = duration;
 	}
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	public Record getRecord() {
 		return record;
 	}
 	public void setRecord(Record record) {
 		this.record = record;
 	}
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	public Artist getArtist() {
 		return artist;
 	}
