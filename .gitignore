@@ -35,3 +35,5 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/specimen
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/taxon
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/view
 cdmlibrary/target
+musiclib-hibernatetest/.classpath
+musiclib-hibernatetest/.settings
