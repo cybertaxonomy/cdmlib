@@ -32,6 +32,15 @@ public class Determination extends AnnotatableEntity {
 	private Calendar identificationDate;
 	private Agent determiner;
 	private Taxon taxon;
+	private DeterminationModifier modifier;
+
+	public DeterminationModifier getModifier() {
+		return modifier;
+	}
+
+	public void setModifier(DeterminationModifier modifier) {
+		this.modifier = modifier;
+	}
 
 	public Taxon getTaxon(){
 		return this.taxon;

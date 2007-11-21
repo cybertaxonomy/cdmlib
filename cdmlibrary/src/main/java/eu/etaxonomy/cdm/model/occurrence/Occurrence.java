@@ -16,6 +16,9 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.Stage;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -40,6 +43,18 @@ public class Occurrence extends IdentifiableEntity {
 	private NamedArea namedArea;
 	private Agent collector;
 	private Collection collection;
+	private String catalogNumber;
+	private String fieldNumber;
+	private String fieldNotes;
+	private String collectingMethod;
+	private Sex sex;
+	private Stage lifeStage;
+	private Integer individualCount;
+	// meter above/below sea level of the surface
+	private Integer absoluteElevation;
+	// distance in meter from the surface when colecting. E.g. 10m below the ground or lake surface or 20m in the canope
+	private Integer relativeElevation;
+	
 
 	public Collection getCollection(){
 		return this.collection;
@@ -133,6 +148,78 @@ public class Occurrence extends IdentifiableEntity {
 
 	public String generateTitle(){
 		return "";
+	}
+
+	public String getCatalogNumber() {
+		return catalogNumber;
+	}
+
+	public void setCatalogNumber(String catalogNumber) {
+		this.catalogNumber = catalogNumber;
+	}
+
+	public String getFieldNumber() {
+		return fieldNumber;
+	}
+
+	public void setFieldNumber(String fieldNumber) {
+		this.fieldNumber = fieldNumber;
+	}
+
+	public String getFieldNotes() {
+		return fieldNotes;
+	}
+
+	public void setFieldNotes(String fieldNotes) {
+		this.fieldNotes = fieldNotes;
+	}
+
+	public String getCollectingMethod() {
+		return collectingMethod;
+	}
+
+	public void setCollectingMethod(String collectingMethod) {
+		this.collectingMethod = collectingMethod;
+	}
+
+	public Sex getSex() {
+		return sex;
+	}
+
+	public void setSex(Sex sex) {
+		this.sex = sex;
+	}
+
+	public Stage getLifeStage() {
+		return lifeStage;
+	}
+
+	public void setLifeStage(Stage lifeStage) {
+		this.lifeStage = lifeStage;
+	}
+
+	public Integer getIndividualCount() {
+		return individualCount;
+	}
+
+	public void setIndividualCount(Integer individualCount) {
+		this.individualCount = individualCount;
+	}
+
+	public Integer getAbsoluteElevation() {
+		return absoluteElevation;
+	}
+
+	public void setAbsoluteElevation(Integer absoluteElevation) {
+		this.absoluteElevation = absoluteElevation;
+	}
+
+	public Integer getRelativeElevation() {
+		return relativeElevation;
+	}
+
+	public void setRelativeElevation(Integer relativeElevation) {
+		this.relativeElevation = relativeElevation;
 	}
 
 }

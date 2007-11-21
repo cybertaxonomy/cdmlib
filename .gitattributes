@@ -172,6 +172,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/ZoologicalName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Collection.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Determination.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationModifier.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Fossil.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/LivingIndividual.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Observation.java -text
