@@ -4,7 +4,7 @@ package org.bgbm.persistence.dao;
 import static org.junit.Assert.*;
 
 import org.apache.log4j.Logger;
-import org.bgbm.model.Artist;
+import org.bgbm.model.Band;
 import org.bgbm.model.Label;
 import org.bgbm.model.Record;
 import org.bgbm.model.Track;
@@ -31,14 +31,14 @@ public class RecordDaoImplTest {
 	private MetaDao dao;
 
 	private Record record;
-	private Artist artist;
+	private Band artist;
 	private Label label;
 	
 	@Before
 	public void setUp() throws Exception {
 		logger.debug(RecordDaoImplTest.class.getSimpleName() + " setup()");
 		this.label = new Label("Universal Music");
-		this.artist = new Artist("Sons of Austria");
+		this.artist = new Band("Sons of Austria");
 		this.record = new Record("Austrian love songs",null,label);
 		String [] songs = {"beat me","hello world","love you always","tear me apart","knock me down"};
 		for (String s : songs){

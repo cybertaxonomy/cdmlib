@@ -12,9 +12,9 @@ public class Track extends MetaBase {
 	private String name;
 	private double duration;
 	private Record record;
-	private Artist artist;
+	private Band artist;
 	
-	public Track(String title, Artist artist2, double duration) {
+	public Track(String title, Band artist2, double duration) {
 		this.name=title;
 		this.artist=artist2;
 		this.duration=duration;
@@ -41,10 +41,10 @@ public class Track extends MetaBase {
 		this.record = record;
 	}
 	@ManyToOne(cascade=CascadeType.PERSIST)
-	public Artist getArtist() {
+	public Band getArtist() {
 		return artist;
 	}
-	public void setArtist(Artist artist) {
+	public void setArtist(Band artist) {
 		this.artist = artist;
 	}
 	

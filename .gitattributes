@@ -246,7 +246,7 @@ docs/layers.png -text
 musiclib-hibernatetest/listAnnotatedClasses.py -text
 musiclib-hibernatetest/pom.xml -text
 musiclib-hibernatetest/src/main/java/org/bgbm/model/Annotation.java -text
-musiclib-hibernatetest/src/main/java/org/bgbm/model/Artist.java -text
+musiclib-hibernatetest/src/main/java/org/bgbm/model/Band.java -text
 musiclib-hibernatetest/src/main/java/org/bgbm/model/Label.java -text
 musiclib-hibernatetest/src/main/java/org/bgbm/model/MetaBase.java -text
 musiclib-hibernatetest/src/main/java/org/bgbm/model/Person.java -text

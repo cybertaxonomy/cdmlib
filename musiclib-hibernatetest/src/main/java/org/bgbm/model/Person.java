@@ -27,13 +27,13 @@ public class Person extends MetaBase{
 
 	private String firstname;
 	private String lastname;
-	private Set<Artist> bands;
+	private Set<Band> bands;
 	
 	@ManyToMany(cascade=CascadeType.PERSIST)
-	public Set<Artist> getBands() {
+	public Set<Band> getBands() {
 		return bands;
 	}
-	public void setBands(Set<Artist> bands) {
+	public void setBands(Set<Band> bands) {
 		this.bands = bands;
 	}
 	public String getFirstname() {
