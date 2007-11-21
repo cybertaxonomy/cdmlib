@@ -18,6 +18,14 @@ public class Record extends MetaBase {
 	private Calendar publicationDate;
 	private Label label;
 	
+	public Record(String title, Calendar publicationDate, Label label) {
+		super();
+		this.title = title;
+		this.publicationDate = publicationDate;
+		this.label = label;
+	}
+
+	
 	@OneToMany(cascade=CascadeType.PERSIST, mappedBy="record")
 	public List<Track> getTracks() {
 		return tracks;
@@ -48,5 +56,14 @@ public class Record extends MetaBase {
 	}
 	public void setLabel(Label label) {
 		this.label = label;
+	}
+	
+	public String toString (){
+		String result = "RECORD:"+this.title+" [";
+		for (Track t : tracks){
+			result += t.getName()+"("+t.getArtist().getName()+") ";
+		}
+		result += "]";
+		return result;
 	}
 }

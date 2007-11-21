@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
 
@@ -14,6 +16,10 @@ public class Label extends MetaBase {
 	private String name;
 	private Set<Record> records = new HashSet();
 
+	public Label(String string) {
+		this.name=string;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -22,6 +28,7 @@ public class Label extends MetaBase {
 		this.name = name;
 	}
 
+	@OneToMany(mappedBy="label")
 	public Set<Record> getRecords() {
 		return records;
 	}
