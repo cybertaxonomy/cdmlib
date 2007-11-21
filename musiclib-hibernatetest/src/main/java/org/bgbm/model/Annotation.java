@@ -21,7 +21,6 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
-@Entity
 public class Annotation extends MetaBase{
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
