@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Media;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Taxon;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
 
@@ -32,7 +32,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Occurrence extends IdentifiableEntity {
+public class Occurrence extends Taxon {
 	static Logger logger = Logger.getLogger(Occurrence.class);
 	//Locality name (as free text) where this occurrence happened
 	private String locality;

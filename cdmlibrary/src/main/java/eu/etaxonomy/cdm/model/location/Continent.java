@@ -25,6 +25,11 @@ import javax.persistence.*;
 public class Continent extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);
 
+	public Continent(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
 	public static final Continent EUROPE(){
 		return null;
 	}

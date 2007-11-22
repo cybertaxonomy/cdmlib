@@ -30,7 +30,11 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	private TimePeriod validPeriod;
 	private Set<Continent> continents;
 
+	public WaterbodyOrCountry(String term, String label) {
+		super(term, label);
+	}
 
+	
 	@OneToMany
 	public Set<Continent> getContinents() {
 		return continents;

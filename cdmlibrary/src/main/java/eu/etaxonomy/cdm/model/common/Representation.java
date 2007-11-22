@@ -23,8 +23,9 @@ import javax.persistence.*;
  */
 @Entity
 public class Representation extends LanguageString {
-	public Representation(String text, Language lang) {
+	public Representation(String text, String label, Language lang) {
 		super(text, lang);
+		this.label = label;
 	}
 
 	static Logger logger = Logger.getLogger(Representation.class);

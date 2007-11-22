@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -26,6 +28,12 @@ import javax.persistence.*;
 @Entity
 public class NamedAreaLevel extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NamedAreaLevel.class);
+
+	public NamedAreaLevel(String term, String label, Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	/**
 	 * continents

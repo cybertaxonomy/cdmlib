@@ -28,12 +28,9 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends VersionableEntity{
-	public DefinedTermBase() {
+	public DefinedTermBase(String term, String label) {
 		super();
-	}
-	public DefinedTermBase(String englishTerm) {
-		this();
-		this.addRepresentation(new Representation(englishTerm, Language.ENGLISH()) );
+		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
 	}
 
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
@@ -47,7 +44,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	private Set<Media> media = new HashSet();
 	
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.PERSIST)
 	public Set<Representation> getRepresentations(){
 		return this.representations;
 	}
@@ -162,6 +159,31 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	@Transient
 	public static DefinedTermBase getDefinedTermByUri(String uri){
 		return null;
+	}
+	
+	public String toString(){
+		String result="DT<"+uri+">:";
+		for (Representation r : representations){
+			result += r.getLabel()+"("+r.getLanguage().getTermLabel()+")";
+		}
+		return result;
+	}
+	
+	@Transient
+	public String getTermLabel(){
+		return this.getRepresentation(Language.DEFAULT()).getLabel();
+	}
+	@Transient
+	public String getTermLabel(Language lang){
+		return this.getRepresentation(lang).getLabel();
+	}
+	@Transient
+	public String getTermText(){
+		return this.getRepresentation(Language.DEFAULT()).getLabel();
+	}
+	@Transient
+	public String getTermText(Language lang){
+		return this.getRepresentation(lang).getLabel();
 	}
 
 }

@@ -26,6 +26,12 @@ import javax.persistence.*;
 public class NamedAreaType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(NamedAreaType.class);
 
+	public NamedAreaType(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/**
 	 * The boundaries are given by natural factors (mountains, valleys, climate, etc.)
 	 */

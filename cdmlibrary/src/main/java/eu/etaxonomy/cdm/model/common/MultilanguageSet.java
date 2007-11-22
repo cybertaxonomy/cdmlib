@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.ArrayList;
 import java.util.AbstractSet;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 
@@ -21,19 +22,23 @@ import org.apache.log4j.Logger;
  * Special array that takes care that all LanguageString elements have a unique language
  */
 //@Entity
-public class MultilanguageSet extends ArrayList<LanguageString>{
+public class MultilanguageSet extends HashSet<LanguageString>{
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 
-	public LanguageString add(String text, Language lang){
+	public void add(String text, Language lang){
 		LanguageString ls = new LanguageString(text, lang);
 		super.add(ls);
-		return ls;
 	}
 	public void remove(Language lang){
 		super.remove(get(lang));
 	}
 	public LanguageString get(Language lang){
 		// FIXME: ...
-		return super.get(0);
+		for (LanguageString ls : this){
+			if (ls.getLanguage()==lang){
+				return ls;
+			}
+		}
+		return null;
 	}
 }

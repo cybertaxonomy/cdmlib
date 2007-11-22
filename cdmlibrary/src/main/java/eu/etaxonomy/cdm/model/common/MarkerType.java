@@ -26,6 +26,12 @@ import javax.persistence.*;
 public class MarkerType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MarkerType.class);
 
+	public MarkerType(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public static final MarkerType IMPORTED(){
 		return null;
 	}

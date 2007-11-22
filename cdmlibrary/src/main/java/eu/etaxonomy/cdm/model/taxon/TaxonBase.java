@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Taxon;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:56
  */
 @Entity
-public abstract class TaxonBase extends IdentifiableEntity {
+public abstract class TaxonBase extends Taxon {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;

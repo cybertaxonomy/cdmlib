@@ -28,6 +28,12 @@ import javax.persistence.*;
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
 
+	public ReferenceSystem(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public static final ReferenceSystem WGS84(){
 		return null;
 	}

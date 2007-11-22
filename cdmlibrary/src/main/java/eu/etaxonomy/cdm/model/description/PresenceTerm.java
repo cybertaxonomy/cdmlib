@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -24,4 +26,8 @@ import javax.persistence.*;
 public class PresenceTerm extends PresenceAbsenceTermBase {
 	static Logger logger = Logger.getLogger(PresenceTerm.class);
 
+	public PresenceTerm(String term, String label, Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
 }

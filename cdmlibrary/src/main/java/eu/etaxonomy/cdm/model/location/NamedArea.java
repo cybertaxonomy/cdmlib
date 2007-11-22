@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.location;
 
 
+import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
@@ -36,7 +37,12 @@ public class NamedArea extends EnumeratedTermBase {
 	private NamedAreaType type;
 	private NamedAreaLevel level;
 
-
+	public NamedArea(String term, String label, Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
+	
+	
 	public NamedAreaType getType(){
 		return this.type;
 	}

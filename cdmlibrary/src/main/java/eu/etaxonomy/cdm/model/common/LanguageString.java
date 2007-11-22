@@ -30,6 +30,7 @@ public class LanguageString  extends VersionableEntity{
 		this.setText(text);
 	}
 
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	public Language getLanguage(){
 		return this.language;
 	}
@@ -48,5 +49,21 @@ public class LanguageString  extends VersionableEntity{
 	private void setText(String text) {
 		this.text = text;
 	}
-
+	
+	@Transient
+	public String getLanguageLabel(){
+		return this.language.getRepresentation(Language.ENGLISH()).getLabel();
+	}
+	@Transient
+	public String getLanguageLabel(Language lang){
+		return this.language.getRepresentation(lang).getLabel();
+	}
+	@Transient
+	public String getLanguageText(){
+		return this.language.getRepresentation(Language.ENGLISH()).getLabel();
+	}
+	@Transient
+	public String getLanguageText(Language lang){
+		return this.language.getRepresentation(lang).getLabel();
+	}
 }

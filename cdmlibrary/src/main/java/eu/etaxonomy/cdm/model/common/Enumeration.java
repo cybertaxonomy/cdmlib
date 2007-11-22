@@ -24,6 +24,11 @@ import javax.persistence.*;
  */
 @Entity
 public class Enumeration extends DefinedTermBase {
+	public Enumeration(String term, String label, String enumerationUri) {
+		super(term, label);
+		setEnumerationUri(enumerationUri);
+	}
+
 	static Logger logger = Logger.getLogger(Enumeration.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
@@ -43,7 +48,7 @@ public class Enumeration extends DefinedTermBase {
 	}
 
 	
-	@OneToMany(mappedBy="enumeration")
+	@OneToMany(mappedBy="enumeration", cascade=CascadeType.PERSIST)
 	public List<EnumeratedTermBase> getTerms() {
 		return terms;
 	}

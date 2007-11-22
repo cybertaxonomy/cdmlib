@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -17,12 +18,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * The list should be extensible at runtime through configuration. This needs to
- * be investigated.   Subgroups are: ================   Illegitimate: -------------
- * ----------- LaterHomonym, TreatedAsLaterHomonym, RejectedInFavour  Legitimate: -
- * ----------------------- ReplacedSynonym, AlternativeName, ConservedAgainst,
- * OrthographyConserved  Invalid: -----------------------------------
- * ValidatedByName, LaterValidatedByName
+ * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
@@ -30,7 +26,13 @@ import javax.persistence.*;
 @Entity
 public class NameRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
-	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm";
+
+	public NameRelationshipType(String term, String label,
+			Enumeration enumeration, boolean symmetric, boolean transitive) {
+		super(term, label, enumeration, symmetric, transitive);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	@Transient
 	public boolean isInvalidType(){

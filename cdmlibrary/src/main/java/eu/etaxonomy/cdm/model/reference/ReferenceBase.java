@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Taxon;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -26,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:47
  */
 @Entity
-public abstract class ReferenceBase extends IdentifiableEntity {
+public abstract class ReferenceBase extends Taxon {
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
 	//URIs like DOIs, LSIDs or Handles for this reference
 	private String uri;

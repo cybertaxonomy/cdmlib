@@ -25,6 +25,11 @@ import javax.persistence.*;
 public class StatisticalMeasure extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
+	public StatisticalMeasure(String term, String label) {
+		super(term, label);
+	}
+
+
 	public static final StatisticalMeasure MIN(){
 		return null;
 	}

@@ -26,15 +26,23 @@ import javax.persistence.*;
 @Entity
 public class Language extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Language.class);
-	static Language langEN = new Language();
-	static Language langCH = new Language();
-	static Language langGE = new Language();
+	static Language langEN = new Language("English","EN");
+	static Language langCH = new Language("Chinese","CH");
+	static Language langGE = new Language("German","DE");
 
 
-	public Language() {
-		super();
+	public Language(String text, String label, Language lang) {
+		super(text, label);
+		this.addRepresentation(new Representation(text,label,lang));
+	}
+	public Language(String label, String text) {
+		this(label,text, DEFAULT());
 	}
 
+	public static final Language DEFAULT(){
+		return langEN;
+	}
+	
 	public static final Language CHINESE(){
 		return langCH;
 	}

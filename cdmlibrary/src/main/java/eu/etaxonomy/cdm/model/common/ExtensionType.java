@@ -27,6 +27,12 @@ import javax.persistence.*;
 public class ExtensionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);
 
+	public ExtensionType(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public static final ExtensionType XML_FRAGMENT(){
 		return null;
 	}

@@ -28,19 +28,19 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	// generate enumeration for every test to play with
 	public void onSetUp() throws Exception {
 		logger.debug(EnumerationDaoHibernateImplTest.class.getSimpleName() + " setup()");
-		this.enumeration = new Enumeration();
+		this.enumeration = new Enumeration("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
-			Keyword term = new Keyword(r);
+			Keyword term = new Keyword(r,r,null);
 			enumeration.addTerm(term);			
 		}
 	}
 
 	@Test
 	public void testSave() {
-		dao.save(this.enumeration);
-		this.enumeration.addTerm(new Keyword("cladistics"));
-		dao.save(this.enumeration);		
+		dao.saveOrUpdate(this.enumeration);
+		this.enumeration.addTerm(new Keyword("cladistics","cladistics",null));
+		dao.saveOrUpdate(this.enumeration);		
 	}
 
 	@Test

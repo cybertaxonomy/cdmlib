@@ -17,6 +17,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:44
@@ -24,6 +25,9 @@ import javax.persistence.*;
 @Entity
 public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
-	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm";
 
+	public PreservationMethod(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
 }

@@ -14,14 +14,17 @@ import org.apache.log4j.Logger;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class RelationshipTermBase extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
-
-	public RelationshipTermBase() {
-		super();
-	}
-
+	
 	private boolean symmetric;
 	private boolean transitive;
 	private Set<Representation> inverseRepresentations;
+	
+	public RelationshipTermBase(String term, String label, Enumeration enumeration, boolean symmetric, boolean transitive) {
+		super(term, label, enumeration);
+		setSymmetric(symmetric);
+		setTransitive(transitive);		
+	}
+
 	
 	public boolean isSymmetric() {
 		return symmetric;

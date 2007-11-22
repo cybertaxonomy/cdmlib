@@ -23,13 +23,10 @@ import javax.persistence.*;
  */
 @Entity
 public class Keyword extends EnumeratedTermBase {
+	public Keyword(String term, String label, Enumeration enumeration) {
+		super(term, label, enumeration);
+	}
+
 	static Logger logger = Logger.getLogger(Keyword.class);
 
-	public Keyword() {
-		super();
-	}
-
-	public Keyword(String englishTerm) {
-		super(englishTerm);
-	}
 }

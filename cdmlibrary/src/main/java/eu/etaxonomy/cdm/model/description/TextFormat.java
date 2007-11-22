@@ -27,4 +27,8 @@ import javax.persistence.*;
 public class TextFormat extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(TextFormat.class);
 
+	public TextFormat(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
 }

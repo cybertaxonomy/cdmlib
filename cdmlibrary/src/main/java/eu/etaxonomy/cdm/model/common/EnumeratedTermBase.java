@@ -26,11 +26,10 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
 	private Enumeration enumeration;
 
-	public EnumeratedTermBase() {
-		super();
-	}
-	public EnumeratedTermBase(String englishTerm) {
-		super(englishTerm);
+
+	public EnumeratedTermBase(String term, String label, Enumeration enumeration) {
+		super(term, label);
+		setEnumeration(enumeration);
 	}
 
 	

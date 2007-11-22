@@ -91,7 +91,7 @@ public abstract class VersionableEntity extends CdmBase {
 	 * 
 	 * @param uuid    uuid
 	 */
-	public void setUuid(String uuid){
+	protected void setUuid(String uuid){
 		this.uuid = uuid;
 	}
 

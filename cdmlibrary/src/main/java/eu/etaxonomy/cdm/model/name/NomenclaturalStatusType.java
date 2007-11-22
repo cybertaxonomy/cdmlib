@@ -11,20 +11,15 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
 /**
- * The list should be extensible at runtime through configuration. This needs to
- * be investigated.  http://rs.tdwg.org/ontology/voc/TaxonName.
- * rdf#NomenclaturalNoteTypeTerm  Subgroups are: ================  Illegitimate: --
- * ---------------------- Illegitimate, Superfluous, Rejected, UtiqueRejected,
- * ConservedProp, OrthographyConservedProp  Legitimate: ------------------------
- * Legitimate, Novum, Alternativ, Conserved, OrthographyConserved, RejectedProp,
- * UtiqueRejectedProp  Invalid: ----------------------------------- Invalid, Nudum,
- * Provisional, CombinationInvalid
+ * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
@@ -32,7 +27,13 @@ import javax.persistence.*;
 @Entity
 public class NomenclaturalStatusType extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
-	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus";
+
+	public NomenclaturalStatusType(String term, String label,
+			Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
+
 
 	@Transient
 	public boolean isInvalidType(){

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Taxon;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:51
  */
 @Entity
-public class Sequence extends IdentifiableEntity implements IReferencedEntity {
+public class Sequence extends Taxon implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(Sequence.class);
 	//the sequence as a string of base pairs. 5'->3'
 	private String sequence;

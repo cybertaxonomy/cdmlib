@@ -66,7 +66,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 		//set Dialect
 		Properties props = sfb.getHibernateProperties();
 		props.setProperty("hibernate.dialect", databaseEnum.getHibernateDialect());
-		System.out.println(props.stringPropertyNames());
+		System.out.println(props.propertyNames());
 		System.out.println(props.getProperty("hibernate.dialect"));
 		
 		//change Datasource

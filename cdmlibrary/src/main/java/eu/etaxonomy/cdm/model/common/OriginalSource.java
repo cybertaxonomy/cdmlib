@@ -28,7 +28,7 @@ public class OriginalSource extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(OriginalSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
-	private IdentifiableEntity parent;
+	private Taxon parent;
 
 
 	public String getIdInSource(){
@@ -44,11 +44,11 @@ public class OriginalSource extends ReferencedEntityBase {
 	}
 
 	@ManyToOne		
-	public IdentifiableEntity getParent() {
+	public Taxon getParent() {
 		return parent;
 	}
 
-	protected void setParent(IdentifiableEntity parent) {
+	protected void setParent(Taxon parent) {
 		this.parent = parent;
 	}
 

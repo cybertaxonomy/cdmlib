@@ -11,14 +11,15 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
 /**
- * This list should be extensible at runtime through configuration. This needs to
- * be investigated. http://rs.tdwg.org/ontology/voc/TaxonRank
+ * http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:46
@@ -26,7 +27,11 @@ import javax.persistence.*;
 @Entity
 public class Rank extends EnumeratedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
-	private static String ontologyClassUri = "http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm";
+
+	public Rank(String term, String label, Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
 
 
 	public static final Rank EMPIRE(){

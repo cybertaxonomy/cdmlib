@@ -11,6 +11,12 @@ package eu.etaxonomy.cdm.model.common;
 
 
 
+import java.util.Calendar;
+
+import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 
@@ -19,5 +25,25 @@ import eu.etaxonomy.cdm.model.Description;
  * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
+@Embeddable
 public class TimePeriod extends VersionableEntity {
+	private Calendar start;
+	private Calendar end;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Calendar getStart() {
+		return start;
+	}
+	public void setStart(Calendar start) {
+		this.start = start;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	public Calendar getEnd() {
+		return end;
+	}
+	public void setEnd(Calendar end) {
+		this.end = end;
+	}
+	
 }

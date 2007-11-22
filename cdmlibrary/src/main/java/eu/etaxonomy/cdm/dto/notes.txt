@@ -1,0 +1,3 @@
+Data Transfer Object and Assembler Patterns:
+
+http://java.sun.com/blueprints/corej2eepatterns/Patterns/TransferObjectAssembler.html

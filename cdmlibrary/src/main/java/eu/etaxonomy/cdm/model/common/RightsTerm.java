@@ -24,6 +24,12 @@ import javax.persistence.*;
 public class RightsTerm extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(RightsTerm.class);
 
+	public RightsTerm(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/**
 	 * http://purl.org/dc/terms/accessRights
 	 */

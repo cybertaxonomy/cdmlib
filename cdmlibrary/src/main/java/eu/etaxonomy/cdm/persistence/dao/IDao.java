@@ -33,7 +33,7 @@ public interface IDao<T extends CdmBase, ID extends Serializable> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
 	 */
-	public Serializable save(T newInstance) throws DataAccessException;
+	public Serializable save(T newOrManagedObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#update(java.lang.Object)

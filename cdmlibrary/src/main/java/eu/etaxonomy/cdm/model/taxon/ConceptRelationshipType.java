@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
+import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -20,12 +23,17 @@ import javax.persistence.*;
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:17
+ * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @Entity
-public class ConceptRelationshipType extends EnumeratedTermBase {
+public class ConceptRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
-	private static String initializationClassUri = "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm";
 
+	public ConceptRelationshipType(String term, String label,
+			Enumeration enumeration) {
+		super(term, label, enumeration);
+		// TODO Auto-generated constructor stub
+	}
 
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
 		return null;

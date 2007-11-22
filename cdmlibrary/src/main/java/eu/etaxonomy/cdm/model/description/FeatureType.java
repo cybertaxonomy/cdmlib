@@ -27,6 +27,7 @@ import javax.persistence.*;
 @Entity
 public class FeatureType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(FeatureType.class);
+
 	private boolean supportsQuantitativeData;
 	private boolean supportsTextData;
 	private boolean supportsDistribution;
@@ -37,7 +38,10 @@ public class FeatureType extends DefinedTermBase {
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures;
 	private Set<Enumeration> supportedCategoricalEnumerations;
 
-
+	public FeatureType(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
 
 	
 	

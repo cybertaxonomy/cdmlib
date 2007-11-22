@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:44
  */
-@Entity
+@Embeddable
 public class Point extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Point.class);
 	private float longitude;
@@ -29,6 +29,8 @@ public class Point extends VersionableEntity {
 	//in Meters
 	private int errorRadius;
 	private ReferenceSystem referenceSystem;
+	
+	@ManyToOne
 	public ReferenceSystem getReferenceSystem(){
 		return this.referenceSystem;
 	}
