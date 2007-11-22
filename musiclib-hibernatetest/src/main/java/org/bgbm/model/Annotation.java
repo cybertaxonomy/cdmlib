@@ -19,12 +19,25 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
+@Entity
 public class Annotation extends MetaBase{
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;
 	private String note;
+	private MetaBase parent;
 
+	@ManyToOne
+	public MetaBase getParent() {
+		return parent;
+	}
+	public void setParent(MetaBase parent) {
+		this.parent = parent;
+	}
+	public Annotation(String text) {
+		super();
+		note=text;
+	}
 	public String getNote() {
 		return note;
 	}
@@ -32,11 +45,18 @@ public class Annotation extends MetaBase{
 		this.note = note;
 	}
 	
+	@ManyToOne
 	public Person getCommentator(){
 		return this.commentator;
 	}
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
 	}
-
+	public String toString(){
+		String n = "";
+		if (note!=null){
+			n = note; 
+		}
+		return "<"+n+">";
+	}
 }

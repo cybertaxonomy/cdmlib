@@ -37,13 +37,21 @@ public class Person extends MetaBase{
 		this.bands = bands;
 	}
 	public String getFirstname() {
-		return firstname;
+		if (firstname!=null){			
+			return firstname;
+		}else{
+			return "";
+		}
 	}
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 	public String getLastname() {
-		return lastname;
+		if (lastname!=null){			
+			return lastname;
+		}else{
+			return "";
+		}
 	}
 	public void setLastname(String lastname) {
 		this.lastname = lastname;

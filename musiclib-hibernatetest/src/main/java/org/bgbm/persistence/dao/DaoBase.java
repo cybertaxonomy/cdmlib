@@ -49,7 +49,9 @@ public abstract class DaoBase<T extends MetaBase, ID extends Serializable> imple
 	}
 
 	public T findById(Integer id) throws DataAccessException {
-		return (T) getSession().get(type, id);
+		T obj = (T) getSession().load(type, id);
+		//getSession().refresh(obj);
+		return obj;
 	}
 
 }

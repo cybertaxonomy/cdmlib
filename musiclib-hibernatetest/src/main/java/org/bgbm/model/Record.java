@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Record extends MetaBase {
@@ -26,7 +27,9 @@ public class Record extends MetaBase {
 	}
 
 	
-	@OneToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, mappedBy="record")
+	@OneToMany(mappedBy="record")
+	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<Track> getTracks() {
 		return tracks;
 	}
@@ -39,7 +42,11 @@ public class Record extends MetaBase {
 		this.tracks.add(track);
 	}
 	public String getTitle() {
-		return title;
+		if (title!=null){			
+			return title;
+		}else{
+			return "";
+		}
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -51,7 +58,9 @@ public class Record extends MetaBase {
 		this.publicationDate = publicationDate;
 	}
 	
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne() // cascade={CascadeType.PERSIST, CascadeType.MERGE}
+	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public Label getLabel() {
 		return label;
 	}
@@ -60,11 +69,12 @@ public class Record extends MetaBase {
 	}
 	
 	public String toString (){
-		String result = "RECORD:"+this.title+" [";
+		Integer annos = this.getAnnotations().size();
+		Integer songs = this.getTracks().size();
+		String result = "RECORD:"+this.getTitle()+" ("+label.getName()+") <#"+annos+"> Songs #"+songs+": ";
 		for (Track t : tracks){
-			result += t.getName()+"("+t.getArtist().getName()+") ";
+			result += t.toString()+" ";
 		}
-		result += "]";
 		return result;
 	}
 }

@@ -22,7 +22,11 @@ public class Label extends MetaBase {
 	}
 
 	public String getName() {
-		return name;
+		if (name!=null){			
+			return name;
+		}else{
+			return "";
+		}
 	}
 
 	public void setName(String name) {

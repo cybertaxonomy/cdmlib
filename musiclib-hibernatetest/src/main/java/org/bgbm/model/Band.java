@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Band extends MetaBase {
@@ -25,14 +26,20 @@ public class Band extends MetaBase {
 	}
 
 	public String getName() {
-		return name;
+		if (name!=null){			
+			return name;
+		}else{
+			return "";
+		}
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@ManyToMany(cascade={CascadeType.PERSIST, CascadeType.MERGE}, mappedBy="bands")
+	@ManyToMany(mappedBy="bands")
+	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public Set<Person> getMusicians() {
 		return musicians;
 	}
@@ -40,5 +47,7 @@ public class Band extends MetaBase {
 	public void setMusicians(Set<Person> musicians) {
 		this.musicians = musicians;
 	}
-
+	public String toString(){
+		return getName();
+	}
 }
