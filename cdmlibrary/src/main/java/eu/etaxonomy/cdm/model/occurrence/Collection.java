@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
-public class Collection extends Taxon {
+public class Collection extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Collection.class);
 	private String code;
 	private String codeStandard;

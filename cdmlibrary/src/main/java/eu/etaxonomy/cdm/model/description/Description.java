@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import java.util.*;
 import javax.persistence.*;
@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:20
  */
 @Entity
-public class Description extends Taxon {
+public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	private String label;
@@ -33,7 +33,7 @@ public class Description extends Taxon {
 	private Set<NamedArea> geoScopes;
 	private ReferenceBase source;
 	private Set<ObservationalUnit> observationalUnits;
-	private Taxon taxon;
+	private IdentifiableEntity taxon;
 
 	public ReferenceBase getSource(){
 		return this.source;
@@ -120,10 +120,10 @@ public class Description extends Taxon {
 	}
 	
 	
-	public Taxon getTaxon() {
+	public IdentifiableEntity getTaxon() {
 		return taxon;
 	}
-	public void setTaxon(Taxon taxon) {
+	public void setTaxon(IdentifiableEntity taxon) {
 		this.taxon = taxon;
 	}
 

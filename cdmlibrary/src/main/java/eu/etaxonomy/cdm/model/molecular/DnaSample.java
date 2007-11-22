@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:22
  */
 @Entity
-public class DnaSample extends Taxon {
+public class DnaSample extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DnaSample.class);
 	private String bankNumber;
 	//Notes on extraction, purification or amplification process

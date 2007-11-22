@@ -2,10 +2,10 @@ package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
 
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 @Entity
-public class Agent extends Taxon {
+public class Agent extends IdentifiableEntity {
 
 	public Agent() {
 		// TODO Auto-generated constructor stub

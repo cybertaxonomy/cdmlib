@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -26,8 +26,8 @@ import javax.persistence.*;
 public class TaxonRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(TaxonRelationship.class);
 	private ConceptRelationshipType type;
-	private Taxon fromTaxon;
-	private Taxon toTaxon;
+	private IdentifiableEntity fromTaxon;
+	private IdentifiableEntity toTaxon;
 
 	public ConceptRelationshipType getType(){
 		return this.type;
@@ -41,7 +41,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 		this.type = type;
 	}
 
-	public Taxon getFromTaxon(){
+	public IdentifiableEntity getFromTaxon(){
 		return this.fromTaxon;
 	}
 
@@ -49,11 +49,11 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	 * 
 	 * @param fromTaxon    fromTaxon
 	 */
-	public void setFromTaxon(Taxon fromTaxon){
+	public void setFromTaxon(IdentifiableEntity fromTaxon){
 		this.fromTaxon = fromTaxon;
 	}
 
-	public Taxon getToTaxon(){
+	public IdentifiableEntity getToTaxon(){
 		return this.toTaxon;
 	}
 
@@ -61,7 +61,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	 * 
 	 * @param toTaxon    toTaxon
 	 */
-	public void setToTaxon(Taxon toTaxon){
+	public void setToTaxon(IdentifiableEntity toTaxon){
 		this.toTaxon = toTaxon;
 	}
 

@@ -16,7 +16,7 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.description.Description;
  * @created 08-Nov-2007 13:06:41
  */
 @Entity
-public class ObservationalUnit extends Taxon {
+public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 	//Description defining the Observational unit in the context of the original Occurrence
 	private MultilanguageSet definition;

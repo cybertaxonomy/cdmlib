@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
@@ -32,7 +32,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase extends Taxon implements IReferencedEntity {
+public abstract class TaxonNameBase extends IdentifiableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
 	private String nameCache;

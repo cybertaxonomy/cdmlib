@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.Taxon;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
@@ -31,7 +31,7 @@ public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
 	private Calendar identificationDate;
 	private Agent determiner;
-	private Taxon taxon;
+	private IdentifiableEntity taxon;
 	private DeterminationModifier modifier;
 
 	public DeterminationModifier getModifier() {
@@ -42,7 +42,7 @@ public class Determination extends AnnotatableEntity {
 		this.modifier = modifier;
 	}
 
-	public Taxon getTaxon(){
+	public IdentifiableEntity getTaxon(){
 		return this.taxon;
 	}
 
@@ -50,7 +50,7 @@ public class Determination extends AnnotatableEntity {
 	 * 
 	 * @param taxon    taxon
 	 */
-	public void setTaxon(Taxon taxon){
+	public void setTaxon(IdentifiableEntity taxon){
 		this.taxon = taxon;
 	}
 
