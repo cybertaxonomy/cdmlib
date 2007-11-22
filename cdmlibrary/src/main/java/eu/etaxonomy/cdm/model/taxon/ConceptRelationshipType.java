@@ -30,10 +30,10 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 
 	public ConceptRelationshipType(String term, String label,
-			Enumeration enumeration) {
-		super(term, label, enumeration);
-		// TODO Auto-generated constructor stub
+			Enumeration enumeration, boolean symmetric, boolean transitive) {
+		super(term, label, enumeration, symmetric, transitive);
 	}
+
 
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
 		return null;
