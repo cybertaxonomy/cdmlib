@@ -45,6 +45,7 @@ public class QuantitativeData extends FeatureBase {
 	}
 
 	
+	@ManyToOne
 	public MeasurementUnit getUnit(){
 		return this.unit;
 	}

@@ -32,6 +32,7 @@ public abstract class RelationshipTermBase extends EnumeratedTermBase {
 	public void setSymmetric(boolean symmetric) {
 		this.symmetric = symmetric;
 	}
+	
 	public boolean isTransitive() {
 		return transitive;
 	}

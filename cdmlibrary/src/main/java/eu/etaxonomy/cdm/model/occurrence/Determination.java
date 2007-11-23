@@ -31,9 +31,10 @@ public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
 	private Calendar identificationDate;
 	private Agent determiner;
-	private IdentifiableEntity taxon;
+	private Taxon taxon;
 	private DeterminationModifier modifier;
 
+	@ManyToOne
 	public DeterminationModifier getModifier() {
 		return modifier;
 	}
@@ -42,7 +43,8 @@ public class Determination extends AnnotatableEntity {
 		this.modifier = modifier;
 	}
 
-	public IdentifiableEntity getTaxon(){
+	@ManyToOne
+	public Taxon getTaxon(){
 		return this.taxon;
 	}
 
@@ -50,7 +52,7 @@ public class Determination extends AnnotatableEntity {
 	 * 
 	 * @param taxon    taxon
 	 */
-	public void setTaxon(IdentifiableEntity taxon){
+	public void setTaxon(Taxon taxon){
 		this.taxon = taxon;
 	}
 
@@ -68,11 +70,12 @@ public class Determination extends AnnotatableEntity {
 		this.identificationDate = identificationDate;
 	}
 
-	protected Agent getDeterminer() {
+	@ManyToOne
+	public Agent getDeterminer() {
 		return determiner;
 	}
 
-	protected void setDeterminer(Agent determiner) {
+	public void setDeterminer(Agent determiner) {
 		this.determiner = determiner;
 	}
 

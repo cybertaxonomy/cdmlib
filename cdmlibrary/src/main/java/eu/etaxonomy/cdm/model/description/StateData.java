@@ -34,6 +34,8 @@ public class StateData extends VersionableEntity {
 	private State state;
 	private Set<Modifier> modifiers;
 	private MultilanguageSet modifyingText;
+
+	@ManyToOne
 	public State getState(){
 		return this.state;
 	}

@@ -27,6 +27,9 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	private float value;
 	private Set<Modifier> modifiers;
 	private StatisticalMeasure type;
+
+	
+	@ManyToOne
 	public StatisticalMeasure getType(){
 		return this.type;
 	}

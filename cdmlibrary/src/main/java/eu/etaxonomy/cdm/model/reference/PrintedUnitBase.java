@@ -28,6 +28,7 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	private String pages;
 	private PrintSeries inSeries;
 
+	@ManyToOne
 	public PrintSeries getInSeries(){
 		return this.inSeries;
 	}

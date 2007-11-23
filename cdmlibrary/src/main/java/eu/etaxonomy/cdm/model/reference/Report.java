@@ -27,6 +27,7 @@ public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);
 	private Institution institution;
 
+	@ManyToOne
 	public Institution getInstitution(){
 		return this.institution;
 	}

@@ -28,38 +28,30 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	private Taxon acceptedTaxon;
 	private SynonymRelationshipType type;
 
+	@ManyToOne
 	public Taxon getAcceptedTaxon(){
 		return this.acceptedTaxon;
 	}
 
-	/**
-	 * 
-	 * @param acceptedTaxon    acceptedTaxon
-	 */
 	public void setAcceptedTaxon(Taxon acceptedTaxon){
 		this.acceptedTaxon = acceptedTaxon;
 	}
 
+	
+	@ManyToOne
 	public SynonymRelationshipType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(SynonymRelationshipType type){
 		this.type = type;
 	}
 
+	
+	@ManyToOne
 	public Synonym getSynoynm(){
 		return this.synoynm;
 	}
 
-	/**
-	 * 
-	 * @param synoynm    synoynm
-	 */
 	public void setSynoynm(Synonym synoynm){
 		this.synoynm = synoynm;
 	}

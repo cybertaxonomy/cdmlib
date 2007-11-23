@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-@Table(name="EnumeratedTerm")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class EnumeratedTermBase extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
 	private Enumeration enumeration;
@@ -37,11 +37,6 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 	public Enumeration getEnumeration(){
 		return this.enumeration;
 	}
-
-	/**
-	 * Bidirectional relation with EnumeratedTermBase.
-	 * 
-	 */
 	public void setEnumeration(Enumeration newEnumeration){
 		if (this.enumeration != null) { 
 			this.enumeration.terms.remove(this);

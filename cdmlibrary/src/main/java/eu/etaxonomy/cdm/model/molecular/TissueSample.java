@@ -28,38 +28,28 @@ public class TissueSample extends VersionableEntity {
 	private String description;
 	private Calendar samplingDate;
 	private ObservationalUnit sampledFrom;
+
+	
+	@ManyToOne
 	public ObservationalUnit getSampledFrom(){
 		return this.sampledFrom;
 	}
-
-	/**
-	 * 
-	 * @param sampledFrom    sampledFrom
-	 */
 	public void setSampledFrom(ObservationalUnit sampledFrom){
 		this.sampledFrom = sampledFrom;
 	}
 
+	
 	public String getDescription(){
 		return this.description;
 	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
 	public void setDescription(String description){
 		this.description = description;
 	}
 
+	
 	public Calendar getSamplingDate(){
 		return this.samplingDate;
 	}
-
-	/**
-	 * 
-	 * @param samplingDate    samplingDate
-	 */
 	public void setSamplingDate(Calendar samplingDate){
 		this.samplingDate = samplingDate;
 	}

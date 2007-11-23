@@ -31,6 +31,7 @@ public class CategoricalData extends FeatureBase {
 	private boolean orderRelevant;
 	private ArrayList<State> states;
 
+	@ManyToMany
 	public ArrayList<State> getStates(){
 		return this.states;
 	}
@@ -47,11 +48,6 @@ public class CategoricalData extends FeatureBase {
 	public boolean getOrderRelevant(){
 		return this.orderRelevant;
 	}
-
-	/**
-	 * 
-	 * @param orderRelevant    orderRelevant
-	 */
 	public void setOrderRelevant(boolean orderRelevant){
 		this.orderRelevant = orderRelevant;
 	}

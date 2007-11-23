@@ -32,18 +32,14 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
 	private TaxonNameBase name;
-	/**
-	 * The concept reference
-	 */
+	// The concept reference
 	private ReferenceBase sec;
+
+
+	@ManyToOne
 	public TaxonNameBase getName(){
 		return this.name;
 	}
-
-	/**
-	 * 
-	 * @param name    name
-	 */
 	public void setName(TaxonNameBase name){
 		this.name = name;
 	}
@@ -51,15 +47,11 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	public boolean isDoubtful(){
 		return this.isDoubtful;
 	}
-
-	/**
-	 * 
-	 * @param isDoubtful    isDoubtful
-	 */
 	public void setDoubtful(boolean isDoubtful){
 		this.isDoubtful = isDoubtful;
 	}
 
+	@ManyToOne
 	public ReferenceBase getSec() {
 		return sec;
 	}

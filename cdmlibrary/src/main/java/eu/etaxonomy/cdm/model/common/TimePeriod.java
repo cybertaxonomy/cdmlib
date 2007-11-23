@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.Description;
  * @created 08-Nov-2007 13:07:00
  */
 @Embeddable
-public class TimePeriod extends VersionableEntity {
+public class TimePeriod {
 	private Calendar start;
 	private Calendar end;
 

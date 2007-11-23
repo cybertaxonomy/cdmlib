@@ -10,12 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 
 @Entity
-@Table(name="CDM_OBJECT")
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class CdmBase implements Serializable{
 	

@@ -40,7 +40,6 @@ public class DnaSample extends IdentifiableEntity {
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
-
 	protected void setSequences(Set<Sequence> sequences) {
 		this.sequences = sequences;
 	}
@@ -51,26 +50,19 @@ public class DnaSample extends IdentifiableEntity {
 		this.sequences.remove(sequence);
 	}
 
+
+	@ManyToOne
 	public Collection getStoredAt(){
 		return this.storedAt;
 	}
-
-	/**
-	 * 
-	 * @param storedAt    storedAt
-	 */
 	public void setStoredAt(Collection storedAt){
 		this.storedAt = storedAt;
 	}
 
+	@ManyToOne
 	public TissueSample getExtractedFrom(){
 		return this.extractedFrom;
 	}
-
-	/**
-	 * 
-	 * @param extractedFrom    extractedFrom
-	 */
 	public void setExtractedFrom(TissueSample extractedFrom){
 		this.extractedFrom = extractedFrom;
 	}
@@ -78,11 +70,6 @@ public class DnaSample extends IdentifiableEntity {
 	public String getBankNumber(){
 		return this.bankNumber;
 	}
-
-	/**
-	 * 
-	 * @param bankNumber    bankNumber
-	 */
 	public void setBankNumber(String bankNumber){
 		this.bankNumber = bankNumber;
 	}
@@ -90,11 +77,6 @@ public class DnaSample extends IdentifiableEntity {
 	public String getProductionNotes(){
 		return this.productionNotes;
 	}
-
-	/**
-	 * 
-	 * @param productionNotes    productionNotes
-	 */
 	public void setProductionNotes(String productionNotes){
 		this.productionNotes = productionNotes;
 	}
@@ -103,11 +85,6 @@ public class DnaSample extends IdentifiableEntity {
 	public Calendar getDateProduced(){
 		return this.dateProduced;
 	}
-
-	/**
-	 * 
-	 * @param dateProduced    dateProduced
-	 */
 	public void setDateProduced(Calendar dateProduced){
 		this.dateProduced = dateProduced;
 	}

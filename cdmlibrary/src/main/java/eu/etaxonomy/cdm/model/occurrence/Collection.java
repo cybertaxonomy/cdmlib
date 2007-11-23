@@ -31,6 +31,7 @@ public class Collection extends IdentifiableEntity {
 	private String townOrLocation;
 	private Institution institute;
 
+	@ManyToOne
 	public Institution getInstitute(){
 		return this.institute;
 	}

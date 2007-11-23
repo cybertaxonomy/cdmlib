@@ -21,7 +21,6 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-@Table(name="DATABASE_REFERENCE")
 public class Database extends PublicationBase {
 	static Logger logger = Logger.getLogger(Database.class);
 

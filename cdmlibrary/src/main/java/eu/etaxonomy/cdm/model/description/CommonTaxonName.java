@@ -28,14 +28,10 @@ public class CommonTaxonName extends FeatureBase {
 	private String name;
 	private Language language;
 
+	@ManyToOne
 	public Language getLanguage(){
 		return this.language;
 	}
-
-	/**
-	 * 
-	 * @param language    language
-	 */
 	public void setLanguage(Language language){
 		this.language = language;
 	}

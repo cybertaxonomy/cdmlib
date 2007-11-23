@@ -39,11 +39,6 @@ public class View extends CdmBase implements IReferencedEntity{
 	public String getName(){
 		return this.name;
 	}
-
-	/**
-	 * 
-	 * @param name    name
-	 */
 	public void setName(String name){
 		this.name = name;
 	}
@@ -51,11 +46,6 @@ public class View extends CdmBase implements IReferencedEntity{
 	public String getDescription(){
 		return this.description;
 	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
 	public void setDescription(String description){
 		this.description = description;
 	}

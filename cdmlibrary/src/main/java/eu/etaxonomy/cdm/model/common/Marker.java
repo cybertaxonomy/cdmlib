@@ -28,6 +28,17 @@ public class Marker extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Marker.class);
 	private boolean flag;
 	private MarkerType type;
+	private AnnotatableEntity markedObj;
+	
+	@ManyToOne
+	public AnnotatableEntity getMarkedObj() {
+		return markedObj;
+	}
+
+	protected void setMarkedObj(AnnotatableEntity markedObject) {
+		this.markedObj = markedObject;
+	}
+
 	public MarkerType getType(){
 		return this.type;
 	}

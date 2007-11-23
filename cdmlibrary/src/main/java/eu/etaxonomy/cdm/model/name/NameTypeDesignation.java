@@ -30,14 +30,10 @@ public class NameTypeDesignation extends TypeDesignationBase {
 	private boolean isConservedType;
 	private TaxonNameBase typeSpecies;
 
+	@ManyToOne
 	public TaxonNameBase getTypeSpecies(){
 		return this.typeSpecies;
 	}
-
-	/**
-	 * 
-	 * @param typeSpecies    typeSpecies
-	 */
 	public void setTypeSpecies(TaxonNameBase typeSpecies){
 		this.typeSpecies = typeSpecies;
 	}

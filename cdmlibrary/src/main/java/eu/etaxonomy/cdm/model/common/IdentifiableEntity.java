@@ -42,11 +42,6 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	public String getLsid(){
 		return this.lsid;
 	}
-
-	/**
-	 * 
-	 * @param lsid    lsid
-	 */
 	public void setLsid(String lsid){
 		this.lsid = lsid;
 	}
@@ -63,11 +58,6 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 		}
 		return titleCache;
 	}
-
-	/**
-	 * 
-	 * @param titleCache    titleCache
-	 */
 	public void setTitleCache(String titleCache){
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(true);
@@ -81,50 +71,28 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	protected void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
-
-	/**
-	 * @param rights
-	 * 
-	 * @param right
-	 */
 	public void addRights(Rights right){
 		this.rights.add(right);
 	}
-
-	/**
-	 * 
-	 * @param right
-	 */
 	public void removeRights(Rights right){
 		this.rights.remove(right);
 	}
 
-	// (mappedBy="identifiableEntity")
-	@OneToMany
+	@OneToMany(mappedBy="extendedObj")
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
-
 	protected void setExtensions(Set<Extension> extensions) {
 		this.extensions = extensions;
 	}
-
-	/**
-	 * 
-	 * @param extension    extension
-	 */
 	public void addExtension(Extension extension){
 		this.extensions.add(extension);
 	}
-
-	/**
-	 * 
-	 * @param extension    extension
-	 */
 	public void removeExtension(Extension extension){
 		this.extensions.remove(extension);
 	}
 
+	
 	public boolean isProtectedTitleCache() {
 		return protectedTitleCache;
 	}
@@ -134,7 +102,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	}
 
 
-	@OneToMany(mappedBy="parent")		
+	@OneToMany(mappedBy="sourcedObj")		
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
 	}

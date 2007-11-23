@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:01
  */
-@MappedSuperclass
+@Entity
 public abstract class VersionableEntity extends CdmBase {
 	public VersionableEntity() {
 		super();
@@ -41,6 +41,7 @@ public abstract class VersionableEntity extends CdmBase {
 	private VersionableEntity nextVersion;
 	private VersionableEntity previousVersion;
 
+	//@OneToOne(mappedBy="previousVersion")
 	@Transient
 	public VersionableEntity getNextVersion(){
 		return this.nextVersion;
@@ -49,6 +50,7 @@ public abstract class VersionableEntity extends CdmBase {
 		this.nextVersion = nextVersion;
 	}
 
+	//@OneToOne
 	@Transient
 	public VersionableEntity getPreviousVersion(){
 		return this.previousVersion;

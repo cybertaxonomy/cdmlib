@@ -26,42 +26,32 @@ import javax.persistence.*;
 public class TaxonRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(TaxonRelationship.class);
 	private ConceptRelationshipType type;
-	private IdentifiableEntity fromTaxon;
-	private IdentifiableEntity toTaxon;
+	private Taxon fromTaxon;
+	private Taxon toTaxon;
 
+	@ManyToOne
 	public ConceptRelationshipType getType(){
 		return this.type;
 	}
 
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(ConceptRelationshipType type){
 		this.type = type;
 	}
 
-	public IdentifiableEntity getFromTaxon(){
+	@ManyToOne
+	public Taxon getFromTaxon(){
 		return this.fromTaxon;
 	}
-
-	/**
-	 * 
-	 * @param fromTaxon    fromTaxon
-	 */
-	public void setFromTaxon(IdentifiableEntity fromTaxon){
+	public void setFromTaxon(Taxon fromTaxon){
 		this.fromTaxon = fromTaxon;
 	}
 
-	public IdentifiableEntity getToTaxon(){
+	@ManyToOne
+	public Taxon getToTaxon(){
 		return this.toTaxon;
 	}
 
-	/**
-	 * 
-	 * @param toTaxon    toTaxon
-	 */
-	public void setToTaxon(IdentifiableEntity toTaxon){
+	public void setToTaxon(Taxon toTaxon){
 		this.toTaxon = toTaxon;
 	}
 

@@ -43,26 +43,18 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	private Locus locus;
 	private Set<Media> chromatograms;
 
+	@ManyToOne
 	public Locus getLocus(){
 		return this.locus;
 	}
-
-	/**
-	 * 
-	 * @param locus    locus
-	 */
 	public void setLocus(Locus locus){
 		this.locus = locus;
 	}
 
+	@ManyToOne
 	public ReferenceBase getPublishedIn(){
 		return this.publishedIn;
 	}
-
-	/**
-	 * 
-	 * @param publishedIn    publishedIn
-	 */
 	public void setPublishedIn(ReferenceBase publishedIn){
 		this.publishedIn = publishedIn;
 	}
@@ -73,7 +65,6 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	public Set<ReferenceBase> getCitations() {
 		return citations;
 	}
-
 	protected void setCitations(Set<ReferenceBase> citations) {
 		this.citations = citations;
 	}

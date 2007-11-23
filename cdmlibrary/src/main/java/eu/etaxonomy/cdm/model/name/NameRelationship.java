@@ -36,23 +36,14 @@ public class NameRelationship extends ReferencedEntityBase {
 	public TaxonNameBase getFromName(){
 		return this.fromName;
 	}
-
-	/**
-	 * 
-	 * @param fromName    fromName
-	 */
 	public void setFromName(TaxonNameBase fromName){
 		this.fromName = fromName;
 	}
 
+	@ManyToOne
 	public NameRelationshipType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(NameRelationshipType type){
 		this.type = type;
 	}
@@ -61,11 +52,6 @@ public class NameRelationship extends ReferencedEntityBase {
 	public TaxonNameBase getToName(){
 		return this.toName;
 	}
-
-	/**
-	 * 
-	 * @param toName    toName
-	 */
 	public void setToName(TaxonNameBase toName){
 		this.toName = toName;
 	}
@@ -73,11 +59,6 @@ public class NameRelationship extends ReferencedEntityBase {
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
 	}
-
-	/**
-	 * 
-	 * @param ruleConsidered    ruleConsidered
-	 */
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
 	}

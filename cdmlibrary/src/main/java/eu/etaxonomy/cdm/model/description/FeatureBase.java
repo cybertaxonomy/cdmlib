@@ -29,6 +29,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:24
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class FeatureBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
 	//type, category of information. In structured descriptions characters
@@ -53,6 +54,7 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	}
 
 
+	@ManyToOne
 	public FeatureType getType(){
 		return this.type;
 	}

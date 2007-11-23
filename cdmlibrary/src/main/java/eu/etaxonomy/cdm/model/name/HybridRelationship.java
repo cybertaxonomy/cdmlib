@@ -32,38 +32,26 @@ public class HybridRelationship extends ReferencedEntityBase {
 	private HybridRelationshipType type;
 	private BotanicalName hybridName;
 
+	@ManyToOne
 	public HybridRelationshipType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(HybridRelationshipType type){
 		this.type = type;
 	}
 
+	@ManyToOne
 	public BotanicalName getParentName(){
 		return this.parentName;
 	}
-
-	/**
-	 * 
-	 * @param parentName    parentName
-	 */
 	public void setParentName(BotanicalName parentName){
 		this.parentName = parentName;
 	}
 
+	@ManyToOne
 	public BotanicalName getHybridName(){
 		return this.hybridName;
 	}
-
-	/**
-	 * 
-	 * @param hybridName    hybridName
-	 */
 	public void setHybridName(BotanicalName hybridName){
 		this.hybridName = hybridName;
 	}
@@ -71,11 +59,6 @@ public class HybridRelationship extends ReferencedEntityBase {
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
 	}
-
-	/**
-	 * 
-	 * @param ruleConsidered    ruleConsidered
-	 */
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
 	}

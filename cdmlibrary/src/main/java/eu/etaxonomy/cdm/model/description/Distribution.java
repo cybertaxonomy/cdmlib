@@ -30,26 +30,18 @@ public class Distribution extends FeatureBase {
 	private NamedArea area;
 	private PresenceAbsenceTermBase status;
 
+	@ManyToOne
 	public NamedArea getArea(){
 		return this.area;
 	}
-
-	/**
-	 * 
-	 * @param area    area
-	 */
 	public void setArea(NamedArea area){
 		this.area = area;
 	}
 
+	@ManyToOne
 	public PresenceAbsenceTermBase getStatus(){
 		return this.status;
 	}
-
-	/**
-	 * 
-	 * @param status    status
-	 */
 	public void setStatus(PresenceAbsenceTermBase status){
 		this.status = status;
 	}

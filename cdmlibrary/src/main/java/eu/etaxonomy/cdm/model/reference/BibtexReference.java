@@ -72,14 +72,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private String note;
 	private BibtexReference crossref;
 
+	@ManyToOne
 	public BibtexReference getCrossref(){
 		return this.crossref;
 	}
-
-	/**
-	 * 
-	 * @param crossref    crossref
-	 */
 	public void setCrossref(BibtexReference crossref){
 		this.crossref = crossref;
 	}
@@ -371,6 +367,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		return "";
 	}
 
+	@ManyToOne
 	public BibtexEntryType getType() {
 		return type;
 	}

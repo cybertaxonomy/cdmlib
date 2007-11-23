@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
-@MappedSuperclass
+@Entity
 public abstract class AnnotatableEntity extends VersionableEntity {
 	public AnnotatableEntity() {
 		super();
@@ -33,54 +33,32 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	private Set<Annotation> annotations = new HashSet();
 	
 	
-	@OneToMany
+	@OneToMany(mappedBy="markedObj")
 	public Set<Marker> getMarkers(){
 		return this.markers;
 	}
-
-	/**
-	 * 
-	 * @param marker    marker
-	 */
 	public void addMarker(Marker marker){
 
 	}
-
-	/**
-	 * 
-	 * @param marker    marker
-	 */
 	public void removeMarker(Marker marker){
 
 	}
-
-	@OneToMany
-	public Set<Annotation> getAnnotations(){
-		return this.annotations;
-	}
-
-	/**
-	 * @param annotations
-	 * 
-	 * @param annotation
-	 */
-	public void addAnnotations(Annotation annotation){
-
-	}
-
-	/**
-	 * 
-	 * @param annotation
-	 */
-	public void removeAnnotations(Annotation annotation){
-
-	}
-
-	public void setMarkers(Set<Marker> markers) {
+	protected void setMarkers(Set<Marker> markers) {
 		this.markers = markers;
 	}
 
-	public void setAnnotations(Set<Annotation> annotations) {
+	
+	@OneToMany(mappedBy="annotatedObj")
+	public Set<Annotation> getAnnotations(){
+		return this.annotations;
+	}
+	public void addAnnotations(Annotation annotation){
+
+	}
+	public void removeAnnotations(Annotation annotation){
+
+	}
+	protected void setAnnotations(Set<Annotation> annotations) {
 		this.annotations = annotations;
 	}
 

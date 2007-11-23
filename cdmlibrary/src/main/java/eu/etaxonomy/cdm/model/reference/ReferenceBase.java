@@ -36,14 +36,11 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 	private Agent authorTeam;
 
 	
+	@ManyToOne
 	public Agent getAuthorTeam(){
 		return this.authorTeam;
 	}
 
-	/**
-	 * 
-	 * @param authorTeam    authorTeam
-	 */
 	public void setAuthorTeam(Agent authorTeam){
 		this.authorTeam = authorTeam;
 	}

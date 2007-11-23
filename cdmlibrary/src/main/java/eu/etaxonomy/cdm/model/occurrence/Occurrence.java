@@ -58,14 +58,11 @@ public class Occurrence extends IdentifiableEntity {
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	private String description;
 
+
+	@ManyToOne
 	public Collection getCollection(){
 		return this.collection;
 	}
-
-	/**
-	 * 
-	 * @param collection    collection
-	 */
 	public void setCollection(Collection collection){
 		this.collection = collection;
 	}
@@ -73,16 +70,10 @@ public class Occurrence extends IdentifiableEntity {
 	public Point getExactLocation(){
 		return this.exactLocation;
 	}
-
-	/**
-	 * 
-	 * @param exactLocation    exactLocation
-	 */
 	public void setExactLocation(Point exactLocation){
 		this.exactLocation = exactLocation;
 	}
 
-	
 
 	@OneToMany
 	public Set<Media> getMedia() {
@@ -99,26 +90,18 @@ public class Occurrence extends IdentifiableEntity {
 	}
 
 	
+	@ManyToOne
 	public Agent getCollector(){
 		return this.collector;
 	}
-
-	/**
-	 * 
-	 * @param collector    collector
-	 */
 	public void setCollector(Agent collector){
 		this.collector = collector;
 	}
 
+	@ManyToOne
 	public NamedArea getNamedArea(){
 		return this.namedArea;
 	}
-
-	/**
-	 * 
-	 * @param namedArea    namedArea
-	 */
 	public void setNamedArea(NamedArea namedArea){
 		this.namedArea = namedArea;
 	}
@@ -126,11 +109,6 @@ public class Occurrence extends IdentifiableEntity {
 	public String getLocality(){
 		return this.locality;
 	}
-
-	/**
-	 * 
-	 * @param locality    locality
-	 */
 	public void setLocality(String locality){
 		this.locality = locality;
 	}
@@ -139,11 +117,6 @@ public class Occurrence extends IdentifiableEntity {
 	public Calendar getEventDate(){
 		return this.eventDate;
 	}
-
-	/**
-	 * 
-	 * @param eventDate    eventDate
-	 */
 	public void setEventDate(Calendar eventDate){
 		this.eventDate = eventDate;
 	}
@@ -184,6 +157,7 @@ public class Occurrence extends IdentifiableEntity {
 		this.collectingMethod = collectingMethod;
 	}
 
+	@ManyToOne
 	public Sex getSex() {
 		return sex;
 	}
@@ -192,6 +166,7 @@ public class Occurrence extends IdentifiableEntity {
 		this.sex = sex;
 	}
 
+	@ManyToOne
 	public Stage getLifeStage() {
 		return lifeStage;
 	}

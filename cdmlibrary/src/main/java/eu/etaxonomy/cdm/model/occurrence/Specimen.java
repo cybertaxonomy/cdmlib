@@ -26,26 +26,18 @@ public class Specimen extends Occurrence {
 	private PreservationMethod preservation;
 	private Specimen derivedFrom;
 
+	@ManyToOne
 	public PreservationMethod getPreservation(){
 		return this.preservation;
 	}
-
-	/**
-	 * 
-	 * @param preservation    preservation
-	 */
 	public void setPreservation(PreservationMethod preservation){
 		this.preservation = preservation;
 	}
 
+	@ManyToOne
 	public Specimen getDerivedFrom(){
 		return this.derivedFrom;
 	}
-
-	/**
-	 * 
-	 * @param derivedFrom    derivedFrom
-	 */
 	public void setDerivedFrom(Specimen derivedFrom){
 		this.derivedFrom = derivedFrom;
 	}

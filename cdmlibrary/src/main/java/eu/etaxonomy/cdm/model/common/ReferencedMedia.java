@@ -27,14 +27,10 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	private String citationMicroReference;
 	private ReferenceBase citation;
 
+	@ManyToOne
 	public ReferenceBase getCitation(){
 		return this.citation;
 	}
-
-	/**
-	 * 
-	 * @param citation    citation
-	 */
 	public void setCitation(ReferenceBase citation){
 		this.citation = citation;
 	}
@@ -42,11 +38,6 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
 	}
-
-	/**
-	 * 
-	 * @param citationMicroReference    citationMicroReference
-	 */
 	public void setCitationMicroReference(String citationMicroReference){
 		this.citationMicroReference = citationMicroReference;
 	}

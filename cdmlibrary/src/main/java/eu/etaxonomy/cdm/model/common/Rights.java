@@ -37,14 +37,10 @@ public class Rights extends LanguageString {
 	}
 
 	
+	@ManyToOne
 	public RightsTerm getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(RightsTerm type){
 		this.type = type;
 	}
@@ -53,11 +49,6 @@ public class Rights extends LanguageString {
 	public String getUri(){
 		return this.uri;
 	}
-
-	/**
-	 * 
-	 * @param uri    uri
-	 */
 	public void setUri(String uri){
 		this.uri = uri;
 	}
@@ -66,11 +57,6 @@ public class Rights extends LanguageString {
 	public String getAbbreviatedText(){
 		return this.abbreviatedText;
 	}
-
-	/**
-	 * 
-	 * @param abbreviatedStatement    abbreviatedStatement
-	 */
 	public void setAbbreviatedText(String abbreviatedStatement){
 		this.abbreviatedText = abbreviatedStatement;
 	}

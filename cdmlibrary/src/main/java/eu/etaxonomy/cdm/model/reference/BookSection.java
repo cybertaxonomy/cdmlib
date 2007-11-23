@@ -25,6 +25,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 	static Logger logger = Logger.getLogger(BookSection.class);
 	private Book inBook;
 
+	@ManyToOne
 	public Book getInBook(){
 		return this.inBook;
 	}

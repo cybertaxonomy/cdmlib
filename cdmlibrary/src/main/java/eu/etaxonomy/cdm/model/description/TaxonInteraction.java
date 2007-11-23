@@ -14,6 +14,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
@@ -29,17 +31,13 @@ import javax.persistence.*;
 public class TaxonInteraction extends FeatureBase {
 	static Logger logger = Logger.getLogger(TaxonInteraction.class);
 	private MultilanguageSet description;
-	private IdentifiableEntity taxon2;
+	private Taxon taxon2;
 
-	public IdentifiableEntity getTaxon2(){
+	@ManyToOne
+	public Taxon getTaxon2(){
 		return this.taxon2;
 	}
-
-	/**
-	 * 
-	 * @param taxon2    taxon2
-	 */
-	public void setTaxon2(IdentifiableEntity taxon2){
+	public void setTaxon2(Taxon taxon2){
 		this.taxon2 = taxon2;
 	}
 

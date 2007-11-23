@@ -51,10 +51,10 @@ public class TextData extends FeatureBase {
 	
 	
 
+	@ManyToOne
 	public TextFormat getFormat() {
 		return format;
 	}
-
 	public void setFormat(TextFormat format) {
 		this.format = format;
 	}

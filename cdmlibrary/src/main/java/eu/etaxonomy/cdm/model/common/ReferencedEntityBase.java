@@ -41,31 +41,22 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
 	}
-
-	/**
-	 * 
-	 * @param citationMicroReference    citationMicroReference
-	 */
 	public void setCitationMicroReference(String citationMicroReference){
 		this.citationMicroReference = citationMicroReference;
 	}
-
+	
+	
 	public String getOriginalNameString(){
 		return this.originalNameString;
 	}
-
-	/**
-	 * 
-	 * @param originalNameString    originalNameString
-	 */
 	public void setOriginalNameString(String originalNameString){
 		this.originalNameString = originalNameString;
 	}
 
+	@ManyToOne
 	public ReferenceBase getCitation(){
 		return this.citation;
 	}
-
 	public void setCitation(ReferenceBase citation) {
 		this.citation = citation;
 	}

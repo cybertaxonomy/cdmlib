@@ -31,18 +31,15 @@ public class IndividualsAssociation extends FeatureBase {
 	private MultilanguageSet description;
 	private ObservationalUnit observationalUnit2;
 
+	@ManyToOne
 	public ObservationalUnit getObservationalUnit2(){
 		return this.observationalUnit2;
 	}
-
-	/**
-	 * 
-	 * @param observationalUnit2    observationalUnit2
-	 */
 	public void setObservationalUnit2(ObservationalUnit observationalUnit2){
 		this.observationalUnit2 = observationalUnit2;
 	}
 
+	
 	public MultilanguageSet getDescription(){
 		return this.description;
 	}

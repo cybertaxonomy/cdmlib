@@ -63,7 +63,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	}
 
 	
-	// properties
 	public String getNameCache() {
 		return nameCache;
 	}
@@ -152,6 +151,8 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 		this.newCombinations.remove(newCombination);
 	}
 
+
+	@ManyToOne
 	public TaxonNameBase getBasionym(){
 		return this.basionym;
 	}
@@ -171,55 +172,26 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 		this.cacheStrategy = cacheStrategy;
 	}
 	
+	@ManyToOne
 	public Rank getRank(){
 		return this.rank;
 	}
-
-	/**
-	 * 
-	 * @param rank    rank
-	 */
 	public void setRank(Rank rank){
 		this.rank = rank;
 	}
 
+	@ManyToOne
 	public ReferenceBase getNomenclaturalReference(){
 		return (ReferenceBase) this.nomenclaturalReference;
 	}
-
-	/**
-	 * 
-	 * @param nomenclaturalReference    nomenclaturalReference
-	 */
 	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
 		this.nomenclaturalReference = nomenclaturalReference;
 	}
 
 
-	public String getName(){
-		if (nameCache == null){ 
-			return cacheStrategy.getNameCache(this);
-		}else{
-			return nameCache;
-		}
-	}
-
-	/**
-	 * 
-	 * @param name    name
-	 */
-	public void setName(String name){
-		this.nameCache = name;
-	}
-
 	public String getAppendedPhrase(){
 		return this.appendedPhrase;
 	}
-
-	/**
-	 * 
-	 * @param appendedPhrase    appendedPhrase
-	 */
 	public void setAppendedPhrase(String appendedPhrase){
 		this.appendedPhrase = appendedPhrase;
 	}
@@ -227,11 +199,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	public String getNomenclaturalMicroReference(){
 		return this.nomenclaturalMicroReference;
 	}
-
-	/**
-	 * 
-	 * @param nomenclaturalMicroReference    nomenclaturalMicroReference
-	 */
 	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
 		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 	}
@@ -239,11 +206,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity implements IRefer
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
-
-	/**
-	 * 
-	 * @param hasProblem    hasProblem
-	 */
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
 	}

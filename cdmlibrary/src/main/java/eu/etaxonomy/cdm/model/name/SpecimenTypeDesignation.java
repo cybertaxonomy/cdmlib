@@ -29,26 +29,18 @@ public class SpecimenTypeDesignation extends TypeDesignationBase {
 	private ObservationalUnit typeSpecimen;
 	private TypeDesignationStatus typeStatus;
 
+	@ManyToOne
 	public ObservationalUnit getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
-
-	/**
-	 * 
-	 * @param typeSpecimen    typeSpecimen
-	 */
 	public void setTypeSpecimen(ObservationalUnit typeSpecimen){
 		this.typeSpecimen = typeSpecimen;
 	}
 
+	@ManyToOne
 	public TypeDesignationStatus getTypeStatus(){
 		return this.typeStatus;
 	}
-
-	/**
-	 * 
-	 * @param typeStatus    typeStatus
-	 */
 	public void setTypeStatus(TypeDesignationStatus typeStatus){
 		this.typeStatus = typeStatus;
 	}

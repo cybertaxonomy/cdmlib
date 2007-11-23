@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import java.util.*;
@@ -33,16 +34,12 @@ public class Description extends IdentifiableEntity {
 	private Set<NamedArea> geoScopes;
 	private ReferenceBase source;
 	private Set<ObservationalUnit> observationalUnits;
-	private IdentifiableEntity taxon;
+	private Taxon taxon;
 
+	@ManyToOne
 	public ReferenceBase getSource(){
 		return this.source;
 	}
-
-	/**
-	 * 
-	 * @param source    sources
-	 */
 	public void setSource(ReferenceBase source){
 		this.source= source;
 	}
@@ -120,10 +117,11 @@ public class Description extends IdentifiableEntity {
 	}
 	
 	
-	public IdentifiableEntity getTaxon() {
+	@ManyToOne
+	public Taxon getTaxon() {
 		return taxon;
 	}
-	public void setTaxon(IdentifiableEntity taxon) {
+	public void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 	}
 

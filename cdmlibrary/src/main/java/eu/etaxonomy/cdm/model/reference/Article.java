@@ -28,14 +28,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	private String pages;
 	private Journal inJournal;
 
+	@ManyToOne
 	public Journal getInJournal(){
 		return this.inJournal;
 	}
-
-	/**
-	 * 
-	 * @param inJournal    inJournal
-	 */
 	public void setInJournal(Journal inJournal){
 		this.inJournal = inJournal;
 	}

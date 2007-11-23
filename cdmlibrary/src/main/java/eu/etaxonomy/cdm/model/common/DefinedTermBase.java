@@ -73,11 +73,6 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
-
-	/**
-	 * 
-	 * @param kindOf    kindOf
-	 */
 	public void setKindOf(DefinedTermBase kindOf){
 		this.kindOf = kindOf;
 	}
@@ -86,11 +81,6 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public Set<DefinedTermBase> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
-
-	/**
-	 * 
-	 * @param generalizationOf    generalizationOf
-	 */
 	public void setGeneralizationOf(Set<DefinedTermBase> generalizationOf) {
 		this.generalizationOf = generalizationOf;
 	}
@@ -100,11 +90,6 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public DefinedTermBase getPartOf(){
 		return this.partOf;
 	}
-
-	/**
-	 * 
-	 * @param partOf    partOf
-	 */
 	public void setPartOf(DefinedTermBase partOf){
 		this.partOf = partOf;
 	}
@@ -142,11 +127,6 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public String getUri(){
 		return this.uri;
 	}
-
-	/**
-	 * 
-	 * @param uri    uri
-	 */
 	public void setUri(String uri){
 		this.uri = uri;
 	}

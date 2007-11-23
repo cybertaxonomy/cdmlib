@@ -56,6 +56,7 @@ public class Media extends AnnotatableEntity {
 	}
 
 	
+	@ManyToOne
 	public Agent getArtist(){
 		return this.artist;
 	}
@@ -82,11 +83,6 @@ public class Media extends AnnotatableEntity {
 	public MultilanguageSet getTitle(){
 		return this.title;
 	}
-
-	/**
-	 * 
-	 * @param title    title
-	 */
 	public void setTitle(MultilanguageSet title){
 		this.title = title;
 	}
@@ -95,15 +91,11 @@ public class Media extends AnnotatableEntity {
 	public Calendar getMediaCreated(){
 		return this.mediaCreated;
 	}
-
-	/**
-	 * 
-	 * @param mediaCreated    mediaCreated
-	 */
 	public void setMediaCreated(Calendar mediaCreated){
 		this.mediaCreated = mediaCreated;
 	}
 
+	
 	public MultilanguageSet getDescription(){
 		return this.description;
 	}

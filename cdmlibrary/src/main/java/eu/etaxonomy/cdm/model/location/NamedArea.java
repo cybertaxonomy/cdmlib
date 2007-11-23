@@ -43,26 +43,18 @@ public class NamedArea extends EnumeratedTermBase {
 	}
 	
 	
+	@ManyToOne
 	public NamedAreaType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(NamedAreaType type){
 		this.type = type;
 	}
 
+	@ManyToOne
 	public NamedAreaLevel getLevel(){
 		return this.level;
 	}
-
-	/**
-	 * 
-	 * @param level    level
-	 */
 	public void setLevel(NamedAreaLevel level){
 		this.level = level;
 	}
@@ -70,11 +62,6 @@ public class NamedArea extends EnumeratedTermBase {
 	public String getDescription(){
 		return this.description;
 	}
-
-	/**
-	 * 
-	 * @param description    description
-	 */
 	public void setDescription(String description){
 		this.description = description;
 	}
@@ -82,11 +69,6 @@ public class NamedArea extends EnumeratedTermBase {
 	public TimePeriod getValidPeriod(){
 		return this.validPeriod;
 	}
-
-	/**
-	 * 
-	 * @param validPeriod    validPeriod
-	 */
 	public void setValidPeriod(TimePeriod validPeriod){
 		this.validPeriod = validPeriod;
 	}
@@ -95,15 +77,15 @@ public class NamedArea extends EnumeratedTermBase {
 	public MediaInstance getShapeFile(){
 		return this.shapeFile;
 	}
-
-	/**
-	 * 
-	 * @param shapeFile    shapeFile
-	 */
 	public void setShapeFile(MediaInstance shapeFile){
 		this.shapeFile = shapeFile;
 	}
 
+
+	@ManyToMany
+	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
+		return waterbodiesOrCountries;
+	}
 	protected void setWaterbodiesOrCountries(
 			Set<WaterbodyOrCountry> waterbodiesOrCountries) {
 		this.waterbodiesOrCountries = waterbodiesOrCountries;

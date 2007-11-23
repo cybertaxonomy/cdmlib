@@ -22,12 +22,12 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Embeddable
-public class Point extends VersionableEntity {
+public class Point {
 	static Logger logger = Logger.getLogger(Point.class);
 	private float longitude;
 	private float latitude;
 	//in Meters
-	private int errorRadius;
+	private int errorRadius = 0;
 	private ReferenceSystem referenceSystem;
 	
 	@ManyToOne

@@ -34,11 +34,6 @@ public class LanguageString  extends VersionableEntity{
 	public Language getLanguage(){
 		return this.language;
 	}
-
-	/**
-	 * 
-	 * @param language    language
-	 */
 	public void setLanguage(Language language){
 		this.language = language;
 	}

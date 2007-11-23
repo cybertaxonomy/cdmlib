@@ -34,6 +34,8 @@ public class MediaInstance extends VersionableEntity {
 	private String uri;
 	//in bytes
 	private int size;
+	
+	
 	public String getMimeType(){
 		return this.mimeType;
 	}

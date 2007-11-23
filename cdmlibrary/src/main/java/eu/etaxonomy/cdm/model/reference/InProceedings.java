@@ -25,6 +25,7 @@ public class InProceedings extends SectionBase {
 	static Logger logger = Logger.getLogger(InProceedings.class);
 	private Proceedings inProceedings;
 
+	@ManyToOne
 	public Proceedings getInProceedings(){
 		return this.inProceedings;
 	}

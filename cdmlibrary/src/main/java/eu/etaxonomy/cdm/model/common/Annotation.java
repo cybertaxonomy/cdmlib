@@ -30,6 +30,16 @@ public class Annotation extends LanguageString {
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;
+	private AnnotatableEntity annotatedObj;
+
+	@ManyToOne
+	public AnnotatableEntity getAnnotatedObj() {
+		return annotatedObj;
+	}
+
+	protected void setAnnotatedObj(AnnotatableEntity annotatedObject) {
+		this.annotatedObj = annotatedObject;
+	}
 
 	public Person getCommentator(){
 		return this.commentator;

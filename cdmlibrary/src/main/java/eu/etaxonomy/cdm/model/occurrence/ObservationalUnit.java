@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.apache.log4j.Logger;
 
@@ -38,6 +39,7 @@ public class ObservationalUnit extends IdentifiableEntity {
 	private Occurrence occurence;
 
 
+	@ManyToOne
 	public Occurrence getOccurence(){
 		return this.occurence;
 	}
