@@ -31,7 +31,7 @@ public abstract class MetaBase extends MetaUltra{
 
 	private Integer id2;
 	
-	@OneToMany()
+	@OneToMany(mappedBy="object")
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     public Set<Annotation> getAnnotations() {

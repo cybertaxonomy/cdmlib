@@ -28,7 +28,15 @@ public class Annotation extends MetaBase{
 	//Human annotation
 	private Person commentator;
 	private String note;
+	private MetaBase object;
 
+	@ManyToOne
+	public MetaBase getObject() {
+		return object;
+	}
+	public void setObject(MetaBase object) {
+		this.object = object;
+	}
 	public Annotation(String text) {
 		super();
 		note=text;
