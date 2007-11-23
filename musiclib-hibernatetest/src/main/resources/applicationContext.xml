@@ -42,6 +42,7 @@
                 <value>org.bgbm.model.Band</value>
                 <value>org.bgbm.model.Label</value>
                 <value>org.bgbm.model.MetaBase</value>
+                <value>org.bgbm.model.MetaUltra</value>
                 <value>org.bgbm.model.Person</value>
                 <value>org.bgbm.model.Record</value>
                 <value>org.bgbm.model.Track</value>            
@@ -49,7 +50,7 @@
         </property>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
 <!--                <prop key="hibernate.show_sql">true</prop>

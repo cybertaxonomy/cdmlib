@@ -21,19 +21,14 @@ import javax.persistence.*;
  */
 @Entity
 public class Annotation extends MetaBase{
+	public Annotation() {
+		super();
+	}
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;
 	private String note;
-	private MetaBase parent;
 
-	@ManyToOne
-	public MetaBase getParent() {
-		return parent;
-	}
-	public void setParent(MetaBase parent) {
-		this.parent = parent;
-	}
 	public Annotation(String text) {
 		super();
 		note=text;

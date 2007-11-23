@@ -12,6 +12,10 @@ import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Record extends MetaBase {
+	public Record() {
+		super();
+	}
+
 	static Logger logger = Logger.getLogger(Record.class);
 
 	private List<Track> tracks = new ArrayList();

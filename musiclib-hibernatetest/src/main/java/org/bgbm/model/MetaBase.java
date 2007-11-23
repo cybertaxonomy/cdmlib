@@ -21,16 +21,17 @@ import org.hibernate.annotations.Cascade;
 
 //@MappedSuperclass
 @Entity
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class MetaBase {
+//@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+public abstract class MetaBase extends MetaUltra{
 	static Logger logger = Logger.getLogger(MetaBase.class);
 
-	private int id;
 	private String uuid;
 	private Calendar created;
 	private Set<Annotation> annotations = new HashSet();
+
+	private Integer id2;
 	
-	@OneToMany(mappedBy="parent")
+	@OneToMany()
 	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
         org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     public Set<Annotation> getAnnotations() {
@@ -54,16 +55,6 @@ public abstract class MetaBase {
 		this.created = Calendar.getInstance();
 	}
 
-	@Id
-	@GeneratedValue(generator = "system-increment")
-	public int getId() {
-		return this.id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-
-
 	public String getUuid(){
 		return this.uuid;
 	}
@@ -78,6 +69,14 @@ public abstract class MetaBase {
 
 	public void setCreated(Calendar created) {
 		this.created = created;
+	}
+
+	@GeneratedValue(generator = "system-increment")
+	public Integer getId2() {
+		return id2;
+	}
+	public void setId2(Integer ultra_id) {
+		this.id2 = ultra_id;
 	}
 
 }

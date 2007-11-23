@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bgbm.model.MetaBase;
+import org.bgbm.model.MetaUltra;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.dao.DataAccessException;
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T extends MetaBase, ID extends Serializable> implements IDao<T, ID> {
+public abstract class DaoBase<T extends MetaUltra, ID extends Serializable> implements IDao<T, ID> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 

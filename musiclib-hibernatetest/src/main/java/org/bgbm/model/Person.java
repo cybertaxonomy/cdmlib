@@ -23,6 +23,10 @@ import javax.persistence.*;
  */
 @Entity
 public class Person extends MetaBase{
+	public Person() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	static Logger logger = Logger.getLogger(Person.class);
 
 	private String firstname;

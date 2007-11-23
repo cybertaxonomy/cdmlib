@@ -12,6 +12,11 @@ import org.apache.log4j.Logger;
 
 @Entity
 public class Label extends MetaBase {
+	public Label() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	static Logger logger = Logger.getLogger(Label.class);
 
 	private String name;

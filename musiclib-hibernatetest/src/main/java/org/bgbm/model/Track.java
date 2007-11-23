@@ -11,6 +11,10 @@ import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Track extends MetaBase {
+	public Track() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	static Logger logger = Logger.getLogger(Track.class);
 	private String name;
 	private double duration;

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bgbm.model.MetaBase;
+import org.bgbm.model.MetaUltra;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +24,15 @@ public class MetaDao {
 	}
 	
 	
-	public void save(MetaBase domainObj) throws DataAccessException  {
+	public void save(MetaUltra domainObj) throws DataAccessException  {
 		getSession().saveOrUpdate(domainObj);
 	}
 
-	public void update(MetaBase domainObj) throws DataAccessException {
+	public void update(MetaUltra domainObj) throws DataAccessException {
 		getSession().update(domainObj);
 	}
 	
-	public void delete(MetaBase domainObj) throws DataAccessException {
+	public void delete(MetaUltra domainObj) throws DataAccessException {
 		getSession().delete(domainObj);
 	}
 

@@ -14,6 +14,10 @@ import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Band extends MetaBase {
+	public Band() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	static Logger logger = Logger.getLogger(Band.class);
 
 	private String name;
