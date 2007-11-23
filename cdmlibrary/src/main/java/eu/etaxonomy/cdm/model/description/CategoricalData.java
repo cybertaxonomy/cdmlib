@@ -22,20 +22,20 @@ import javax.persistence.*;
  */
 @Entity
 public class CategoricalData extends FeatureBase {
-	public CategoricalData() {
-		super();
-	}
-
 	static Logger logger = Logger.getLogger(CategoricalData.class);
 	//whether the sequence of ordered states is important
 	private boolean orderRelevant;
-	private ArrayList<State> states;
+	private List<State> states = new ArrayList();
 
+	public CategoricalData() {
+		super();
+	}
+	
 	@ManyToMany
-	public ArrayList<State> getStates(){
+	public List<State> getStates(){
 		return this.states;
 	}
-	private void setStates(ArrayList<State> states){
+	private void setStates(List<State> states){
 		this.states = states;
 	}
 	public void addState(State state){

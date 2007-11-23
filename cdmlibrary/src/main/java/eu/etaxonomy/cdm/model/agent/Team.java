@@ -25,24 +25,22 @@ import javax.persistence.*;
  */
 @Entity
 public class Team extends Agent {
+	static Logger logger = Logger.getLogger(Team.class);
+
+	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
+	//in case of some bibliographical references)
+	private List<Person> teamMembers = new ArrayList();
+	
 	public Team() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	static Logger logger = Logger.getLogger(Team.class);
-	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
-	//in case of some bibliographical references)
-	private ArrayList<Person> teamMembers;
-	public ArrayList<Person> getTeamMembers(){
+	@ManyToMany
+	public List<Person> getTeamMembers(){
 		return this.teamMembers;
 	}
-
-	/**
-	 * 
-	 * @param teamMembers    teamMembers
-	 */
-	public void setTeamMembers(ArrayList<Person> teamMembers){
+	public void setTeamMembers(List<Person> teamMembers){
 		this.teamMembers = teamMembers;
 	}
 

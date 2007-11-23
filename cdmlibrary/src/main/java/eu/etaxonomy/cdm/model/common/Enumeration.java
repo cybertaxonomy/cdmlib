@@ -24,11 +24,6 @@ import javax.persistence.*;
  */
 @Entity
 public class Enumeration extends DefinedTermBase {
-	public Enumeration(String term, String label, String enumerationUri) {
-		super(term, label);
-		setEnumerationUri(enumerationUri);
-	}
-
 	static Logger logger = Logger.getLogger(Enumeration.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
@@ -38,6 +33,12 @@ public class Enumeration extends DefinedTermBase {
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Furhter vocs can be setup through our own ontology.
 	private String enumerationUri;
+
+	
+	public Enumeration(String term, String label, String enumerationUri) {
+		super(term, label);
+		setEnumerationUri(enumerationUri);
+	}
 
 	
 	public boolean isOrdinal(){
