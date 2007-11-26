@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.agent;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -60,6 +62,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
 		return this.institute;
 	}

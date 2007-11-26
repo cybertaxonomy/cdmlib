@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -38,6 +40,7 @@ public class Contact extends VersionableEntity {
 	
 	
 	@OneToMany(mappedBy="contact")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Address> getAddresses(){
 		return this.addresses;
 	}

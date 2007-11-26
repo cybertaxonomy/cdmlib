@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -38,6 +40,7 @@ public class Institution extends Agent {
 	private Contact contact;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){
 		return this.contact;
 	}
@@ -61,6 +64,7 @@ public class Institution extends Agent {
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getIsPartOf(){
 		return this.isPartOf;
 	}

@@ -14,6 +14,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -50,6 +52,7 @@ public class Person extends Agent {
 	private Set<Keyword> keywords;
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
@@ -66,6 +69,7 @@ public class Person extends Agent {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Keyword> getKeywords(){
 		return this.keywords;
 	}
@@ -82,6 +86,7 @@ public class Person extends Agent {
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){
 		return this.contact;
 	}
