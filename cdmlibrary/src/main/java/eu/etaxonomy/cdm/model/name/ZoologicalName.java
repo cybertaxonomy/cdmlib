@@ -23,23 +23,20 @@ import javax.persistence.*;
  */
 @Entity
 public class ZoologicalName extends NonViralName {
+	static Logger logger = Logger.getLogger(ZoologicalName.class);
+
+	//Name of the breed of an animal
+	private String breed;
+
 	public ZoologicalName(Rank rank) {
 		super(rank);
 		// TODO Auto-generated constructor stub
 	}
 
-	static Logger logger = Logger.getLogger(ZoologicalName.class);
-	//Name of the breed of an animal
-	private String breed;
-
+	
 	public String getBreed(){
 		return this.breed;
 	}
-
-	/**
-	 * 
-	 * @param breed    breed
-	 */
 	public void setBreed(String breed){
 		this.breed = breed;
 	}

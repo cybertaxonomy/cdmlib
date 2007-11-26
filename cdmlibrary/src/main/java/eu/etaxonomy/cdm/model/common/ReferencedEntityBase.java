@@ -38,8 +38,17 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	
+
+	public ReferencedEntityBase(ReferenceBase citation, String citationMicroReference,
+			String originalNameString) {
+		super();
+		this.citationMicroReference = citationMicroReference;
+		this.originalNameString = originalNameString;
+		this.citation = citation;
+	}
+
+
+
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
 	}

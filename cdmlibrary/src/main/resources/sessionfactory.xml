@@ -29,7 +29,6 @@
     
     <property name="annotatedClasses">
         <list>
-            <value>eu.etaxonomy.cdm.model.Description</value>
             <value>eu.etaxonomy.cdm.model.agent.Address</value>
             <value>eu.etaxonomy.cdm.model.agent.Agent</value>
             <value>eu.etaxonomy.cdm.model.agent.Contact</value>

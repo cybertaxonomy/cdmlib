@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -23,16 +25,18 @@ import javax.persistence.*;
  */
 @Entity
 public class BacterialName extends NonViralName {
-	public BacterialName(Rank rank) {
-		super(rank);
-	}
-
 	static Logger logger = Logger.getLogger(BacterialName.class);
+
 	//Author team and year of the subgenus name
 	private String subGenusAuthorship;
 	//Approbation of name according to approved list, validation list,or validly published, paper in IJSB after 1980
 	private String nameApprobation;
 
+	public BacterialName(Rank rank) {
+		super(rank);
+	}
+
+	
 	public String getSubGenusAuthorship(){
 		return this.subGenusAuthorship;
 	}

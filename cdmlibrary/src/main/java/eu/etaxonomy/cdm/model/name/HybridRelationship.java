@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -41,6 +43,7 @@ public class HybridRelationship extends ReferencedEntityBase {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public BotanicalName getParentName(){
 		return this.parentName;
 	}
@@ -49,6 +52,7 @@ public class HybridRelationship extends ReferencedEntityBase {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public BotanicalName getHybridName(){
 		return this.hybridName;
 	}

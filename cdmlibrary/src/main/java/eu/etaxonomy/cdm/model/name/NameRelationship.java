@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -32,7 +34,8 @@ public class NameRelationship extends ReferencedEntityBase {
 	private NameRelationshipType type;
 	private TaxonNameBase toName;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getFromName(){
 		return this.fromName;
 	}
@@ -48,7 +51,8 @@ public class NameRelationship extends ReferencedEntityBase {
 		this.type = type;
 	}
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getToName(){
 		return this.toName;
 	}

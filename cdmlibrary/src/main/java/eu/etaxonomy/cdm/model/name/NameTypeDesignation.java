@@ -11,7 +11,11 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -30,7 +34,20 @@ public class NameTypeDesignation extends TypeDesignationBase {
 	private boolean isConservedType;
 	private TaxonNameBase typeSpecies;
 
+	public NameTypeDesignation(TaxonNameBase typifiedName,
+			ReferenceBase citation, String citationMicroReference,
+			String originalNameString, boolean isRejectedType,
+			boolean isConservedType, TaxonNameBase typeSpecies) {
+		super(typifiedName, citation, citationMicroReference,
+				originalNameString);
+		this.isRejectedType = isRejectedType;
+		this.isConservedType = isConservedType;
+		this.typeSpecies = typeSpecies;
+	}
+
+
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getTypeSpecies(){
 		return this.typeSpecies;
 	}

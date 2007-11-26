@@ -24,23 +24,20 @@ import javax.persistence.*;
  */
 @Entity
 public class ViralName extends TaxonNameBase {
+	static Logger logger = Logger.getLogger(ViralName.class);
+
+	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
+	private String acronym;
+
 	public ViralName(Rank rank) {
 		super(rank);
 		// TODO Auto-generated constructor stub
 	}
 
-	static Logger logger = Logger.getLogger(ViralName.class);
-	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
-	private String acronym;
-
+	
 	public String getAcronym(){
 		return this.acronym;
 	}
-
-	/**
-	 * 
-	 * @param acronym    acronym
-	 */
 	public void setAcronym(String acronym){
 		this.acronym = acronym;
 	}
@@ -49,5 +46,4 @@ public class ViralName extends TaxonNameBase {
 	public String generateTitle(){
 		return "";
 	}
-
 }

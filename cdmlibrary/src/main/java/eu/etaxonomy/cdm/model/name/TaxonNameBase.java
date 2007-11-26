@@ -10,12 +10,15 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
 
@@ -43,7 +46,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	private Set<TypeDesignationBase> typeDesignations;
+	protected Set<TypeDesignationBase> typeDesignations;
 	private Set<NameRelationship> nameRelations;
 	private Set<NomenclaturalStatus> status;
 	private Rank rank;
@@ -73,22 +76,30 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TypeDesignationBase> getTypeDesignations() {
 		return typeDesignations;
 	}
 	protected void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}
-	public void addTypeDesignation(TypeDesignationBase typeDesignation) {
-		this.typeDesignations.add(typeDesignation);
+	public void addTypeDesignation(ObservationalUnit typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
+		SpecimenTypeDesignation td = new SpecimenTypeDesignation(this, typeSpecimen, status, citation, citationMicroReference, originalNameString);
+	}
+	public void addTypeDesignation(TaxonNameBase typeSpecies, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
+		NameTypeDesignation ntd = new NameTypeDesignation(this,
+				citation, citationMicroReference,
+				originalNameString, isRejectedType,
+				isConservedType, typeSpecies);
 	}
 	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
-		this.typeDesignations.remove(typeDesignation);
+		typeDesignation.setTypifiedName(null);
 	}
 
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getNameRelations() {
 		return nameRelations;
 	}
@@ -121,6 +132,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
 	}
@@ -137,6 +149,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameBase> getNewCombinations() {
 		return newCombinations;
 	}
@@ -153,6 +166,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getBasionym(){
 		return this.basionym;
 	}
@@ -181,6 +195,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getNomenclaturalReference(){
 		return (ReferenceBase) this.nomenclaturalReference;
 	}

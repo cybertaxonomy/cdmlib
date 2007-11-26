@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -46,28 +48,20 @@ public class NonViralName extends TaxonNameBase {
 		super(rank);
 	}
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
-
-	/**
-	 * 
-	 * @param combinationAuthorTeam    combinationAuthorTeam
-	 */
 	public void setCombinationAuthorTeam(Agent combinationAuthorTeam){
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}  )
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
-
-	/**
-	 * 
-	 * @param exCombinationAuthorTeam    exCombinationAuthorTeam
-	 */
 	public void setExCombinationAuthorTeam(Agent exCombinationAuthorTeam){
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
@@ -75,11 +69,6 @@ public class NonViralName extends TaxonNameBase {
 	public String getUninomial(){
 		return this.uninomial;
 	}
-
-	/**
-	 * 
-	 * @param uninomial    uninomial
-	 */
 	public void setUninomial(String uninomial){
 		this.uninomial = uninomial;
 	}

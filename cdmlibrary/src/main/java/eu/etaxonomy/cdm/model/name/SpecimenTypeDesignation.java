@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -29,7 +32,17 @@ public class SpecimenTypeDesignation extends TypeDesignationBase {
 	private ObservationalUnit typeSpecimen;
 	private TypeDesignationStatus typeStatus;
 
+	public SpecimenTypeDesignation(TaxonNameBase typifiedName,
+			ObservationalUnit specimen, TypeDesignationStatus status,
+			ReferenceBase citation, String citationMicroReference, String originalNameString) {
+		super(typifiedName, citation, citationMicroReference, originalNameString);
+		this.typeSpecimen = specimen;
+		this.typeStatus = status;
+	}
+	
+
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public ObservationalUnit getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
