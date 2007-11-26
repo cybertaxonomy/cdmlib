@@ -25,8 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Repository
-public class TaxonDaoHibernateImpl 
-			extends DaoBase<TaxonBase> implements ITaxonDao {
+public class TaxonDaoHibernateImpl extends DaoBase<TaxonBase> implements ITaxonDao {
 	static Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
@@ -45,8 +44,8 @@ public class TaxonDaoHibernateImpl
 	}
 
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO add reference filter
+		return this.find(name);
 	}
 	
 }

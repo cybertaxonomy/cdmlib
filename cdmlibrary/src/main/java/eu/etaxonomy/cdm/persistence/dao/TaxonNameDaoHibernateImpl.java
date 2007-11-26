@@ -22,31 +22,14 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 @Repository
 public class TaxonNameDaoHibernateImpl 
-			extends DaoBase<TaxonNameBase, Integer> implements ITaxonNameDao {
+			extends DaoBase<TaxonNameBase> implements ITaxonNameDao {
 	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
 
-	/**
-	 * 
-	 */
 	public TaxonNameDaoHibernateImpl() {
 		super(TaxonNameBase.class); 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.ITaxonNameDAO#getRelatedNames(java.lang.Integer)
-	 */
-	public List<TaxonNameBase> getRelatedNames(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
-	
-	public List<TaxonNameBase> getNamesByName(String name) {
-		List<TaxonNameBase> list = this.find(name);
-		return list;
-	}
-	
-
 	@Override
 	public List<TaxonNameBase> find(String queryString) {
 		// TODO Auto-generated method stub

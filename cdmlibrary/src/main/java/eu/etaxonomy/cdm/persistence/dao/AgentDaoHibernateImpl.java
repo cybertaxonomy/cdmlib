@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 
 
 @Repository
-public class AgentDaoHibernateImpl extends DaoBase<Agent, Integer> implements IAgentDao{
+public class AgentDaoHibernateImpl extends DaoBase<Agent> implements IAgentDao{
 	private static final Logger logger = Logger.getLogger(AgentDaoHibernateImpl.class);
 
 	public AgentDaoHibernateImpl() {

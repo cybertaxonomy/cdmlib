@@ -12,10 +12,4 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 public interface ITaxonNameDao extends IDao<TaxonNameBase> {
 	
-	/* any nice thing to find*/
-	public List<TaxonNameBase> getRelatedNames(Integer id);
-	
-	/* some names*/
-	public List<TaxonNameBase> getNamesByName(String name);
-	
 }
