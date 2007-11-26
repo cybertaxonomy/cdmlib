@@ -1,5 +1,7 @@
 package extern;
 
+import java.util.List;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -21,15 +23,14 @@ public class TestJarMain {
 		//TODO
 		CdmApplicationController app = new CdmApplicationController();
 		INameService ns = app.getNameService();
-		TaxonNameBase tn = ns.getTaxonNameById(1);
+		List<TaxonNameBase> tnl = ns.getAllNames(1);
 		logger.setLevel(Level.INFO);
-		if (tn != null){
-			logger.info("Uuid for TaxonName(1): " + tn.getUuid());
+		if (tnl.isEmpty()){
+			logger.warn("No name exists");
 		}else{
-			logger.warn("No name with id = 1");
+			logger.info("Uuid for 1st TaxonName: " + tnl.get(0).getUuid());
 		}
 		System.out.println("End Success");
-		
 	}
 
 }

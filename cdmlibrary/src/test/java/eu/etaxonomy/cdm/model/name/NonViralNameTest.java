@@ -16,7 +16,7 @@ public class NonViralNameTest {
 	static Logger logger = Logger.getLogger(NonViralNameTest.class);
 
 	private static NonViralName tn;
-	private static int id;
+	private static String uuid;
 	private static ITaxonNameDao tnDao;
 	private static INameService nameServiceImpl;
 	private static String authorship = "authorship";
@@ -32,15 +32,15 @@ public class NonViralNameTest {
 		tn.setAuthorshipCache(authorship);
 		tn.setUninomial(genus);
 		nameServiceImpl = app.getNameService();
-		id = nameServiceImpl.saveTaxonName(tn);
-		logger.info("id is " + id);
+		uuid = nameServiceImpl.saveTaxonName(tn);
+		logger.info("id is " + uuid);
 	}
 
 	@Before
 	public void setUp()
 	  throws Exception{
 		//tn = tnDao.findById(id);
-		tn = (NonViralName) nameServiceImpl.getTaxonNameById(this.id);
+		tn = (NonViralName) nameServiceImpl.getTaxonNameByUuid(this.uuid);
 	}
 
 	//Used by Spring to setup test

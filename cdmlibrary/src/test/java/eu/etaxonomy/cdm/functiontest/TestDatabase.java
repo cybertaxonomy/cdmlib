@@ -34,7 +34,7 @@ public class TestDatabase {
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
 		
-		List list = appCtr.getNameService().getAllNames();
+		List list = appCtr.getNameService().getAllNames(100);
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn = new BotanicalName(null);
@@ -49,7 +49,7 @@ public class TestDatabase {
 		//dbService.connectToDatabase(DatabaseEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
-		list = nameService.getAllNames();
+		list = nameService.getAllNames(100);
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn2 = new BotanicalName(null);

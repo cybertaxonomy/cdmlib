@@ -34,8 +34,8 @@ public class NameServiceImpl extends ServiceBase<TaxonNameBase> implements IName
 		return super.saveCdmObject(taxonName);
 	}
 
-	public List getAllNames(){
-		return dao.list(1000);
+	public List getAllNames(int limit){
+		return dao.list(limit);
 	}
 
 }

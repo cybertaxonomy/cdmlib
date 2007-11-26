@@ -47,7 +47,7 @@ public class SpringControl {
 		
 		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.getNamesByName(tn.getNameCache());
+		List<TaxonNameBase> tnList = tnDao.find(tn.getNameCache());
 		for (TaxonNameBase tn2: tnList){
 			System.out.print(tn2.getUuid()+";");
 		}
@@ -83,7 +83,7 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames();
+		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(100);
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
