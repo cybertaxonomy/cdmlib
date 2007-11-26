@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -32,23 +32,24 @@ public class Annotation extends LanguageString {
 	private Person commentator;
 	private AnnotatableEntity annotatedObj;
 
-	@ManyToOne
+	@Transient
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-
-	protected void setAnnotatedObj(AnnotatableEntity annotatedObject) {
-		this.annotatedObj = annotatedObject;
+	protected void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
+		if (annotatedObj != null) { 
+			annotatedObj.annotations.remove(this);
+		}
+		if (newAnnotatedObj!= null) { 
+			newAnnotatedObj.annotations.add(this);
+		}
+		this.annotatedObj = newAnnotatedObj;		
 	}
 
+	@ManyToOne
 	public Person getCommentator(){
 		return this.commentator;
 	}
-
-	/**
-	 * 
-	 * @param commentator    commentator
-	 */
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
 	}

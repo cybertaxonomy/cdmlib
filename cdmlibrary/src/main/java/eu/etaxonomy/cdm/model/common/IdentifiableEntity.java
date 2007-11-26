@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,14 +23,11 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
-@Entity
+@MappedSuperclass
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class IdentifiableEntity extends AnnotatableEntity implements IOriginalSource {
-	public IdentifiableEntity() {
-		super();
-	}
-
+public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
+
 	private String lsid;
 	private String titleCache;
 	//if true titleCache will not be automatically generated/updated
@@ -39,6 +36,11 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	private Set<Extension> extensions = new HashSet();
 	private Set<OriginalSource> sources = new HashSet();
 
+	public IdentifiableEntity() {
+		super();
+	}
+	
+	
 	public String getLsid(){
 		return this.lsid;
 	}
@@ -78,7 +80,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 		this.rights.remove(right);
 	}
 
-	@OneToMany(mappedBy="extendedObj")
+	@OneToMany//(mappedBy="extendedObj")
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
@@ -102,7 +104,7 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IO
 	}
 
 
-	@OneToMany(mappedBy="sourcedObj")		
+	@OneToMany //(mappedBy="sourcedObj")		
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
 	}

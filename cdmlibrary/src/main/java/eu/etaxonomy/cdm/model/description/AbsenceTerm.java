@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import eu.etaxonomy.cdm.model.common.Enumeration;
 
 import java.util.*;

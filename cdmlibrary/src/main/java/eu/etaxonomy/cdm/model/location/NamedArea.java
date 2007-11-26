@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 

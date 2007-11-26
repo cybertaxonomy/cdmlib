@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 

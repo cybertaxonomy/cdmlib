@@ -15,8 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 
-@Entity
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class CdmBase implements Serializable{
 	
 	public CdmBase() {

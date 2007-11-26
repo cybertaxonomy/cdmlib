@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 
 /**
  * @author m.doering

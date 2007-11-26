@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 
 /**
  * @author m.doering

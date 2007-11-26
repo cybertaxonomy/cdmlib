@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.agent;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -33,16 +33,38 @@ public class InstitutionalMembership extends VersionableEntity {
 	private String role;
 	//current institute the person belongs to
 	private Institution institute;
+	private Person person;
+	
+	
+	public InstitutionalMembership(Institution institute, Person person, TimePeriod period, String department,
+			String role) {
+		super();
+		this.period = period;
+		this.department = department;
+		this.role = role;
+		this.institute = institute;
+		this.person = person;
+	}
+	
+	public Person getPerson() {
+		return person;
+	}
+	public void setPerson(Person newPerson) {
+		if (person != null) { 
+			person.institutionalMemberships.remove(this);
+		}
+		if (newPerson!= null) { 
+			newPerson.institutionalMemberships.add(this);
+		}
+		this.person = newPerson;
+	}
+
+	
 	public Institution getInstitute(){
 		return this.institute;
 	}
-
-	/**
-	 * 
-	 * @param institute    institute
-	 */
-	public void setInstitute(Institution institute){
-		this.institute = institute;
+	public void setInstitute(Institution newInstitute){
+		this.institute = newInstitute;
 	}
 
 	public TimePeriod getPeriod(){

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -34,28 +34,24 @@ public class Contact extends VersionableEntity {
 	private String url;
 	private String phone;
 	private String fax;
-	private Set<Address> addresses;
+	protected Set<Address> addresses;
 	
 	
-	@OneToMany
+	@OneToMany(mappedBy="contact")
 	public Set<Address> getAddresses(){
 		return this.addresses;
 	}
-
-	/**
-	 * 
-	 * @param addresses    addresses
-	 */
-	public void setAddresses(Set<Address> addresses){
+	protected void setAddresses(Set<Address> addresses){
 		this.addresses = addresses;
 	}
 	public void addAddress(Address address){
-		this.addresses.add(address);
+		address.setContact(this);
 	}
 	public void removeAddress(Address address){
-		this.addresses.remove(address);
+		address.setContact(null);
 	}
 
+	
 	public String getEmail(){
 		return this.email;
 	}

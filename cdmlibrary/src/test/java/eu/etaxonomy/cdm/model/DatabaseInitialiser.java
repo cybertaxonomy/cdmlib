@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -30,6 +31,7 @@ public class DatabaseInitialiser {
 		logger.info("Populate database with a taxon");
 		Taxon tax = new Taxon();
 		TaxonNameBase nm = new BotanicalName(Rank.SPECIES());
+		//BotanicalName ve = nm.getNextVersion();
 		nm.setNameCache(speciesname);
 		nm.setTitleCache(speciesname);
 		tax.setName(nm);

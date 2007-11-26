@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.view;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -79,7 +79,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 	
 
-	@OneToMany
+	@Transient
 	public Set<CdmBase> getMembers() {
 		return members;
 	}
@@ -94,7 +94,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	}
 
 	
-	@OneToMany
+	@Transient
 	public Set<CdmBase> getNonMembers() {
 		return nonMembers;
 	}

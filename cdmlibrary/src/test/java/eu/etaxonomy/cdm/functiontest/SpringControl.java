@@ -47,7 +47,7 @@ public class SpringControl {
 		
 		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.getNamesByName(tn.getName());
+		List<TaxonNameBase> tnList = tnDao.getNamesByName(tn.getNameCache());
 		for (TaxonNameBase tn2: tnList){
 			System.out.print(tn2.getUuid()+";");
 		}

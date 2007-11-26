@@ -31,6 +31,7 @@
         <list>
             <value>eu.etaxonomy.cdm.model.Description</value>
             <value>eu.etaxonomy.cdm.model.agent.Address</value>
+            <value>eu.etaxonomy.cdm.model.agent.Agent</value>
             <value>eu.etaxonomy.cdm.model.agent.Contact</value>
             <value>eu.etaxonomy.cdm.model.agent.Institution</value>
             <value>eu.etaxonomy.cdm.model.agent.InstitutionalMembership</value>
@@ -61,9 +62,9 @@
             <value>eu.etaxonomy.cdm.model.common.MovieFile</value>
             <value>eu.etaxonomy.cdm.model.common.MultilanguageSet</value>
             <value>eu.etaxonomy.cdm.model.common.OriginalSource</value>
-            <value>eu.etaxonomy.cdm.model.common.package-info</value>
             <value>eu.etaxonomy.cdm.model.common.ReferencedEntityBase</value>
             <value>eu.etaxonomy.cdm.model.common.ReferencedMedia</value>
+            <value>eu.etaxonomy.cdm.model.common.RelationshipTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.Representation</value>
             <value>eu.etaxonomy.cdm.model.common.Rights</value>
             <value>eu.etaxonomy.cdm.model.common.RightsTerm</value>
@@ -112,7 +113,6 @@
             <value>eu.etaxonomy.cdm.model.name.CultivarPlantName</value>
             <value>eu.etaxonomy.cdm.model.name.HybridRelationship</value>
             <value>eu.etaxonomy.cdm.model.name.HybridRelationshipType</value>
-            <value>eu.etaxonomy.cdm.model.name.TypeDesignationBase</value>
             <value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
             <value>eu.etaxonomy.cdm.model.name.NameRelationshipType</value>
             <value>eu.etaxonomy.cdm.model.name.NameTypeDesignation</value>
@@ -122,11 +122,13 @@
             <value>eu.etaxonomy.cdm.model.name.Rank</value>
             <value>eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation</value>
             <value>eu.etaxonomy.cdm.model.name.TaxonNameBase</value>
+            <value>eu.etaxonomy.cdm.model.name.TypeDesignationBase</value>
             <value>eu.etaxonomy.cdm.model.name.TypeDesignationStatus</value>
             <value>eu.etaxonomy.cdm.model.name.ViralName</value>
             <value>eu.etaxonomy.cdm.model.name.ZoologicalName</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Collection</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Determination</value>
+            <value>eu.etaxonomy.cdm.model.occurrence.DeterminationModifier</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Fossil</value>
             <value>eu.etaxonomy.cdm.model.occurrence.LivingIndividual</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Observation</value>
@@ -173,8 +175,8 @@
         <props>
             <prop key="hibernate.hbm2ddl.auto">create</prop>
             <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-            <!--                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-            -->                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+            <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+            <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultComponentSafeNamingStrategy</prop>
             <prop key="hibernate.show_sql">true</prop>
             <prop key="hibernate.format_sql">false</prop>
         </props>

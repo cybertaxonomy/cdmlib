@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -45,7 +45,7 @@ public class Person extends Agent {
 	//suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
 	//prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
 	private TimePeriod lifespan;
-	private Set<InstitutionalMembership> institutionalMemberships;
+	protected Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
 	private Set<Keyword> keywords;
 
@@ -53,13 +53,15 @@ public class Person extends Agent {
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
-
-	/**
-	 * 
-	 * @param institutionalMemberships    institutionalMemberships
-	 */
-	public void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
+	protected void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
 		this.institutionalMemberships = institutionalMemberships;
+	}
+	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
+		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role); 
+	}
+	public void removeInstitutionalMembership(InstitutionalMembership ims){
+		ims.setInstitute(null);
+		ims.setPerson(null);
 	}
 
 
@@ -79,14 +81,10 @@ public class Person extends Agent {
 
 
 
+	@ManyToOne
 	public Contact getContact(){
 		return this.contact;
 	}
-
-	/**
-	 * 
-	 * @param contact    contact
-	 */
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}

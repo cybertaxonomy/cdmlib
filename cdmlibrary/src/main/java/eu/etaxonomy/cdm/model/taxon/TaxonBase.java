@@ -15,7 +15,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -37,6 +40,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 
 	@ManyToOne
+	@Cascade(CascadeType.SAVE_UPDATE)
 	public TaxonNameBase getName(){
 		return this.name;
 	}
@@ -52,6 +56,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 
 	@ManyToOne
+	@Cascade(CascadeType.SAVE_UPDATE)
 	public ReferenceBase getSec() {
 		return sec;
 	}

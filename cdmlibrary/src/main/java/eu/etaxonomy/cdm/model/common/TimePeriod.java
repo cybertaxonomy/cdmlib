@@ -18,7 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 
 /**
  * @author m.doering

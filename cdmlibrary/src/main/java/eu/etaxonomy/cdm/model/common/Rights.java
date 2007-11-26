@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -37,7 +37,7 @@ public class Rights extends LanguageString {
 	}
 
 	
-	@ManyToOne
+	@Transient
 	public RightsTerm getType(){
 		return this.type;
 	}

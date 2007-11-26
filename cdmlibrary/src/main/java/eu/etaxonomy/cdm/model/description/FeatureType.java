@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 

@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.view.View;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -22,8 +22,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:01
  */
-@Entity
-public abstract class VersionableEntity extends CdmBase {
+@MappedSuperclass
+public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
 	public VersionableEntity() {
 		super();
 		this.uuid = UUID.randomUUID().toString();
@@ -38,24 +38,24 @@ public abstract class VersionableEntity extends CdmBase {
 	//time of last update for this object
 	private Calendar updated;
 	private Person updatedBy;
-	private VersionableEntity nextVersion;
-	private VersionableEntity previousVersion;
+	private T nextVersion;
+	private T previousVersion;
 
 	//@OneToOne(mappedBy="previousVersion")
 	@Transient
-	public VersionableEntity getNextVersion(){
+	public T getNextVersion(){
 		return this.nextVersion;
 	}
-	public void setNextVersion(VersionableEntity nextVersion){
+	public void setNextVersion(T nextVersion){
 		this.nextVersion = nextVersion;
 	}
 
 	//@OneToOne
 	@Transient
-	public VersionableEntity getPreviousVersion(){
+	public T getPreviousVersion(){
 		return this.previousVersion;
 	}
-	public void setPreviousVersion(VersionableEntity previousVersion){
+	public void setPreviousVersion(T previousVersion){
 		this.previousVersion = previousVersion;
 	}
 

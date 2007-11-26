@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -30,23 +30,24 @@ public class Marker extends VersionableEntity {
 	private MarkerType type;
 	private AnnotatableEntity markedObj;
 	
-	@ManyToOne
+	@Transient
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
 	}
-
-	protected void setMarkedObj(AnnotatableEntity markedObject) {
-		this.markedObj = markedObject;
+	protected void setMarkedObj(AnnotatableEntity newMarkedObject) {
+		if (markedObj != null) { 
+			markedObj.markers.remove(this);
+		}
+		if (newMarkedObject!= null) { 
+			newMarkedObject.markers.add(this);
+		}
+		this.markedObj = newMarkedObject;
 	}
 
+	@ManyToOne
 	public MarkerType getType(){
 		return this.type;
 	}
-
-	/**
-	 * 
-	 * @param type    type
-	 */
 	public void setType(MarkerType type){
 		this.type = type;
 	}
@@ -54,11 +55,6 @@ public class Marker extends VersionableEntity {
 	public boolean getFlag(){
 		return this.flag;
 	}
-
-	/**
-	 * 
-	 * @param flag    flag
-	 */
 	public void setFlag(boolean flag){
 		this.flag = flag;
 	}

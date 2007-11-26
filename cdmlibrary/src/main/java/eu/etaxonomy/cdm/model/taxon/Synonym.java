@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 

@@ -77,7 +77,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaggedText.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaxonTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/assembler/TaxonTOAssembler.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/notes.txt -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/Description.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text

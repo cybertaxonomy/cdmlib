@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -31,7 +31,7 @@ public class Extension extends VersionableEntity {
 	private ExtensionType type;
 	private IdentifiableEntity extendedObj;
 	
-	@ManyToOne
+	@Transient
 	public IdentifiableEntity getExtendedObj() {
 		return extendedObj;
 	}

@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
 import java.util.*;
 import javax.persistence.*;
 
@@ -39,6 +38,24 @@ public class Address extends VersionableEntity {
 	private String region;
 	private WaterbodyOrCountry country;
 	private Point location;
+	//Bidirectional only private
+	private Contact contact;
+	
+	
+	@ManyToOne
+	public Contact getContact() {
+		return contact;
+	}
+	protected void setContact(Contact newContact) {
+		if (contact != null) { 
+			contact.addresses.remove(this);
+		}
+		if (newContact!= null) { 
+			newContact.addresses.add(this);
+		}
+		this.contact = newContact;
+	}
+
 	
 	@ManyToOne
 	public WaterbodyOrCountry getCountry(){

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.model.Description;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -37,19 +37,15 @@ public class Institution extends Agent {
 	private Institution isPartOf;
 	private Contact contact;
 
+	@ManyToOne
 	public Contact getContact(){
 		return this.contact;
 	}
-
-	/**
-	 * 
-	 * @param contact    contact
-	 */
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}
 
-	@OneToMany
+	@ManyToMany
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}
@@ -59,23 +55,15 @@ public class Institution extends Agent {
 	public void removeTypes(InstitutionType t){
 		this.types.remove(t);
 	}
-
-	/**
-	 * 
-	 * @param types    types
-	 */
-	public void setTypes(Set<InstitutionType> types){
+	protected void setTypes(Set<InstitutionType> types){
 		this.types = types;
 	}
 
+
+	@ManyToOne
 	public Institution getIsPartOf(){
 		return this.isPartOf;
 	}
-
-	/**
-	 * 
-	 * @param isPartOf    isPartOf
-	 */
 	public void setIsPartOf(Institution isPartOf){
 		this.isPartOf = isPartOf;
 	}
@@ -83,23 +71,14 @@ public class Institution extends Agent {
 	public String getCode(){
 		return this.code;
 	}
-
-	/**
-	 * 
-	 * @param code    code
-	 */
 	public void setCode(String code){
 		this.code = code;
 	}
 
+	
 	public String getName(){
 		return this.name;
 	}
-
-	/**
-	 * 
-	 * @param name    name
-	 */
 	public void setName(String name){
 		this.name = name;
 	}
