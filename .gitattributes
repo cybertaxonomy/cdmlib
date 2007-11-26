@@ -47,8 +47,6 @@ cdmLibraryUpdateSite/plugins/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
 cdmLibraryUpdateSite/site.xml -text
 cdmLibraryUpdateSite/web/site.css -text
 cdmLibraryUpdateSite/web/site.xsl -text
-cdmParent/.classpath -text
-cdmParent/.project -text
 cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
 cdmParent/settings.xml -text
