@@ -17,8 +17,11 @@ public abstract class ServiceBase<T extends IdentifiableEntity> implements IIden
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;
-	@Autowired
 	protected IDao<T> dao;
+	
+	protected void setEntityDao(IDao<T> da){
+		this.dao=da;
+	}
 	
 	public void setApplicationContext(ApplicationContext appContext){
 		this.appContext = appContext;

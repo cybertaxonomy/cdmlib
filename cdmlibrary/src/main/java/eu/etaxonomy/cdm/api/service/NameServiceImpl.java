@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.persistence.dao.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
@@ -18,9 +20,13 @@ import java.util.List;
 public class NameServiceImpl extends ServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
+	private ITaxonNameDao nameDao;
 	@Autowired
-	private ITaxonNameDao dao;
-	
+	protected void setDao(ITaxonNameDao dao) {
+		this.dao = dao;
+		this.nameDao = dao;
+	}
+
 
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);

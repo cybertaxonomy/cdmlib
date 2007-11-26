@@ -23,8 +23,13 @@ import java.util.List;
 public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
 	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 	
+	private ITaxonDao taxonDao;
 	@Autowired
-	private ITaxonDao dao;
+	protected void setDao(ITaxonDao dao) {
+		this.dao = dao;
+		this.taxonDao = dao;
+	}
+	
 
 	public TaxonBase getTaxonByUuid(String uuid) {
 		return super.getCdmObjectByUuid(uuid); 
@@ -35,10 +40,10 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
-		return dao.getTaxaByName(name, sec);
+		return taxonDao.getTaxaByName(name, sec);
 	}
 
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		return dao.getRootTaxa(sec);
+		return taxonDao.getRootTaxa(sec);
 	}
 }

@@ -24,6 +24,13 @@ import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
 public class AgentServiceImpl extends ServiceBase<Agent> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
+	private IAgentDao agentDao;
+	@Autowired
+	protected void setDao(IAgentDao dao) {
+		this.dao = dao;
+		this.agentDao = dao;
+	}
+
 	public List<Agent> findAgentsByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
@@ -35,5 +42,4 @@ public class AgentServiceImpl extends ServiceBase<Agent> implements IAgentServic
 	public String saveAgent(Agent agent) {
 		return super.saveCdmObject(agent);
 	}
-
 }
