@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -31,6 +33,7 @@ public class Distribution extends FeatureBase {
 	private PresenceAbsenceTermBase status;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedArea getArea(){
 		return this.area;
 	}

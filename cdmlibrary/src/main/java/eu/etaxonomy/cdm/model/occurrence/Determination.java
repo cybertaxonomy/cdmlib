@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -71,6 +73,7 @@ public class Determination extends AnnotatableEntity {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getDeterminer() {
 		return determiner;
 	}

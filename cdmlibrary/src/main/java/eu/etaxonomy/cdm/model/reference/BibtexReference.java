@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -73,6 +75,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private BibtexReference crossref;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public BibtexReference getCrossref(){
 		return this.crossref;
 	}

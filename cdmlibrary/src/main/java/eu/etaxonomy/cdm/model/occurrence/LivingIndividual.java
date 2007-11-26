@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -28,6 +30,7 @@ public class LivingIndividual extends Occurrence {
 	
 	
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<LivingIndividual> getParents() {
 		return parents;
 	}
@@ -43,6 +46,7 @@ public class LivingIndividual extends Occurrence {
 	
 	
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<LivingIndividual> getOffspring() {
 		return offspring;
 	}

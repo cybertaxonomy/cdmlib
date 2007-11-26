@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.description.Description;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -29,6 +32,7 @@ public class Taxon extends TaxonBase {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Description> getDescriptions() {
 		return descriptions;
 	}
@@ -44,6 +48,7 @@ public class Taxon extends TaxonBase {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
 	}
@@ -59,6 +64,7 @@ public class Taxon extends TaxonBase {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getTaxonRelations() {
 		return taxonRelations;
 	}

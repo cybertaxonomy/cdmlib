@@ -29,23 +29,14 @@ public abstract class PublicationBase extends StrictReferenceBase {
 	public String getPublisher(){
 		return this.publisher;
 	}
-
-	/**
-	 * 
-	 * @param publisher    publisher
-	 */
 	public void setPublisher(String publisher){
 		this.publisher = publisher;
 	}
 
+
 	public String getPlacePublished(){
 		return this.placePublished;
 	}
-
-	/**
-	 * 
-	 * @param placePublished    placePublished
-	 */
 	public void setPlacePublished(String placePublished){
 		this.placePublished = placePublished;
 	}

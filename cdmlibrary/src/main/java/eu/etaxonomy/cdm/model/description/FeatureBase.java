@@ -20,6 +20,9 @@ import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -40,6 +43,7 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 
 	
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}

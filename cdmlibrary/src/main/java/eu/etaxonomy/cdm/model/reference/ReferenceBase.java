@@ -14,6 +14,8 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -37,6 +39,7 @@ public abstract class ReferenceBase extends IdentifiableEntity {
 
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getAuthorTeam(){
 		return this.authorTeam;
 	}

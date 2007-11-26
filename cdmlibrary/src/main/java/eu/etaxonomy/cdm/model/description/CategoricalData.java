@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class CategoricalData extends FeatureBase {
 	}
 	
 	@ManyToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<State> getStates(){
 		return this.states;
 	}

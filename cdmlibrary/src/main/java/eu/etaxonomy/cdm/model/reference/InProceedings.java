@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -26,6 +28,7 @@ public class InProceedings extends SectionBase {
 	private Proceedings inProceedings;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Proceedings getInProceedings(){
 		return this.inProceedings;
 	}

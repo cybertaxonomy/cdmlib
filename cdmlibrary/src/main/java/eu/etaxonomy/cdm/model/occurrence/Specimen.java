@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -35,6 +37,7 @@ public class Specimen extends Occurrence {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Specimen getDerivedFrom(){
 		return this.derivedFrom;
 	}

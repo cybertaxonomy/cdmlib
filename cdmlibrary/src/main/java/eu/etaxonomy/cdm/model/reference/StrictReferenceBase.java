@@ -35,11 +35,6 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	public String getTitle(){
 		return this.title;
 	}
-
-	/**
-	 * 
-	 * @param title    title
-	 */
 	public void setTitle(String title){
 		this.title = title;
 	}
@@ -47,11 +42,6 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	public TimePeriod getDatePublished(){
 		return this.datePublished;
 	}
-
-	/**
-	 * 
-	 * @param datePublished    datePublished
-	 */
 	public void setDatePublished(TimePeriod datePublished){
 		this.datePublished = datePublished;
 	}

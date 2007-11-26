@@ -29,11 +29,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	public String getEdition(){
 		return this.edition;
 	}
-
-	/**
-	 * 
-	 * @param edition    edition
-	 */
 	public void setEdition(String edition){
 		this.edition = edition;
 	}
@@ -41,11 +36,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	public String getIsbn(){
 		return this.isbn;
 	}
-
-	/**
-	 * 
-	 * @param isbn    isbn
-	 */
 	public void setIsbn(String isbn){
 		this.isbn = isbn;
 	}
@@ -58,11 +48,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	public String getCitation(){
 		return "";
 	}
-
-	/**
-	 * returns a formatted string containing the reference citation excluding authors
-	 * as used in a taxon name
-	 */
 	@Transient
 	public String getNomenclaturalCitation(){
 		return "";

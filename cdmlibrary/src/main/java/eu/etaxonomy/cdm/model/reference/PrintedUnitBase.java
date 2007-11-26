@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -29,6 +31,7 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	private PrintSeries inSeries;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public PrintSeries getInSeries(){
 		return this.inSeries;
 	}

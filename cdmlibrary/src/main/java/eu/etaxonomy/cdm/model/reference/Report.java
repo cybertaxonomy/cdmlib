@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -28,14 +30,10 @@ public class Report extends PublicationBase {
 	private Institution institution;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitution(){
 		return this.institution;
 	}
-
-	/**
-	 * 
-	 * @param institution    institution
-	 */
 	public void setInstitution(Institution institution){
 		this.institution = institution;
 	}

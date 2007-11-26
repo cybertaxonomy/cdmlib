@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -32,6 +34,7 @@ public class Collection extends IdentifiableEntity {
 	private Institution institute;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
 		return this.institute;
 	}

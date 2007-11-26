@@ -16,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -40,6 +42,7 @@ public class ObservationalUnit extends IdentifiableEntity {
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Occurrence getOccurence(){
 		return this.occurence;
 	}

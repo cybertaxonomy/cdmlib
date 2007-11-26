@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -27,6 +29,7 @@ public class Synonym extends TaxonBase {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<SynonymRelationship> getSynoynmRelations() {
 		return synoynmRelations;
 	}

@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.taxon;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -39,6 +41,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Taxon getFromTaxon(){
 		return this.fromTaxon;
 	}
@@ -47,6 +50,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Taxon getToTaxon(){
 		return this.toTaxon;
 	}

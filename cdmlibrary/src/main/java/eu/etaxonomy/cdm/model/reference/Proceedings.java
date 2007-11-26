@@ -29,11 +29,6 @@ public class Proceedings extends PrintedUnitBase {
 	public String getOrganization(){
 		return this.organization;
 	}
-
-	/**
-	 * 
-	 * @param organization    organization
-	 */
 	public void setOrganization(String organization){
 		this.organization = organization;
 	}
