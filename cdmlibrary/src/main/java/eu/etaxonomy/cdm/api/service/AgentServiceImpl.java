@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,19 +21,19 @@ import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
  *
  */
 @Service
-public class AgentServiceImpl implements IAgentService {
+public class AgentServiceImpl extends ServiceBase<Agent> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
-	
-	@Autowired
-    private IAgentDao agentDao;
-	
 
-	public Agent getAgentById(Integer id) {
-		return (Team)agentDao.findById(id);
+	public List<Agent> findAgentsByTitle(String title) {
+		return super.findCdmObjectsByTitle(title);
 	}
 
-	public int saveAgent(Agent agent) {
-		return (Integer)agentDao.save(agent);
+	public Agent getAgentByUuid(String uuid) {
+		return super.getCdmObjectByUuid(uuid);
+	}
+
+	public String saveAgent(Agent agent) {
+		return super.saveCdmObject(agent);
 	}
 
 }

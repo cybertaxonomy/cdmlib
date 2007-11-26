@@ -13,7 +13,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.IDao;
 
 
-public abstract class ServiceBase<T extends IdentifiableEntity> implements IService<T>, ApplicationContextAware {
+public abstract class ServiceBase<T extends IdentifiableEntity> implements IIdentifiableEntityService<T>, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;

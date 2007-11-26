@@ -19,6 +19,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Transactional(propagation=Propagation.SUPPORTS)
-public interface IService<T extends IdentifiableEntity>{
+public interface IService{
 
 }

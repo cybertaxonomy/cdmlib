@@ -58,6 +58,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -tex
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text

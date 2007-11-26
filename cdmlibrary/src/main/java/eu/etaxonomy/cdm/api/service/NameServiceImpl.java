@@ -15,45 +15,27 @@ import java.util.List;
 
 
 @Service
-public class NameServiceImpl extends ServiceBase implements INameService {
+public class NameServiceImpl extends ServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	@Autowired
-	private ITaxonNameDao taxonNameDao;
+	private ITaxonNameDao dao;
 	
 
+	public List getNamesByName(String name){
+		return super.findCdmObjectsByTitle(name);
+	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#getTaxonNameById(java.lang.Integer)
-	 */
-	public TaxonNameBase getTaxonNameById(Integer id) {
-		TaxonNameBase tn = taxonNameDao.findById(id);
-		if (tn != null) {
-			logger.info("getTaxonNameById: UUID: " + tn.getUuid());
-		}
-		return tn;
+	public TaxonNameBase getTaxonNameByUuid(String uuid) {
+		return super.getCdmObjectByUuid(uuid);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonName)
-	 */
-	public int saveTaxonName(TaxonNameBase taxonName) {
-		taxonNameDao.saveOrUpdate(taxonName);
-		return taxonName.getId();
+
+	public String saveTaxonName(TaxonNameBase taxonName) {
+		return super.saveCdmObject(taxonName);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#getAllNames()
-	 */
+
 	public List getAllNames(){
-		return taxonNameDao.list(1000);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.INameService#getNamesByName(java.lang.String)
-	 */
-	public List getNamesByNameString(String name){
-		return taxonNameDao.getNamesByName(name);
+		return dao.list(1000);
 	}
 
 }
