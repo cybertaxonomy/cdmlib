@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 
 import java.util.HashSet;
@@ -66,6 +68,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	}
 
 	@ManyToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){
 		return this.rights;
 	}
@@ -81,6 +84,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	}
 
 	@OneToMany//(mappedBy="extendedObj")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
@@ -105,6 +109,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 
 
 	@OneToMany //(mappedBy="sourcedObj")		
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
 	}

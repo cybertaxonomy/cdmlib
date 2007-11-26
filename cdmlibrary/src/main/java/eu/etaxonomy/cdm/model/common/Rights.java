@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -38,6 +40,7 @@ public class Rights extends LanguageString {
 
 	
 	@Transient
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public RightsTerm getType(){
 		return this.type;
 	}

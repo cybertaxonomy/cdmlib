@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -34,6 +36,7 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Enumeration getEnumeration(){
 		return this.enumeration;
 	}

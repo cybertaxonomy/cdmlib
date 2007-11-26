@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -28,6 +30,7 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	private ReferenceBase citation;
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getCitation(){
 		return this.citation;
 	}

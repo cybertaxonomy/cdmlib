@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -30,7 +32,8 @@ public class LanguageString  extends VersionableEntity{
 		this.setText(text);
 	}
 
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){
 		return this.language;
 	}

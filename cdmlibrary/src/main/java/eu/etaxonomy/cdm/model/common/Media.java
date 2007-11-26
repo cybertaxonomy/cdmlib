@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.common;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -42,6 +44,7 @@ public class Media extends AnnotatableEntity {
 	private Agent artist;
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<MediaInstance> getInstances(){
 		return this.instances;
 	}
@@ -57,6 +60,7 @@ public class Media extends AnnotatableEntity {
 
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getArtist(){
 		return this.artist;
 	}
@@ -66,6 +70,7 @@ public class Media extends AnnotatableEntity {
 
 
 	@ManyToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){
 		return this.rights;
 	}

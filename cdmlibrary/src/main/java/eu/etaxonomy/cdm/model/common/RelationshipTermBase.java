@@ -9,6 +9,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -42,6 +44,7 @@ public abstract class RelationshipTermBase extends EnumeratedTermBase {
 	
 	
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Representation> getInverseRepresentations() {
 		return inverseRepresentations;
 	}

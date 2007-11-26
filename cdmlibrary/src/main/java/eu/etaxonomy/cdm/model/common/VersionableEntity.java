@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.common;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.view.View;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -61,6 +63,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getUpdatedBy(){
 		return this.updatedBy;
 	}
@@ -74,6 +77,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getCreatedBy(){
 		return this.createdBy;
 	}

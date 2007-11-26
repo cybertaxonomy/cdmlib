@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 
 import java.io.Serializable;
@@ -28,12 +30,8 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends VersionableEntity{
-	public DefinedTermBase(String term, String label) {
-		super();
-		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
-	}
-
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
+
 	//URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!
 	private String uri;
 	private Set<Representation> representations = new HashSet();
@@ -43,8 +41,14 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	private Set<DefinedTermBase> includes = new HashSet();
 	private Set<Media> media = new HashSet();
 	
+	public DefinedTermBase(String term, String label) {
+		super();
+		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
+	}
+
 	
-	@OneToMany(cascade=CascadeType.PERSIST)
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Representation> getRepresentations(){
 		return this.representations;
 	}
@@ -70,6 +74,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
@@ -78,6 +83,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
@@ -87,6 +93,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public DefinedTermBase getPartOf(){
 		return this.partOf;
 	}
@@ -95,6 +102,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getIncludes(){
 		return this.includes;
 	}
@@ -110,6 +118,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}
