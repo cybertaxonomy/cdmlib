@@ -89,53 +89,38 @@ public class Person extends Agent {
 		this.contact = contact;
 	}
 
+	
 	public String getPrefix(){
 		return this.prefix;
 	}
-
-	/**
-	 * 
-	 * @param prefix    prefix
-	 */
 	public void setPrefix(String prefix){
 		this.prefix = prefix;
 	}
 
+
 	public String getFirstname(){
 		return this.firstname;
 	}
-
-	/**
-	 * 
-	 * @param firstname    firstname
-	 */
 	public void setFirstname(String firstname){
 		this.firstname = firstname;
 	}
 
+	
 	public String getLastname(){
 		return this.lastname;
 	}
-
-	/**
-	 * 
-	 * @param lastname    lastname
-	 */
 	public void setLastname(String lastname){
 		this.lastname = lastname;
 	}
 
+
 	public String getSuffix(){
 		return this.suffix;
 	}
-
-	/**
-	 * 
-	 * @param suffix    suffix
-	 */
 	public void setSuffix(String suffix){
 		this.suffix = suffix;
 	}
+
 
 	public TimePeriod getLifespan(){
 		return this.lifespan;

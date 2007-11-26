@@ -40,8 +40,14 @@ public class Team extends Agent {
 	public List<Person> getTeamMembers(){
 		return this.teamMembers;
 	}
-	public void setTeamMembers(List<Person> teamMembers){
+	protected void setTeamMembers(List<Person> teamMembers){
 		this.teamMembers = teamMembers;
+	}
+	public void addTeamMember(Person person){
+		this.teamMembers.add(person);
+	}
+	public void removeTeamMember(Person person){
+		this.teamMembers.remove(person);
 	}
 
 }
