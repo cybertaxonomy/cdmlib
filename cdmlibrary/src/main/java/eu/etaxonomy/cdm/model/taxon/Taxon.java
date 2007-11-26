@@ -61,7 +61,12 @@ public class Taxon extends TaxonBase {
 	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.remove(synonymRelation);
 	}
-
+	
+	@Transient
+	public List<Synonym> getSynonymsSortedByType(){
+		// FIXME
+		return null;
+	}
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})

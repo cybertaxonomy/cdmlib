@@ -13,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
 /**
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implements IDao<T, ID> {
+public abstract class DaoBase<T extends VersionableEntity> implements IDao<T> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
@@ -37,35 +38,41 @@ public abstract class DaoBase<T extends CdmBase, ID extends Serializable> implem
 	}
 	
 	
-	public void saveOrUpdate(T transientObject) throws DataAccessException  {
+	public String saveOrUpdate(T transientObject) throws DataAccessException  {
 		getSession().saveOrUpdate(transientObject);
+		return transientObject.getUuid();
 	}
 
-	public Serializable save(T newInstance) throws DataAccessException {
-		return getSession().save(newInstance);
+	public String save(T newInstance) throws DataAccessException {
+		getSession().save(newInstance);
+		return newInstance.getUuid();
 	}
 	
-	public void update(T transientObject) throws DataAccessException {
+	public String update(T transientObject) throws DataAccessException {
 		getSession().update(transientObject);
+		return transientObject.getUuid();
 	}
 	
-	public void delete(T persistentObject) throws DataAccessException {
+	public String delete(T persistentObject) throws DataAccessException {
 		getSession().delete(persistentObject);
+		return persistentObject.getUuid();
 	}
 
-	public T findById(Integer id) throws DataAccessException {
+	public T findById(int id) throws DataAccessException {
 		return (T) getSession().get(type, id);
 	}
 
-
+	public T findByUuid(String Uuid) throws DataAccessException{
+		//FIXME
+		return null;
+	}
 	
-	public Boolean exists(ID id) {
-		if (findById(id)==null){
+	public Boolean exists(String uuid) {
+		if (findByUuid(uuid)==null){
 			return false;
 		}
 		return true;
 	}
-
 
 	public List<T> list(Integer limit) {
 		// TODO Auto-generated method stub

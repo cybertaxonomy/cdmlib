@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @author a.mueller
  *
  */
-public interface ITaxonNameDao extends IDao<TaxonNameBase,Integer> {
+public interface ITaxonNameDao extends IDao<TaxonNameBase> {
 	
 	/* any nice thing to find*/
 	public List<TaxonNameBase> getRelatedNames(Integer id);

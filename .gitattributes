@@ -60,8 +60,10 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
@@ -226,7 +228,9 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/EnumerationDaoHibernat
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAgentDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IEnumerationDAO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonNameDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonNameDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text

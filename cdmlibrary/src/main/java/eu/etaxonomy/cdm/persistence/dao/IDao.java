@@ -27,28 +27,32 @@ import eu.etaxonomy.cdm.model.common.Enumeration;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T extends CdmBase, ID extends Serializable> {
-	public void saveOrUpdate(T transientObject) throws DataAccessException;
+public interface IDao<T extends CdmBase> {
+	public String saveOrUpdate(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
 	 */
-	public Serializable save(T newOrManagedObject) throws DataAccessException;
+	public String save(T newOrManagedObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#update(java.lang.Object)
 	 */
-	public void update(T transientObject) throws DataAccessException;
+	public String update(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#delete(java.lang.Object)
 	 */
-	public void delete(T persistentObject) throws DataAccessException;
+	public String delete(T persistentObject) throws DataAccessException;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#findById(java.io.Serializable)
 	 */
-	public T findById(ID id) throws DataAccessException;
+	public T findById(int id) throws DataAccessException;
+
+	public T findByUuid(String Uuid) throws DataAccessException;
+	
+	public Boolean exists(String uuid);
 
 //********************************************//	
 	
@@ -60,8 +64,6 @@ public interface IDao<T extends CdmBase, ID extends Serializable> {
 	 * common.Identifyable.getTitleCache if existing
 	 */
 	public List<T> find(String queryString);
-
-	public Boolean exists(ID id);
 
 	public List<T> list(Integer limit);
 

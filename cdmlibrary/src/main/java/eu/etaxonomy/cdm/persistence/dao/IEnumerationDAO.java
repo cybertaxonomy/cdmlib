@@ -4,6 +4,6 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.Enumeration;
 
-public interface IEnumerationDAO extends IDao<Enumeration,Integer> {
+public interface IEnumerationDAO extends IDao<Enumeration> {
 
 }
