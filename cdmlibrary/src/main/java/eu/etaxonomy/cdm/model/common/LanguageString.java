@@ -25,7 +25,7 @@ import javax.persistence.*;
 @MappedSuperclass
 public class LanguageString  extends VersionableEntity{
 	static Logger logger = Logger.getLogger(LanguageString.class);
-	private String text;
+	protected String text;
 	private Language language;
 	public LanguageString(String text, Language lang) {
 		this.setLanguage(lang);
@@ -44,13 +44,13 @@ public class LanguageString  extends VersionableEntity{
 	public String getText(){
 		return this.text;
 	}
-	private void setText(String text) {
+	protected void setText(String text) {
 		this.text = text;
 	}
 	
 	@Transient
 	public String getLanguageLabel(){
-		return this.language.getRepresentation(Language.ENGLISH()).getLabel();
+		return this.language.getRepresentation(Language.DEFAULT()).getLabel();
 	}
 	@Transient
 	public String getLanguageLabel(Language lang){
@@ -58,7 +58,7 @@ public class LanguageString  extends VersionableEntity{
 	}
 	@Transient
 	public String getLanguageText(){
-		return this.language.getRepresentation(Language.ENGLISH()).getLabel();
+		return this.language.getRepresentation(Language.DEFAULT()).getLabel();
 	}
 	@Transient
 	public String getLanguageText(Language lang){

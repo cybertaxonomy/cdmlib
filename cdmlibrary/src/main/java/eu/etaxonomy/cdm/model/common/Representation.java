@@ -36,11 +36,6 @@ public class Representation extends LanguageString {
 	public String getLabel(){
 		return this.label;
 	}
-
-	/**
-	 * 
-	 * @param label    label
-	 */
 	public void setLabel(String label){
 		this.label = label;
 	}
@@ -48,13 +43,22 @@ public class Representation extends LanguageString {
 	public String getAbbreviatedLabel(){
 		return this.abbreviatedLabel;
 	}
-
-	/**
-	 * 
-	 * @param abbreviatedLabel    abbreviatedLabel
-	 */
 	public void setAbbreviatedLabel(String abbreviatedLabel){
 		this.abbreviatedLabel = abbreviatedLabel;
 	}
-
+	
+	@Transient
+	public String getText(){
+		return super.getText();
+	}
+	private void setText(String text) {
+		super.setText(text);
+	}
+	public String getDescription(){
+		return super.getText();
+	}
+	private void setDescription(String text) {
+		super.setText(text);
+	}
+		
 }

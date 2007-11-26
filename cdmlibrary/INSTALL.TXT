@@ -1,8 +1,18 @@
 The projecvt uses Maven2
 
- * install maven 2.07 commandline tools locally
- * im cdmlib projekt root folder (zusammen mit pom.xml):
-   $ mvn compile
-   $ mvn eclipse:eclipse
- * Set in Eclipse preferences (not project) M2-REPO java class variable, pointing to your local repository. In OSX for example /Users/USERNAME/.m2/repository 
- * refresh eclipse projekt
+ 1) 
+   * install maven 2.07 commandline tools locally
+   * Set in Eclipse preferences (not project) M2_REPO java class variable, pointing to your local repository. 
+      - In OSX for example    /Users/USERNAME/.m2/repository 
+      - In WinXP for example  C:/Documents and Settings/USERNAME/.m2/repository
+ 
+ 2) checkout cdmParent as java project
+ 	* im cdmParent projekt root folder (zusammen mit pom.xml):
+	   $ mvn compile
+	   $ mvn eclipse:eclipse
+ 
+ 3) im cdmlib projekt root folder (zusammen mit pom.xml):
+     $ mvn compile
+     $ mvn eclipse:eclipse
+ 
+ 4) refresh eclipse projekt

@@ -71,7 +71,10 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -tex
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/MySQLDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/OdbcDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SqlServerDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/BaseTO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/LocalisedRepresentationTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/NameTO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/ReferenceTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TagEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaggedText.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaxonTO.java -text
