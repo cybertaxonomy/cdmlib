@@ -51,13 +51,13 @@ public class Representation extends LanguageString {
 	public String getText(){
 		return super.getText();
 	}
-	private void setText(String text) {
+	protected void setText(String text) {
 		super.setText(text);
 	}
 	public String getDescription(){
 		return super.getText();
 	}
-	private void setDescription(String text) {
+	protected void setDescription(String text) {
 		super.setText(text);
 	}
 		
