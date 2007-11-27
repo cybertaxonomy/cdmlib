@@ -1,15 +1,15 @@
 package eu.etaxonomy.cdm.api.application;
 
-
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hsqldb.Server;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.database.CdmDataSource;
+
 
 /**
  * @author a.mueller
@@ -19,44 +19,68 @@ public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
 	private ClassPathXmlApplicationContext applicationContext;
-	@Autowired
 	private INameService nameService;
-	@Autowired
 	private IAgentService agentService;
-	@Autowired
 	private IDatabaseService databaseService;
 	
 	private Server hsqldbServer;
 	
 	
-	/* Constructor */
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
+	 * @param dataSource
+	 */
 	public CdmApplicationController() {
 		//logger.info("Start HSQLDB Server");
 		//startHsqldbServer();
-		logger.info("Start CdmApplicationController");
-		String fileName = "applicationContext.xml";
-		setApplicationContext(new ClassPathXmlApplicationContext(fileName));
 		
 		//TODO find out if DataSource is localHsqldb,
 		//if yes then find out if Server is running
 		//if not running, start server
+
+		logger.info("Start CdmApplicationController");
+		CdmDataSource dataSource = CdmDataSource.getDefaultDataSource();
+		dataSource.updateSessionFactory();
+		String appContextFileName = CdmDataSource.getDataSourceFile().getName();
+		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
 	}
 	
-	public void finalize(){
-		close();
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
+	 * @param dataSource
+	 */
+	public CdmApplicationController(CdmDataSource dataSource) {
+		logger.info("Start CdmApplicationController with datasource: " + dataSource);
+		dataSource.updateSessionFactory();
+		String appContextFileName = CdmDataSource.getDataSourceFile().getName();
+		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
 	}
+
 	
-	public void close(){
-		if (applicationContext != null)
-			logger.info("Close ApplicationContext");
-			applicationContext.close();
-	}
-	
-	
+	/**
+	 * Sets a new application Context.
+	 * @param appCtx
+	 */
 	public void setApplicationContext(ClassPathXmlApplicationContext appCtx){
 		applicationContext = appCtx;
 		applicationContext.registerShutdownHook();
 		setServices();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	public void finalize(){
+		close();
+	}
+	
+	/**
+	 * closes the application
+	 */
+	public void close(){
+		if (applicationContext != null)
+			logger.info("Close ApplicationContext");
+			applicationContext.close();
 	}
 	
 	private void setServices(){
@@ -81,6 +105,8 @@ public class CdmApplicationController {
 		return this.databaseService;
 	}
 	
+	
+	/* **** flush ***********/
 	public void flush() {
 		SessionFactory sf = (SessionFactory)applicationContext.getBean("sessionFactory");
 		sf.getCurrentSession().flush();
