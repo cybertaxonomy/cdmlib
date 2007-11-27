@@ -242,6 +242,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
 cdmlibrary/src/main/resources/applicationContext.xml -text
+cdmlibrary/src/main/resources/cdm.datasource.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/main/resources/sessionfactory.xml -text
 cdmlibrary/src/site/site.xml -text
