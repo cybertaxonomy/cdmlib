@@ -260,6 +260,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/src/test/resources/appInitContext.xml -text
 cdmlibrary/src/test/resources/applicationContext-test.xml -text
+cdmlibrary/src/test/resources/test.cdm.datasource.xml -text
 docs/layers.graffle -text
 docs/layers.png -text
 musiclib-hibernatetest/listAnnotatedClasses.py -text
