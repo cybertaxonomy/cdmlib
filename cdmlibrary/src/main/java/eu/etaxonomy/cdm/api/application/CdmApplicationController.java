@@ -45,9 +45,7 @@ public class CdmApplicationController {
 
 		logger.info("Start CdmApplicationController with default data source");
 		CdmDataSource dataSource = CdmDataSource.getDefaultDataSource();
-		dataSource.updateSessionFactory();
-		String appContextFileName = APP_CONTEXT_FILE_NAME;
-		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
+		setNewDataSource(dataSource);
 	}
 	
 	/**
@@ -56,9 +54,29 @@ public class CdmApplicationController {
 	 */
 	public CdmApplicationController(CdmDataSource dataSource) {
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
-		dataSource.updateSessionFactory();
+		setNewDataSource(dataSource);
+	}
+
+	
+	/**
+	 * Changes the ApplicationContext to the new dataSource
+	 * @param dataSource
+	 */
+	public boolean changeDataSource(CdmDataSource dataSource) {
+		logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource);
+	}
+
+	
+	/**
+	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
+	 * @param dataSource
+	 */
+	private boolean setNewDataSource(CdmDataSource dataSource) {
+		dataSource.updateSessionFactory(); 
 		String appContextFileName = APP_CONTEXT_FILE_NAME;
 		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
+		return true;
 	}
 
 	
@@ -67,6 +85,7 @@ public class CdmApplicationController {
 	 * @param appCtx
 	 */
 	public void setApplicationContext(ClassPathXmlApplicationContext appCtx){
+		closeApplicationContext(); //closes old application context if necessary
 		applicationContext = appCtx;
 		applicationContext.registerShutdownHook();
 		setServices();
@@ -83,9 +102,17 @@ public class CdmApplicationController {
 	 * closes the application
 	 */
 	public void close(){
-		if (applicationContext != null)
+		closeApplicationContext();
+	}
+	
+	/**
+	 * closes the application context
+	 */
+	private void closeApplicationContext(){
+		if (applicationContext != null){
 			logger.info("Close ApplicationContext");
 			applicationContext.close();
+		}
 	}
 	
 	private void setServices(){
@@ -93,6 +120,7 @@ public class CdmApplicationController {
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
 		databaseService = (IDatabaseService)applicationContext.getBean("databaseServiceHibernateImpl");
+		databaseService.setApplicationController(this);
 	}
 	
 

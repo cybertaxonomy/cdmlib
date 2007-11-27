@@ -7,10 +7,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
+import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
 import org.jdom.output.Format;
+import org.jdom.xpath.XPath;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 import static eu.etaxonomy.cdm.database.XmlHelp.insertXmlBean; 
 import static eu.etaxonomy.cdm.database.XmlHelp.insertXmlRefProperty;
@@ -30,6 +35,8 @@ public class CdmDataSource {
 	public static final String BEAN_POSTFIX = "DataSource";
 	public static final String SESSION_FACTORY_FILE = "sessionfactory.xml";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
+	private final static Format format = Format.getPrettyFormat(); 
+	
 	
 	/**
 	 * Returns the default CdmDataSource
@@ -118,7 +125,6 @@ public class CdmDataSource {
 		elDialectProp.setText(this.getDatabaseType().getHibernateDialect());
 		
 		//save
-		Format format = Format.getPrettyFormat(); 
 		saveToXml(root.getDocument(), getResourceDirectory(), getSessionFactoryFile().getName(), format );
 		return true;
 	}
@@ -165,9 +171,9 @@ public class CdmDataSource {
 	 * @param database
 	 * @param username
 	 * @param password
-	 * @return true if successful.
+	 * @return the CdmDataSource, null if not successful.
 	 */
-	public static boolean save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
+	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 			String username, String password){
 		return save(strDataSourceName, databaseTypeEnum, server, database, 
 				databaseTypeEnum.getDefaultPort(), username, password);
@@ -182,14 +188,14 @@ public class CdmDataSource {
 	 * @param port
 	 * @param username
 	 * @param password
-	 * @return true if successful.
+	 * @return the CdmDataSource, null if not successful.
 	 */
-	public static boolean save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
+	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 				int port, String username, String password){
 		//root
 		Element root = getRoot(getDataSourceFile());
 		if (root == null){
-			return false;
+			return null;
 		}
 		//bean
 		Element bean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
@@ -203,9 +209,21 @@ public class CdmDataSource {
 		insertXmlValueProperty(bean, "username", username );
 		insertXmlValueProperty(bean, "password", password );
 		//save
-		Format format = Format.getPrettyFormat(); 
 		saveToXml(root.getDocument(), getResourceDirectory(), DATASOURCE_FILE_NAME, format );
-		return true;
+		return getDataSource(strDataSourceName) ;
+	}
+	
+	/**
+	 * Deletes a dataSource
+	 * @param dataSource
+	 */
+	public static void delete (CdmDataSource dataSource){
+		Element bean = getDatasourceBeanXml(dataSource.getName());
+		if (bean != null){
+			Document doc = bean.getDocument();
+			bean.detach();
+			saveToXml(doc, getResourceDirectory(), DATASOURCE_FILE_NAME, format );
+		}
 	}
 	
 	
@@ -287,6 +305,7 @@ public class CdmDataSource {
 			return xmlBean;
 		}
 	}
+	
 	
 	/**
 	 * Filter class to define datasource file format

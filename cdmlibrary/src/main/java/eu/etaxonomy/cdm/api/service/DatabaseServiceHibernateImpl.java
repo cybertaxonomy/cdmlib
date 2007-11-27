@@ -25,6 +25,8 @@ import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBea
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Service;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 
@@ -35,91 +37,43 @@ import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 @Service
 public class DatabaseServiceHibernateImpl extends ServiceBase implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
-
+	
+	private static final String TMP_DATASOURCE = "tmp"; 
+	
 	@Autowired
 	private SessionFactory factory;
 	
+	@Autowired
 	protected ApplicationContext appContext;
+//	public void setApplicationContext(ApplicationContext appContext){
+//		this.appContext = appContext;
+//	}
 	
-	public void setApplicationContext(ApplicationContext appContext){
-		this.appContext = appContext;
+	private CdmApplicationController application;
+	public void setApplicationController(CdmApplicationController cdmApplicationController){
+		this.application = cdmApplicationController;
 	}
-
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatasource(eu.etaxonomy.cdm.database.CdmDataSource)
+	 */
+	public boolean connectToDatasource(CdmDataSource dataSource) {
+		this.application.changeDataSource(dataSource);
+		logger.debug("DataSource changed to " + dataSource.getName());
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password, int port) {
-		Session session;
-		DriverManagerDataSource aDataSource = getDataSource();
-		//HibernateTemplate ht = getHibernateTemplate();
-		AnnotationSessionFactoryBean sfb = (AnnotationSessionFactoryBean)this.appContext.getBean("&sessionFactory");
-		SessionFactory aSessionFactory =  factory; //getSessionFactory();
-		
-		Object o;
-		//flush
-		//ht.flush();
-		
-		//close everything
-		//aSessionFactory.close();
-		
-		//set Dialect
-		Properties props = sfb.getHibernateProperties();
-		props.setProperty("hibernate.dialect", databaseTypeEnum.getHibernateDialect());
-		System.out.println(props.propertyNames());
-		System.out.println(props.getProperty("hibernate.dialect"));
-		
-		//change Datasource
-		aDataSource.setDriverClassName(databaseTypeEnum.getDriverClassName());
-		aDataSource.setUsername(username);
-		aDataSource.setPassword(password);
-		aDataSource.setUrl(databaseTypeEnum.getConnectionString(server, database, port));
-		
-		//update schema
-		sfb.updateDatabaseSchema();
-		
-//		DriverManagerDataSource ds = new DriverManagerDataSource();
-//		ds.setDriverClassName(databaseEnum.getDriverClassName());
-//		ds.setUsername(username);
-//		ds.setPassword(password);
-//		ds.setUrl(databaseEnum.getConnectionString(server, database, port));
-//		sfb.setDataSource(ds);
-		Configuration cfg = sfb.getConfiguration();
-		//Object dsProp = cfg.getProperties();
-		//System.out.println(dsProp);
-		//		cfg.setProperties(sfb.getHibernateProperties());
-//		
-		cfg.setProperty("hibernate.connection.driver_class", databaseTypeEnum.getDriverClassName());
-		cfg.setProperty("hibernate.connection.url", databaseTypeEnum.getConnectionString(server, database, port));
-		cfg.setProperty("hibernate.connection.username", username);
-		cfg.setProperty("hibernate.connection.password", password);
-		cfg.setProperty("hibernate.dialect", databaseTypeEnum.getHibernateDialect());
-		
-		Properties ps = cfg.getProperties();
-		Iterator<Object> it = 	ps.keySet().iterator();
-		
-		while (it.hasNext()){
-			String pn = (String)it.next();
-			if (pn.contains("hibernate")){ 
-				System.out.println(pn + ": " + ps.getProperty(pn));
-			}
-		}
-		
-		
-		SessionFactory sf = cfg.buildSessionFactory();
-		//ht.setSessionFactory(sf);
-		
-		
-		logger.info("DataSource changed to " + aDataSource.getUrl());
-		return true;
+		CdmDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, databaseTypeEnum, server, database, username, password);
+		boolean result = connectToDatasource(tmpDataSource);
+		CdmDataSource.delete(tmpDataSource);
+		return result;
 	}
-	
-	protected Session getSession(){
-		Session s = factory.getCurrentSession();
-		//s.beginTransaction();
-		return s;
-	}
-
 
 
 	/* (non-Javadoc)
@@ -128,6 +82,15 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password) {
 		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort()) ;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public CdmDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
+			String server, String database, String username, String password) {
+		return CdmDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
 	}
 	
 

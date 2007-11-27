@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 /**
@@ -12,22 +14,26 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 public interface IDatabaseService extends IService {
 
 	/**
+	 * Returns the databaseTypeEnum
 	 * @return
 	 */
 	public DatabaseTypeEnum getDatabaseEnum();
 	
 	
 	/**
+	 * Returns the database driver class name
 	 * @return
 	 */
 	public String getDriverClassName();
 	
 	/**
+	 * Returns the database URL
 	 * @return
 	 */
 	public String getUrl();
 	
 	/**
+	 * Returns the username.
 	 * @return
 	 */
 	public String getUsername();
@@ -64,7 +70,7 @@ public interface IDatabaseService extends IService {
 	 * @param username
 	 * @param password
 	 * @param port
-	 * @return
+	 * @return returns true if successful
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password, int port);
 
@@ -74,8 +80,29 @@ public interface IDatabaseService extends IService {
 	 * @param url
 	 * @param username
 	 * @param password
-	 * @return
+	 * @return returns true if successful
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
 	
+
+	/**
+	 * Connect to the database with the given parameters. Uses default port.
+	 * @param dataSource
+	 * @return returns true if successful
+	 */
+	public boolean connectToDatasource(CdmDataSource dataSource);
+
+	/**
+	 * Saves a new CdmDatasource into the datasource config file.
+	 * @param strDataSourceName
+	 * @param databaseTypeEnum
+	 * @param server
+	 * @param database
+	 * @param username
+	 * @param password
+	 * @return the CdmDataSource, null if not successful.
+	 */
+	public CdmDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
+	
+	public void setApplicationController(CdmApplicationController cdmApplicationController);
 }

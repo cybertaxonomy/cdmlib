@@ -32,7 +32,7 @@ public class XmlHelp {
 			if (! fileName.endsWith(".xml")){
 				fileName += ".xml";
 			}
-			FileOutputStream outFile = new FileOutputStream(path + "\\" + fileName); 
+			FileOutputStream outFile = new FileOutputStream(path + File.separator + fileName); 
 			out.output(doc, outFile);
 			return true;
 		} catch (IOException e) {
