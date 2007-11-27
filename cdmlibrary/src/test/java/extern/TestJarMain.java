@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 public class TestJarMain {
 	static Logger logger = Logger.getLogger(TestJarMain.class);
 	
-	
 	/**
 	 * @param args
 	 */
