@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import eu.etaxonomy.cdm.database.DatabaseEnum;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 /**
  * @author a.mueller
@@ -14,7 +14,7 @@ public interface IDatabaseService extends IService {
 	/**
 	 * @return
 	 */
-	public DatabaseEnum getDatabaseEnum();
+	public DatabaseTypeEnum getDatabaseEnum();
 	
 	
 	/**
@@ -59,23 +59,23 @@ public interface IDatabaseService extends IService {
 
 	/**
 	 * Connect to the database with the given parameters
-	 * @param databaseEnum
+	 * @param databaseTypeEnum
 	 * @param url
 	 * @param username
 	 * @param password
 	 * @param port
 	 * @return
 	 */
-	public boolean connectToDatabase(DatabaseEnum databaseEnum, String server, String database, String username, String password, int port);
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password, int port);
 
 	/**
 	 * Connect to the database with the given parameters. Uses default port.
-	 * @param databaseEnum
+	 * @param databaseTypeEnum
 	 * @param url
 	 * @param username
 	 * @param password
 	 * @return
 	 */
-	public boolean connectToDatabase(DatabaseEnum databaseEnum, String server, String database, String username, String password);
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
 	
 }
