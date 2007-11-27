@@ -11,6 +11,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
@@ -64,9 +66,16 @@ public abstract class DaoBase<T extends VersionableEntity> implements IDao<T> {
 		return (T) getSession().get(type, id);
 	}
 
-	public T findByUuid(String Uuid) throws DataAccessException{
-		//FIXME
-		return null;
+	public T findByUuid(String uuid) throws DataAccessException{
+		Criteria crit = getSession().createCriteria(type);
+		crit.add(Restrictions.eq("uuid", uuid));
+		crit.addOrder(Order.desc("created"));
+		List<T> results = crit.list();
+		if (results.isEmpty()){
+			return null;
+		}else{
+			return results.get(0);			
+		}
 	}
 	
 	public Boolean exists(String uuid) {
@@ -77,12 +86,10 @@ public abstract class DaoBase<T extends VersionableEntity> implements IDao<T> {
 	}
 
 	public List<T> list(int limit, int start) {
-		Session s = getSession();
-		Criteria crit = s.createCriteria(type); 
+		Criteria crit = getSession().createCriteria(type); 
 		crit.setFirstResult(start);
 		crit.setMaxResults(limit);
-		List<T> entities = crit.list(); 
-		return entities; 
+		return crit.list(); 
 	}
 
 	public List<CdmBase> executeHsql(String hsql){

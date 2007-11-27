@@ -26,12 +26,6 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
-	public VersionableEntity() {
-		super();
-		this.uuid = UUID.randomUUID().toString();
-		this.created = Calendar.getInstance();
-	}
-
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
 	//the globally unique identifier
 	private String uuid;
@@ -43,6 +37,13 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	private T nextVersion;
 	private T previousVersion;
 
+	public VersionableEntity() {
+		super();
+		this.uuid = UUID.randomUUID().toString();
+		this.created = Calendar.getInstance();
+	}
+
+	
 	//@OneToOne(mappedBy="previousVersion")
 	@Transient
 	public T getNextVersion(){

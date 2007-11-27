@@ -29,7 +29,7 @@ public class SpringControl {
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
 		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.list(1000);
+		List<TaxonNameBase> tnList = tnDao.list(1000,1);
 		
 		logger.warn(tn.getUuid());
 	}
@@ -83,7 +83,7 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(100);
+		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(100,1);
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}

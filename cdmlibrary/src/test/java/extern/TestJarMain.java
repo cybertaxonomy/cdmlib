@@ -23,7 +23,7 @@ public class TestJarMain {
 		//TODO
 		CdmApplicationController app = new CdmApplicationController();
 		INameService ns = app.getNameService();
-		List<TaxonNameBase> tnl = ns.getAllNames(1);
+		List<TaxonNameBase> tnl = ns.getAllNames(1,1);
 		logger.setLevel(Level.INFO);
 		if (tnl.isEmpty()){
 			logger.warn("No name exists");

@@ -61,6 +61,6 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 
 	@Test
 	public void testList100() {
-		assertFalse(dao.list(100).isEmpty());
+		assertFalse(dao.list(100,1).isEmpty());
 	}
 }
