@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,14 +76,24 @@ public abstract class DaoBase<T extends VersionableEntity> implements IDao<T> {
 		return true;
 	}
 
-	public List<T> list(Integer limit) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> list(int limit, int start) {
+		Session s = getSession();
+		Criteria crit = s.createCriteria(type); 
+		crit.setFirstResult(start);
+		crit.setMaxResults(limit);
+		List<T> entities = crit.list(); 
+		return entities; 
 	}
 
+	public List<CdmBase> executeHsql(String hsql){
+		Query q = getSession().createQuery(hsql);
+		return q.list();
+	}
 
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.IDao#find(java.lang.String)
 	 */
 	public abstract List<T> find(String queryString);
+	
 }

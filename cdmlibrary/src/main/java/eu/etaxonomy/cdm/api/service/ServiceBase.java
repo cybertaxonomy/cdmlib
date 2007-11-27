@@ -39,8 +39,8 @@ public abstract class ServiceBase<T extends IdentifiableEntity> implements IIden
 		return dao.find(title);
 	}
 
-	protected List<T> list(Integer limit) {
-		return dao.list(limit);
+	protected List<T> list(int limit, int start) {
+		return dao.list(limit, start);
 	}
 
 }

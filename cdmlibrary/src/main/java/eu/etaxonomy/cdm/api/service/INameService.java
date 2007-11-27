@@ -11,7 +11,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
 	public abstract String saveTaxonName(TaxonNameBase taxonName);
 
-	public abstract List<TaxonNameBase> getAllNames(int limit);
+	public abstract List<TaxonNameBase> getAllNames(int limit, int start);
 
 	public abstract List<TaxonNameBase> getNamesByName(String name);
 

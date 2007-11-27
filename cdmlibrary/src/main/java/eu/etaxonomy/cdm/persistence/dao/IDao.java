@@ -55,17 +55,10 @@ public interface IDao<T extends VersionableEntity> {
 	
 	public Boolean exists(String uuid);
 
-//********************************************//	
-	
-	
-	/**
-	 * @param queryString
-	 * @return List<T extends CdmBase>
-	 * list object by searching on their title/lable.
-	 * common.Identifyable.getTitleCache if existing
-	 */
 	public List<T> find(String queryString);
 
-	public List<T> list(Integer limit);
+	public List<CdmBase> executeHsql(String hsql);
+
+	public List<T> list(int limit, int start);
 
 }
