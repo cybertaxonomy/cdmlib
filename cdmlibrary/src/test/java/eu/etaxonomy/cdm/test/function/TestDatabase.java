@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
 
@@ -34,7 +35,7 @@ public class TestDatabase {
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
 		
-		List list = appCtr.getNameService().getAllNames();
+		List<TaxonNameBase> list = appCtr.getNameService().getAllNames(1000, 0);
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn = new BotanicalName(null);
@@ -49,7 +50,7 @@ public class TestDatabase {
 		//dbService.connectToDatabase(DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
-		list = nameService.getAllNames();
+		list = nameService.getAllNames(1000, 0);
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn2 = new BotanicalName(null);
