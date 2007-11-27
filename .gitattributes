@@ -67,8 +67,10 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseEnum.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/XmlHelp.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -text

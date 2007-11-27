@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
  * @author a.mueller
  *
  */
-public enum DatabaseEnum {
+public enum DatabaseTypeEnum {
 	HSqlDb(1),
 	MySQL(2),
 	ODBC(3),
@@ -29,7 +29,7 @@ public enum DatabaseEnum {
 	 * Constructor
 	 * @param i
 	 */
-	private DatabaseEnum(int i) {
+	private DatabaseTypeEnum(int i) {
 		switch(i)
         {
         	case 1:
@@ -46,7 +46,7 @@ public enum DatabaseEnum {
 	}
 	
  	//Logger
-	private static final Logger logger = Logger.getLogger(DatabaseEnum.class);
+	private static final Logger logger = Logger.getLogger(DatabaseTypeEnum.class);
 	protected IDatabaseType dbType;
 	
 	   
@@ -115,25 +115,26 @@ public enum DatabaseEnum {
      * Returns a List of all available DatabaseEnums.
      * @return List of DatabaseEnums
      */
-    public static List<DatabaseEnum> getAllTypes(){
-    	List<DatabaseEnum> result = new ArrayList<DatabaseEnum>();
-    	for (DatabaseEnum dbEnum : DatabaseEnum.values()){
+    public static List<DatabaseTypeEnum> getAllTypes(){
+    	List<DatabaseTypeEnum> result = new ArrayList<DatabaseTypeEnum>();
+    	for (DatabaseTypeEnum dbEnum : DatabaseTypeEnum.values()){
     		result.add(dbEnum);
     	}
     	return result;
     }
 
     /**
-     * Returns the DatabaseEnum to a given DriverClass
+     * Returns the DatabaseTypeEnum to a given DriverClass
      * @param strDriverClass
-     * @return DatabaseEnum
+     * @return the according DatabaseTypeEnum. Null if the driver class does not exist.
      */
-    public static DatabaseEnum getDatabaseEnumByDriverClass(String strDriverClass){
-    	for (DatabaseEnum dbEnum : DatabaseEnum.values()){
+    public static DatabaseTypeEnum getDatabaseEnumByDriverClass(String strDriverClass){
+    	for (DatabaseTypeEnum dbEnum : DatabaseTypeEnum.values()){
     		if (dbEnum.getDriverClassName().equals(strDriverClass)){
     			return dbEnum;
     		}
     	}
+    	logger.warn("Unknown driver class " + strDriverClass==null ? "null" : strDriverClass);
     	return null;
     }
  
