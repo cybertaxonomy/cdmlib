@@ -21,14 +21,14 @@ import org.junit.Test;
  */
 public class DatabaseEnumTest {
 	private static final Logger logger = Logger.getLogger(DatabaseEnumTest.class);
-	private static DatabaseEnum dbEnum;
+	private static DatabaseTypeEnum dbEnum;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		dbEnum = DatabaseEnum.MySQL;
+		dbEnum = DatabaseTypeEnum.MySQL;
 	}
 
 
@@ -40,7 +40,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getName()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getName()}.
 	 */
 	@Test
 	public void testGetName() {
@@ -48,7 +48,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getDriverClassName()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getDriverClassName()}.
 	 */
 	@Test
 	public void testGetDriverClassName() {
@@ -56,7 +56,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getUrl()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getUrl()}.
 	 */
 	@Test
 	public void testGetUrl() {
@@ -64,7 +64,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getDefaultPort()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getDefaultPort()}.
 	 */
 	@Test
 	public void testGetDefaultPort() {
@@ -72,7 +72,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getConnectionString(java.lang.String, java.lang.String, int)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String, int)}.
 	 */
 	@Test
 	public void testGetConnectionStringStringStringInt() {
@@ -80,7 +80,7 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getConnectionString(java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testGetConnectionStringStringString() {
@@ -88,11 +88,11 @@ public class DatabaseEnumTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getAllTypes()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getAllTypes()}.
 	 */
 	@Test
 	public void testGetAllTypes() {
-		List<DatabaseEnum> typeList = dbEnum.getAllTypes();
+		List<DatabaseTypeEnum> typeList = dbEnum.getAllTypes();
 		assertEquals(4, typeList.size());
 		assertEquals(dbEnum.HSqlDb, typeList.get(0));
 		assertEquals(dbEnum.MySQL, typeList.get(1));
@@ -102,7 +102,7 @@ public class DatabaseEnumTest {
 	
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseEnum#getDatabaseEnumByDriverClass(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getDatabaseEnumByDriverClass(java.lang.String)}.
 	 */
 	@Test
 	public void testGetDatabaseEnumByDriverClass() {

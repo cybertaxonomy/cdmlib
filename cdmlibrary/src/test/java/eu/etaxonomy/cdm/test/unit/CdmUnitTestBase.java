@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm;
+package eu.etaxonomy.cdm.test.unit;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.*;

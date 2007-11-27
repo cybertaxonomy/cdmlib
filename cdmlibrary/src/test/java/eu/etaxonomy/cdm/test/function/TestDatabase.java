@@ -1,7 +1,7 @@
 /* just for testing */
 
 
-package eu.etaxonomy.cdm.functiontest;
+package eu.etaxonomy.cdm.test.function;
 
 
 import java.util.List;
@@ -15,7 +15,7 @@ import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBea
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.database.DatabaseEnum;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 
@@ -34,7 +34,7 @@ public class TestDatabase {
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
 		
-		List list = appCtr.getNameService().getAllNames(100,1);
+		List list = appCtr.getNameService().getAllNames();
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn = new BotanicalName(null);
@@ -45,11 +45,11 @@ public class TestDatabase {
 		bn.setInfraGenericEpithet("test");
 		nameService.saveTaxonName(bn);
 		//change connection
-		dbService.connectToDatabase(DatabaseEnum.SqlServer, "LAPTOPHP", "cdmTest", "sa", "sa");
-		//dbService.connectToDatabase(DatabaseEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
+		dbService.connectToDatabase(DatabaseTypeEnum.SqlServer, "LAPTOPHP", "cdmTest", "sa", "sa");
+		//dbService.connectToDatabase(DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());
-		list = nameService.getAllNames(100,1);
+		list = nameService.getAllNames();
 		logger.info("Count: " + list.size());
 		
 		BotanicalName bn2 = new BotanicalName(null);

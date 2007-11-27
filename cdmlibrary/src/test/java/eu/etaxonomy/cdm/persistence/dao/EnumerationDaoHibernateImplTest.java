@@ -12,9 +12,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import eu.etaxonomy.cdm.CdmUnitTestBase;
 import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 
 public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{

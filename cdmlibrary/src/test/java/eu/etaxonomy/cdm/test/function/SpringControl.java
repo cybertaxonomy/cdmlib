@@ -1,7 +1,7 @@
 /* just for testing */
 
 
-package eu.etaxonomy.cdm.functiontest;
+package eu.etaxonomy.cdm.test.function;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.log4j.Logger;
@@ -29,7 +29,7 @@ public class SpringControl {
 		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
 		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.list(1000,1);
+		List<TaxonNameBase> tnList = tnDao.list(1000);
 		
 		logger.warn(tn.getUuid());
 	}
@@ -47,7 +47,7 @@ public class SpringControl {
 		
 		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
 		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.find(tn.getNameCache());
+		List<TaxonNameBase> tnList = tnDao.getNamesByName(tn.getName());
 		for (TaxonNameBase tn2: tnList){
 			System.out.print(tn2.getUuid()+";");
 		}
@@ -83,7 +83,7 @@ public class SpringControl {
 
 		// load objects
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(100,1);
+		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames();
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
