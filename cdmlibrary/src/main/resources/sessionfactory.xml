@@ -20,7 +20,7 @@
     
 <bean id="sessionFactory" 
     class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-    <property name="dataSource" ref="mysqlDataSource"/>
+    <property name="dataSource" ref="defaultDataSource"/>
     <property name="annotatedPackages">
         <list>
             <value>eu.etaxonomy.cdm.model.common</value>

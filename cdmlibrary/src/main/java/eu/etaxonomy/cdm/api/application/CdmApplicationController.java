@@ -18,10 +18,15 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
+	static final String APP_CONTEXT_FILE_NAME = "applicationContext.xml";
+	
+	
+	
 	private ClassPathXmlApplicationContext applicationContext;
 	private INameService nameService;
 	private IAgentService agentService;
 	private IDatabaseService databaseService;
+	
 	
 	private Server hsqldbServer;
 	
@@ -38,10 +43,10 @@ public class CdmApplicationController {
 		//if yes then find out if Server is running
 		//if not running, start server
 
-		logger.info("Start CdmApplicationController");
+		logger.info("Start CdmApplicationController with default data source");
 		CdmDataSource dataSource = CdmDataSource.getDefaultDataSource();
 		dataSource.updateSessionFactory();
-		String appContextFileName = CdmDataSource.getDataSourceFile().getName();
+		String appContextFileName = APP_CONTEXT_FILE_NAME;
 		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
 	}
 	
@@ -52,7 +57,7 @@ public class CdmApplicationController {
 	public CdmApplicationController(CdmDataSource dataSource) {
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
 		dataSource.updateSessionFactory();
-		String appContextFileName = CdmDataSource.getDataSourceFile().getName();
+		String appContextFileName = APP_CONTEXT_FILE_NAME;
 		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
 	}
 

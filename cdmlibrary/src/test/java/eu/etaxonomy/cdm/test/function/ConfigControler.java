@@ -13,7 +13,7 @@ public class ConfigControler {
 		List<CdmDataSource> lsDataSources = CdmDataSource.getAllDataSources();
 		System.out.println(lsDataSources);
 		CdmDataSource dataSource = lsDataSources.get(0);
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		CdmDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
 		CdmApplicationController appCtr = new CdmApplicationController(dataSource);
 		appCtr.close();
