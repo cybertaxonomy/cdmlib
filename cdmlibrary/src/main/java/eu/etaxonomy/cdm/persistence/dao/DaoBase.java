@@ -17,14 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
 /**
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T extends VersionableEntity> implements IDao<T> {
+public abstract class DaoBase<T extends CdmBase> implements IDao<T> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 

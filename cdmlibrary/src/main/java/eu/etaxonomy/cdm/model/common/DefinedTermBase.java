@@ -175,4 +175,17 @@ public abstract class DefinedTermBase extends VersionableEntity{
 		return this.getRepresentation(lang).getLabel();
 	}
 
+
+	@Override
+	// equals if UUIDs are the same, no matter where/when created!
+	public boolean equals(Object obj) {
+		if (DefinedTermBase.class.isAssignableFrom(obj.getClass())){
+			DefinedTermBase dtb = (DefinedTermBase)obj;
+			if (dtb.getUuid().equals(this.getUuid())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

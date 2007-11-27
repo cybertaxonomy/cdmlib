@@ -1,0 +1,28 @@
+UUID	Term	Inverseterm	Symetric	Transitive
+	Taxonomically Included in	Taxonomically Includes		*
+	Misapplied Name for	Has Misapplied Name		
+	Invalid Designation for	Has Invalid Designation		
+	Contradiction		*	
+	Congruent to		*	
+	Includes	Included in		*
+	Congruent to or Includes	Congruent to or Included in		*
+	Included in or Includes		*	
+	Congruent to or Included in or Includes		*	
+	Overlaps		*	
+	Congruent to or Overlaps		*	
+	Includes or Overlaps	Included in or Overlaps		
+	Congruent to or Includes or Overlaps	Congruent to or Included in or Overlaps		
+	Included in or Includes or Overlaps		*	
+	Does Not Exclude		*	
+	Excludes		*	
+	Congruent to or Excludes		*	
+	Includes or Excludes	Included in or Excludes		
+	Congruent to or Includes or Excludes	Congruent to or Included in or Excludes		
+	Included in or Includes or Excludes		*	
+	Does Not Overlap		*	
+	Overlaps or Excludes		*	
+	Congruent to or Overlaps or Excludes		*	
+	Includes or Overlaps or Excludes	Included in or Overlaps or Excludes		
+	Not Included in	Does Not Include		
+	Not Congruent to		*	
+	All Relationships		*	

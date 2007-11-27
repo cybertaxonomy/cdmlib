@@ -234,6 +234,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/IEnumerationDAO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/ITaxonNameDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/NoDefinedTermClassException.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/TaxonNameDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text
@@ -245,6 +246,13 @@ cdmlibrary/src/main/resources/applicationContext.xml -text
 cdmlibrary/src/main/resources/cdm.datasource.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/main/resources/sessionfactory.xml -text
+cdmlibrary/src/main/resources/terms/ConceptRelationshipType.csv -text
+cdmlibrary/src/main/resources/terms/HybridRelationshipType.csv -text
+cdmlibrary/src/main/resources/terms/NameRelationshipType.csv -text
+cdmlibrary/src/main/resources/terms/NomenclaturalStatusType.csv -text
+cdmlibrary/src/main/resources/terms/Rank.csv -text
+cdmlibrary/src/main/resources/terms/SynonymRelationshipType.csv -text
+cdmlibrary/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlibrary/src/site/site.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text

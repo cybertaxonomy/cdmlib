@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import eu.etaxonomy.cdm.model.common.Enumeration;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.IAgentDao;
@@ -42,6 +43,12 @@ public class NameServiceImpl extends ServiceBase<TaxonNameBase> implements IName
 
 	public List getAllNames(int limit, int start){
 		return dao.list(limit, start);
+	}
+
+
+	public Enumeration getRankEnumeration() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

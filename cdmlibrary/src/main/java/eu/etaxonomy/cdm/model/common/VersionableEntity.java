@@ -27,38 +27,32 @@ import javax.persistence.*;
 @MappedSuperclass
 public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
 	static Logger logger = Logger.getLogger(VersionableEntity.class);
-	//the globally unique identifier
-	private String uuid;
-	private Calendar created;
-	private Person createdBy;
 	//time of last update for this object
 	private Calendar updated;
 	private Person updatedBy;
-	private T nextVersion;
-	private T previousVersion;
+	private CdmBase nextVersion;
+	private CdmBase previousVersion;
 
 	public VersionableEntity() {
 		super();
-		this.uuid = UUID.randomUUID().toString();
-		this.created = Calendar.getInstance();
 	}
 
 	
 	//@OneToOne(mappedBy="previousVersion")
 	@Transient
-	public T getNextVersion(){
+	public CdmBase getNextVersion(){
 		return this.nextVersion;
 	}
-	public void setNextVersion(T nextVersion){
+	public void setNextVersion(CdmBase nextVersion){
 		this.nextVersion = nextVersion;
 	}
 
 	//@OneToOne
 	@Transient
-	public T getPreviousVersion(){
+	public CdmBase getPreviousVersion(){
 		return this.previousVersion;
 	}
-	public void setPreviousVersion(T previousVersion){
+	public void setPreviousVersion(CdmBase previousVersion){
 		this.previousVersion = previousVersion;
 	}
 
@@ -75,43 +69,6 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	 */
 	public void setUpdatedBy(Person updatedBy){
 		this.updatedBy = updatedBy;
-	}
-
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Person getCreatedBy(){
-		return this.createdBy;
-	}
-
-	/**
-	 * 
-	 * @param createdBy    createdBy
-	 */
-	public void setCreatedBy(Person createdBy){
-		this.createdBy = createdBy;
-	}
-
-	public String getUuid(){
-		return this.uuid;
-	}
-	/**
-	 * 
-	 * @param uuid    uuid
-	 */
-	protected void setUuid(String uuid){
-		this.uuid = uuid;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	public Calendar getCreated(){
-		return this.created;
-	}
-	/**
-	 * 
-	 * @param created    created
-	 */
-	public void setCreated(Calendar created){
-		this.created = created;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

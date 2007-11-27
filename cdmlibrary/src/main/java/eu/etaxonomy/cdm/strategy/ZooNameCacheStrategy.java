@@ -2,7 +2,7 @@ package eu.etaxonomy.cdm.strategy;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 
 public class ZooNameCacheStrategy extends StrategyBase implements
@@ -12,7 +12,7 @@ public class ZooNameCacheStrategy extends StrategyBase implements
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */
 	// PROTOTYPE dummy implementation
-	public String getNameCache(VersionableEntity object) {
+	public String getNameCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
 		if (tn.getUninomial() != null){
@@ -29,7 +29,7 @@ public class ZooNameCacheStrategy extends StrategyBase implements
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
 	// PROTOTYPE dummy implementation
-	public String getFullNameCache(VersionableEntity object) {
+	public String getFullNameCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
 		result = getNameCache(object);

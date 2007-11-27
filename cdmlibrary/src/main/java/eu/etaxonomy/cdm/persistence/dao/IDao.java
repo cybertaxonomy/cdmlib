@@ -20,7 +20,6 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Enumeration;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * an data access interface that all data access classes implement
@@ -28,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T extends VersionableEntity> {
+public interface IDao<T extends CdmBase> {
 	public String saveOrUpdate(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)

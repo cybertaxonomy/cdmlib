@@ -29,28 +29,32 @@ public aspect PropertyChangeAspect {
 		//logger.setLevel(Level.DEBUG);
 		// get property that is set by setter method
 		Field property = getFieldOfSetter( thisJoinPointStaticPart.getSignature() );
-		property.setAccessible(true);
-		String propertyName = property.getName();
-		//logger.debug("execSetter: The property is ["+propertyName+"]");
-		try {
-			// use property attribute directly, not through get method.
-			// get method might modify things, like setting a UUID when called for the first time.
-			// Also get methods for booleans start with "is" or "has"
-			Object oldValue = property.get(cb);
+		if (property==null){
 			proceed( cb );
-			cb.firePropertyChange( propertyName, oldValue, property.get(cb));
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-			proceed( cb );
-		}catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			proceed( cb );
-		}catch (IllegalAccessException e) {
-			e.printStackTrace();
-			proceed( cb );
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			proceed( cb );
+		}else{			
+			property.setAccessible(true);
+			String propertyName = property.getName();
+			//logger.debug("execSetter: The property is ["+propertyName+"]");
+			try {
+				// use property attribute directly, not through get method.
+				// get method might modify things, like setting a UUID when called for the first time.
+				// Also get methods for booleans start with "is" or "has"
+				Object oldValue = property.get(cb);
+				proceed( cb );
+				cb.firePropertyChange( propertyName, oldValue, property.get(cb));
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				proceed( cb );
+			}catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				proceed( cb );
+			}catch (IllegalAccessException e) {
+				e.printStackTrace();
+				proceed( cb );
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+				proceed( cb );
+			}
 		}
 	}
 
@@ -58,6 +62,7 @@ public aspect PropertyChangeAspect {
 		/**
 		 * @param signature
 		 * Return the Field object that belongs to the signature of a setter method
+		 * If no matching attribute can be found return null instead of throwing an NoSuchFieldException
 		 * Removes first 3 characters of method name to find property name
 		 */
 		private Field getFieldOfSetter( Signature signature ){
@@ -73,7 +78,8 @@ public aspect PropertyChangeAspect {
 					propertyName = "is"+propertyName.substring(0, 1).toUpperCase()+ propertyName.substring(1);
 					field = signature.getDeclaringType().getDeclaredField( propertyName );
 				}catch( NoSuchFieldException nsfe ){
-					nsfe.printStackTrace();
+					// cant find any matching attribute. catch error and return null
+					return null;
 				}
 			}
 			return field;

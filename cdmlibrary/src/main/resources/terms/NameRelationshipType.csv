@@ -1,0 +1,16 @@
+Uuid	Term	Inverseterm	Symetric	Transitive
+	Orthographic Variant		*	*
+	Later Homonym	Ealier Homonym		*
+	Treated As Later Homonym	Treated As Earlier Homonym		
+	Alternative Name		*	*
+	Basionym	New Combination		
+	Replaced Synonym	New Name		
+	Conserved Against	Rejected in Favour		
+	Validated by Name	Validating Name		
+	Later Validated by Name	Later Validating Name		
+
+Hybridrelationshiptype				
+	First Parent	Child		
+	Second Parent	Child		
+	Female Parent	Child		
+	Male Parent	Child

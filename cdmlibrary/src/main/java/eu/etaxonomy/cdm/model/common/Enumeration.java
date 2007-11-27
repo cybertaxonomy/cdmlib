@@ -65,7 +65,22 @@ public class Enumeration extends DefinedTermBase {
 	public void removeTerm(EnumeratedTermBase term) {
 		term.setEnumeration(null);
 	}
-	
+
+	public List<EnumeratedTermBase> getPrecedingTerms(EnumeratedTermBase etb) {
+		return terms.subList(0, terms.indexOf(etb));
+	}
+	public List<EnumeratedTermBase> getSucceedingTerms(EnumeratedTermBase etb) {
+		return terms.subList(terms.indexOf(etb), terms.size());
+	}
+	public EnumeratedTermBase getPreviousTerm(EnumeratedTermBase etb) {
+		int idx = terms.indexOf(etb)-1;
+		return terms.get(idx);
+	}
+	public EnumeratedTermBase getNextTerm(EnumeratedTermBase etb) {
+		int idx = terms.indexOf(etb)+1;
+		return terms.get(idx);
+	}
+
 	
 	public String getEnumerationUri() {
 		return enumerationUri;
@@ -73,15 +88,4 @@ public class Enumeration extends DefinedTermBase {
 	public void setEnumerationUri(String enumerationUri) {
 		this.enumerationUri = enumerationUri;
 	}
-
-	/**
-	 * add new terms from a vocabulary to which uri points.
-	 * 
-	 * @param uri    uri
-	 */
-	public void loadTerms(String uri){
-
-	}
-
-	
 }
