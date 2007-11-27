@@ -25,7 +25,7 @@ import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBea
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Service;
 
-import eu.etaxonomy.cdm.database.DatabaseEnum;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 
 /**
@@ -46,9 +46,9 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
-	public boolean connectToDatabase(DatabaseEnum databaseEnum, String server,
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password, int port) {
 		Session session;
 		DriverManagerDataSource aDataSource = getDataSource();
@@ -65,15 +65,15 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 		
 		//set Dialect
 		Properties props = sfb.getHibernateProperties();
-		props.setProperty("hibernate.dialect", databaseEnum.getHibernateDialect());
+		props.setProperty("hibernate.dialect", databaseTypeEnum.getHibernateDialect());
 		System.out.println(props.propertyNames());
 		System.out.println(props.getProperty("hibernate.dialect"));
 		
 		//change Datasource
-		aDataSource.setDriverClassName(databaseEnum.getDriverClassName());
+		aDataSource.setDriverClassName(databaseTypeEnum.getDriverClassName());
 		aDataSource.setUsername(username);
 		aDataSource.setPassword(password);
-		aDataSource.setUrl(databaseEnum.getConnectionString(server, database, port));
+		aDataSource.setUrl(databaseTypeEnum.getConnectionString(server, database, port));
 		
 		//update schema
 		sfb.updateDatabaseSchema();
@@ -89,11 +89,11 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 		//System.out.println(dsProp);
 		//		cfg.setProperties(sfb.getHibernateProperties());
 //		
-		cfg.setProperty("hibernate.connection.driver_class", databaseEnum.getDriverClassName());
-		cfg.setProperty("hibernate.connection.url", databaseEnum.getConnectionString(server, database, port));
+		cfg.setProperty("hibernate.connection.driver_class", databaseTypeEnum.getDriverClassName());
+		cfg.setProperty("hibernate.connection.url", databaseTypeEnum.getConnectionString(server, database, port));
 		cfg.setProperty("hibernate.connection.username", username);
 		cfg.setProperty("hibernate.connection.password", password);
-		cfg.setProperty("hibernate.dialect", databaseEnum.getHibernateDialect());
+		cfg.setProperty("hibernate.dialect", databaseTypeEnum.getHibernateDialect());
 		
 		Properties ps = cfg.getProperties();
 		Iterator<Object> it = 	ps.keySet().iterator();
@@ -123,19 +123,19 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean connectToDatabase(DatabaseEnum databaseEnum, String server,
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password) {
-		return connectToDatabase(databaseEnum, server, database, username, password, databaseEnum.getDefaultPort()) ;
+		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort()) ;
 	}
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDatabaseTypeName()
 	 */
-	public DatabaseEnum getDatabaseEnum() {
-		return DatabaseEnum.getDatabaseEnumByDriverClass(getDataSource().getDriverClassName());
+	public DatabaseTypeEnum getDatabaseEnum() {
+		return DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDataSource().getDriverClassName());
 	}
 
 
