@@ -58,8 +58,6 @@
             <value>eu.etaxonomy.cdm.model.common.MediaInstance</value>
             <value>eu.etaxonomy.cdm.model.common.MovieFile</value>
             <value>eu.etaxonomy.cdm.model.common.MultilanguageSet</value>
-            <value>eu.etaxonomy.cdm.model.common.NonOrderedTermBase</value>
-            <value>eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.OrderedTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.OriginalSource</value>
             <value>eu.etaxonomy.cdm.model.common.ReferencedEntityBase</value>
