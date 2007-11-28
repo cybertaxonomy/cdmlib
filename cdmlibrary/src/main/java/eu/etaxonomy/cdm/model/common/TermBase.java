@@ -64,15 +64,6 @@ public abstract class TermBase extends VersionableEntity {
 		this.uri = uri;
 	}
 
-	/**
-	 * 
-	 * @param uri    uri
-	 */
-	@Transient
-	public static DefinedTermBase getDefinedTermByUri(String uri) {
-		return null;
-	}
-
 	public String toString() {
 		String result="DT<"+uri+">:";
 		for (Representation r : representations){

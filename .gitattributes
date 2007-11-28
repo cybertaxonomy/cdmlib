@@ -62,6 +62,8 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text

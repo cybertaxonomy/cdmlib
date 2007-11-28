@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @Service
-public class NameServiceImpl extends ServiceBase<TaxonNameBase> implements INameService {
+public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	private ITaxonNameDao nameDao;

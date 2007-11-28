@@ -8,12 +8,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.IDao;
 
 
-public abstract class ServiceBase<T extends IdentifiableEntity> implements IIdentifiableEntityService<T>, ApplicationContextAware {
+public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;
@@ -33,10 +34,6 @@ public abstract class ServiceBase<T extends IdentifiableEntity> implements IIden
 
 	protected String saveCdmObject(T cdmObj){
 		return dao.saveOrUpdate(cdmObj);
-	}
-
-	protected List<T> findCdmObjectsByTitle(String title){
-		return dao.find(title);
 	}
 
 	protected List<T> list(int limit, int start) {
