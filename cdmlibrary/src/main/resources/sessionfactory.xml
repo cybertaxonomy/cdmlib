@@ -21,12 +21,14 @@
 <bean id="sessionFactory" 
     class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
     <property name="dataSource" ref="defaultDataSource"/>
+    <property name="namingStrategy">
+    	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+    </property>
     <property name="annotatedPackages">
         <list>
             <value>eu.etaxonomy.cdm.model.common</value>
         </list>
     </property>
-    
     <property name="annotatedClasses">
         <list>
             <value>eu.etaxonomy.cdm.model.agent.Address</value>
@@ -174,10 +176,9 @@
     </property>
     <property name="hibernateProperties">
         <props>
-            <prop key="hibernate.hbm2ddl.auto">created</prop>
+            <prop key="hibernate.hbm2ddl.auto">update</prop>
             <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
             <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-            <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultComponentSafeNamingStrategy</prop>
             <prop key="hibernate.show_sql">true</prop>
             <prop key="hibernate.format_sql">false</prop>
         </props>
