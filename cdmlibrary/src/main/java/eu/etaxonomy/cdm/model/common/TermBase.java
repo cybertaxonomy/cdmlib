@@ -49,7 +49,7 @@ public abstract class TermBase extends VersionableEntity {
 	@Transient
 	public Representation getRepresentation(Language lang) {
 		for (Representation repr : representations){
-			if (repr.getLanguage() == lang){
+			if (repr.getLanguage().equals(lang)){
 				return repr;
 			}
 		}
@@ -64,31 +64,30 @@ public abstract class TermBase extends VersionableEntity {
 		this.uri = uri;
 	}
 
-	public String toString() {
-		String result="DT<"+uri+">:";
-		for (Representation r : representations){
-			result += r.getLabel()+"("+r.getLanguage().getTermLabel()+")";
+	@Transient
+	public String getLabel() {
+		if(getLabel(Language.DEFAULT())!=null){
+			return this.getRepresentation(Language.DEFAULT()).getLabel();
+		}else{
+			for (Representation r : representations){
+				return r.getLabel();
+			}			
 		}
-		return result;
+		return super.getUuid();
 	}
 
 	@Transient
-	public String getTermLabel() {
-		return this.getRepresentation(Language.DEFAULT()).getLabel();
-	}
-
-	@Transient
-	public String getTermLabel(Language lang) {
+	public String getLabel(Language lang) {
 		return this.getRepresentation(lang).getLabel();
 	}
 
 	@Transient
-	public String getTermText() {
+	public String getDescription() {
 		return this.getRepresentation(Language.DEFAULT()).getLabel();
 	}
 
 	@Transient
-	public String getTermText(Language lang) {
+	public String getDescription(Language lang) {
 		return this.getRepresentation(lang).getLabel();
 	}
 
@@ -101,6 +100,15 @@ public abstract class TermBase extends VersionableEntity {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		String result="DT<"+uri+">:";
+		for (Representation r : representations){
+			result += r.toString();
+		}
+		return result;
 	}
 
 }

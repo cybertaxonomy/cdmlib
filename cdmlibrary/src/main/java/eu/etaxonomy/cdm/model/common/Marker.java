@@ -37,6 +37,9 @@ public class Marker extends VersionableEntity {
 		return markedObj;
 	}
 	protected void setMarkedObj(AnnotatableEntity newMarkedObject) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.markedObj == newMarkedObject) return;
 		if (markedObj != null) { 
 			markedObj.markers.remove(this);
 		}

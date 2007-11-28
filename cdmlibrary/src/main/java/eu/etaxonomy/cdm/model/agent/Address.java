@@ -47,6 +47,9 @@ public class Address extends VersionableEntity {
 		return contact;
 	}
 	protected void setContact(Contact newContact) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.contact == newContact) return;
 		if (contact != null) { 
 			contact.addresses.remove(this);
 		}

@@ -52,6 +52,9 @@ public class InstitutionalMembership extends VersionableEntity {
 		return person;
 	}
 	public void setPerson(Person newPerson) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.person == newPerson) return;
 		if (person != null) { 
 			person.institutionalMemberships.remove(this);
 		}

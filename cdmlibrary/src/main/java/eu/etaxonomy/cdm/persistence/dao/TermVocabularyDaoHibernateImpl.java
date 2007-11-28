@@ -50,7 +50,6 @@ public class TermVocabularyDaoHibernateImpl extends DaoBase<TermVocabulary> impl
 						term.setVocabulary(voc);
 						term.addRepresentation(new Representation(nextLine[1].trim(), nextLine[1].trim(), Language.DEFAULT()));
 						logger.debug("Created term: "+term.toString());
-						//this.saveCdmObj(term);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

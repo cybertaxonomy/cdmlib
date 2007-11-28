@@ -59,11 +59,15 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 			Set<Representation> inverseRepresentations) {
 		this.inverseRepresentations = inverseRepresentations;
 	}
-	public void addRepresentation(Representation representation) {
-		this.inverseRepresentations.add(representation);
+	public void addInverseRepresentation(Representation inverseRepresentation) {
+		this.inverseRepresentations.add(inverseRepresentation);
 	}
-	public void removeRepresentation(Representation representation) {
-		this.inverseRepresentations.remove(representation);
+	public void removeInverseRepresentation(Representation inverseRepresentation) {
+		this.inverseRepresentations.remove(inverseRepresentation);
+	}
+	public void addRepresentation(Representation representation, Representation inverseRepresentation) {
+		this.addRepresentation(representation);
+		this.addInverseRepresentation(inverseRepresentation);
 	}
 	
 	@Transient

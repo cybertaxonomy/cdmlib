@@ -30,8 +30,6 @@ import javax.persistence.*;
 @Entity
 public class NamedArea extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
-	//description of this area
-	private String description;
 	//description of time valid context of this area. e.g. year range
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
@@ -64,13 +62,6 @@ public class NamedArea extends OrderedTermBase {
 	}
 	public void setLevel(NamedAreaLevel level){
 		this.level = level;
-	}
-
-	public String getDescription(){
-		return this.description;
-	}
-	public void setDescription(String description){
-		this.description = description;
 	}
 
 	public TimePeriod getValidPeriod(){

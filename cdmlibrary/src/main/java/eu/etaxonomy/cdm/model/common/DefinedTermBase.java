@@ -115,6 +115,9 @@ public abstract class DefinedTermBase extends TermBase{
 		return this.vocabulary;
 	}
 	public void setVocabulary(TermVocabulary newVocabulary) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.vocabulary == newVocabulary) return;
 		if (this.vocabulary != null) { 
 			this.vocabulary.terms.remove(this);
 		}

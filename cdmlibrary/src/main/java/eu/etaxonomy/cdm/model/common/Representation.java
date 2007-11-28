@@ -58,5 +58,14 @@ public class Representation extends LanguageString {
 	protected void setDescription(String text) {
 		super.setText(text);
 	}
-		
+	
+	public String toString(){
+		// we dont need the language returned too, do we? 
+		return getLabel();
+//		if(getLanguage()==null || getLanguage().getLabel()==null){
+//			return getLabel();
+//		}else{
+//			return getLabel()+"("+ getLanguage().getLabel()+")";
+//		}
+	}
 }

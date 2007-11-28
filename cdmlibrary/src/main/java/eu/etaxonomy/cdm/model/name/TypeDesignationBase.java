@@ -34,6 +34,9 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase {
 	}
 
 	public void setTypifiedName(TaxonNameBase newTypifiedName) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.typifiedName == newTypifiedName) return;
 		if (typifiedName != null) { 
 			typifiedName.typeDesignations.remove(this);
 		}

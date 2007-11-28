@@ -127,4 +127,10 @@ public abstract class CdmBase implements Serializable{
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+"#"+this.getUuid();
+	}
+	
 }
