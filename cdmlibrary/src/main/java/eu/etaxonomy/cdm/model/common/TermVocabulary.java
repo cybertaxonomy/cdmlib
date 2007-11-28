@@ -56,7 +56,7 @@ public class TermVocabulary extends TermBase {
 
 	
 	@OneToMany(mappedBy="vocabulary")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<DefinedTermBase> getTerms() {
 		return terms;
 	}

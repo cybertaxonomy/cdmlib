@@ -4,23 +4,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import au.com.bytecode.opencsv.CSVReader;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.test.function.SpringControl;
 
 
 
@@ -53,6 +49,7 @@ public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> impleme
 						term.setVocabulary(voc);
 						term.addRepresentation(new Representation(nextLine[1].trim(), nextLine[1].trim(), Language.DEFAULT()));
 						logger.debug("Created term: "+term.toString());
+						//this.saveCdmObj(term);
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;

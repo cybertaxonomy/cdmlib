@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @created 02-Nov-2007 19:36:10
  */
 public interface IDao<T extends CdmBase> {
+	public String saveCdmObj(CdmBase cdmObj) throws DataAccessException;
+
 	public String saveOrUpdate(T transientObject) throws DataAccessException;
 	
 	/* (non-Javadoc)

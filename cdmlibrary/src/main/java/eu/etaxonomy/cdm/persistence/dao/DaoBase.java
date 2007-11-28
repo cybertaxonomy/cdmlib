@@ -41,6 +41,11 @@ public abstract class DaoBase<T extends CdmBase> implements IDao<T> {
 	}
 	
 	
+	public String saveCdmObj(CdmBase cdmObj) throws DataAccessException  {
+		getSession().saveOrUpdate(cdmObj);
+		return cdmObj.getUuid();
+	}
+
 	public String saveOrUpdate(T transientObject) throws DataAccessException  {
 		getSession().saveOrUpdate(transientObject);
 		return transientObject.getUuid();
