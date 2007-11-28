@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.dao;
+package eu.etaxonomy.cdm.model.common;
 
 public class NoDefinedTermClassException extends Exception {
 

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
