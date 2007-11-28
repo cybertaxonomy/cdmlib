@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
+import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
 
 /**
@@ -22,7 +23,8 @@ public enum DatabaseTypeEnum {
 	HSqlDb(1),
 	MySQL(2),
 	ODBC(3),
-	SqlServer(4)
+	PostgreSQL(4),
+	SqlServer(5)
 	;
 
 	/**
@@ -39,6 +41,8 @@ public enum DatabaseTypeEnum {
         	case 3:
         		this.dbType = new OdbcDatabaseType(); break;
         	case 4:
+            	this.dbType = new PostgreSQLDatabaseType(); break;
+            case 5:
             	this.dbType = new SqlServerDatabaseType(); break;
             default:
                 //TODO Exception
