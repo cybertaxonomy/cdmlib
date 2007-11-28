@@ -17,7 +17,12 @@ import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
@@ -27,43 +32,48 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 
 	@Autowired
 	private ITermVocabularyDao dao;
-	private TermVocabulary enumeration;
+	private TermVocabulary vocabulary;
 
 	@Before
 	// generate enumeration for every test to play with
 	public void onSetUp() throws Exception {
 		logger.debug(EnumerationDaoHibernateImplTest.class.getSimpleName() + " setup()");
-		this.enumeration = new TermVocabulary("Biological subdomains","biodomain","http://myterms.org/biodomain");
+		this.vocabulary = new TermVocabulary("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
 			Keyword term = new Keyword(r,r);
-			enumeration.addTerm(term);			
+			vocabulary.addTerm(term);			
 		}
 	}
 
-	//@Test
+	@Test
 	public void testSave() {
-		dao.saveOrUpdate(this.enumeration);
+		dao.saveOrUpdate(this.vocabulary);
 		try {
-			this.enumeration.addTerm(new Keyword("cladistics","cladistics"));
+			this.vocabulary.addTerm(new Keyword("cladistics","cladistics"));
 		} catch (WrongTermTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		dao.saveOrUpdate(this.enumeration);		
+		dao.saveOrUpdate(this.vocabulary);		
 	}
 
-	//@Test
+	@Test
 	public void testFindString() {
 		List<TermVocabulary> myEnum = dao.find("biodomain");
-		assertTrue(myEnum.contains(this.enumeration));
+		assertTrue(myEnum.contains(this.vocabulary));
 	}
 
 	@Test
 	public void loadTerms() {
 		try {
-			//dao.loadTerms(Rank.class, "Rank.csv", true);
+			dao.loadDefaultTerms(Rank.class);
+			dao.loadDefaultTerms(TypeDesignationStatus.class);
+			dao.loadDefaultTerms(NomenclaturalStatusType.class);
 			dao.loadDefaultTerms(SynonymRelationshipType.class);
+			dao.loadDefaultTerms(HybridRelationshipType.class);
+			dao.loadDefaultTerms(NameRelationshipType.class);
+			dao.loadDefaultTerms(ConceptRelationshipType.class);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
