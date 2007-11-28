@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.NonOrderedTermBase;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -23,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public class PreservationMethod extends DefinedTermBase {
+public class PreservationMethod extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
 
 	public PreservationMethod(String term, String label) {

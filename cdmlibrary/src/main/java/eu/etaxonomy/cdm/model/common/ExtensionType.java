@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class ExtensionType extends DefinedTermBase {
+public class ExtensionType extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);
 
 	public ExtensionType(String term, String label) {

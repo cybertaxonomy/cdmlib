@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.NonOrderedTermBase;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -22,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:18
  */
 @Entity
-public class Continent extends DefinedTermBase {
+public class Continent extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);
 
 	public Continent(String term, String label) {

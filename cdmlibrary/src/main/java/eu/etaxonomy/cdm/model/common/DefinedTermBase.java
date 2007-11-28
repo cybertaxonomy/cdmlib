@@ -28,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@MappedSuperclass
 public abstract class DefinedTermBase extends VersionableEntity{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 

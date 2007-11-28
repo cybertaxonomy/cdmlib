@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.location;
 
 
+import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
@@ -27,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:36
  */
 @Entity
-public class NamedArea extends OrderedTermBase {
+public class NamedArea extends OrderedNonRelationshipTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
 	//description of this area
 	private String description;

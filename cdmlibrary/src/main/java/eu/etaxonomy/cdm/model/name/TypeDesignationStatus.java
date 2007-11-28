@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -25,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:00
  */
 @Entity
-public class TypeDesignationStatus extends OrderedTermBase {
+public class TypeDesignationStatus extends OrderedNonRelationshipTermBase {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
 
 	public TypeDesignationStatus(String term, String label,

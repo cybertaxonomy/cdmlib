@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:33
  */
 @Entity
-public class MarkerType extends DefinedTermBase {
+public class MarkerType extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(MarkerType.class);
 
 	public MarkerType(String term, String label) {

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.IDefinedTermDao;
@@ -28,7 +29,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:46
  */
 @Entity
-public class Rank extends OrderedTermBase {
+public class Rank extends OrderedNonRelationshipTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 	@Autowired
 	private static IDefinedTermDao dao;

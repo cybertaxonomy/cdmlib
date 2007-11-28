@@ -22,8 +22,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
-@Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@MappedSuperclass
 public abstract class OrderedTermBase extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(OrderedTermBase.class);
 	private TermVocabulary enumeration;

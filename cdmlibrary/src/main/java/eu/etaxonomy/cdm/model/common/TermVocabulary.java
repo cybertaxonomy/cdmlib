@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class TermVocabulary extends DefinedTermBase {
+public class TermVocabulary extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal

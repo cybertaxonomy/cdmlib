@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
+import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -25,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:30
  */
 @Entity
-public class InstitutionType extends OrderedTermBase {
+public class InstitutionType extends OrderedNonRelationshipTermBase {
 	public InstitutionType(String term, String label, TermVocabulary enumeration) {
 		super(term, label, enumeration);
 	}

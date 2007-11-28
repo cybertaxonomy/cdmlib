@@ -6,10 +6,11 @@ import javax.persistence.InheritanceType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class NonOrderedTermBase extends DefinedTermBase {
+public abstract class OrderedNonRelationshipTermBase extends OrderedTermBase {
 
-	public NonOrderedTermBase(String term, String label) {
-		super(term, label);
+	public OrderedNonRelationshipTermBase(String term, String label,
+			TermVocabulary enumeration) {
+		super(term, label, enumeration);
 		// TODO Auto-generated constructor stub
 	}
 

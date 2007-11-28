@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -25,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:12
  */
 @Entity
-public class BibtexEntryType extends OrderedTermBase {
+public class BibtexEntryType extends OrderedNonRelationshipTermBase {
 	static Logger logger = Logger.getLogger(BibtexEntryType.class);
 
 	public BibtexEntryType(String term, String label, TermVocabulary enumeration) {

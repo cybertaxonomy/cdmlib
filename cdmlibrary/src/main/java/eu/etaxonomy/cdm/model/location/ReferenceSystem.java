@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.NonOrderedTermBase;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -25,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class ReferenceSystem extends DefinedTermBase {
+public class ReferenceSystem extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
 
 	public ReferenceSystem(String term, String label) {

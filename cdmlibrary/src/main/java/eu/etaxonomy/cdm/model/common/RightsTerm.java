@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:50
  */
 @Entity
-public class RightsTerm extends DefinedTermBase {
+public class RightsTerm extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(RightsTerm.class);
 
 	public RightsTerm(String term, String label) {

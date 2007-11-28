@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:31
  */
 @Entity
-public class Language extends DefinedTermBase {
+public class Language extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(Language.class);
 	static Language langEN = new Language("English","EN");
 	static Language langCH = new Language("Chinese","CH");

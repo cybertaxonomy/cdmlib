@@ -116,7 +116,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MediaInstance.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MovieFile.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageSet.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/NonOrderedTermBase.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/NonRelationshipTermBase.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/OrderedNonRelationshipTermBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSource.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text

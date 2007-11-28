@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.location;
 
 
+import eu.etaxonomy.cdm.model.common.NonOrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
@@ -24,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:02
  */
 @Entity
-public class WaterbodyOrCountry extends DefinedTermBase {
+public class WaterbodyOrCountry extends NonOrderedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	private String iso2code;
 	private TimePeriod validPeriod;
