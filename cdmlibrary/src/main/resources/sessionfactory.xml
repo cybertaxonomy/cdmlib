@@ -68,9 +68,11 @@
             <value>eu.etaxonomy.cdm.model.common.Representation</value>
             <value>eu.etaxonomy.cdm.model.common.Rights</value>
             <value>eu.etaxonomy.cdm.model.common.RightsTerm</value>
+            <value>eu.etaxonomy.cdm.model.common.TermBase</value>
             <value>eu.etaxonomy.cdm.model.common.TermVocabulary</value>
             <value>eu.etaxonomy.cdm.model.common.TimePeriod</value>
             <value>eu.etaxonomy.cdm.model.common.VersionableEntity</value>
+            <value>eu.etaxonomy.cdm.model.common.WrongTermTypeException</value>
             <value>eu.etaxonomy.cdm.model.description.AbsenceTerm</value>
             <value>eu.etaxonomy.cdm.model.description.CategoricalData</value>
             <value>eu.etaxonomy.cdm.model.description.CharacterTree</value>
