@@ -75,6 +75,21 @@
   </build>
   <dependencies>
   	<dependency>
+  		<groupId>com.microsoft.jdbcdriver</groupId>
+  		<artifactId>mssqlserver</artifactId>
+  		<version>2000.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.microsoft.jdbcdriver</groupId>
+  		<artifactId>msutil</artifactId>
+  		<version>2000.3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.microsoft.jdbcdriver</groupId>
+  		<artifactId>msbase</artifactId>
+  		<version>2000.3</version>
+  	</dependency>
+  	<dependency>
   		<groupId>aspectj</groupId>
   		<artifactId>aspectjrt</artifactId>
   		<version>1.5.2a</version>
@@ -124,7 +139,6 @@
   		<artifactId>hibernate</artifactId>
   		<version>3.2.5.ga</version>
   	</dependency>
-
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring</artifactId>
@@ -150,23 +164,26 @@
   		<artifactId>spring-test</artifactId>
   		<version>2.5</version>
   	</dependency>
-
   	<dependency>
   		<groupId>xerces</groupId>
   		<artifactId>xercesImpl</artifactId>
   		<version>2.7.1</version>
   	</dependency>
-
   	<dependency>
   		<groupId>jdom</groupId>
   		<artifactId>jdom</artifactId>
   		<version>1.0</version>
   	</dependency>
-    <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>1.8</version>
-    </dependency>
+  	<dependency>
+  		<groupId>jaxen</groupId>
+  		<artifactId>jaxen</artifactId>
+  		<version>1.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.sf.opencsv</groupId>
+  		<artifactId>opencsv</artifactId>
+  		<version>1.8</version>
+  	</dependency>
   </dependencies>
 </project>
 
