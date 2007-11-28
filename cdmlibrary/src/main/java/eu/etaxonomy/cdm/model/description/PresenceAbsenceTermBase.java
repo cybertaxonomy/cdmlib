@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 
@@ -24,11 +24,11 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public abstract class PresenceAbsenceTermBase extends EnumeratedTermBase {
+public abstract class PresenceAbsenceTermBase extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
 	public PresenceAbsenceTermBase(String term, String label,
-			Enumeration enumeration) {
+			TermVocabulary enumeration) {
 		super(term, label, enumeration);
 		// TODO Auto-generated constructor stub
 	}

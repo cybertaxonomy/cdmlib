@@ -19,7 +19,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * an data access interface that all data access classes implement

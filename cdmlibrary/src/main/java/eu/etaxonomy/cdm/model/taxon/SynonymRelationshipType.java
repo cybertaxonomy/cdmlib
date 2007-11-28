@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
@@ -28,7 +28,7 @@ public class SynonymRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	public SynonymRelationshipType(String term, String label,
-			Enumeration enumeration, boolean symmetric, boolean transitive) {
+			TermVocabulary enumeration, boolean symmetric, boolean transitive) {
 		super(term, label, enumeration, symmetric, transitive);
 		// TODO Auto-generated constructor stub
 	}

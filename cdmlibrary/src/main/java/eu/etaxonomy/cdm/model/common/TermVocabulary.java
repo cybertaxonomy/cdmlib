@@ -25,19 +25,19 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class Enumeration extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(Enumeration.class);
+public class TermVocabulary extends DefinedTermBase {
+	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
-	protected List<EnumeratedTermBase> terms = new ArrayList();
+	protected List<OrderedTermBase> terms = new ArrayList();
 	//The enumeration/vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Furhter vocs can be setup through our own ontology.
 	private String enumerationUri;
 
 	
-	public Enumeration(String term, String label, String enumerationUri) {
+	public TermVocabulary(String term, String label, String enumerationUri) {
 		super(term, label);
 		setEnumerationUri(enumerationUri);
 	}
@@ -53,30 +53,30 @@ public class Enumeration extends DefinedTermBase {
 	
 	@OneToMany(mappedBy="enumeration")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-	public List<EnumeratedTermBase> getTerms() {
+	public List<OrderedTermBase> getTerms() {
 		return terms;
 	}
-	protected void setTerms(List<EnumeratedTermBase> terms) {
+	protected void setTerms(List<OrderedTermBase> terms) {
 		this.terms = terms;
 	}
-	public void addTerm(EnumeratedTermBase term) {
+	public void addTerm(OrderedTermBase term) {
 		term.setEnumeration(this);
 	}
-	public void removeTerm(EnumeratedTermBase term) {
+	public void removeTerm(OrderedTermBase term) {
 		term.setEnumeration(null);
 	}
 
-	public List<EnumeratedTermBase> getPrecedingTerms(EnumeratedTermBase etb) {
+	public List<OrderedTermBase> getPrecedingTerms(OrderedTermBase etb) {
 		return terms.subList(0, terms.indexOf(etb));
 	}
-	public List<EnumeratedTermBase> getSucceedingTerms(EnumeratedTermBase etb) {
+	public List<OrderedTermBase> getSucceedingTerms(OrderedTermBase etb) {
 		return terms.subList(terms.indexOf(etb), terms.size());
 	}
-	public EnumeratedTermBase getPreviousTerm(EnumeratedTermBase etb) {
+	public OrderedTermBase getPreviousTerm(OrderedTermBase etb) {
 		int idx = terms.indexOf(etb)-1;
 		return terms.get(idx);
 	}
-	public EnumeratedTermBase getNextTerm(EnumeratedTermBase etb) {
+	public OrderedTermBase getNextTerm(OrderedTermBase etb) {
 		int idx = terms.indexOf(etb)+1;
 		return terms.get(idx);
 	}

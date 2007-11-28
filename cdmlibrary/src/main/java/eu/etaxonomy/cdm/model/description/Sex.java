@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import java.util.*;
 import javax.persistence.*;
@@ -26,7 +26,7 @@ import javax.persistence.*;
 public class Sex extends Scope {
 	static Logger logger = Logger.getLogger(Sex.class);
 
-	public Sex(String term, String label, Enumeration enumeration) {
+	public Sex(String term, String label, TermVocabulary enumeration) {
 		super(term, label, enumeration);
 		// TODO Auto-generated constructor stub
 	}

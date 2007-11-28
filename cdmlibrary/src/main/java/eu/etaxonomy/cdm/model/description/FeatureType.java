@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
@@ -34,9 +34,9 @@ public class FeatureType extends DefinedTermBase {
 	private boolean supportsIndividualAssociation;
 	private boolean supportsTaxonInteraction;
 	private boolean supportsCommonTaxonName;
-	private Set<Enumeration> recommendedModifierEnumeration;
+	private Set<TermVocabulary> recommendedModifierEnumeration;
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures;
-	private Set<Enumeration> supportedCategoricalEnumerations;
+	private Set<TermVocabulary> supportedCategoricalEnumerations;
 
 	public FeatureType(String term, String label) {
 		super(term, label);
@@ -95,21 +95,21 @@ public class FeatureType extends DefinedTermBase {
 	}
 
 	@OneToMany
-	public Set<Enumeration> getRecommendedModifierEnumeration() {
+	public Set<TermVocabulary> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
 	protected void setRecommendedModifierEnumeration(
-			Set<Enumeration> recommendedModifierEnumeration) {
+			Set<TermVocabulary> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
 
 	public void addRecommendedModifierEnumeration(
-			Enumeration recommendedModifierEnumeration) {
+			TermVocabulary recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	public void removeRecommendedModifierEnumeration(
-			Enumeration recommendedModifierEnumeration) {
+			TermVocabulary recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
@@ -133,20 +133,20 @@ public class FeatureType extends DefinedTermBase {
 	}
 
 	@OneToMany
-	public Set<Enumeration> getSupportedCategoricalEnumerations() {
+	public Set<TermVocabulary> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
 	protected void setSupportedCategoricalEnumerations(
-			Set<Enumeration> supportedCategoricalEnumerations) {
+			Set<TermVocabulary> supportedCategoricalEnumerations) {
 		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
 	}
 	public void addSupportedCategoricalEnumeration(
-			Enumeration supportedCategoricalEnumeration) {
+			TermVocabulary supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	public void removeSupportedCategoricalEnumeration(
-			Enumeration supportedCategoricalEnumeration) {
+			TermVocabulary supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 

@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 
@@ -26,10 +26,10 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:35
  */
 @Entity
-public class Modifier extends EnumeratedTermBase {
+public class Modifier extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(Modifier.class);
 
-	public Modifier(String term, String label, Enumeration enumeration) {
+	public Modifier(String term, String label, TermVocabulary enumeration) {
 		super(term, label, enumeration);
 		// TODO Auto-generated constructor stub
 	}

@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 
@@ -25,11 +25,11 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:39
  */
 @Entity
-public class NomenclaturalStatusType extends EnumeratedTermBase {
+public class NomenclaturalStatusType extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
 	public NomenclaturalStatusType(String term, String label,
-			Enumeration enumeration) {
+			TermVocabulary enumeration) {
 		super(term, label, enumeration);
 		// TODO Auto-generated constructor stub
 	}

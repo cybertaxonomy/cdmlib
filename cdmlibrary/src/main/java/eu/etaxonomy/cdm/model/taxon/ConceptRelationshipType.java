@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 import org.apache.log4j.Logger;
@@ -30,7 +30,7 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 
 	public ConceptRelationshipType(String term, String label,
-			Enumeration enumeration, boolean symmetric, boolean transitive) {
+			TermVocabulary enumeration, boolean symmetric, boolean transitive) {
 		super(term, label, enumeration, symmetric, transitive);
 	}
 

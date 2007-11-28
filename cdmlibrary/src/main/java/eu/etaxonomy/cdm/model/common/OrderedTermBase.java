@@ -24,12 +24,12 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class EnumeratedTermBase extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(EnumeratedTermBase.class);
-	private Enumeration enumeration;
+public abstract class OrderedTermBase extends DefinedTermBase {
+	static Logger logger = Logger.getLogger(OrderedTermBase.class);
+	private TermVocabulary enumeration;
 
 
-	public EnumeratedTermBase(String term, String label, Enumeration enumeration) {
+	public OrderedTermBase(String term, String label, TermVocabulary enumeration) {
 		super(term, label);
 		setEnumeration(enumeration);
 	}
@@ -37,10 +37,10 @@ public abstract class EnumeratedTermBase extends DefinedTermBase {
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Enumeration getEnumeration(){
+	public TermVocabulary getEnumeration(){
 		return this.enumeration;
 	}
-	public void setEnumeration(Enumeration newEnumeration){
+	public void setEnumeration(TermVocabulary newEnumeration){
 		if (this.enumeration != null) { 
 			this.enumeration.terms.remove(this);
 		}

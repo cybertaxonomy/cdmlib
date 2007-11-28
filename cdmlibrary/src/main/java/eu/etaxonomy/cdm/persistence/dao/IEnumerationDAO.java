@@ -3,9 +3,12 @@ package eu.etaxonomy.cdm.persistence.dao;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
-public interface IEnumerationDAO extends IDao<Enumeration> {
+public interface IEnumerationDAO extends IDao<TermVocabulary> {
 
-	public Enumeration loadTerms(Class termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException;
+	public TermVocabulary loadTerms(Class termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException;
+	
+	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException;
+
 }

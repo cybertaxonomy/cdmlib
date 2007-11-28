@@ -10,8 +10,8 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
-import eu.etaxonomy.cdm.model.common.EnumeratedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 
@@ -25,8 +25,8 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:30
  */
 @Entity
-public class InstitutionType extends EnumeratedTermBase {
-	public InstitutionType(String term, String label, Enumeration enumeration) {
+public class InstitutionType extends OrderedTermBase {
+	public InstitutionType(String term, String label, TermVocabulary enumeration) {
 		super(term, label, enumeration);
 	}
 

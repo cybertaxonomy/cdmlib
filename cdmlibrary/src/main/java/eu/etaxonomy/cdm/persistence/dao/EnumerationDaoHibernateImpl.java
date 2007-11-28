@@ -15,47 +15,73 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Enumeration;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.test.function.SpringControl;
 
 
 
 @Repository
-public class EnumerationDaoHibernateImpl extends DaoBase<Enumeration> implements IEnumerationDAO {
+public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> implements IEnumerationDAO {
 	private static final Logger logger = Logger.getLogger(EnumerationDaoHibernateImpl.class);
 
 	public EnumerationDaoHibernateImpl() {
-		super(Enumeration.class);
+		super(TermVocabulary.class);
 	}
 
 	@Override
-	public List<Enumeration> find(String queryString) {
+	public List<TermVocabulary> find(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
-	public Enumeration loadTerms(Class termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
-		if (DefinedTermBase.class.isAssignableFrom(termClass)){
+	public TermVocabulary loadTerms(Class termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
+		if (OrderedTermBase.class.isAssignableFrom(termClass)){
 			File termFile = new File(CdmUtils.getResourceDir().getAbsoluteFile()+File.separator+"terms"+File.separator+filename);
-			 CSVReader reader = new CSVReader(new FileReader(termFile));
+			 CSVReader reader = new CSVReader(new FileReader(termFile), '\t');
 			    String [] nextLine;
+			    TermVocabulary enumeration = new TermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 			    try {
 					while ((nextLine = reader.readNext()) != null) {
 					    // nextLine[] is an array of values from the line
-						for (String col : nextLine){
-						    System.out.print(">"+col.toString()+"< ");
-						}
-					    System.out.println();
+						OrderedTermBase term = (OrderedTermBase) termClass.newInstance();
+						term.setEnumeration(enumeration);
+						term.addRepresentation(new Representation(nextLine[1].trim(), nextLine[1].trim(), Language.DEFAULT()));
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				// save enumeration and all terms to DB
+				this.saveOrUpdate(enumeration);
 		}else{
 			throw new NoDefinedTermClassException(termClass.getSimpleName()); 
 		}
 		return null;
 	}
 
+	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException {
+		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true);
+	}
+
+		public static void  main(String[] args) {
+		EnumerationDaoHibernateImpl dao = new EnumerationDaoHibernateImpl();
+		try {
+			dao.loadTerms(Rank.class, "Rank.csv", true);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoDefinedTermClassException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

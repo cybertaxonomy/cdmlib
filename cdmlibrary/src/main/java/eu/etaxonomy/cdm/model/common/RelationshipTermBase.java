@@ -14,14 +14,14 @@ import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class RelationshipTermBase extends EnumeratedTermBase {
+public abstract class RelationshipTermBase extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	private boolean symmetric;
 	private boolean transitive;
 	private Set<Representation> inverseRepresentations;
 	
-	public RelationshipTermBase(String term, String label, Enumeration enumeration, boolean symmetric, boolean transitive) {
+	public RelationshipTermBase(String term, String label, TermVocabulary enumeration, boolean symmetric, boolean transitive) {
 		super(term, label, enumeration);
 		setSymmetric(symmetric);
 		setTransitive(transitive);		
