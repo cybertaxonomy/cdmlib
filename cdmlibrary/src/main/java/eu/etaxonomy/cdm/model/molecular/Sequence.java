@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -38,10 +39,10 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	//the sequence as a string of base pairs. 5'->3'
 	private String citationMicroReference;
 	private ReferenceBase publishedIn;
-	private Set<ReferenceBase> citations;
-	private Set<GenBankAccession> genBankAccession;
+	private Set<ReferenceBase> citations = new HashSet();
+	private Set<GenBankAccession> genBankAccession = new HashSet();
 	private Locus locus;
-	private Set<Media> chromatograms;
+	private Set<Media> chromatograms = new HashSet();
 
 	@ManyToOne
 	public Locus getLocus(){

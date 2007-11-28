@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public class PreservationMethod extends NonOrderedTermBase {
+public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
 
 	public PreservationMethod(String term, String label) {

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.Stage;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -38,7 +39,7 @@ public class Occurrence extends IdentifiableEntity {
 	private String locality;
 	//Date on which this occurrence happened
 	private Calendar eventDate;
-	private Set<Media> media;
+	private Set<Media> media = new HashSet();
 	private Point exactLocation;
 	private NamedArea namedArea;
 	private Agent collector;

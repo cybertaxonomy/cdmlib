@@ -24,12 +24,14 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class ExtensionType extends NonOrderedTermBase {
+public class ExtensionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);
 
+	public ExtensionType() {
+		super();
+	}
 	public ExtensionType(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 

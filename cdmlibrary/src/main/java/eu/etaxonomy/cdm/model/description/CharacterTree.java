@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,7 +27,7 @@ import javax.persistence.*;
 @Entity
 public class CharacterTree extends VersionableEntity {
 	static Logger logger = Logger.getLogger(CharacterTree.class);
-	private Set<FeatureType> characters;
+	private Set<FeatureType> characters = new HashSet();
 	
 	@ManyToMany
 	public Set<FeatureType> getCharacters(){

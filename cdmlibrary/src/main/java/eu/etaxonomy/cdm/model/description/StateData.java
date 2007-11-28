@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -32,7 +33,7 @@ public class StateData extends VersionableEntity {
 	}
 	static Logger logger = Logger.getLogger(StateData.class);
 	private State state;
-	private Set<Modifier> modifiers;
+	private Set<Modifier> modifiers = new HashSet();
 	private MultilanguageSet modifyingText;
 
 	@ManyToOne

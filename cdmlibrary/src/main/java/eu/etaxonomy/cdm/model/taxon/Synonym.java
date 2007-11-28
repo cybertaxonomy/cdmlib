@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,7 +26,7 @@ import javax.persistence.*;
 @Entity
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
-	private Set<SynonymRelationship> synoynmRelations;
+	private Set<SynonymRelationship> synoynmRelations = new HashSet();
 
 
 	@OneToMany

@@ -28,57 +28,33 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-@MappedSuperclass
-public abstract class DefinedTermBase extends VersionableEntity{
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class DefinedTermBase extends TermBase{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 
-	//URI used as an ID for the term. In the case of TDWG ontology derived terms the URL to the term!
-	private String uri;
-	private Set<Representation> representations = new HashSet();
-	private DefinedTermBase kindOf;
+	private TermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet();
-	private DefinedTermBase partOf;
+	private TermBase partOf;
 	private Set<DefinedTermBase> includes = new HashSet();
 	private Set<Media> media = new HashSet();
+
+	private TermVocabulary vocabulary;
 	
-	public DefinedTermBase(String term, String label) {
+	
+	public DefinedTermBase() {
 		super();
-		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
 	}
-
-	
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-	public Set<Representation> getRepresentations(){
-		return this.representations;
-	}
-	public void setRepresentations(Set<Representation> representations) {
-		this.representations = representations;
-	}
-	public void addRepresentation(Representation representation) {
-		this.representations.add(representation);
-	}
-	public void removeRepresentation(Representation representation) {
-		this.representations.remove(representation);
-	}
-
-	@Transient
-	public Representation getRepresentation(Language lang) {
-		for (Representation repr : representations){
-			if (repr.getLanguage() == lang){
-				return repr;
-			}
-		}
-		return null;
+	public DefinedTermBase(String term, String label) {
+		super(term, label);
 	}
 
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase getKindOf(){
+	public TermBase getKindOf(){
 		return this.kindOf;
 	}
-	public void setKindOf(DefinedTermBase kindOf){
+	public void setKindOf(TermBase kindOf){
 		this.kindOf = kindOf;
 	}
 
@@ -94,10 +70,10 @@ public abstract class DefinedTermBase extends VersionableEntity{
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase getPartOf(){
+	public TermBase getPartOf(){
 		return this.partOf;
 	}
-	public void setPartOf(DefinedTermBase partOf){
+	public void setPartOf(TermBase partOf){
 		this.partOf = partOf;
 	}
 
@@ -112,7 +88,7 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	public void addIncludes(DefinedTermBase includes) {
 		this.includes.add(includes);
 	}
-	public void removeIncludes(DefinedTermBase includes) {
+	public void removeIncludes(TermBase includes) {
 		this.includes.remove(includes);
 	}
 
@@ -133,59 +109,19 @@ public abstract class DefinedTermBase extends VersionableEntity{
 	}
 
 	
-	public String getUri(){
-		return this.uri;
+	@ManyToOne
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	public TermVocabulary getVocabulary() {
+		return this.vocabulary;
 	}
-	public void setUri(String uri){
-		this.uri = uri;
-	}
-
-	
-	/**
-	 * 
-	 * @param uri    uri
-	 */
-	@Transient
-	public static DefinedTermBase getDefinedTermByUri(String uri){
-		return null;
-	}
-	
-	public String toString(){
-		String result="DT<"+uri+">:";
-		for (Representation r : representations){
-			result += r.getLabel()+"("+r.getLanguage().getTermLabel()+")";
+	public void setVocabulary(TermVocabulary newVocabulary) {
+		if (this.vocabulary != null) { 
+			this.vocabulary.terms.remove(this);
 		}
-		return result;
-	}
-	
-	@Transient
-	public String getTermLabel(){
-		return this.getRepresentation(Language.DEFAULT()).getLabel();
-	}
-	@Transient
-	public String getTermLabel(Language lang){
-		return this.getRepresentation(lang).getLabel();
-	}
-	@Transient
-	public String getTermText(){
-		return this.getRepresentation(Language.DEFAULT()).getLabel();
-	}
-	@Transient
-	public String getTermText(Language lang){
-		return this.getRepresentation(lang).getLabel();
-	}
-
-
-	@Override
-	// equals if UUIDs are the same, no matter where/when created!
-	public boolean equals(Object obj) {
-		if (DefinedTermBase.class.isAssignableFrom(obj.getClass())){
-			DefinedTermBase dtb = (DefinedTermBase)obj;
-			if (dtb.getUuid().equals(this.getUuid())){
-				return true;
-			}
+		if (newVocabulary!= null) { 
+			newVocabulary.terms.add(this);
 		}
-		return false;
+		this.vocabulary = newVocabulary;		
 	}
 	
 }

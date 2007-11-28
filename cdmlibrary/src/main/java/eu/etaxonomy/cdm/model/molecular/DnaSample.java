@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -29,7 +30,7 @@ public class DnaSample extends IdentifiableEntity {
 	//Notes on extraction, purification or amplification process
 	private String productionNotes;
 	private Calendar dateProduced;
-	private Set<Sequence> sequences;
+	private Set<Sequence> sequences = new HashSet();
 	private TissueSample extractedFrom;
 	private Collection storedAt;
 

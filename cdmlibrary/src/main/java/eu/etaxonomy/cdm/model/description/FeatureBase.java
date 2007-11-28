@@ -24,6 +24,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -37,9 +38,9 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(FeatureBase.class);
 	//type, category of information. In structured descriptions characters
 	private FeatureType type;
-	private Set<Modifier> modifiers;
+	private Set<Modifier> modifiers = new HashSet();
 	private MultilanguageSet modifyingText;
-	private Set<Media> media;
+	private Set<Media> media = new HashSet();
 
 	
 	@OneToMany

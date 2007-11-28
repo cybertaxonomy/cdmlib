@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,12 +26,16 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:02
  */
 @Entity
-public class WaterbodyOrCountry extends NonOrderedTermBase {
+public class WaterbodyOrCountry extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	private String iso2code;
 	private TimePeriod validPeriod;
-	private Set<Continent> continents;
+	private Set<Continent> continents = new HashSet();
 
+	public WaterbodyOrCountry() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public WaterbodyOrCountry(String term, String label) {
 		super(term, label);
 	}

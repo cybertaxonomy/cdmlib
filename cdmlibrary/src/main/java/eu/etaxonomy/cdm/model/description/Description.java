@@ -20,6 +20,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -32,11 +33,11 @@ public class Description extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(Description.class);
 	//in 95% of all cases this will be the taxon name. getLabel() should return the taxon name in case label is null.
 	private String label;
-	private Set<FeatureBase> features;
-	private Set<Scope> scopes;
-	private Set<NamedArea> geoScopes;
+	private Set<FeatureBase> features = new HashSet();
+	private Set<Scope> scopes = new HashSet();
+	private Set<NamedArea> geoScopes = new HashSet();
 	private ReferenceBase source;
-	private Set<ObservationalUnit> observationalUnits;
+	private Set<ObservationalUnit> observationalUnits = new HashSet();
 	private Taxon taxon;
 
 	@ManyToOne

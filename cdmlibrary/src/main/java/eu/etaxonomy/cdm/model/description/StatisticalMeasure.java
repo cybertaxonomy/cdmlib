@@ -24,9 +24,13 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:54
  */
 @Entity
-public class StatisticalMeasure extends NonOrderedTermBase {
+public class StatisticalMeasure extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
+	public StatisticalMeasure() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public StatisticalMeasure(String term, String label) {
 		super(term, label);
 	}

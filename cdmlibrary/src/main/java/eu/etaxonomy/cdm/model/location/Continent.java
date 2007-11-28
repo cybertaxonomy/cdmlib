@@ -24,12 +24,14 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:18
  */
 @Entity
-public class Continent extends NonOrderedTermBase {
+public class Continent extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);
 
+	public Continent() {
+		super();
+	}
 	public Continent(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static final Continent EUROPE(){

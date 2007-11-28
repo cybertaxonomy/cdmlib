@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
@@ -42,7 +43,12 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	//@Test
 	public void testSave() {
 		dao.saveOrUpdate(this.enumeration);
-		this.enumeration.addTerm(new Keyword("cladistics","cladistics",null));
+		try {
+			this.enumeration.addTerm(new Keyword("cladistics","cladistics",null));
+		} catch (WrongTermTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		dao.saveOrUpdate(this.enumeration);		
 	}
 

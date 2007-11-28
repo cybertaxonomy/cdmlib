@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.Media;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -27,7 +28,7 @@ import javax.persistence.*;
 @Entity
 public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
-	private Set<Taxon> coveredTaxa;
+	private Set<Taxon> coveredTaxa = new HashSet();
 	
 	@OneToMany
 	public Set<Taxon> getCoveredTaxa() {

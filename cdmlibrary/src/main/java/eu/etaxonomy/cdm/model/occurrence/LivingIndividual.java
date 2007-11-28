@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,8 +26,8 @@ import javax.persistence.*;
 @Entity
 public class LivingIndividual extends Occurrence {
 	static Logger logger = Logger.getLogger(LivingIndividual.class);
-	private Set<LivingIndividual> parents;
-	private Set<LivingIndividual> offspring;
+	private Set<LivingIndividual> parents = new HashSet();
+	private Set<LivingIndividual> offspring = new HashSet();
 	
 	
 	@OneToMany

@@ -23,6 +23,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -47,12 +48,12 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
 	protected Set<TypeDesignationBase> typeDesignations;
-	private Set<NameRelationship> nameRelations;
-	private Set<NomenclaturalStatus> status;
+	private Set<NameRelationship> nameRelations = new HashSet();
+	private Set<NomenclaturalStatus> status = new HashSet();
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
-	private Set<TaxonNameBase> newCombinations;
+	private Set<TaxonNameBase> newCombinations = new HashSet();
 	// bidrectional with newCombinations. Keep congruent
 	private TaxonNameBase basionym;
 

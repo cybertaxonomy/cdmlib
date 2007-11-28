@@ -20,6 +20,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -36,7 +37,7 @@ public class NamedArea extends OrderedNonRelationshipTermBase {
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
 	private MediaInstance shapeFile;
-	private Set<WaterbodyOrCountry> waterbodiesOrCountries;
+	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet();
 	private NamedAreaType type;
 	private NamedAreaLevel level;
 

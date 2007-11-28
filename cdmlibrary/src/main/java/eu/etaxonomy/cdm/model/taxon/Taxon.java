@@ -16,6 +16,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,9 +27,9 @@ import javax.persistence.*;
 @Entity
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
-	private Set<Description> descriptions;
-	private Set<SynonymRelationship> synonymRelations;
-	private Set<TaxonRelationship> taxonRelations;
+	private Set<Description> descriptions = new HashSet();
+	private Set<SynonymRelationship> synonymRelations = new HashSet();
+	private Set<TaxonRelationship> taxonRelations = new HashSet();
 
 
 	@OneToMany

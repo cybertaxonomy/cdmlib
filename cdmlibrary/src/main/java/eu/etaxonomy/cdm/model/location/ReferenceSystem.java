@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class ReferenceSystem extends NonOrderedTermBase {
+public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
 
 	public ReferenceSystem(String term, String label) {

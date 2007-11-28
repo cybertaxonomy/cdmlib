@@ -25,24 +25,28 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class TermVocabulary extends NonOrderedTermBase {
+public class TermVocabulary extends TermBase {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
-	protected List<OrderedTermBase> terms = new ArrayList();
-	//The enumeration/vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
+	protected List<DefinedTermBase> terms = new ArrayList();
+	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
-	// UUID needed? Furhter vocs can be setup through our own ontology.
-	private String enumerationUri;
+	// UUID needed? Further vocs can be setup through our own ontology.
+	private String termSourceUri;
+	private Class termClass;
 
 	
-	public TermVocabulary(String term, String label, String enumerationUri) {
+	public TermVocabulary() {
+		super();
+	}
+	public TermVocabulary(String term, String label, String termSourceUri) {
 		super(term, label);
-		setEnumerationUri(enumerationUri);
+		setTermSourceUri(termSourceUri);
 	}
 
-	
+
 	public boolean isOrdinal(){
 		return this.isOrdinal;
 	}
@@ -53,39 +57,57 @@ public class TermVocabulary extends NonOrderedTermBase {
 	
 	@OneToMany(mappedBy="enumeration")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-	public List<OrderedTermBase> getTerms() {
+	public List<DefinedTermBase> getTerms() {
 		return terms;
 	}
-	protected void setTerms(List<OrderedTermBase> terms) {
+	protected void setTerms(List<DefinedTermBase> terms) {
 		this.terms = terms;
 	}
-	public void addTerm(OrderedTermBase term) {
-		term.setEnumeration(this);
+	public void addTerm(DefinedTermBase term) throws WrongTermTypeException {
+		if (terms.size()<1){
+			// no term yet in the list. First term defines the vocabulary kind
+			termClass=term.getClass();
+		}else if (term.getClass()!=termClass){
+				// check if new term in this vocabulary matches the previous ones
+				throw new WrongTermTypeException(term.getClass().getCanonicalName());
+		}
+		term.setVocabulary(this);
 	}
-	public void removeTerm(OrderedTermBase term) {
-		term.setEnumeration(null);
-	}
-
-	public List<OrderedTermBase> getPrecedingTerms(OrderedTermBase etb) {
-		return terms.subList(0, terms.indexOf(etb));
-	}
-	public List<OrderedTermBase> getSucceedingTerms(OrderedTermBase etb) {
-		return terms.subList(terms.indexOf(etb), terms.size());
-	}
-	public OrderedTermBase getPreviousTerm(OrderedTermBase etb) {
-		int idx = terms.indexOf(etb)-1;
-		return terms.get(idx);
-	}
-	public OrderedTermBase getNextTerm(OrderedTermBase etb) {
-		int idx = terms.indexOf(etb)+1;
-		return terms.get(idx);
+	public void removeTerm(DefinedTermBase term) {
+		term.setVocabulary(null);
 	}
 
 	
-	public String getEnumerationUri() {
-		return enumerationUri;
+	public List<DefinedTermBase> getPrecedingTerms(OrderedTermBase otb) {
+		// FIXME: need to return only OrderedTermBase lists
+		return terms.subList(0, terms.indexOf(otb));
 	}
-	public void setEnumerationUri(String enumerationUri) {
-		this.enumerationUri = enumerationUri;
+	public List<DefinedTermBase> getSucceedingTerms(OrderedTermBase otb) {
+		// FIXME: need to return only OrderedTermBase lists
+		return terms.subList(terms.indexOf(otb), terms.size());
+	}
+	public OrderedTermBase getPreviousTerm(OrderedTermBase otb) {
+		int idx = terms.indexOf(otb)-1;
+		return (OrderedTermBase)terms.get(idx);
+	}
+	public OrderedTermBase getNextTerm(OrderedTermBase otb) {
+		int idx = terms.indexOf(otb)+1;
+		return (OrderedTermBase)terms.get(idx);
+	}
+
+	
+	public String getTermSourceUri() {
+		return termSourceUri;
+	}
+	public void setTermSourceUri(String vocabularyUri) {
+		this.termSourceUri = vocabularyUri;
+	}
+	
+	
+	protected Class getTermClass() {
+		return termClass;
+	}
+	protected void setTermClass(Class termClass) {
+		this.termClass = termClass;
 	}
 }

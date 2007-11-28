@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -13,14 +14,16 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class RelationshipTermBase extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	private boolean symmetric;
 	private boolean transitive;
-	private Set<Representation> inverseRepresentations;
+	private Set<Representation> inverseRepresentations = new HashSet();
 	
+	public RelationshipTermBase() {
+		super();
+	}
 	public RelationshipTermBase(String term, String label, TermVocabulary enumeration, boolean symmetric, boolean transitive) {
 		super(term, label, enumeration);
 		setSymmetric(symmetric);

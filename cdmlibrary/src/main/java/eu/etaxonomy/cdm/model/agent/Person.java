@@ -18,6 +18,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -49,7 +50,7 @@ public class Person extends Agent {
 	private TimePeriod lifespan;
 	protected Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
-	private Set<Keyword> keywords;
+	private Set<Keyword> keywords = new HashSet();
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})

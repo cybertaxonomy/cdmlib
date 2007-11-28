@@ -23,16 +23,20 @@ import javax.persistence.*;
  */
 @Entity
 public class Representation extends LanguageString {
+	static Logger logger = Logger.getLogger(Representation.class);
+
+	private String label;
+	private String abbreviatedLabel;
+
+	public Representation() {
+		super();
+	}	
 	public Representation(String text, String label, Language lang) {
 		super(text, lang);
 		this.label = label;
 	}
 
-	static Logger logger = Logger.getLogger(Representation.class);
-	private String label;
-	private String abbreviatedLabel;
-
-
+	
 	public String getLabel(){
 		return this.label;
 	}
@@ -48,12 +52,6 @@ public class Representation extends LanguageString {
 	}
 	
 	@Transient
-	public String getText(){
-		return super.getText();
-	}
-	protected void setText(String text) {
-		super.setText(text);
-	}
 	public String getDescription(){
 		return super.getText();
 	}

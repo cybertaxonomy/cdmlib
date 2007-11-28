@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -36,8 +37,8 @@ public class ObservationalUnit extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(ObservationalUnit.class);
 	//Description defining the Observational unit in the context of the original Occurrence
 	private MultilanguageSet definition;
-	private Set<Description> descriptions;
-	private Set<Determination> determinations;
+	private Set<Description> descriptions = new HashSet();
+	private Set<Determination> determinations = new HashSet();
 	private Occurrence occurence;
 
 

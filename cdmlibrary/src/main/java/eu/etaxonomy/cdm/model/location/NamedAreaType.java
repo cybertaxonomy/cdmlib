@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:37
  */
 @Entity
-public class NamedAreaType extends NonOrderedTermBase {
+public class NamedAreaType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(NamedAreaType.class);
 
 	public NamedAreaType(String term, String label) {

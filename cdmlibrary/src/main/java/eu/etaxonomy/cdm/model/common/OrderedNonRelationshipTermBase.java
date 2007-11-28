@@ -8,6 +8,9 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class OrderedNonRelationshipTermBase extends OrderedTermBase {
 
+	public OrderedNonRelationshipTermBase() {
+		super();
+	}
 	public OrderedNonRelationshipTermBase(String term, String label,
 			TermVocabulary enumeration) {
 		super(term, label, enumeration);

@@ -27,6 +27,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 public class SynonymRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
+	public SynonymRelationshipType() {
+		super();
+	}
+
 	public SynonymRelationshipType(String term, String label,
 			TermVocabulary enumeration, boolean symmetric, boolean transitive) {
 		super(term, label, enumeration, symmetric, transitive);

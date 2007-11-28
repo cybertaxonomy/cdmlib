@@ -33,10 +33,6 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	private CdmBase nextVersion;
 	private CdmBase previousVersion;
 
-	public VersionableEntity() {
-		super();
-	}
-
 	
 	//@OneToOne(mappedBy="previousVersion")
 	@Transient
@@ -72,6 +68,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Version
 	public Calendar getUpdated(){
 		return this.updated;
 	}

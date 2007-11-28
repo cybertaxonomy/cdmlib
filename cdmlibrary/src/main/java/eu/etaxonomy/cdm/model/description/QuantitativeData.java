@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -24,7 +25,7 @@ import javax.persistence.*;
 public class QuantitativeData extends FeatureBase {
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
 	private MeasurementUnit unit;
-	private Set<StatisticalMeasurementValue> statisticalValues;
+	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet();
 	
 
 	@OneToMany

@@ -26,8 +26,13 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:59
  */
 @Entity
-public class TextFormat extends NonOrderedTermBase {
+public class TextFormat extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(TextFormat.class);
+
+	public TextFormat() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	public TextFormat(String term, String label) {
 		super(term, label);

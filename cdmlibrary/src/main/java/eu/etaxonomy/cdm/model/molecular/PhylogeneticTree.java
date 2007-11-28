@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedMedia;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -24,7 +25,7 @@ import javax.persistence.*;
 @Entity
 public class PhylogeneticTree extends ReferencedMedia {
 	static Logger logger = Logger.getLogger(PhylogeneticTree.class);
-	private Set<Sequence> usedSequences;
+	private Set<Sequence> usedSequences = new HashSet();
 	
 	@OneToMany
 	public Set<Sequence> getUsedSequences() {

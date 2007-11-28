@@ -35,7 +35,7 @@ public class Institution extends Agent {
 	//Acronym, code or initialism by which the insitution is generally known
 	private String code;
 	private String name;
-	private Set<InstitutionType> types;
+	private Set<InstitutionType> types = new HashSet();
 	private Institution isPartOf;
 	private Contact contact;
 

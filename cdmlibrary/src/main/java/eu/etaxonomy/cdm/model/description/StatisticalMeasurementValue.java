@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,7 +26,7 @@ import javax.persistence.*;
 public class StatisticalMeasurementValue extends VersionableEntity {
 	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 	private float value;
-	private Set<Modifier> modifiers;
+	private Set<Modifier> modifiers = new HashSet();
 	private StatisticalMeasure type;
 
 	

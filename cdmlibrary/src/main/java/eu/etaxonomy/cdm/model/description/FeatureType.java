@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:24
  */
 @Entity
-public class FeatureType extends NonOrderedTermBase {
+public class FeatureType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(FeatureType.class);
 
 	private boolean supportsQuantitativeData;
@@ -35,9 +36,9 @@ public class FeatureType extends NonOrderedTermBase {
 	private boolean supportsIndividualAssociation;
 	private boolean supportsTaxonInteraction;
 	private boolean supportsCommonTaxonName;
-	private Set<TermVocabulary> recommendedModifierEnumeration;
-	private Set<StatisticalMeasure> recommendedStatisticalMeasures;
-	private Set<TermVocabulary> supportedCategoricalEnumerations;
+	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet();
+	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet();
+	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet();
 
 	public FeatureType(String term, String label) {
 		super(term, label);

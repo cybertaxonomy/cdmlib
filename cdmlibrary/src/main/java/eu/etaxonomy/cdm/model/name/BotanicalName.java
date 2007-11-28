@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -34,7 +35,7 @@ public class BotanicalName extends NonViralName {
 	private boolean isTrinomHybrid = false;
 	//Only for fungi: to indicate that the type of the name is asexual or not
 	private boolean isAnamorphic;
-	private Set<HybridRelationship> hybridRelationships;
+	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
 	public BotanicalName(Rank rank) {
 		super(rank);

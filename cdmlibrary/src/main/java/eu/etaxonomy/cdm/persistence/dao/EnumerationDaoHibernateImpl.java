@@ -45,13 +45,14 @@ public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> impleme
 			File termFile = new File(CdmUtils.getResourceDir().getAbsoluteFile()+File.separator+"terms"+File.separator+filename);
 			 CSVReader reader = new CSVReader(new FileReader(termFile), '\t');
 			    String [] nextLine;
-			    TermVocabulary enumeration = new TermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+			    TermVocabulary voc = new TermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 			    try {
 					while ((nextLine = reader.readNext()) != null) {
 					    // nextLine[] is an array of values from the line
-						OrderedTermBase term = (OrderedTermBase) termClass.newInstance();
-						term.setEnumeration(enumeration);
+						DefinedTermBase term = (DefinedTermBase) termClass.newInstance();
+						term.setVocabulary(voc);
 						term.addRepresentation(new Representation(nextLine[1].trim(), nextLine[1].trim(), Language.DEFAULT()));
+						logger.debug("Created term: "+term.toString());
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -61,7 +62,7 @@ public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> impleme
 					e.printStackTrace();
 				}
 				// save enumeration and all terms to DB
-				this.saveOrUpdate(enumeration);
+				this.saveOrUpdate(voc);
 		}else{
 			throw new NoDefinedTermClassException(termClass.getSimpleName()); 
 		}

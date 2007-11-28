@@ -27,10 +27,15 @@ public class LanguageString  extends VersionableEntity{
 	static Logger logger = Logger.getLogger(LanguageString.class);
 	protected String text;
 	private Language language;
+
+	public LanguageString() {
+		super();
+	}
 	public LanguageString(String text, Language lang) {
 		this.setLanguage(lang);
 		this.setText(text);
 	}
+
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
