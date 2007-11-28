@@ -31,9 +31,8 @@ public class SynonymRelationshipType extends RelationshipTermBase {
 		super();
 	}
 
-	public SynonymRelationshipType(String term, String label,
-			TermVocabulary enumeration, boolean symmetric, boolean transitive) {
-		super(term, label, enumeration, symmetric, transitive);
+	public SynonymRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
+		super(term, label, symmetric, transitive);
 		// TODO Auto-generated constructor stub
 	}
 

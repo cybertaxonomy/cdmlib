@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.NonOrderedTermBase;
+
 
 import org.apache.log4j.Logger;
 

@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -27,11 +27,17 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:34
  */
 @Entity
-public class MeasurementUnit extends OrderedNonRelationshipTermBase {
+public class MeasurementUnit extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MeasurementUnit.class);
 
-	public MeasurementUnit(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public MeasurementUnit() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	public MeasurementUnit(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
 }

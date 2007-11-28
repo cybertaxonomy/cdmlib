@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.location;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
@@ -29,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:36
  */
 @Entity
-public class NamedArea extends OrderedNonRelationshipTermBase {
+public class NamedArea extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(NamedArea.class);
 	//description of this area
 	private String description;
@@ -41,8 +40,12 @@ public class NamedArea extends OrderedNonRelationshipTermBase {
 	private NamedAreaType type;
 	private NamedAreaLevel level;
 
-	public NamedArea(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public NamedArea() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public NamedArea(String term, String label) {
+		super(term, label);
 		// TODO Auto-generated constructor stub
 	}
 	

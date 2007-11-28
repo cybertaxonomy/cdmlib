@@ -26,8 +26,14 @@ import javax.persistence.*;
 public class Stage extends Scope {
 	static Logger logger = Logger.getLogger(Stage.class);
 
-	public Stage(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public Stage() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	public Stage(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
 }

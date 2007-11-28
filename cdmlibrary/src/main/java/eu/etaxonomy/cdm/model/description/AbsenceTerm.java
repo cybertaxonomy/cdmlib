@@ -26,8 +26,13 @@ import javax.persistence.*;
 public class AbsenceTerm extends PresenceAbsenceTermBase {
 	static Logger logger = Logger.getLogger(AbsenceTerm.class);
 
-	public AbsenceTerm(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public AbsenceTerm() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public AbsenceTerm(String term, String label) {
+		super(term, label);
 		// TODO Auto-generated constructor stub
 	}
 }

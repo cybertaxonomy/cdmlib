@@ -26,8 +26,7 @@ public abstract class OrderedTermBase extends DefinedTermBase {
 	public OrderedTermBase() {
 		super();
 	}
-	public OrderedTermBase(String term, String label, TermVocabulary vocabulary) {
+	public OrderedTermBase(String term, String label) {
 		super(term, label);
-		setVocabulary(vocabulary);
 	}
 }

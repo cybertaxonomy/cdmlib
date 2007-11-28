@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-@Entity
+@MappedSuperclass
 public abstract class RelationshipTermBase extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
@@ -24,8 +25,8 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	public RelationshipTermBase() {
 		super();
 	}
-	public RelationshipTermBase(String term, String label, TermVocabulary enumeration, boolean symmetric, boolean transitive) {
-		super(term, label, enumeration);
+	public RelationshipTermBase(String term, String label, boolean symmetric, boolean transitive) {
+		super(term, label);
 		setSymmetric(symmetric);
 		setTransitive(transitive);		
 	}

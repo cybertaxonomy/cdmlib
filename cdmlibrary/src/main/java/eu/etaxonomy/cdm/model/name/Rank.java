@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
+
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.IDefinedTermDao;
@@ -29,16 +29,20 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:46
  */
 @Entity
-public class Rank extends OrderedNonRelationshipTermBase {
+public class Rank extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 	@Autowired
 	private static IDefinedTermDao dao;
 	
-	public Rank(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public Rank() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	public Rank(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
 
 	public static final Rank EMPIRE(){
 		return (Rank)dao.findByUuid("1234-8765-21341");

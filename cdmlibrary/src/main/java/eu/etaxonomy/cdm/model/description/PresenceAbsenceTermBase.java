@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -25,12 +24,16 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public abstract class PresenceAbsenceTermBase extends OrderedNonRelationshipTermBase {
+public abstract class PresenceAbsenceTermBase extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
-	public PresenceAbsenceTermBase(String term, String label,
-			TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public PresenceAbsenceTermBase() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public PresenceAbsenceTermBase(String term, String label) {
+		super(term, label);
 		// TODO Auto-generated constructor stub
 	}
 

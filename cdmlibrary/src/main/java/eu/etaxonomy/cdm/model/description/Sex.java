@@ -26,8 +26,14 @@ import javax.persistence.*;
 public class Sex extends Scope {
 	static Logger logger = Logger.getLogger(Sex.class);
 
-	public Sex(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public Sex() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	public Sex(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
 }

@@ -27,9 +27,8 @@ import javax.persistence.*;
 public class NameRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
-	public NameRelationshipType(String term, String label,
-			TermVocabulary enumeration, boolean symmetric, boolean transitive) {
-		super(term, label, enumeration, symmetric, transitive);
+	public NameRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
+		super(term, label, symmetric, transitive);
 		// TODO Auto-generated constructor stub
 	}
 

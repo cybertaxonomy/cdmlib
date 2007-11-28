@@ -22,11 +22,17 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:31
  */
 @Entity
-public class Keyword extends OrderedNonRelationshipTermBase {
-	public Keyword(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+public class Keyword extends OrderedTermBase {
+	static Logger logger = Logger.getLogger(Keyword.class);
+
+	public Keyword() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	static Logger logger = Logger.getLogger(Keyword.class);
+	public Keyword(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
 
 }

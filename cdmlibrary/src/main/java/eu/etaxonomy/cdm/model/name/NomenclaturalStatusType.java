@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedNonRelationshipTermBase;
+
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -26,14 +26,19 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:39
  */
 @Entity
-public class NomenclaturalStatusType extends OrderedNonRelationshipTermBase {
+public class NomenclaturalStatusType extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
-	public NomenclaturalStatusType(String term, String label,
-			TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public NomenclaturalStatusType() {
+		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	public NomenclaturalStatusType(String term, String label) {
+		super(term, label);
+		// TODO Auto-generated constructor stub
+	}
+
 
 
 	@Transient

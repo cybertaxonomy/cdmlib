@@ -35,7 +35,7 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 		this.enumeration = new TermVocabulary("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
-			Keyword term = new Keyword(r,r,null);
+			Keyword term = new Keyword(r,r);
 			enumeration.addTerm(term);			
 		}
 	}
@@ -44,7 +44,7 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	public void testSave() {
 		dao.saveOrUpdate(this.enumeration);
 		try {
-			this.enumeration.addTerm(new Keyword("cladistics","cladistics",null));
+			this.enumeration.addTerm(new Keyword("cladistics","cladistics"));
 		} catch (WrongTermTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

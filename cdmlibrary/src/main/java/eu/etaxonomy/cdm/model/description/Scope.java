@@ -26,8 +26,13 @@ import javax.persistence.*;
 public class Scope extends Modifier {
 	static Logger logger = Logger.getLogger(Scope.class);
 
-	public Scope(String term, String label, TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public Scope() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Scope(String term, String label) {
+		super(term, label);
 		// TODO Auto-generated constructor stub
 	}
 }

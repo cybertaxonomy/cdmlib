@@ -11,9 +11,13 @@ import eu.etaxonomy.cdm.model.description.Modifier;
 public class DeterminationModifier extends Modifier {
 	static Logger logger = Logger.getLogger(DeterminationModifier.class);
 
-	public DeterminationModifier(String term, String label,
-			TermVocabulary enumeration) {
-		super(term, label, enumeration);
+	public DeterminationModifier() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public DeterminationModifier(String term, String label) {
+		super(term, label);
 		// TODO Auto-generated constructor stub
 	}
 
