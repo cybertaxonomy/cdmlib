@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,15 +27,15 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:01
  */
-@Entity
+@Entity(name="CDM_VIEW")
 public class View extends CdmBase implements IReferencedEntity{
 	static Logger logger = Logger.getLogger(View.class);
 	private String name;
 	private String description;
 	private ReferenceBase reference;
-	private Set<View> superViews;
-	private Set<CdmBase> members;
-	private Set<CdmBase> nonMembers;
+	private Set<View> superViews = new HashSet();
+	private Set<CdmBase> members = new HashSet();
+	private Set<CdmBase> nonMembers = new HashSet();
 	
 	public String getName(){
 		return this.name;
