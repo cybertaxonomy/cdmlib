@@ -25,7 +25,7 @@ public class EnumerationDaoHibernateImplTest extends CdmUnitTestBase{
 	static Logger logger = Logger.getLogger(EnumerationDaoHibernateImplTest.class);
 
 	@Autowired
-	private IEnumerationDAO dao;
+	private ITermVocabularyDao dao;
 	private TermVocabulary enumeration;
 
 	@Before

@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.IEnumerationDAO;
+import eu.etaxonomy.cdm.persistence.dao.ITermVocabularyDao;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

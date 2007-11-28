@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 
 @Repository
-public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> implements IEnumerationDAO {
-	private static final Logger logger = Logger.getLogger(EnumerationDaoHibernateImpl.class);
+public class TermVocabularyDaoHibernateImpl extends DaoBase<TermVocabulary> implements ITermVocabularyDao {
+	private static final Logger logger = Logger.getLogger(TermVocabularyDaoHibernateImpl.class);
 
-	public EnumerationDaoHibernateImpl() {
+	public TermVocabularyDaoHibernateImpl() {
 		super(TermVocabulary.class);
 	}
 
@@ -70,16 +70,4 @@ public class EnumerationDaoHibernateImpl extends DaoBase<TermVocabulary> impleme
 		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true);
 	}
 
-		public static void  main(String[] args) {
-		EnumerationDaoHibernateImpl dao = new EnumerationDaoHibernateImpl();
-		try {
-			dao.loadTerms(Rank.class, "Rank.csv", true);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoDefinedTermClassException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }
