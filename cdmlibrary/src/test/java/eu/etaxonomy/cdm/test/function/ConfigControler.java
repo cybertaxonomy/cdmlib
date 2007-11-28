@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
 
+import org.hibernate.cfg.Environment;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
