@@ -32,9 +32,9 @@ import javax.persistence.*;
 public abstract class DefinedTermBase extends TermBase{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 
-	private TermBase kindOf;
+	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet();
-	private TermBase partOf;
+	private DefinedTermBase partOf;
 	private Set<DefinedTermBase> includes = new HashSet();
 	private Set<Media> media = new HashSet();
 
@@ -51,10 +51,10 @@ public abstract class DefinedTermBase extends TermBase{
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public TermBase getKindOf(){
+	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
-	public void setKindOf(TermBase kindOf){
+	public void setKindOf(DefinedTermBase kindOf){
 		this.kindOf = kindOf;
 	}
 
@@ -70,10 +70,10 @@ public abstract class DefinedTermBase extends TermBase{
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public TermBase getPartOf(){
+	public DefinedTermBase getPartOf(){
 		return this.partOf;
 	}
-	public void setPartOf(TermBase partOf){
+	public void setPartOf(DefinedTermBase partOf){
 		this.partOf = partOf;
 	}
 
