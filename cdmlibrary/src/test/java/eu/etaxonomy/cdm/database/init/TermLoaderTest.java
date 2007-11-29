@@ -13,9 +13,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 
-public class TermLoaderTest {
+public class TermLoaderTest extends CdmUnitTestBase{
 	private TermLoader loader;
 	@Before
 	// generate enumeration for every test to play with
