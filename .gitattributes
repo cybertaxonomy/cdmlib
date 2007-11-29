@@ -74,11 +74,15 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/XmlHelp.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/MySQLDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/OdbcDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/OracleDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SqlServerDatabaseType.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/BaseTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/LocalisedRepresentationTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/NameTO.java -text
