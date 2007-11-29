@@ -95,7 +95,7 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	 */
 	@Transient
 	public String getInverseLabel() {
-		if(getLabel(Language.DEFAULT())!=null){
+		if(getInverseLabel(Language.DEFAULT())!=null){
 			return this.getInverseRepresentation(Language.DEFAULT()).getLabel();
 		}else{
 			for (Representation r : inverseRepresentations){
@@ -107,7 +107,12 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 
 	@Transient
 	public String getInverseLabel(Language lang) {
-		return this.getInverseRepresentation(lang).getLabel();
+		Representation r = this.getInverseRepresentation(lang);
+		if(r==null){
+			return null;
+		}else{
+			return r.getLabel();
+		}
 	}
 
 	@Transient

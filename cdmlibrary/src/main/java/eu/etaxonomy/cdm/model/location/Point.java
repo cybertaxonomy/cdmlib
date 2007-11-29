@@ -29,7 +29,7 @@ public class Point {
 	private float longitude;
 	private float latitude;
 	//in Meters
-	private int errorRadius = 0;
+	private Integer errorRadius = 0;
 	private ReferenceSystem referenceSystem;
 	
 	@ManyToOne
@@ -69,7 +69,7 @@ public class Point {
 		this.latitude = latitude;
 	}
 
-	public int getErrorRadius(){
+	public Integer getErrorRadius(){
 		return this.errorRadius;
 	}
 
@@ -77,7 +77,7 @@ public class Point {
 	 * 
 	 * @param errorRadius    errorRadius
 	 */
-	public void setErrorRadius(int errorRadius){
+	public void setErrorRadius(Integer errorRadius){
 		this.errorRadius = errorRadius;
 	}
 

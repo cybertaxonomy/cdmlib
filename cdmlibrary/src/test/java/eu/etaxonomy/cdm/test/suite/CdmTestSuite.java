@@ -13,11 +13,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    NonViralNameTest.class,
     PropertyChangeTest.class,
     DatabaseEnumTest.class,
-    DefinedTermDaoImplTest.class,
-    NameRelationshipTest.class
+    DefinedTermDaoImplTest.class
 })
 
 public class CdmTestSuite {
@@ -30,11 +28,9 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
-        	 NonViralNameTest.class, 
              PropertyChangeTest.class,
              DatabaseEnumTest.class,
-             DefinedTermDaoImplTest.class,
-             NameRelationshipTest.class
+             DefinedTermDaoImplTest.class
 	    ); 
 	}
 }

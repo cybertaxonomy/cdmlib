@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -21,11 +22,13 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
+@Component
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
 	@Autowired
 	private ICdmGenericDao dao;
+	
 	
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
@@ -54,9 +57,11 @@ public class TermLoader {
 				// save enumeration and all terms to DB
 				dao.saveOrUpdate(voc);
 				try {
-					CSVWriter writer = new CSVWriter(new FileWriter(termDirectory+File.separator+filename+".txt"));
+					String outfile=termDirectory+File.separator+filename+".txt";
+					CSVWriter writer = new CSVWriter(new FileWriter(outfile));
+					logger.info("Writing terms file to:"+outfile);
 						for (DefinedTermBase dt : voc){
-							String [] line = new String[4];
+							String [] line = new String[5];
 							line[0] = dt.getUuid();
 							line[1] = dt.getUri();
 							line[2] = dt.getLabel();
@@ -81,4 +86,5 @@ public class TermLoader {
 	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException {
 		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true);
 	}
+
 }
