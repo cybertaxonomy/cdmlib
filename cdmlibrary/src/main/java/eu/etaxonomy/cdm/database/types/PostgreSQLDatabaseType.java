@@ -19,7 +19,7 @@ public class PostgreSQLDatabaseType extends AbstractDatabaseType {
     //port
     private int defaultPort = 5432;
     //hibernate dialect
-    private String hibernateDialect = "org.hibernate.dialect.PostgreSQLDialect";
+    private String hibernateDialect = "PostgreSQLDialect";
 
     
     //connection String

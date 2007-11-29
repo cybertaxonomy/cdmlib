@@ -25,7 +25,7 @@ public class Db2DatabaseType extends AbstractDatabaseType {
     //port
     private int defaultPort = 50000;
     //hibernate dialect
-    private String hibernateDialect = "org.hibernate.dialect.DB2Dialect";
+    private String hibernateDialect = "DB2Dialect";
 
     
     //connection String

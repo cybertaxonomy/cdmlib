@@ -20,7 +20,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType {
     //port
     private int defaultPort = 4100;
     //hibernate dialect
-    private String hibernateDialect = "org.hibernate.dialect.SybaseDialect";
+    private String hibernateDialect = "SybaseDialect";
 
     
     //connection String

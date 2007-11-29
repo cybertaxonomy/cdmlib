@@ -19,7 +19,7 @@ public class OracleDatabaseType extends AbstractDatabaseType {
     //port
     private int defaultPort = 1521;
     //hibernate dialect
-    private String hibernateDialect = "org.hibernate.dialect.OracleDialect";
+    private String hibernateDialect = "OracleDialect";
 
     
     //connection String
