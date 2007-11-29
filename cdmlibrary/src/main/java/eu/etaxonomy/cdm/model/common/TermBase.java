@@ -104,7 +104,7 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Override
 	public String toString() {
-		return super.toString()+this.getLabel();
+		return super.toString()+" "+this.getLabel();
 	}
 
 }

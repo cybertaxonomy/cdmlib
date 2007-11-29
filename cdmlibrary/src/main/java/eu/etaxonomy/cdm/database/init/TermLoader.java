@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
+	@Autowired
 	private ICdmGenericDao dao;
 	
 	// load a list of defined terms from a simple text file
