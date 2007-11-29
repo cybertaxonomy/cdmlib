@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:40
  */
 @Entity
-public class Observation extends Occurrence {
-	static Logger logger = Logger.getLogger(Observation.class);
+public class OrganismObservation extends CollectionUnit {
+	static Logger logger = Logger.getLogger(OrganismObservation.class);
 
 }

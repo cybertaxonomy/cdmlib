@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Media;
@@ -20,6 +21,8 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 
@@ -33,8 +36,8 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Occurrence extends IdentifiableEntity {
-	static Logger logger = Logger.getLogger(Occurrence.class);
+public class CollectionUnit extends IdentifiableEntity {
+	static Logger logger = Logger.getLogger(CollectionUnit.class);
 	//Locality name (as free text) where this occurrence happened
 	private String locality;
 	//Date on which this occurrence happened
@@ -45,22 +48,25 @@ public class Occurrence extends IdentifiableEntity {
 	private Agent collector;
 	private Collection collection;
 	private String catalogNumber;
+	private TaxonNameBase storedUnder;
 	private String fieldNumber;
 	private String fieldNotes;
 	private String collectingMethod;
-	private Sex sex;
-	private Stage lifeStage;
 	private Integer individualCount;
 	// meter above/below sea level of the surface
 	private Integer absoluteElevation;
-	// distance in meter from the surface when colecting. E.g. 10m below the ground or lake surface or 20m in the canope
-	private Integer relativeElevation;
+	private Integer absoluteElevationError;
+	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope 
+	private Integer distanceToGround;
+	// distance in meters to lake or sea surface. Simmilar to distanceToGround use negative integers for distance *below* the surface, ie under water 
+	private Integer distanceToWaterSurface;
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	private String description;
 
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Collection getCollection(){
 		return this.collection;
 	}
@@ -77,6 +83,7 @@ public class Occurrence extends IdentifiableEntity {
 
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia() {
 		return media;
 	}
@@ -92,6 +99,7 @@ public class Occurrence extends IdentifiableEntity {
 
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getCollector(){
 		return this.collector;
 	}
@@ -158,23 +166,6 @@ public class Occurrence extends IdentifiableEntity {
 		this.collectingMethod = collectingMethod;
 	}
 
-	@ManyToOne
-	public Sex getSex() {
-		return sex;
-	}
-
-	public void setSex(Sex sex) {
-		this.sex = sex;
-	}
-
-	@ManyToOne
-	public Stage getLifeStage() {
-		return lifeStage;
-	}
-
-	public void setLifeStage(Stage lifeStage) {
-		this.lifeStage = lifeStage;
-	}
 
 	public Integer getIndividualCount() {
 		return individualCount;
@@ -192,20 +183,39 @@ public class Occurrence extends IdentifiableEntity {
 		this.absoluteElevation = absoluteElevation;
 	}
 
-	public Integer getRelativeElevation() {
-		return relativeElevation;
-	}
-
-	public void setRelativeElevation(Integer relativeElevation) {
-		this.relativeElevation = relativeElevation;
-	}
-
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public Integer getAbsoluteElevationError() {
+		return absoluteElevationError;
+	}
+	public void setAbsoluteElevationError(Integer absoluteElevationError) {
+		this.absoluteElevationError = absoluteElevationError;
+	}
+	public Integer getDistanceToGround() {
+		return distanceToGround;
+	}
+	public void setDistanceToGround(Integer distanceToGround) {
+		this.distanceToGround = distanceToGround;
+	}
+	public Integer getDistanceToWaterSurface() {
+		return distanceToWaterSurface;
+	}
+	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
+		this.distanceToWaterSurface = distanceToWaterSurface;
+	}
+	
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public TaxonNameBase getStoredUnder() {
+		return storedUnder;
+	}
+	public void setStoredUnder(TaxonNameBase storedUnder) {
+		this.storedUnder = storedUnder;
 	}
 
 }

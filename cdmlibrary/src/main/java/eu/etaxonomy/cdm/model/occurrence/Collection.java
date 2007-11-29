@@ -32,6 +32,7 @@ public class Collection extends IdentifiableEntity {
 	private String name;
 	private String townOrLocation;
 	private Institution institute;
+	private Collection superCollection;
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -97,6 +98,16 @@ public class Collection extends IdentifiableEntity {
 
 	public String generateTitle(){
 		return "";
+	}
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Collection getSuperCollection() {
+		return superCollection;
+	}
+
+	public void setSuperCollection(Collection superCollection) {
+		this.superCollection = superCollection;
 	}
 
 }

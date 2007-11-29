@@ -11,25 +11,20 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
  * @author m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:52
+ * @created 08-Nov-2007 13:06:32
  */
 @Entity
-public class Specimen extends PhysicalOrganism {
-	static Logger logger = Logger.getLogger(Specimen.class);
-	private PreservationMethod preservation;
-	@ManyToOne
-	public PreservationMethod getPreservation(){
-		return this.preservation;
-	}
-	public void setPreservation(PreservationMethod preservation){
-		this.preservation = preservation;
-	}
+public class LivingBeing extends PhysicalOrganism {
+	static Logger logger = Logger.getLogger(LivingBeing.class);
 
 }

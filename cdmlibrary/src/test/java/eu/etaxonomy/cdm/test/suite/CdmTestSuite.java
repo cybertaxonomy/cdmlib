@@ -9,14 +9,14 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 
 import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.EnumerationDaoHibernateImplTest;
+import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     NonViralNameTest.class,
     PropertyChangeTest.class,
     DatabaseEnumTest.class,
-    EnumerationDaoHibernateImplTest.class,
+    DefinedTermDaoImplTest.class,
     NameRelationshipTest.class
 })
 
@@ -33,7 +33,7 @@ public class CdmTestSuite {
         	 NonViralNameTest.class, 
              PropertyChangeTest.class,
              DatabaseEnumTest.class,
-             EnumerationDaoHibernateImplTest.class,
+             DefinedTermDaoImplTest.class,
              NameRelationshipTest.class
 	    ); 
 	}

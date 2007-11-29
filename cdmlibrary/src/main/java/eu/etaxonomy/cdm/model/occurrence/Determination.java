@@ -31,6 +31,8 @@ import javax.persistence.*;
 @Entity
 public class Determination extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(Determination.class);
+
+	private ObservationalUnit identifiedUnit;
 	private Calendar identificationDate;
 	private Agent determiner;
 	private Taxon taxon;
@@ -80,6 +82,15 @@ public class Determination extends AnnotatableEntity {
 
 	public void setDeterminer(Agent determiner) {
 		this.determiner = determiner;
+	}
+
+	@ManyToOne
+	public ObservationalUnit getIdentifiedUnit() {
+		return identifiedUnit;
+	}
+
+	public void setIdentifiedUnit(ObservationalUnit identifiedUnit) {
+		this.identifiedUnit = identifiedUnit;
 	}
 
 }

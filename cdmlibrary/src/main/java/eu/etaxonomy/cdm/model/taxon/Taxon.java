@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.description.Description;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -27,23 +28,23 @@ import javax.persistence.*;
 @Entity
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
-	private Set<Description> descriptions = new HashSet();
+	private Set<TaxonDescription> descriptions = new HashSet();
 	private Set<SynonymRelationship> synonymRelations = new HashSet();
 	private Set<TaxonRelationship> taxonRelations = new HashSet();
 
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<Description> getDescriptions() {
+	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
 	}
-	protected void setDescriptions(Set<Description> descriptions) {
+	protected void setDescriptions(Set<TaxonDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
-	public void addDescriptions(Description description) {
+	public void addDescriptions(TaxonDescription description) {
 		this.descriptions.add(description);
 	}
-	public void removeDescriptions(Description description) {
+	public void removeDescriptions(DescriptionBase description) {
 		this.descriptions.remove(description);
 	}
 
