@@ -9,13 +9,15 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.persistence.dao.EnumerationDaoHibernateImplTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     NonViralNameTest.class,
     PropertyChangeTest.class,
-    DatabaseEnumTest.class
-    //, NameRelationshipTest.class
+    DatabaseEnumTest.class,
+    EnumerationDaoHibernateImplTest.class,
+    NameRelationshipTest.class
 })
 
 public class CdmTestSuite {
@@ -28,10 +30,11 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
-        		NonViralNameTest.class, 
+        	 NonViralNameTest.class, 
              PropertyChangeTest.class,
-             DatabaseEnumTest.class
-             //, NameRelationshipTest.class
+             DatabaseEnumTest.class,
+             EnumerationDaoHibernateImplTest.class,
+             NameRelationshipTest.class
 	    ); 
 	}
 }
