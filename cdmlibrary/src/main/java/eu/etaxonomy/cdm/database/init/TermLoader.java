@@ -38,7 +38,7 @@ public class TermLoader {
 			File termFile = new File(termDirectory+File.separator+filename);
 			 CSVReader reader = new CSVReader(new FileReader(termFile), '\t');
 			    String [] nextLine;
-			    TermVocabulary voc = new TermVocabulary(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+			    TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 			    try {
 					while ((nextLine = reader.readNext()) != null) {
 					    // nextLine[] is an array of values from the line

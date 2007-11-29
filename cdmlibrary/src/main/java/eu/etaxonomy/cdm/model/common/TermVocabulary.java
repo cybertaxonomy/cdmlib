@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 
 import java.util.*;
 
@@ -26,13 +27,12 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class TermVocabulary extends TermBase implements Iterable<DefinedTermBase> {
+public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
-	protected List<DefinedTermBase> terms = new ArrayList();
-	private int i= 0;
+	protected List<T> terms = new ArrayList();
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Further vocs can be setup through our own ontology.
@@ -58,11 +58,12 @@ public class TermVocabulary extends TermBase implements Iterable<DefinedTermBase
 
 	
 	@OneToMany(mappedBy="vocabulary")
+	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public List<DefinedTermBase> getTerms() {
+	public List<T> getTerms() {
 		return terms;
 	}
-	protected void setTerms(List<DefinedTermBase> terms) {
+	protected void setTerms(List<T> terms) {
 		this.terms = terms;
 	}
 	public void addTerm(DefinedTermBase term) throws WrongTermTypeException {
@@ -80,11 +81,11 @@ public class TermVocabulary extends TermBase implements Iterable<DefinedTermBase
 	}
 
 	
-	public List<DefinedTermBase> getPrecedingTerms(OrderedTermBase otb) {
+	public List<T> getPrecedingTerms(T otb) {
 		// FIXME: need to return only OrderedTermBase lists
 		return terms.subList(0, terms.indexOf(otb));
 	}
-	public List<DefinedTermBase> getSucceedingTerms(OrderedTermBase otb) {
+	public List<T> getSucceedingTerms(T otb) {
 		// FIXME: need to return only OrderedTermBase lists
 		return terms.subList(terms.indexOf(otb), terms.size());
 	}
@@ -115,22 +116,25 @@ public class TermVocabulary extends TermBase implements Iterable<DefinedTermBase
 	
 	
 	// inner iterator class for the iterable interface
-	private class TermIterator implements Iterator<DefinedTermBase> {
-		   private DefinedTermBase[] array;
+	private class TermIterator<T> implements Iterator<T> {
+		   // FIXME: using a list here is probably not safe. Sth passed by value, an array, would be better
+		   // but arrays cause generics problems: http://forum.java.sun.com/thread.jspa?threadID=651276&messageID=3832182
+		   // hack for now ;(
+		   private List<T> array;
 		   private int i= 0;
 		   // ctor
-		   public TermIterator(DefinedTermBase[] array) {
+		   public TermIterator(List<T> array) {
 		      // check for null being passed in etc.
 		      this.array= array;
 		   }
 		   // interface implementation
-		   public boolean hasNext() { return i < array.length; }
-		   public DefinedTermBase next() { return array[i++]; }
+		   public boolean hasNext() { return i < array.size(); }
+		   public T next() { return array.get(i++); }
 		   public void remove() { throw new UnsupportedOperationException(); }
 	}
 
-	public Iterator<DefinedTermBase> iterator() {
-		return new TermIterator(this.terms.toArray( new DefinedTermBase[0]));
+	public Iterator<T> iterator() {
+		return new TermIterator<T>(this.terms);
 	}
     
 }

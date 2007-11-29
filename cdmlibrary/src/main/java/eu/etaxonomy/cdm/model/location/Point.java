@@ -26,8 +26,8 @@ import javax.persistence.*;
 @Embeddable
 public class Point {
 	static Logger logger = Logger.getLogger(Point.class);
-	private float longitude;
-	private float latitude;
+	private Float longitude;
+	private Float latitude;
 	//in Meters
 	private Integer errorRadius = 0;
 	private ReferenceSystem referenceSystem;

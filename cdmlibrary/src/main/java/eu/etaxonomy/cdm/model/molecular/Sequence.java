@@ -31,7 +31,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	//the sequence as a string of base pairs. 5'->3'
 	private String sequence;
 	//should be calculated in case sequence is set
-	private int length;
+	private Integer length;
 	//should be calculated in case sequence is set
 	private Calendar dateSequenced;
 	//should be calculated in case sequence is set
@@ -121,7 +121,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 		this.sequence = sequence;
 	}
 
-	public int getLength(){
+	public Integer getLength(){
 		return this.length;
 	}
 
@@ -129,7 +129,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity {
 	 * 
 	 * @param length    length
 	 */
-	public void setLength(int length){
+	public void setLength(Integer length){
 		this.length = length;
 	}
 
