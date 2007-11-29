@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,12 +26,13 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class TermVocabulary extends TermBase {
+public class TermVocabulary extends TermBase implements Iterable<DefinedTermBase> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
 	protected List<DefinedTermBase> terms = new ArrayList();
+	private int i= 0;
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Further vocs can be setup through our own ontology.
@@ -104,10 +106,31 @@ public class TermVocabulary extends TermBase {
 	}
 	
 	
-	protected Class getTermClass() {
+	public Class getTermClass() {
 		return termClass;
 	}
-	protected void setTermClass(Class termClass) {
+	private void setTermClass(Class termClass) {
 		this.termClass = termClass;
+	} 
+	
+	
+	// inner iterator class for the iterable interface
+	private class TermIterator implements Iterator<DefinedTermBase> {
+		   private DefinedTermBase[] array;
+		   private int i= 0;
+		   // ctor
+		   public TermIterator(DefinedTermBase[] array) {
+		      // check for null being passed in etc.
+		      this.array= array;
+		   }
+		   // interface implementation
+		   public boolean hasNext() { return i < array.length; }
+		   public DefinedTermBase next() { return array[i++]; }
+		   public void remove() { throw new UnsupportedOperationException(); }
 	}
+
+	public Iterator<DefinedTermBase> iterator() {
+		return new TermIterator(this.terms.toArray( new DefinedTermBase[0]));
+	}
+    
 }

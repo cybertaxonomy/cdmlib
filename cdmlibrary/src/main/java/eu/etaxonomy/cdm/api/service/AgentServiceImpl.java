@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.persistence.dao.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 
 /**

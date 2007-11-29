@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 import java.util.*;
 

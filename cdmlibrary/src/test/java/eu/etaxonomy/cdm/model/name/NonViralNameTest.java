@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 public class NonViralNameTest {
 	static Logger logger = Logger.getLogger(NonViralNameTest.class);

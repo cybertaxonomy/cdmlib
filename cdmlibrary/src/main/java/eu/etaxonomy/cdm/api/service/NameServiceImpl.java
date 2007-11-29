@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
 import java.util.List;
@@ -21,11 +21,9 @@ import java.util.List;
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
-	private ITaxonNameDao nameDao;
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
 		this.dao = dao;
-		this.nameDao = dao;
 	}
 
 
@@ -44,7 +42,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	public List getAllNames(int limit, int start){
 		return dao.list(limit, start);
 	}
-
 
 	public TermVocabulary getRankEnumeration() {
 		// TODO Auto-generated method stub

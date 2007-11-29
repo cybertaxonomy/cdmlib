@@ -11,9 +11,9 @@ import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.IDao;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
 import java.util.List;
@@ -23,11 +23,10 @@ import java.util.List;
 public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
 	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 	
-	private ITaxonDao taxonDao;
+	private ITaxonDao dao;
 	@Autowired
 	protected void setDao(ITaxonDao dao) {
 		this.dao = dao;
-		this.taxonDao = dao;
 	}
 	
 
@@ -40,10 +39,10 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
-		return taxonDao.getTaxaByName(name, sec);
+		return dao.getTaxaByName(name, sec);
 	}
 
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		return taxonDao.getRootTaxa(sec);
+		return dao.getRootTaxa(sec);
 	}
 }

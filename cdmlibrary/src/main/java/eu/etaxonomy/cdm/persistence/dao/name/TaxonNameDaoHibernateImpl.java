@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao;
+package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBase;
 
 /**
  * @author a.mueller
@@ -22,18 +24,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 @Repository
 public class TaxonNameDaoHibernateImpl 
-			extends DaoBase<TaxonNameBase> implements ITaxonNameDao {
+			extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	static Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
 
 	public TaxonNameDaoHibernateImpl() {
 		super(TaxonNameBase.class); 
-	}
-
-	
-	@Override
-	public List<TaxonNameBase> find(String queryString) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 }

@@ -13,8 +13,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ import javax.persistence.*;
 @Entity
 public class Rank extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
-	@Autowired
-	private static IDefinedTermDao dao;
 	
 	public Rank() {
 		super();

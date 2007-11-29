@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
 import java.io.Serializable;
@@ -31,13 +34,14 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends TermBase{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
+	@Autowired
+	protected static IDefinedTermDao dao;
 
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet();
 	private DefinedTermBase partOf;
 	private Set<DefinedTermBase> includes = new HashSet();
 	private Set<Media> media = new HashSet();
-
 	private TermVocabulary vocabulary;
 	
 	

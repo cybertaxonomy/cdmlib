@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao;
+package eu.etaxonomy.cdm.persistence.dao.common;
 
 
 import java.io.Serializable;
@@ -27,39 +27,22 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T extends CdmBase> {
-	public String saveCdmObj(CdmBase cdmObj) throws DataAccessException;
-
+public interface ICdmEntityDao<T extends CdmBase> {
+	
 	public String saveOrUpdate(T transientObject) throws DataAccessException;
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#save(java.lang.Object)
-	 */
 	public String save(T newOrManagedObject) throws DataAccessException;
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#update(java.lang.Object)
-	 */
 	public String update(T transientObject) throws DataAccessException;
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#delete(java.lang.Object)
-	 */
 	public String delete(T persistentObject) throws DataAccessException;
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDAO#findById(java.io.Serializable)
-	 */
+	public List<T> list(int limit, int start) throws DataAccessException;
+
 	public T findById(int id) throws DataAccessException;
 
 	public T findByUuid(String Uuid) throws DataAccessException;
 	
-	public Boolean exists(String uuid);
-
-	public List<T> find(String queryString);
-
-	public List<CdmBase> executeHsql(String hsql);
-
-	public List<T> list(int limit, int start);
-
+	public Boolean exists(String uuid) throws DataAccessException;
+	
 }

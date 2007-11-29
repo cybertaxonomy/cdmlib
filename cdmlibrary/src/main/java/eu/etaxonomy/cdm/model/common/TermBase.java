@@ -83,12 +83,12 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Transient
 	public String getDescription() {
-		return this.getRepresentation(Language.DEFAULT()).getLabel();
+		return this.getRepresentation(Language.DEFAULT()).getDescription();
 	}
 
 	@Transient
 	public String getDescription(Language lang) {
-		return this.getRepresentation(lang).getLabel();
+		return this.getRepresentation(lang).getDescription();
 	}
 
 	@Override
@@ -104,11 +104,7 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Override
 	public String toString() {
-		String result="DT<"+uri+">:";
-		for (Representation r : representations){
-			result += r.toString();
-		}
-		return result;
+		return super.toString()+this.getLabel();
 	}
 
 }

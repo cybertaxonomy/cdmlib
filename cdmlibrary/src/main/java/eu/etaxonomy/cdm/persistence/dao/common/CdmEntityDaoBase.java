@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao;
+package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,22 +23,17 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T extends CdmBase> implements IDao<T> {
+public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
 
-	static Logger logger = Logger.getLogger(DaoBase.class);
+	static Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
-	@Autowired
-	private SessionFactory factory;
 	protected Class<T> type;
 	
-	public DaoBase(Class<T> type){
+	public CdmEntityDaoBase(Class<T> type){
 		this.type = type;
 		logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
 	}
 	
-	protected Session getSession(){
-		return factory.getCurrentSession();
-	}
 	
 	
 	public String saveCdmObj(CdmBase cdmObj) throws DataAccessException  {
@@ -96,15 +91,9 @@ public abstract class DaoBase<T extends CdmBase> implements IDao<T> {
 		return crit.list(); 
 	}
 
-	public List<CdmBase> executeHsql(String hsql){
+	public List<Object> executeHsql(String hsql){
 		Query q = getSession().createQuery(hsql);
 		return q.list();
 	}
-
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.IDao#find(java.lang.String)
-	 */
-	public abstract List<T> find(String queryString);
 	
 }

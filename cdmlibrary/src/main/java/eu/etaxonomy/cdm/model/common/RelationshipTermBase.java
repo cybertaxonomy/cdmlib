@@ -88,4 +88,35 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 		}
 		return result;
 	}
+	
+	/*
+	 * Inverse representation convenience methods similar to TermBase.xxx 
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
+	 */
+	@Transient
+	public String getInverseLabel() {
+		if(getLabel(Language.DEFAULT())!=null){
+			return this.getInverseRepresentation(Language.DEFAULT()).getLabel();
+		}else{
+			for (Representation r : inverseRepresentations){
+				return r.getLabel();
+			}			
+		}
+		return super.getUuid();
+	}
+
+	@Transient
+	public String getInverseLabel(Language lang) {
+		return this.getInverseRepresentation(lang).getLabel();
+	}
+
+	@Transient
+	public String getInverseDescription() {
+		return this.getInverseRepresentation(Language.DEFAULT()).getDescription();
+	}
+
+	@Transient
+	public String getInverseDescription(Language lang) {
+		return this.getInverseRepresentation(lang).getDescription();
+	}
 }

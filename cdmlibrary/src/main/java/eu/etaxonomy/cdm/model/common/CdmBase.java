@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 
 @MappedSuperclass
 public abstract class CdmBase implements Serializable{
-	private PropertyChangeSupport support = new PropertyChangeSupport(this);
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private int id;
 	private String uuid;
 	private Calendar created;
@@ -40,43 +40,43 @@ public abstract class CdmBase implements Serializable{
 
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		support.addPropertyChangeListener(listener);
+		propertyChangeSupport.addPropertyChangeListener(listener);
 	}
 
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		support.addPropertyChangeListener(propertyName, listener);
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		support.removePropertyChangeListener(propertyName, listener);
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		support.removePropertyChangeListener(listener);
+		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
 
 	@Transient
 	public void hasListeners(String propertyName) {
-		support.hasListeners(propertyName);
+		propertyChangeSupport.hasListeners(propertyName);
 	}
 
 	public void firePropertyChange(String property, String oldval, String newval) {
-		support.firePropertyChange(property, oldval, newval);
+		propertyChangeSupport.firePropertyChange(property, oldval, newval);
 	}
 	public void firePropertyChange(String property, int oldval, int newval) {
-		support.firePropertyChange(property, oldval, newval);
+		propertyChangeSupport.firePropertyChange(property, oldval, newval);
 	}
 	public void firePropertyChange(String property, float oldval, float newval) {
-		support.firePropertyChange(property, oldval, newval);
+		propertyChangeSupport.firePropertyChange(property, oldval, newval);
 	}
 	public void firePropertyChange(String property, boolean oldval, boolean newval) {
-		support.firePropertyChange(property, oldval, newval);
+		propertyChangeSupport.firePropertyChange(property, oldval, newval);
 	}
 	public void firePropertyChange(String property, Object oldval, Object newval) {
-		support.firePropertyChange(property, oldval, newval);
+		propertyChangeSupport.firePropertyChange(property, oldval, newval);
 	}
 	public void firePropertyChange(PropertyChangeEvent evt) {
-		support.firePropertyChange(evt);
+		propertyChangeSupport.firePropertyChange(evt);
 	}
 
 	@Id
@@ -130,7 +130,7 @@ public abstract class CdmBase implements Serializable{
 	
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName()+"#"+this.getUuid();
+		return this.getClass().getSimpleName()+"<"+this.getUuid()+">";
 	}
 	
 }

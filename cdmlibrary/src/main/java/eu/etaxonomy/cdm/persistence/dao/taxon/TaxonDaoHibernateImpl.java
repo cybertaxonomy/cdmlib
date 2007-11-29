@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao;
+package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,23 +19,19 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBase;
 
 /**
  * @author a.mueller
  *
  */
 @Repository
-public class TaxonDaoHibernateImpl extends DaoBase<TaxonBase> implements ITaxonDao {
+public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
 	static Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
 		super(TaxonBase.class);
-	}
-
-	@Override
-	public List<TaxonBase> find(String queryString) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
@@ -45,7 +41,7 @@ public class TaxonDaoHibernateImpl extends DaoBase<TaxonBase> implements ITaxonD
 
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
 		// TODO add reference filter
-		return this.find(name);
+		return this.findByTitle(name);
 	}
 	
 }

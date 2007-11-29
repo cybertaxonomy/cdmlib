@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.persistence.dao.IDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 
 public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	protected ApplicationContext appContext;
-	protected IDao<T> dao;
+	protected ICdmEntityDao<T> dao;
 	
-	protected void setEntityDao(IDao<T> da){
+	protected void setEntityDao(ICdmEntityDao<T> da){
 		this.dao=da;
 	}
 	
