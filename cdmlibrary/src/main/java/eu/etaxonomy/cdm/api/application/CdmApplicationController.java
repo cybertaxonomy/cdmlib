@@ -54,7 +54,9 @@ public class CdmApplicationController {
 	 */
 	public CdmApplicationController(CdmDataSource dataSource) {
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
-		setNewDataSource(dataSource);
+		if (setNewDataSource(dataSource) == false){
+			//FIXME throw Exceptioin
+		}
 	}
 
 	
