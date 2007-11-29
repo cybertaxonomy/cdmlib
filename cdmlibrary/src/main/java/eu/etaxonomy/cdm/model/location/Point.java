@@ -45,7 +45,7 @@ public class Point {
 		this.referenceSystem = referenceSystem;
 	}
 
-	public float getLongitude(){
+	public Float getLongitude(){
 		return this.longitude;
 	}
 
@@ -53,11 +53,11 @@ public class Point {
 	 * 
 	 * @param longitude    longitude
 	 */
-	public void setLongitude(float longitude){
+	public void setLongitude(Float longitude){
 		this.longitude = longitude;
 	}
 
-	public float getLatitude(){
+	public Float getLatitude(){
 		return this.latitude;
 	}
 
@@ -65,7 +65,7 @@ public class Point {
 	 * 
 	 * @param latitude    latitude
 	 */
-	public void setLatitude(float latitude){
+	public void setLatitude(Float latitude){
 		this.latitude = latitude;
 	}
 
