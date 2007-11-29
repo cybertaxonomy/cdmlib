@@ -34,6 +34,7 @@ public class NamedArea extends OrderedTermBase {
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
 	private MediaInstance shapeFile;
+	private Point pointApproximation;
 	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet();
 	private NamedAreaType type;
 	private NamedAreaLevel level;
@@ -96,6 +97,12 @@ public class NamedArea extends OrderedTermBase {
 	public void removeWaterbodyOrCountry(
 			WaterbodyOrCountry waterbodyOrCountry) {
 		this.waterbodiesOrCountries.remove(waterbodyOrCountry);
+	}
+	public Point getPointApproximation() {
+		return pointApproximation;
+	}
+	public void setPointApproximation(Point pointApproximation) {
+		this.pointApproximation = pointApproximation;
 	}
 
 }
