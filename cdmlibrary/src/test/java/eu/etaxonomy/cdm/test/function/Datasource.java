@@ -2,12 +2,12 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
 
-import org.hibernate.cfg.Environment;
-
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public class Datasource {
 
@@ -20,6 +20,7 @@ public class Datasource {
 		CdmDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
 		CdmApplicationController appCtr = new CdmApplicationController(dataSource);
 		appCtr.close();
+		
 	}
 	
 	private void testDatabaseChange(){
@@ -51,9 +52,10 @@ public class Datasource {
 		String password = "wp5";
 		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		CdmApplicationController appCtr = new CdmApplicationController(ds);
-		
-		//appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
-		
+		Agent agent = new Agent();
+		appCtr.getAgentService().saveAgent(agent);
+		TaxonNameBase tn = new BotanicalName(null);
+		appCtr.getNameService().saveTaxonName(tn);
 		appCtr.close();
 	}
 	
@@ -65,9 +67,10 @@ public class Datasource {
 		String password = "schalke";
 		CdmDataSource ds = CdmDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		CdmApplicationController appCtr = new CdmApplicationController(ds);
-		
-		//appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
-		
+		Agent agent = new Agent();
+		appCtr.getAgentService().saveAgent(agent);
+		TaxonNameBase tn = new BotanicalName(null);
+		appCtr.getNameService().saveTaxonName(tn);
 		appCtr.close();
 	}
 	
@@ -75,8 +78,8 @@ public class Datasource {
 		System.out.println("Start Datasource");
 		//testNewConfigControler();
     	//testDatabaseChange();
-		testSqlServer();
-		//testPostgreServer();
+		//testSqlServer();
+		testPostgreServer();
 		System.out.println("\nEnd Datasource");
 	}
 	
