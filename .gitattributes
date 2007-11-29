@@ -272,6 +272,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NameRelationshipTest.java -
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/EnumerationDaoHibernateImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/ConfigControler.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/SpringControl.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
