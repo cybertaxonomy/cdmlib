@@ -267,6 +267,7 @@ cdmlibrary/src/main/resources/cdm.datasource.xml -text
 cdmlibrary/src/main/resources/log4j.properties -text
 cdmlibrary/src/main/resources/sessionfactory.xml -text
 cdmlibrary/src/main/resources/terms/ConceptRelationshipType.csv -text
+cdmlibrary/src/main/resources/terms/Continent.csv -text
 cdmlibrary/src/main/resources/terms/DerivationEventType.csv -text
 cdmlibrary/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlibrary/src/main/resources/terms/Language.csv -text
