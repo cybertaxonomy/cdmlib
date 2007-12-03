@@ -15,11 +15,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
 import java.io.Serializable;
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -52,7 +55,19 @@ public abstract class DefinedTermBase extends TermBase{
 		super(term, label);
 	}
 
-
+	public void readCsvLine(List<String> csvLine) {
+		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
+		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+	}
+	public void writeCsvLine(CSVWriter writer) {
+		String [] line = new String[4];
+		line[0] = getUuid();
+		line[1] = getUri();
+		line[2] = getLabel();
+		line[3] = getDescription();
+		writer.writeNext(line);
+	}
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public DefinedTermBase getKindOf(){

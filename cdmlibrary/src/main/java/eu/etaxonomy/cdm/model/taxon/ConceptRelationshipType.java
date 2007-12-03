@@ -29,6 +29,9 @@ import javax.persistence.*;
 public class ConceptRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 
+	public ConceptRelationshipType() {
+		super();
+	}
 	public ConceptRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
 		super(term, label, symmetric, transitive);
 	}

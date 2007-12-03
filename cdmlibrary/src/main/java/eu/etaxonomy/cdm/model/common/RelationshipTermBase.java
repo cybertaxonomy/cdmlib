@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -15,6 +17,8 @@ import javax.persistence.Transient;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 @MappedSuperclass
 public abstract class RelationshipTermBase extends OrderedTermBase {
@@ -124,4 +128,31 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	public String getInverseDescription(Language lang) {
 		return this.getInverseRepresentation(lang).getDescription();
 	}
+	
+	public void readCsvLine(List<String> csvLine) {
+		if(csvLine.size()>3 && csvLine.get(3).trim().length()>0){
+			this.symmetric=true;
+		}
+		if(csvLine.size()>4 && csvLine.get(4).trim().length()>0){
+			this.transitive=true;
+		}
+		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
+		if (csvLine.size()>2){ 
+			this.addInverseRepresentation(new Representation(csvLine.get(2).trim(), csvLine.get(2).trim(), Language.DEFAULT()) );
+		}
+		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+	}
+	
+	public void writeCsvLine(CSVWriter writer) {
+		String [] line = new String[7];
+		line[0] = getUuid();
+		line[1] = getUri();
+		line[2] = getLabel();
+		line[3] = getDescription();
+		line[4] = getInverseLabel();
+		line[5] = String.valueOf(this.isSymmetric());
+		line[6] = String.valueOf(this.isTransitive());
+		writer.writeNext(line);
+	}
+	
 }

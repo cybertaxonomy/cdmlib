@@ -27,6 +27,9 @@ import javax.persistence.*;
 public class HybridRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
+	public HybridRelationshipType() {
+		super();
+	}
 	public HybridRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
 		super(term, label, symmetric, transitive);
 		// TODO Auto-generated constructor stub

@@ -6,7 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
+import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -25,6 +28,9 @@ public class TermLoaderTest extends CdmUnitTestBase{
 	@Test
 	public void loadTerms() {
 		try {
+			loader.loadDefaultTerms(Language.class);
+			loader.loadDefaultTerms(Continent.class);
+			//loader.loadDefaultTerms(WaterbodyOrCountry.class);
 			loader.loadDefaultTerms(Rank.class);
 			loader.loadDefaultTerms(TypeDesignationStatus.class);
 			loader.loadDefaultTerms(NomenclaturalStatusType.class);

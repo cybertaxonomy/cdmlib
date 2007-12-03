@@ -12,13 +12,15 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import java.util.*;
 import javax.persistence.*;
 
 /**
  * list of languages according to current internet best practices as given by IANA
- * or ISO codes.  http://www.ietf.org/rfc/rfc4646.txt http://www.loc.
- * gov/standards/iso639-2/php/English_list.php
+ * or ISO codes.  http://www.ietf.org/rfc/rfc4646.txt 
+ * http://www.loc.gov/standards/iso639-2/php/English_list.php
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
@@ -31,8 +33,21 @@ public class Language extends DefinedTermBase {
 	static Language langGE = new Language("German","DE");
 
 
+	private char[] iso639_1 = new char[2];
+	private char[] iso639_2 = new char[3];
+	
+	public Language() {
+		super();
+	}
+	public Language(char[] iso639_1, char[] iso639_2, String englishLabel, String frenchLabel) {
+		super();
+		this.iso639_1=iso639_1;
+		this.iso639_2=iso639_2;
+		this.addRepresentation(new Representation(englishLabel, String.valueOf(iso639_2), Language.ENGLISH()));
+		this.addRepresentation(new Representation(frenchLabel, String.valueOf(iso639_2), Language.FRENCH()));
+	}
 	public Language(String text, String label, Language lang) {
-		super(text, label);
+		super();
 		this.addRepresentation(new Representation(text,label,lang));
 	}
 	public Language(String label, String text) {
@@ -82,5 +97,29 @@ public class Language extends DefinedTermBase {
 	public static final Language GERMAN(){
 		return langGE;
 	}
+	
+	public static final Language FRENCH(){
+		return langGE;
+	}
 
+	
+	public void readCsvLine(List<String> csvLine) {
+		this.iso639_1=csvLine.get(0).trim().toCharArray();
+		this.iso639_2=csvLine.get(2).trim().toCharArray();
+		this.addRepresentation(new Representation(csvLine.get(3).trim(), String.valueOf(iso639_2), Language.ENGLISH()));
+		this.addRepresentation(new Representation(csvLine.get(4).trim(), String.valueOf(iso639_2), Language.FRENCH()));
+		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+	}
+	public void writeCsvLine(CSVWriter writer) {
+		String [] line = new String[5];
+		line[0] = getUuid();
+		line[1] = getUri();
+		line[2] = getLabel(Language.ENGLISH());
+		line[3] = getDescription();
+		line[4] = getLabel(Language.FRENCH());
+		line[5] = String.valueOf(this.iso639_1);
+		line[6] = String.valueOf(this.iso639_2);
+		writer.writeNext(line);
+	}
+	
 }

@@ -21,6 +21,8 @@ import javax.persistence.*;
 
 /**
  * +/- current ISO codes. year given with each entry
+ * http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+ * http://www.davros.org/misc/iso3166.txt
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:02

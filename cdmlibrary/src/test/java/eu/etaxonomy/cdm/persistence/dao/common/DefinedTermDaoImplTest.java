@@ -48,9 +48,4 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 		//assertTrue(terms.contains(this.vocabulary));
 	}
 
-
-	@Test
-	public void list100() {
-		assertFalse(dao.list(100,1).isEmpty());
-	}	
 }

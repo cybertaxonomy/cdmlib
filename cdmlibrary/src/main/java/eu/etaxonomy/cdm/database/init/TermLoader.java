@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class TermLoader {
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
 	public TermVocabulary loadTerms(Class termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
-		if (OrderedTermBase.class.isAssignableFrom(termClass)){
+		if (DefinedTermBase.class.isAssignableFrom(termClass)){
 			String termDirectory = CdmUtils.getResourceDir().getAbsoluteFile()+File.separator+"terms";
 			File termFile = new File(termDirectory+File.separator+filename);
 			 CSVReader reader = new CSVReader(new FileReader(termFile), '\t');
@@ -43,13 +44,13 @@ public class TermLoader {
 					while ((nextLine = reader.readNext()) != null) {
 					    // nextLine[] is an array of values from the line
 						DefinedTermBase term = (DefinedTermBase) termClass.newInstance();
+						ArrayList aList = new ArrayList(10);
+						for (String col : nextLine){
+							aList.add(col);
+						}
+						term.readCsvLine(aList);
 						term.setVocabulary(voc);
-						term.addRepresentation(new Representation(nextLine[1].trim(), nextLine[1].trim(), Language.DEFAULT()));
-						logger.debug("Created term: "+term.toString());
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -60,18 +61,10 @@ public class TermLoader {
 					String outfile=termDirectory+File.separator+filename+".txt";
 					CSVWriter writer = new CSVWriter(new FileWriter(outfile));
 					logger.info("Writing terms file to:"+outfile);
-						for (DefinedTermBase dt : voc){
-							String [] line = new String[5];
-							line[0] = dt.getUuid();
-							line[1] = dt.getUri();
-							line[2] = dt.getLabel();
-							line[3] = dt.getDescription();
-							if(RelationshipTermBase.class.isAssignableFrom(dt.getClass())){
-								RelationshipTermBase rt = (RelationshipTermBase)dt;
-								line[4] = rt.getInverseLabel();
-							}
-							writer.writeNext(line);
-						}
+					for (DefinedTermBase dt : voc){
+						dt.writeCsvLine(writer);
+					}
+					writer.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
