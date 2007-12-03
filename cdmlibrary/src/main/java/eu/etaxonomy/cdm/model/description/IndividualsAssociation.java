@@ -13,7 +13,8 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
-import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservation;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -29,14 +30,16 @@ import javax.persistence.*;
 public class IndividualsAssociation extends FeatureBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	private MultilanguageSet description;
-	private ObservationalUnit observationalUnit2;
+	private SpecimenOrObservation associatedSpecimenOrObservation;
+
 
 	@ManyToOne
-	public ObservationalUnit getObservationalUnit2(){
-		return this.observationalUnit2;
+	public SpecimenOrObservation getAssociatedSpecimenOrObservation() {
+		return associatedSpecimenOrObservation;
 	}
-	public void setObservationalUnit2(ObservationalUnit observationalUnit2){
-		this.observationalUnit2 = observationalUnit2;
+	public void setAssociatedSpecimenOrObservation(
+			SpecimenOrObservation associatedSpecimenOrObservation) {
+		this.associatedSpecimenOrObservation = associatedSpecimenOrObservation;
 	}
 
 	

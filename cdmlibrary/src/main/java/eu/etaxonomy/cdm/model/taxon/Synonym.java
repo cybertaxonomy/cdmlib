@@ -26,22 +26,22 @@ import javax.persistence.*;
 @Entity
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
-	private Set<SynonymRelationship> synoynmRelations = new HashSet();
+	private Set<SynonymRelationship> synonymRelations = new HashSet();
 
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-	public Set<SynonymRelationship> getSynoynmRelations() {
-		return synoynmRelations;
+	public Set<SynonymRelationship> getSynonymRelations() {
+		return synonymRelations;
 	}
-	protected void setSynoynmRelations(Set<SynonymRelationship> synoynmRelations) {
-		this.synoynmRelations = synoynmRelations;
+	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
+		this.synonymRelations = synonymRelations;
 	}
-	public void addSynoynmRelations(SynonymRelationship synoynmRelation) {
-		this.synoynmRelations.add(synoynmRelation);
+	public void addSynoynmRelations(SynonymRelationship synonymRelation) {
+		this.synonymRelations.add(synonymRelation);
 	}
-	public void removeSynoynmRelations(SynonymRelationship synoynmRelation) {
-		this.synoynmRelations.remove(synoynmRelation);
+	public void removeSynoynmRelations(SynonymRelationship synonymRelation) {
+		this.synonymRelations.remove(synonymRelation);
 	}
 
 

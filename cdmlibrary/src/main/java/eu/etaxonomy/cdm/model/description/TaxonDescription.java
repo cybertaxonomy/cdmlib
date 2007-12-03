@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;

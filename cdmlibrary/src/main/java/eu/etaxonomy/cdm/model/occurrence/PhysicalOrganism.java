@@ -19,12 +19,47 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-@Entity
-public class PhysicalOrganism extends CollectionUnit {
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
+@Entity
+public class PhysicalOrganism extends SpecimenOrObservation {
+
+	private Collection collection;
+	private String catalogNumber;
+	private TaxonNameBase storedUnder;
 	private DerivationEvent derivedFrom;
 	private Set<DerivationEvent> derivationEvents = new HashSet();
 
+
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Collection getCollection(){
+		return this.collection;
+	}
+	public void setCollection(Collection collection){
+		this.collection = collection;
+	}
+	
+
+	public String getCatalogNumber() {
+		return catalogNumber;
+	}
+
+	public void setCatalogNumber(String catalogNumber) {
+		this.catalogNumber = catalogNumber;
+	}
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public TaxonNameBase getStoredUnder() {
+		return storedUnder;
+	}
+	public void setStoredUnder(TaxonNameBase storedUnder) {
+		this.storedUnder = storedUnder;
+	}
+
+	
 	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public DerivationEvent getDerivedFrom() {

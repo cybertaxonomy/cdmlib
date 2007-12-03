@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
@@ -84,7 +84,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	protected void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}
-	public void addTypeDesignation(ObservationalUnit typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
+	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		SpecimenTypeDesignation td = new SpecimenTypeDesignation(this, typeSpecimen, status, citation, citationMicroReference, originalNameString);
 	}
 	public void addTypeDesignation(TaxonNameBase typeSpecies, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {

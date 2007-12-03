@@ -13,12 +13,13 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.common.EventBase;
 
 import java.util.*;
 import javax.persistence.*;
@@ -29,12 +30,10 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:21
  */
 @Entity
-public class Determination extends AnnotatableEntity {
+public class Determination extends EventBase {
 	static Logger logger = Logger.getLogger(Determination.class);
 
-	private ObservationalUnit identifiedUnit;
-	private Calendar identificationDate;
-	private Agent determiner;
+	private SpecimenOrObservation identifiedUnit;
 	private Taxon taxon;
 	private DeterminationModifier modifier;
 
@@ -61,9 +60,9 @@ public class Determination extends AnnotatableEntity {
 	}
 
 
-	@Temporal(TemporalType.DATE)
+	@Transient
 	public Calendar getIdentificationDate(){
-		return this.identificationDate;
+		return this.getTimeperiod().getStart();
 	}
 
 	/**
@@ -71,25 +70,23 @@ public class Determination extends AnnotatableEntity {
 	 * @param identificationDate    identificationDate
 	 */
 	public void setIdentificationDate(Calendar identificationDate){
-		this.identificationDate = identificationDate;
+		this.getTimeperiod().setStart(identificationDate);
 	}
 
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public Agent getDeterminer() {
-		return determiner;
+		return this.getActor();
 	}
-
 	public void setDeterminer(Agent determiner) {
-		this.determiner = determiner;
+		this.setActor(determiner);
 	}
 
 	@ManyToOne
-	public ObservationalUnit getIdentifiedUnit() {
+	public SpecimenOrObservation getIdentifiedUnit() {
 		return identifiedUnit;
 	}
 
-	public void setIdentifiedUnit(ObservationalUnit identifiedUnit) {
+	public void setIdentifiedUnit(SpecimenOrObservation identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
 

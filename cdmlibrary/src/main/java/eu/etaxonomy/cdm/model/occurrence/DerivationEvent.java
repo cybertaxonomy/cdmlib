@@ -20,43 +20,45 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.common.EventBase;
+
 @Entity
 public class DerivationEvent extends EventBase{
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
-	private Set<PhysicalOrganism> parents = new HashSet();
-	private Set<PhysicalOrganism> derived = new HashSet();
+	private Set<SpecimenOrObservation> originals = new HashSet();
+	private Set<PhysicalOrganism> derivatives = new HashSet();
 	private DerivationEventType type;
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<PhysicalOrganism> getParents() {
-		return parents;
+	public Set<SpecimenOrObservation> getOriginals() {
+		return originals;
 	}
-	protected void setParents(Set<PhysicalOrganism> parents) {
-		this.parents = parents;
+	protected void setOriginals(Set<SpecimenOrObservation> originals) {
+		this.originals = originals;
 	}
-	public void addParent(PhysicalOrganism parent) {
-		this.parents.add(parent);
+	public void addOriginal(SpecimenOrObservation original) {
+		this.originals.add(original);
 	}
-	public void removeParent(PhysicalOrganism parent) {
-		this.parents.remove(parent);
+	public void removeOriginal(SpecimenOrObservation original) {
+		this.originals.remove(original);
 	}
 	
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<PhysicalOrganism> getDerived() {
-		return derived;
+	public Set<PhysicalOrganism> getDerivatives() {
+		return derivatives;
 	}
-	protected void setDerived(Set<PhysicalOrganism> derived) {
-		this.derived = derived;
+	protected void setDerivatives(Set<PhysicalOrganism> derivatives) {
+		this.derivatives = derivatives;
 	}
-	public void addDerived(PhysicalOrganism parent) {
-		this.parents.add(parent);
+	public void addDerivative(PhysicalOrganism derivative) {
+		this.derivatives.add(derivative);
 	}
-	public void removeDerived(PhysicalOrganism parent) {
-		this.parents.remove(parent);
+	public void removeDerivative(PhysicalOrganism derivative) {
+		this.derivatives.remove(derivative);
 	}
 
 	

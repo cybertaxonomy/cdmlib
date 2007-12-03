@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
@@ -29,11 +29,11 @@ import javax.persistence.*;
 @Entity
 public class SpecimenTypeDesignation extends TypeDesignationBase {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
-	private ObservationalUnit typeSpecimen;
+	private Specimen typeSpecimen;
 	private TypeDesignationStatus typeStatus;
 
 	public SpecimenTypeDesignation(TaxonNameBase typifiedName,
-			ObservationalUnit specimen, TypeDesignationStatus status,
+			Specimen specimen, TypeDesignationStatus status,
 			ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		super(typifiedName, citation, citationMicroReference, originalNameString);
 		this.typeSpecimen = specimen;
@@ -43,10 +43,10 @@ public class SpecimenTypeDesignation extends TypeDesignationBase {
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public ObservationalUnit getTypeSpecimen(){
+	public Specimen getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
-	public void setTypeSpecimen(ObservationalUnit typeSpecimen){
+	public void setTypeSpecimen(Specimen typeSpecimen){
 		this.typeSpecimen = typeSpecimen;
 	}
 

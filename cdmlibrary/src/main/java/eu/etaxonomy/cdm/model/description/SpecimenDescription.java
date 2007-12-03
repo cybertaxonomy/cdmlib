@@ -8,28 +8,26 @@ import javax.persistence.ManyToMany;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.occurrence.ObservationalUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservation;
 
 @Entity
 public class SpecimenDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(SpecimenDescription.class);
-	private Set<ObservationalUnit> observationalUnits = new HashSet();
+	private Set<SpecimenOrObservation> describedSpecimenOrObservations = new HashSet();
 
 	@ManyToMany
-	public Set<ObservationalUnit> getObservationalUnits() {
-		return observationalUnits;
+	public Set<SpecimenOrObservation> getDescribedSpecimenOrObservations() {
+		return describedSpecimenOrObservations;
 	}
-
-	protected void setObservationalUnits(Set<ObservationalUnit> observationalUnits) {
-		this.observationalUnits = observationalUnits;
+	public void setDescribedSpecimenOrObservations(
+			Set<SpecimenOrObservation> describedSpecimenOrObservations) {
+		this.describedSpecimenOrObservations = describedSpecimenOrObservations;
 	}
-
-	public void addObservationalUnit(ObservationalUnit observationalUnit) {
-		this.observationalUnits.add(observationalUnit);
+	public void addDescribedSpecimenOrObservations(SpecimenOrObservation describedSpecimenOrObservation) {
+		this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
 	}
-
-	public void removeObservationalUnit(ObservationalUnit observationalUnit) {
-		this.observationalUnits.remove(observationalUnit);
+	public void removeDescribedSpecimenOrObservations(SpecimenOrObservation describedSpecimenOrObservation) {
+		this.describedSpecimenOrObservations.remove(describedSpecimenOrObservation);
 	}
 
 

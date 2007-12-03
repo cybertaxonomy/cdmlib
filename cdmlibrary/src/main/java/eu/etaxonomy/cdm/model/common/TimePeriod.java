@@ -30,6 +30,17 @@ public class TimePeriod {
 	private Calendar start;
 	private Calendar end;
 
+	public TimePeriod() {
+		// TODO Auto-generated constructor stub
+	}
+	public TimePeriod(Calendar startDate) {
+		start=startDate;
+	}
+	public TimePeriod(Calendar startDate, Calendar endDate) {
+		start=startDate;
+		end=endDate;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Calendar getStart() {
 		return start;

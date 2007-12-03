@@ -1,0 +1,138 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.model.occurrence;
+
+
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.Media;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.Stage;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import java.util.*;
+
+import javax.persistence.*;
+
+/**
+ * type figures are observations with at least a figure object in media
+ * @author m.doering
+ * @version 1.0
+ * @created 08-Nov-2007 13:06:41
+ */
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public class SpecimenOrObservation extends IdentifiableEntity {
+	static Logger logger = Logger.getLogger(SpecimenOrObservation.class);
+	private Set<Media> media = new HashSet();
+	private Set<SpecimenDescription> descriptions = new HashSet();
+	private Set<Determination> determinations = new HashSet();
+	private Sex sex;
+	private Stage lifeStage;
+	private Integer individualCount;
+	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
+	// in conjunction with titleCache which serves as the "citation" string for this object
+	private MultilanguageSet description;
+
+
+
+	@OneToMany(mappedBy="identifiedUnit")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<Determination> getDeterminations() {
+		return determinations;
+	}
+	protected void setDeterminations(Set<Determination> determinations) {
+		this.determinations = determinations;
+	}
+	public void addDetermination(Determination determination) {
+		// FIXME bidirectional integrity. Use protected Determination setter
+		this.determinations.add(determination);
+	}
+	public void removeDetermination(Determination determination) {
+		// FIXME bidirectional integrity. Use protected Determination setter
+		this.determinations.remove(determination);
+	}
+	
+	
+	@ManyToOne
+	public Sex getSex() {
+		return sex;
+	}
+
+	public void setSex(Sex sex) {
+		this.sex = sex;
+	}
+
+	@ManyToOne
+	public Stage getLifeStage() {
+		return lifeStage;
+	}
+
+	public void setLifeStage(Stage lifeStage) {
+		this.lifeStage = lifeStage;
+	}
+	
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<Media> getMedia() {
+		return media;
+	}
+	protected void setMedia(Set<Media> media) {
+		this.media = media;
+	}
+	public void addMedia(Media media) {
+		this.media.add(media);
+	}
+	public void removeMedia(Media media) {
+		this.media.remove(media);
+	}
+
+	
+	public String generateTitle(){
+		return "";
+	}
+
+
+	public Integer getIndividualCount() {
+		return individualCount;
+	}
+
+	public void setIndividualCount(Integer individualCount) {
+		this.individualCount = individualCount;
+	}
+
+
+	public MultilanguageSet getDefinition(){
+		return this.description;
+	}
+	private void setDefinition(MultilanguageSet description){
+		this.description = description;
+	}
+	public void addDefinition(LanguageString description){
+		this.description.add(description);
+	}
+	public void addDefinition(String text, Language lang){
+		this.description.add(text, lang);
+	}
+	public void removeDefinition(Language lang){
+		this.description.remove(lang);
+	}	
+}

@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.PhysicalOrganism;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservation;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
@@ -24,18 +27,10 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:22
  */
 @Entity
-public class DnaSample extends IdentifiableEntity {
+public class DnaSample extends Specimen {
 	static Logger logger = Logger.getLogger(DnaSample.class);
 	private String bankNumber;
-	//Notes on extraction, purification or amplification process
-	private String productionNotes;
-	private Calendar dateProduced;
 	private Set<Sequence> sequences = new HashSet();
-	private TissueSample extractedFrom;
-	private Collection storedAt;
-
-
-	
 
 	@OneToMany
 	public Set<Sequence> getSequences() {
@@ -52,46 +47,38 @@ public class DnaSample extends IdentifiableEntity {
 	}
 
 
-	@ManyToOne
+	@Transient
 	public Collection getStoredAt(){
-		return this.storedAt;
+		return this.getCollection();
 	}
 	public void setStoredAt(Collection storedAt){
-		this.storedAt = storedAt;
+		this.setCollection(storedAt);
 	}
 
-	@ManyToOne
-	public TissueSample getExtractedFrom(){
-		return this.extractedFrom;
-	}
-	public void setExtractedFrom(TissueSample extractedFrom){
-		this.extractedFrom = extractedFrom;
+	@Transient
+	public Set<SpecimenOrObservation> getExtractedFrom(){
+		return this.getDerivedFrom().getOriginals();
 	}
 
+	@Transient
 	public String getBankNumber(){
-		return this.bankNumber;
+		return this.getCatalogNumber();
 	}
 	public void setBankNumber(String bankNumber){
-		this.bankNumber = bankNumber;
+		this.setCatalogNumber(bankNumber);
 	}
 
+	@Transient
 	public String getProductionNotes(){
-		return this.productionNotes;
+		return this.getDerivedFrom().getDescription();
 	}
 	public void setProductionNotes(String productionNotes){
-		this.productionNotes = productionNotes;
+		this.getDerivedFrom().setDescription(productionNotes);
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Transient
 	public Calendar getDateProduced(){
-		return this.dateProduced;
-	}
-	public void setDateProduced(Calendar dateProduced){
-		this.dateProduced = dateProduced;
-	}
-
-	public String generateTitle(){
-		return "";
+		return this.getDerivedFrom().getTimeperiod().getStart();
 	}
 
 }
