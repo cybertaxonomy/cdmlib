@@ -19,6 +19,7 @@ cdmlibrary/edit_cdm.rar
 cdmlibrary/manifest.txt
 cdmlibrary/mavenInstall
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation
+cdmlibrary/src/main/resources/originals
 cdmlibrary/src/org
 cdmlibrary/src/test
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/agent
