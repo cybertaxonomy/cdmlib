@@ -60,18 +60,18 @@ public class TermLoader {
 		}
 		// save enumeration and all terms to DB
 		dao.saveOrUpdate(voc);
-		try {
-			String outfile=termDirectory+File.separator+filename+".txt";
-			CSVWriter writer = new CSVWriter(new FileWriter(outfile));
-			logger.info("Writing terms file to:"+outfile);
-			for (DefinedTermBase dt : voc){
-				dt.writeCsvLine(writer);
-			}
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			String outfile=termDirectory+File.separator+filename+".txt";
+//			CSVWriter writer = new CSVWriter(new FileWriter(outfile));
+//			logger.info("Writing terms file to:"+outfile);
+//			for (DefinedTermBase dt : voc){
+//				dt.writeCsvLine(writer);
+//			}
+//			writer.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return null;
 	}
 
