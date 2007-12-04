@@ -1,6 +1,9 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +18,16 @@ import org.jdom.output.Format;
 import org.jdom.xpath.XPath;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
-import static eu.etaxonomy.cdm.database.XmlHelp.insertXmlBean; 
-import static eu.etaxonomy.cdm.database.XmlHelp.insertXmlRefProperty;
-import static eu.etaxonomy.cdm.database.XmlHelp.insertXmlValueProperty; 
-import static eu.etaxonomy.cdm.database.XmlHelp.saveToXml; 
-import static eu.etaxonomy.cdm.database.XmlHelp.getFirstAttributedChild;
-import static eu.etaxonomy.cdm.database.XmlHelp.getOrAddChild;
-import static eu.etaxonomy.cdm.database.XmlHelp.getRoot;;
+import static eu.etaxonomy.cdm.common.XmlHelp.getFirstAttributedChild;
+import static eu.etaxonomy.cdm.common.XmlHelp.getOrAddChild;
+import static eu.etaxonomy.cdm.common.XmlHelp.getRoot;
+import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
+import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlRefProperty;
+import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
+import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 
 
 /**
@@ -95,7 +99,7 @@ public class CdmDataSource {
 	 * @return true if successful.
 	 */
 	public boolean updateSessionFactory(){
-		Element root = getRoot(getSessionFactoryFile());
+		Element root = getRoot(getSessionFactoryInputStream());
 		if (root == null){
 			return false;
 		}
@@ -125,7 +129,7 @@ public class CdmDataSource {
 		elDialectProp.setText(this.getDatabaseType().getHibernateDialect());
 		
 		//save
-		saveToXml(root.getDocument(), getResourceDirectory(), getSessionFactoryFile().getName(), format );
+		saveToXml(root.getDocument(), getSessionFactoryOutputStream() , format );
 		return true;
 	}
 
@@ -193,7 +197,7 @@ public class CdmDataSource {
 	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 				int port, String username, String password){
 		//root
-		Element root = getRoot(getDataSourceFile());
+		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
 			return null;
 		}
@@ -222,7 +226,7 @@ public class CdmDataSource {
 		if (bean != null){
 			Document doc = bean.getDocument();
 			bean.detach();
-			saveToXml(doc, getResourceDirectory(), DATASOURCE_FILE_NAME, format );
+			saveToXml(doc, getDataSourceOutputStream(), format );
 		}
 	}
 	
@@ -234,7 +238,7 @@ public class CdmDataSource {
 	static public List<CdmDataSource> getAllDataSources(){
 		List<CdmDataSource> dataSources = new ArrayList<CdmDataSource>();
 		
-		Element root = getRoot(getDataSourceFile());
+		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
 			return null;
 		}else{
@@ -263,26 +267,67 @@ public class CdmDataSource {
 	}
 	
 	/**
-	 * Returns the session factory config file.
+	 * Returns the session factory config file input stream.
 	 * @return session factory config file
 	 */
-	private File getSessionFactoryFile(){
+	private FileInputStream getSessionFactoryInputStream(){
 		String dir = getResourceDirectory();
 		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-		return file;
+		return fileInputStream(file);
 	}
 	
 	/**
-	 * Returns the datasource config file.
-	 * @return data source config file
+	 * Returns the session factory output stream.
+	 * @return 
 	 */
-	static public File getDataSourceFile(){
+	private FileOutputStream getSessionFactoryOutputStream(){
+		String dir = getResourceDirectory();
+		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
+		return fileOutputStream(file);
+	}
+
+	
+	/**
+	 * Returns the datasource config file input stream.
+	 * @return data source config file input stream
+	 */
+	static public FileInputStream getDataSourceInputStream(){
 		String dir = getResourceDirectory();
 		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
-		if (! file.exists()) logger.warn("Datasource file does not exist in the file system");
-		return file;
+		return fileInputStream(file);
 	}
 	
+	
+	/**
+	 * Returns the datasource config file outputStream.
+	 * @return data source config file outputStream
+	 */
+	static public FileOutputStream getDataSourceOutputStream(){
+		String dir = getResourceDirectory();
+		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
+		return fileOutputStream(file);
+	}
+	
+	
+	static private FileInputStream fileInputStream(File file){
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			return fis;
+		} catch (FileNotFoundException e) {
+			logger.warn("File " + file == null?"null":file.getAbsolutePath() + " does not exist in the file system");
+			return null;
+		}
+	}
+	
+	static private FileOutputStream fileOutputStream(File file){
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			return fos;
+		} catch (FileNotFoundException e) {
+			logger.warn("File " + file == null?"null":file.getAbsolutePath() + " does not exist in the file system");
+			return null;
+		}
+	}
 	
 	// returns the directory containing the resources 
 	private static String getResourceDirectory(){
@@ -296,7 +341,7 @@ public class CdmDataSource {
 	 * @return
 	 */
 	private static Element getDatasourceBeanXml(String strDataSourceName){
-		Element root = getRoot(getDataSourceFile());
+		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
 			return null;
 		}else{
