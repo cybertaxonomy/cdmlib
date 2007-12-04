@@ -73,7 +73,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/XmlHelp.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/init/TermLoader.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text

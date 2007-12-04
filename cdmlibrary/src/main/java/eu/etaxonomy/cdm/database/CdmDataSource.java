@@ -12,14 +12,10 @@ import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
 import org.jdom.output.Format;
-import org.jdom.xpath.XPath;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 import static eu.etaxonomy.cdm.common.XmlHelp.getFirstAttributedChild;
 import static eu.etaxonomy.cdm.common.XmlHelp.getOrAddChild;
@@ -39,6 +35,7 @@ public class CdmDataSource {
 	public static final String BEAN_POSTFIX = "DataSource";
 	public static final String SESSION_FACTORY_FILE = "sessionfactory.xml";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
+	public final static String APPLICATION_CONTEXT_FILE_NAME = "applicationContext.xml";
 	private final static Format format = Format.getPrettyFormat(); 
 	
 	
@@ -255,6 +252,7 @@ public class CdmDataSource {
 		return dataSources;
 	}
 	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -324,7 +322,7 @@ public class CdmDataSource {
 			FileOutputStream fos = new FileOutputStream(file);
 			return fos;
 		} catch (FileNotFoundException e) {
-			logger.warn("File " + file == null?"null":file.getAbsolutePath() + " does not exist in the file system");
+			logger.warn("File " + (file == null?"null":file.getAbsolutePath()) + " does not exist in the file system");
 			return null;
 		}
 	}
@@ -335,7 +333,7 @@ public class CdmDataSource {
 		return f.getPath();
 	}
 	
-	
+
 	/**
 	 * Returns the jdom Element representing the data source bean in the config file.
 	 * @return
@@ -350,7 +348,7 @@ public class CdmDataSource {
 			return xmlBean;
 		}
 	}
-	
+
 	
 	/**
 	 * Filter class to define datasource file format
