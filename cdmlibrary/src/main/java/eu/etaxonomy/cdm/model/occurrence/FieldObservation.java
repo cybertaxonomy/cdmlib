@@ -32,7 +32,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:40
  */
 @Entity
-public class FieldObservation extends SpecimenOrObservation implements IEvent{
+public class FieldObservation extends SpecimenOrObservationBase implements IEvent{
 	static Logger logger = Logger.getLogger(FieldObservation.class);
 
 	//Locality name (as free text) where this occurrence happened

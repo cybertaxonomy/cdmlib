@@ -111,7 +111,7 @@ public class Language extends DefinedTermBase {
 		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
 	}
 	public void writeCsvLine(CSVWriter writer) {
-		String [] line = new String[5];
+		String [] line = new String[7];
 		line[0] = getUuid();
 		line[1] = getUri();
 		line[2] = getLabel(Language.ENGLISH());

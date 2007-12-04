@@ -35,7 +35,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DefinedTermBase extends TermBase{
+public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 	@Autowired
 	protected static IDefinedTermDao dao;
@@ -55,10 +55,16 @@ public abstract class DefinedTermBase extends TermBase{
 		super(term, label);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#readCsvLine(java.util.List)
+	 */
 	public void readCsvLine(List<String> csvLine) {
 		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
 		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter)
+	 */
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[4];
 		line[0] = getUuid();
@@ -128,11 +134,17 @@ public abstract class DefinedTermBase extends TermBase{
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
+	 */
 	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public TermVocabulary getVocabulary() {
 		return this.vocabulary;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
 	public void setVocabulary(TermVocabulary newVocabulary) {
 		// Hibernate bidirectional cascade hack: 
 		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054

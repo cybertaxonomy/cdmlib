@@ -11,9 +11,13 @@ package eu.etaxonomy.cdm.model.location;
 
 
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 import java.util.*;
 
@@ -122,4 +126,19 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 		return null;
 	}
 
+	
+	public void readCsvLine(List<String> csvLine) {
+		this.iso2code=csvLine.get(0).trim();
+		this.addRepresentation(new Representation(csvLine.get(3).trim(), csvLine.get(1).trim(), Language.ENGLISH()));
+	}
+	public void writeCsvLine(CSVWriter writer) {
+		String [] line = new String[6];
+		line[0] = getUuid();
+		line[1] = getUri();
+		line[2] = getLabel(Language.ENGLISH());
+		line[3] = getDescription();
+		line[4] = this.getIso2code();
+		line[5] = this.getContinents().toString();
+		writer.writeNext(line);
+	}	
 }

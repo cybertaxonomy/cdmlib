@@ -144,7 +144,7 @@
             <value>eu.etaxonomy.cdm.model.occurrence.PhysicalOrganism</value>
             <value>eu.etaxonomy.cdm.model.occurrence.PreservationMethod</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Specimen</value>
-            <value>eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservation</value>
+            <value>eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase</value>
             <value>eu.etaxonomy.cdm.model.reference.Article</value>
             <value>eu.etaxonomy.cdm.model.reference.BibtexEntryType</value>
             <value>eu.etaxonomy.cdm.model.reference.BibtexReference</value>

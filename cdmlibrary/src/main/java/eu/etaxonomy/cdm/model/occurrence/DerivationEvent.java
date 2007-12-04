@@ -26,22 +26,22 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 public class DerivationEvent extends EventBase{
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
-	private Set<SpecimenOrObservation> originals = new HashSet();
+	private Set<SpecimenOrObservationBase> originals = new HashSet();
 	private Set<PhysicalOrganism> derivatives = new HashSet();
 	private DerivationEventType type;
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<SpecimenOrObservation> getOriginals() {
+	public Set<SpecimenOrObservationBase> getOriginals() {
 		return originals;
 	}
-	protected void setOriginals(Set<SpecimenOrObservation> originals) {
+	protected void setOriginals(Set<SpecimenOrObservationBase> originals) {
 		this.originals = originals;
 	}
-	public void addOriginal(SpecimenOrObservation original) {
+	public void addOriginal(SpecimenOrObservationBase original) {
 		this.originals.add(original);
 	}
-	public void removeOriginal(SpecimenOrObservation original) {
+	public void removeOriginal(SpecimenOrObservationBase original) {
 		this.originals.remove(original);
 	}
 	

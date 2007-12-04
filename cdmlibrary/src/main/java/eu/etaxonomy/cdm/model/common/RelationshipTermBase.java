@@ -130,28 +130,27 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	}
 	
 	public void readCsvLine(List<String> csvLine) {
-		if(csvLine.size()>3 && csvLine.get(3).trim().length()>0){
+		if(csvLine.get(3).trim().length()>0){
 			this.symmetric=true;
 		}
-		if(csvLine.size()>4 && csvLine.get(4).trim().length()>0){
+		if(csvLine.get(4).trim().length()>0){
 			this.transitive=true;
 		}
 		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
-		if (csvLine.size()>2){ 
-			this.addInverseRepresentation(new Representation(csvLine.get(2).trim(), csvLine.get(2).trim(), Language.DEFAULT()) );
-		}
+		this.addInverseRepresentation(new Representation(csvLine.get(2).trim(), csvLine.get(2).trim(), Language.DEFAULT()) );
 		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
 	}
 	
 	public void writeCsvLine(CSVWriter writer) {
-		String [] line = new String[7];
+		String [] line = new String[8];
 		line[0] = getUuid();
 		line[1] = getUri();
 		line[2] = getLabel();
 		line[3] = getDescription();
 		line[4] = getInverseLabel();
-		line[5] = String.valueOf(this.isSymmetric());
-		line[6] = String.valueOf(this.isTransitive());
+		line[5] = getInverseDescription();
+		line[6] = String.valueOf(this.isSymmetric());
+		line[7] = String.valueOf(this.isTransitive());
 		writer.writeNext(line);
 	}
 	

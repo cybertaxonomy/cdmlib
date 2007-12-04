@@ -40,8 +40,8 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class SpecimenOrObservation extends IdentifiableEntity {
-	static Logger logger = Logger.getLogger(SpecimenOrObservation.class);
+public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
+	static Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	private Set<Media> media = new HashSet();
 	private Set<SpecimenDescription> descriptions = new HashSet();
 	private Set<Determination> determinations = new HashSet();

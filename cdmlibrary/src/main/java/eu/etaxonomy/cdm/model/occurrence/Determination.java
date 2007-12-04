@@ -33,7 +33,7 @@ import javax.persistence.*;
 public class Determination extends EventBase {
 	static Logger logger = Logger.getLogger(Determination.class);
 
-	private SpecimenOrObservation identifiedUnit;
+	private SpecimenOrObservationBase identifiedUnit;
 	private Taxon taxon;
 	private DeterminationModifier modifier;
 
@@ -82,11 +82,11 @@ public class Determination extends EventBase {
 	}
 
 	@ManyToOne
-	public SpecimenOrObservation getIdentifiedUnit() {
+	public SpecimenOrObservationBase getIdentifiedUnit() {
 		return identifiedUnit;
 	}
 
-	public void setIdentifiedUnit(SpecimenOrObservation identifiedUnit) {
+	public void setIdentifiedUnit(SpecimenOrObservationBase identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
 

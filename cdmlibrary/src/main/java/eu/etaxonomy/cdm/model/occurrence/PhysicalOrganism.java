@@ -22,7 +22,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 @Entity
-public class PhysicalOrganism extends SpecimenOrObservation {
+public class PhysicalOrganism extends SpecimenOrObservationBase {
 
 	private Collection collection;
 	private String catalogNumber;

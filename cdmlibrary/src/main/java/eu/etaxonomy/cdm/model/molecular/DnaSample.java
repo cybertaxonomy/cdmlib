@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.model.molecular;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.PhysicalOrganism;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservation;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 
@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:22
  */
 @Entity
-public class DnaSample extends Specimen {
+public class DnaSample extends PhysicalOrganism {
 	static Logger logger = Logger.getLogger(DnaSample.class);
 	private String bankNumber;
 	private Set<Sequence> sequences = new HashSet();
@@ -56,7 +56,7 @@ public class DnaSample extends Specimen {
 	}
 
 	@Transient
-	public Set<SpecimenOrObservation> getExtractedFrom(){
+	public Set<SpecimenOrObservationBase> getExtractedFrom(){
 		return this.getDerivedFrom().getOriginals();
 	}
 
