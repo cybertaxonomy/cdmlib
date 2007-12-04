@@ -37,8 +37,7 @@ public class CdmUtils {
 				// unknown environment
 				fileResourceDir = null;
 			}
-			logger.debug("Resource directory: " + fileResourceDir.getAbsolutePath());	
-			
+			logger.debug("Resource directory: " + fileResourceDir==null?"null":fileResourceDir.getAbsolutePath());		
 		}
 		return fileResourceDir;
 	}
