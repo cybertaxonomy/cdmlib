@@ -8,6 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 
 
@@ -17,10 +18,6 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
  */
 public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
-	
-	static final String APP_CONTEXT_FILE_NAME = "applicationContext.xml";
-	
-	
 	
 	private ClassPathXmlApplicationContext applicationContext;
 	private INameService nameService;
@@ -76,8 +73,7 @@ public class CdmApplicationController {
 	 */
 	private boolean setNewDataSource(CdmDataSource dataSource) {
 		dataSource.updateSessionFactory(); 
-		String appContextFileName = APP_CONTEXT_FILE_NAME;
-		setApplicationContext(new ClassPathXmlApplicationContext(appContextFileName));
+		setApplicationContext(new ClassPathXmlApplicationContext(CdmUtils.getApplicationContextString()));
 		return true;
 	}
 
