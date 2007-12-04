@@ -1,8 +1,10 @@
 package eu.etaxonomy.cdm.test.function;
 
+import java.net.URL;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.model.agent.Agent;
@@ -79,6 +81,7 @@ public class Datasource {
 		//testNewConfigControler();
     	//testDatabaseChange();
 		//testSqlServer();
+		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
 		testPostgreServer();
 		System.out.println("\nEnd Datasource");
 	}
