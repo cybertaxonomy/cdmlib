@@ -104,21 +104,20 @@ public class Language extends DefinedTermBase {
 
 	
 	public void readCsvLine(List<String> csvLine) {
-		this.iso639_1=csvLine.get(0).trim().toCharArray();
-		this.iso639_2=csvLine.get(2).trim().toCharArray();
-		this.addRepresentation(new Representation(csvLine.get(3).trim(), String.valueOf(iso639_2), Language.ENGLISH()));
-		this.addRepresentation(new Representation(csvLine.get(4).trim(), String.valueOf(iso639_2), Language.FRENCH()));
-		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+		// read UUID, URI, english label+description
+		super.readCsvLine(csvLine);
+		// iso codes extra
+		this.iso639_1=csvLine.get(4).trim().toCharArray();
+		this.iso639_2=csvLine.get(5).trim().toCharArray();
 	}
 	public void writeCsvLine(CSVWriter writer) {
-		String [] line = new String[7];
+		String [] line = new String[6];
 		line[0] = getUuid();
 		line[1] = getUri();
 		line[2] = getLabel(Language.ENGLISH());
-		line[3] = getDescription();
-		line[4] = getLabel(Language.FRENCH());
-		line[5] = String.valueOf(this.iso639_1);
-		line[6] = String.valueOf(this.iso639_2);
+		line[3] = getDescription(Language.ENGLISH());
+		line[4] = String.valueOf(this.iso639_1);
+		line[5] = String.valueOf(this.iso639_2);
 		writer.writeNext(line);
 	}
 	

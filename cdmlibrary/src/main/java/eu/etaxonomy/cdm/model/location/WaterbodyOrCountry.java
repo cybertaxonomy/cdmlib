@@ -128,8 +128,10 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 
 	
 	public void readCsvLine(List<String> csvLine) {
-		this.iso2code=csvLine.get(0).trim();
-		this.addRepresentation(new Representation(csvLine.get(3).trim(), csvLine.get(1).trim(), Language.ENGLISH()));
+		// read UUID, URI, english label+description
+		super.readCsvLine(csvLine);
+		// iso codes extra
+		this.iso2code=csvLine.get(4).trim();
 	}
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];

@@ -59,9 +59,11 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#readCsvLine(java.util.List)
 	 */
 	public void readCsvLine(List<String> csvLine) {
-		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
-		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+		this.setUuid(csvLine.get(0));
+		this.setUri(csvLine.get(1));
+		this.addRepresentation(new Representation(csvLine.get(3), csvLine.get(2).trim(), Language.ENGLISH()) );
 	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter)
 	 */

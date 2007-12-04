@@ -130,15 +130,12 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	}
 	
 	public void readCsvLine(List<String> csvLine) {
-		if(csvLine.get(3).trim().length()>0){
-			this.symmetric=true;
-		}
-		if(csvLine.get(4).trim().length()>0){
-			this.transitive=true;
-		}
-		this.addRepresentation(new Representation(csvLine.get(1).trim(), csvLine.get(1).trim(), Language.DEFAULT()) );
-		this.addInverseRepresentation(new Representation(csvLine.get(2).trim(), csvLine.get(2).trim(), Language.DEFAULT()) );
-		logger.debug("Created "+this.getClass().getSimpleName() + " term: "+this.toString());
+		// read UUID, URI, english label+description
+		super.readCsvLine(csvLine);
+		// inverse label + 2 booleans
+		this.addInverseRepresentation(new Representation(csvLine.get(4).trim(), csvLine.get(5).trim(), Language.ENGLISH()) );
+		this.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
+		this.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
 	}
 	
 	public void writeCsvLine(CSVWriter writer) {

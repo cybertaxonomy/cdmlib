@@ -28,9 +28,9 @@ public class TermLoaderTest extends CdmUnitTestBase{
 	@Test
 	public void loadTerms() {
 		try {
+			loader.loadDefaultTerms(WaterbodyOrCountry.class);
 			loader.loadDefaultTerms(Language.class);
 			loader.loadDefaultTerms(Continent.class);
-			//loader.loadDefaultTerms(WaterbodyOrCountry.class);
 			loader.loadDefaultTerms(Rank.class);
 			loader.loadDefaultTerms(TypeDesignationStatus.class);
 			loader.loadDefaultTerms(NomenclaturalStatusType.class);
