@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
-@Entity
+@MappedSuperclass
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
