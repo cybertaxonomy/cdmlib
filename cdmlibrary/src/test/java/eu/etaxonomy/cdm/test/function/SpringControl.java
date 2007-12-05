@@ -9,6 +9,8 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.DatabaseServiceHibernateImpl;
+import eu.etaxonomy.cdm.api.service.NameServiceImpl;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -16,6 +18,7 @@ import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
+import java.io.InputStream;
 import java.util.*;
 
 
@@ -56,7 +59,12 @@ public class SpringControl {
 	}
 	
 	public void testAppController(){
+		
 		CdmApplicationController appCtr = new CdmApplicationController();
+		DatabaseServiceHibernateImpl dbsi = (DatabaseServiceHibernateImpl)appCtr.getDatabaseService();
+		//dbsi.fillTerms();
+		
+		
 		logger.info("Create name objects...");
 		NonViralName tn = new NonViralName(Rank.SPECIES());
 		BotanicalName tn3 = new BotanicalName(Rank.SPECIES());

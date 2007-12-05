@@ -3,15 +3,19 @@ package eu.etaxonomy.cdm.test.function;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public class Datasource {
+	private static final Logger logger = Logger.getLogger(Datasource.class);
 
 	
 	private void testNewConfigControler(){
@@ -20,9 +24,13 @@ public class Datasource {
 		CdmDataSource dataSource = lsDataSources.get(0);
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		CdmDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
-		CdmApplicationController appCtr = new CdmApplicationController(dataSource);
-		appCtr.close();
-		
+		CdmApplicationController appCtr;
+		try {
+			appCtr = new CdmApplicationController(dataSource);
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Unknown datasource");
+		}
 	}
 	
 	private void testDatabaseChange(){
@@ -53,12 +61,16 @@ public class Datasource {
 		String username = "edit";
 		String password = "wp5";
 		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
-		CdmApplicationController appCtr = new CdmApplicationController(ds);
-		Agent agent = new Agent();
-		appCtr.getAgentService().saveAgent(agent);
-		TaxonNameBase tn = new BotanicalName(null);
-		appCtr.getNameService().saveTaxonName(tn);
-		appCtr.close();
+		try {
+			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			Agent agent = new Agent();
+			appCtr.getAgentService().saveAgent(agent);
+			TaxonNameBase tn = new BotanicalName(null);
+			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Unknown datasource");
+		}
 	}
 	
 	private void testPostgreServer(){
@@ -66,14 +78,18 @@ public class Datasource {
 		String server = "192.168.1.17";
 		String database = "cdm_test";
 		String username = "edit";
-		String password = "schalke";
+		String password = "wp5";
 		CdmDataSource ds = CdmDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
-		CdmApplicationController appCtr = new CdmApplicationController(ds);
-		Agent agent = new Agent();
-		appCtr.getAgentService().saveAgent(agent);
-		TaxonNameBase tn = new BotanicalName(null);
-		appCtr.getNameService().saveTaxonName(tn);
-		appCtr.close();
+		try {
+			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			Agent agent = new Agent();
+			appCtr.getAgentService().saveAgent(agent);
+			TaxonNameBase tn = new BotanicalName(null);
+			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Unknown datasource");
+		}
 	}
 	
 	private void test(){
