@@ -38,33 +38,38 @@ public class CdmDataSource {
 	public final static String APPLICATION_CONTEXT_FILE_NAME = "applicationContext.xml";
 	private final static Format format = Format.getPrettyFormat(); 
 	
+	//name
+	protected String dataSourceName;
+
 	
 	/**
 	 * Returns the default CdmDataSource
 	 * @return the default CdmDataSource
 	 */
-	public final static CdmDataSource getDefaultDataSource(){
-		return getDataSource("default");
+	public final static CdmDataSource NewDefaultInstance(){
+		try {
+			return NewInstance("default");
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Default datasource does not exist in config file");
+			return null;
+		}
 	}
 	/**
 	 * Returns the CdmDataSource named by strDataSource
 	 * @param strDataSource
 	 * @return
 	 */
-	public final static CdmDataSource getDataSource(String strDataSource){
-		if (exists(strDataSource)){
-			return new CdmDataSource(strDataSource);
+	public final static CdmDataSource NewInstance(String dataSourceName) 
+				throws DataSourceNotFoundException{
+		if (exists(dataSourceName)){
+			return new CdmDataSource(dataSourceName);
 		}else{
-			logger.warn("CdmDataSource" + strDataSource == null? "(null)": strDataSource + " does not exist."  );
-			return null;
+			throw new DataSourceNotFoundException("Datasource not found: " + dataSourceName);
 		}
 	}
-	
-	//name
-	protected String dataSourceName;
 
 	/**
-	 * private Constructor.
+	 * Private Constructor. Use NewXXX factory methods for creating a new instance of CdmDataSource!
 	 * @param strDataSource
 	 */
 	private CdmDataSource(String strDataSource){
@@ -160,7 +165,6 @@ public class CdmDataSource {
 		Element bean = getDatasourceBeanXml(strDataSourceName);
 		return (bean != null);
 	}
-	
 
 	
 	/**
@@ -211,7 +215,12 @@ public class CdmDataSource {
 		insertXmlValueProperty(bean, "password", password );
 		//save
 		saveToXml(root.getDocument(), getResourceDirectory(), DATASOURCE_FILE_NAME, format );
-		return getDataSource(strDataSourceName) ;
+		try {
+			return NewInstance(strDataSourceName) ;
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Error when saving datasource");
+			return null;
+		}
 	}
 	
 	/**
@@ -263,6 +272,50 @@ public class CdmDataSource {
 			return null;
 		}
 	}
+
+
+	
+	/**
+	 * Returns the datasource config file input stream.
+	 * @return data source config file input stream
+	 */
+	static protected FileInputStream getDataSourceInputStream(){
+		String dir = getResourceDirectory();
+		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
+		return fileInputStream(file);
+	}
+	
+	
+	/**
+	 * Returns the datasource config file outputStream.
+	 * @return data source config file outputStream
+	 */
+	static protected FileOutputStream getDataSourceOutputStream(){
+		String dir = getResourceDirectory();
+		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
+		return fileOutputStream(file);
+	}
+
+	/**
+	 * Returns the jdom Element representing the data source bean in the config file.
+	 * @return
+	 */
+	private static Element getDatasourceBeanXml(String strDataSourceName){
+		Element root = getRoot(getDataSourceInputStream());
+		if (root == null){
+			return null;
+		}else{
+	    	Element xmlBean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
+			if (xmlBean == null){logger.warn("Unknown Element 'bean' ");};
+			return xmlBean;
+		}
+	}
+	
+	// returns the directory containing the resources 
+	private static String getResourceDirectory(){
+		File f = CdmUtils.getWritableResourceDir();
+		return f.getPath();
+	}
 	
 	/**
 	 * Returns the session factory config file input stream.
@@ -281,28 +334,6 @@ public class CdmDataSource {
 	private FileOutputStream getSessionFactoryOutputStream(){
 		String dir = getResourceDirectory();
 		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-		return fileOutputStream(file);
-	}
-
-	
-	/**
-	 * Returns the datasource config file input stream.
-	 * @return data source config file input stream
-	 */
-	static public FileInputStream getDataSourceInputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
-		return fileInputStream(file);
-	}
-	
-	
-	/**
-	 * Returns the datasource config file outputStream.
-	 * @return data source config file outputStream
-	 */
-	static public FileOutputStream getDataSourceOutputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
 		return fileOutputStream(file);
 	}
 	
@@ -327,28 +358,6 @@ public class CdmDataSource {
 		}
 	}
 	
-	// returns the directory containing the resources 
-	private static String getResourceDirectory(){
-		File f = CdmUtils.getResourceDir();
-		return f.getPath();
-	}
-	
-
-	/**
-	 * Returns the jdom Element representing the data source bean in the config file.
-	 * @return
-	 */
-	private static Element getDatasourceBeanXml(String strDataSourceName){
-		Element root = getRoot(getDataSourceInputStream());
-		if (root == null){
-			return null;
-		}else{
-	    	Element xmlBean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
-			if (xmlBean == null){logger.warn("Unknown Element 'bean' ");};
-			return xmlBean;
-		}
-	}
-
 	
 	/**
 	 * Filter class to define datasource file format

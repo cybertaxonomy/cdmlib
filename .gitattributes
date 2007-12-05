@@ -71,6 +71,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/init/TermLoader.java -text

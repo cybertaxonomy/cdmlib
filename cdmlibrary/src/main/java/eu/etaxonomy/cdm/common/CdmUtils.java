@@ -28,14 +28,25 @@ public class CdmUtils {
 	static File fileResourceDir;
 	static final String MUST_EXIST_FILE = "applicationContext.xml";
 
+	/**
+	 * Returns the an InputStream for a read-only source
+	 * @param resourceFileName the resources path within the classpath(!)
+	 * @return
+	 * @throws IOException
+	 */
 	public static InputStream getReadableResourceStream(String resourceFileName) 
 			throws IOException{
-		URL url = CdmApplicationController.class.getResource("/"+ resourceFileName);
-		InputStream urlStream = url.openStream();
+		InputStream urlStream = CdmApplicationController.class.getResourceAsStream("/"+ resourceFileName);
 		return urlStream;
 	}
 	
-	public static File getResourceDir(){
+	
+	/**
+	 * Returns the directory path to the writable resources. (Resources must be copied to this directory, this is automatically done for
+	 * the cdm.datasource.xml, sessionfactory.xml and applicationContext.xml
+	 * @return 
+	 */
+	public static File getWritableResourceDir(){
 		//compute only once
 		if (fileResourceDir == null){
 			//workaround to find out in which environment the library is executed
@@ -45,8 +56,9 @@ public class CdmUtils {
 				if (file.exists()){
 					fileResourceDir= file.getParentFile();
 				}else{
+					String subPath = File.separator + "cdmResources" ;
 					//file = new File(System.getProperty("user.home") + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
-					file = new File(System.getProperty("user.dir") + File.separator + "cdmLibrary" + File.separator + "writableResources" );
+					file = new File(System.getProperty("user.dir") + subPath );
 					
 					file.mkdirs();
 					copyResource(file, CdmDataSource.DATASOURCE_FILE_NAME);
@@ -60,6 +72,11 @@ public class CdmUtils {
 		return fileResourceDir;
 	}
 	
+	/**
+	 * Copies a file from the classpath resource (e.g. jar-File) to the resources directory in the file system (get
+	 * @param directory
+	 * @param resourceFileName
+	 */
 	static private void copyResource(File directory, String resourceFileName){
 		try {
 			File fileToCopy = new File(directory + File.separator + resourceFileName);
@@ -72,10 +89,12 @@ public class CdmUtils {
 		}
 	}
 	
+	/**
+	 * Returns the string to the applicationContext.xml to be used.
+	 * @return
+	 */
 	public static String getApplicationContextString(){
-		return CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
-			
-		//return CdmUtils.getResourceDir() + File.separator + CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
+		return CdmUtils.getWritableResourceDir() + File.separator + CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
 	}
 	
 	
