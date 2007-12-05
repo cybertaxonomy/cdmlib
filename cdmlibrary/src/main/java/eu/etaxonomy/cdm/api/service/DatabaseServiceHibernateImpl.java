@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,6 +30,17 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 /**
  * @author a.mueller
@@ -149,6 +161,22 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 		return ds;
 	}
 
+//	public void createDatabase(){
+//		this.connectToDatabase(databaseTypeEnum, server, database, username, password)
+//		
+//		
+//		loader.loadDefaultTerms(WaterbodyOrCountry.class);
+//		loader.loadDefaultTerms(Language.class);
+//		loader.loadDefaultTerms(Continent.class);
+//		loader.loadDefaultTerms(Rank.class);
+//		loader.loadDefaultTerms(TypeDesignationStatus.class);
+//		loader.loadDefaultTerms(NomenclaturalStatusType.class);
+//		loader.loadDefaultTerms(SynonymRelationshipType.class);
+//		loader.loadDefaultTerms(HybridRelationshipType.class);
+//		loader.loadDefaultTerms(NameRelationshipType.class);
+//		loader.loadDefaultTerms(ConceptRelationshipType.class);
+//	
+//	}
 
 
 }

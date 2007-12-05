@@ -2,14 +2,21 @@ package eu.etaxonomy.cdm.api.application;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.hsqldb.Server;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 
 /**
@@ -19,7 +26,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
-	private ClassPathXmlApplicationContext applicationContext;
+	private AbstractApplicationContext applicationContext;
 	private INameService nameService;
 	private IAgentService agentService;
 	private IDatabaseService databaseService;
@@ -41,7 +48,7 @@ public class CdmApplicationController {
 		//if not running, start server
 
 		logger.info("Start CdmApplicationController with default data source");
-		CdmDataSource dataSource = CdmDataSource.getDefaultDataSource();
+		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
 		setNewDataSource(dataSource);
 	}
 	
@@ -49,21 +56,12 @@ public class CdmApplicationController {
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
 	 */
-	public CdmApplicationController(CdmDataSource dataSource) {
+	public CdmApplicationController(CdmDataSource dataSource) 
+			throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
 		if (setNewDataSource(dataSource) == false){
-			//FIXME throw Exceptioin
+			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
-	}
-
-	
-	/**
-	 * Changes the ApplicationContext to the new dataSource
-	 * @param dataSource
-	 */
-	public boolean changeDataSource(CdmDataSource dataSource) {
-		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource);
 	}
 
 	
@@ -73,18 +71,27 @@ public class CdmApplicationController {
 	 */
 	private boolean setNewDataSource(CdmDataSource dataSource) {
 		dataSource.updateSessionFactory(); 
-		setApplicationContext(new ClassPathXmlApplicationContext(CdmUtils.getApplicationContextString()));
+		FileSystemXmlApplicationContext ac = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+		setApplicationContext(ac);
 		return true;
 	}
 
+	/**
+	 * Changes the ApplicationContext to the new dataSource
+	 * @param dataSource
+	 */
+	public boolean changeDataSource(CdmDataSource dataSource) {
+		logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource);
+	}
 	
 	/**
 	 * Sets a new application Context.
-	 * @param appCtx
+	 * @param ac
 	 */
-	public void setApplicationContext(ClassPathXmlApplicationContext appCtx){
+	public void setApplicationContext(AbstractXmlApplicationContext ac){
 		closeApplicationContext(); //closes old application context if necessary
-		applicationContext = appCtx;
+		applicationContext = ac;
 		applicationContext.registerShutdownHook();
 		setServices();
 	}
