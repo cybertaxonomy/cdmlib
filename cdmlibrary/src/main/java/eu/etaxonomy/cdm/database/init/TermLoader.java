@@ -2,9 +2,8 @@ package eu.etaxonomy.cdm.database.init;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -16,11 +15,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IDefTerm;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
+
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
@@ -35,12 +31,12 @@ public class TermLoader {
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
 	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
-		String termDirectory = CdmUtils.getResourceDir().getAbsoluteFile()+File.separator+"terms";
-		File termFile = new File(termDirectory+File.separator+filename);
-		CSVReader reader = new CSVReader(new FileReader(termFile), '\t');
-		String [] nextLine;
 		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		try {
+			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + File.separator + filename);
+			CSVReader reader = new CSVReader(new InputStreamReader(inputStream),'\t');
+		
+			String [] nextLine;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				IDefTerm term = termClass.newInstance();
