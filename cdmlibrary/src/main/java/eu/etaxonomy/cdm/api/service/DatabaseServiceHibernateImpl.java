@@ -25,6 +25,7 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
  *
  */
 @Service
+@Transactional
 public class DatabaseServiceHibernateImpl extends ServiceBase implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	

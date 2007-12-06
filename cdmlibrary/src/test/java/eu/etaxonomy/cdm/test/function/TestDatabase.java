@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;

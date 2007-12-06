@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 
 @Service
+@Transactional(readOnly = true)
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
@@ -35,6 +37,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return super.getCdmObjectByUuid(uuid);
 	}
 
+	@Transactional(readOnly = false)
 	public String saveTaxonName(TaxonNameBase taxonName) {
 		return super.saveCdmObject(taxonName);
 	}

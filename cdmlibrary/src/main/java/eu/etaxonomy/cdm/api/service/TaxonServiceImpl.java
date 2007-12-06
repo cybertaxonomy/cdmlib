@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.*;
@@ -20,6 +21,7 @@ import java.util.List;
 
 
 @Service
+@Transactional(readOnly = true)
 public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
 	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 	
@@ -34,6 +36,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
+	@Transactional(readOnly = false)
 	public String saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
 	}

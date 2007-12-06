@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -32,6 +33,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		return dao.findByUuid(uuid);
 	}
 
+	@Transactional(readOnly = false)
 	protected String saveCdmObject(T cdmObj){
 		return dao.saveOrUpdate(cdmObj);
 	}

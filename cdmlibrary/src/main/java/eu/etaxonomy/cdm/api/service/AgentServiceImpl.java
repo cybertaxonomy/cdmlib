@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
  *
  */
 @Service
+@Transactional
 public class AgentServiceImpl extends IdentifiableServiceBase<Agent> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
