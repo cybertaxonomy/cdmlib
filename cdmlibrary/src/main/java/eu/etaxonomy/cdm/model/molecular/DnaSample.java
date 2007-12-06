@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:22
  */
 @Entity
-public class DnaSample extends PhysicalUnit {
+public class DnaSample extends Specimen {
 	static Logger logger = Logger.getLogger(DnaSample.class);
 	private String bankNumber;
 	private Set<Sequence> sequences = new HashSet();
