@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
-	private AbstractApplicationContext applicationContext;
+	public AbstractApplicationContext applicationContext;
 	private INameService nameService;
 	private IAgentService agentService;
 	private IDatabaseService databaseService;

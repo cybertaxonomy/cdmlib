@@ -12,12 +12,23 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IDefTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 @Component
@@ -74,5 +85,28 @@ public class TermLoader {
 	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException {
 		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true);
 	}
+	
+	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
+			loadDefaultTerms(WaterbodyOrCountry.class);
+			loadDefaultTerms(Language.class);
+			loadDefaultTerms(Continent.class);
+			loadDefaultTerms(Rank.class);
+			loadDefaultTerms(TypeDesignationStatus.class);
+			loadDefaultTerms(NomenclaturalStatusType.class);
+			loadDefaultTerms(SynonymRelationshipType.class);
+			loadDefaultTerms(HybridRelationshipType.class);
+			loadDefaultTerms(NameRelationshipType.class);
+			loadDefaultTerms(ConceptRelationshipType.class);
+	}
 
+	public static void main(String[] args) {
+		CdmApplicationController appCtr = new CdmApplicationController();
+		TermLoader tl = (TermLoader) appCtr.applicationContext.getBean("termLoader");
+		try {
+			tl.loadAllDefaultTerms();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
