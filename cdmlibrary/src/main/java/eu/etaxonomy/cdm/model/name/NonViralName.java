@@ -128,6 +128,7 @@ public class NonViralName extends TaxonNameBase {
 	}
 
 	@Override
+	@Transient
 	public boolean isCodeCompliant() {
 		// TODO Auto-generated method stub
 		return false;

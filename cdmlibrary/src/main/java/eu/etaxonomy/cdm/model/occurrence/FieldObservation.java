@@ -41,7 +41,7 @@ public class FieldObservation extends SpecimenOrObservationBase{
 
 
 	@Override
-	@ManyToMany
+	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public GatheringEvent getGatheringEvent() {
 		return this.gatheringEvent;

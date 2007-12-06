@@ -32,6 +32,7 @@ public class PhysicalUnit extends SpecimenOrObservationBase {
 
 	
 	@Override
+	@Transient
 	public GatheringEvent getGatheringEvent() {
 		// FIXME: implement efficient way of getting original gathering event
 		// keep link to original gathering event for performance mainly.

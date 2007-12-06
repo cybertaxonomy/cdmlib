@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -30,7 +31,9 @@ public class DerivationEvent<FROM extends SpecimenOrObservationBase, TO extends 
 	private Set<TO> derivatives = new HashSet();
 	private DerivationEventType type;
 	
+	
 	@OneToMany
+	@Type(type="SpecimenOrObservationBase")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<FROM> getOriginals() {
 		return originals;
@@ -47,6 +50,7 @@ public class DerivationEvent<FROM extends SpecimenOrObservationBase, TO extends 
 	
 	
 	@OneToMany
+	@Type(type="PhysicalUnit")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TO> getDerivatives() {
 		return derivatives;

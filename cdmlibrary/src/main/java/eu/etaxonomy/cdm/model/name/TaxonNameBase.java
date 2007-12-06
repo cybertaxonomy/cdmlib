@@ -75,6 +75,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	}
 
 
+	@Transient
 	public abstract boolean isCodeCompliant();
 	
 	@OneToMany
