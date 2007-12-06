@@ -201,12 +201,13 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/ZoologicalName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Collection.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEvent.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEventType.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Determination.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationEvent.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationModifier.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/FieldObservation.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Fossil.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/GatheringEvent.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/LivingBeing.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/PhysicalOrganism.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/PhysicalUnit.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/PreservationMethod.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/Specimen.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationBase.java -text

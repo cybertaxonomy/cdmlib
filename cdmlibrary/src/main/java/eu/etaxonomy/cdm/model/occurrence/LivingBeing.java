@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:32
  */
 @Entity
-public class LivingBeing extends PhysicalOrganism {
+public class LivingBeing extends PhysicalUnit {
 	static Logger logger = Logger.getLogger(LivingBeing.class);
 
 }

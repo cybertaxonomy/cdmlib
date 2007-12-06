@@ -30,8 +30,8 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:21
  */
 @Entity
-public class Determination extends EventBase {
-	static Logger logger = Logger.getLogger(Determination.class);
+public class DeterminationEvent extends EventBase {
+	static Logger logger = Logger.getLogger(DeterminationEvent.class);
 
 	private SpecimenOrObservationBase identifiedUnit;
 	private Taxon taxon;

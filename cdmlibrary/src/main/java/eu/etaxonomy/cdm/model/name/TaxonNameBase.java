@@ -75,7 +75,8 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	}
 
 
-
+	public abstract boolean isCodeCompliant();
+	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TypeDesignationBase> getTypeDesignations() {

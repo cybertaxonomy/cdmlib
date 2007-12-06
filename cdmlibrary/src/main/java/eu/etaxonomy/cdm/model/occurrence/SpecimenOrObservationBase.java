@@ -44,7 +44,7 @@ public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	private Set<Media> media = new HashSet();
 	private Set<SpecimenDescription> descriptions = new HashSet();
-	private Set<Determination> determinations = new HashSet();
+	private Set<DeterminationEvent> determinations = new HashSet();
 	private Sex sex;
 	private Stage lifeStage;
 	private Integer individualCount;
@@ -56,17 +56,17 @@ public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
 
 	@OneToMany(mappedBy="identifiedUnit")
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<Determination> getDeterminations() {
+	public Set<DeterminationEvent> getDeterminations() {
 		return determinations;
 	}
-	protected void setDeterminations(Set<Determination> determinations) {
+	protected void setDeterminations(Set<DeterminationEvent> determinations) {
 		this.determinations = determinations;
 	}
-	public void addDetermination(Determination determination) {
+	public void addDetermination(DeterminationEvent determination) {
 		// FIXME bidirectional integrity. Use protected Determination setter
 		this.determinations.add(determination);
 	}
-	public void removeDetermination(Determination determination) {
+	public void removeDetermination(DeterminationEvent determination) {
 		// FIXME bidirectional integrity. Use protected Determination setter
 		this.determinations.remove(determination);
 	}
@@ -134,5 +134,20 @@ public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
 	}
 	public void removeDefinition(Language lang){
 		this.description.remove(lang);
-	}	
+	}
+	
+	
+	/**
+	 * for derived units get the single next higher parental/original unit.
+	 * If multiple original units exist throw error
+	 * @return
+	 */
+	@Transient
+	public GatheringEvent getOriginalUnit(){
+		return null;
+	}
+
+	@Transient
+	public abstract GatheringEvent getGatheringEvent();
+	
 }

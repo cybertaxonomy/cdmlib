@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.PhysicalOrganism;
+import eu.etaxonomy.cdm.model.occurrence.PhysicalUnit;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:22
  */
 @Entity
-public class DnaSample extends PhysicalOrganism {
+public class DnaSample extends PhysicalUnit {
 	static Logger logger = Logger.getLogger(DnaSample.class);
 	private String bankNumber;
 	private Set<Sequence> sequences = new HashSet();
@@ -57,7 +57,7 @@ public class DnaSample extends PhysicalOrganism {
 
 	@Transient
 	public Set<SpecimenOrObservationBase> getExtractedFrom(){
-		return this.getDerivedFrom().getOriginals();
+		return this.getDerivedFrom();
 	}
 
 	@Transient
@@ -66,19 +66,6 @@ public class DnaSample extends PhysicalOrganism {
 	}
 	public void setBankNumber(String bankNumber){
 		this.setCatalogNumber(bankNumber);
-	}
-
-	@Transient
-	public String getProductionNotes(){
-		return this.getDerivedFrom().getDescription();
-	}
-	public void setProductionNotes(String productionNotes){
-		this.getDerivedFrom().setDescription(productionNotes);
-	}
-
-	@Transient
-	public Calendar getDateProduced(){
-		return this.getDerivedFrom().getTimeperiod().getStart();
 	}
 
 }

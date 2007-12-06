@@ -23,41 +23,41 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.EventBase;
 
 @Entity
-public class DerivationEvent extends EventBase{
+public class DerivationEvent<FROM extends SpecimenOrObservationBase, TO extends PhysicalUnit> extends EventBase{
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
-	private Set<SpecimenOrObservationBase> originals = new HashSet();
-	private Set<PhysicalOrganism> derivatives = new HashSet();
+	private Set<FROM> originals = new HashSet();
+	private Set<TO> derivatives = new HashSet();
 	private DerivationEventType type;
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<SpecimenOrObservationBase> getOriginals() {
+	public Set<FROM> getOriginals() {
 		return originals;
 	}
-	protected void setOriginals(Set<SpecimenOrObservationBase> originals) {
+	protected void setOriginals(Set<FROM> originals) {
 		this.originals = originals;
 	}
-	public void addOriginal(SpecimenOrObservationBase original) {
+	public void addOriginal(FROM original) {
 		this.originals.add(original);
 	}
-	public void removeOriginal(SpecimenOrObservationBase original) {
+	public void removeOriginal(FROM original) {
 		this.originals.remove(original);
 	}
 	
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<PhysicalOrganism> getDerivatives() {
+	public Set<TO> getDerivatives() {
 		return derivatives;
 	}
-	protected void setDerivatives(Set<PhysicalOrganism> derivatives) {
+	protected void setDerivatives(Set<TO> derivatives) {
 		this.derivatives = derivatives;
 	}
-	public void addDerivative(PhysicalOrganism derivative) {
+	public void addDerivative(TO derivative) {
 		this.derivatives.add(derivative);
 	}
-	public void removeDerivative(PhysicalOrganism derivative) {
+	public void removeDerivative(TO derivative) {
 		this.derivatives.remove(derivative);
 	}
 

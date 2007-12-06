@@ -127,4 +127,10 @@ public class NonViralName extends TaxonNameBase {
 		this.authorshipCache = authorshipCache;
 	}
 
+	@Override
+	public boolean isCodeCompliant() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
