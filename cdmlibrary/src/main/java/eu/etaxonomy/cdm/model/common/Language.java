@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
+
 import au.com.bytecode.opencsv.CSVWriter;
 
 import java.util.*;
@@ -28,10 +30,6 @@ import javax.persistence.*;
 @Entity
 public class Language extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Language.class);
-	static Language langEN = new Language("English","EN");
-	static Language langCH = new Language("Chinese","CH");
-	static Language langGE = new Language("German","DE");
-
 
 	private char[] iso639_1 = new char[2];
 	private char[] iso639_2 = new char[3];
@@ -54,55 +52,68 @@ public class Language extends DefinedTermBase {
 		this(label,text, DEFAULT());
 	}
 
+	public static final Language getUUID(String uuid){
+		return (Language) dao.findByUuid(uuid);
+	}
+
+	
+	
 	public static final Language DEFAULT(){
-		return langEN;
+		return ENGLISH();
 	}
 	
 	public static final Language CHINESE(){
-		return langCH;
+		return getUUID("a9fc2782-5b2a-466f-b9c3-64d9ca6614c4");
 	}
 
 	public static final Language ENGLISH(){
-		return langEN;
+		return getUUID("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 	}
 
 	public static final Language SPANISH(){
-		return null;
+		return getUUID("511d8125-f5e6-445d-aee2-6327375238be");
 	}
 
 	public static final Language HINDI(){
-		return null;
+		return getUUID("0a1d9d1d-135d-4575-b172-669b51673c39");
 	}
 
 	public static final Language ARABIC(){
-		return null;
-	}
-
-	public static final Language BENGALI(){
-		return null;
+		return getUUID("4d3ec2eb-536f-4aab-81c5-34e37a3edbba");
 	}
 
 	public static final Language RUSSIAN(){
-		return null;
+		return getUUID("64ea9354-cbf8-40de-9f6e-387d24896f50");
 	}
 
 	public static final Language PORTUGUESE(){
-		return null;
+		return getUUID("c2c08339-2405-4d7d-bd25-cbe01fb7ce09");
 	}
 
 	public static final Language JAPANESE(){
-		return null;
+		return getUUID("6778c7fb-c195-4dc1-ae3f-164201314e51");
 	}
 
 	public static final Language GERMAN(){
-		return langGE;
+		return getUUID("d1131746-e58b-4e80-a865-f5182c9c3073");
 	}
 	
 	public static final Language FRENCH(){
-		return langGE;
+		return getUUID("7759a1d8-a5ea-454a-8c93-1dcfaae8cc21");
 	}
 
-	
+	public static final Language ITALIAN(){
+		return getUUID("fecbf0c7-fea9-465b-8a16-950517c5c0c4");
+	}
+
+	public static final Language DUTCH(){
+		return getUUID("9965d79a-acf9-4921-a2c0-863b8c16c056");
+	}
+
+	public static final Language POLISH(){
+		return getUUID("3fdca387-f1b0-4ec1-808f-1bc3dc482194");
+	}
+
 	public void readCsvLine(List<String> csvLine) {
 		// read UUID, URI, english label+description
 		super.readCsvLine(csvLine);

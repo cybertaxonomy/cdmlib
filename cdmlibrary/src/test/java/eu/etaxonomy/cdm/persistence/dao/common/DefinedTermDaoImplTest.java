@@ -22,21 +22,16 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 
 	@Autowired
 	private IDefinedTermDao dao;
-	private TermVocabulary<DefinedTermBase> vocabulary;
 	
-	@Before
-	// generate enumeration for every test to play with
-	public void onSetUp() throws Exception {
-		this.vocabulary = new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain","http://myterms.org/biodomain");
+
+	//@Test
+	public void save() throws WrongTermTypeException {
+		TermVocabulary<DefinedTermBase> vocabulary	= new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
 			Keyword term = new Keyword(r,r);
 			vocabulary.addTerm(term);			
 		}
-	}
-
-	@Test
-	public void save() {
 		for (DefinedTermBase dt : vocabulary){
 			dao.save(dt);
 		}

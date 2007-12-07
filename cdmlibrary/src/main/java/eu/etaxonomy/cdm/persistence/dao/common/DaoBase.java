@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class DaoBase {
 	@Autowired
-	public SessionFactory factory;
+	private SessionFactory factory;
 	
 	protected Session getSession(){
 		return factory.getCurrentSession();
