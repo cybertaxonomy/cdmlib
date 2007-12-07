@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -35,6 +36,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+	@OneToMany
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
 	}
@@ -49,6 +53,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 	
+	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SpecimenTypeDesignation> getTypeDesignations() {
 		return typeDesignations;
