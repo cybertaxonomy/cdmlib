@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.PhysicalUnit;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

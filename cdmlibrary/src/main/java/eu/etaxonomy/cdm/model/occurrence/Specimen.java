@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:52
  */
 @Entity
-public class Specimen extends PhysicalUnit {
+public class Specimen extends DerivedUnit {
 	static Logger logger = Logger.getLogger(Specimen.class);
 	private PreservationMethod preservation;
 	@ManyToOne

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
 @Entity
-public class GatheringEvent extends DerivationEvent<FieldObservation,PhysicalUnit> {
+public class GatheringEvent extends EventBase {
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
 
 	//Locality name (as free text) where this occurrence happened
