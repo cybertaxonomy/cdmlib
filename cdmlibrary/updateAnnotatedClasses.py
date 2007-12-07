@@ -29,4 +29,4 @@ for line in file(sprinfCfg):
 	else:
 		result+=line
 
-file(sprinfCfg+"new","w").write(result)
+file(sprinfCfg,"w").write(result)

@@ -119,6 +119,7 @@
             <value>eu.etaxonomy.cdm.model.name.BacterialName</value>
             <value>eu.etaxonomy.cdm.model.name.BotanicalName</value>
             <value>eu.etaxonomy.cdm.model.name.CultivarPlantName</value>
+            <value>eu.etaxonomy.cdm.model.name.HomotypicalGroup</value>
             <value>eu.etaxonomy.cdm.model.name.HybridRelationship</value>
             <value>eu.etaxonomy.cdm.model.name.HybridRelationshipType</value>
             <value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
@@ -130,20 +131,20 @@
             <value>eu.etaxonomy.cdm.model.name.Rank</value>
             <value>eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation</value>
             <value>eu.etaxonomy.cdm.model.name.TaxonNameBase</value>
-            <value>eu.etaxonomy.cdm.model.name.TypeDesignationBase</value>
             <value>eu.etaxonomy.cdm.model.name.TypeDesignationStatus</value>
             <value>eu.etaxonomy.cdm.model.name.ViralName</value>
             <value>eu.etaxonomy.cdm.model.name.ZoologicalName</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Collection</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DerivationEvent</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DerivationEventType</value>
+            <value>eu.etaxonomy.cdm.model.occurrence.DerivedUnit</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DeterminationEvent</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DeterminationModifier</value>
             <value>eu.etaxonomy.cdm.model.occurrence.FieldObservation</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Fossil</value>
             <value>eu.etaxonomy.cdm.model.occurrence.GatheringEvent</value>
             <value>eu.etaxonomy.cdm.model.occurrence.LivingBeing</value>
-            <value>eu.etaxonomy.cdm.model.occurrence.PhysicalUnit</value>
+            <value>eu.etaxonomy.cdm.model.occurrence.Observation</value>
             <value>eu.etaxonomy.cdm.model.occurrence.PreservationMethod</value>
             <value>eu.etaxonomy.cdm.model.occurrence.Specimen</value>
             <value>eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase</value>

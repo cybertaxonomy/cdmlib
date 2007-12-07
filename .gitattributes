@@ -51,7 +51,6 @@ cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
 cdmParent/settings.xml -text
 cdmlibrary/INSTALL.TXT -text
-cdmlibrary/listAnnotatedClasses.py -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
@@ -297,6 +296,7 @@ cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/src/test/resources/appInitContext.xml -text
 cdmlibrary/src/test/resources/applicationContext-test.xml -text
 cdmlibrary/src/test/resources/test.cdm.datasource.xml -text
+cdmlibrary/updateAnnotatedClasses.py -text
 docs/layers.graffle -text
 docs/layers.png -text
 musiclib-hibernatetest/listAnnotatedClasses.py -text
