@@ -28,26 +28,44 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:52
  */
 @Entity
-public class SpecimenTypeDesignation extends TypeDesignationBase {
+public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
+	private HomotypicalGroup homotypicalGroup;
 	private DerivedUnit typeSpecimen;
 	private TypeDesignationStatus typeStatus;
 
-	public SpecimenTypeDesignation(TaxonNameBase typifiedName,
+	public SpecimenTypeDesignation(HomotypicalGroup homotypicalGroup,
 			DerivedUnit specimen, TypeDesignationStatus status,
 			ReferenceBase citation, String citationMicroReference, String originalNameString) {
-		super(typifiedName, citation, citationMicroReference, originalNameString);
-		this.typeSpecimen = specimen;
-		this.typeStatus = status;
+		super(citation, citationMicroReference, originalNameString);
+		this.setHomotypicalGroup(homotypicalGroup);
+		this.setTypeSpecimen(specimen);
+		this.setTypeStatus(status);
 	}
 	
+
+	@ManyToOne
+	public HomotypicalGroup getHomotypicalGroup() {
+		return homotypicalGroup;
+	}
+	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
+		if(this.homotypicalGroup == newHomotypicalGroup) return;
+		if (homotypicalGroup != null) { 
+			homotypicalGroup.typeDesignations.remove(this);
+		}
+		if (newHomotypicalGroup!= null) { 
+			newHomotypicalGroup.typeDesignations.add(this);
+		}
+		this.homotypicalGroup = newHomotypicalGroup;		
+	}
+
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public DerivedUnit getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
-	public void setTypeSpecimen(Specimen typeSpecimen){
+	public void setTypeSpecimen(DerivedUnit typeSpecimen){
 		this.typeSpecimen = typeSpecimen;
 	}
 

@@ -47,7 +47,8 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	protected Set<TypeDesignationBase> typeDesignations;
+	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet();
+	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 	private Set<NameRelationship> nameRelations = new HashSet();
 	private Set<NomenclaturalStatus> status = new HashSet();
 	private Rank rank;
@@ -60,9 +61,12 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	protected INameCacheStrategy cacheStrategy;
 
 	
-	// CONSTRUCTORS
-	
+	// CONSTRUCTORS	
+	public TaxonNameBase() {
+		super();
+	}
 	public TaxonNameBase(Rank rank) {
+		super();
 		this.setRank(rank);
 	}
 
@@ -78,28 +82,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	@Transient
 	public abstract boolean isCodeCompliant();
 	
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-	public Set<TypeDesignationBase> getTypeDesignations() {
-		return typeDesignations;
-	}
-	protected void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
-		this.typeDesignations = typeDesignations;
-	}
-	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
-		SpecimenTypeDesignation td = new SpecimenTypeDesignation(this, typeSpecimen, status, citation, citationMicroReference, originalNameString);
-	}
-	public void addTypeDesignation(TaxonNameBase typeSpecies, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
-		NameTypeDesignation ntd = new NameTypeDesignation(this,
-				citation, citationMicroReference,
-				originalNameString, isRejectedType,
-				isConservedType, typeSpecies);
-	}
-	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
-		typeDesignation.setTypifiedName(null);
-	}
-
-
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -228,6 +210,46 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 		this.hasProblem = hasProblem;
 	}
 
+
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	public Set<NameTypeDesignation> getNameTypeDesignations() {
+		return nameTypeDesignations;
+	}
+	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
+		this.nameTypeDesignations = nameTypeDesignations;
+	}
+	
+	public void addTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
+		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType);
+	}
+	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
+		this.homotypicalGroup.addTypeDesignation(typeSpecimen, status,  citation, citationMicroReference, originalNameString);
+	}
+	public void removeTypeDesignation(NameTypeDesignation typeDesignation) {
+		this.nameTypeDesignations.remove(typeDesignation);
+	}
+	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
+		this.homotypicalGroup.removeTypeDesignation(typeDesignation);
+	}
+
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public HomotypicalGroup getHomotypicalGroup() {
+		return homotypicalGroup;
+	}
+	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
+		if(this.homotypicalGroup == newHomotypicalGroup) return;
+		if (homotypicalGroup != null) { 
+			homotypicalGroup.typifiedNames.remove(this);
+		}
+		if (newHomotypicalGroup!= null) { 
+			newHomotypicalGroup.typifiedNames.add(this);
+		}
+		this.homotypicalGroup = newHomotypicalGroup;		
+	}
+
 	@Transient
 	public StrictReferenceBase getCitation(){
 		return null;
@@ -258,6 +280,5 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	 */
 	public boolean parseName(String fullname){
 		return false;
-	}
-
+	}	
 }

@@ -183,6 +183,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/BotanicalName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/CultivarPlantName.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroup.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationship.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationship.java -text
@@ -194,7 +195,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/NonViralName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatus.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/model/name/ZoologicalName.java -text

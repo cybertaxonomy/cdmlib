@@ -28,22 +28,31 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:38
  */
 @Entity
-public class NameTypeDesignation extends TypeDesignationBase {
+public class NameTypeDesignation extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	private boolean isRejectedType;
 	private boolean isConservedType;
 	private TaxonNameBase typeSpecies;
+	private TaxonNameBase typifiedName;
 
-	public NameTypeDesignation(TaxonNameBase typifiedName,
-			ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean isRejectedType,
-			boolean isConservedType, TaxonNameBase typeSpecies) {
-		super(typifiedName, citation, citationMicroReference,
-				originalNameString);
+	public NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
+			String originalNameString, boolean isRejectedType, boolean isConservedType) {
+		super(citation, citationMicroReference, originalNameString);
+		this.setTypeSpecies(typeSpecies);
+		this.setTypifiedName(typifiedName);
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
-		this.typeSpecies = typeSpecies;
 	}
+	
+	
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public TaxonNameBase getTypifiedName() {
+		return typifiedName;
+	}
+	private void setTypifiedName(TaxonNameBase typifiedName) {
+		this.typifiedName = typifiedName;
+		typifiedName.nameTypeDesignations.add(this);
+		}
 
 
 	@ManyToOne
@@ -51,18 +60,13 @@ public class NameTypeDesignation extends TypeDesignationBase {
 	public TaxonNameBase getTypeSpecies(){
 		return this.typeSpecies;
 	}
-	public void setTypeSpecies(TaxonNameBase typeSpecies){
+	private void setTypeSpecies(TaxonNameBase typeSpecies){
 		this.typeSpecies = typeSpecies;
 	}
 
 	public boolean isRejectedType(){
 		return this.isRejectedType;
 	}
-
-	/**
-	 * 
-	 * @param isRejectedType    isRejectedType
-	 */
 	public void setRejectedType(boolean isRejectedType){
 		this.isRejectedType = isRejectedType;
 	}
@@ -70,11 +74,6 @@ public class NameTypeDesignation extends TypeDesignationBase {
 	public boolean isConservedType(){
 		return this.isConservedType;
 	}
-
-	/**
-	 * 
-	 * @param isConservedType    isConservedType
-	 */
 	public void setConservedType(boolean isConservedType){
 		this.isConservedType = isConservedType;
 	}
