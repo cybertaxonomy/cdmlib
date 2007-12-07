@@ -15,6 +15,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -61,10 +62,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return persistentObject.getUuid();
 	}
 
+	@Transactional(readOnly = true)
 	public T findById(int id) throws DataAccessException {
 		return (T) getSession().get(type, id);
 	}
 
+	@Transactional(readOnly = true)
 	public T findByUuid(String uuid) throws DataAccessException{
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.eq("uuid", uuid));
@@ -77,6 +80,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 	}
 	
+	@Transactional(readOnly = true)
 	public Boolean exists(String uuid) {
 		if (findByUuid(uuid)==null){
 			return false;
@@ -84,6 +88,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return true;
 	}
 
+	@Transactional(readOnly = true)
 	public List<T> list(int limit, int start) {
 		Criteria crit = getSession().createCriteria(type); 
 		crit.setFirstResult(start);

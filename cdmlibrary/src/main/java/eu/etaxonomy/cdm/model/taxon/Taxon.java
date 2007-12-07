@@ -64,11 +64,6 @@ public class Taxon extends TaxonBase {
 		this.synonymRelations.remove(synonymRelation);
 	}
 	
-	@Transient
-	public List<Synonym> getSynonymsSortedByType(){
-		// FIXME
-		return null;
-	}
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -101,5 +96,49 @@ public class Taxon extends TaxonBase {
 	public String generateTitle(){
 		return "";
 	}
+
+	@Transient
+	public Taxon getTaxonomicParent() {
+		for (TaxonRelationship rel: this.getTaxonRelations()){
+			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
+				return rel.getToTaxon();
+			}
+		}
+		return null;
+	}
+	@Transient
+	public Set<Taxon> getTaxonomicChildren() {
+		Set<Taxon> taxa = new HashSet();
+		for (TaxonRelationship rel: this.getTaxonRelations()){
+			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getToTaxon().equals(this)){
+				taxa.add(rel.getFromTaxon());
+			}
+		}
+		return taxa;
+	}
+	@Transient
+	public boolean hasTaxonomicChildren(){
+		for (TaxonRelationship rel: this.getTaxonRelations()){
+			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getToTaxon().equals(this)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Transient
+	public Set<Synonym> getSynonyms(){
+		Set<Synonym> taxa = new HashSet();
+		for (SynonymRelationship rel: this.getSynonymRelations()){
+			taxa.add(rel.getSynoynm());
+		}
+		return taxa;
+	}
+	@Transient
+	public Set<Synonym> getSynonymsSortedByType(){
+		// FIXME: need to sort synonyms according to type!!!
+		return getSynonyms();
+	}
+	
 
 }

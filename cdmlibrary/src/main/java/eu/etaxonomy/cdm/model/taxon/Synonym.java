@@ -50,4 +50,13 @@ public class Synonym extends TaxonBase {
 		return "";
 	}
 
+	@Transient
+	public Set<Taxon> getAcceptedTaxa() {
+		Set<Taxon>taxa=new HashSet();
+		for (SynonymRelationship rel:getSynonymRelations()){
+			taxa.add(rel.getAcceptedTaxon());
+		}
+		return taxa;
+	}
+
 }

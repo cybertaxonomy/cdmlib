@@ -15,9 +15,9 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 
 	public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
-		// TODO Auto-generated constructor stub
 	}
 
+	@Transactional(readOnly = true)
 	public List<DefinedTermBase> findByTitle(String queryString) {
 		// TODO find defined terms by their representation label
 		return null;

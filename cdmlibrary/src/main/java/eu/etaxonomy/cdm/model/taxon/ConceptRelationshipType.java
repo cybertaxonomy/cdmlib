@@ -36,9 +36,14 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 		super(term, label, symmetric, transitive);
 	}
 
+	public static final ConceptRelationshipType getUUID(String uuid){
+		return (ConceptRelationshipType) dao.findByUuid(uuid);
+	}
 
+	
+	
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
-		return null;
+		return getUUID("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 	}
 
 	public static final ConceptRelationshipType MISAPPLIED_NAME_FOR(){

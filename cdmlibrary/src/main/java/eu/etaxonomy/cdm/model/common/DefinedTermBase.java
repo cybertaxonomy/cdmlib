@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
@@ -85,7 +86,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		this.kindOf = kindOf;
 	}
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getGeneralizationOf(){
 		return this.generalizationOf;
@@ -104,7 +105,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		this.partOf = partOf;
 	}
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getIncludes(){
 		return this.includes;
@@ -139,7 +140,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public TermVocabulary getVocabulary() {
 		return this.vocabulary;
