@@ -34,7 +34,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		// TODO Auto-generated constructor stub
 	}
 
-	@OneToMany //(mappedBy="markedObj")
+	@OneToMany
 	public Set<Marker> getMarkers(){
 		return this.markers;
 	}
@@ -49,7 +49,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 	}
 
 	
-	@OneToMany //(mappedBy="annotatedObj")
+	@OneToMany
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}

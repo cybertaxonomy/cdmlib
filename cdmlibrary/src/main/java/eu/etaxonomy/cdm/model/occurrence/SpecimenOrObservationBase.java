@@ -51,8 +51,25 @@ public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	private MultilanguageSet description;
+	// events that created derivedUnits from this unit
+	private Set<DerivationEvent> derivationEvents = new HashSet();
 
-
+	
+	@ManyToMany
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	public Set<DerivationEvent> getDerivationEvents() {
+		return derivationEvents;
+	}
+	protected void setDerivationEvents(Set<DerivationEvent> derivationEvents) {
+		this.derivationEvents = derivationEvents;
+	}
+	public void addDerivationEvent(DerivationEvent event) {
+		this.derivationEvents.add(event);
+	}
+	public void removeDerivationEvent(DerivationEvent event) {
+		this.derivationEvents.remove(event);
+	}
+	
 
 	@OneToMany(mappedBy="identifiedUnit")
 	@Cascade({CascadeType.SAVE_UPDATE})

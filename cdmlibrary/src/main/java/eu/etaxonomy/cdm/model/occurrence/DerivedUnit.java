@@ -28,54 +28,28 @@ public class DerivedUnit extends SpecimenOrObservationBase {
 	private Collection collection;
 	private String catalogNumber;
 	private TaxonNameBase storedUnder;
-	private Set<DerivationEvent> derivationEvents = new HashSet();
+	private DerivationEvent derivedFrom;
 
 	
+	@ManyToOne
+	public DerivationEvent getDerivedFrom() {
+		return derivedFrom;
+	}
+	public void setDerivedFrom(DerivationEvent derivedFrom) {
+		this.derivedFrom = derivedFrom;
+	}
+	@Transient
+	public Set<SpecimenOrObservationBase> getOriginals(){
+		return this.getDerivedFrom().getOriginals();
+	}
+
+
 	@Override
 	@Transient
 	public GatheringEvent getGatheringEvent() {
 		// FIXME: implement efficient way of getting original gathering event
 		// keep link to original gathering event for performance mainly.
 		return null;
-	}
-
-	
-	@ManyToMany
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	public Set<DerivationEvent> getDerivationEvents() {
-		return derivationEvents;
-	}
-	protected void setDerivationEvents(Set<DerivationEvent> derivationEvents) {
-		this.derivationEvents = derivationEvents;
-	}
-	public void addDerivationEvent(DerivationEvent event) {
-		this.derivationEvents.add(event);
-	}
-	public void removeDerivationEvent(DerivationEvent event) {
-		this.derivationEvents.remove(event);
-	}
-	
-	
-	@Transient
-	public Set<SpecimenOrObservationBase> getDerivedFrom(){
-		Set<SpecimenOrObservationBase> result = new HashSet();
-		for (DerivationEvent event : getDerivationEvents()){
-			if (event.getDerivatives().contains(this)){
-				result.addAll(event.getOriginals());
-			}
-		}
-		return result;
-	}
-	@Transient
-	public Set<SpecimenOrObservationBase> getDerivates(){
-		Set<SpecimenOrObservationBase> result = new HashSet();
-		for (DerivationEvent event : getDerivationEvents()){
-			// check if I am not a derivate
-			if (event.getOriginals().contains(this)){
-				result.addAll(event.getDerivatives());
-			}
-		}
-		return result;
 	}
 
 	

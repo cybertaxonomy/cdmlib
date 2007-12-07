@@ -57,7 +57,7 @@ public class DnaSample extends Specimen {
 
 	@Transient
 	public Set<SpecimenOrObservationBase> getExtractedFrom(){
-		return this.getDerivedFrom();
+		return getOriginals();
 	}
 
 	@Transient

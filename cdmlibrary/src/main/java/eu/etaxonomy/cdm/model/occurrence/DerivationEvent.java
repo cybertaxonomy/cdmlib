@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -32,7 +33,7 @@ public class DerivationEvent extends EventBase{
 	private DerivationEventType type;
 	
 	
-	@OneToMany
+	@ManyToMany(mappedBy="derivationEvents")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SpecimenOrObservationBase> getOriginals() {
 		return originals;
@@ -48,8 +49,7 @@ public class DerivationEvent extends EventBase{
 	}
 	
 	
-	@OneToMany
-	@Type(type="PhysicalUnit")
+	@OneToMany(mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DerivedUnit> getDerivatives() {
 		return derivatives;

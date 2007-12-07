@@ -53,7 +53,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	}
 
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getUpdatedBy(){
 		return this.updatedBy;
@@ -69,6 +69,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Version
+	@Basic(fetch = FetchType.LAZY)
 	public Calendar getUpdated(){
 		return this.updated;
 	}

@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -28,7 +29,7 @@ public abstract class TermBase extends VersionableEntity {
 	}
 
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	public Set<Representation> getRepresentations() {
 		return this.representations;

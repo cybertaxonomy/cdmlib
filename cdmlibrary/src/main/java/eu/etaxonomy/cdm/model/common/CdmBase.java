@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -98,6 +100,7 @@ public abstract class CdmBase implements Serializable{
 
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Basic(fetch = FetchType.LAZY)
 	public Calendar getCreated() {
 		return this.created;
 	}
@@ -106,7 +109,7 @@ public abstract class CdmBase implements Serializable{
 	}
 
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Person getCreatedBy() {
 		return this.createdBy;

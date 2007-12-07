@@ -44,8 +44,36 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 
 	@Test
 	public void findByTitle() {
-		List<DefinedTermBase> terms = dao.findByTitle("biodomain");
+		List<DefinedTermBase> terms = dao.findByTitle("En");
+		logger.debug("Results: "+terms.size());
+		for (DefinedTermBase dt:terms){
+			logger.debug(dt.toString());
+		}
 		//assertTrue(terms.contains(this.vocabulary));
 	}
 
+	@Test
+	public void listOneTerm() {
+		logger.debug("TEST: List 1 defined term");
+		List<DefinedTermBase> terms = dao.list(1, 1);
+		for (DefinedTermBase dt:terms){
+			logger.debug("Loaded term: "+dt.toString());
+		}
+	}
+	
+	@Test
+	public void getTermByUUID() {
+		logger.debug("TEST: getTermByUUID eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
+		DefinedTermBase dt = dao.findByUuid("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
+		logger.debug("Loaded term: "+dt.toString());
+	}
+	
+	@Test
+	public void listManyTerms() {
+		logger.debug("TEST: List 10 defined terms");
+		List<DefinedTermBase> terms = dao.list(10, 0);
+		for (DefinedTermBase dt:terms){
+			logger.debug("Loaded term: "+dt.toString());
+		}
+	}
 }

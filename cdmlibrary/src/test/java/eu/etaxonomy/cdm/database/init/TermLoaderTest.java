@@ -23,7 +23,7 @@ public class TermLoaderTest extends CdmUnitTestBase{
 	private TermLoader loader;
 
 	@Test
-	public void loadTerms() {
+	public void insertTerms() {
 		try {
 			loader.loadAllDefaultTerms();
 		} catch (Exception e) {
