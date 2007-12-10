@@ -12,15 +12,16 @@ public class NameTO extends BaseTO {
 	private List<TaggedText> taggedName = new ArrayList();
 	
 	private Set<ReferenceTO> typeDesignations;
-	//FIXME: implement private Set<NameRelationship> nameRelations;
+	private Set<NameRelationshipTO> nameRelations;
 	private Set<LocalisedRepresentationTO> status;
 	private LocalisedRepresentationTO rank;
 	
-	/**
-	 * Titles of nomenclaturalReference instances exclude the author team string.
-	 */
-	private ReferenceTO nomenclaturalReference;
+	private String  nomenclaturalCitation;
+	private String  nomenclaturalMicroReference;
+	private String  nomenclaturalCitationYear;
+	
 	private Set<NameTO> newCombinations;
+	
 	private NameTO basionym;
 
 	public String getFullname() {

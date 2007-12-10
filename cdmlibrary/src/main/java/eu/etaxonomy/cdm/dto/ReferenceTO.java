@@ -16,4 +16,7 @@ public class ReferenceTO extends BaseTO {
 	 * year of the publication 
 	 */
 	private Calendar year; 
+	
+	//URIs like DOIs, LSIDs or Handles for this reference
+	private String uri;
 }
