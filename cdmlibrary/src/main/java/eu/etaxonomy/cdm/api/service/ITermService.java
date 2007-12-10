@@ -12,6 +12,8 @@ public interface ITermService extends IService<DefinedTermBase>{
 
 	public abstract DefinedTermBase getTermByUri(String uri);
 	
+	public abstract List<DefinedTermBase> listTerms();
+
 	public abstract List<DefinedTermBase> listTerms(String vocabularyUuid);
 
 	public abstract List<TermVocabulary> listVocabularies(Class termClass);

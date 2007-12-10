@@ -14,6 +14,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 import java.util.*;
 
@@ -29,6 +32,7 @@ import javax.persistence.*;
 @Entity
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
+	
 	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
 	//ordinal
 	private boolean isOrdinal;
@@ -47,7 +51,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		super(term, label);
 		setTermSourceUri(termSourceUri);
 	}
-
 
 	public boolean isOrdinal(){
 		return this.isOrdinal;

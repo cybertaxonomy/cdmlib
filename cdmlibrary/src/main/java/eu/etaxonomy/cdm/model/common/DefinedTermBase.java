@@ -38,8 +38,7 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
-	@Autowired
-	protected static IDefinedTermDao dao;
+	public static IDefinedTermDao dao;
 
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet();
@@ -49,6 +48,11 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	private TermVocabulary vocabulary;
 	
 	
+	public static void setDao(IDefinedTermDao dao) {
+		logger.warn("Setting DefinedTerm static dao");
+		DefinedTermBase.dao = dao;
+	}
+	
 	public DefinedTermBase() {
 		super();
 	}
@@ -56,13 +60,17 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		super(term, label);
 	}
 
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#readCsvLine(java.util.List)
 	 */
 	public void readCsvLine(List<String> csvLine) {
+		readCsvLine(csvLine, Language.ENGLISH());
+	}
+	public void readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(csvLine.get(0));
 		this.setUri(csvLine.get(1));
-		this.addRepresentation(new Representation(csvLine.get(3), csvLine.get(2).trim(), Language.ENGLISH()) );
+		this.addRepresentation(new Representation(csvLine.get(3), csvLine.get(2).trim(), lang) );
 	}
 
 	/* (non-Javadoc)

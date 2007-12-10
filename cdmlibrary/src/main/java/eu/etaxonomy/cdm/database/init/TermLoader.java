@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 @Component
+@Transactional(readOnly = false)
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
@@ -41,6 +43,7 @@ public class TermLoader {
 
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
+	@Transactional(readOnly = false)
 	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
 		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		try {
@@ -60,26 +63,14 @@ public class TermLoader {
 				}
 				term.readCsvLine(aList);
 				term.setVocabulary(voc);
+				// save enumeration and all terms to DB
+				dao.saveOrUpdate(voc);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// save enumeration and all terms to DB
-		dao.saveOrUpdate(voc);
-//		try {
-//			String outfile=termDirectory+File.separator+filename+".txt";
-//			CSVWriter writer = new CSVWriter(new FileWriter(outfile));
-//			logger.info("Writing terms file to:"+outfile);
-//			for (DefinedTermBase dt : voc){
-//				dt.writeCsvLine(writer);
-//			}
-//			writer.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		return null;
+		return voc;
 	}
 
 	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException {
@@ -87,16 +78,20 @@ public class TermLoader {
 	}
 	
 	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
-			loadDefaultTerms(WaterbodyOrCountry.class);
-			loadDefaultTerms(Language.class);
-			loadDefaultTerms(Continent.class);
-			loadDefaultTerms(Rank.class);
-			loadDefaultTerms(TypeDesignationStatus.class);
-			loadDefaultTerms(NomenclaturalStatusType.class);
-			loadDefaultTerms(SynonymRelationshipType.class);
-			loadDefaultTerms(HybridRelationshipType.class);
-			loadDefaultTerms(NameRelationshipType.class);
-			loadDefaultTerms(ConceptRelationshipType.class);
+		// first insert default language english, its used everywhere even for Language!
+		//Language langEN = new Language("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+		//dao.save(langEN);
+	
+		loadDefaultTerms(Language.class);
+		loadDefaultTerms(WaterbodyOrCountry.class);
+		loadDefaultTerms(Continent.class);
+		loadDefaultTerms(Rank.class);
+		loadDefaultTerms(TypeDesignationStatus.class);
+		loadDefaultTerms(NomenclaturalStatusType.class);
+		loadDefaultTerms(SynonymRelationshipType.class);
+		loadDefaultTerms(HybridRelationshipType.class);
+		loadDefaultTerms(NameRelationshipType.class);
+		loadDefaultTerms(ConceptRelationshipType.class);
 	}
 
 	public static void main(String[] args) {

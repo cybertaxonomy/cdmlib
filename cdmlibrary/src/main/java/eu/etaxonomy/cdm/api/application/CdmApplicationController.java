@@ -13,6 +13,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -30,6 +31,7 @@ public class CdmApplicationController {
 	private INameService nameService;
 	private IAgentService agentService;
 	private IDatabaseService databaseService;
+	private ITermService termService;
 	
 	
 	private Server hsqldbServer;
@@ -124,6 +126,7 @@ public class CdmApplicationController {
 		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
+		termService = (ITermService)applicationContext.getBean("termServiceImpl");
 		databaseService = (IDatabaseService)applicationContext.getBean("databaseServiceHibernateImpl");
 		databaseService.setApplicationController(this);
 	}
@@ -143,6 +146,9 @@ public class CdmApplicationController {
 		return this.databaseService;
 	}
 	
+	public final ITermService getTermService(){
+		return this.termService;
+	}
 	
 	/* **** flush ***********/
 	public void flush() {

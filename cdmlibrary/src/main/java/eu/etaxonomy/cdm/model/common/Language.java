@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -34,8 +36,13 @@ public class Language extends DefinedTermBase {
 	private char[] iso639_1 = new char[2];
 	private char[] iso639_2 = new char[3];
 	
+
 	public Language() {
 		super();
+	}
+	public Language(String uuid) {
+		super();
+		this.setUuid(uuid);
 	}
 	public Language(char[] iso639_1, char[] iso639_2, String englishLabel, String frenchLabel) {
 		super();
@@ -57,11 +64,11 @@ public class Language extends DefinedTermBase {
 	}
 
 	
-	
 	public static final Language DEFAULT(){
 		return ENGLISH();
 	}
 	
+
 	public static final Language CHINESE(){
 		return getUUID("a9fc2782-5b2a-466f-b9c3-64d9ca6614c4");
 	}

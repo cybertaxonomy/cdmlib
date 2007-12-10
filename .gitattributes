@@ -66,6 +66,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.ja
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
@@ -285,6 +286,7 @@ cdmlibrary/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlibrary/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlibrary/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlibrary/src/site/site.xml -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/init/TermLoaderTest.java -text

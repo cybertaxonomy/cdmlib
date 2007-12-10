@@ -10,10 +10,12 @@ import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.DatabaseServiceHibernateImpl;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.NameServiceImpl;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.*;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -98,13 +100,25 @@ public class SpringControl {
 		}
 		appCtr.close();
 	}
-	
+
+	public void testTermApi(){
+		CdmApplicationController appCtr = new CdmApplicationController();
+		ITermService ts = (ITermService)appCtr.getTermService();
+		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+		//logger.warn(dt.toString());
+		List<DefinedTermBase> dts = ts.listTerms();
+		for (DefinedTermBase d: dts){
+			logger.warn(d.toString());
+		}
+	}
+
 	private void test(){
 		System.out.println("Start");
 		SpringControl sc = new SpringControl();
     	//testBeanFactory();
     	//testAppContext();
-    	testAppController();
+		testTermApi();
+    	//testAppController();
     	System.out.println("\nEnd");
 	}
 	
