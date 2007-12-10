@@ -15,10 +15,8 @@ public class NameTO extends BaseTO {
 	private Set<NameRelationshipTO> nameRelations;
 	private Set<LocalisedRepresentationTO> status;
 	private LocalisedRepresentationTO rank;
-	
-	private String  nomenclaturalCitation;
-	private String  nomenclaturalMicroReference;
-	private String  nomenclaturalCitationYear;
+	private NomenclaturalReferenceTO nomenclaturalReference;
+ 
 	
 	private Set<NameTO> newCombinations;
 	
