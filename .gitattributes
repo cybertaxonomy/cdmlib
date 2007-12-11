@@ -88,6 +88,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/BaseTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/IdentifiedString.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/LocalisedRepresentationTO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/MediaInstanceTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/MediaTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/NameRelationshipTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/NameTO.java -text
