@@ -3,24 +3,16 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.*;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.DatabaseServiceHibernateImpl;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.NameServiceImpl;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.*;
-import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
-import java.io.InputStream;
 import java.util.*;
 
 
@@ -28,37 +20,6 @@ import java.util.*;
 public class SpringControl {
 	static Logger logger = Logger.getLogger(SpringControl.class);
 	
-	public void testBeanFactory (){
-		String fileName = "editCdm.spring.cfg.xml";
-		ClassPathResource cpr = new ClassPathResource(fileName);
-		
-		XmlBeanFactory  bf = new XmlBeanFactory(cpr);
-		ITaxonNameDao tnDao = (ITaxonNameDao)bf.getBean("tnDao");
-		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.list(1000, 0);
-		
-		logger.warn(tn.getUuid());
-	}
-	
-	public void testAppContext(){
-		String fileName = "editCdm.spring.cfg.xml";
-		
-		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(fileName);
-		appContext.registerShutdownHook();
-		
-		String[] o = appContext.getBeanDefinitionNames();
-		for (int i= 0; i<o.length;i++){
-			System.out.println(o[i]);
-		}
-		
-		ITaxonNameDao tnDao = (ITaxonNameDao) appContext.getBean( "tnDao" );
-		TaxonNameBase tn = tnDao.findById(1);
-		List<TaxonNameBase> tnList = tnDao.list(1000, 0);
-		for (TaxonNameBase tn2: tnList){
-			System.out.print(tn2.getUuid()+";");
-		}
-		appContext.close();
-	}
 	
 	public void testAppController(){
 		
