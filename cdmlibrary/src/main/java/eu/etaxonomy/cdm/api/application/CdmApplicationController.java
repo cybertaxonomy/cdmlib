@@ -1,9 +1,14 @@
 package eu.etaxonomy.cdm.api.application;
 
+import java.io.FileNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.loading.LoadContexts;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hsqldb.Server;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -17,7 +22,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 
 
 /**
@@ -72,9 +79,28 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 */
 	private boolean setNewDataSource(CdmDataSource dataSource) {
-		dataSource.updateSessionFactory(); 
-		FileSystemXmlApplicationContext ac = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
-		setApplicationContext(ac);
+		dataSource.updateSessionFactory(null);
+		FileSystemXmlApplicationContext appContext;
+		try {
+			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto default property");
+			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+		} catch (BeanCreationException e) {
+			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
+			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
+			dataSource.updateSessionFactory("create"); 
+			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
+			try {
+				termLoader.loadAllDefaultTerms();
+			} catch (FileNotFoundException fileNotFoundException) {
+				logger.error("One or more DefinedTerm initialisation files could not be found");
+				fileNotFoundException.printStackTrace();
+			} catch (NoDefinedTermClassException noDefinedTermClassException) {
+				logger.error("NoDefinedTermClassException");
+				noDefinedTermClassException.printStackTrace();
+			}
+		}
+		setApplicationContext(appContext);
 		return true;
 	}
 

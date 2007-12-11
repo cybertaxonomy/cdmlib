@@ -82,6 +82,7 @@ public class TermLoader {
 		//Language langEN = new Language("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//dao.save(langEN);
 	
+		logger.debug("load terms");
 		loadDefaultTerms(Language.class);
 		loadDefaultTerms(WaterbodyOrCountry.class);
 		loadDefaultTerms(Continent.class);
@@ -92,6 +93,7 @@ public class TermLoader {
 		loadDefaultTerms(HybridRelationshipType.class);
 		loadDefaultTerms(NameRelationshipType.class);
 		loadDefaultTerms(ConceptRelationshipType.class);
+		logger.debug("terms loaded");
 	}
 
 	public static void main(String[] args) {

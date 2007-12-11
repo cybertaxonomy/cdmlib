@@ -114,9 +114,10 @@ public class CdmDataSource {
 	/**
 	 * Updates the session factory config file for using this database.
 	 * Writes the datasource property and the dialect property into the session factory.
+	 * @param hibernateHbm2ddlAuto value for the hibernate property hibernate.hbm2dll.auto . If null the properties is not changed. Possible values are 'validate', 'create', 'update' and 'create-drop'.
 	 * @return true if successful.
 	 */
-	public boolean updateSessionFactory(){
+	public boolean updateSessionFactory(String hibernateHbm2ddlAuto){
 		Element root = getRoot(getSessionFactoryInputStream());
 		if (root == null){
 			return false;
@@ -145,6 +146,15 @@ public class CdmDataSource {
 		Element props = getOrAddChild(elHibernateProperties, "props", null, null);
 		Element elDialectProp = getOrAddChild(props, "prop", "key", "hibernate.dialect");
 		elDialectProp.setText(this.getDatabaseType().getHibernateDialect());
+		
+		//set hibernateHbm2ddlAuto
+		if (hibernateHbm2ddlAuto != null){
+			if (hibernateHbm2ddlAuto != "validate" && hibernateHbm2ddlAuto != "create"  && hibernateHbm2ddlAuto != "update "  && hibernateHbm2ddlAuto != "create-drop"  ){
+				logger.warn("Invalid value " + hibernateHbm2ddlAuto + " for property hibernate.hbm2ddl.auto");
+			}
+			Element elHbm2ddlAutoProp = getOrAddChild(props, "prop", "key", "hibernate.hbm2ddl.auto");
+			elHbm2ddlAutoProp.setText(hibernateHbm2ddlAuto);
+		}
 		
 		//save
 		saveToXml(root.getDocument(), getSessionFactoryOutputStream() , format );

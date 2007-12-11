@@ -94,8 +94,8 @@ public class CdmUtils {
 	 * @return
 	 */
 	public static String getApplicationContextString(){
-		return "target/classes/applicationContext.xml";
-		//return CdmUtils.getWritableResourceDir() + File.separator + CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
+		String result = "file:" + CdmUtils.getWritableResourceDir() + File.separator + CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
+		return result;
 	}
 	
 	
