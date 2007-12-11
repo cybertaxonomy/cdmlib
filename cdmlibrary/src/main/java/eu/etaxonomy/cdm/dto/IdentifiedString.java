@@ -9,9 +9,16 @@
 
 package eu.etaxonomy.cdm.dto;
 
-public class NameTypeDesignationTO extends ReferencedEntityBaseTO {
+/**
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 11.12.2007 14:13:29
+ *
+ */
+public class IdentifiedString  {
 	
-	private boolean isRejectedType;
-	private boolean isConservedType;
+	private String uuid;
+	private String text;
 
 }
