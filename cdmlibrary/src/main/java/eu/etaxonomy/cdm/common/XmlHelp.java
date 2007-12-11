@@ -74,7 +74,7 @@ public class XmlHelp {
 		return null;
 	}
 	
-	
+
 	/**
 	 * @param parent
 	 * @param elementName

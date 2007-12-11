@@ -45,7 +45,7 @@ public interface IDatabaseService extends IService {
 	 * otherwise the hsql-server might still be running, if startet by cdmLibrary.
 	 * @return true if a connection could be established
 	 */
-	public boolean useLocalHsqldb();
+	public boolean useLocalDefaultHsqldb();
 	
 	/**
 	 * Set the database connection to the local Hsqldb-database using
@@ -61,7 +61,7 @@ public interface IDatabaseService extends IService {
 	 * @return true if a connection could be established
 	 * TODO exceptions
 	 */
-	public boolean useLocalHsqldb(String path, String databaseName, boolean silent, boolean startServer);
+	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer);
 
 	/**
 	 * Connect to the database with the given parameters
@@ -103,6 +103,17 @@ public interface IDatabaseService extends IService {
 	 * @return the CdmDataSource, null if not successful.
 	 */
 	public CdmDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
+	
+	/**
+	 * Saves a new hsqldb datasource into the datasource config file.
+	 * @param strDataSourceName
+	 * @param path
+	 * @param database
+	 * @param username
+	 * @param password
+	 * @return the CdmDataSource, null if not successful.
+	 */
+	public CdmDataSource saveLocalHsqldb(String strDataSourceName, String path, String database, String username, String password, boolean silent, boolean startServer);
 	
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
 }

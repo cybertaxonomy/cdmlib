@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.LocalHsqldb;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -106,6 +107,30 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 			String server, String database, String username, String password) {
 		return CdmDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
+	 */
+	public CdmDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
+		return CdmDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
+	 */
+	public boolean useLocalDefaultHsqldb() {
+			CdmDataSource dataSource = CdmDataSource.NewLocalHsqlInstance();
+			return connectToDatasource(dataSource);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
+	 */
+	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
+		CdmDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
+		return connectToDatasource(dataSource);
+	}
 	
 
 	/* (non-Javadoc)
@@ -114,8 +139,6 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	public DatabaseTypeEnum getDatabaseEnum() {
 		return DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDataSource().getDriverClassName());
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDriverClassName()
@@ -138,30 +161,14 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 		return getDataSource().getUsername();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
-	 */
-	public boolean useLocalHsqldb() {
-		logger.error("Method not yet implemented");
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
-	 */
-	public boolean useLocalHsqldb(String path, String databaseName,
-			boolean silent, boolean startServer) {
-		// TODO Auto-generated method stub
-		logger.error("Method not yet implemented");
-		return false;
-	}
-	
 
 	//returns the DriverManagerDataSource from hibernate
 	private DriverManagerDataSource getDataSource(){
 		DriverManagerDataSource ds = (DriverManagerDataSource)SessionFactoryUtils.getDataSource(factory);
 		return ds;
 	}
+
+
 
 //	public void createDatabase(){
 //		this.connectToDatabase(databaseTypeEnum, server, database, username, password)

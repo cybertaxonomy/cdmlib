@@ -13,6 +13,7 @@ import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -54,6 +55,21 @@ public class CdmDataSource {
 			return null;
 		}
 	}
+	
+	
+	/**
+	 * Returns the default CdmDataSource
+	 * @return the default CdmDataSource
+	 */
+	public final static CdmDataSource NewLocalHsqlInstance(){
+		try {
+			return NewInstance("localDefaultHsql");
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Local datasource does not exist in config file");
+			return null;
+		}
+	}
+	
 	/**
 	 * Returns the CdmDataSource named by strDataSource
 	 * @param strDataSource
@@ -197,6 +213,34 @@ public class CdmDataSource {
 	 */
 	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 				int port, String username, String password){
+		Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
+		return save(strDataSourceName, databaseTypeEnum, server, database, port, username, password, driverManagerDataSource, null, null, null, null, null);
+	}
+	
+	
+	public static CdmDataSource saveLocalHsqlDb(String strDataSourceName, String databasePath, String databaseName, String username, String password){
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.HSqlDb;
+		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalHsqldb.class;
+		String server = "localhost";
+		int port = databaseTypeEnum.getDefaultPort();
+		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, "init", "destroy", true, true, databasePath);
+	}
+	
+	//
+	private static CdmDataSource save(String strDataSourceName, 
+			DatabaseTypeEnum databaseTypeEnum, 
+			String server, 
+			String database, 
+			int port, 
+			String username, 
+			String password, 
+			Class<? extends DriverManagerDataSource> driverManagerDataSource,
+			String initMethod,
+			String destroyMethod,
+			Boolean startSilent,
+			Boolean startServer, 
+			String databasePath
+		){
 		//root
 		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
@@ -205,14 +249,22 @@ public class CdmDataSource {
 		//bean
 		Element bean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
 		if (bean != null){
-			bean.detach();  //getParentElement().removeChildren("mysqlDataSource");//delete old version if necessary
+			bean.detach();  //delete old version if necessary
 		}
-		bean = insertXmlBean(root, getBeanName(strDataSourceName), "org.springframework.jdbc.datasource.DriverManagerDataSource");
+		bean = insertXmlBean(root, getBeanName(strDataSourceName), driverManagerDataSource.getName());
+		//attributes
+		bean.setAttribute("lazy-init", "true");
+		if (initMethod != null) {bean.setAttribute("init-method", initMethod);}
+		if (destroyMethod != null) {bean.setAttribute("destroy-method", destroyMethod);}
+		
 		//set properties
 		insertXmlValueProperty(bean, "driverClassName", databaseTypeEnum.getDriverClassName());
 		insertXmlValueProperty(bean, "url", databaseTypeEnum.getConnectionString(server, database, port));
-		insertXmlValueProperty(bean, "username", username );
-		insertXmlValueProperty(bean, "password", password );
+		if (username != null) {insertXmlValueProperty(bean, "username", username );}
+		if (startSilent != null) {insertXmlValueProperty(bean, "startSilent", startSilent.toString() );}
+		if (startServer != null) {insertXmlValueProperty(bean, "startServer", startServer.toString() );}
+		if (startServer != null) {insertXmlValueProperty(bean, "databasePath", databasePath );}
+		
 		//save
 		saveToXml(root.getDocument(), getResourceDirectory(), DATASOURCE_FILE_NAME, format );
 		try {
@@ -222,6 +274,7 @@ public class CdmDataSource {
 			return null;
 		}
 	}
+	
 	
 	/**
 	 * Deletes a dataSource

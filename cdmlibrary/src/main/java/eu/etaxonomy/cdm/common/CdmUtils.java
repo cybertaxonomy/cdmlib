@@ -57,8 +57,8 @@ public class CdmUtils {
 					fileResourceDir= file.getParentFile();
 				}else{
 					String subPath = File.separator + "cdmResources" ;
-					//file = new File(System.getProperty("user.home") + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
-					file = new File(System.getProperty("user.dir") + subPath );
+					file = new File(System.getProperty("user.home") + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
+					//file = new File(System.getProperty("user.dir") + subPath );  //does not work in plugin-environmen (uses eclipse installation directory)
 					
 					file.mkdirs();
 					copyResource(file, CdmDataSource.DATASOURCE_FILE_NAME);

@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.database;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -13,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.hsqldb.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
@@ -29,7 +32,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	/** database name */
 	protected String dbName = "cdm";
 	/** path, where database should be stored in the file system */
-	protected String dbPath = getDefaultPath();
+	protected String databasePath = getDefaultPath();
 	/** Server instance */
 	protected Server hsqldbServer;
 	/** if true starts server on init() */
@@ -146,9 +149,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 		setUrl(getPureUrl() + getDbName());
 	}
 	
-	/*checked ob die hsqldb gestartet ist, wenn dies nicht der Fall ist, wird sie gestartet
-	TODO status: in work
-	*/
+	//checks if hsqldb-server is started, if not it will be started	
 	private void startHsqldbServer(){
 		try {
 			Driver driver = DriverManager.getDriver(getUrl());
@@ -166,12 +167,17 @@ public class LocalHsqldb extends DriverManagerDataSource {
 				logger.warn("Start HsqldbServer"); //TODO make it .info
 				hsqldbServer = new Server();
 				hsqldbServer.setSilent(this.isSilent);
+				for (int i = 0; i < 10; i++){
+					logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, true));
+					logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, false));
+					logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, true));
+					logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, false));
+					logger.info("DatabaseType " + i + ": " + hsqldbServer.getDatabaseType(i));
+				}
 				hsqldbServer.setDatabaseName(0, getDbName());
-				hsqldbServer.setDatabasePath(0,  getDbPath());
+				hsqldbServer.setDatabasePath(0,  getDatabasePath());
 				hsqldbServer.start();
 				hsqldbServer.checkRunning(true);
-				//String[] args = {"org.hsqldb.Server"};
-				// Server.main(args);
 			} catch (RuntimeException e1) {
 				logger.error("Local hsqlServer could not be started or connection to existing server could not be established.");
 			}
@@ -187,30 +193,30 @@ public class LocalHsqldb extends DriverManagerDataSource {
 			logger.info("stop HsqldbServer");
 			hsqldbServer.stop();
 		}
-		//hsqldbServer.shutdown();
 	}
 	
 	private static final String getDefaultPath(){
-		String path = System.getProperty("user.dir");
-		String sep = System.getProperty("file.separator");
-		return  path + sep + "db" +sep + "hsqldb" + sep + "localCdm";
+		//String path = System.getProperty("user.dir");
+		File path = CdmUtils.getWritableResourceDir();
+		String supPath = File.separator + "db" + File.separator + "LocalHsqldb"; 
+		return  path + supPath;
 	}
 
 	/**
 	 * @return the dbPath
 	 */
-	public String getDbPath() {
-		return dbPath;
+	public String getDatabasePath() {
+		return databasePath;
 	}
 
 	/**
 	 * @param dbPath the dbPath to set
 	 */
-	public void setDbPath(String dbPath) {
-		if (dbPath.endsWith(sep)){
-			dbPath = dbPath + "localCdm";
+	public void setDatabasePath(String databasePath) {
+		if (databasePath.endsWith(sep)){
+			databasePath = databasePath + "localCdm";
 		}
-		this.dbPath = dbPath;
+		this.databasePath = databasePath;
 	}
 
 	/**
