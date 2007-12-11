@@ -86,6 +86,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseType.
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SqlServerDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/BaseTO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/IdentifiedNameStr.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/IdentifiedString.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/LocalisedRepresentationTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/MediaInstanceTO.java -text

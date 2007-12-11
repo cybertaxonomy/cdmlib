@@ -27,6 +27,38 @@ public class BaseTO {
 	private String createdBy;
 	private Calendar updated;
 	private String updatedBy;
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	public Calendar getCreated() {
+		return created;
+	}
+	public void setCreated(Calendar created) {
+		this.created = created;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public Calendar getUpdated() {
+		return updated;
+	}
+	public void setUpdated(Calendar updated) {
+		this.updated = updated;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
+	
 	
 
 }

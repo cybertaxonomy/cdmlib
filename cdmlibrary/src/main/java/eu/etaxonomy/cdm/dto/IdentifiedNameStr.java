@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.dto;
 
 import java.util.ArrayList;
@@ -16,16 +15,15 @@ import java.util.List;
  * 
  * @author a.kohlbecker
  * @version 1.0
- * @created 11.12.2007 12:10:57
- *
+ * @created 11.12.2007 14:40:26
  */
-public class NameRelationshipTO extends ReferencedEntityBaseTO {
+public class IdentifiedNameStr {
 	
-	private LocalisedRepresentationTO type;
+	private String uuid;
 	
-	private String ruleConsidered;
-
-	// basic data on the referenced Name object:
-	private IdentifiedNameStr name;
+	private String fullname;
+	
+	private List<TaggedText> taggedName = new ArrayList();
+	
 	
 }
