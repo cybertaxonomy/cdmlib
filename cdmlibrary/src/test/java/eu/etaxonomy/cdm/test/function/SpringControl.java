@@ -67,7 +67,8 @@ public class SpringControl {
 		ITermService ts = (ITermService)appCtr.getTermService();
 		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//logger.warn(dt.toString());
-		List<DefinedTermBase> dts = ts.listTerms();
+		List<DefinedTermBase> dts = ts.listTerms(); 
+		logger.debug("");
 		for (DefinedTermBase d: dts){
 			logger.warn(d.toString());
 		}
