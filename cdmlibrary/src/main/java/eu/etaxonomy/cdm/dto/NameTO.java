@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Data Transfer Object representing a taxonomic Name. The fields are mainly derived from the 
- * domain object {@link TaxonNameBase}. The <code>typeDesignations</code> however are not 
+ * domain object {@link TaxonNameBase}. The <code>typeDesignations</code> field however is not 
  * included since these will obtained by a separate call to the web service.
  * 
  * @author a.kohlbecker & m.doering
