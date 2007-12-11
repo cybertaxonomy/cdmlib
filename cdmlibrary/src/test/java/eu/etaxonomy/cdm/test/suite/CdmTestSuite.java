@@ -9,13 +9,13 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 
 import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;;
+//import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     PropertyChangeTest.class,
     DatabaseEnumTest.class,
-    DefinedTermDaoImplTest.class
+    //DefinedTermDaoImplTest.class
 })
 
 public class CdmTestSuite {
@@ -29,8 +29,8 @@ public class CdmTestSuite {
 	public static void consoleRun(){
         org.junit.runner.JUnitCore.runClasses(
              PropertyChangeTest.class,
-             DatabaseEnumTest.class,
-             DefinedTermDaoImplTest.class
+             DatabaseEnumTest.class
+            // DefinedTermDaoImplTest.class
 	    ); 
 	}
 }

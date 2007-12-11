@@ -92,13 +92,36 @@ public class Datasource {
 		}
 	}
 	
+	private void testLocalHsql(){
+		try {
+			CdmDataSource ds = CdmDataSource.NewLocalHsqlInstance();
+			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			try {
+				List l = appCtr.getNameService().getAllNames(5, 1);
+				System.out.println(l);
+				//Agent agent = new Agent();
+				//appCtr.getAgentService().saveAgent(agent);
+				appCtr.close();
+			} catch (RuntimeException e) {
+				logger.error("Runtime Exception");
+				e.printStackTrace();
+				appCtr.close();
+				
+			}
+		} catch (DataSourceNotFoundException e) {
+			logger.error("LOCAL HSQL");
+		}
+	}
+		
+	
 	private void test(){
 		System.out.println("Start Datasource");
 		//testNewConfigControler();
     	//testDatabaseChange();
 		//testSqlServer();
 		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
-		testPostgreServer();
+		//testPostgreServer();
+		testLocalHsql();
 		System.out.println("\nEnd Datasource");
 	}
 	
