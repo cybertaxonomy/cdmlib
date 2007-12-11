@@ -10,11 +10,10 @@
 package eu.etaxonomy.cdm.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Data Transfer Object representing a taxonomic Name. The fields are mainly derived from the 
@@ -23,20 +22,20 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * 
  * @author a.kohlbecker
  * @author  m.doering
- * @version 1.0 r$LastChangedRevision$
+ * @version 1.0 $Id$
  * @created 11.12.2007 11:04:42
  */
 public class NameTO extends BaseTO {
 
 	private String fullname;
-	private List<TaggedText> taggedName = new ArrayList();
+	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
 	
-	private Set<ReferenceTO> typeDesignations;
-	private Set<NameRelationshipTO> nameRelations;
-	private Set<LocalisedRepresentationTO> status;
+	private Set<ReferenceTO> typeDesignations = new HashSet<ReferenceTO>();
+	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
+	private Set<LocalisedRepresentationTO> status = new HashSet<LocalisedRepresentationTO>();
 	private LocalisedRepresentationTO rank;
 	private NomenclaturalReferenceTO nomenclaturalReference;
-	private Set<NameTO> newCombinations;
+	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 	private NameTO basionym;
 	
 
@@ -54,6 +53,63 @@ public class NameTO extends BaseTO {
 
 	protected void addNameToken(TaggedText token) {
 		this.taggedName.add(token);
+	}
+
+	public void setTypeDesignations(Set<ReferenceTO> typeDesignations) {
+		this.typeDesignations = typeDesignations;
+	}
+
+	public void addNameRelation(NameRelationshipTO nameRelation) {
+		this.nameRelations.add(nameRelation);
+	}
+
+	public void addStatus(LocalisedRepresentationTO status) {
+		this.status.add(status);
+	}
+
+	public void setRank(LocalisedRepresentationTO rank) {
+		this.rank = rank;
+	}
+
+	public void setNomenclaturalReference(
+			NomenclaturalReferenceTO nomenclaturalReference) {
+		this.nomenclaturalReference = nomenclaturalReference;
+	}
+
+	public Set<ReferenceTO> getTypeDesignations() {
+		return typeDesignations;
+	}
+
+	public Set<NameRelationshipTO> getNameRelations() {
+		return nameRelations;
+	}
+
+	public Set<LocalisedRepresentationTO> getStatus() {
+		return status;
+	}
+
+	public LocalisedRepresentationTO getRank() {
+		return rank;
+	}
+
+	public NomenclaturalReferenceTO getNomenclaturalReference() {
+		return nomenclaturalReference;
+	}
+
+	public Set<NameTO> getNewCombinations() {
+		return newCombinations;
+	}
+
+	public NameTO getBasionym() {
+		return basionym;
+	}
+
+	public void addNewCombination(NameTO newCombination) {
+		this.newCombinations.add(newCombination);
+	}
+
+	public void setBasionym(NameTO basionym) {
+		this.basionym = basionym;
 	}
 
 }
