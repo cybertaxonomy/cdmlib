@@ -7,7 +7,7 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<bean id="defaultDataSource"  class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="defaultDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_lib" />
 		<property name="username" value="edit" />
@@ -27,20 +27,20 @@
 	    <property name="password" value="schalke" />
 	    
   	</bean>
-  		<bean id="localHsqlDataSource" 
+  	<bean id="localDefaultHsqlDataSource" 
 			lazy-init="true"
   			class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
 			init-method="init"
   			destroy-method="destroy"
   			>
-        <!-- property name="driverClassName" value="org.hsqldb.jdbcDriver"/-->
-        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
-        <!-- property name="dbName" value="cdm"/> -->
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
-        <!--  <property name="dbPath" value="C:\tmp\cdmDb\"/> -->
         <property name="startServer" value="true"/>
         <property name="silent" value="true"/>
-  </bean>
+        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
+        <!-- property name="dbName" value="cdm"/> -->
+        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
+  	</bean>
 </beans>
 
