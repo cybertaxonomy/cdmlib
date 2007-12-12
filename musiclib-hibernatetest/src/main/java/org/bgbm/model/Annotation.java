@@ -20,7 +20,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Annotation extends Annotatable{
+public class Annotation extends EntityBase{
 	public Annotation() {
 		super();
 	}
@@ -40,13 +40,15 @@ public class Annotation extends Annotatable{
 		this.note = note;
 	}
 	
-	@ManyToOne
+
 	public String getCommentator(){
 		return this.commentator;
 	}
 	public void setCommentator(String commentator){
 		this.commentator = commentator;
 	}
+	
+	
 	public String toString(){
 		String n = "";
 		if (note!=null){
