@@ -12,7 +12,7 @@ package org.bgbm.persistence.dao;
 
 import java.io.Serializable;
 
-import org.bgbm.model.MetaUltra;
+import org.bgbm.model.EntityBase;
 import org.hibernate.SessionFactory;
 import org.springframework.dao.DataAccessException;
 
@@ -23,13 +23,13 @@ import org.springframework.dao.DataAccessException;
  * @version 1.0
  * @created 02-Nov-2007 19:36:10
  */
-public interface IDao<T extends MetaUltra, ID extends Serializable> {
+public interface IDao<T extends EntityBase> {
 	public void save(T transientObject) throws DataAccessException;
 	
 	public void update(T transientObject) throws DataAccessException;
 
 	public void delete(T persistentObject) throws DataAccessException;
 	
-	public T findById(ID id) throws DataAccessException;
+	public T findById(Integer id) throws DataAccessException;
 
 }

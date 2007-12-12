@@ -7,25 +7,26 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class MetaUltra {
-	private Calendar created_ultra;
+@MappedSuperclass
+public abstract class EntityBase {
+	private Calendar created;
 	private int id;
 
-	public MetaUltra() {
+	public EntityBase() {
+		this.created = Calendar.getInstance();
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Calendar getCreatedUltra() {
-		return created_ultra;
+	public Calendar getCreated() {
+		return created;
 	}
 
-	public void setCreatedUltra(Calendar created) {
-		this.created_ultra = created;
+	public void setCreated(Calendar created) {
+		this.created = created;
 	}
 	@Id
 	@GeneratedValue(generator = "system-increment")

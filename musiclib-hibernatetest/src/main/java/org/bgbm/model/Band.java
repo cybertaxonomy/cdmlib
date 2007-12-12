@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 
 @Entity
-public class Band extends MetaBase {
+public class Band extends Annotatable {
 	public Band() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -21,7 +21,6 @@ public class Band extends MetaBase {
 	static Logger logger = Logger.getLogger(Band.class);
 
 	private String name;
-	private Set<Person> musicians;
 	//private Set<Record> records = new HashSet();
 
 	
@@ -41,16 +40,6 @@ public class Band extends MetaBase {
 		this.name = name;
 	}
 
-	@ManyToMany(mappedBy="bands")
-	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-	public Set<Person> getMusicians() {
-		return musicians;
-	}
-
-	public void setMusicians(Set<Person> musicians) {
-		this.musicians = musicians;
-	}
 	public String toString(){
 		return getName();
 	}

@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 
 @Entity
-public class Record extends MetaBase {
+public class Record extends Annotatable {
 	public Record() {
 		super();
 	}

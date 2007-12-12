@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 
 @Entity
-public class Track extends MetaBase {
+public class Track extends Annotatable {
 	public Track() {
 		super();
 		// TODO Auto-generated constructor stub

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bgbm.model.MetaUltra;
+import org.bgbm.model.EntityBase;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.dao.DataAccessException;
  * @author a.mueller
  *
  */
-public abstract class DaoBase<T extends MetaUltra, ID extends Serializable> implements IDao<T, ID> {
+public abstract class DaoBase<T extends EntityBase> implements IDao<T> {
 
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
@@ -50,7 +50,6 @@ public abstract class DaoBase<T extends MetaUltra, ID extends Serializable> impl
 
 	public T findById(Integer id) throws DataAccessException {
 		T obj = (T) getSession().load(type, id);
-		//getSession().refresh(obj);
 		return obj;
 	}
 

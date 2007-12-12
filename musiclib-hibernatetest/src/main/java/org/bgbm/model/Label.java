@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import org.apache.log4j.Logger;
 
 @Entity
-public class Label extends MetaBase {
+public class Label extends Annotatable {
 	public Label() {
 		super();
 		// TODO Auto-generated constructor stub

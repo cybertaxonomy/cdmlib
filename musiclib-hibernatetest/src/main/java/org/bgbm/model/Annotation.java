@@ -20,23 +20,15 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Annotation extends MetaBase{
+public class Annotation extends Annotatable{
 	public Annotation() {
 		super();
 	}
 	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
-	private Person commentator;
+	private String commentator;
 	private String note;
-	private MetaBase object;
 
-	@ManyToOne
-	public MetaBase getObject() {
-		return object;
-	}
-	public void setObject(MetaBase object) {
-		this.object = object;
-	}
 	public Annotation(String text) {
 		super();
 		note=text;
@@ -49,10 +41,10 @@ public class Annotation extends MetaBase{
 	}
 	
 	@ManyToOne
-	public Person getCommentator(){
+	public String getCommentator(){
 		return this.commentator;
 	}
-	public void setCommentator(Person commentator){
+	public void setCommentator(String commentator){
 		this.commentator = commentator;
 	}
 	public String toString(){

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class RecordDaoImpl extends DaoBase<Record, Integer> implements IDao<Record, Integer>{
+public class RecordDaoImpl extends DaoBase<Record> implements IDao<Record>{
 	private static final Logger logger = Logger.getLogger(RecordDaoImpl.class);
 
 	public RecordDaoImpl() {
