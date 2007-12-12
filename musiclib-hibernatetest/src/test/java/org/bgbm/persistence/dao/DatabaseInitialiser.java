@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
+@Transactional
 public class DatabaseInitialiser {
 	private static final Logger logger = Logger.getLogger(DatabaseInitialiser.class);
 
