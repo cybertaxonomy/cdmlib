@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
+@Transactional
 public class DatabaseInitialiser {
 	private static final Logger logger = Logger.getLogger(DatabaseInitialiser.class);
 
@@ -34,8 +35,6 @@ public class DatabaseInitialiser {
 
 	public Integer insertRecord(){
 		logger.info("Populate database with a record");
-//		Session session = txm.getSessionFactory().openSession();
-//		Transaction tx = session.beginTransaction();
 		Random generator=new Random();
 		Label label = new Label("Universal Music");
 		Band artist = new Band("Sons of Austria");
@@ -47,18 +46,7 @@ public class DatabaseInitialiser {
 		// save record
 		logger.debug("Save record: "+record.toString());
 		dao.save(record);
-//		tx.commit();
-//		session.flush();
-//		session.close();
 		return record.getId();
-	}
-
-	private void save(Object obj){
-		Session s = dao.factory.openSession();
-		Transaction tx = s.beginTransaction();
-		s.saveOrUpdate(obj);
-		tx.commit();
-		s.close();		
 	}
 
 }
