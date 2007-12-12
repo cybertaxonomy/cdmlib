@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -33,7 +34,6 @@ public abstract class DaoBase<T extends EntityBase> implements IDao<T> {
 	protected Session getSession(){
 		return factory.getCurrentSession();
 	}
-	
 	
 	public void save(T domainObj) throws DataAccessException  {
 		getSession().saveOrUpdate(domainObj);

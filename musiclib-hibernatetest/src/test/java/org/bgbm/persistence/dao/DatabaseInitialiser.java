@@ -15,28 +15,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
+
+@Component
 public class DatabaseInitialiser {
 	private static final Logger logger = Logger.getLogger(DatabaseInitialiser.class);
 
-	private static ClassPathXmlApplicationContext applicationContext;
 
+	@Autowired
 	private RecordDaoImpl recordDao;
+	@Autowired
 	private GenericDao dao;
+	@Autowired
 	private HibernateTransactionManager txm;
 
-	public DatabaseInitialiser() {
-		applicationContext = new ClassPathXmlApplicationContext("appInitContext.xml");
-		dao = (GenericDao)applicationContext.getBean("genericDao");
-		recordDao = (RecordDaoImpl)applicationContext.getBean("recordDaoImpl");
-		txm = (HibernateTransactionManager)applicationContext.getBean("transactionManager");
-	}
 
 	public Integer insertRecord(){
 		logger.info("Populate database with a record");
-		Session session = txm.getSessionFactory().openSession();
-		Transaction tx = session.beginTransaction();
+//		Session session = txm.getSessionFactory().openSession();
+//		Transaction tx = session.beginTransaction();
 		Random generator=new Random();
 		Label label = new Label("Universal Music");
 		Band artist = new Band("Sons of Austria");
@@ -47,10 +46,10 @@ public class DatabaseInitialiser {
 		}
 		// save record
 		logger.debug("Save record: "+record.toString());
-		recordDao.save(record);
-		tx.commit();
-		session.flush();
-		session.close();
+		dao.save(record);
+//		tx.commit();
+//		session.flush();
+//		session.close();
 		return record.getId();
 	}
 
@@ -62,9 +61,4 @@ public class DatabaseInitialiser {
 		s.close();		
 	}
 
-	public static void main(String[] args) {
-		DatabaseInitialiser dbInit = new DatabaseInitialiser();
-		dbInit.insertRecord();
-		dbInit.insertRecord();
-	}
 }
