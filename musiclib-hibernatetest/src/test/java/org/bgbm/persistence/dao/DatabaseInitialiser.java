@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.bgbm.model.Band;
 import org.bgbm.model.Label;
 import org.bgbm.model.Record;
+import org.bgbm.model.Track;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
-@Transactional
 public class DatabaseInitialiser {
 	private static final Logger logger = Logger.getLogger(DatabaseInitialiser.class);
 
@@ -32,6 +32,16 @@ public class DatabaseInitialiser {
 	@Autowired
 	private HibernateTransactionManager txm;
 
+
+	public void playWithRecord(Integer id){
+		Record rOrig = (Record)dao.findById(id, Record.class);
+		for (Record r : rOrig.getLabel().getRecords()){
+			logger.debug(r.toString());
+			for (Track t : r.getTracks()){
+				logger.debug(t.toString());
+			}
+		}
+	}
 
 	public Integer insertRecord(){
 		logger.info("Populate database with a record");

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
+@Transactional
 public class RecordDaoImpl extends DaoBase<Record> implements IDao<Record>{
 	private static final Logger logger = Logger.getLogger(RecordDaoImpl.class);
 

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
+@Transactional
 public class GenericDao{
 	static Logger logger = Logger.getLogger(GenericDao.class);
 	@Autowired

@@ -9,7 +9,8 @@ public class TestIt {
 		applicationContext = new ClassPathXmlApplicationContext("appInitContext.xml");
 		DatabaseInitialiser dbInit = (DatabaseInitialiser)applicationContext.getBean("databaseInitialiser");
 		dbInit.insertRecord();
-		dbInit.insertRecord();
+		Integer rId = dbInit.insertRecord();
+		dbInit.playWithRecord(rId);
 	}
 
 }
