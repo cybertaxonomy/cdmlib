@@ -2,6 +2,8 @@ package org.bgbm.persistence.dao;
 
 import java.util.Random;
 
+import javax.transaction.TransactionManager;
+
 import org.apache.log4j.Logger;
 import org.bgbm.model.Band;
 import org.bgbm.model.Label;
@@ -9,23 +11,32 @@ import org.bgbm.model.Record;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 
 
 public class DatabaseInitialiser {
 	private static final Logger logger = Logger.getLogger(DatabaseInitialiser.class);
 
-	private static SessionFactory factory;
 	private static ClassPathXmlApplicationContext applicationContext;
+
+	private RecordDaoImpl recordDao;
+	private GenericDao dao;
+	private HibernateTransactionManager txm;
 
 	public DatabaseInitialiser() {
 		applicationContext = new ClassPathXmlApplicationContext("appInitContext.xml");
-		factory = (SessionFactory)applicationContext.getBean("sessionFactory");
+		dao = (GenericDao)applicationContext.getBean("genericDao");
+		recordDao = (RecordDaoImpl)applicationContext.getBean("recordDaoImpl");
+		txm = (HibernateTransactionManager)applicationContext.getBean("transactionManager");
 	}
 
-	public static Integer insertRecord(){
+	public Integer insertRecord(){
 		logger.info("Populate database with a record");
+		Session session = txm.getSessionFactory().openSession();
+		Transaction tx = session.beginTransaction();
 		Random generator=new Random();
 		Label label = new Label("Universal Music");
 		Band artist = new Band("Sons of Austria");
@@ -36,12 +47,15 @@ public class DatabaseInitialiser {
 		}
 		// save record
 		logger.debug("Save record: "+record.toString());
-		save(record);
+		recordDao.save(record);
+		tx.commit();
+		session.flush();
+		session.close();
 		return record.getId();
 	}
 
-	private static void save(Object obj){
-		Session s = factory.openSession();
+	private void save(Object obj){
+		Session s = dao.factory.openSession();
 		Transaction tx = s.beginTransaction();
 		s.saveOrUpdate(obj);
 		tx.commit();

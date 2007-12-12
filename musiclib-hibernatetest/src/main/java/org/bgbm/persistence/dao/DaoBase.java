@@ -19,11 +19,10 @@ import org.springframework.dao.DataAccessException;
  *
  */
 public abstract class DaoBase<T extends EntityBase> implements IDao<T> {
-
 	static Logger logger = Logger.getLogger(DaoBase.class);
 
 	@Autowired
-	private SessionFactory factory;
+	public SessionFactory factory;
 	protected Class<T> type;
 	
 	public DaoBase(Class<T> type){
