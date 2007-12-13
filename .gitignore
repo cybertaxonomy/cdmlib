@@ -18,6 +18,9 @@ cdmlibrary/dist
 cdmlibrary/edit_cdm.rar
 cdmlibrary/manifest.txt
 cdmlibrary/mavenInstall
+cdmlibrary/runManager.bat
+cdmlibrary/runServer.bat
+cdmlibrary/site.xml
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/validation
 cdmlibrary/src/main/resources/originals
 cdmlibrary/src/org

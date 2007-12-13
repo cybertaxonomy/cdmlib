@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -33,15 +34,18 @@ public class SpringControl {
 		logger.info("Create name objects...");
 		NonViralName tn = new NonViralName(Rank.SPECIES());
 		BotanicalName tn3 = new BotanicalName(Rank.SUBSPECIES());
+		ZoologicalName parentName = new ZoologicalName(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
 		ReferenceBase sec = new Journal();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
-		Taxon taxon = Taxon.NewInstance(tn, sec);
+		Taxon childTaxon = Taxon.NewInstance(tn, sec);
 		Synonym syn = Synonym.NewInstance(tn3, sec);
-		
+		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
+		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
+		parentTaxon.addChild(childTaxon);
 		
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
@@ -60,19 +64,27 @@ public class SpringControl {
 		tn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
-		appCtr.getAgentService().saveAgent(team);
-		appCtr.getTaxonService().saveTaxon(taxon);
-		appCtr.getTaxonService().saveTaxon(syn);
+		appCtr.getTaxonService().saveTaxon(parentTaxon);
 		
-		//appCtr.getNameService().saveTaxonName(tn);
-		//appCtr.getNameService().saveTaxonName(tn3);
-
-		// load objects
+		// load Name list 
 		logger.info("Load existing names from db...");
 		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
+		
+		// load Name list 
+		logger.info("Load taxon from db...");
+		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(parentTaxon.getUuid());
+		logger.info("Parent: "+ taxon.toString());
+		for (Taxon child: taxon.getTaxonomicChildren()){
+			logger.info("Child: "+ child.toString());
+			for (Synonym synonym: child.getSynonyms()){
+				logger.info("Synonym: "+ synonym.toString());
+			}
+		}
+		
+		// close 
 		appCtr.close();
 	}
 
