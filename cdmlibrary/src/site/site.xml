@@ -5,9 +5,6 @@
     <src>http://www.e-taxonomy.eu/_styles/images/logo_edit.png</src>
     <href>http://eu.e-taxonomy.cdm/</href>
   </bannerLeft>
-  <bannerRight>
-    <src>http://www.e-taxonomy.eu/_styles/images/logo_edit.png</src>
-  </bannerRight>
  <!-- <skin>
   	<groupId>org.apache.maven.skins</groupId>
   	<artifactId>maven-stylus-skin</artifactId>
