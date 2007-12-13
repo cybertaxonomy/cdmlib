@@ -20,9 +20,28 @@ package eu.etaxonomy.cdm.dto;
  */
 public enum TagEnum {
 	
+	/**
+	 *  A taxon name including genus name, epithet etc.
+	 */
 	name,
+	/**
+	 * Non-atomised addition to a taxon name not ruled by a nomenclatural code
+	 */
+	appendedPhrase,
+	/**
+	 * The authors of a reference, also used in taxon names 
+	 */
 	authors,
+	/**
+	 * a reference
+	 */
 	reference,
+	/**
+	 * Volume, page number etc. of a reference
+	 */
 	microreference,
+	/**
+	 * publication year of a reference
+	 */
 	year,
 }

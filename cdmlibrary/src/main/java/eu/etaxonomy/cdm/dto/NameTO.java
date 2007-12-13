@@ -14,10 +14,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+
 
 /**
  * Data Transfer Object representing a taxonomic Name. The fields are mainly derived from the 
- * domain object {@link TaxonNameBase}. The <code>typeDesignations</code> field however is not 
+ * domain object {@link TaxonNameBase}. The field <code>typeDesignations</code> however is not 
  * included since these will obtained by a separate call to the web service.
  * 
  * @author a.kohlbecker
@@ -29,14 +32,15 @@ public class NameTO extends BaseTO {
 
 	private String fullname;
 	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
-	
-	private Set<ReferenceTO> typeDesignations = new HashSet<ReferenceTO>();
-	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
+
 	private Set<LocalisedTermTO> status = new HashSet<LocalisedTermTO>();
 	private LocalisedTermTO rank;
 	private ReferenceTO nomenclaturalReference;
-	private Set<NameTO> newCombinations = new HashSet<NameTO>();
+	
 	private NameTO basionym;
+	private Set<NameSTO> homotypicalGroup = new HashSet<NameSTO>();
+	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
+	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 	
 
 	public String getFullname() {

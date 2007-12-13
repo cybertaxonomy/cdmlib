@@ -9,7 +9,15 @@
 
 package eu.etaxonomy.cdm.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 /**
+ * Data Transfer Object derived from {@link Taxon}.
+ * The TaxonTO is always the accepted taxon.
+ * Descriptions are not included, and therefore have to be queried separately from the web service.
  * 
  * @author a.kohlbecker
  * @author  m.doering
@@ -17,8 +25,15 @@ package eu.etaxonomy.cdm.dto;
  * @created 11.12.2007 12:11:29
  *
  */
-public class TaxonTO extends NameTO{
+public class TaxonTO extends SynonymTO {
 
-	private boolean isAccepted; // important flag for UI
+	private NameSTO name;
+	/**
+	 * The concept reference
+	 */
+	private ReferenceTO sec;
+	
+	private Set<SynonymRelationshipTO> synonyms = new HashSet();
+	private Set<TaxonRelationshipTO> taxonRelations = new HashSet();
 	
 }

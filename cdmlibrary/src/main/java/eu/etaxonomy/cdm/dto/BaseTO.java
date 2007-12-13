@@ -27,6 +27,7 @@ public class BaseTO {
 	private String createdBy;
 	private Calendar updated;
 	private String updatedBy;
+	
 	public String getUuid() {
 		return uuid;
 	}
