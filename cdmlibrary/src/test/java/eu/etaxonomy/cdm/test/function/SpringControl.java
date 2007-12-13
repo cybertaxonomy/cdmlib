@@ -12,6 +12,11 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 import java.util.*;
 
@@ -24,13 +29,19 @@ public class SpringControl {
 	public void testAppController(){
 		
 		CdmApplicationController appCtr = new CdmApplicationController();
-		DatabaseServiceHibernateImpl dbsi = (DatabaseServiceHibernateImpl)appCtr.getDatabaseService();
-		//dbsi.fillTerms();
-		
 		
 		logger.info("Create name objects...");
 		NonViralName tn = new NonViralName(Rank.SPECIES());
-		BotanicalName tn3 = new BotanicalName(Rank.SPECIES());
+		BotanicalName tn3 = new BotanicalName(Rank.SUBSPECIES());
+		
+		logger.info("Create reference objects...");
+		ReferenceBase sec = new Journal();
+		sec.setTitleCache("TestJournal");
+		
+		logger.info("Create taxon objects...");
+		Taxon taxon = Taxon.NewInstance(tn, sec);
+		Synonym syn = Synonym.NewInstance(tn3, sec);
+		
 		
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
@@ -50,8 +61,11 @@ public class SpringControl {
 		
 		logger.info("Save objects ...");
 		appCtr.getAgentService().saveAgent(team);
-		appCtr.getNameService().saveTaxonName(tn);
-		appCtr.getNameService().saveTaxonName(tn3);
+		appCtr.getTaxonService().saveTaxon(taxon);
+		appCtr.getTaxonService().saveTaxon(syn);
+		
+		//appCtr.getNameService().saveTaxonName(tn);
+		//appCtr.getNameService().saveTaxonName(tn3);
 
 		// load objects
 		logger.info("Load existing names from db...");
@@ -68,19 +82,19 @@ public class SpringControl {
 		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//logger.warn(dt.toString());
 		List<DefinedTermBase> dts = ts.listTerms(); 
-		logger.debug("");
+		int i = 0;
 		for (DefinedTermBase d: dts){
-			logger.warn(d.toString());
+			i++;
+			if (i > 10) break;
+			logger.info(d.toString());
 		}
 	}
 
 	private void test(){
 		System.out.println("Start");
 		SpringControl sc = new SpringControl();
-    	//testBeanFactory();
-    	//testAppContext();
-		testTermApi();
-    	//testAppController();
+    	//testTermApi();
+    	testAppController();
     	System.out.println("\nEnd");
 	}
 	
