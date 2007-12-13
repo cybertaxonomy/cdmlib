@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -23,16 +24,24 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		this.dao = dao;
 	}
 	
-	
 	public DefinedTermBase getTermByUri(String uri) {
-		return dao.findByUuid(uri);
+		return   DefinedTermBase.findByUuid(uri);  
 	}
 	public DefinedTermBase getTermByUuid(String uuid) {
-		return dao.findByUuid(uuid);
+		return DefinedTermBase.findByUuid(uuid);  
 	}
 
 	public List<DefinedTermBase> listTerms() {
-		return dao.list(10, 0);
+		if (DefinedTermBase.isInitialized()){
+			logger.debug("listTerms by Map");
+			List<DefinedTermBase> result = new ArrayList<DefinedTermBase>();
+			result.addAll(DefinedTermBase.getDefinedTerms().values());
+			return result;
+		}else{
+			//needed for initialization by DefinedTermBase
+			logger.debug("listTerms by Init");
+			return dao.list(100000, 0);
+		}
 	}
 
 	public List<DefinedTermBase> listTerms(String vocabularyUuid) {

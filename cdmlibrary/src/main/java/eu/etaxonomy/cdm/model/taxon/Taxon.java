@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -32,6 +35,16 @@ public class Taxon extends TaxonBase {
 	private Set<SynonymRelationship> synonymRelations = new HashSet();
 	private Set<TaxonRelationship> taxonRelations = new HashSet();
 
+	public static Taxon NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
+		Taxon result = new Taxon();
+		result.setName(taxonName);
+		result.setSec(sec);
+		return result;
+	}
+	
+	//TODO should be private, but still produces Spring init errors
+	public Taxon(){
+	}
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})

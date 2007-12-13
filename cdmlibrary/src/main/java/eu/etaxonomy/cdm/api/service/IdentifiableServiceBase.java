@@ -12,13 +12,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity>
 						extends ServiceBase<T> 
 						implements IIdentifiableEntityService<T>{
 	static Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
-	protected IIdentifiableDao<T> dao;
-
-	protected void setEntityDao(IIdentifiableDao<T> da){
-		this.dao=da;
-	}
+//	protected IIdentifiableDao<T> dao;
+//
+//	protected void setEntityDao(IIdentifiableDao<T> dao){
+//		this.dao=dao;
+//	}
 
 	protected List<T> findCdmObjectsByTitle(String title){
-		return dao.findByTitle(title);
+		return ((IIdentifiableDao)dao).findByTitle(title);
 	}
 }

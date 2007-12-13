@@ -14,16 +14,23 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 
 
@@ -36,6 +43,8 @@ public class CdmApplicationController {
 	
 	public AbstractApplicationContext applicationContext;
 	private INameService nameService;
+	private ITaxonService taxonService;
+	private IReferenceService referenceService;
 	private IAgentService agentService;
 	private IDatabaseService databaseService;
 	private ITermService termService;
@@ -49,13 +58,6 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 */
 	public CdmApplicationController() {
-		//logger.info("Start HSQLDB Server");
-		//startHsqldbServer();
-		
-		//TODO find out if DataSource is localHsqldb,
-		//if yes then find out if Server is running
-		//if not running, start server
-
 		logger.info("Start CdmApplicationController with default data source");
 		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
 		setNewDataSource(dataSource);
@@ -82,27 +84,49 @@ public class CdmApplicationController {
 		dataSource.updateSessionFactory(null);
 		FileSystemXmlApplicationContext appContext;
 		try {
-			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto default property");
+			logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
 			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
 		} catch (BeanCreationException e) {
+			// create new schema
 			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
 			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
 			dataSource.updateSessionFactory("create"); 
 			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+		}
+		setApplicationContext(appContext);
+		// load defined terms if necessary 
+		if (testDefinedTermsAreMissing()){
 			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
 			try {
 				termLoader.loadAllDefaultTerms();
 			} catch (FileNotFoundException fileNotFoundException) {
 				logger.error("One or more DefinedTerm initialisation files could not be found");
 				fileNotFoundException.printStackTrace();
+				return false;
 			} catch (NoDefinedTermClassException noDefinedTermClassException) {
 				logger.error("NoDefinedTermClassException");
 				noDefinedTermClassException.printStackTrace();
+				return false;
 			}
 		}
-		setApplicationContext(appContext);
 		return true;
 	}
+	
+	
+	/**
+	 * Tests if some DefinedTermsAreMissing.
+	 * @return true, if at least one is missing, else false
+	 */
+	public boolean testDefinedTermsAreMissing(){
+		String englishUuid = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
+		DefinedTermBase english = this.getTermService().getTermByUri(englishUuid);
+		if ( english == null || ! english.getUuid().equalsIgnoreCase(englishUuid)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 
 	/**
 	 * Changes the ApplicationContext to the new dataSource
@@ -121,7 +145,7 @@ public class CdmApplicationController {
 		closeApplicationContext(); //closes old application context if necessary
 		applicationContext = ac;
 		applicationContext.registerShutdownHook();
-		setServices();
+		init();
 	}
 	
 	/* (non-Javadoc)
@@ -148,11 +172,14 @@ public class CdmApplicationController {
 		}
 	}
 	
-	private void setServices(){
+	private void init(){
 		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
+		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
+		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");
 		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
 		termService = (ITermService)applicationContext.getBean("termServiceImpl");
+		DefinedTermBase.initTermList(termService);
 		databaseService = (IDatabaseService)applicationContext.getBean("databaseServiceHibernateImpl");
 		databaseService.setApplicationController(this);
 	}
@@ -162,6 +189,14 @@ public class CdmApplicationController {
 	/* ******  Services *********/
 	public final INameService getNameService(){
 		return this.nameService;
+	}
+
+	public final ITaxonService getTaxonService(){
+		return this.taxonService;
+	}
+
+	public final IReferenceService getReferenceService(){
+		return this.referenceService;
 	}
 	
 	public final IAgentService getAgentService(){

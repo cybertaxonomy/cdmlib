@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
@@ -30,6 +32,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:31
  */
 @Entity
+@Component
 public class Language extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Language.class);
 
@@ -60,7 +63,9 @@ public class Language extends DefinedTermBase {
 	}
 
 	public static final Language getUUID(String uuid){
-		return (Language) dao.findByUuid(uuid);
+		return (Language)findByUuid(uuid);
+		//return (Language)termService.getTermByUri(uuid);
+		//return (Language) dao.findByUuid(uuid);
 	}
 
 	

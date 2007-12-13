@@ -42,7 +42,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank EMPIRE(){
-		return (Rank)dao.findByUuid("1234-8765-21341");
+		return (Rank)findByUuid("1234-8765-21341");
 	}
 
 	public static final Rank DOMAIN(){
@@ -138,7 +138,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank SUBFAMILY(){
-		return null;
+		return (Rank)findByUuid("af5f2481-3192-403f-ae65-7c957a0f02b6");
 	}
 
 	public static final Rank INFRAFAMILY(){
@@ -166,7 +166,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank GENUS(){
-		return null;
+		return (Rank)findByUuid("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
 	}
 
 	public static final Rank SUBGENUS(){
@@ -202,7 +202,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank SPECIES(){
-		return null;
+		return (Rank)findByUuid("b301f787-f319-4ccc-a10f-b4ed3b99a86d");
 	}
 
 	public static final Rank SUBSPECIFIC_AGGREGATE(){
@@ -210,19 +210,19 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank SUBSPECIES(){
-		return null;
+		return (Rank)findByUuid("462a7819-8b00-4190-8313-88b5be81fad5");
 	}
-
+	
 	public static final Rank INFRASPECIES(){
-		return null;
+		return (Rank)findByUuid("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
 	}
 
 	public static final Rank VARIETY(){
-		return null;
+		return (Rank)findByUuid("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
 	}
 
 	public static final Rank BIO_VARIETY(){
-		return null;
+		return (Rank)findByUuid("d5feb6a5-af5c-45ef-9878-bb4f36aaf490");
 	}
 
 	public static final Rank PATHO_VARIETY(){

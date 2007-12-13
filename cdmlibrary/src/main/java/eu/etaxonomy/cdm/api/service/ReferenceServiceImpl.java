@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
@@ -22,31 +23,25 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
-	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements IReferenceService {
+	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 	
-	private ITaxonDao taxonDao;
+	private IReferenceDao referenceDao;
+	
 	@Autowired
-	protected void setDao(ITaxonDao dao) {
+	protected void setDao(IReferenceDao dao) {
 		this.dao = dao;
-		this.taxonDao = dao;
+		this.referenceDao = dao;
 	}
 	
 
-	public TaxonBase getTaxonByUuid(String uuid) {
+	public ReferenceBase getReferenceByUuid(String uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
 	@Transactional(readOnly = false)
-	public String saveTaxon(TaxonBase taxon) {
-		return super.saveCdmObject(taxon);
+	public String saveReference(ReferenceBase reference) {
+		return super.saveCdmObject(reference);
 	}
 
-	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
-		return taxonDao.getTaxaByName(name, sec);
-	}
-
-	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		return taxonDao.getRootTaxa(sec);
-	}
 }

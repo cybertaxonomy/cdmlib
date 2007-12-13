@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.jdom.output.Format;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;

@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
 public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
@@ -21,8 +22,8 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 	protected ApplicationContext appContext;
 	protected ICdmEntityDao<T> dao;
 	
-	protected void setEntityDao(ICdmEntityDao<T> da){
-		this.dao=da;
+	protected void setEntityDao(ICdmEntityDao<T> dao){
+		this.dao=dao;
 	}
 	
 	public void setApplicationContext(ApplicationContext appContext){
@@ -35,6 +36,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 
 	@Transactional(readOnly = false)
 	protected String saveCdmObject(T cdmObj){
+		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + cdmObj == null? null: cdmObj.toString());}
 		return dao.saveOrUpdate(cdmObj);
 	}
 

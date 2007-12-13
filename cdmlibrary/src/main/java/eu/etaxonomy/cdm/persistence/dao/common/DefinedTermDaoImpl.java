@@ -17,7 +17,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		super(DefinedTermBase.class);
 		// add reference to static DefindTermBase class
 		// Spring cant inject static properties...
-		DefinedTermBase.setDao(this);
+		//DefinedTermBase.setDao(this);
 	}
 
 	public List<DefinedTermBase> findByTitle(String queryString) {

@@ -48,7 +48,7 @@ public class TermLoader {
 		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		try {
 			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + File.separator + filename);
-			CSVReader reader = new CSVReader(new InputStreamReader(inputStream),'\t');
+			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 		
 			String [] nextLine;
 			while ((nextLine = reader.readNext()) != null) {

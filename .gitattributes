@@ -59,11 +59,13 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
@@ -270,6 +272,8 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITitledDao.java
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IdentifiableDaoBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/TaxonNameDaoHibernateImpl.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IReferenceDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/ReferenceDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text

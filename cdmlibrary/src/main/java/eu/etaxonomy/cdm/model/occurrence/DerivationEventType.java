@@ -18,15 +18,15 @@ public class DerivationEventType extends DefinedTermBase {
 	}
 	
 	public static final DerivationEventType DUPLICATE(){
-		return (DerivationEventType)dao.findByUuid("1234-8765-21341");
+		return (DerivationEventType)findByUuid("1234-8765-21341");
 	}
 	public static final DerivationEventType GATHERING_IN_SITU(){
-		return (DerivationEventType)dao.findByUuid("1234-8765-21341");
+		return (DerivationEventType)findByUuid("1234-8765-21341");
 	}
 	public static final DerivationEventType TISSUE_SAMPLING(){
-		return (DerivationEventType)dao.findByUuid("1234-8765-21341");
+		return (DerivationEventType)findByUuid("1234-8765-21341");
 	}
 	public static final DerivationEventType DNA_EXTRACTION(){
-		return (DerivationEventType)dao.findByUuid("1234-8765-21341");
+		return (DerivationEventType)findByUuid("1234-8765-21341");
 	}
 }

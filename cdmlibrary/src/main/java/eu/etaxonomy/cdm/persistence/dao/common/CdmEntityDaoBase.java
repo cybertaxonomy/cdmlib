@@ -11,6 +11,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,10 +68,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 
 	public T findByUuid(String uuid) throws DataAccessException{
-		Criteria crit = getSession().createCriteria(type);
+		Session session = getSession();
+//	logger.debug("BEGIN TRANSACTION");
+//	session.beginTransaction();
+	Transaction tx = session.getTransaction();
+	
+		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("uuid", uuid));
 		crit.addOrder(Order.desc("created"));
 		List<T> results = crit.list();
+//	logger.debug("COMMIT TRANSACTION");
+//	tx.commit();
+	Object o = tx;
 		if (results.isEmpty()){
 			return null;
 		}else{

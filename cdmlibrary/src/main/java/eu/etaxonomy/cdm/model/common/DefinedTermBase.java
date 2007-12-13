@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
@@ -38,20 +39,52 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
-	public static IDefinedTermDao dao;
+	//public static IDefinedTermDao dao;
+	//public static ITermService termService;
+	//Map for preloading all DefinedTerms
+	static protected Map<String, DefinedTermBase> definedTermsMap = null;
 
 	private DefinedTermBase kindOf;
-	private Set<DefinedTermBase> generalizationOf = new HashSet();
+	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
 	private DefinedTermBase partOf;
-	private Set<DefinedTermBase> includes = new HashSet();
-	private Set<Media> media = new HashSet();
+	private Set<DefinedTermBase> includes = new HashSet<DefinedTermBase>();
+	private Set<Media> media = new HashSet<Media>();
 	private TermVocabulary vocabulary;
 	
-	
-	public static void setDao(IDefinedTermDao dao) {
-		logger.warn("Setting DefinedTerm static dao");
-		DefinedTermBase.dao = dao;
+	public static void initTermList(ITermService termService){
+		logger.debug("initTermList");
+		if (definedTermsMap == null){
+			List<DefinedTermBase> list = termService.listTerms();
+			definedTermsMap = new HashMap<String, DefinedTermBase>();
+			for (DefinedTermBase dtb: list){
+				definedTermsMap.put(dtb.getUuid(), dtb);
+			}
+		}
+		logger.debug("initTermList - end");
 	}
+	
+	public static DefinedTermBase findByUuid(String uuid){
+		return definedTermsMap.get(uuid);
+	}
+	
+	public static boolean isInitialized(){
+		return (definedTermsMap != null);
+	}
+	
+	public static Map<String, DefinedTermBase> getDefinedTerms(){
+		return definedTermsMap;
+	}
+	
+	
+//	public static void setDao(IDefinedTermDao dao) {
+//		logger.warn("Setting DefinedTerm static dao");
+//		DefinedTermBase.dao = dao;
+//	}
+//	
+//	public static void setService(ITermService service) {
+//		logger.warn("Setting DefinedTerm static service");
+//		DefinedTermBase.termService = service;
+//	}
 	
 	public DefinedTermBase() {
 		super();

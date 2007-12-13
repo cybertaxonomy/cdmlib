@@ -11,10 +11,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public abstract TaxonBase getTaxonByUuid(String uuid);
 
-	// save a taxon and return its UUID
+	/** save a taxon and return its UUID**/
 	public abstract String saveTaxon(TaxonBase taxon);
 
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec);
 
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
+	
 }

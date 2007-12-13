@@ -37,7 +37,7 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 	}
 
 	public static final ConceptRelationshipType getUUID(String uuid){
-		return (ConceptRelationshipType) dao.findByUuid(uuid);
+		return (ConceptRelationshipType) findByUuid(uuid);
 	}
 
 	

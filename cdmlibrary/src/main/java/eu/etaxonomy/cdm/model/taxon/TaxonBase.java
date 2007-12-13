@@ -38,7 +38,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	// The concept reference
 	private ReferenceBase sec;
 
-
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public TaxonNameBase getName(){

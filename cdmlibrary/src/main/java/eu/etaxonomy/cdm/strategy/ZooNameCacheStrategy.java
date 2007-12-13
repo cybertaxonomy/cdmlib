@@ -8,6 +8,14 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 public class ZooNameCacheStrategy extends StrategyBase implements
 		INameCacheStrategy {
 
+	public ZooNameCacheStrategy NewInstance(){
+		return new ZooNameCacheStrategy();
+	}
+	
+	private ZooNameCacheStrategy(){
+		super();
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */

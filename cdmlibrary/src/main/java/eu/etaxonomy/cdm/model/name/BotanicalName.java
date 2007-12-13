@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -37,11 +39,17 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
+	//needed by hibernate
+	protected BotanicalName(){
+		super();
+		this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+	}
+	
+	
 	public BotanicalName(Rank rank) {
 		super(rank);
+		this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
 	}
-
-	
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})

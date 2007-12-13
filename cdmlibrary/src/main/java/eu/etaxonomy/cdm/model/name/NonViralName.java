@@ -12,9 +12,12 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.util.*;
 import javax.persistence.*;
@@ -44,8 +47,23 @@ public class NonViralName extends TaxonNameBase {
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 
+	//needed by hibernate
+	protected NonViralName(){
+		super();
+		setNameCacheStrategy();
+	}
+	
+	private void setNameCacheStrategy(){
+		if (getClass() == NonViralName.class){
+			this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+			logger.warn("NonViralName uses BotanicNameCacheStrategy");
+		}
+		
+	}
+	
 	public NonViralName(Rank rank) {
 		super(rank);
+		setNameCacheStrategy();
 	}
 
 	@ManyToOne

@@ -16,10 +16,10 @@ import org.hibernate.annotations.CascadeType;
 @MappedSuperclass
 public abstract class TermBase extends VersionableEntity {
 	static Logger logger = Logger.getLogger(TermBase.class);
+	
 	private String uri;
-	private Set<Representation> representations = new HashSet();
-
-
+	private Set<Representation> representations = new HashSet<Representation>();
+	
 	public TermBase() {
 		super();
 	}
@@ -28,8 +28,7 @@ public abstract class TermBase extends VersionableEntity {
 		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
 	}
 
-
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany//(fetch=FetchType.EAGER)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	public Set<Representation> getRepresentations() {
 		return this.representations;
@@ -50,7 +49,8 @@ public abstract class TermBase extends VersionableEntity {
 	@Transient
 	public Representation getRepresentation(Language lang) {
 		for (Representation repr : representations){
-			if (repr.getLanguage().equals(lang)){
+			Language reprLanguage = repr.getLanguage();
+			if (reprLanguage != null && reprLanguage.equals(lang)){
 				return repr;
 			}
 		}
@@ -68,7 +68,8 @@ public abstract class TermBase extends VersionableEntity {
 	@Transient
 	public String getLabel() {
 		if(getLabel(Language.DEFAULT())!=null){
-			return this.getRepresentation(Language.DEFAULT()).getLabel();
+			Representation repr = getRepresentation(Language.DEFAULT());
+			return (repr == null)? null :repr.getLabel();
 		}else{
 			for (Representation r : representations){
 				return r.getLabel();
@@ -79,17 +80,19 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Transient
 	public String getLabel(Language lang) {
-		return this.getRepresentation(lang).getLabel();
+		Representation repr = this.getRepresentation(lang);
+		return (repr == null) ? null : repr.getLabel();
 	}
 
 	@Transient
 	public String getDescription() {
-		return this.getRepresentation(Language.DEFAULT()).getDescription();
+		return this.getDescription(Language.DEFAULT());
 	}
 
 	@Transient
 	public String getDescription(Language lang) {
-		return this.getRepresentation(lang).getDescription();
+		Representation repr = this.getRepresentation(lang);
+		return (repr == null) ? null :repr.getDescription();
 	}
 
 	@Override

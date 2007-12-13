@@ -15,10 +15,18 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 public class BotanicNameCacheStrategy extends StrategyBase implements
 		INameCacheStrategy {
 
+	public static BotanicNameCacheStrategy NewInstance(){
+		return new BotanicNameCacheStrategy();
+	}
+	
+	private BotanicNameCacheStrategy(){
+		super();
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */
-	// PROTOTYPE implementation
+	// Test implementation
 	public String getNameCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
@@ -35,7 +43,7 @@ public class BotanicNameCacheStrategy extends StrategyBase implements
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
-	// PROTOTYPE implementation
+	// Test implementation
 	public String getFullNameCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
