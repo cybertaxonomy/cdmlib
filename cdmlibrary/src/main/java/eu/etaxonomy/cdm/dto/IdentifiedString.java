@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.dto;
 
 /**
+ * A String globally uniquely identified by an uuid.
  * 
  * @author a.kohlbecker
  * @version 1.0
@@ -19,7 +20,8 @@ package eu.etaxonomy.cdm.dto;
 public class IdentifiedString  {
 	
 	private String uuid;
-	private String text;
+	private String value;
+	
 	public String getUuid() {
 		return uuid;
 	}
@@ -27,10 +29,10 @@ public class IdentifiedString  {
 		this.uuid = uuid;
 	}
 	public String getText() {
-		return text;
+		return value;
 	}
 	public void setText(String text) {
-		this.text = text;
+		this.value = text;
 	}
 	
 

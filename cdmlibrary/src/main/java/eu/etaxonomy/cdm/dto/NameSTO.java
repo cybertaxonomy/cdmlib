@@ -12,18 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Simple Transfer Object version of {@link NameTO}
  * 
  * @author a.kohlbecker
  * @version 1.0
  * @created 11.12.2007 14:40:26
  */
-public class IdentifiedNameStr {
+public class NameSTO {
 	
 	private String uuid;
 	
 	private String fullname;
 	
 	private List<TaggedText> taggedName = new ArrayList();
-	
 	
 }

@@ -9,8 +9,12 @@
 
 package eu.etaxonomy.cdm.dto;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 /**
+ * Transfer object derived from {@link LanguageString} excluding some {@link CdmBase} fields
  * 
+ * Term descriptions are to be delivered by a separate web service request
  * 
  * @author a.kohlbecker
  * @author  m.doering
@@ -18,17 +22,12 @@ package eu.etaxonomy.cdm.dto;
  * @created 11.12.2007 12:10:45
  *
  */
-public class LocalisedRepresentationTO {
+public class LocalisedTermTO {
 
-	private String description;
+	private String term;
+	private String uuid;
 	private String language;
 	
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
 	public String getLanguage() {
 		return language;
 	}

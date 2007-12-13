@@ -9,6 +9,20 @@
 
 package eu.etaxonomy.cdm.dto;
 
+/**
+ * Tags for atomised taxon name strings and atomised reference citation strings.
+ * Used by {@link TaggedText}.
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 13.12.2007 12:04:15
+ *
+ */
 public enum TagEnum {
-
+	
+	name,
+	authors,
+	reference,
+	microreference,
+	year,
 }

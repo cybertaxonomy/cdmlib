@@ -32,9 +32,9 @@ public class NameTO extends BaseTO {
 	
 	private Set<ReferenceTO> typeDesignations = new HashSet<ReferenceTO>();
 	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
-	private Set<LocalisedRepresentationTO> status = new HashSet<LocalisedRepresentationTO>();
-	private LocalisedRepresentationTO rank;
-	private NomenclaturalReferenceTO nomenclaturalReference;
+	private Set<LocalisedTermTO> status = new HashSet<LocalisedTermTO>();
+	private LocalisedTermTO rank;
+	private ReferenceTO nomenclaturalReference;
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 	private NameTO basionym;
 	
@@ -63,11 +63,11 @@ public class NameTO extends BaseTO {
 		this.nameRelations.add(nameRelation);
 	}
 
-	public void addStatus(LocalisedRepresentationTO status) {
+	public void addStatus(LocalisedTermTO status) {
 		this.status.add(status);
 	}
 
-	public void setRank(LocalisedRepresentationTO rank) {
+	public void setRank(LocalisedTermTO rank) {
 		this.rank = rank;
 	}
 
@@ -84,11 +84,11 @@ public class NameTO extends BaseTO {
 		return nameRelations;
 	}
 
-	public Set<LocalisedRepresentationTO> getStatus() {
+	public Set<LocalisedTermTO> getStatus() {
 		return status;
 	}
 
-	public LocalisedRepresentationTO getRank() {
+	public LocalisedTermTO getRank() {
 		return rank;
 	}
 

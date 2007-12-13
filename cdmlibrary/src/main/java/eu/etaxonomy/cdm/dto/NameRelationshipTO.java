@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class NameRelationshipTO extends ReferencedEntityBaseTO {
 	
-	private LocalisedRepresentationTO type;
+	private LocalisedTermTO type;
 	
 	private String ruleConsidered;
 
 	// basic data on the referenced Name object:
-	private IdentifiedNameStr name;
+	private NameSTO name;
 	
 }

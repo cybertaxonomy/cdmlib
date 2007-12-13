@@ -28,12 +28,12 @@ import eu.etaxonomy.cdm.model.common.Rights;
  */
 public class MediaTO extends BaseTO {
 
-	private Set<LocalisedRepresentationTO> title;
+	private Set<LocalisedTermTO> title;
 	/**	
 	 * creation date of the media (not of the record)
 	 */
 	private Calendar mediaCreated;
-	private Set<LocalisedRepresentationTO> description;
+	private Set<LocalisedTermTO> description;
 	/**
 	 * A single medium such as a picture can have multiple representations in files. 
 	 * Common are multiple resolutions or file

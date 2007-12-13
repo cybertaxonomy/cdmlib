@@ -9,23 +9,29 @@
 
 package eu.etaxonomy.cdm.dto;
 
-import java.net.URI;
-import java.util.Calendar;
+import java.util.Set;
 
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-
-public class ReferenceTO extends BaseTO {
+public class ReferenceTO extends BaseTO{
 	
 	/**
-	 * title of the publication including authors except if the ReferenceTO 
-	 * is used for nomenclatural references. See also {@link INomenclaturalReference}
+	 * 	URIs like DOIs, LSIDs or Handles for this reference
 	 */
-	private String title;
+	private String uri;
+	/**
+	 * 
+	 */
+	private String authorship;
+	
+	private String citation;
+	/**
+	 * Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or
+	 * tables or any other element of a publication. {only if a nomenclatural reference exists}
+	 */
+	private String microReference;
 	/**
 	 * year of the publication 
 	 */
-	private Calendar year; 
+	private String year;
 	
-	//URIs like DOIs, LSIDs or Handles for this reference
-	private String uri;
+	private Set<IdentifiedString> media_uri;
 }
