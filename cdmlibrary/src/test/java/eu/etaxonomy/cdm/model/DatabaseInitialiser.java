@@ -13,6 +13,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -29,8 +31,9 @@ public class DatabaseInitialiser {
 
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
-		Taxon tax = new Taxon();
+		ReferenceBase sec = new Journal();
 		TaxonNameBase nm = new BotanicalName(Rank.SPECIES());
+		Taxon tax = Taxon.NewInstance(nm, sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nm.setNameCache(speciesname);
 		nm.setTitleCache(speciesname);
