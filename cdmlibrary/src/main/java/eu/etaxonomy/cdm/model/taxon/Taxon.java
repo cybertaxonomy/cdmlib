@@ -121,7 +121,7 @@ public class Taxon extends TaxonBase {
 	}
 	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
-		Set<Taxon> taxa = new HashSet();
+		Set<Taxon> taxa = new HashSet<Taxon>();
 		for (TaxonRelationship rel: this.getTaxonRelations()){
 			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getToTaxon().equals(this)){
 				taxa.add(rel.getFromTaxon());
@@ -139,13 +139,14 @@ public class Taxon extends TaxonBase {
 		return false;
 	}
 	
+	
 	@Transient
 	public Set<Synonym> getSynonyms(){
-		Set<Synonym> taxa = new HashSet();
+		Set<Synonym> syns = new HashSet();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
-			taxa.add(rel.getSynoynm());
+			syns.add(rel.getSynoynm());
 		}
-		return taxa;
+		return syns;
 	}
 	@Transient
 	public Set<Synonym> getSynonymsSortedByType(){
@@ -153,5 +154,36 @@ public class Taxon extends TaxonBase {
 		return getSynonyms();
 	}
 	
+	@Transient
+	public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
+		SynonymRelationship synonymRelationship = new SynonymRelationship();
+		synonymRelationship.setSynoynm(synonym);
+		synonymRelationship.setAcceptedTaxon(this);
+		synonymRelationship.setType(synonymType);
+		this.addSynonymRelation(synonymRelationship);
+	}
+	
+	@Transient
+	public void addChild(Taxon child){
+		if (child == null){
+			throw new NullPointerException("Chilc Taxon is 'null'");
+		}else{
+			TaxonRelationship taxonRelation = new TaxonRelationship();
+			taxonRelation.setFromTaxon(child);
+			taxonRelation.setToTaxon(this);
+			taxonRelation.setType(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN());
+			this.addTaxonRelation(taxonRelation);
+		}
+	}
+	
+	
+	@Transient
+	public void addParent(Taxon parent){
+		if (parent != null){
+			throw new NullPointerException("Parent Taxon is 'null'");
+		}else{
+			parent.addChild(this);
+		}
+	}
 
 }

@@ -36,7 +36,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 
 	@Transactional(readOnly = false)
 	protected String saveCdmObject(T cdmObj){
-		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + cdmObj == null? null: cdmObj.toString());}
+		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 		return dao.saveOrUpdate(cdmObj);
 	}
 

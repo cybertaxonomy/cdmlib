@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -28,9 +31,13 @@ public class ZoologicalName extends NonViralName {
 	//Name of the breed of an animal
 	private String breed;
 
+	private ZoologicalName() {
+		this.cacheStrategy = ZooNameCacheStrategy.NewInstance();
+	}
+	
 	public ZoologicalName(Rank rank) {
 		super(rank);
-		// TODO Auto-generated constructor stub
+		this.cacheStrategy = ZooNameCacheStrategy.NewInstance();
 	}
 
 	

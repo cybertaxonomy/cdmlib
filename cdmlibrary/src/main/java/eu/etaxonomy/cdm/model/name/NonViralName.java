@@ -130,7 +130,12 @@ public class NonViralName extends TaxonNameBase {
 
 	@Override
 	public String generateTitle(){
-		return cacheStrategy.getFullNameCache(this);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
+			return null;
+		}else{
+			return cacheStrategy.getFullNameCache(this);
+		}
 	}
 
 	/**
