@@ -32,7 +32,6 @@ public class SpringControl {
 	
 	
 	public void testAppController(){
-		
 		CdmApplicationController appCtr = new CdmApplicationController();
 		
 		logger.info("Create name objects...");
@@ -92,6 +91,30 @@ public class SpringControl {
 		appCtr.close();
 	}
 
+	public void testReadTaxa(){
+		CdmApplicationController appCtr = new CdmApplicationController();
+		// load Name list 
+		logger.info("Load existing names from db...");
+		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
+		for (TaxonNameBase tn2: tnList){
+			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
+		}
+		
+		// load Name list 
+		logger.info("Load taxon from db...");
+		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid("b3084573-343d-4279-ba92-4ab01bb47db5");
+		logger.info("Parent: "+ taxon.toString());
+		for (Taxon child: taxon.getTaxonomicChildren()){
+			logger.info("Child: "+ child.toString());
+			for (Synonym synonym: child.getSynonyms()){
+				logger.info("Synonym: "+ synonym.toString());
+			}
+		}
+		
+		// close 
+		appCtr.close();
+		
+	}
 	public void testTermApi(){
 		CdmApplicationController appCtr = new CdmApplicationController();
 		ITermService ts = (ITermService)appCtr.getTermService();
@@ -110,7 +133,8 @@ public class SpringControl {
 		System.out.println("Start");
 		SpringControl sc = new SpringControl();
     	//testTermApi();
-    	testAppController();
+		testReadTaxa();
+    	//testAppController();
     	System.out.println("\nEnd");
 	}
 	

@@ -5,6 +5,8 @@ package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -24,8 +26,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO add reference filter
+		Criteria crit = getSession().createCriteria(Taxon.class);
+		crit.add(Restrictions.isNull("higherTaxon"));
+		List<Taxon> results = crit.list();
+		return results;
 	}
 
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {

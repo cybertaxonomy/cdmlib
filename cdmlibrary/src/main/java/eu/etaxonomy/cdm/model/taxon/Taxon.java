@@ -33,7 +33,10 @@ public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet();
 	private Set<SynonymRelationship> synonymRelations = new HashSet();
+	// all taxa relations, no matter if this is fromTaxon or toTaxon
 	private Set<TaxonRelationship> taxonRelations = new HashSet();
+	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
+	private Taxon higherTaxon;
 
 	public static Taxon NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
 		Taxon result = new Taxon();
@@ -87,6 +90,11 @@ public class Taxon extends TaxonBase {
 		this.taxonRelations = taxonRelations;
 	}
 	public void addTaxonRelation(TaxonRelationship taxonRelation) {
+		// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
+		// TODO: all relation objects need both taxa (to/from). How can this be guaranteed so we dont need to check isNotNull all the time?
+		if (taxonRelation.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxonRelation.getToTaxon()!=null && taxonRelation.getFromTaxon().equals(this)){
+			this.setHigherTaxon(taxonRelation.getToTaxon());
+		}
 		this.taxonRelations.add(taxonRelation);
 	}
 	public void removeTaxonRelation(TaxonRelationship taxonRelation) {
@@ -192,6 +200,13 @@ public class Taxon extends TaxonBase {
 		}else{
 			parent.addChild(this);
 		}
+	}
+
+	public Taxon getHigherTaxon() {
+		return higherTaxon;
+	}
+	private void setHigherTaxon(Taxon higherTaxon) {
+		this.higherTaxon = higherTaxon;
 	}
 
 }

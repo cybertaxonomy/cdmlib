@@ -173,7 +173,6 @@ public class CdmApplicationController {
 	}
 	
 	private void init(){
-		//TODO ? also possible via SPRING?
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
 		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");

@@ -99,9 +99,4 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return crit.list(); 
 	}
 
-	public List<Object> executeHsql(String hsql){
-		Query q = getSession().createQuery(hsql);
-		return q.list();
-	}
-	
 }

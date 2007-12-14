@@ -16,6 +16,4 @@ public interface ICdmGenericDao {
 	
 	public String delete(CdmBase persistentObject) throws DataAccessException;
 	
-	public List<Object> executeHsql(String hsql) throws DataAccessException;
-
 }
