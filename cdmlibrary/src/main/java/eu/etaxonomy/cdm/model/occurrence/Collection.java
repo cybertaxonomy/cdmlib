@@ -11,12 +11,17 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.IMediaDocumented;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.common.Media;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -25,7 +30,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
-public class Collection extends IdentifiableEntity {
+public class Collection extends IdentifyableMediaEntity{
 	static Logger logger = Logger.getLogger(Collection.class);
 	private String code;
 	private String codeStandard;
@@ -33,7 +38,8 @@ public class Collection extends IdentifiableEntity {
 	private String townOrLocation;
 	private Institution institute;
 	private Collection superCollection;
-
+	
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
@@ -109,5 +115,5 @@ public class Collection extends IdentifiableEntity {
 	public void setSuperCollection(Collection superCollection) {
 		this.superCollection = superCollection;
 	}
-
+	
 }

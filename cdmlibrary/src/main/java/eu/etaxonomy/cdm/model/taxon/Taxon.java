@@ -153,6 +153,14 @@ public class Taxon extends TaxonBase {
 		// FIXME: need to sort synonyms according to type!!!
 		return getSynonyms();
 	}
+	@Transient
+	public Set<TaxonNameBase> getSynonymNames(){
+		Set<TaxonNameBase> names = new HashSet();
+		for (SynonymRelationship rel: this.getSynonymRelations()){
+			names.add(rel.getSynoynm().getName());
+		}
+		return names;
+	}
 	
 	@Transient
 	public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){

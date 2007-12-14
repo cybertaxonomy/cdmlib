@@ -26,7 +26,6 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:27
  */
 @MappedSuperclass
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
@@ -38,10 +37,6 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	private Set<Extension> extensions = new HashSet();
 	private Set<OriginalSource> sources = new HashSet();
 
-	public IdentifiableEntity() {
-		super();
-	}
-	
 	
 	public String getLsid(){
 		return this.lsid;

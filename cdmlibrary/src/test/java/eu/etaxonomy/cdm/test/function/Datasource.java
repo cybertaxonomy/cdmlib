@@ -11,6 +11,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -63,7 +64,7 @@ public class Datasource {
 		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
-			Agent agent = new Agent();
+			Person agent = new Person();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
 			appCtr.getNameService().saveTaxonName(tn);
@@ -82,7 +83,7 @@ public class Datasource {
 		CdmDataSource ds = CdmDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
-			Agent agent = new Agent();
+			Person agent = new Person();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
 			appCtr.getNameService().saveTaxonName(tn);

@@ -50,4 +50,10 @@ public class Team extends Agent {
 		this.teamMembers.remove(person);
 	}
 
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

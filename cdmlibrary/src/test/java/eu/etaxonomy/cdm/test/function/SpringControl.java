@@ -3,23 +3,27 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.DatabaseServiceHibernateImpl;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-
-import java.util.*;
 
 
 
@@ -58,7 +62,7 @@ public class SpringControl {
 		tn3.getUninomial();
 		
 		logger.info("Create new Author agent...");
-		Agent team= new Agent();
+		Person team= new Person();
 		team.addPropertyChangeListener(listener);
 		team.setTitleCache("AuthorAgent1");
 		tn.setCombinationAuthorTeam(team);

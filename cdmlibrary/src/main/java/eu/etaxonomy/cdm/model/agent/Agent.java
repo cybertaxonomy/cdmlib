@@ -1,20 +1,21 @@
 package eu.etaxonomy.cdm.model.agent;
 
-import javax.persistence.Entity;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.common.IMediaDocumented;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.common.Media;
 
 @Entity
-public class Agent extends IdentifiableEntity {
-
-	public Agent() {
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+public abstract class Agent extends IdentifyableMediaEntity{
+	
 
 }

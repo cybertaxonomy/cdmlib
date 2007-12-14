@@ -15,6 +15,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IMediaDocumented;
+import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Media;
@@ -40,9 +42,8 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
+public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	static Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
-	private Set<Media> media = new HashSet();
 	private Set<SpecimenDescription> descriptions = new HashSet();
 	private Set<DeterminationEvent> determinations = new HashSet();
 	private Sex sex;
@@ -107,21 +108,6 @@ public abstract class SpecimenOrObservationBase extends IdentifiableEntity {
 		this.lifeStage = lifeStage;
 	}
 	
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<Media> getMedia() {
-		return media;
-	}
-	protected void setMedia(Set<Media> media) {
-		this.media = media;
-	}
-	public void addMedia(Media media) {
-		this.media.add(media);
-	}
-	public void removeMedia(Media media) {
-		this.media.remove(media);
-	}
-
 	
 	public String generateTitle(){
 		return "";

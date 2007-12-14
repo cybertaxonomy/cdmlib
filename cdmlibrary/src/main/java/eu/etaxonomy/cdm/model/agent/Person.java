@@ -29,12 +29,8 @@ import javax.persistence.*;
  */
 @Entity
 public class Person extends Agent {
-	public Person() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	
 	static Logger logger = Logger.getLogger(Person.class);
+
 	//e.g. the title
 	private String prefix;
 	//All other names not included in the surname. May be just initials, all forenames in full or a combination of expanded
@@ -46,7 +42,7 @@ public class Person extends Agent {
 	private String suffix;
 	//The period for which this person was alive represented as a TimePeriod datatype, i.e. start - end date. Alternative
 	//suggestion as a flexible String. the form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
-	//prefered, or as simple flourished date (fl. XXXX) may be given where that is all that is known
+	//preferred, or as simple flourished date (fl. XXXX) may be given where that is all that is known
 	private TimePeriod lifespan;
 	protected Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
