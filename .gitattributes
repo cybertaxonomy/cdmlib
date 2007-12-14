@@ -100,6 +100,7 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/ReferenceTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/ReferencedEntityBaseTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/RightsTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/SynonymRelationshipTO.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/SynonymTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TagEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaggedText.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaxonRelationshipTO.java -text

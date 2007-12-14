@@ -41,6 +41,7 @@ public class NameTO extends BaseTO {
 	private Set<NameSTO> homotypicalGroup = new HashSet<NameSTO>();
 	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
+	private Set<ReferenceTO> typeDesignations;
 	
 
 	public String getFullname() {
@@ -75,8 +76,7 @@ public class NameTO extends BaseTO {
 		this.rank = rank;
 	}
 
-	public void setNomenclaturalReference(
-			NomenclaturalReferenceTO nomenclaturalReference) {
+	public void setNomenclaturalReference(ReferenceTO nomenclaturalReference) {
 		this.nomenclaturalReference = nomenclaturalReference;
 	}
 
@@ -96,7 +96,7 @@ public class NameTO extends BaseTO {
 		return rank;
 	}
 
-	public NomenclaturalReferenceTO getNomenclaturalReference() {
+	public ReferenceTO getNomenclaturalReference() {
 		return nomenclaturalReference;
 	}
 
