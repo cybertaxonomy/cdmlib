@@ -27,7 +27,13 @@
 	    <property name="password" value="schalke" />
 	    
   	</bean>
-  	<bean id="localDefaultHsqlDataSource" 
+	<bean id="localMysqlDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/cdm" />
+		<property name="username" value="edit" />
+		<property name="password" value="wp5" />
+	</bean>
+	<bean id="localDefaultHsqlDataSource" 
 			lazy-init="true"
   			class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
 			init-method="init"

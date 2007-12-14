@@ -32,11 +32,15 @@ import javax.persistence.*;
 public class Taxon extends TaxonBase {
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet();
+	// all related synonyms
 	private Set<SynonymRelationship> synonymRelations = new HashSet();
-	// all taxa relations, no matter if this is fromTaxon or toTaxon
-	private Set<TaxonRelationship> taxonRelations = new HashSet();
+	// all taxa relations with rel.fromTaxon==this
+	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet();
+	// all taxa relations with rel.toTaxon==this
+	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet();
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
-	private Taxon higherTaxon;
+	private Taxon taxonomicParentCache;
+
 
 	public static Taxon NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
 		Taxon result = new Taxon();
@@ -83,55 +87,109 @@ public class Taxon extends TaxonBase {
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
+		return relationsFromThisTaxon;
+	}
+	protected void setRelationsFromThisTaxon(
+			Set<TaxonRelationship> relationsFromThisTaxon) {
+		this.relationsFromThisTaxon = relationsFromThisTaxon;
+	}
+
+
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<TaxonRelationship> getRelationsToThisTaxon() {
+		return relationsToThisTaxon;
+	}
+	protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
+		this.relationsToThisTaxon = relationsToThisTaxon;
+	}
+
+	@ManyToOne
+	// used by hibernate only...
+	private Taxon getTaxonomicParentCache() {
+		return taxonomicParentCache;
+	}
+	private void setTaxonomicParentCache(Taxon taxonomicParent) {
+		this.taxonomicParentCache = taxonomicParent;
+	}
+
+	@Transient
 	public Set<TaxonRelationship> getTaxonRelations() {
-		return taxonRelations;
+		Set<TaxonRelationship> rels = new HashSet();
+		rels.addAll(getRelationsToThisTaxon());
+		rels.addAll(getRelationsFromThisTaxon());
+		return rels;
 	}
-	protected void setTaxonRelations(Set<TaxonRelationship> taxonRelations) {
-		this.taxonRelations = taxonRelations;
-	}
-	public void addTaxonRelation(TaxonRelationship taxonRelation) {
-		// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
-		// TODO: all relation objects need both taxa (to/from). How can this be guaranteed so we dont need to check isNotNull all the time?
-		if (taxonRelation.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxonRelation.getToTaxon()!=null && taxonRelation.getFromTaxon().equals(this)){
-			this.setHigherTaxon(taxonRelation.getToTaxon());
+	public void removeTaxonRelation(TaxonRelationship rel) {
+		this.relationsToThisTaxon.remove(rel);
+		this.relationsFromThisTaxon.remove(rel);
+		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
+		if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
+			this.setTaxonomicParentCache(null);
 		}
-		this.taxonRelations.add(taxonRelation);
+		// TODO: remove in related taxon too?
 	}
-	public void removeTaxonRelation(TaxonRelationship taxonRelation) {
-		this.taxonRelations.remove(taxonRelation);
+	public void addTaxonRelation(TaxonRelationship rel) {
+		if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel)){
+			if (rel.getFromTaxon().equals(this)){
+				Taxon toTaxon=rel.getToTaxon();
+				relationsFromThisTaxon.add(rel);
+				// also add relation to other taxon object
+				toTaxon.addTaxonRelation(rel);
+				// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
+				if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
+					this.setTaxonomicParentCache(rel.getToTaxon());
+				}
+			}else if (rel.getToTaxon().equals(this)){
+				relationsToThisTaxon.add(rel);
+			}
+		}
+	}
+	public void addTaxonRelation(Taxon toTaxon, ConceptRelationshipType type, ReferenceBase citation, String microreference) {
+		TaxonRelationship rel = new TaxonRelationship();
+		rel.setToTaxon(toTaxon);
+		rel.setFromTaxon(this);
+		rel.setType(type);
+		rel.setCitation(citation);
+		rel.setCitationMicroReference(microreference);
+		this.addTaxonRelation(rel);
 	}
 
-	@Transient
-	public Set<TaxonRelationship> getIncomingTaxonRelations() {
-		// FIXME: filter relations
-		return taxonRelations;
-	}
-	@Transient
-	public Set<TaxonRelationship> getOutgoingTaxonRelations() {
-		// FIXME: filter relations
-		return taxonRelations;
-	}
-
-
+	
+	
+	
 	@Override
 	public String generateTitle(){
 		return "";
 	}
 
 	@Transient
-	public Taxon getTaxonomicParent() {
-		for (TaxonRelationship rel: this.getTaxonRelations()){
-			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
-				return rel.getToTaxon();
-			}
+	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
+		if (child == null){
+			throw new NullPointerException("Child Taxon is 'null'");
+		}else{
+			child.setTaxonomicParent(this, citation, microcitation);
 		}
-		return null;
 	}
+	
+	@Transient
+	public Taxon getTaxonomicParent() {
+		return getTaxonomicParentCache();
+	}
+	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
+		if (parent == null){
+			throw new NullPointerException("Parent Taxon is 'null'");
+		}else{
+			addTaxonRelation(parent,ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
+		}
+	}
+
 	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
-		for (TaxonRelationship rel: this.getTaxonRelations()){
-			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getToTaxon().equals(this)){
+		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
+			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				taxa.add(rel.getFromTaxon());
 			}
 		}
@@ -139,15 +197,19 @@ public class Taxon extends TaxonBase {
 	}
 	@Transient
 	public boolean hasTaxonomicChildren(){
-		for (TaxonRelationship rel: this.getTaxonRelations()){
-			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getToTaxon().equals(this)){
+		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
+			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				return true;
 			}
 		}
 		return false;
 	}
+
 	
 	
+	/*
+	 * DEALING WITH SYNONYMS
+	 */
 	@Transient
 	public Set<Synonym> getSynonyms(){
 		Set<Synonym> syns = new HashSet();
@@ -177,36 +239,6 @@ public class Taxon extends TaxonBase {
 		synonymRelationship.setAcceptedTaxon(this);
 		synonymRelationship.setType(synonymType);
 		this.addSynonymRelation(synonymRelationship);
-	}
-	
-	@Transient
-	public void addChild(Taxon child){
-		if (child == null){
-			throw new NullPointerException("Chilc Taxon is 'null'");
-		}else{
-			TaxonRelationship taxonRelation = new TaxonRelationship();
-			taxonRelation.setFromTaxon(child);
-			taxonRelation.setToTaxon(this);
-			taxonRelation.setType(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN());
-			this.addTaxonRelation(taxonRelation);
-		}
-	}
-	
-	
-	@Transient
-	public void addParent(Taxon parent){
-		if (parent != null){
-			throw new NullPointerException("Parent Taxon is 'null'");
-		}else{
-			parent.addChild(this);
-		}
-	}
-
-	public Taxon getHigherTaxon() {
-		return higherTaxon;
-	}
-	private void setHigherTaxon(Taxon higherTaxon) {
-		this.higherTaxon = higherTaxon;
 	}
 
 }

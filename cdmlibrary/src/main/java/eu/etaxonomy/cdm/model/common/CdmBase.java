@@ -94,7 +94,7 @@ public abstract class CdmBase implements Serializable{
 	public String getUuid() {
 		return this.uuid;
 	}
-	protected void setUuid(String uuid) {
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 

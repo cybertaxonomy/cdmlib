@@ -118,8 +118,9 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		writer.writeNext(line);
 	}
 	
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
+	//@ManyToOne
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public DefinedTermBase getKindOf(){
 		return this.kindOf;
 	}
@@ -127,8 +128,9 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		this.kindOf = kindOf;
 	}
 
-	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
+	//@OneToMany(fetch=FetchType.LAZY)
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
@@ -137,8 +139,9 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	}
 
 
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
+	//@ManyToOne
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public DefinedTermBase getPartOf(){
 		return this.partOf;
 	}
@@ -146,8 +149,9 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		this.partOf = partOf;
 	}
 
-	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
+	//@OneToMany(fetch=FetchType.LAZY)
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DefinedTermBase> getIncludes(){
 		return this.includes;
 	}

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 public class SpringControl {
+	private static final String TEST_TAXON_UUID = "b3084573-343d-4279-ba92-4ab01bb47db5";
 	static Logger logger = Logger.getLogger(SpringControl.class);
 	
 	
@@ -48,7 +49,8 @@ public class SpringControl {
 		Synonym syn = Synonym.NewInstance(tn3, sec);
 		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
 		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
-		parentTaxon.addChild(childTaxon);
+		parentTaxon.setUuid(TEST_TAXON_UUID);
+		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
 		
 		// setup listeners
 		PropertyChangeTest listener = new PropertyChangeTest();
@@ -102,12 +104,15 @@ public class SpringControl {
 		
 		// load Name list 
 		logger.info("Load taxon from db...");
-		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid("b3084573-343d-4279-ba92-4ab01bb47db5");
-		logger.info("Parent: "+ taxon.toString());
-		for (Taxon child: taxon.getTaxonomicChildren()){
-			logger.info("Child: "+ child.toString());
-			for (Synonym synonym: child.getSynonyms()){
-				logger.info("Synonym: "+ synonym.toString());
+		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(TEST_TAXON_UUID);
+		if (taxon != null){
+			logger.info("Parent: "+ taxon.toString());
+			for (Taxon child: taxon.getTaxonomicChildren()){
+				logger.info("Child: "+ child.toString());
+				logger.info("  Child.higherTaxon: "+ child.getTaxonomicParent().toString());
+				for (Synonym synonym: child.getSynonyms()){
+					logger.info("Synonym: "+ synonym.toString());
+				}
 			}
 		}
 		
@@ -133,8 +138,8 @@ public class SpringControl {
 		System.out.println("Start");
 		SpringControl sc = new SpringControl();
     	//testTermApi();
-		testReadTaxa();
-    	//testAppController();
+    	testAppController();
+		//testReadTaxa();
     	System.out.println("\nEnd");
 	}
 	
