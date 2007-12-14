@@ -85,7 +85,7 @@ public class Taxon extends TaxonBase {
 	}
 	
 
-	@OneToMany
+	@OneToMany(mappedBy="fromTaxon")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;
@@ -96,7 +96,7 @@ public class Taxon extends TaxonBase {
 	}
 
 
-	@OneToMany
+	@OneToMany(mappedBy="toTaxon")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
 		return relationsToThisTaxon;
@@ -169,7 +169,7 @@ public class Taxon extends TaxonBase {
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
 		}else{
-			child.setTaxonomicParent(this, citation, microcitation);
+			child.sssetTaxonomicParent(this, citation, microcitation);
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class Taxon extends TaxonBase {
 	public Taxon getTaxonomicParent() {
 		return getTaxonomicParentCache();
 	}
-	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
+	public void sssetTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
 		if (parent == null){
 			throw new NullPointerException("Parent Taxon is 'null'");
 		}else{

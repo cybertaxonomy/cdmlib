@@ -69,7 +69,7 @@ public class SpringControl {
 		tn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
-		appCtr.getTaxonService().saveTaxon(parentTaxon);
+ 		appCtr.getTaxonService().saveTaxon(parentTaxon);
 		
 		// load Name list 
 		logger.info("Load existing names from db...");

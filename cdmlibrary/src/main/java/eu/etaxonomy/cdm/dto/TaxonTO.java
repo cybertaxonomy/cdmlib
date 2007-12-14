@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @created 11.12.2007 12:11:29
  *
  */
-public class TaxonTO extends SynonymTO {
+public class TaxonTO extends BaseTO {
 
 	private NameSTO name;
 	/**

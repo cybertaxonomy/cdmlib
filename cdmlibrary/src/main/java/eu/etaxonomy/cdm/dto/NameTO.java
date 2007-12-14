@@ -41,7 +41,7 @@ public class NameTO extends BaseTO {
 	private Set<NameSTO> homotypicalGroup = new HashSet<NameSTO>();
 	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
-	private Set<ReferenceTO> typeDesignations;
+	private Set<ReferenceTO> typeDesignations = new HashSet<ReferenceTO>();
 	
 
 	public String getFullname() {

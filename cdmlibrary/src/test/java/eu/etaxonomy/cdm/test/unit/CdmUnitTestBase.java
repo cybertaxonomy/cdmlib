@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Basic CDM unit testing class that incorporates the Spring Context for DI
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//ApplicationContext will be loaded from "/applicationContext.xml" and "/applicationContext-test.xml"
-//in the root of the classpath
 @ContextConfiguration(locations={"/applicationContext-test.xml"})
 @TransactionConfiguration(defaultRollback=true)
 @Transactional

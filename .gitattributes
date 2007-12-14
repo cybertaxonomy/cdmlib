@@ -100,7 +100,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/ReferenceTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/ReferencedEntityBaseTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/RightsTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/SynonymRelationshipTO.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/SynonymTO.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TagEnum.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaggedText.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/dto/TaxonRelationshipTO.java -text
@@ -315,6 +314,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text
 cdmlibrary/src/test/resources/appInitContext.xml -text
 cdmlibrary/src/test/resources/applicationContext-test.xml -text
+cdmlibrary/src/test/resources/hibernate.properties -text
 cdmlibrary/src/test/resources/test.cdm.datasource.xml -text
 cdmlibrary/updateAnnotatedClasses.py -text
 docs/layers.graffle -text
