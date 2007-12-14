@@ -50,8 +50,10 @@
             <value>eu.etaxonomy.cdm.model.common.Figure</value>
             <value>eu.etaxonomy.cdm.model.common.IDefTerm</value>
             <value>eu.etaxonomy.cdm.model.common.IdentifiableEntity</value>
+            <value>eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity</value>
             <value>eu.etaxonomy.cdm.model.common.IEvent</value>
             <value>eu.etaxonomy.cdm.model.common.ImageFile</value>
+            <value>eu.etaxonomy.cdm.model.common.IMediaDocumented</value>
             <value>eu.etaxonomy.cdm.model.common.IOriginalSource</value>
             <value>eu.etaxonomy.cdm.model.common.IReferencedEntity</value>
             <value>eu.etaxonomy.cdm.model.common.Keyword</value>
