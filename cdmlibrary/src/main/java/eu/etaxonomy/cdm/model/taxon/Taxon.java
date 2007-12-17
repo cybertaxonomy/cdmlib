@@ -29,7 +29,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:56
  */
 @Entity
-public class Taxon extends TaxonBase {
+public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet();
 	// all related synonyms
@@ -241,4 +241,22 @@ public class Taxon extends TaxonBase {
 		this.addSynonymRelation(synonymRelationship);
 	}
 
+	public Iterator<Taxon> iterator() {
+		return new TaxonIterator(this.getTaxonomicChildren());
+
+	}
+	// inner iterator class for the iterable interface
+	private class TaxonIterator implements Iterator<Taxon> {
+		   private Taxon[] items;
+		   private int i= 0;
+		   public TaxonIterator(Set<Taxon> items) {
+		      // check for null being passed in etc.
+		      this.items= items.toArray(new Taxon[0]);
+		   }
+		   // interface implementation
+		   public boolean hasNext() { return i < items.length; }
+		   public Taxon next() { return items[i++]; }
+		   public void remove() { throw new UnsupportedOperationException(); }
+	}
+	
 }

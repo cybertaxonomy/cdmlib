@@ -4,6 +4,7 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -93,7 +94,7 @@ public class SpringControl {
 		appCtr.close();
 	}
 
-	public void testReadTaxa(){
+	public void testRootTaxa(){
 		CdmApplicationController appCtr = new CdmApplicationController();
 		// load Name list 
 		logger.info("Load existing names from db...");
@@ -102,16 +103,16 @@ public class SpringControl {
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
 		
-		// load Name list 
+		// load Root taxa 
 		logger.info("Load taxon from db...");
-		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(TEST_TAXON_UUID);
-		if (taxon != null){
-			logger.info("Parent: "+ taxon.toString());
-			for (Taxon child: taxon.getTaxonomicChildren()){
+		List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(null);
+		for (Taxon rt: taxa){
+			logger.info("Root taxon: "+ rt.toString());
+			for (Taxon child: rt){
 				logger.info("Child: "+ child.toString());
 				logger.info("  Child.higherTaxon: "+ child.getTaxonomicParent().toString());
 				for (Synonym synonym: child.getSynonyms()){
-					logger.info("Synonym: "+ synonym.toString());
+					logger.info("  Child synonyms: "+ synonym.toString());
 				}
 			}
 		}
@@ -138,8 +139,8 @@ public class SpringControl {
 		System.out.println("Start");
 		SpringControl sc = new SpringControl();
     	//testTermApi();
-    	testAppController();
-		//testReadTaxa();
+    	//testAppController();
+		testRootTaxa();
     	System.out.println("\nEnd");
 	}
 	
