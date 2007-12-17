@@ -4,7 +4,7 @@
   <bannerLeft>
     <name>CdmLibrary</name>
     <src>http://www.e-taxonomy.eu/_styles/images/logo_edit.png</src>
-    <href>http://eu.e-taxonomy.cdm/</href>
+    <href>http://dev.e-taxonomy.eu/wiki/	</href>
   </bannerLeft>
   <skin>
   	<groupId>org.apache.maven.skins</groupId>
@@ -33,7 +33,7 @@
     <menu name="CdmLibrary">
       <item name="About	" href="/index.html"/>
       <item name="Download" href="/source-repository.html"/>
-      <item name="FAQs" href="/faqs.html"/>
+      <item name="FAQs" href="/faq.html"/>
      </menu>
     
 	${reports}
