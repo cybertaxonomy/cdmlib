@@ -52,6 +52,7 @@ cdmParent/pom.xml -text
 cdmParent/settings.xml -text
 cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
+cdmlibrary/src/changes/changes.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
@@ -299,6 +300,8 @@ cdmlibrary/src/main/resources/terms/Rank.csv -text
 cdmlibrary/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlibrary/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlibrary/src/main/resources/terms/WaterbodyOrCountry.csv -text
+cdmlibrary/src/site/apt/index.apt -text
+cdmlibrary/src/site/fml/faq.fml -text
 cdmlibrary/src/site/site.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text

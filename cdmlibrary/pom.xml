@@ -7,14 +7,14 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>0.1</version>
+    <version>0.2</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmLibrary</artifactId>
   <name>EDIT Common Data Model Library</name>
-  <version>0.4.0</version>
-  <description>EDIT cdm library</description>
+  <version>0.4.1</version>
+  <description>EDIT CDM library</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</developerConnection>

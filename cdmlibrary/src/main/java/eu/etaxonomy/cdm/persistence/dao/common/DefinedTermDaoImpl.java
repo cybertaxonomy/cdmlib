@@ -24,4 +24,12 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return (List<DefinedTermBase>) query.list();
 	}
 
+//	@Override
+//	public List<DefinedTermBase> list(int limit, int start) {
+//		Query query = getSession().createQuery("select term from DefinedTermBase term join fetch term.representations representation ");
+//		query.setMaxResults(limit);
+//		query.setFirstResult(start);
+//		return (List<DefinedTermBase>) query.list();
+//	}
+
 }
