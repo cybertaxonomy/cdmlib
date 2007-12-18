@@ -48,9 +48,6 @@
 		<developer>
 			<!-- your SVN account id please! -->
 			<id>m.doering</id>
-			<name>
-				Markus D&ouml;ring
-			</name>
 			<email>m.doering [at] bgbm.org</email>
 			<organization>
 				Botanical Garden Botanical Museum Berlin
@@ -284,11 +281,10 @@
 	<distributionManagement>
 		<site>
 			<id>edit-wp5</id>
-			<url>
+       		<url>
 				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/site
 			</url>
-		</site>
-
+       	</site>
 		<repository>
 			<id>edit-wp5</id>
 			<name>Edit Maven Repository</name>
@@ -296,7 +292,6 @@
 				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
 			</url>
 		</repository>
-
 	</distributionManagement>
 
 
