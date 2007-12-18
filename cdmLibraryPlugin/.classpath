@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="lib" path="cdmLibrary.jar"/>
+	<classpathentry exported="true" kind="lib" path="cdmLibrary-0.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="msbase-2000.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="mssqlserver-2000.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="msutil-2000.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="opencsv-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm.jar"/>
@@ -21,7 +28,6 @@
 	<classpathentry exported="true" kind="lib" path="junit-4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="log4j-1.2.14.jar"/>
 	<classpathentry exported="true" kind="lib" path="mysql-connector-java-3.1.14-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring.jar"/>
 	<classpathentry exported="true" kind="lib" path="xml-apis.jar"/>
 	<classpathentry exported="true" kind="lib" path="hsqldb.jar"/>
 	<classpathentry exported="true" kind="lib" path="jaxb-api.jar"/>
@@ -33,5 +39,14 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="aspectjrt-1.5.4.jar"/>
+	<classpathentry kind="lib" path="aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="spring-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-beans-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-context-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-core-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-jdbc-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-orm-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-test-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-tx-2.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
