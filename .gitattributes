@@ -347,6 +347,7 @@ musiclib-hibernatetest/target/mvn-eclipse-cache.properties -text
 updateSite/.project -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.4.0.jar -text
+updateSite/features/eu.etaxonomy.cdmLibrary_0.4.1.1.jar -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.4.1.jar -text
 updateSite/index.html -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
