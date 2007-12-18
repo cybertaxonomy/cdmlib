@@ -3,7 +3,7 @@
    <description url="file:///P:\eclipse\europaWS\CdmLibrary UpdateSite">
       Eine schöne Update Site
    </description>
-   <feature url="features/eu.etaxonomy.cdmLibrary_0.4.1.2.jar" id="eu.etaxonomy.cdmLibrary" version="0.4.1.2">
+   <feature url="features/eu.etaxonomy.cdmLibrary_0.4.1.3.jar" id="eu.etaxonomy.cdmLibrary" version="0.4.1.3">
       <category name="cdmLibrary"/>
    </feature>
    <category-def name="cdmLibrary" label="cdmLibrary">
