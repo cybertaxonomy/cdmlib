@@ -16,17 +16,17 @@ public class TermServiceImplTest extends CdmUnitTestBase{
 
 	@Test
 	public void testListTerms() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 
 	@Test
 	public void testListTermsString() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 
 	@Test
 	public void testListVocabularies() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 
 }

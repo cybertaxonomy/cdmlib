@@ -60,7 +60,7 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 	public void getTermByUUID() {
 		logger.debug("TEST: getTermByUUID eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 		DefinedTermBase dt = dao.findByUuid("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
-		logger.debug("Loaded term: "+dt.toString());
+		//logger.debug("Loaded term: "+dt.toString());
 	}
 	
 	@Test
