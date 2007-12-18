@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,11 @@ public class TermLoader {
 	@Autowired
 	private ICdmGenericDao dao;
 	
+	private static Map<String, DefinedTermBase> definedTermsMap;
+	
+	public static void setDefinedTermsMap(Map<String, DefinedTermBase> dtm){
+		 definedTermsMap = dtm;
+	}
 
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
@@ -47,14 +53,14 @@ public class TermLoader {
 	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
 		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		try {
-			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + File.separator + filename);
+			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
 			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 		
 			String [] nextLine;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				IDefTerm term = termClass.newInstance();
-				ArrayList<String> aList = new ArrayList(10);
+				ArrayList<String> aList = new ArrayList<String>(10);
 				for (String col : nextLine){
 					aList.add(col);
 				}
@@ -64,7 +70,17 @@ public class TermLoader {
 				term.readCsvLine(aList);
 				term.setVocabulary(voc);
 				// save enumeration and all terms to DB
-				dao.saveOrUpdate(voc);
+				if (dao != null){
+					dao.saveOrUpdate(voc);
+				}else{
+					//e.g. in tests when no database connection exists
+					logger.info("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved");
+				}
+				if (definedTermsMap != null){
+					DefinedTermBase defTermBase = (DefinedTermBase)term;
+					definedTermsMap.put(defTermBase.getUuid(), defTermBase);	
+				}
+				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -95,6 +111,8 @@ public class TermLoader {
 		loadDefaultTerms(ConceptRelationshipType.class);
 		logger.debug("terms loaded");
 	}
+	
+	
 
 	public static void main(String[] args) {
 		CdmApplicationController appCtr = new CdmApplicationController();

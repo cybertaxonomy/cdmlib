@@ -173,6 +173,8 @@ public class CdmApplicationController {
 	}
 	
 	private void init(){
+		logger.debug("Init " +  this.getClass().getName());
+		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
 		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");

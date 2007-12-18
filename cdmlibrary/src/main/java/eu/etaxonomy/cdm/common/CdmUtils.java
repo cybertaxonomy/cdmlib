@@ -28,6 +28,7 @@ public class CdmUtils {
 	//directory of the resources (configfiles etc.)
 	static File fileResourceDir;
 	static final String MUST_EXIST_FILE = "applicationContext.xml";
+	static String folderSeperator;
 
 	/**
 	 * Returns the an InputStream for a read-only source
@@ -88,6 +89,18 @@ public class CdmUtils {
 		} catch (IOException e) {
 			logger.error("File "  + resourceFileName + " + could not be created");
 		}
+	}
+	
+	static public String getFolderSeperator(){
+		if (folderSeperator == null){
+			URL url = CdmApplicationController.class.getResource("/"+ MUST_EXIST_FILE);
+			if (url != null && ! url.getProtocol().startsWith("jar")){
+				folderSeperator =  File.separator;
+			}else{
+				folderSeperator = "/";
+			}
+		}
+		return folderSeperator;
 	}
 	
 	/**

@@ -18,10 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.database.init.TermLoader;
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -54,16 +56,34 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	public static void initTermList(ITermService termService){
 		logger.debug("initTermList");
 		if (definedTermsMap == null){
-			List<DefinedTermBase> list = termService.listTerms();
-			definedTermsMap = new HashMap<String, DefinedTermBase>();
-			for (DefinedTermBase dtb: list){
-				definedTermsMap.put(dtb.getUuid(), dtb);
+			if (termService == null){   //e.g. when used in tests with no database connection
+				definedTermsMap = new HashMap<String, DefinedTermBase>();
+				try {
+					String uuidEnglish = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
+					Language english = new Language(uuidEnglish);
+					definedTermsMap.put(english.getUuid(), english);
+					TermLoader.setDefinedTermsMap(definedTermsMap);
+					new TermLoader().loadAllDefaultTerms();
+				} catch (Exception e) {
+					logger.error("Error ocurred when loading terms");
+				}				
+				
+			}else{
+				List<DefinedTermBase> list = termService.listTerms();
+				definedTermsMap = new HashMap<String, DefinedTermBase>();
+				for (DefinedTermBase dtb: list){
+					definedTermsMap.put(dtb.getUuid(), dtb);
+				}
 			}
 		}
 		logger.debug("initTermList - end");
 	}
 	
 	public static DefinedTermBase findByUuid(String uuid){
+		//in tests tems may no be initialised by database access
+		if (!isInitialized()){
+			initTermList(null);
+		}
 		return definedTermsMap.get(uuid);
 	}
 	
