@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -58,8 +59,9 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 	
 	@Test
 	public void getTermByUUID() {
-		logger.debug("TEST: getTermByUUID eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
-		DefinedTermBase dt = dao.findByUuid("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
+		String strUuid = "eeaea868-c4c1-497f-b9fe-52c9fc4aca53";
+		logger.debug("TEST: getTermByUUID " + strUuid);
+		DefinedTermBase dt = dao.findByUuid(UUID.fromString(strUuid));
 		//logger.debug("Loaded term: "+dt.toString());
 	}
 	

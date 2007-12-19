@@ -4,12 +4,11 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.DatabaseServiceHibernateImpl;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -19,17 +18,19 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+
 
 
 
 public class SpringControl {
-	private static final String TEST_TAXON_UUID = "b3084573-343d-4279-ba92-4ab01bb47db5";
+	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(SpringControl.class);
 	
 	
@@ -95,6 +96,11 @@ public class SpringControl {
 	}
 
 	public void testRootTaxa(){
+		logger.info(UUID.randomUUID());
+		DerivationEventType det = DerivationEventType.DNA_EXTRACTION();
+		DerivationEvent de = new DerivationEvent();
+		de.setType(det);
+		
 		CdmApplicationController appCtr = new CdmApplicationController();
 		// load Name list 
 		logger.info("Load existing names from db...");
