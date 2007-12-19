@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy;
 
@@ -39,7 +41,10 @@ public class ZoologicalName extends NonViralName {
 		super(rank);
 		this.cacheStrategy = ZooNameCacheStrategy.NewInstance();
 	}
-
+	public ZoologicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+		this.cacheStrategy = ZooNameCacheStrategy.NewInstance();
+	}
 	
 	public String getBreed(){
 		return this.breed;

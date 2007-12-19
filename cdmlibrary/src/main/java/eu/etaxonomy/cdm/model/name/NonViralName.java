@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
 import org.apache.log4j.Logger;
@@ -65,7 +66,16 @@ public class NonViralName extends TaxonNameBase {
 		super(rank);
 		setNameCacheStrategy();
 	}
-
+	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+		super(rank);
+		setNameCacheStrategy();
+		setUninomial(genusOrUninomial);
+		setSpecificEpithet(specificEpithet);
+		setInfraSpecificEpithet(infraSpecificEpithet);
+		setCombinationAuthorTeam(combinationAuthorTeam);
+		setNomenclaturalReference(nomenclaturalReference);
+		this.setNomenclaturalMicroReference(nomenclMicroRef);
+	}
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getCombinationAuthorTeam(){

@@ -14,7 +14,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy;
 
 import java.util.*;
 
@@ -44,13 +47,16 @@ public class BotanicalName extends NonViralName {
 		super();
 		this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
 	}
-	
-	
 	public BotanicalName(Rank rank) {
 		super(rank);
 		this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
 	}
+	public BotanicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+		this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+	}
 
+	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<HybridRelationship> getHybridRelationships() {

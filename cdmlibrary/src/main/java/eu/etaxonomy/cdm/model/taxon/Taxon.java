@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
@@ -52,6 +53,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	//TODO should be private, but still produces Spring init errors
 	public Taxon(){
 	}
+
 
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -161,7 +163,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	
 	@Override
 	public String generateTitle(){
-		return "";
+		return this.toString();
 	}
 
 	@Transient

@@ -48,6 +48,15 @@ public class Person extends Agent {
 	private Contact contact;
 	private Set<Keyword> keywords = new HashSet();
 
+	public Person() {
+	}
+	public Person(String firstname, String lastname, String abbreviation) {
+		this.setFirstname(firstname);
+		this.setLastname(lastname);
+		this.setTitleCache(abbreviation);
+	}
+	
+	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
