@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="lib" path="cdmLibrary-0.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="cdmLibrary-0.4.1.jar" sourcepath="/cdmLibrary/src"/>
 	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
