@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class TermLoader {
 	@Autowired
 	private ICdmGenericDao dao;
 	
-	private static Map<String, DefinedTermBase> definedTermsMap;
+	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
-	public static void setDefinedTermsMap(Map<String, DefinedTermBase> dtm){
+	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
 		 definedTermsMap = dtm;
 	}
 
@@ -74,7 +75,7 @@ public class TermLoader {
 					dao.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
-					logger.info("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved");
+					logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");
 				}
 				if (definedTermsMap != null){
 					DefinedTermBase defTermBase = (DefinedTermBase)term;

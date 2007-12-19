@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -33,12 +34,12 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 	
 
-	public TaxonBase getTaxonByUuid(String uuid) {
+	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
 	@Transactional(readOnly = false)
-	public String saveTaxon(TaxonBase taxon) {
+	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
 	}
 

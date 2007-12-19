@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	}
 	
 	public DefinedTermBase getTermByUri(String uri) {
-		return   DefinedTermBase.findByUuid(uri);  
+		//FIXME transformation from URI to UUID
+		return DefinedTermBase.findByUuid(UUID.fromString(uri));  
 	}
-	public DefinedTermBase getTermByUuid(String uuid) {
+	public DefinedTermBase getTermByUuid(UUID uuid) {
 		return DefinedTermBase.findByUuid(uuid);  
 	}
 
@@ -44,13 +46,15 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		}
 	}
 
-	public List<DefinedTermBase> listTerms(String vocabularyUuid) {
+	public List<DefinedTermBase> listTerms(UUID vocabularyUuid) {
 		// TODO Auto-generated method stub
+		logger.error("Method not implemented yet");
 		return null;
 	}
 
 	public List<TermVocabulary> listVocabularies(Class termClass) {
 		// TODO Auto-generated method stub
+		logger.error("Method not implemented yet");
 		return null;
 	}
 

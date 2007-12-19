@@ -75,7 +75,7 @@ public abstract class TermBase extends VersionableEntity {
 				return r.getLabel();
 			}			
 		}
-		return super.getUuid();
+		return super.getUuid().toString();
 	}
 
 	@Transient

@@ -1,6 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import java.util.List;
+import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 
@@ -8,12 +8,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface ICdmGenericDao {
 
-	public String saveOrUpdate(CdmBase transientObject) throws DataAccessException;
+	public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException;
 	
-	public String save(CdmBase newOrManagedObject) throws DataAccessException;
+	public UUID save(CdmBase newOrManagedObject) throws DataAccessException;
 	
-	public String update(CdmBase transientObject) throws DataAccessException;
+	public UUID update(CdmBase transientObject) throws DataAccessException;
 	
-	public String delete(CdmBase persistentObject) throws DataAccessException;
+	public UUID delete(CdmBase persistentObject) throws DataAccessException;
 	
 }

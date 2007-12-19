@@ -19,14 +19,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.init.TermLoader;
-import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
-
-import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -44,7 +38,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	//public static IDefinedTermDao dao;
 	//public static ITermService termService;
 	//Map for preloading all DefinedTerms
-	static protected Map<String, DefinedTermBase> definedTermsMap = null;
+	static protected Map<UUID, DefinedTermBase> definedTermsMap = null;
 
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
@@ -57,9 +51,10 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		logger.debug("initTermList");
 		if (definedTermsMap == null){
 			if (termService == null){   //e.g. when used in tests with no database connection
-				definedTermsMap = new HashMap<String, DefinedTermBase>();
+				definedTermsMap = new HashMap<UUID, DefinedTermBase>();
 				try {
-					String uuidEnglish = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
+					String strUuidEnglish = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
+					UUID uuidEnglish = UUID.fromString(strUuidEnglish);
 					Language english = new Language(uuidEnglish);
 					definedTermsMap.put(english.getUuid(), english);
 					TermLoader.setDefinedTermsMap(definedTermsMap);
@@ -70,7 +65,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 				
 			}else{
 				List<DefinedTermBase> list = termService.listTerms();
-				definedTermsMap = new HashMap<String, DefinedTermBase>();
+				definedTermsMap = new HashMap<UUID, DefinedTermBase>();
 				for (DefinedTermBase dtb: list){
 					definedTermsMap.put(dtb.getUuid(), dtb);
 				}
@@ -79,7 +74,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		logger.debug("initTermList - end");
 	}
 	
-	public static DefinedTermBase findByUuid(String uuid){
+	public static DefinedTermBase findByUuid(UUID uuid){
 		//in tests tems may no be initialised by database access
 		if (!isInitialized()){
 			initTermList(null);
@@ -91,7 +86,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		return (definedTermsMap != null);
 	}
 	
-	public static Map<String, DefinedTermBase> getDefinedTerms(){
+	public static Map<UUID, DefinedTermBase> getDefinedTerms(){
 		return definedTermsMap;
 	}
 	
@@ -121,7 +116,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		readCsvLine(csvLine, Language.ENGLISH());
 	}
 	public void readCsvLine(List<String> csvLine, Language lang) {
-		this.setUuid(csvLine.get(0));
+		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
 		this.addRepresentation(new Representation(csvLine.get(3), csvLine.get(2).trim(), lang) );
 	}
@@ -131,7 +126,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	 */
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[4];
-		line[0] = getUuid();
+		line[0] = getUuid().toString();
 		line[1] = getUri();
 		line[2] = getLabel();
 		line[3] = getDescription();

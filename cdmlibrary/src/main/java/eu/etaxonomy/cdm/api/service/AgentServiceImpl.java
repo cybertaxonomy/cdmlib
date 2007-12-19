@@ -4,6 +4,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,11 @@ public class AgentServiceImpl extends IdentifiableServiceBase<Agent> implements 
 		return super.findCdmObjectsByTitle(title);
 	}
 
-	public Agent getAgentByUuid(String uuid) {
+	public Agent getAgentByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid);
 	}
 
-	public String saveAgent(Agent agent) {
+	public UUID saveAgent(Agent agent) {
 		return super.saveCdmObject(agent);
 	}
 }

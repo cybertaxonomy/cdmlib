@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,12 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		this.appContext = appContext;
 	}
 
-	protected T getCdmObjectByUuid(String uuid){
+	protected T getCdmObjectByUuid(UUID uuid){
 		return dao.findByUuid(uuid);
 	}
 
 	@Transactional(readOnly = false)
-	protected String saveCdmObject(T cdmObj){
+	protected UUID saveCdmObject(T cdmObj){
 		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 		return dao.saveOrUpdate(cdmObj);
 	}

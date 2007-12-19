@@ -31,9 +31,43 @@ import javax.persistence.*;
 public class Rank extends OrderedTermBase {
 	static Logger logger = Logger.getLogger(Rank.class);
 	
+	private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
+	private static final UUID uuidDomain = UUID.fromString("ffca6ec8-8b88-417b-a6a0-f7c992aac19b");
+	private static final UUID uuidSuperKingdom = UUID.fromString("64223610-7625-4cfd-83ad-b797bf7f0edd");
+	private static final UUID uuidKingdom = UUID.fromString("fbe7109d-66b3-498c-a697-c6c49c686162");
+	private static final UUID uuidSubKingdom = UUID.fromString("a71bd9d8-f3ab-4083-afb5-d89315d71655");
+	private static final UUID uuidInfraKingdom = UUID.fromString("1e37930c-86cf-44f6-90fd-7822928df260");
+	private static final UUID uuidSuperPhylum = UUID.fromString("0d0cecb1-e254-4607-b210-6801e7ecbb04");
+	private static final UUID uuidPhylum = UUID.fromString("773430d2-76b4-438c-b817-97a543a33287");
+
+	private static final UUID uuidDivision = UUID.fromString("7e56f5cc-123a-4fd1-8cbb-6fd80358b581");
+
+	private static final UUID uuidClass = UUID.fromString("f23d14c4-1d34-4ee6-8b4e-eee2eb9a3daf");
+
+	private static final UUID uuidOrder = UUID.fromString("b0785a65-c1c1-4eb4-88c7-dbd3df5aaad1");
+
+	private static final UUID uuidFamily = UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6");
+	private static final UUID uuidSubFamily = UUID.fromString("862526ee-7592-4760-a23a-4ff3641541c5");
+
+	private static final UUID uuidTribe = UUID.fromString("4aa6890b-0363-4899-8d7c-ee0cb78e6166");
+
+	private static final UUID uuidGenus = UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
+	private static final UUID uuidSubGenus = UUID.fromString("78786e16-2a70-48af-a608-494023b91904");
+	private static final UUID uuidInfraGenus = UUID.fromString("a9972969-82cd-4d54-b693-a096422f13fa");
+	private static final UUID uuidSection = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
+	
+	private static final UUID uuidSpeciesAggregate = UUID.fromString("1ecae058-4217-4f75-9c27-6d8ba099ac7a");
+	private static final UUID uuidInfraGenericTaxon = UUID.fromString("41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9");
+	private static final UUID uuidSpecies = UUID.fromString("b301f787-f319-4ccc-a10f-b4ed3b99a86d");
+	
+	private static final UUID uuidSubSpecies = UUID.fromString("462a7819-8b00-4190-8313-88b5be81fad5");
+	private static final UUID uuidInfraSpecies = UUID.fromString("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
+	private static final UUID uuidVariety = UUID.fromString("d5feb6a5-af5c-45ef-9878-bb4f36aaf490");
+	private static final UUID uuidBioVariety = UUID.fromString("a3a364cb-1a92-43fc-a717-3c44980a0991");
+	
 	public Rank() {
-		super();
 		// TODO Auto-generated constructor stub
+			super();
 	}
 
 	public Rank(String term, String label) {
@@ -42,35 +76,35 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank EMPIRE(){
-		return (Rank)findByUuid("1234-8765-21341");
+		return (Rank)findByUuid(uuidEmpire);
 	}
 
 	public static final Rank DOMAIN(){
-		return null;
+		return (Rank)findByUuid(uuidDomain);
 	}
 
 	public static final Rank SUPER_KINGDOM(){
-		return null;
+		return (Rank)findByUuid(uuidSuperKingdom);
 	}
 
 	public static final Rank KINGDOM(){
-		return null;
+		return (Rank)findByUuid(uuidKingdom);
 	}
 
 	public static final Rank SUBKINGDOM(){
-		return null;
+		return (Rank)findByUuid(uuidSubKingdom);
 	}
 
 	public static final Rank INFRAKINGDOM(){
-		return null;
+		return (Rank)findByUuid(uuidInfraKingdom);
 	}
 
 	public static final Rank SUPERPHYLUM(){
-		return null;
+		return (Rank)findByUuid(uuidSuperPhylum);
 	}
 
 	public static final Rank PHYLUM(){
-		return null;
+		return (Rank)findByUuid(uuidPhylum);
 	}
 
 	public static final Rank SUBPHYLUM(){
@@ -86,7 +120,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank DIVISION(){
-		return null;
+		return (Rank)findByUuid(uuidDivision);
 	}
 
 	public static final Rank SUBDIVISION(){
@@ -102,7 +136,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank CLASS(){
-		return null;
+		return (Rank)findByUuid(uuidClass);
 	}
 
 	public static final Rank SUBCLASS(){
@@ -118,7 +152,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank ORDER(){
-		return null;
+		return (Rank)findByUuid(uuidOrder);
 	}
 
 	public static final Rank SUBORDER(){
@@ -134,11 +168,11 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank FAMILY(){
-		return null;
+		return (Rank)findByUuid(uuidFamily);
 	}
 
 	public static final Rank SUBFAMILY(){
-		return (Rank)findByUuid("af5f2481-3192-403f-ae65-7c957a0f02b6");
+		return (Rank)findByUuid(uuidSubFamily);
 	}
 
 	public static final Rank INFRAFAMILY(){
@@ -150,7 +184,7 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank TRIBE(){
-		return null;
+		return (Rank)findByUuid(uuidTribe);
 	}
 
 	public static final Rank SUBTRIBE(){
@@ -166,19 +200,19 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank GENUS(){
-		return (Rank)findByUuid("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
+		return (Rank)findByUuid(uuidGenus);
 	}
 
 	public static final Rank SUBGENUS(){
-		return null;
+		return (Rank)findByUuid(uuidSubGenus);
 	}
 
 	public static final Rank INFRAGENUS(){
-		return null;
+		return (Rank)findByUuid(uuidInfraGenus);
 	}
 
 	public static final Rank SECTION(){
-		return null;
+		return (Rank)findByUuid(uuidSection);
 	}
 
 	public static final Rank SUBSECTION(){
@@ -194,15 +228,15 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank SPECIES_AGGREGATE(){
-		return null;
+		return (Rank)findByUuid(uuidSpeciesAggregate);
 	}
 
 	public static final Rank INFRAGENERIC_TAXON(){
-		return null;
+		return (Rank)findByUuid(uuidInfraGenericTaxon);
 	}
 
 	public static final Rank SPECIES(){
-		return (Rank)findByUuid("b301f787-f319-4ccc-a10f-b4ed3b99a86d");
+		return (Rank)findByUuid(uuidSpecies);
 	}
 
 	public static final Rank SUBSPECIFIC_AGGREGATE(){
@@ -210,19 +244,19 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank SUBSPECIES(){
-		return (Rank)findByUuid("462a7819-8b00-4190-8313-88b5be81fad5");
+		return (Rank)findByUuid(uuidSubSpecies);
 	}
 	
 	public static final Rank INFRASPECIES(){
-		return (Rank)findByUuid("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
+		return (Rank)findByUuid(uuidInfraSpecies);
 	}
 
 	public static final Rank VARIETY(){
-		return (Rank)findByUuid("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
+		return (Rank)findByUuid(uuidVariety);
 	}
 
 	public static final Rank BIO_VARIETY(){
-		return (Rank)findByUuid("d5feb6a5-af5c-45ef-9878-bb4f36aaf490");
+		return (Rank)findByUuid(uuidBioVariety);
 	}
 
 	public static final Rank PATHO_VARIETY(){

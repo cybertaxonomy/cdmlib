@@ -106,7 +106,7 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 				return r.getLabel();
 			}			
 		}
-		return super.getUuid();
+		return super.getUuid().toString();
 	}
 
 	@Transient
@@ -140,7 +140,7 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 	
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[8];
-		line[0] = getUuid();
+		line[0] = getUuid().toString();
 		line[1] = getUri();
 		line[2] = getLabel();
 		line[3] = getDescription();

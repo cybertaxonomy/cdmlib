@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.api.application;
 
 import java.io.FileNotFoundException;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -118,9 +119,9 @@ public class CdmApplicationController {
 	 * @return true, if at least one is missing, else false
 	 */
 	public boolean testDefinedTermsAreMissing(){
-		String englishUuid = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
-		DefinedTermBase english = this.getTermService().getTermByUri(englishUuid);
-		if ( english == null || ! english.getUuid().equalsIgnoreCase(englishUuid)){
+		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+		DefinedTermBase english = this.getTermService().getTermByUri(englishUuid.toString());
+		if ( english == null || ! english.getUuid().equals(englishUuid)){
 			return true;
 		}else{
 			return false;

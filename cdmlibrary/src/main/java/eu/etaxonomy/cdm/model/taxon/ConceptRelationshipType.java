@@ -10,14 +10,11 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
+import java.util.UUID;
+
 
 /**
  * @author m.doering
@@ -29,6 +26,9 @@ import javax.persistence.*;
 public class ConceptRelationshipType extends RelationshipTermBase {
 	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
 
+	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+	
+	
 	public ConceptRelationshipType() {
 		super();
 	}
@@ -36,14 +36,14 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 		super(term, label, symmetric, transitive);
 	}
 
-	public static final ConceptRelationshipType getUUID(String uuid){
+	public static final ConceptRelationshipType getUUID(UUID uuid){
 		return (ConceptRelationshipType) findByUuid(uuid);
 	}
 
 	
 	
 	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
-		return getUUID("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+		return getUUID(uuidTaxonomicallyIncludedIn);
 	}
 
 	public static final ConceptRelationshipType MISAPPLIED_NAME_FOR(){

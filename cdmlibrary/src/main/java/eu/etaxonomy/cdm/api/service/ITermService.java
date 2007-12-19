@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Transient;
 
@@ -14,7 +15,7 @@ public interface ITermService extends IService<DefinedTermBase>{
 	
 	public abstract List<DefinedTermBase> listTerms();
 
-	public abstract List<DefinedTermBase> listTerms(String vocabularyUuid);
+	public abstract List<DefinedTermBase> listTerms(UUID vocabularyUuid);
 
 	public abstract List<TermVocabulary> listVocabularies(Class termClass);
 

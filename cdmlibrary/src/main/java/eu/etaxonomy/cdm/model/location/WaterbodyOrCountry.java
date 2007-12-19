@@ -135,7 +135,7 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	}
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];
-		line[0] = getUuid();
+		line[0] = getUuid().toString();
 		line[1] = getUri();
 		line[2] = getLabel(Language.ENGLISH());
 		line[3] = getDescription();

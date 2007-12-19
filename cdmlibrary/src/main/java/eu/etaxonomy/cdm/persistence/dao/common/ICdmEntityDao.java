@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -29,20 +30,20 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 public interface ICdmEntityDao<T extends CdmBase> {
 	
-	public String saveOrUpdate(T transientObject) throws DataAccessException;
+	public UUID saveOrUpdate(T transientObject) throws DataAccessException;
 	
-	public String save(T newOrManagedObject) throws DataAccessException;
+	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
-	public String update(T transientObject) throws DataAccessException;
+	public UUID update(T transientObject) throws DataAccessException;
 	
-	public String delete(T persistentObject) throws DataAccessException;
+	public UUID delete(T persistentObject) throws DataAccessException;
 	
 	public List<T> list(int limit, int start) throws DataAccessException;
 
 	public T findById(int id) throws DataAccessException;
 
-	public T findByUuid(String Uuid) throws DataAccessException;
+	public T findByUuid(UUID Uuid) throws DataAccessException;
 	
-	public Boolean exists(String uuid) throws DataAccessException;
+	public Boolean exists(UUID uuid) throws DataAccessException;
 	
 }

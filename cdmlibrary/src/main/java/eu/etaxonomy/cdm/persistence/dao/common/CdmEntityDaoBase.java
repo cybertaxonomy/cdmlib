@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -36,27 +37,27 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
 	}
 	
-	public String saveCdmObj(CdmBase cdmObj) throws DataAccessException  {
+	public UUID saveCdmObj(CdmBase cdmObj) throws DataAccessException  {
 		getSession().saveOrUpdate(cdmObj);
 		return cdmObj.getUuid();
 	}
 
-	public String saveOrUpdate(T transientObject) throws DataAccessException  {
+	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
 		getSession().saveOrUpdate(transientObject);
 		return transientObject.getUuid();
 	}
 
-	public String save(T newInstance) throws DataAccessException {
+	public UUID save(T newInstance) throws DataAccessException {
 		getSession().save(newInstance);
 		return newInstance.getUuid();
 	}
 	
-	public String update(T transientObject) throws DataAccessException {
+	public UUID update(T transientObject) throws DataAccessException {
 		getSession().update(transientObject);
 		return transientObject.getUuid();
 	}
 	
-	public String delete(T persistentObject) throws DataAccessException {
+	public UUID delete(T persistentObject) throws DataAccessException {
 		getSession().delete(persistentObject);
 		return persistentObject.getUuid();
 	}
@@ -65,19 +66,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return (T) getSession().get(type, id);
 	}
 
-	public T findByUuid(String uuid) throws DataAccessException{
+	public T findByUuid(UUID uuid) throws DataAccessException{
 		Session session = getSession();
-//	logger.debug("BEGIN TRANSACTION");
-//	session.beginTransaction();
-	Transaction tx = session.getTransaction();
 	
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("uuid", uuid));
 		crit.addOrder(Order.desc("created"));
 		List<T> results = crit.list();
-//	logger.debug("COMMIT TRANSACTION");
-//	tx.commit();
-	Object o = tx;
 		if (results.isEmpty()){
 			return null;
 		}else{
@@ -85,7 +80,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 	}
 	
-	public Boolean exists(String uuid) {
+	public Boolean exists(UUID uuid) {
 		if (findByUuid(uuid)==null){
 			return false;
 		}

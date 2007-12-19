@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.model.agent.Person;
 public abstract class CdmBase implements Serializable{
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private int id;
-	private String uuid;
+	private UUID uuid;
 	private Calendar created;
 	private Person createdBy;
 
 	public CdmBase() {
-		this.uuid = UUID.randomUUID().toString();
+		this.uuid = UUID.randomUUID();
 		this.created = Calendar.getInstance();
 	}
 
@@ -91,10 +91,10 @@ public abstract class CdmBase implements Serializable{
 	}
 
 	
-	public String getUuid() {
+	public UUID getUuid() {
 		return this.uuid;
 	}
-	public void setUuid(String uuid) {
+	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
 
