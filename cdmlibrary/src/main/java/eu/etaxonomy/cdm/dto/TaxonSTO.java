@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 
 /**
  * This Simple Transfer Object (STO) is used as surrogate for instances of {@link Taxon} and {@link Synonym},  
- * thus a TaxonSTO my represent acceptet ad unaccepted taxa. Therfore the flag isAccepted has been introduced 
+ * thus a TaxonSTO my represent accepted ad unaccepted taxa. Therefore the flag isAccepted has been introduced 
  * by which accepted taxa can be clearly identified.
  * 
  * @author a.kohlbecker
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 public class TaxonSTO {
 	
 	private NameSTO name;
-	private UUID sensu;
+	private UUID sec_uuid;
 	private boolean isAccepted;
 	
 }
