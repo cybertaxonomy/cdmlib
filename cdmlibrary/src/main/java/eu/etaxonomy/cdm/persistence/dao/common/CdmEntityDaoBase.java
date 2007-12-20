@@ -70,7 +70,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		Session session = getSession();
 	
 		Criteria crit = session.createCriteria(type);
-		crit.add(Restrictions.eq("uuid", uuid));
+		crit.add(Restrictions.eq("strUuid", uuid.toString()));
 		crit.addOrder(Order.desc("created"));
 		List<T> results = crit.list();
 		if (results.isEmpty()){
