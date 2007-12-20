@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmLibrary</artifactId>
   <name>EDIT Common Data Model Library</name>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
   <description>EDIT CDM library</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
@@ -199,7 +199,13 @@
   		<artifactId>dbunit</artifactId>
   		<version>2.2</version>
   	</dependency>
-  	  	
+  	<dependency>
+  		<groupId>org.eclipse</groupId>
+  		<artifactId>osgi</artifactId>
+  		<version>3.2.1-R32x_v20060919</version>
+  	</dependency>
+  	
+  	
   	<!-- ******* DATABASES DRIVER ******* -->
   	<!-- SQL Server and Sybase -->
   	<dependency>

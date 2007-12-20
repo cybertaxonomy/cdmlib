@@ -5,21 +5,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.loading.LoadContexts;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.hsqldb.Server;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
+import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveFileSystemXmlApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -31,7 +23,6 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 
 
@@ -83,16 +74,29 @@ public class CdmApplicationController {
 	 */
 	private boolean setNewDataSource(CdmDataSource dataSource) {
 		dataSource.updateSessionFactory(null);
+		
+//		Thread cur = Thread.currentThread();
+//		ClassLoader save = cur.getContextClassLoader();
+//		cur.setContextClassLoader(plugin.getClass().getClassLoader());
+    
+//		try
+//		{ doInitialize }
+//		finally
+//		{
+//		cur.setContextClassLoader(save);
+//		}
+		Object o;
 		FileSystemXmlApplicationContext appContext;
 		try {
 			logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
-			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
 		} catch (BeanCreationException e) {
 			// create new schema
 			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
 			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
 			dataSource.updateSessionFactory("create"); 
 			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+			
 		}
 		setApplicationContext(appContext);
 		// load defined terms if necessary 

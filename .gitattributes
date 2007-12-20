@@ -61,6 +61,8 @@ cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/changes/changes.xml -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text

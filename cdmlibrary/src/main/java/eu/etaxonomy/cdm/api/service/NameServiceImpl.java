@@ -24,6 +24,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		this.dao = dao;
 	}
 
+	public NameServiceImpl(){
+		logger.info("Load NameService Bean");
+	}
 
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);
