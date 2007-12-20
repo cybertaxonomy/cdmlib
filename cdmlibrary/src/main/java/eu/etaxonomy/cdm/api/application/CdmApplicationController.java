@@ -73,28 +73,17 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 */
 	private boolean setNewDataSource(CdmDataSource dataSource) {
-		dataSource.updateSessionFactory(null);
-		
-//		Thread cur = Thread.currentThread();
-//		ClassLoader save = cur.getContextClassLoader();
-//		cur.setContextClassLoader(plugin.getClass().getClassLoader());
-    
-//		try
-//		{ doInitialize }
-//		finally
-//		{
-//		cur.setContextClassLoader(save);
-//		}
-		Object o;
+		dataSource.updateSessionFactory("validate");
+		logger.info("Connecting to '" + dataSource.getName() + "'");
 		FileSystemXmlApplicationContext appContext;
 		try {
-			logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
+			//logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
 			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
 		} catch (BeanCreationException e) {
 			// create new schema
 			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
 			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
-			dataSource.updateSessionFactory("create"); 
+			dataSource.updateSessionFactory("validate"); 
 			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
 			
 		}
