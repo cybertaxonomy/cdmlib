@@ -1,22 +1,18 @@
 package eu.etaxonomy.cdm.model.common;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.UUID;
 
 import javax.persistence.Basic;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -91,6 +87,15 @@ public abstract class CdmBase implements Serializable{
 	}
 
 	
+	private String getStrUuid() {
+		return this.uuid.toString();
+	}
+	private void setStrUuid(String uuid) {
+		this.uuid = UUID.fromString(uuid);
+	}
+	
+	
+	@Transient
 	public UUID getUuid() {
 		return this.uuid;
 	}
