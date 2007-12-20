@@ -34,7 +34,6 @@
 	<classpathentry kind="lib" path="lib/msbase-2000.3.jar"/>
 	<classpathentry kind="lib" path="lib/mssqlserver-2000.3.jar"/>
 	<classpathentry kind="lib" path="lib/msutil-2000.3.jar"/>
-	<classpathentry kind="lib" path="lib/cdmLibrary-0.4.1.jar" sourcepath="/cdmLibrary/src"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-8.2-504.jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/spring-beans-2.5.jar"/>
@@ -46,5 +45,6 @@
 	<classpathentry kind="lib" path="lib/spring-tx-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/cdmLibrary-0.4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
