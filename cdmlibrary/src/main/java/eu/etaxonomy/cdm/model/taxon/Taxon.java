@@ -171,7 +171,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
 		}else{
-			child.sssetTaxonomicParent(this, citation, microcitation);
+			child.setTaxonomicParent(this, citation, microcitation);
 		}
 	}
 	
@@ -179,7 +179,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public Taxon getTaxonomicParent() {
 		return getTaxonomicParentCache();
 	}
-	public void sssetTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
+	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
 		if (parent == null){
 			throw new NullPointerException("Parent Taxon is 'null'");
 		}else{
