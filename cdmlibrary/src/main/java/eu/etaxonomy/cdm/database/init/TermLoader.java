@@ -54,9 +54,12 @@ public class TermLoader {
 	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
 		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		try {
+			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
+			logger.debug("strResourceFileName is " + strResourceFileName);
 			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
+			if (inputStream == null) {logger.debug("inputStream is null");}
 			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
-		
+			
 			String [] nextLine;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
