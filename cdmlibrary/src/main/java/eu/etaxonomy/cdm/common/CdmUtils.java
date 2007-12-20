@@ -94,13 +94,17 @@ public class CdmUtils {
 	static public String getFolderSeperator(){
 		if (folderSeperator == null){
 			URL url = CdmApplicationController.class.getResource("/"+ MUST_EXIST_FILE);
-			if (url != null && ! url.getProtocol().startsWith("jar")){
+			if ( url != null && ! urlIsJarOrBundle(url) ){
 				folderSeperator =  File.separator;
 			}else{
 				folderSeperator = "/";
 			}
 		}
 		return folderSeperator;
+	}
+	
+	static private boolean urlIsJarOrBundle(URL url){
+		return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
 	}
 	
 	/**
