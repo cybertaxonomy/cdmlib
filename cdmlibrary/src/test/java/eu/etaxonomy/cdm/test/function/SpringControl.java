@@ -96,10 +96,6 @@ public class SpringControl {
 	}
 
 	public void testRootTaxa(){
-		logger.info(UUID.randomUUID());
-		DerivationEventType det = DerivationEventType.DNA_EXTRACTION();
-		DerivationEvent de = new DerivationEvent();
-		de.setType(det);
 		
 		CdmApplicationController appCtr = new CdmApplicationController();
 		// load Name list 
