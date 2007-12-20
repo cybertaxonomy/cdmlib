@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="lib" path="cdmLibrary-0.4.1.jar" sourcepath="/cdmLibrary/src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="cdmLibrary-0.4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
@@ -21,7 +22,7 @@
 	<classpathentry exported="true" kind="lib" path="hibernate-annotations.jar"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-commons-annotations.jar"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-validator.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate3.jar"/>
+	<classpathentry exported="true" kind="lib" path="hibernate3.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="javassist.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar"/>
 	<classpathentry exported="true" kind="lib" path="jta.jar"/>
@@ -35,15 +36,14 @@
 	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="xercesImpl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="aspectjrt-1.5.4.jar"/>
 	<classpathentry kind="lib" path="aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="spring-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-beans-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-context-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-core-2.5.jar"/>
+	<classpathentry kind="lib" path="spring-beans-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-beans/2.5/spring-beans-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="spring-context-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-context/2.5/spring-context-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="spring-core-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-core/2.5/spring-core-2.5-sources.jar"/>
 	<classpathentry kind="lib" path="spring-jdbc-2.5.jar"/>
 	<classpathentry kind="lib" path="spring-orm-2.5.jar"/>
 	<classpathentry kind="lib" path="spring-test-2.5.jar"/>

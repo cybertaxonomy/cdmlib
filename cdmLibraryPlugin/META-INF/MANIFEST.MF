@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary
-Bundle-Version: 0.4.1.3
+Bundle-Version: 0.4.4.1
 Bundle-ClassPath: aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
  asm-attrs.jar,
@@ -36,7 +36,6 @@ Bundle-ClassPath: aspectjrt-1.5.4.jar,
  opencsv-1.8.jar,
  jtds-1.2.2.jar,
  postgresql-8.2-504.jdbc4.jar,
- cdmLibrary-0.4.1.jar,
  aopalliance-1.0.jar,
  spring-2.5.jar,
  spring-beans-2.5.jar,
@@ -45,7 +44,8 @@ Bundle-ClassPath: aspectjrt-1.5.4.jar,
  spring-jdbc-2.5.jar,
  spring-orm-2.5.jar,
  spring-test-2.5.jar,
- spring-tx-2.5.jar
+ spring-tx-2.5.jar,
+ cdmLibrary-0.4.4.jar
 Bundle-Vendor: EDIT
 Export-Package: eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.service,
@@ -67,3 +67,4 @@ Export-Package: eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.model.taxon,
  eu.etaxonomy.cdm.model.view,
  eu.etaxonomy.cdm.strategy
+Require-Bundle: org.eclipse.osgi

@@ -9,10 +9,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 
 	public class PropertyChangeTest implements PropertyChangeListener {
 		static Logger logger = Logger.getLogger(PropertyChangeTest.class);
@@ -27,13 +26,13 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 
 		@Test
 		public void testPropertyChange() {
-			TaxonName b = new TaxonName();
+			BotanicalName b = new BotanicalName(null);
 			logger.debug("startTest");
 			b.addPropertyChangeListener(this);
-			b.setGenus("Abies");
-			Assert.assertEquals(b.getGenus(), lastPropValue);
-			b.setGenus("Picea");
-			assertEquals(b.getGenus(), lastPropValue);
+			b.setUninomial("Abies");
+			Assert.assertEquals(b.getUninomial(), lastPropValue);
+			b.setUninomial("Picea");
+			assertEquals(b.getUninomial(), lastPropValue);
 			b.setUninomial("Unipicea");
 			assertEquals(b.getUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
