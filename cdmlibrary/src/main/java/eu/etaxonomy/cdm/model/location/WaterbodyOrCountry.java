@@ -37,7 +37,7 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	private String iso2code;
 	private TimePeriod validPeriod;
 	private Set<Continent> continents = new HashSet();
-
+	
 	public WaterbodyOrCountry() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -84,46 +84,6 @@ public class WaterbodyOrCountry extends DefinedTermBase {
 	 */
 	public void setValidPeriod(TimePeriod validPeriod){
 		this.validPeriod = validPeriod;
-	}
-
-	public static final WaterbodyOrCountry ARCTIC_OCEAN(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry ATLANTIC_OCEAN(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry PACIFIC_OCEAN(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry INDIAN_OCEAN(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry SOUTHERN_OCEAN(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry MEDITERRANEAN_SEA(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry BLACK_SEA(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry CASPIAN_SEA(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry RED_SEA(){
-		return null;
-	}
-
-	public static final WaterbodyOrCountry PERSIAN_GULF(){
-		return null;
 	}
 
 	

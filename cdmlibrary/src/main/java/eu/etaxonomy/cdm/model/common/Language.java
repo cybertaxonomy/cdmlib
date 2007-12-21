@@ -81,8 +81,6 @@ public class Language extends DefinedTermBase {
 
 	public static final Language getUUID(UUID uuid){
 		return (Language)findByUuid(uuid);
-		//return (Language)termService.getTermByUri(uuid);
-		//return (Language) dao.findByUuid(uuid);
 	}
 
 	
