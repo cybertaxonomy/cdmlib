@@ -317,6 +317,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/init/TermLoaderTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/DefinedTermDaoImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/SpringControl.java -text
