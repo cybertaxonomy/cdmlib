@@ -1,0 +1,9 @@
+<archetype>
+  <id>cdmlib-archetype</id>
+  <sources>
+<!--    <source>src/main/java/App.java</source> -->
+  </sources>
+  <resources>
+<!--    <source>src/test/java/AppTest.java</source> -->
+  </resources>
+</archetype>

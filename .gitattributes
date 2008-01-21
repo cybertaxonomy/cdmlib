@@ -57,6 +57,9 @@ cdmLibraryPlugin/xml-apis.jar -text
 cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
 cdmParent/settings.xml -text
+cdmlib-archetype/pom.xml -text
+cdmlib-archetype/src/main/resources/META-INF/archetype.xml -text
+cdmlib-archetype/src/main/resources/archetype-resources/pom.xml -text
 cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/changes/changes.xml -text
