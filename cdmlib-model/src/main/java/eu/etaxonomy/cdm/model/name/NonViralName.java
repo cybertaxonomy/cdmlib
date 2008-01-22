@@ -1,0 +1,170 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.model.name;
+
+
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import java.util.*;
+import javax.persistence.*;
+
+/**
+ * Taxon name class for all non viral taxa. Parentetical authorship is derived
+ * from basionym relationship.
+ * @author m.doering
+ * @version 1.0
+ * @created 08-Nov-2007 13:06:39
+ */
+@Entity
+public class NonViralName extends TaxonNameBase {
+	static Logger logger = Logger.getLogger(NonViralName.class);
+	//The suprageneric or the genus name
+	private String uninomial;
+	//Genus subdivision epithet
+	private String infraGenericEpithet;
+	//species epithet
+	private String specificEpithet;
+	//Species subdivision epithet
+	private String infraSpecificEpithet;
+	//Author team that published the present combination
+	private Agent combinationAuthorTeam;
+	//Author team that contributed to the publication of the present combination
+	private Agent exCombinationAuthorTeam;
+	//concatenated und formated authorteams including basionym and combination authors
+	private String authorshipCache;
+
+	//needed by hibernate
+	protected NonViralName(){
+		super();
+		setNameCacheStrategy();
+	}
+	
+	private void setNameCacheStrategy(){
+		if (getClass() == NonViralName.class){
+			this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+			logger.warn("NonViralName uses BotanicNameCacheStrategy");
+		}
+		
+	}
+	
+	public NonViralName(Rank rank) {
+		super(rank);
+		setNameCacheStrategy();
+	}
+	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+		super(rank);
+		setNameCacheStrategy();
+		setUninomial(genusOrUninomial);
+		setSpecificEpithet(specificEpithet);
+		setInfraSpecificEpithet(infraSpecificEpithet);
+		setCombinationAuthorTeam(combinationAuthorTeam);
+		setNomenclaturalReference(nomenclaturalReference);
+		this.setNomenclaturalMicroReference(nomenclMicroRef);
+	}
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Agent getCombinationAuthorTeam(){
+		return this.combinationAuthorTeam;
+	}
+	public void setCombinationAuthorTeam(Agent combinationAuthorTeam){
+		this.combinationAuthorTeam = combinationAuthorTeam;
+	}
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Agent getExCombinationAuthorTeam(){
+		return this.exCombinationAuthorTeam;
+	}
+	public void setExCombinationAuthorTeam(Agent exCombinationAuthorTeam){
+		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
+	}
+
+	public String getUninomial(){
+		return this.uninomial;
+	}
+	public void setUninomial(String uninomial){
+		this.uninomial = uninomial;
+	}
+
+
+	public String getInfraGenericEpithet(){
+		return this.infraGenericEpithet;
+	}
+
+	/**
+	 * 
+	 * @param infraGenericEpithet    infraGenericEpithet
+	 */
+	public void setInfraGenericEpithet(String infraGenericEpithet){
+		this.infraGenericEpithet = infraGenericEpithet;
+	}
+
+	public String getSpecificEpithet(){
+		return this.specificEpithet;
+	}
+
+	/**
+	 * 
+	 * @param specificEpithet    specificEpithet
+	 */
+	public void setSpecificEpithet(String specificEpithet){
+		this.specificEpithet = specificEpithet;
+	}
+
+	public String getInfraSpecificEpithet(){
+		return this.infraSpecificEpithet;
+	}
+
+	/**
+	 * 
+	 * @param infraSpecificEpithet    infraSpecificEpithet
+	 */
+	public void setInfraSpecificEpithet(String infraSpecificEpithet){
+		this.infraSpecificEpithet = infraSpecificEpithet;
+	}
+
+	@Override
+	public String generateTitle(){
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
+			return null;
+		}else{
+			return cacheStrategy.getFullNameCache(this);
+		}
+	}
+
+	/**
+	 * returns concatenated und formated authorteams including basionym and
+	 * combination authors
+	 */
+	public String getAuthorshipCache() {
+		return authorshipCache;
+	}
+
+	public void setAuthorshipCache(String authorshipCache) {
+		this.authorshipCache = authorshipCache;
+	}
+
+	@Override
+	@Transient
+	public boolean isCodeCompliant() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}
