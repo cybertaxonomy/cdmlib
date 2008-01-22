@@ -6,6 +6,10 @@ cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
 cdmlib-commons/target
+cdmlib-model/.classpath
+cdmlib-model/.project
+cdmlib-model/.settings
+cdmlib-model/target
 cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
