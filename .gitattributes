@@ -69,6 +69,7 @@ cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/changes/changes.xml -text
