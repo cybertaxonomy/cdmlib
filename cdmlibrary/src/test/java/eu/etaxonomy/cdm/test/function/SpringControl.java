@@ -138,12 +138,12 @@ public class SpringControl {
 	}
 
 	private void test(){
-		System.out.println("Start");
+		System.out.println("Start ...");
 		SpringControl sc = new SpringControl();
     	//testTermApi();
     	//testAppController();
 		testRootTaxa();
-    	System.out.println("\nEnd");
+    	System.out.println("\nEnd ...");
 	}
 	
 	/**

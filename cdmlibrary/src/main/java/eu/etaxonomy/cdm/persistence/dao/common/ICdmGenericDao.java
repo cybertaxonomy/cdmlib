@@ -5,8 +5,9 @@ import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.init.ICdmBaseSaver;
 
-public interface ICdmGenericDao {
+public interface ICdmGenericDao extends ICdmBaseSaver {
 
 	public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException;
 	

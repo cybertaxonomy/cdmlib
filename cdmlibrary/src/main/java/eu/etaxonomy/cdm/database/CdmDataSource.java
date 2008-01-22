@@ -15,6 +15,7 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 
@@ -33,7 +34,7 @@ import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 public class CdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 	
-	public static final String BEAN_POSTFIX = "DataSource";
+	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 	public static final String SESSION_FACTORY_FILE = "sessionfactory.xml";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
 	public final static String APPLICATION_CONTEXT_FILE_NAME = "applicationContext.xml";
@@ -106,7 +107,7 @@ public class CdmDataSource {
 	 * @return bean name
 	 */
 	private static String getBeanName(String name){
-		return name == null? null : name + BEAN_POSTFIX;
+		return name == null? null : name + DATASOURCE_BEAN_POSTFIX;
 	}
 
 
@@ -315,8 +316,8 @@ public class CdmDataSource {
 	    	
 	    	for (Element elBean : lsChildren){
 	    		String strId = elBean.getAttributeValue("id");
-	    		if (strId != null && strId.endsWith(BEAN_POSTFIX)){
-	    			strId = strId.replace(BEAN_POSTFIX, "");
+	    		if (strId != null && strId.endsWith(DATASOURCE_BEAN_POSTFIX)){
+	    			strId = strId.replace(DATASOURCE_BEAN_POSTFIX, "");
 	    			dataSources.add(new CdmDataSource(strId));
 	    		}
 	    	}
@@ -376,7 +377,7 @@ public class CdmDataSource {
 	
 	// returns the directory containing the resources 
 	private static String getResourceDirectory(){
-		File f = CdmUtils.getWritableResourceDir();
+		File f = CdmApplicationUtils.getWritableResourceDir();
 		return f.getPath();
 	}
 	

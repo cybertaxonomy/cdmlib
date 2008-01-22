@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.database.init.TermLoader;
+import eu.etaxonomy.cdm.model.common.init.ICdmBaseSaver;
+import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 import java.util.*;
 

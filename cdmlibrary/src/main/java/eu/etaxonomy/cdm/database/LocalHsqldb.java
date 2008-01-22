@@ -15,6 +15,7 @@ import org.hsqldb.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
@@ -197,7 +198,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	
 	private static final String getDefaultPath(){
 		//String path = System.getProperty("user.dir");
-		File path = CdmUtils.getWritableResourceDir();
+		File path = CdmApplicationUtils.getWritableResourceDir();
 		String supPath = File.separator + "db" + File.separator + "LocalHsqldb"; 
 		return  path + supPath;
 	}

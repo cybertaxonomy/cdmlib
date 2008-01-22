@@ -21,9 +21,10 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
+import eu.etaxonomy.cdm.model.common.init.ICdmBaseSaver;
+import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 
 /**
@@ -78,20 +79,21 @@ public class CdmApplicationController {
 		FileSystemXmlApplicationContext appContext;
 		try {
 			//logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
-			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
+			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());
 		} catch (BeanCreationException e) {
 			// create new schema
 			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
 			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
-			dataSource.updateSessionFactory("validate"); 
-			appContext = new FileSystemXmlApplicationContext(CdmUtils.getApplicationContextString());
-			
+			dataSource.updateSessionFactory("create"); 
+			appContext = new FileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());		
 		}
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
 		if (testDefinedTermsAreMissing()){
 			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
+			ICdmBaseSaver cdmBaseSaver = (ICdmBaseSaver) appContext.getBean("cdmGenericDaoImpl");
 			try {
+				//TODO? termloader.setCdmBaseSaver(cdmBaseSaver)
 				termLoader.loadAllDefaultTerms();
 			} catch (FileNotFoundException fileNotFoundException) {
 				logger.error("One or more DefinedTerm initialisation files could not be found");

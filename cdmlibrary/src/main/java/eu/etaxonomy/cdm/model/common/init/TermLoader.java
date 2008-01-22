@@ -1,6 +1,5 @@
-package eu.etaxonomy.cdm.database.init;
+package eu.etaxonomy.cdm.model.common.init;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,11 +16,11 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IDefTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -32,15 +31,14 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 @Component
 @Transactional(readOnly = false)
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
-
+	
 	@Autowired
-	private ICdmGenericDao dao;
+	private ICdmBaseSaver cdmBaseSaver;
 	
 	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
@@ -74,8 +72,8 @@ public class TermLoader {
 				term.readCsvLine(aList);
 				term.setVocabulary(voc);
 				// save enumeration and all terms to DB
-				if (dao != null){
-					dao.saveOrUpdate(voc);
+				if (cdmBaseSaver != null){
+					cdmBaseSaver.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
 					logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");
@@ -101,7 +99,7 @@ public class TermLoader {
 		// first insert default language english, its used everywhere even for Language!
 		//Language langEN = new Language("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//dao.save(langEN);
-	
+		
 		logger.debug("load terms");
 		loadDefaultTerms(Language.class);
 		loadDefaultTerms(WaterbodyOrCountry.class);
@@ -116,7 +114,9 @@ public class TermLoader {
 		logger.debug("terms loaded");
 	}
 	
-	
+
+/******************* not in version 4.5 (cdmlib-model)*/
+
 
 	public static void main(String[] args) {
 		CdmApplicationController appCtr = new CdmApplicationController();
@@ -128,4 +128,5 @@ public class TermLoader {
 			e.printStackTrace();
 		}
 	}
+
 }
