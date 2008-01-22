@@ -2,6 +2,10 @@ cdmLibraryPlugin/.settings
 cdmLibraryPlugin/target
 cdmParent/.externalToolBuilders
 cdmParent/target
+cdmlib-commons/.classpath
+cdmlib-commons/.project
+cdmlib-commons/.settings
+cdmlib-commons/target
 cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
