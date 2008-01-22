@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmParent</artifactId>
-	<version>0.2</version>
+	<version>0.4</version>
 	<description>
 		Parent project for all EDIT common data model projects
 	</description>
