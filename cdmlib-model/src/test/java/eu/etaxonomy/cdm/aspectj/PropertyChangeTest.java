@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 		
 		@Before
 		public void updateDebugLevel(){
-			logger.setLevel(Level.DEBUG);
+			logger.setLevel(Level.INFO);
 		}
 
 	}

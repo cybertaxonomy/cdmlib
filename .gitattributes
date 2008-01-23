@@ -246,6 +246,8 @@ cdmlib-model/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermLoaderTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

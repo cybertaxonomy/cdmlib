@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 
+import eu.etaxonomy.cdm.model.common.*;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.taxon.*;
 
@@ -14,6 +15,8 @@ import eu.etaxonomy.cdm.model.taxon.*;
 @Suite.SuiteClasses( 
 		{ 	
 			PropertyChangeTest.class,
+			CdmBaseTest.class,
+			TermLoaderTest.class,
 			TaxonTest.class
 		}
 	)
@@ -27,6 +30,8 @@ public class CdmTestSuite {
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
 				PropertyChangeTest.class, 
+				CdmBaseTest.class,
+				TermLoaderTest.class,
 				TaxonTest.class
 			);
 	}
