@@ -18,12 +18,11 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-import eu.etaxonomy.cdm.model.common.init.ICdmBaseSaver;
+import eu.etaxonomy.cdm.model.common.init.IVocabularySaver;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 
@@ -91,7 +90,7 @@ public class CdmApplicationController {
 		// load defined terms if necessary 
 		if (testDefinedTermsAreMissing()){
 			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
-			ICdmBaseSaver cdmBaseSaver = (ICdmBaseSaver) appContext.getBean("cdmGenericDaoImpl");
+			IVocabularySaver cdmBaseSaver = (IVocabularySaver) appContext.getBean("cdmGenericDaoImpl");
 			try {
 				//TODO? termloader.setCdmBaseSaver(cdmBaseSaver)
 				termLoader.loadAllDefaultTerms();

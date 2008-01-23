@@ -5,7 +5,6 @@ import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
-import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 import eu.etaxonomy.cdm.database.init.TermLoaderTest;
 
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;
 @Suite.SuiteClasses( 
 		{ 	
 			TermServiceImplTest.class,
-			PropertyChangeTest.class, 
 			DatabaseEnumTest.class, 
 			TermLoaderTest.class,
 			DefinedTermDaoImplTest.class
@@ -33,7 +31,6 @@ public class CdmTestSuite {
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
 				TermServiceImplTest.class,
-				PropertyChangeTest.class, 
 				DatabaseEnumTest.class, 
 				TermLoaderTest.class,
 				DefinedTermDaoImplTest.class

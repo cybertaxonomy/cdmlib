@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.cfg.SettingsFactory;
+import org.hibernate.tuple.PojoInstantiator;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -54,19 +55,13 @@ public class SpringControl {
 		parentTaxon.setUuid(TEST_TAXON_UUID);
 		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
 		
-		// setup listeners
-		PropertyChangeTest listener = new PropertyChangeTest();
-		tn.addPropertyChangeListener(listener);
-		tn3.addPropertyChangeListener(listener);
-
-		// test listeners
+		
+		// test 
 		tn.setUninomial("tn1-Genus1");
 		tn3.setUninomial("tn3-genus");
-		tn3.getUninomial();
 		
 		logger.info("Create new Author agent...");
 		Person team= new Person();
-		team.addPropertyChangeListener(listener);
 		team.setTitleCache("AuthorAgent1");
 		tn.setCombinationAuthorTeam(team);
 		
