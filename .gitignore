@@ -14,6 +14,10 @@ cdmlib-persistence/.classpath
 cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/target
+cdmlib-services/.classpath
+cdmlib-services/.project
+cdmlib-services/.settings
+cdmlib-services/target
 cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders

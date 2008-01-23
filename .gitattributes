@@ -290,6 +290,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDao
 cdmlib-persistence/src/main/resources/cdm.datasource.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/main/resources/sessionfactory.xml -text
+cdmlib-services/pom.xml -text
 cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
 cdmlibrary/src/changes/changes.xml -text
