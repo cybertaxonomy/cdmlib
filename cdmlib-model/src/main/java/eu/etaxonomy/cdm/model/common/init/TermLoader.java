@@ -36,10 +36,14 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 	
-	@Autowired
+	private static Map<UUID, DefinedTermBase> definedTermsMap;
+	
+	//@Autowired
 	private IVocabularySaver vocabularySaver;
 	
-	private static Map<UUID, DefinedTermBase> definedTermsMap;
+	public void setVocabularySaver(IVocabularySaver vocabularySaver){
+		this.vocabularySaver = vocabularySaver;
+	}
 	
 	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
 		 definedTermsMap = dtm;
