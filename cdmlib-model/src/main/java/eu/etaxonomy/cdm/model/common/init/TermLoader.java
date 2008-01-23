@@ -37,7 +37,7 @@ public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 	
 	@Autowired
-	private ICdmBaseSaver cdmBaseSaver;
+	private IVocabularySaver vocabularySaver;
 	
 	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
@@ -71,8 +71,8 @@ public class TermLoader {
 				term.readCsvLine(aList);
 				term.setVocabulary(voc);
 				// save enumeration and all terms to DB
-				if (cdmBaseSaver != null){
-					cdmBaseSaver.saveOrUpdate(voc);
+				if (vocabularySaver != null){
+					vocabularySaver.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
 					logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");
@@ -129,7 +129,7 @@ public class TermLoader {
 //	}
 //	
 //	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
-//		ICdmBaseSaver cdmBaseSaver = dao;
-//		loadAllDefaultTerms(cdmBaseSaver);
+//		IVocabularySaver vocabularySaver = dao;
+//		loadAllDefaultTerms(vocabularySaver);
 //	}
 }
