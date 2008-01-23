@@ -319,8 +319,10 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEntityDao.j
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IIdentifiableDao.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITermVocabularyDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITitledDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IdentifiableDaoBase.java -text
+cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/TermVocabularyDaoImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/TaxonNameDaoHibernateImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IReferenceDao.java -text

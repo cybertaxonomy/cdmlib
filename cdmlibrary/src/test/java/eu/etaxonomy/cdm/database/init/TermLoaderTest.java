@@ -1,21 +1,12 @@
 package eu.etaxonomy.cdm.database.init;
 
+ import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
-import eu.etaxonomy.cdm.model.location.Continent;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
-import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 
@@ -27,6 +18,8 @@ public class TermLoaderTest extends CdmUnitTestBase{
 	public void insertTerms() {
 		try {
 			loader.loadAllDefaultTerms();
+			Rank genus = Rank.GENUS();
+			assertEquals(genus.getUuid(), Rank.GENUS().getUuid());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
