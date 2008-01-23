@@ -273,7 +273,6 @@ cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java 
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
-cdmlibrary/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlibrary/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text

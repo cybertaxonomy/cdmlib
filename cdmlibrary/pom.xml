@@ -86,33 +86,13 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>aspectj-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>test-compile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <includes>
-            <include>**/cdm/**/*.java</include>
-            <include>**/*.aj</include>
-          </includes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <dependencies>
-  	<dependency>
-  		<groupId>aspectj</groupId>
-  		<artifactId>aspectjrt</artifactId>
-  		<version>1.5.2a</version>
+  	 <dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-model</artifactId>
+  		<version>0.4.5</version>
   	</dependency>
   	<dependency>
   		<groupId>com.sun.xml.rpc</groupId>
