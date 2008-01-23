@@ -10,6 +10,10 @@ cdmlib-model/.classpath
 cdmlib-model/.project
 cdmlib-model/.settings
 cdmlib-model/target
+cdmlib-persistence/.classpath
+cdmlib-persistence/.project
+cdmlib-persistence/.settings
+cdmlib-persistence/target
 cdmlibrary/${user.home}
 cdmlibrary/.classpath
 cdmlibrary/.externalToolBuilders
