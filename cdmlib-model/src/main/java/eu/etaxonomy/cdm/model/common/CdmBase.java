@@ -45,17 +45,17 @@ public abstract class CdmBase implements Serializable{
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
-	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
-	}
-
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
-
+	
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+	
 	@Transient
-	public void hasListeners(String propertyName) {
-		propertyChangeSupport.hasListeners(propertyName);
+	public boolean hasListeners(String propertyName) {
+		return propertyChangeSupport.hasListeners(propertyName);
 	}
 
 	public void firePropertyChange(String property, String oldval, String newval) {
