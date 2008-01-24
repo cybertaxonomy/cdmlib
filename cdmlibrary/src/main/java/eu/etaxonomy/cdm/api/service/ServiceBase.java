@@ -27,6 +27,9 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		this.dao=dao;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.Iyyy#setApplicationContext(org.springframework.context.ApplicationContext)
+	 */
 	public void setApplicationContext(ApplicationContext appContext){
 		this.appContext = appContext;
 	}
@@ -41,6 +44,12 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		return dao.saveOrUpdate(cdmObj);
 	}
 
+	@Transactional(readOnly = false)
+	protected UUID removeCdmObject(T cdmObj){
+		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+		return dao.delete(cdmObj);
+	}
+	
 	protected List<T> list(int limit, int start) {
 		return dao.list(limit, start);
 	}

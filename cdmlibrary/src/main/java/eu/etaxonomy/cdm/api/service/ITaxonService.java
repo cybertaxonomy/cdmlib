@@ -16,10 +16,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** save a taxon and return its UUID**/
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
+	/** delete a taxon and return its UUID**/
+	public abstract UUID removeTaxon(TaxonBase taxon);
+	
 	/** */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec);
 	
 	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
+	
+	
 	
 }

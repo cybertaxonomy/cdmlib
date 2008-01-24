@@ -27,6 +27,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 	
 	private ITaxonDao taxonDao;
+	
 	@Autowired
 	protected void setDao(ITaxonDao dao) {
 		this.dao = dao;
@@ -41,6 +42,12 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
+	}
+	
+
+	@Transactional(readOnly = false)
+	public UUID removeTaxon(TaxonBase taxon) {
+		return super.removeCdmObject(taxon);
 	}
 
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
