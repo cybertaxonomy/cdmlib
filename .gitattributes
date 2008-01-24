@@ -405,6 +405,7 @@ cdmlibrary/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlibrary/src/site/apt/index.apt -text
 cdmlibrary/src/site/fml/faq.fml -text
 cdmlibrary/src/site/site.xml -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
@@ -412,6 +413,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/DefinedTermDaoI
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/SpringControl.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
+cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlibrary/src/test/java/extern/TestJarMain.java -text

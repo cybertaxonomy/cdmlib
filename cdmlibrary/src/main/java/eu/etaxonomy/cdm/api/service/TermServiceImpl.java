@@ -35,13 +35,13 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 
 	public List<DefinedTermBase> listTerms() {
 		if (DefinedTermBase.isInitialized()){
-			logger.info("listTerms by Map");
+			logger.debug("listTerms by Map");
 			List<DefinedTermBase> result = new ArrayList<DefinedTermBase>();
 			result.addAll(DefinedTermBase.getDefinedTerms().values());
 			return result;
 		}else{
 			//needed for initialization by DefinedTermBase
-			logger.info("listTerms by Init");
+			logger.debug("listTerms by Init");
 			return dao.list(100000, 0);
 		}
 	}

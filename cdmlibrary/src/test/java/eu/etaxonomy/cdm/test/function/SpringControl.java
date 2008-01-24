@@ -7,10 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cfg.SettingsFactory;
-import org.hibernate.tuple.PojoInstantiator;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -19,14 +18,11 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
 
 
 
@@ -116,8 +112,8 @@ public class SpringControl {
 		
 		// close 
 		appCtr.close();
-		
 	}
+
 	public void testTermApi(){
 		CdmApplicationController appCtr = new CdmApplicationController();
 		ITermService ts = (ITermService)appCtr.getTermService();
@@ -131,13 +127,58 @@ public class SpringControl {
 			logger.info(d.toString());
 		}
 	}
+	
+	public void testDeleteTaxa(){
+		CdmApplicationController appCtr = new CdmApplicationController();
+		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		ReferenceBase ref = new Journal();
+		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
+		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
+		logger.info("Save taxon ...");
+		UUID uuidTaxon1 = taxonService.saveTaxon(taxon1);
+		logger.info("  UUID: " + uuidTaxon1);
+		UUID uuidTaxon2 = taxonService.saveTaxon(taxon2);
+		logger.info("  UUID: " + uuidTaxon2);
+		logger.info("Remove taxon ...");
+		UUID uuid = taxonService.removeTaxon(taxon1);
+		logger.info("  UUID: " + uuid);
+	}
 
+	public void testDeleteRelationship(){
+		CdmApplicationController appCtr = new CdmApplicationController();
+		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		ReferenceBase ref = new Journal();
+		Taxon parent = Taxon.NewInstance(taxonName, ref);
+		Taxon child = Taxon.NewInstance(taxonName, null);
+		parent.addTaxonomicChild(child, null, null);
+		
+		logger.info("Save taxon ...");
+		UUID uuidTaxon1 = taxonService.saveTaxon(parent);
+		logger.info("  UUID: " + uuidTaxon1);
+		UUID uuidTaxon2 = taxonService.saveTaxon(child);
+		logger.info("  UUID: " + uuidTaxon2);
+		
+		
+//		Set<TaxonRelationship> set = parent.getRelationsToThisTaxon();
+//		for (TaxonRelationship rel : set){
+//			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+//				parent.removeTaxonRelation(rel);
+//			}
+//		}
+		
+	}
+	
 	private void test(){
 		System.out.println("Start ...");
 		SpringControl sc = new SpringControl();
     	//testTermApi();
     	//testAppController();
-		testRootTaxa();
+		//testRootTaxa();
+		//testTermApi();
+		//testDeleteTaxa();
+		testDeleteRelationship();
     	System.out.println("\nEnd ...");
 	}
 	
