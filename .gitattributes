@@ -407,7 +407,6 @@ cdmlibrary/src/site/fml/faq.fml -text
 cdmlibrary/src/site/site.xml -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
-cdmlibrary/src/test/java/eu/etaxonomy/cdm/database/init/TermLoaderTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/DefinedTermDaoImplTest.java -text
 cdmlibrary/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
