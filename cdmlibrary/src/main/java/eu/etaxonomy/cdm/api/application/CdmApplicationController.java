@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-import eu.etaxonomy.cdm.model.common.init.IVocabularySaver;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 
@@ -90,9 +89,7 @@ public class CdmApplicationController {
 		// load defined terms if necessary 
 		if (testDefinedTermsAreMissing()){
 			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
-			IVocabularySaver cdmBaseSaver = (IVocabularySaver) appContext.getBean("cdmGenericDaoImpl");
 			try {
-				//TODO? termloader.setCdmBaseSaver(cdmBaseSaver)
 				termLoader.loadAllDefaultTerms();
 			} catch (FileNotFoundException fileNotFoundException) {
 				logger.error("One or more DefinedTerm initialisation files could not be found");
@@ -168,7 +165,7 @@ public class CdmApplicationController {
 	}
 	
 	private void init(){
-		logger.debug("Init " +  this.getClass().getName());
+		logger.debug("Init " +  this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
 		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
