@@ -3,22 +3,24 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import org.springframework.stereotype.Repository;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.init.IVocabularySaver;
 
 /**
  * @author a.mueller
  *
  */
+@Repository
 public class TermVocabularyDaoImpl extends CdmEntityDaoBase implements
 		ITermVocabularyDao {
 
 	/**
 	 * @param type
 	 */
-	public TermVocabularyDaoImpl(Class type) {
-		super(type);
+	public TermVocabularyDaoImpl() {
+		super(TermVocabulary.class);
 	}
 
 	/* (non-Javadoc)
