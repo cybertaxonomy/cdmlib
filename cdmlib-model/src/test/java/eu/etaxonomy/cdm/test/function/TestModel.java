@@ -3,28 +3,20 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.List;
 import java.util.UUID;
-
 import org.apache.log4j.Logger;
-
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-
 
 
 public class TestModel {
@@ -67,14 +59,23 @@ public class TestModel {
 		team.setTitleCache("AuthorAgent1");
 		tn.setCombinationAuthorTeam(team);
 	}
-
+	
+	public void testParentRelation(){
+		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		ReferenceBase ref = new Journal();
+		Taxon parent = Taxon.NewInstance(taxonName, ref);
+		Taxon child = Taxon.NewInstance(taxonName, null);
+		parent.addTaxonomicChild(child, null, null);
+		if (child.getTaxonomicParent() != parent){
+			logger.warn("Error");
+		}
+	}
+	
 	private void test(){
-		System.out.println("Start");
+		System.out.println("Start ...");
 		TestModel sc = new TestModel();
-    	//testTermApi();
-    	testAppController();
-		//testRootTaxa();
-    	System.out.println("\nEnd");
+    	sc.testParentRelation();
+		System.out.println("\nEnd ...");
 	}
 	
 	/**

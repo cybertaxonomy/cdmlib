@@ -174,18 +174,29 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 	}
 	
+	/**
+	 * @return
+	 */
 	@Transient
 	public Taxon getTaxonomicParent() {
 		return getTaxonomicParentCache();
 	}
+	/**
+	 * @param parent
+	 * @param citation
+	 * @param microcitation 
+	 */
 	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
 		if (parent == null){
 			throw new NullPointerException("Parent Taxon is 'null'");
 		}else{
-			addTaxonRelation(parent,ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
+			addTaxonRelation(parent, ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
@@ -196,6 +207,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 		return taxa;
 	}
+	/**
+	 * @return
+	 */
 	@Transient
 	public boolean hasTaxonomicChildren(){
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){

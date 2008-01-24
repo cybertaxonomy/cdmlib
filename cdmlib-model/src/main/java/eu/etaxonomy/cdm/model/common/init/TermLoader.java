@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -38,12 +37,8 @@ public class TermLoader {
 	
 	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
-	//@Autowired
+	@Autowired
 	private IVocabularySaver vocabularySaver;
-	
-	public void setVocabularySaver(IVocabularySaver vocabularySaver){
-		this.vocabularySaver = vocabularySaver;
-	}
 	
 	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
 		 definedTermsMap = dtm;
