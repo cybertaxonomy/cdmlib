@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
