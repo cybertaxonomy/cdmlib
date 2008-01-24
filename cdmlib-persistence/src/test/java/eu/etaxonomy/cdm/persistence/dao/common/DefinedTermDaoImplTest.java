@@ -22,7 +22,7 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 	@Autowired
 	private IDefinedTermDao dao;
 
-	//@Test
+	@Test
 	public void save() throws WrongTermTypeException {
 		TermVocabulary<DefinedTermBase> vocabulary	= new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
@@ -42,6 +42,7 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 		for (DefinedTermBase dt:terms){
 			logger.debug(dt.toString());
 		}
+		fail();
 		//assertTrue(terms.contains(this.vocabulary));
 	}
 

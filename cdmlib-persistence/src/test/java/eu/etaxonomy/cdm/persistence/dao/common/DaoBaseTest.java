@@ -11,6 +11,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl;
 
 /**
  * @author a.mueller
@@ -19,10 +22,12 @@ import org.junit.Test;
 public class DaoBaseTest {
 	private static final Logger logger = Logger.getLogger(DaoBaseTest.class);
 	
-	private DaoBaseTester daoBaseTester;
+	//private DaoBase daoBaseTester;
+	@Autowired
+	private TaxonDaoHibernateImpl daoBaseTester;
 	
-	public class DaoBaseTester extends DaoBase{
-	}
+//	public class DaoBaseTester extends DaoBase{
+//	}
 	
 	
 	/**
@@ -44,7 +49,7 @@ public class DaoBaseTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		daoBaseTester = new DaoBaseTester();
+		//daoBaseTester = new TaxonDaoHibernateImpl();
 	}
 
 	/**

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class DaoBase {
+	
 	@Autowired
 	private SessionFactory factory;
 	
