@@ -300,6 +300,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/Defined
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/IdentifiableDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
