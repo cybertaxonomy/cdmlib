@@ -5,7 +5,6 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.init.IVocabularySaver;
 
 /**
  * @author a.mueller
