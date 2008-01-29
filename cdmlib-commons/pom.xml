@@ -30,6 +30,29 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <outputDirectory>C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-commons\0.4.5</outputDirectory>
+          <finalName>cdm-commons</finalName>
+          <attach>false</attach>
+        </configuration>
+      </plugin>
+      
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
