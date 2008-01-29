@@ -441,6 +441,8 @@ public class CdmBaseTest {
 		assertFalse(cdmBase.getCreated().after(Calendar.getInstance() ));
 		Calendar calendar = Calendar.getInstance();
 		cdmBase.setCreated(calendar);
+		assertEquals(0, cdmBase.getCreated().get(Calendar.MILLISECOND ));
+		calendar.set(Calendar.MILLISECOND, 0);
 		assertEquals(calendar, cdmBase.getCreated());
 	}
 
@@ -454,6 +456,9 @@ public class CdmBaseTest {
 		Calendar calendarFalse = (Calendar)calendar.clone();
 		calendarFalse.add(2, 5);
 		cdmBase.setCreated(calendar);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendarTrue.set(Calendar.MILLISECOND, 0);
+		calendarFalse.set(Calendar.MILLISECOND, 0);
 		assertEquals(calendar, cdmBase.getCreated());
 		assertEquals(calendarTrue, cdmBase.getCreated());
 		assertFalse(calendarFalse.equals(calendar));

@@ -33,7 +33,7 @@ public abstract class CdmBase implements Serializable{
 
 	public CdmBase() {
 		this.uuid = UUID.randomUUID();
-		this.created = Calendar.getInstance();
+		this.setCreated(Calendar.getInstance());
 	}
 
 	
@@ -107,9 +107,10 @@ public abstract class CdmBase implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	@Basic(fetch = FetchType.LAZY)
 	public Calendar getCreated() {
-		return this.created;
+		return created;
 	}
 	public void setCreated(Calendar created) {
+		created.set(Calendar.MILLISECOND, 0);
 		this.created = created;
 	}
 
@@ -129,7 +130,9 @@ public abstract class CdmBase implements Serializable{
 	public boolean equals(Object obj) {
 		if (CdmBase.class.isAssignableFrom(obj.getClass())){
 			CdmBase cdmObj = (CdmBase)obj;
-			if (cdmObj.getUuid().equals(this.getUuid()) && cdmObj.getCreated().equals(this.getCreated())){
+			boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
+			boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
+			if (uuidEqual && createdEqual){
 				return true;
 			}
 		}
