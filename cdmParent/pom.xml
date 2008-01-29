@@ -141,7 +141,7 @@
 	<repositories>
 		<repository>
 			<id>EditRepository</id>
-			<url>http://dev.e-taxonomy.eu/svn/maven</url>
+			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
 		</repository>
 	</repositories>
 
@@ -282,15 +282,14 @@
 		<site>
 			<id>edit-wp5</id>
        		<url>
-				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/site
+				scp://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/site
 			</url>
        	</site>
 		<repository>
 			<id>edit-wp5</id>
 			<name>Edit Maven Repository</name>
 			<url>
-<!--				scp://192.168.1.17/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo-->
-					scp://wp5.e-taxonomy.eu/cdmlib/mavenrepo
+					scp://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/mavenrepo
 			</url>
 		</repository>
 	</distributionManagement>
