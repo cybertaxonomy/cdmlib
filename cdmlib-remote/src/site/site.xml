@@ -10,16 +10,7 @@
   	<groupId>org.apache.maven.skins</groupId>
   	<artifactId>maven-default-skin</artifactId>
   	<version>1.0</version>
-<!--
-    <artifactId>maven-stylus-skin</artifactId>
-  	<version>1.0.1</version>
-  	
-  	<artifactId>maven-default-skin</artifactId>
-  	<version>1.0</version>
-	
-	<artifactId>maven-classic-skin</artifactId>
-  	<version>1.0</version>
--->
+
   </skin>
   
   <publishDate format="dd-MM-yyyy"/>  
@@ -30,10 +21,9 @@
       <item name="Wiki" href="http://dev.e-taxonomy.eu/wiki"/>
     </links>
 
-    <menu name="CdmLibrary">
+    <menu name="CdmCommunityStore">
       <item name="About	" href="/index.html"/>
       <item name="Download" href="/source-repository.html"/>
-      <item name="FAQs" href="/faq.html"/>
      </menu>
     
 	${reports}

@@ -1,14 +1,22 @@
 -----
-The EDIT CDM Java library
+The EDIT CDM Community Store
 -----
 -----
- December 2007
+ January 2008
 -----
 
 Introduction
 
- The CDM Library is meant to be a shared library for the between several applications which can be of any kind, 
- i.e. J2EE having an application container, simple command line tools or swing desktop applications. The library defines a persistent domain model, EDITs CommonDataModel, that can be serialsed and read in XML. Business logic shared between applications should be part of this library as much as possible, while application specific logic has to stay out. 
- We hope to develop this library in collaboration with the CATE project initially.
+A Central datastore for a community of users (taxonomically, geographically or otherwise defined). 
+The community store server is used to centrally host versionable CommonDataModel data. 
+The store makes use of the CdmLibrary and exposes webservices based on the CdmLibrary service layer. 
 
- Please see also http://dev.e-taxonomy.eu/trac/wiki/CdmLibrary
+Planned Services/APIs exposed by the community store are:
+
+REST read operations for portals based on DTOs
+RSS search feeds for subscriptions
+Sync API, likely based on SyncML
+OAI-PMH for aggregation
+LSID resolver exposing objects in RDF as TDWG LSID voc
+
+Please see also http://dev.e-taxonomy.eu/trac/wiki/CommunityStore
