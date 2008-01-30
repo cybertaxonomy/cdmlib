@@ -6,12 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.dto;
 
+package eu.etaxonomy.cdm.remote.dto;
 
-public class SynonymRelationshipTO {
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
+public class ReferencedEntityBaseTO extends BaseTO{
 	
-	private TaxonSTO synoynm;
-	private LocalisedTermTO type;
+	private String citationMicroReference;
+	private String originalNameString;
+	private ReferenceBase citation;
 
 }

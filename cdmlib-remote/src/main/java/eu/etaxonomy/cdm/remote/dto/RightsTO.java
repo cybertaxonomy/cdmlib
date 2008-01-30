@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.dto;
+package eu.etaxonomy.cdm.remote.dto;
 
 import eu.etaxonomy.cdm.model.common.RightsTerm;
 
