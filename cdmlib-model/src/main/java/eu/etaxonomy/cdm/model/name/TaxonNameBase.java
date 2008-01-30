@@ -172,6 +172,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	}
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Rank getRank(){
 		return this.rank;
 	}
