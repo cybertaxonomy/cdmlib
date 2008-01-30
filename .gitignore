@@ -6,10 +6,6 @@ cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
 cdmlib-commons/target
-cdmlib-dto/.classpath
-cdmlib-dto/.project
-cdmlib-dto/.settings
-cdmlib-dto/target
 cdmlib-model/.classpath
 cdmlib-model/.project
 cdmlib-model/.settings
@@ -18,6 +14,10 @@ cdmlib-persistence/.classpath
 cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/target
+cdmlib-remote/.classpath
+cdmlib-remote/.project
+cdmlib-remote/.settings
+cdmlib-remote/target
 cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings

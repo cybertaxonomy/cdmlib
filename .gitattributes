@@ -69,7 +69,6 @@ cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-dto/pom.xml -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
@@ -309,6 +308,7 @@ cdmlib-persistence/src/test/resources/applicationContext-test.xml -text
 cdmlib-persistence/src/test/resources/hibernate.properties -text
 cdmlib-persistence/src/test/resources/settings.xml -text
 cdmlib-persistence/src/test/resources/test.cdm.datasource.xml -text
+cdmlib-remote/pom.xml -text
 cdmlib-services/pom.xml -text
 cdmlibrary/INSTALL.TXT -text
 cdmlibrary/pom.xml -text
