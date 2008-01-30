@@ -330,6 +330,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonTOAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorld.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorldImpl.java -text
 cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-services/pom.xml -text
