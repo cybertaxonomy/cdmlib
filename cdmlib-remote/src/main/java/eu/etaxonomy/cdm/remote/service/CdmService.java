@@ -13,10 +13,9 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
  * Methods adopted from ws_method as 
  * found in http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api.module
  */
-//@WebService
+@WebService
 public interface CdmService {
 
-	//@WebMethod(action = "getCustomer")  
 	public NameTO getName(UUID uuid);// throws BusinessLogicException;  
 	
 	public TaxonTO getTaxon(UUID uuid); 

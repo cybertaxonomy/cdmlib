@@ -11,13 +11,6 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 
 public class CdmServiceImpl implements CdmService {
 
-	@WebService
-	public class Hello {
-	  public String sayHi(String name) {
-	    return "Hello " + name;
-	  }
-	}
-	
 	public NameTO getName(UUID uuid) {
 		// TODO Auto-generated method stub
 		return null;
