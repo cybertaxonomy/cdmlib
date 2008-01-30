@@ -126,7 +126,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		this.relationsToThisTaxon.remove(rel);
 		this.relationsFromThisTaxon.remove(rel);
 		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
-		if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
+		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
 			this.setTaxonomicParentCache(null);
 		}
 		// TODO: remove in related taxon too?
@@ -139,7 +139,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 				// also add relation to other taxon object
 				toTaxon.addTaxonRelation(rel);
 				// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
-				if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
+				if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
 					this.setTaxonomicParentCache(rel.getToTaxon());
 				}
 			}else if (rel.getToTaxon().equals(this)){
@@ -147,7 +147,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 			}
 		}
 	}
-	public void addTaxonRelation(Taxon toTaxon, ConceptRelationshipType type, ReferenceBase citation, String microreference) {
+	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microreference) {
 		TaxonRelationship rel = new TaxonRelationship();
 		rel.setToTaxon(toTaxon);
 		rel.setFromTaxon(this);
@@ -190,7 +190,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		if (parent == null){
 			throw new NullPointerException("Parent Taxon is 'null'");
 		}else{
-			addTaxonRelation(parent, ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
+			addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
 		}
 	}
 
@@ -201,7 +201,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
-			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+			if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				taxa.add(rel.getFromTaxon());
 			}
 		}
@@ -213,7 +213,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	@Transient
 	public boolean hasTaxonomicChildren(){
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
-			if (rel.getType().equals(ConceptRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+			if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				return true;
 			}
 		}

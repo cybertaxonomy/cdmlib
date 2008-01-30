@@ -23,8 +23,8 @@ import java.util.UUID;
  * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @Entity
-public class ConceptRelationshipType extends RelationshipTermBase {
-	static Logger logger = Logger.getLogger(ConceptRelationshipType.class);
+public class TaxonRelationshipType extends RelationshipTermBase {
+	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
 
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
@@ -39,54 +39,54 @@ public class ConceptRelationshipType extends RelationshipTermBase {
 	private static final UUID uuidNotIncludedIn = UUID.fromString("89dffa4e-e004-4d42-b0d1-ae1827529e43");
 	private static final UUID uuidNotCongruentTo = UUID.fromString("6c16c33b-cfc5-4a00-92bd-a9f9e448f389");
 	
-	public ConceptRelationshipType() {
+	public TaxonRelationshipType() {
 		super();
 	}
-	public ConceptRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
+	public TaxonRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
 		super(term, label, symmetric, transitive);
 	}
 
-	public static final ConceptRelationshipType getUUID(UUID uuid){
-		return (ConceptRelationshipType) findByUuid(uuid);
+	public static final TaxonRelationshipType getUUID(UUID uuid){
+		return (TaxonRelationshipType) findByUuid(uuid);
 	}
 
 
 
-	public static final ConceptRelationshipType TAXONOMICALLY_INCLUDED_IN(){
+	public static final TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN(){
 		return getUUID(uuidTaxonomicallyIncludedIn);
 	}
-	public static final ConceptRelationshipType MISAPPLIEDNAMEFOR(){
-		return (ConceptRelationshipType)findByUuid(uuidMisappliedNameFor);
+	public static final TaxonRelationshipType MISAPPLIEDNAMEFOR(){
+		return (TaxonRelationshipType)findByUuid(uuidMisappliedNameFor);
 	}
-	public static final ConceptRelationshipType INVALIDDESIGNATIONFOR(){
-		return (ConceptRelationshipType)findByUuid(uuidInvalidDesignationFor);
+	public static final TaxonRelationshipType INVALIDDESIGNATIONFOR(){
+		return (TaxonRelationshipType)findByUuid(uuidInvalidDesignationFor);
 	}
-	public static final ConceptRelationshipType CONTRADICTION(){
-		return (ConceptRelationshipType)findByUuid(uuidContradiction);
+	public static final TaxonRelationshipType CONTRADICTION(){
+		return (TaxonRelationshipType)findByUuid(uuidContradiction);
 	}
-	public static final ConceptRelationshipType CONGRUENTTO(){
-		return (ConceptRelationshipType)findByUuid(uuidCongruentTo);
+	public static final TaxonRelationshipType CONGRUENTTO(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentTo);
 	}
-	public static final ConceptRelationshipType INCLUDES(){
-		return (ConceptRelationshipType)findByUuid(uuidIncludes);
+	public static final TaxonRelationshipType INCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludes);
 	}
-	public static final ConceptRelationshipType OVERLAPS(){
-		return (ConceptRelationshipType)findByUuid(uuidOverlaps);
+	public static final TaxonRelationshipType OVERLAPS(){
+		return (TaxonRelationshipType)findByUuid(uuidOverlaps);
 	}
-	public static final ConceptRelationshipType EXCLUDES(){
-		return (ConceptRelationshipType)findByUuid(uuidExcludes);
+	public static final TaxonRelationshipType EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidExcludes);
 	}
-	public static final ConceptRelationshipType DOESNOTEXCLUDE(){
-		return (ConceptRelationshipType)findByUuid(uuidDoesNotExclude);
+	public static final TaxonRelationshipType DOESNOTEXCLUDE(){
+		return (TaxonRelationshipType)findByUuid(uuidDoesNotExclude);
 	}
-	public static final ConceptRelationshipType DOESNOTOVERLAP(){
-		return (ConceptRelationshipType)findByUuid(uuidDoesNotOverlap);
+	public static final TaxonRelationshipType DOESNOTOVERLAP(){
+		return (TaxonRelationshipType)findByUuid(uuidDoesNotOverlap);
 	}
-	public static final ConceptRelationshipType NOTINCLUDEDIN(){
-		return (ConceptRelationshipType)findByUuid(uuidNotIncludedIn);
+	public static final TaxonRelationshipType NOTINCLUDEDIN(){
+		return (TaxonRelationshipType)findByUuid(uuidNotIncludedIn);
 	}
-	public static final ConceptRelationshipType NOTCONGRUENTTO(){
-		return (ConceptRelationshipType)findByUuid(uuidNotCongruentTo);
+	public static final TaxonRelationshipType NOTCONGRUENTTO(){
+		return (TaxonRelationshipType)findByUuid(uuidNotCongruentTo);
 	}
 
 

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
-import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 @Component
@@ -107,7 +107,7 @@ public class TermLoader {
 		loadDefaultTerms(SynonymRelationshipType.class);
 		loadDefaultTerms(HybridRelationshipType.class);
 		loadDefaultTerms(NameRelationshipType.class);
-		loadDefaultTerms(ConceptRelationshipType.class);
+		loadDefaultTerms(TaxonRelationshipType.class);
 		logger.debug("terms loaded");
 	}
 	
