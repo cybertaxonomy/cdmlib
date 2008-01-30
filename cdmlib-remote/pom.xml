@@ -61,7 +61,7 @@
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-model</artifactId>
-  		<version>0.4</version>
+  		<version>0.4.5</version>
   	</dependency>
   	
   	<dependency>
