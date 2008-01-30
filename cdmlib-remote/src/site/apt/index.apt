@@ -1,0 +1,14 @@
+-----
+The EDIT CDM Java library
+-----
+-----
+ December 2007
+-----
+
+Introduction
+
+ The CDM Library is meant to be a shared library for the between several applications which can be of any kind, 
+ i.e. J2EE having an application container, simple command line tools or swing desktop applications. The library defines a persistent domain model, EDITs CommonDataModel, that can be serialsed and read in XML. Business logic shared between applications should be part of this library as much as possible, while application specific logic has to stay out. 
+ We hope to develop this library in collaboration with the CATE project initially.
+
+ Please see also http://dev.e-taxonomy.eu/trac/wiki/CdmLibrary
