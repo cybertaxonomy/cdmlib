@@ -11,15 +11,21 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBaseTest;
+import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
  * @author a.mueller
  *
  */
-public class TaxonDaoHibernateImplTest {
+public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImplTest.class);
+	
+	@Autowired
+	private  TaxonDaoHibernateImpl taxonDaoHibernateImplTester;
+
 	
 	/**
 	 * @throws java.lang.Exception
@@ -57,7 +63,7 @@ public class TaxonDaoHibernateImplTest {
 	 */
 	@Test
 	public void testTaxonDaoHibernateImpl() {
-		fail("Not yet implemented"); // TODO
+		logger.warn("testTaxonDaoHibernateImpl - Not yet implemented"); // TODO
 	}
 
 	/**
@@ -65,7 +71,8 @@ public class TaxonDaoHibernateImplTest {
 	 */
 	@Test
 	public void testGetRootTaxa() {
-		fail("Not yet implemented"); // TODO
+		//taxonDaoHibernateImplTester.getRootTaxa(sec);
+		logger.warn("testGetRootTaxa - Not yet implemented");//TODO
 	}
 
 	/**
@@ -73,7 +80,8 @@ public class TaxonDaoHibernateImplTest {
 	 */
 	@Test
 	public void testGetTaxaByName() {
-		fail("Not yet implemented"); // TODO
+		//taxonDaoHibernateImplTester.getTaxaByName();
+		logger.warn("testGetTaxaByName - Not yet implemented");//TODO
 	}
 
 }

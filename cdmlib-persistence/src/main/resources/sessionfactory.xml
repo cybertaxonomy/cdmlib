@@ -175,7 +175,7 @@
             <value>eu.etaxonomy.cdm.model.reference.StrictReferenceBase</value>
             <value>eu.etaxonomy.cdm.model.reference.Thesis</value>
             <value>eu.etaxonomy.cdm.model.reference.WebPage</value>
-            <value>eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType</value>
+            <value>eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType</value>
             <value>eu.etaxonomy.cdm.model.taxon.Synonym</value>
             <value>eu.etaxonomy.cdm.model.taxon.SynonymRelationship</value>
             <value>eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType</value>

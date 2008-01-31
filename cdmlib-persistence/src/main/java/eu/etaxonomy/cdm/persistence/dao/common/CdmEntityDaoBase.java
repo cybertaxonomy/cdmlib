@@ -4,6 +4,8 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -68,7 +72,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	public T findByUuid(UUID uuid) throws DataAccessException{
 		Session session = getSession();
-	
+		
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("strUuid", uuid.toString()));
 		crit.addOrder(Order.desc("created"));

@@ -11,7 +11,7 @@
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>cdmLibrary</artifactId>
+  <artifactId>cdmlib-persistence</artifactId>
   <name>EDIT Common Data Model Library</name>
   <version>0.4.5</version>
   <description>EDIT CDM library</description>
@@ -72,6 +72,20 @@
         	</systemProperties>
         </configuration>
       </plugin>
+<!--      <plugin>-->
+<!--        <artifactId>maven-antrun-plugin</artifactId>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>generate-resources</phase>-->
+<!--            <goals>-->
+<!--              <goal>run</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tasks />-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
     </plugins>
   </build>
   <dependencies>
@@ -80,34 +94,14 @@
   		<artifactId>cdmlib-model</artifactId>
   		<version>0.4.5</version>
   	</dependency>
-<!--  	<dependency>-->
-<!--  		<groupId>com.sun.xml.rpc</groupId>-->
-<!--  		<artifactId>jaxrpc-impl</artifactId>-->
-<!--  		<version>1.1.3_01</version>-->
-<!--  	</dependency>-->
   	<dependency>
   		<groupId>javax.persistence</groupId>
   		<artifactId>ejb</artifactId>
   		<version>3</version>
   	</dependency>
   	<dependency>
-  		<groupId>javax.xml</groupId>
-  		<artifactId>jaxrpc-api</artifactId>
-  		<version>1.1</version>
-  	</dependency>
-<!--  	<dependency>-->
-<!--  		<groupId>javax.xml.bind</groupId>-->
-<!--  		<artifactId>jaxb-api</artifactId>-->
-<!--  		<version>2.0</version>-->
-<!--  	</dependency>-->
-  	<dependency>
   		<groupId>org.hibernate</groupId>
   		<artifactId>hibernate-commons-annotations</artifactId>
-  		<version>3.3.0.ga</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.hibernate</groupId>
-  		<artifactId>hibernate-annotations</artifactId>
   		<version>3.3.0.ga</version>
   	</dependency>
   	<dependency>
@@ -140,30 +134,20 @@
   		<artifactId>spring-test</artifactId>
   		<version>2.5</version>
   	</dependency>
-  	<dependency>
-  		<groupId>xerces</groupId>
-  		<artifactId>xercesImpl</artifactId>
-  		<version>2.7.1</version>
-  	</dependency>
 <!--  	<dependency>-->
-<!--  		<groupId>jdom</groupId>-->
-<!--  		<artifactId>jdom</artifactId>-->
-<!--  		<version>1.0</version>-->
+<!--  		<groupId>xerces</groupId>-->
+<!--  		<artifactId>xercesImpl</artifactId>-->
+<!--  		<version>2.7.1</version>-->
 <!--  	</dependency>-->
-  	<dependency>
-  		<groupId>jaxen</groupId>
-  		<artifactId>jaxen</artifactId>
-  		<version>1.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.dbunit</groupId>
-  		<artifactId>dbunit</artifactId>
-  		<version>2.2</version>
-  	</dependency>
 <!--  	<dependency>-->
-<!--  		<groupId>org.eclipse</groupId>-->
-<!--  		<artifactId>osgi</artifactId>-->
-<!--  		<version>3.2.1-R32x_v20060919</version>-->
+<!--  		<groupId>jaxen</groupId>-->
+<!--  		<artifactId>jaxen</artifactId>-->
+<!--  		<version>1.1</version>-->
+<!--  	</dependency>-->
+<!--  	<dependency>-->
+<!--  		<groupId>org.dbunit</groupId>-->
+<!--  		<artifactId>dbunit</artifactId>-->
+<!--  		<version>2.2</version>-->
 <!--  	</dependency>-->
   	
   	
@@ -223,4 +207,3 @@
   	</dependency>
   </dependencies>
 </project>
-

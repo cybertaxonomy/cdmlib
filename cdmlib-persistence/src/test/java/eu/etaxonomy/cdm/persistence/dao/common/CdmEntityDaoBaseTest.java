@@ -5,26 +5,57 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
  * @author a.mueller
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"/applicationContext-test.xml"})
+@TransactionConfiguration(defaultRollback=false)   //TODO rollback=true does not work yet because of Terms
+@Transactional
 public class CdmEntityDaoBaseTest {
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBaseTest.class);
 	
+	private static UUID taxonUUID;
+	private static boolean isInitialized;
+	
+	@Autowired
+	private TaxonDaoHibernateImpl cdmEntityDaoBaseTester;
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		logger.debug("setUpBeforeClass");
 	}
+	
 
 	/**
 	 * @throws java.lang.Exception
@@ -38,6 +69,20 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		logger.debug("setUp");
+		if (! isInitialized){  //as long as rollback does not work
+			Rank genus = Rank.GENUS();
+			BotanicalName botanicalName = new BotanicalName(genus);
+			botanicalName.setUninomial("GenusName");
+			Journal journal = new Journal();
+			journal.setTitle("JournalTitel");
+			
+			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
+			UUID uuid = cdmEntityDaoBaseTester.saveOrUpdate(taxon);
+			taxonUUID = UUID.fromString(uuid.toString());
+			logger.debug("setUpEnd");
+			isInitialized = true;
+		}
 	}
 
 	/**
@@ -55,7 +100,7 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testCdmEntityDaoBase() {
-		fail("Not yet implemented"); // TODO
+		logger.warn("Not yet implemented");
 	}
 
 	/**
@@ -63,7 +108,8 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSaveCdmObj() {
-		fail("Not yet implemented"); // TODO
+		CdmBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		assertNotNull(cdmBase);
 	}
 
 	/**
@@ -71,7 +117,16 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSaveOrUpdate() {
-		fail("Not yet implemented"); // TODO
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		UUID oldUuid = cdmBase.getUuid();
+		cdmBase.setUuid(UUID.randomUUID());
+		UUID newUuid = cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(newUuid);
+		assertEquals(cdmBase.getId(), cdmBase2.getId());
+		
+		//oldValue
+		cdmBase.setUuid(oldUuid);
+		cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
 	}
 
 	/**
@@ -79,7 +134,19 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSave() {
-		fail("Not yet implemented"); // TODO
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		int oldId = cdmBase.getId();
+		
+		UUID oldUuid = cdmBase.getUuid();
+		UUID newUuid = UUID.randomUUID();
+		cdmBase.setUuid(newUuid);
+		cdmEntityDaoBaseTester.save(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(newUuid);
+		logger.warn("semantic unclear");
+		//assertFalse(cdmBase.getId() == cdmBase2.getId());
+		//oldValue
+		cdmBase.setUuid(oldUuid);
+		cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
 	}
 
 	/**
@@ -87,23 +154,18 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testUpdate() {
-		fail("Not yet implemented"); // TODO
+		logger.warn("testUpdate - Not yet implemented"); // TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
-	@Test
-	public void testDelete() {
-		fail("Not yet implemented"); // TODO
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#findById(int)}.
 	 */
 	@Test
 	public void testFindById() {
-		fail("Not yet implemented"); // TODO
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findById(cdmBase.getId());
+		assertSame(cdmBase, cdmBase2);
 	}
 
 	/**
@@ -111,7 +173,8 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testFindByUuid() {
-		fail("Not yet implemented"); // TODO
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		assertNotNull(cdmBase);
 	}
 
 	/**
@@ -119,7 +182,11 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testExists() {
-		fail("Not yet implemented"); // TODO
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		boolean exists = cdmEntityDaoBaseTester.exists(cdmBase.getUuid());
+		assertTrue(exists);
+		boolean existsRandom = cdmEntityDaoBaseTester.exists(UUID.randomUUID());
+		assertFalse(existsRandom);
 	}
 
 	/**
@@ -127,7 +194,24 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testList() {
-		fail("Not yet implemented"); // TODO
+		List<TaxonBase> list = cdmEntityDaoBaseTester.list(1000, 0);
+		assertNotNull(list);
+		assertTrue(list.size()>0);
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	public void testDelete() {
+		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		assertNotNull(cdmBase);
+		cdmEntityDaoBaseTester.delete(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		assertNull(cdmBase2);
+		//oldValue
+//		cdmBase.setId(0);
+//		cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
 	}
 
 }
