@@ -25,16 +25,11 @@ public class WordLookupPortTypeImpl implements WordLookupPortType {
     static {
         try {
             DriverManager.registerDriver(
-                    new org.apache.derby.jdbc.EmbeddedDriver());
+                    new com.mysql.jdbc.Driver());
 
             dbConn = DriverManager.getConnection( 
-            /* Enter connection string for database directory below.
-             * Examples:
-             * "jdbc:derby:c:\myfolder\LANGLOOKUP" (Windows)
-             * "jdbc:derby:/dbdir/LANGLOOKUP" (Linux)
-             **/                
-                "jdbc:derby:/home/mydbdir/LANGLOOKUP",    
-                "APP", "PASSWORD"); // Derby ignores password by default
+                "jdbc:mysql://localhost/LangLookup",    
+                "root", ""); 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(
