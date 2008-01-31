@@ -7,13 +7,13 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>0.4</version>
+    <version>${cdmlib.version}</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-persistence</artifactId>
   <name>EDIT Common Data Model Library</name>
-  <version>0.4.5</version>
+  <version>${cdmlib.version}</version>
   <description>EDIT CDM library</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
@@ -22,23 +22,39 @@
   </scm>
   <build>
     <plugins>
-<!--    	<plugin>
-    		<groupId>org.codehaus.mojo</groupId>
-    		<artifactId>hibernate3-maven-plugin</artifactId>
-    		<version>2.0-alpha-2</version>
-    		<configuration>
-    			<components>
-    				<component>
-    					<name>hbm2cfgxml</name>
-    					<outputDirectory>src/main/resources</outputDirectory>
-    				</component>
-    			</components>
-    			<componentProperties>
-    				<drop>true</drop>
-    				<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>
-    			</componentProperties>
-    		</configuration>
-    	</plugin>-->
+<!--    	<plugin>-->
+<!--    		<groupId>org.codehaus.mojo</groupId>-->
+<!--    		<artifactId>hibernate3-maven-plugin</artifactId>-->
+<!--    		<version>2.0-alpha-2</version>-->
+<!--    		<configuration>-->
+<!--    			<components>-->
+<!--    				<component>-->
+<!--    					<name>hbm2cfgxml</name>-->
+<!--    					<outputDirectory>src/main/resources</outputDirectory>-->
+<!--    				</component>-->
+<!--    			</components>-->
+<!--    			<componentProperties>-->
+<!--    				<drop>true</drop>-->
+<!--    				<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>-->
+<!--    			</componentProperties>-->
+<!--    		</configuration>-->
+<!--    	</plugin>-->
+    	
+    	<!--      <plugin>-->
+<!--        <artifactId>maven-antrun-plugin</artifactId>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>generate-resources</phase>-->
+<!--            <goals>-->
+<!--              <goal>run</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tasks />-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+
     	<plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -72,27 +88,14 @@
         	</systemProperties>
         </configuration>
       </plugin>
-<!--      <plugin>-->
-<!--        <artifactId>maven-antrun-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <phase>generate-resources</phase>-->
-<!--            <goals>-->
-<!--              <goal>run</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <tasks />-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+
     </plugins>
   </build>
   <dependencies>
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-model</artifactId>
-  		<version>0.4.5</version>
+  		<version>${cdmlib.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>javax.persistence</groupId>
@@ -112,27 +115,27 @@
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring</artifactId>
-  		<version>2.5</version>
+  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-beans</artifactId>
-  		<version>2.5</version>
+  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-orm</artifactId>
-  		<version>2.5</version>
+  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-jdbc</artifactId>
-  		<version>2.5</version>
+  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-test</artifactId>
-  		<version>2.5</version>
+  		<version>${spring.version}</version>
   	</dependency>
 <!--  	<dependency>-->
 <!--  		<groupId>xerces</groupId>-->
@@ -175,21 +178,7 @@
   		<version>1.8.0.7</version>
   	</dependency>
   	
-<!--  	<dependency>-->
-<!--  		<groupId>oracle</groupId>-->
-<!--  		<artifactId>ojdbc14</artifactId>-->
-<!--  		<version>10.2.0.2</version>-->
-<!--  	</dependency>-->
-<!--  	<dependency>-->
-<!--  		<groupId>oracle</groupId>-->
-<!--  		<artifactId>ojdbc14</artifactId>-->
-<!--  		<version>9i</version>-->
-<!--  	</dependency>-->
-<!--  	<dependency>-->
-<!--  		<groupId>oracle</groupId>-->
-<!--  		<artifactId>ojdbc14</artifactId>-->
-<!--  		<version>9.2.0.5</version>-->
-<!--  	</dependency>-->
+
   	<dependency>
   		<groupId>com.microsoft.jdbcdriver</groupId>
   		<artifactId>mssqlserver</artifactId>
@@ -205,5 +194,21 @@
   		<artifactId>msbase</artifactId>
   		<version>2000.3</version>
   	</dependency>
+  	
+  	<!--  	<dependency>-->
+<!--  		<groupId>oracle</groupId>-->
+<!--  		<artifactId>ojdbc14</artifactId>-->
+<!--  		<version>10.2.0.2</version>-->
+<!--  	</dependency>-->
+<!--  	<dependency>-->
+<!--  		<groupId>oracle</groupId>-->
+<!--  		<artifactId>ojdbc14</artifactId>-->
+<!--  		<version>9i</version>-->
+<!--  	</dependency>-->
+<!--  	<dependency>-->
+<!--  		<groupId>oracle</groupId>-->
+<!--  		<artifactId>ojdbc14</artifactId>-->
+<!--  		<version>9.2.0.5</version>-->
+<!--  	</dependency>-->
   </dependencies>
 </project>
