@@ -137,11 +137,17 @@
 	</issueManagement>
 
 	<!-- **** REPOSITORIES **** -->
-	<!-- the cdm internal repository -->
 	<repositories>
+		<!-- the cdm internal repository -->
 		<repository>
 			<id>EditRepository</id>
 			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
+		</repository>
+		<!-- sun repository -->
+		<repository>
+			<id>java.net</id>
+			<url>http://download.java.net/maven/1/</url>
+			<layout>legacy</layout>
 		</repository>
 	</repositories>
 
@@ -309,6 +315,10 @@
 
 
 	<!-- **** DEPENDENCIES **** -->
+	<properties>
+		<cdmlib.version>0.4.5</cdmlib.version>
+		<spring.version>2.5</spring.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
