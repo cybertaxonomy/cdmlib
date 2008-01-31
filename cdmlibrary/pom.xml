@@ -22,23 +22,6 @@
   </scm>
   <build>
     <plugins>
-<!--    	<plugin>
-    		<groupId>org.codehaus.mojo</groupId>
-    		<artifactId>hibernate3-maven-plugin</artifactId>
-    		<version>2.0-alpha-2</version>
-    		<configuration>
-    			<components>
-    				<component>
-    					<name>hbm2cfgxml</name>
-    					<outputDirectory>src/main/resources</outputDirectory>
-    				</component>
-    			</components>
-    			<componentProperties>
-    				<drop>true</drop>
-    				<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>
-    			</componentProperties>
-    		</configuration>
-    	</plugin>-->
     	<plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -46,72 +29,45 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        	<systemProperties>
-        		<property>
-        			<name>hibernate.connection.driver_class</name>
-        			<value>${hibernate.connection.driver_class}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.url</name>
-        			<value>${hibernate.connection.url}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.username</name>
-        			<value>${hibernate.connection.username}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.password</name>
-        			<value>${hibernate.connection.password}</value>
-        		</property>
-        	</systemProperties>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks />
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <artifactId>maven-surefire-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <includes>-->
+<!--            <include>**/*Test.java</include>-->
+<!--          </includes>-->
+<!--        	<systemProperties>-->
+<!--        		<property>-->
+<!--        			<name>hibernate.connection.driver_class</name>-->
+<!--        			<value>${hibernate.connection.driver_class}</value>-->
+<!--        		</property>-->
+<!--        		<property>-->
+<!--        			<name>hibernate.connection.url</name>-->
+<!--        			<value>${hibernate.connection.url}</value>-->
+<!--        		</property>-->
+<!--        		<property>-->
+<!--        			<name>hibernate.connection.username</name>-->
+<!--        			<value>${hibernate.connection.username}</value>-->
+<!--        		</property>-->
+<!--        		<property>-->
+<!--        			<name>hibernate.connection.password</name>-->
+<!--        			<value>${hibernate.connection.password}</value>-->
+<!--        		</property>-->
+<!--        	</systemProperties>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
     </plugins>
   </build>
   <dependencies>
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
-  		<artifactId>cdmlib-model</artifactId>
+  		<artifactId>cdmlib-persistence</artifactId>
   		<version>0.4.5</version>
   	</dependency>
-  	<dependency>
-  		<groupId>com.sun.xml.rpc</groupId>
-  		<artifactId>jaxrpc-impl</artifactId>
-  		<version>1.1.3_01</version>
-  	</dependency>
+<!--  	<dependency>-->
+<!--  		<groupId>com.sun.xml.rpc</groupId>-->
+<!--  		<artifactId>jaxrpc-impl</artifactId>-->
+<!--  		<version>1.1.3_01</version>-->
+<!--  	</dependency>-->
   	<dependency>
   		<groupId>javax.persistence</groupId>
   		<artifactId>ejb</artifactId>

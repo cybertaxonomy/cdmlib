@@ -7,14 +7,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
 
 
-import eu.etaxonomy.cdm.persistence.dao.common.DefinedTermDaoImplTest;
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( 
 		{ 	
-			TermServiceImplTest.class,
-			DefinedTermDaoImplTest.class
+			TermServiceImplTest.class
 		}
 	)
 public class CdmTestSuite {
@@ -26,8 +23,7 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
-				TermServiceImplTest.class,
-				DefinedTermDaoImplTest.class
+				TermServiceImplTest.class
 			);
 	}
 }
