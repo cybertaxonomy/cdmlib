@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" mlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <description>Word Lookup Web Service</description>
+    <display-name>word lookup</display-name>
+    <!-- Uncomment below listener if using Metro 
+    <listener>
+        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+    </listener-->
+    <servlet>
+        <description>Word Lookup</description>
+        <display-name>wordlookup</display-name>
+        <servlet-name>WebServicePort</servlet-name>
+        <!-- Switch to WSServlet below if using Metro -->
+        <servlet-class>
+            org.apache.cxf.transport.servlet.CXFServlet 
+           <!-- com.sun.xml.ws.transport.http.servlet.WSServlet -->
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WebServicePort</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+</web-app>

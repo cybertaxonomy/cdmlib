@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns="http://www.example.org/WordLookup"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WordLookup"
+   targetNamespace="http://www.example.org/WordLookup">
+   <wsdl:types>
+      <xsd:schema targetNamespace="http://www.example.org/WordLookup">
+         <xsd:element name="LookupEJ">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="wordToTranslate" type="xsd:string"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="LookupJE">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="wordToTranslate" type="xsd:string"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="LookupResponse">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="translatedWord" type="xsd:string" />
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="AddWordEntry">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="englishWord" type="xsd:string" />
+                  <xsd:element name="japaneseWord" type="xsd:string" />
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="AddWordEntryResponse">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="results" type="xsd:string" />
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>
+         <xsd:element name="BasicFault">
+            <xsd:complexType>
+               <xsd:sequence>
+                  <xsd:element name="errorMessage" type="xsd:string"/>
+                  <xsd:element name="errorDetails" type="xsd:string"/>
+               </xsd:sequence>
+            </xsd:complexType>
+         </xsd:element>         
+      </xsd:schema>
+   </wsdl:types>
+   <wsdl:message name="LookupEJRequest">
+      <wsdl:part element="tns:LookupEJ" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="LookupJERequest">
+      <wsdl:part element="tns:LookupJE" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="LookupResponse">
+      <wsdl:part element="tns:LookupResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="EntryNotFoundFault">
+      <wsdl:part element="tns:BasicFault" name="BasicFault"/>
+   </wsdl:message>
+   <wsdl:message name="EntryAlreadyExistsFault">
+      <wsdl:part element="tns:BasicFault" name="BasicFault"/>
+   </wsdl:message>
+   <wsdl:message name="AddWordEntryRequest">
+      <wsdl:part element="tns:AddWordEntry" name="parameters" />
+   </wsdl:message>
+   <wsdl:message name="AddWordEntryResponse">
+      <wsdl:part element="tns:AddWordEntryResponse" name="parameters" />
+   </wsdl:message>
+   <wsdl:portType name="WordLookupPortType">
+      <wsdl:operation name="JaToEnLookup">
+         <wsdl:input message="tns:LookupJERequest" />
+         <wsdl:output message="tns:LookupResponse" />
+         <wsdl:fault message="tns:EntryNotFoundFault" 
+            name="EntryNotFoundFault"/>
+      </wsdl:operation>
+      <wsdl:operation name="EnToJaLookup">
+         <wsdl:input message="tns:LookupEJRequest" />
+         <wsdl:output message="tns:LookupResponse" />
+         <wsdl:fault message="tns:EntryNotFoundFault" 
+            name="EntryNotFoundFault"/>
+      </wsdl:operation>
+      <wsdl:operation name="AddWordEntry">
+         <wsdl:input message="tns:AddWordEntryRequest" />
+         <wsdl:output message="tns:AddWordEntryResponse" />
+         <wsdl:fault message="tns:EntryAlreadyExistsFault" 
+            name="EntryAlreadyExistsFault"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="WordLookupBinding" type="tns:WordLookupPortType">
+      <soap:binding style="document"
+         transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="JaToEnLookup">
+         <soap:operation soapAction=""/>
+         <wsdl:input><soap:body use="literal"/></wsdl:input>
+         <wsdl:output><soap:body use="literal"/></wsdl:output>
+         <wsdl:fault name="EntryNotFoundFault">
+             <soap:fault name="EntryNotFoundFault" use="literal" />
+         </wsdl:fault>
+      </wsdl:operation>
+      <wsdl:operation name="EnToJaLookup">
+         <soap:operation soapAction=""/>
+         <wsdl:input><soap:body use="literal"/></wsdl:input>
+         <wsdl:output><soap:body use="literal"/></wsdl:output>
+         <wsdl:fault name="EntryNotFoundFault">
+             <soap:fault name="EntryNotFoundFault" use="literal" />
+         </wsdl:fault>
+      </wsdl:operation>
+      <wsdl:operation name="AddWordEntry">
+         <soap:operation soapAction=""/>
+         <wsdl:input><soap:body use="literal"/></wsdl:input>
+         <wsdl:output><soap:body use="literal"/></wsdl:output>
+         <wsdl:fault name="EntryAlreadyExistsFault">
+             <soap:fault name="EntryAlreadyExistsFault" use="literal" />
+         </wsdl:fault>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="WordLookupService">
+      <wsdl:port name="WordLookupPort" binding="tns:WordLookupBinding">
+         <soap:address 
+            location="http://localhost:8080/wordlookup/services/wordlookup"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>
