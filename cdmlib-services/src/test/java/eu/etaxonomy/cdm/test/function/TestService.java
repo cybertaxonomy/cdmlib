@@ -174,7 +174,7 @@ public class TestService {
 		System.out.println("Start ...");
 		TestService sc = new TestService();
     	//testTermApi();
-    	//testAppController();
+    	testAppController();
 		//testRootTaxa();
 		//testTermApi();
 		//testDeleteTaxa();
