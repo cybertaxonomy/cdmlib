@@ -8,6 +8,7 @@
       <groupId>com.mycompany.webservice</groupId>
       <artifactId>DictionaryServiceSample</artifactId>
       <version>1.0-SNAPSHOT</version>
+      <relativePath>../dictionaryService-CxfTest/pom.xml</relativePath>
    </parent>
    <artifactId>client</artifactId>
    <name>SOAP Client for Dictionary Service</name>
