@@ -364,6 +364,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/resources/annotated.xml -text
 cdmlib-services/src/main/resources/log4j.properties -text
+cdmlib-services/src/site/apt/index.apt -text
+cdmlib-services/src/site/site.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
