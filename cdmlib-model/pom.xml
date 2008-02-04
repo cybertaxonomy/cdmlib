@@ -7,9 +7,10 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>${cdmlib.version}</version>
+    <version>0.4.5</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
+  
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
   <name>EDIT Common Data Model Library - Domain Model</name>
@@ -20,6 +21,7 @@
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-model/</url>
   </scm>
+  
   <build>
     <plugins>
     	<plugin>
