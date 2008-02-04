@@ -251,21 +251,16 @@
 					</reportSet>
 				</reportSets>
 			</plugin>	-->		
+			<!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
+			<!-- 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>config/maven_checks.xml</configLocation>
-				</configuration>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>changes-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
-			</plugin>
+			-->
 			<plugin>
 				<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
 				<groupId>org.codehaus.mojo</groupId>
