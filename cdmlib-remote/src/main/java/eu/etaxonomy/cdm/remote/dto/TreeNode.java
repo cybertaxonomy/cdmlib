@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.remote.dto;
 import java.util.Collection;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.dto.TaxonSTO;
+import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 
 /**
  * A TreeNode represents a Taxon in its position in the taxonomic 
@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.dto.TaxonSTO;
 public class TreeNode extends TaxonSTO {
 	
 	/**
-	 * A collection of UUIDs of alternative concept i.e. 'secundum' 
-	 * references which exist for this TaxonNode
+	 * A collection of UUIDs of alternative concept references of the same name 
+	 * i.e. 'secundum' references which exist for this Taxon
 	 */
-	private Collection<UUID> alternativeConcepts;
+	private Collection<UUID> alternativeConceptRefs;
 	
 	/**
 	 * the number of children of this taxon tree node

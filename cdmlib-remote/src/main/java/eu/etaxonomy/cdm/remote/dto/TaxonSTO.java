@@ -10,10 +10,6 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.dto.NameSTO;
-import eu.etaxonomy.cdm.dto.Taxon;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-
 
 
 /**
