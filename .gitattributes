@@ -295,6 +295,8 @@ cdmlib-persistence/src/main/resources/applicationContext.xml -text
 cdmlib-persistence/src/main/resources/cdm.datasource.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/main/resources/sessionfactory.xml -text
+cdmlib-persistence/src/site/apt/index.apt -text
+cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/CdmEntityDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/DaoBaseTest.java -text
