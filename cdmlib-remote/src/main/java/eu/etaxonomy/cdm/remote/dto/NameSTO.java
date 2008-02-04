@@ -18,9 +18,7 @@ import java.util.List;
  * @version 1.0
  * @created 11.12.2007 14:40:26
  */
-public class NameSTO {
-	
-	private String uuid;
+public class NameSTO extends BaseSTO {
 	
 	private String fullname;
 	

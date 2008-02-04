@@ -10,12 +10,15 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.dto.NameSTO;
+import eu.etaxonomy.cdm.dto.Taxon;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+
 
 
 /**
  * This Simple Transfer Object (STO) is used as surrogate for instances of {@link Taxon} and {@link Synonym},  
- * thus a TaxonSTO my represent accepted ad unaccepted taxa. Therefore the flag isAccepted has been introduced 
+ * thus a TaxonSTO my represent accepted a not accepted taxon. Therefore the flag isAccepted has been introduced 
  * by which accepted taxa can be clearly identified.
  * 
  * @author a.kohlbecker
@@ -23,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
  * @created 13.12.2007 14:55:32
  *
  */
-public class TaxonSTO {
+public class TaxonSTO extends BaseSTO {
 	
 	private NameSTO name;
 	private UUID sec_uuid;
