@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
-import eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TaxonRelationshipTO {
