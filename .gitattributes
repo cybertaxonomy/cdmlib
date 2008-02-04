@@ -244,6 +244,8 @@ cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
+cdmlib-model/src/site/apt/index.apt -text
+cdmlib-model/src/site/site.xml -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
