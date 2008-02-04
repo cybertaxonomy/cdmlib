@@ -340,6 +340,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorld.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorldImpl.java -text
+cdmlib-remote/src/main/webapp/WEB-INF/cxf-servlet.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/sun-jaxws.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-services/pom.xml -text

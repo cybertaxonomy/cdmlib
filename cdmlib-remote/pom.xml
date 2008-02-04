@@ -11,11 +11,11 @@
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>cdmLibrary</artifactId>
+  <artifactId>cdmLibrary-remote</artifactId>
   <packaging>war</packaging>
 
   <name>EDIT CDM Community Server</name>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <description>The EDIT CDM Community Server allows remote access to the common data model via webservices in the wider sense</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</connection>
@@ -23,6 +23,10 @@
   	<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/</url>
   </scm>
 	
+	<properties>
+		<cxf.version>2.0.3-incubator</cxf.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
@@ -32,18 +36,18 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>2.0.2-incubator</version>
+			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>2.0.2-incubator</version>
+			<version>${cxf.version}</version>
 		</dependency>
 		<!-- Jetty is needed if you're are not using the CXFServlet -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>2.0.2-incubator</version>
+			<version>${cxf.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -91,32 +95,41 @@
 	<build>
 		<plugins>
 			<plugin>
-		<groupId>org.apache.cxf</groupId>
-		<artifactId>cxf-codegen-plugin</artifactId>
-		<version>2.0.2-incubator</version>
-		<dependencies>
-			<dependency>
+				<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
 				<groupId>org.apache.cxf</groupId>
-				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>2.0.2-incubator</version>
-			</dependency>
-		</dependencies>
-		<executions>
-			<execution>
-				<id>generate-wsdl</id>
-				<phase>process-classes</phase>
+				<artifactId>cxf-codegen-plugin</artifactId>
+						<version>${cxf.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-rt-frontend-jaxws</artifactId>
+						<version>${cxf.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>generate-wsdl</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<className>
+						eu.etaxonomy.cdm.remote.service.HelloWorld
+							</className>
+						</configuration>
+						<goals>
+							<goal>java2wsdl</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>		
+			<plugin><!--use mvn tomcat:deploy -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
-					<className>
-				eu.etaxonomy.cdm.remote.service.HelloWorld
-					</className>
+					<server>tomcat-local</server>
+					<!--url>Place URL if different from http://localhost:8080/manager</url-->
 				</configuration>
-				<goals>
-					<goal>java2wsdl</goal>
-				</goals>
-			</execution>
-		</executions>
-	</plugin>		
-	</plugins>
+			</plugin>
+		</plugins>
 	</build>
 	
 </project>
