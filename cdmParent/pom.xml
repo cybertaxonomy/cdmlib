@@ -13,6 +13,12 @@
 	</description>
 	<url>http://wp5.e-taxonomy.eu</url>
 	<packaging>pom</packaging>
+
+	<properties>
+		<cdmlib.version>0.4.5</cdmlib.version>
+		<spring.version>2.5</spring.version>
+	</properties>
+	
 	<mailingLists>
 		<mailingList>
 			<name>dev-edit</name>
@@ -261,11 +267,13 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			-->
+			<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
+			<!-- 
 			<plugin>
-				<!-- The changelog plug-in generates a nice report describing which files have been changed and by whom -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>changelog-maven-plugin</artifactId>
 			</plugin>
+			-->
 			<plugin>
 				<!-- if you use @todo tags to remind you of things to be done (which is a good coding practice), the taglist report will generate a list of all the items marked @todo or TODO -->
 				<groupId>org.codehaus.mojo</groupId>
@@ -310,11 +318,6 @@
 
 
 	<!-- **** DEPENDENCIES **** -->
-	<properties>
-		<cdmlib.version>0.4.5</cdmlib.version>
-		<spring.version>2.5</spring.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
