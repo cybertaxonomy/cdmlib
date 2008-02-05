@@ -9,12 +9,72 @@
     http://cxf.apache.org/schemas/jaxws.xsd">
     
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-http-binding.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-http-binding.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-xml.xml"/> 
     
+    <jaxws:endpoint id="cdmRestWS"
+        implementor="eu.etaxonomy.cdm.remote.service.CdmServiceImpl"
+        address="/xml"
+        bindingUri="http://apache.org/cxf/binding/http">
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="true" />
+            </bean>
+        </jaxws:serviceFactory>
+    </jaxws:endpoint>    
+
+    <jaxws:endpoint id="cdmJsonWS"
+        implementor="eu.etaxonomy.cdm.remote.service.CdmServiceImpl"
+        address="/json"
+        bindingUri="http://apache.org/cxf/binding/http">
+        <jaxws:serviceFactory>
+            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
+                <property name="wrapped" value="true"/>
+                <property name="properties">
+                    <map>
+                        <entry key="Content-Type" value="text/plain"/>
+                        <entry>
+                            <key><value>javax.xml.stream.XMLInputFactory</value></key>
+                            <bean class="org.codehaus.jettison.badgerfish.BadgerFishXMLInputFactory"/>
+                        </entry>
+                        <entry>
+                            <key><value>javax.xml.stream.XMLOutputFactory</value></key>
+                            <bean class="org.codehaus.jettison.badgerfish.BadgerFishXMLOutputFactory"/>
+                        </entry>
+
+                        <!--
+                            <entry>                            
+                            <key><value>javax.xml.stream.XMLInputFactory</value></key>
+                            <bean class="org.codehaus.jettison.mapped.MappedXMLInputFactory">
+                            <constructor-arg>
+                            <map>
+                            <entry key="http://cdm.etaxonomy.eu/remote" value="cdm-remote"/>
+                            </map>
+                            </constructor-arg>
+                            </bean>
+                            </entry>
+                            <entry>
+                            <key><value>javax.xml.stream.XMLOutputFactory</value></key>
+                            <bean class="org.codehaus.jettison.mapped.MappedXMLOutputFactory">
+                            <constructor-arg>
+                            <map>
+                            <entry key="http://cdm.etaxonomy.eu/remote" value="cdm-remote"/>
+                            </map>
+                            </constructor-arg>
+                            </bean>
+                            </entry>
+                        -->
+                    </map>
+                </property>
+            </bean>
+        </jaxws:serviceFactory>
+    </jaxws:endpoint>
+
+
     <jaxws:endpoint id="hellowWorldService"
         implementor="eu.etaxonomy.cdm.remote.service.HelloWorldImpl"
-        address="/"
+        address="/hello"
         bindingUri="http://apache.org/cxf/binding/http">
         <jaxws:serviceFactory>
             <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
