@@ -11,6 +11,13 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
+/**
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 05.02.2008 14:59:38
+ *
+ */
 public class ReferencedEntityBaseTO extends BaseTO{
 	
 	private String citationMicroReference;

@@ -9,6 +9,13 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 
+/**
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 05.02.2008 14:59:52
+ *
+ */
 public class SynonymRelationshipTO {
 	
 	private TaxonSTO synoynm;

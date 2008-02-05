@@ -11,6 +11,13 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.Set;
 
+/**
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 05.02.2008 14:59:44
+ *
+ */
 public class ReferenceTO extends BaseTO{
 	
 	/**

@@ -10,6 +10,13 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
+/**
+ * 
+ * @author a.kohlbecker
+ * @version 1.0
+ * @created 05.02.2008 15:00:00
+ *
+ */
 public class TaxonRelationshipTO {
 	
 	private LocalisedTermTO type;
