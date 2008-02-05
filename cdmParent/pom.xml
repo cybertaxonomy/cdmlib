@@ -13,12 +13,11 @@
 	</description>
 	<url>http://wp5.e-taxonomy.eu</url>
 	<packaging>pom</packaging>
-
 	<properties>
-		<cdmlib.version>0.4.5</cdmlib.version>
+		<cdmlib.version>0.4.6</cdmlib.version>
 		<spring.version>2.5</spring.version>
 	</properties>
-	
+
 	<mailingLists>
 		<mailingList>
 			<name>dev-edit</name>
@@ -144,17 +143,18 @@
 
 	<!-- **** REPOSITORIES **** -->
 	<repositories>
-		<!-- the cdm internal repository -->
-		<repository>
-			<id>EditRepository</id>
-			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
-		</repository>
 		<!-- sun repository -->
 		<repository>
 			<id>java.net</id>
 			<url>http://download.java.net/maven/1/</url>
 			<layout>legacy</layout>
 		</repository>
+		<!-- the cdm internal repository -->
+		<repository>
+			<id>EditRepository</id>
+			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
+		</repository>
+
 	</repositories>
 
 	<!-- **** PLUGINS **** -->
