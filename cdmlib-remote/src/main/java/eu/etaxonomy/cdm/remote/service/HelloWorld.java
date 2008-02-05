@@ -10,10 +10,17 @@ import org.codehaus.jra.HttpResource;
 import org.codehaus.jra.Post;
 import org.codehaus.jra.Put;
 
-@WebService(targetNamespace = "http://cdm.server.etaxonomy.eu")
+import eu.etaxonomy.cdm.remote.service.parabind.GetGreeting;
+
+@WebService(targetNamespace = "http://cdm.etaxonomy.eu/remote")
 public interface HelloWorld {
 	@Get
-    @HttpResource(location = "/hello")
+    @HttpResource(location = "/hello/{first}/{last}")
     @WebResult(name = "Greeting")
-    String sayHi(@WebParam(name="text") String text);
+    String getGreeting(@WebParam(name="first") String firstName, @WebParam(name="last") String lastName);
+
+	@Get
+    @HttpResource(location = "/hello/{nomen}")
+    @WebResult(name = "Greeting")
+    String sayHi(@WebParam(name="nomen") String nomen);
 }

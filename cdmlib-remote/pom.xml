@@ -105,7 +105,7 @@
 	</pluginRepositories>
 		
 	<build>
-		<finalName>cdmlib-remote</finalName>
+		<finalName>cdmserver</finalName>
 		<plugins>
 			<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
 			<!-- 

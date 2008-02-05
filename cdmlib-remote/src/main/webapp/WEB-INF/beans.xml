@@ -14,7 +14,7 @@
     
     <jaxws:endpoint id="hellowWorldService"
         implementor="eu.etaxonomy.cdm.remote.service.HelloWorldImpl"
-        address="/cdm"
+        address="/"
         bindingUri="http://apache.org/cxf/binding/http">
         <jaxws:serviceFactory>
             <bean class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean">
