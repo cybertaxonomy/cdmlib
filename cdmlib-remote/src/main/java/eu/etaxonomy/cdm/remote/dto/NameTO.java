@@ -56,7 +56,7 @@ public class NameTO extends BaseTO {
 		return taggedName;
 	}
 
-	protected void addNameToken(TaggedText token) {
+	public void addNameToken(TaggedText token) {
 		this.taggedName.add(token);
 	}
 
@@ -114,6 +114,30 @@ public class NameTO extends BaseTO {
 
 	public void setBasionym(NameTO basionym) {
 		this.basionym = basionym;
+	}
+
+	public Set<NameSTO> getHomotypicalGroup() {
+		return homotypicalGroup;
+	}
+
+	public void setHomotypicalGroup(Set<NameSTO> homotypicalGroup) {
+		this.homotypicalGroup = homotypicalGroup;
+	}
+
+	public void setTaggedName(List<TaggedText> taggedName) {
+		this.taggedName = taggedName;
+	}
+
+	public void setStatus(Set<LocalisedTermTO> status) {
+		this.status = status;
+	}
+
+	public void setNameRelations(Set<NameRelationshipTO> nameRelations) {
+		this.nameRelations = nameRelations;
+	}
+
+	public void setNewCombinations(Set<NameTO> newCombinations) {
+		this.newCombinations = newCombinations;
 	}
 
 }

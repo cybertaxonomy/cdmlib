@@ -34,5 +34,13 @@ public class TaggedText {
 	public void setType(TagEnum type) {
 		this.type = type;
 	}
+	public TaggedText() {
+		super();
+	}
+	public TaggedText(TagEnum type, String text) {
+		super();
+		this.text = text;
+		this.type = type;
+	}
 	
 }

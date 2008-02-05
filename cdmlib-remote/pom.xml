@@ -7,13 +7,13 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>0.4.5</version>
+  	<version>${cdmlib.version}</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
 	
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
-  <artifactId>cdmLibrary-remote</artifactId>
+	<artifactId>cdmlib-remote</artifactId>
   <packaging>war</packaging>
   <version>0.1</version>
   <name>EDIT CDM Community Server</name>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-model</artifactId>
-			<version>0.4.5</version>
+			<version>${cdmlib.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -44,10 +44,22 @@
 			<artifactId>cxf-rt-transports-http</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
+		<!-- different JSON libs -->
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
 			<version>1.0-RC2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sdicons.jsontools</groupId>
+			<artifactId>jsontools-core</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.2</version>
+			<classifier>jdk15</classifier>   
 		</dependency>
 		<!-- 
 			<dependency>

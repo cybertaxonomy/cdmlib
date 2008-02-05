@@ -42,8 +42,8 @@
                             <key><value>javax.xml.stream.XMLOutputFactory</value></key>
                             <bean class="org.codehaus.jettison.badgerfish.BadgerFishXMLOutputFactory"/>
                         </entry>
-
                         <!--
+                            
                             <entry>                            
                             <key><value>javax.xml.stream.XMLInputFactory</value></key>
                             <bean class="org.codehaus.jettison.mapped.MappedXMLInputFactory">

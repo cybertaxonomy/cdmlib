@@ -25,6 +25,10 @@ public enum TagEnum {
 	 */
 	name,
 	/**
+	 *  A name rank abbreviation, e.g. subsp.
+	 */
+	rank,
+	/**
 	 * Non-atomised addition to a taxon name not ruled by a nomenclatural code
 	 */
 	appendedPhrase,
