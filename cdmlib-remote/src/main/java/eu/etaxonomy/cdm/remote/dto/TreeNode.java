@@ -40,7 +40,7 @@ public class TreeNode extends BaseSTO {
 	private int hasChildren;
 
 	/**
-	 * A formated string of the fullname of this taxons scientific name including autors
+	 * A formated string of the fullname of this taxons scientific name including authors
 	 */
 	private String fullname;
 
