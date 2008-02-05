@@ -156,7 +156,10 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					<server>tomcat-local</server>
-					<!--url>Place URL if different from http://localhost:8080/manager</url-->
+					<!-- 					  
+						<server>tomcat-edit</server>
+						<url>http://search.biocase.org:8080/manager</url>
+					-->
 				</configuration>
 			</plugin>
 		</plugins>
