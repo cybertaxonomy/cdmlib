@@ -10,6 +10,8 @@ import java.util.UUID;
 
 import javax.jws.WebService;
 
+import net.sf.json.JSONObject;
+
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
@@ -26,11 +28,10 @@ public class CdmServiceImpl implements CdmService {
 		n.addNameToken(new TaggedText(TagEnum.name,"berolina"));
 		n.addNameToken(new TaggedText(TagEnum.name,"subsp."));
 		try {
-			JSONValue jObj;
-			jObj = JSONMapper.toJSON(n);
-			n.setUpdatedBy(jObj.render(true));
-			Marshall marshall = new JSONMarshall(); 
-			n.setCreatedBy(marshall.marshall(n).render(true));
+			JSONValue jObj1 = JSONMapper.toJSON(n);
+			JSONObject jObj2 = JSONObject.fromObject( n );  
+			n.setUpdatedBy(jObj1.render(false));
+			n.setCreatedBy(jObj2.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
