@@ -21,7 +21,7 @@ import java.util.List;
 public class NameSTO extends BaseSTO {
 	
 	private String fullname;
-	
+	private ReferenceSTO nomenclaturalReference;
 	private List<TaggedText> taggedName = new ArrayList();
 	
 }

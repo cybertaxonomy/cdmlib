@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -33,7 +35,8 @@ public class TaxonTO extends BaseTO {
 	 */
 	private ReferenceTO sec;
 	
-	private Set<SynonymRelationshipTO> synonyms = new HashSet();
+	private List<SynonymRelationshipTO> homotypicSynonyms = new ArrayList();
+	private List<HomotypicGroupTO> heterotypicSynonymyGroups = new ArrayList();
 	private Set<TaxonRelationshipTO> taxonRelations = new HashSet();
 	
 }

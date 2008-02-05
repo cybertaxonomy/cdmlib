@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:jaxws="http://cxf.apache.org/jaxws"
-      xmlns:soap="http://cxf.apache.org/bindings/soap"
-      xsi:schemaLocation="
-http://www.springframework.org/schema/beans 
-http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://cxf.apache.org/bindings/soap
-http://cxf.apache.org/schemas/configuration/soap.xsd
-http://cxf.apache.org/jaxws
-http://cxf.apache.org/schemas/jaxws.xsd">
-
-    <jaxws:endpoint 
-        id="cdmlib-remote"
-        implementor="eu.etaxonomy.cdm.remote.service.HelloWorldImpl"
-        wsdlLocation="WEB-INF/wsdl/HelloWorld.wsdl"
-        address="/helloworld">
-        <!--jaxws:features>
- 		   <bean class="org.apache.cxf.feature.LoggingFeature"/>
-        </jaxws:features-->
-    </jaxws:endpoint>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://cxf.apache.org/jaxrs
+    http://cxf.apache.org/schemas/jaxrs.xsd">
+    
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+    
+    <jaxrs:server id="cdmlibRemote" address="http://localhost:8080/cdm/">
+        <jaxrs:serviceBeans>
+            <bean class="eu.etaxonomy.cdm.remote.service.HelloWorld" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+    
 </beans>

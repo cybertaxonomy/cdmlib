@@ -15,7 +15,7 @@
   <packaging>war</packaging>
 
   <name>EDIT CDM Community Server</name>
-  <version>0.1.1</version>
+  <version>0.1</version>
   <description>The EDIT CDM Community Server allows remote access to the common data model via webservices in the wider sense</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</connection>
@@ -24,7 +24,7 @@
   </scm>
 	
 	<properties>
-		<cxf.version>2.0.3-incubator</cxf.version>
+		<cxf.version>2.0.4-incubator</cxf.version>
 	</properties>
 
 	<dependencies>
@@ -35,7 +35,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<artifactId>cxf-rt-bindings-http</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
@@ -43,12 +43,23 @@
 			<artifactId>cxf-rt-transports-http</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<!-- Jetty is needed if you're are not using the CXFServlet -->
 		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+			<version>1.0-RC2</version>
+		</dependency>
+		<!-- 
+			<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http-jetty</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
+		-->
 	</dependencies>
 
 	<repositories>
@@ -94,8 +105,12 @@
 		
 	<build>
 		<plugins>
+			<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
+			<!-- 
+
+								ONLY FOR SOAP !!!
+			
 			<plugin>
-				<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
 						<version>${cxf.version}</version>
@@ -120,7 +135,8 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>		
+			</plugin>
+			-->		
 			<plugin><!--use mvn tomcat:deploy -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
