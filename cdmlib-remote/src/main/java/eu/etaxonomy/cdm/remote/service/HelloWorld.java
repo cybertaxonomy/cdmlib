@@ -10,7 +10,6 @@ import org.codehaus.jra.HttpResource;
 import org.codehaus.jra.Post;
 import org.codehaus.jra.Put;
 
-import eu.etaxonomy.cdm.remote.service.parabind.GetGreeting;
 
 @WebService(targetNamespace = "http://cdm.etaxonomy.eu/remote")
 public interface HelloWorld {
