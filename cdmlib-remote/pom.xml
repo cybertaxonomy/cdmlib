@@ -10,12 +10,13 @@
     <version>0.4.5</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
+	
   <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmLibrary-remote</artifactId>
   <packaging>war</packaging>
-
-  <name>EDIT CDM Community Server</name>
   <version>0.1</version>
+  <name>EDIT CDM Community Server</name>
   <description>The EDIT CDM Community Server allows remote access to the common data model via webservices in the wider sense</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</connection>
@@ -104,6 +105,7 @@
 	</pluginRepositories>
 		
 	<build>
+		<finalName>cdmlib-remote</finalName>
 		<plugins>
 			<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
 			<!-- 
