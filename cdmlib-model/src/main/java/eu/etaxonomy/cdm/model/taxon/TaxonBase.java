@@ -63,5 +63,13 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	public void setSec(ReferenceBase sec) {
 		this.sec = sec;
 	}
+	
+	public boolean isSaveable(){
+		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
+			return false;
+		}else{
+			return true;
+		}
+	}
 
 }

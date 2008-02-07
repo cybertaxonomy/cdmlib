@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -99,187 +101,310 @@ public class Rank extends OrderedTermBase {
 	}
 
 	public static final Rank EMPIRE(){
-		  return (Rank)findByUuid(uuidEmpire);
+	  return (Rank)findByUuid(uuidEmpire);
+	}
+	public static final Rank DOMAIN(){
+	  return (Rank)findByUuid(uuidDomain);
+	}
+	public static final Rank SUPERKINGDOM(){
+	  return (Rank)findByUuid(uuidSuperkingdom);
+	}
+	public static final Rank KINGDOM(){
+	  return (Rank)findByUuid(uuidKingdom);
+	}
+	public static final Rank SUBKINGDOM(){
+	  return (Rank)findByUuid(uuidSubkingdom);
+	}
+	public static final Rank INFRAKINGDOM(){
+	  return (Rank)findByUuid(uuidInfrakingdom);
+	}
+	public static final Rank SUPERPHYLUM(){
+	  return (Rank)findByUuid(uuidSuperphylum);
+	}
+	public static final Rank PHYLUM(){
+	  return (Rank)findByUuid(uuidPhylum);
+	}
+	public static final Rank SUBPHYLUM(){
+	  return (Rank)findByUuid(uuidSubphylum);
+	}
+	public static final Rank INFRAPHYLUM(){
+	  return (Rank)findByUuid(uuidInfraphylum);
+	}
+	public static final Rank SUPERDIVISION(){
+	  return (Rank)findByUuid(uuidSuperdivision);
+	}
+	public static final Rank DIVISION(){
+	  return (Rank)findByUuid(uuidDivision);
+	}
+	public static final Rank SUBDIVISION(){
+	  return (Rank)findByUuid(uuidSubdivision);
+	}
+	public static final Rank INFRADIVISION(){
+	  return (Rank)findByUuid(uuidInfradivision);
+	}
+	public static final Rank SUPERCLASS(){
+	  return (Rank)findByUuid(uuidSuperclass);
+	}
+	public static final Rank CLASS(){
+	  return (Rank)findByUuid(uuidClass);
+	}
+	public static final Rank SUBCLASS(){
+	  return (Rank)findByUuid(uuidSubclass);
+	}
+	public static final Rank INFRACLASS(){
+	  return (Rank)findByUuid(uuidInfraclass);
+	}
+	public static final Rank SUPERORDER(){
+	  return (Rank)findByUuid(uuidSuperorder);
+	}
+	public static final Rank ORDER(){
+	  return (Rank)findByUuid(uuidOrder);
+	}
+	public static final Rank SUBORDER(){
+	  return (Rank)findByUuid(uuidSuborder);
+	}
+	public static final Rank INFRAORDER(){
+	  return (Rank)findByUuid(uuidInfraorder);
+	}
+	public static final Rank SUPERFAMILY(){
+	  return (Rank)findByUuid(uuidSuperfamily);
+	}
+	public static final Rank FAMILY(){
+	  return (Rank)findByUuid(uuidFamily);
+	}
+	public static final Rank SUBFAMILY(){
+	  return (Rank)findByUuid(uuidSubfamily);
+	}
+	public static final Rank INFRAFAMILY(){
+	  return (Rank)findByUuid(uuidInfrafamily);
+	}
+	public static final Rank SUPERTRIBE(){
+	  return (Rank)findByUuid(uuidSupertribe);
+	}
+	public static final Rank TRIBE(){
+	  return (Rank)findByUuid(uuidTribe);
+	}
+	public static final Rank SUBTRIBE(){
+	  return (Rank)findByUuid(uuidSubtribe);
+	}
+	public static final Rank INFRATRIBE(){
+	  return (Rank)findByUuid(uuidInfratribe);
+	}
+	public static final Rank SUPRAGENERICTAXON(){
+	  return (Rank)findByUuid(uuidSupragenericTaxon);
+	}
+	public static final Rank GENUS(){
+	  return (Rank)findByUuid(uuidGenus);
+	}
+	public static final Rank SUBGENUS(){
+	  return (Rank)findByUuid(uuidSubgenus);
+	}
+	public static final Rank INFRAGENUS(){
+	  return (Rank)findByUuid(uuidInfragenus);
+	}
+	public static final Rank SECTION(){
+	  return (Rank)findByUuid(uuidSection);
+	}
+	public static final Rank SUBSECTION(){
+	  return (Rank)findByUuid(uuidSubsection);
+	}
+	public static final Rank SERIES(){
+	  return (Rank)findByUuid(uuidSeries);
+	}
+	public static final Rank SUBSERIES(){
+	  return (Rank)findByUuid(uuidSubseries);
+	}
+	public static final Rank SPECIESAGGREGATE(){
+	  return (Rank)findByUuid(uuidSpeciesAggregate);
+	}
+	public static final Rank INFRAGENERICTAXON(){
+	  return (Rank)findByUuid(uuidInfragenericTaxon);
+	}
+	public static final Rank SPECIES(){
+	  return (Rank)findByUuid(uuidSpecies);
+	}
+	public static final Rank SUBSPECIFICAGGREGATE(){
+	  return (Rank)findByUuid(uuidSubspecificAggregate);
+	}
+	public static final Rank SUBSPECIES(){
+	  return (Rank)findByUuid(uuidSubspecies);
+	}
+	public static final Rank INFRASPECIES(){
+	  return (Rank)findByUuid(uuidInfraspecies);
+	}
+	public static final Rank VARIETY(){
+	  return (Rank)findByUuid(uuidVariety);
+	}
+	public static final Rank BIOVARIETY(){
+	  return (Rank)findByUuid(uuidBioVariety);
+	}
+	public static final Rank PATHOVARIETY(){
+	  return (Rank)findByUuid(uuidPathoVariety);
+	}
+	public static final Rank SUBVARIETY(){
+	  return (Rank)findByUuid(uuidSubvariety);
+	}
+	public static final Rank SUBSUBVARIETY(){
+	  return (Rank)findByUuid(uuidSubsubvariety);
+	}
+	public static final Rank CONVAR(){
+	  return (Rank)findByUuid(uuidConvar);
+	}
+	public static final Rank FORM(){
+	  return (Rank)findByUuid(uuidForm);
+	}
+	public static final Rank SPECIALFORM(){
+	  return (Rank)findByUuid(uuidSpecialForm);
+	}
+	public static final Rank SUBFORM(){
+	  return (Rank)findByUuid(uuidSubform);
+	}
+	public static final Rank SUBSUBFORM(){
+	  return (Rank)findByUuid(uuidSubsubform);
+	}
+	public static final Rank INFRASPECIFICTAXON(){
+	  return (Rank)findByUuid(uuidInfraspecificTaxon);
+	}
+	public static final Rank CANDIDATE(){
+	  return (Rank)findByUuid(uuidCandidate);
+	}
+	public static final Rank DENOMINATIONCLASS(){
+	  return (Rank)findByUuid(uuidDenominationClass);
+	}
+	public static final Rank GREX(){
+	  return (Rank)findByUuid(uuidGrex);
+	}
+	public static final Rank GRAFTCHIMAERA(){
+	  return (Rank)findByUuid(uuidGraftChimaera);
+	}
+	public static final Rank CULTIVARGROUP(){
+	  return (Rank)findByUuid(uuidCultivarGroup);
+	}
+	public static final Rank CULTIVAR(){
+	  return (Rank)findByUuid(uuidCultivar);
+	}
+	
+	
+	
+	/**
+	 * NOT YET COMPLETE !!
+	 * @param strRank
+	 * @return Rank
+	 * @throws UnknownRankException
+	 */
+	public static Rank getRankByNameOrAbbreviation(String strRank)
+			throws UnknownRankException{
+		try {
+			return getRankByAbbreviation(strRank);
+		} catch (UnknownRankException e) {
+			return getRankByName(strRank);
 		}
-		public static final Rank DOMAIN(){
-		  return (Rank)findByUuid(uuidDomain);
+	}
+	
+	/** TODO
+	 * preliminary implementation for BotanicalNameParser
+	 *  * not yet complete
+	 */
+	public static Rank getRankByAbbreviation(String abbrev) throws UnknownRankException{
+		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRangByAbbrev");
+		}else if (abbrev.equalsIgnoreCase("reg.")){	return Rank.KINGDOM();
+		}else if (abbrev.equalsIgnoreCase("subreg.")){ return Rank.SUBKINGDOM();
+		}else if (abbrev.equalsIgnoreCase("phyl.")){return Rank.PHYLUM();
+		}else if (abbrev.equalsIgnoreCase("subphyl.")) { return Rank.SUBPHYLUM();
+		}else if (abbrev.equalsIgnoreCase("div.")) { return Rank.DIVISION();
+		}else if (abbrev.equalsIgnoreCase("subdiv.")) { return Rank.SUBDIVISION();
+		}else if (abbrev.equalsIgnoreCase("cl.")) { return Rank.CLASS();
+		}else if (abbrev.equalsIgnoreCase("subcl.")) { return Rank.SUBCLASS();
+		}else if (abbrev.equalsIgnoreCase("superor.")) { return Rank.SUPERORDER();
+		}else if (abbrev.equalsIgnoreCase("ordo")) { return Rank.ORDER();
+		}else if (abbrev.equalsIgnoreCase("subor.")) { return Rank.SUBORDER();
+		}else if (abbrev.equalsIgnoreCase("fam.")) { return Rank.FAMILY();
+		}else if (abbrev.equalsIgnoreCase("subfam.")) { return Rank.SUBFAMILY();
+		}else if (abbrev.equalsIgnoreCase("trib.")) { return Rank.TRIBE();
+		}else if (abbrev.equalsIgnoreCase("subtrib.")) { return Rank.SUBTRIBE();
+		}else if (abbrev.equalsIgnoreCase("gen.")) { return Rank.GENUS();
+		}else if (abbrev.equalsIgnoreCase("subg.")) { return Rank.SUBGENUS();
+		}else if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION();
+		}else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION();
+		}else if (abbrev.equalsIgnoreCase("ser.")) { return Rank.SERIES();
+		}else if (abbrev.equalsIgnoreCase("subser.")) { return Rank.SUBSERIES();
+		}else if (abbrev.equalsIgnoreCase("aggr.")) { return Rank.SPECIESAGGREGATE();
+		//TODO
+		//}else if (abbrev.equalsIgnoreCase("group")) { return Rank.SPECIESGROUP();
+		}else if (abbrev.equalsIgnoreCase("sp.")) { return Rank.SPECIES();
+		}else if (abbrev.equalsIgnoreCase("subsp.")) { return Rank.SUBSPECIES();
+		}else if (abbrev.equalsIgnoreCase("convar.")) { return Rank.CONVAR();
+		}else if (abbrev.equalsIgnoreCase("var.")) { return Rank.VARIETY();
+		}else if (abbrev.equalsIgnoreCase("subvar.")) { return Rank.SUBVARIETY();
+		}else if (abbrev.equalsIgnoreCase("f.")) { return Rank.FORM();
+		}else if (abbrev.equalsIgnoreCase("subf.")) { return Rank.SUBFORM();
+		//TODO
+		//}else if (abbrev.equalsIgnoreCase("f.spec.")) { return Rank.FORMA_SPEC();
+		}else if (abbrev.equalsIgnoreCase("t.infgen.")) { return Rank.INFRAGENERICTAXON();
+		}else if (abbrev.equalsIgnoreCase("t.infr.")) { return Rank.INFRASPECIFICTAXON();
+		}else { 
+			if (abbrev == null){
+				abbrev = "(null)";
+			}
+			throw new UnknownRankException("Unknown rank abbreviation: " + abbrev);
 		}
-		public static final Rank SUPERKINGDOM(){
-		  return (Rank)findByUuid(uuidSuperkingdom);
+	}
+	
+	/** TODO
+	 * preliminary implementation for BotanicalNameParser
+	 * not yet complete
+	 */
+	public static Rank getRankByName(String rankName)
+			throws UnknownRankException{
+		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
+		}else if (rankName.equalsIgnoreCase("Subregnum")){ return Rank.SUBKINGDOM();
+		}else if (rankName.equalsIgnoreCase("Phylum")){ return Rank.PHYLUM();
+		}else if (rankName.equalsIgnoreCase("subphylum")){ return Rank.SUBPHYLUM();
+		}else if (rankName.equalsIgnoreCase("Divisio")){ return Rank.DIVISION();
+		}else if (rankName.equalsIgnoreCase("Subdivisio")){ return Rank.SUBDIVISION();
+		}else if (rankName.equalsIgnoreCase("Classis")){ return Rank.CLASS();
+		}else if (rankName.equalsIgnoreCase("Subclassis")){ return Rank.SUBCLASS();
+		}else if (rankName.equalsIgnoreCase("Superordo")){ return Rank.SUPERORDER();
+		}else if (rankName.equalsIgnoreCase("Ordo")){ return Rank.ORDER();
+		}else if (rankName.equalsIgnoreCase("Subordo")){ return Rank.SUBORDER();
+		}else if (rankName.equalsIgnoreCase("Familia")){ return Rank.FAMILY();
+		}else if (rankName.equalsIgnoreCase("Subfamilia")){ return Rank.SUBFAMILY();
+		}else if (rankName.equalsIgnoreCase("Tribus")){ return Rank.TRIBE();
+		}else if (rankName.equalsIgnoreCase("Subtribus")){ return Rank.SUBTRIBE();
+		}else if (rankName.equalsIgnoreCase("Genus")){ return Rank.GENUS();
+		}else if (rankName.equalsIgnoreCase("Subgenus")){ return Rank.SUBGENUS();
+		}else if (rankName.equalsIgnoreCase("Sectio")){ return Rank.SECTION();
+		}else if (rankName.equalsIgnoreCase("Subsectio")){ return Rank.SUBSECTION();
+		}else if (rankName.equalsIgnoreCase("Series")){ return Rank.SERIES();
+		}else if (rankName.equalsIgnoreCase("Subseries")){ return Rank.SUBSERIES();
+		}else if (rankName.equalsIgnoreCase("Aggregate")){ return Rank.SPECIESAGGREGATE();
+		//TODO
+		//}else if (rankName.equalsIgnoreCase("Speciesgroup")){ return Rank.SPECIESGROUP();
+		}else if (rankName.equalsIgnoreCase("Species")){ return Rank.SPECIES();
+		}else if (rankName.equalsIgnoreCase("Subspecies")){ return Rank.SUBSPECIES();
+		}else if (rankName.equalsIgnoreCase("Convarietas")){ return Rank.CONVAR();
+		}else if (rankName.equalsIgnoreCase("Varietas")){ return Rank.VARIETY();
+		}else if (rankName.equalsIgnoreCase("Subvarietas")){ return Rank.SUBVARIETY();
+		}else if (rankName.equalsIgnoreCase("Forma")){ return Rank.FORM();
+		}else if (rankName.equalsIgnoreCase("Subforma")){ return Rank.SUBFORM();
+		}else if (rankName.equalsIgnoreCase("Forma spec.")){ return Rank.SPECIALFORM();
+		}else if (rankName.equalsIgnoreCase("tax.infragen.")){ return Rank.INFRAGENERICTAXON();
+		}else if (rankName.equalsIgnoreCase("tax.infrasp.")){ return Rank.INFRASPECIFICTAXON();
+		// old ranks 
+		}else if (rankName.equalsIgnoreCase("proles")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
+		}else if (rankName.equalsIgnoreCase("race")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
+		}else if (rankName.equalsIgnoreCase("taxon")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
+		}else if (rankName.equalsIgnoreCase("sublusus")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
+		
+		}else{ 
+			if (rankName == null){
+				rankName = "(null)";
+			}
+			throw new UnknownRankException("Unknown rank name: " + rankName);
 		}
-		public static final Rank KINGDOM(){
-		  return (Rank)findByUuid(uuidKingdom);
-		}
-		public static final Rank SUBKINGDOM(){
-		  return (Rank)findByUuid(uuidSubkingdom);
-		}
-		public static final Rank INFRAKINGDOM(){
-		  return (Rank)findByUuid(uuidInfrakingdom);
-		}
-		public static final Rank SUPERPHYLUM(){
-		  return (Rank)findByUuid(uuidSuperphylum);
-		}
-		public static final Rank PHYLUM(){
-		  return (Rank)findByUuid(uuidPhylum);
-		}
-		public static final Rank SUBPHYLUM(){
-		  return (Rank)findByUuid(uuidSubphylum);
-		}
-		public static final Rank INFRAPHYLUM(){
-		  return (Rank)findByUuid(uuidInfraphylum);
-		}
-		public static final Rank SUPERDIVISION(){
-		  return (Rank)findByUuid(uuidSuperdivision);
-		}
-		public static final Rank DIVISION(){
-		  return (Rank)findByUuid(uuidDivision);
-		}
-		public static final Rank SUBDIVISION(){
-		  return (Rank)findByUuid(uuidSubdivision);
-		}
-		public static final Rank INFRADIVISION(){
-		  return (Rank)findByUuid(uuidInfradivision);
-		}
-		public static final Rank SUPERCLASS(){
-		  return (Rank)findByUuid(uuidSuperclass);
-		}
-		public static final Rank CLASS(){
-		  return (Rank)findByUuid(uuidClass);
-		}
-		public static final Rank SUBCLASS(){
-		  return (Rank)findByUuid(uuidSubclass);
-		}
-		public static final Rank INFRACLASS(){
-		  return (Rank)findByUuid(uuidInfraclass);
-		}
-		public static final Rank SUPERORDER(){
-		  return (Rank)findByUuid(uuidSuperorder);
-		}
-		public static final Rank ORDER(){
-		  return (Rank)findByUuid(uuidOrder);
-		}
-		public static final Rank SUBORDER(){
-		  return (Rank)findByUuid(uuidSuborder);
-		}
-		public static final Rank INFRAORDER(){
-		  return (Rank)findByUuid(uuidInfraorder);
-		}
-		public static final Rank SUPERFAMILY(){
-		  return (Rank)findByUuid(uuidSuperfamily);
-		}
-		public static final Rank FAMILY(){
-		  return (Rank)findByUuid(uuidFamily);
-		}
-		public static final Rank SUBFAMILY(){
-		  return (Rank)findByUuid(uuidSubfamily);
-		}
-		public static final Rank INFRAFAMILY(){
-		  return (Rank)findByUuid(uuidInfrafamily);
-		}
-		public static final Rank SUPERTRIBE(){
-		  return (Rank)findByUuid(uuidSupertribe);
-		}
-		public static final Rank TRIBE(){
-		  return (Rank)findByUuid(uuidTribe);
-		}
-		public static final Rank SUBTRIBE(){
-		  return (Rank)findByUuid(uuidSubtribe);
-		}
-		public static final Rank INFRATRIBE(){
-		  return (Rank)findByUuid(uuidInfratribe);
-		}
-		public static final Rank SUPRAGENERICTAXON(){
-		  return (Rank)findByUuid(uuidSupragenericTaxon);
-		}
-		public static final Rank GENUS(){
-		  return (Rank)findByUuid(uuidGenus);
-		}
-		public static final Rank SUBGENUS(){
-		  return (Rank)findByUuid(uuidSubgenus);
-		}
-		public static final Rank INFRAGENUS(){
-		  return (Rank)findByUuid(uuidInfragenus);
-		}
-		public static final Rank SECTION(){
-		  return (Rank)findByUuid(uuidSection);
-		}
-		public static final Rank SUBSECTION(){
-		  return (Rank)findByUuid(uuidSubsection);
-		}
-		public static final Rank SERIES(){
-		  return (Rank)findByUuid(uuidSeries);
-		}
-		public static final Rank SUBSERIES(){
-		  return (Rank)findByUuid(uuidSubseries);
-		}
-		public static final Rank SPECIESAGGREGATE(){
-		  return (Rank)findByUuid(uuidSpeciesAggregate);
-		}
-		public static final Rank INFRAGENERICTAXON(){
-		  return (Rank)findByUuid(uuidInfragenericTaxon);
-		}
-		public static final Rank SPECIES(){
-		  return (Rank)findByUuid(uuidSpecies);
-		}
-		public static final Rank SUBSPECIFICAGGREGATE(){
-		  return (Rank)findByUuid(uuidSubspecificAggregate);
-		}
-		public static final Rank SUBSPECIES(){
-		  return (Rank)findByUuid(uuidSubspecies);
-		}
-		public static final Rank INFRASPECIES(){
-		  return (Rank)findByUuid(uuidInfraspecies);
-		}
-		public static final Rank VARIETY(){
-		  return (Rank)findByUuid(uuidVariety);
-		}
-		public static final Rank BIOVARIETY(){
-		  return (Rank)findByUuid(uuidBioVariety);
-		}
-		public static final Rank PATHOVARIETY(){
-		  return (Rank)findByUuid(uuidPathoVariety);
-		}
-		public static final Rank SUBVARIETY(){
-		  return (Rank)findByUuid(uuidSubvariety);
-		}
-		public static final Rank SUBSUBVARIETY(){
-		  return (Rank)findByUuid(uuidSubsubvariety);
-		}
-		public static final Rank CONVAR(){
-		  return (Rank)findByUuid(uuidConvar);
-		}
-		public static final Rank FORM(){
-		  return (Rank)findByUuid(uuidForm);
-		}
-		public static final Rank SPECIALFORM(){
-		  return (Rank)findByUuid(uuidSpecialForm);
-		}
-		public static final Rank SUBFORM(){
-		  return (Rank)findByUuid(uuidSubform);
-		}
-		public static final Rank SUBSUBFORM(){
-		  return (Rank)findByUuid(uuidSubsubform);
-		}
-		public static final Rank INFRASPECIFICTAXON(){
-		  return (Rank)findByUuid(uuidInfraspecificTaxon);
-		}
-		public static final Rank CANDIDATE(){
-		  return (Rank)findByUuid(uuidCandidate);
-		}
-		public static final Rank DENOMINATIONCLASS(){
-		  return (Rank)findByUuid(uuidDenominationClass);
-		}
-		public static final Rank GREX(){
-		  return (Rank)findByUuid(uuidGrex);
-		}
-		public static final Rank GRAFTCHIMAERA(){
-		  return (Rank)findByUuid(uuidGraftChimaera);
-		}
-		public static final Rank CULTIVARGROUP(){
-		  return (Rank)findByUuid(uuidCultivarGroup);
-		}
-		public static final Rank CULTIVAR(){
-		  return (Rank)findByUuid(uuidCultivar);
-		}
+	}
+
+	
+	
 
 }

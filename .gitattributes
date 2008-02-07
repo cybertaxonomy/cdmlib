@@ -230,8 +230,12 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ITaxonNameParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownRankException.java -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
@@ -251,6 +255,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermLoaderTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
