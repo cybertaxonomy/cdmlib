@@ -9,6 +9,7 @@ import javax.jws.WebService;
 
 import org.codehaus.jra.Get;
 import org.codehaus.jra.HttpResource;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
  * found in http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api.module
  */
 @WebService(targetNamespace = "http://cdm.etaxonomy.eu/remote")
+//@Component
 public interface CdmService {
 
 	@Get
