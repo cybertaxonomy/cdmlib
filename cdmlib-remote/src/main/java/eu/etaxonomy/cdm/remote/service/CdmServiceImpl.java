@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.jws.WebService;
-
 import net.sf.json.JSONObject;
 
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -20,10 +18,10 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 
 public class CdmServiceImpl implements CdmService {
 
-	public NameTO getName(String uuid) {
+	public NameTO getName(UUID uuid) {
 		NameTO n=new NameTO();
 		n.setFullname("Bella berolina subsp. rosa");
-		n.setUuid(uuid);
+		n.setUuid(uuid.toString());
 		n.addNameToken(new TaggedText(TagEnum.name,"Bella"));
 		n.addNameToken(new TaggedText(TagEnum.name,"berolina"));
 		n.addNameToken(new TaggedText(TagEnum.name,"subsp."));
@@ -38,9 +36,9 @@ public class CdmServiceImpl implements CdmService {
 		return n;
 	}
 
-	public TaxonTO getTaxon(String uuid) {
+	public TaxonTO getTaxon(UUID uuid) {
 		TaxonTO t=new TaxonTO();
-		t.setUuid(uuid);
+		t.setUuid(uuid.toString());
 		return t;
 	}
 
@@ -49,7 +47,7 @@ public class CdmServiceImpl implements CdmService {
 		return null;
 	}
 
-	public Class whatis(String uuid) {
+	public Class whatis(UUID uuid) {
 		return this.getClass();
 	}
 

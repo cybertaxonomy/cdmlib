@@ -348,8 +348,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/rest/CdmRestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorld.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HelloWorldImpl.java -text
 cdmlib-remote/src/main/webapp/WEB-INF/beans.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdm-rest-servlet.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
