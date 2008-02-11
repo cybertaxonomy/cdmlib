@@ -18,7 +18,7 @@ import java.util.List;
  * Sorted chronologically starting with the basionym if existing
  */
 public class HomotypicGroupTO extends BaseSTO{
-	// TODO: add type designation infos for this group? No retrieve by separate request!
+
 	private List<TaxonSTO> taxa = new ArrayList();
-	private List<SpecimenTypeDesignationSTO> typeDesignations;
+	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList();
 }
