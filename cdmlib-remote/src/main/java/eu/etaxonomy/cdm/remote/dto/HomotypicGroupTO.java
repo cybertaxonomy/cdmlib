@@ -18,6 +18,6 @@ import java.util.List;
  * Sorted chronologically starting with the basionym if existing
  */
 public class HomotypicGroupTO {
-	// TODO: add type designation infos for this group
+	// TODO: add type designation infos for this group? No retrieve by separate request!
 	private List<TaxonSTO> taxa = new ArrayList();
 }

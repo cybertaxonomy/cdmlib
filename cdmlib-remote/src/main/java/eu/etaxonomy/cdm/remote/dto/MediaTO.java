@@ -28,11 +28,30 @@ import eu.etaxonomy.cdm.model.common.Rights;
  */
 public class MediaTO extends BaseTO {
 
+	/**
+	 * The title of the Media instance
+	 * 
+	 * FIXME: no set of title in different languages required,
+	 * since web service request contain information about 
+	 * the preferred languages. Therefore web service responses will 
+	 * return only one string in that language which matches the 
+	 * preference best.
+	 */
 	private Set<LocalisedTermTO> title;
 	/**	
 	 * creation date of the media (not of the record)
 	 */
 	private Calendar mediaCreated;
+	
+	/**
+	 * The description of the Media.
+	 * 
+	 * FIXME: no set of description in different languages required,
+	 * since web service request contain information about 
+	 * the preferred languages. Therefore web service responses will 
+	 * return only one string in that language which matches the 
+	 * preference best.
+	 */
 	private Set<LocalisedTermTO> description;
 	/**
 	 * A single medium such as a picture can have multiple representations in files. 
