@@ -24,8 +24,18 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class LocalisedTermTO {
 
+	/**
+	 * representation of this term in the specific language as specified by {@link LocalisedTermTO#language}
+	 */
 	private String term;
+	/**
+	 * UID of this term. The UUID is unique for all representations of this term, 
+	 * that is it does not depend on the {@link LocalisedTermTO#language}.
+	 */
 	private String uuid;
+	/**
+	 * The language of this term representation
+	 */
 	private String language;
 	
 	public String getLanguage() {
