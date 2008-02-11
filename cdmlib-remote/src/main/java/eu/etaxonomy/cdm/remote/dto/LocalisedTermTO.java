@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * Transfer object derived from {@link LanguageString} excluding some {@link CdmBase} fields
  * 
- * Term descriptions are to be delivered by a separate web service request
+ * Term descriptions are to be delivered by a separate web service request.
  * 
  * @author a.kohlbecker
  * @author  m.doering
