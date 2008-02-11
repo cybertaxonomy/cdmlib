@@ -18,10 +18,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 05.02.2008 14:59:38
  *
  */
-public class ReferencedEntityBaseTO extends BaseTO{
+public class ReferencedEntityBaseTO extends BaseSTO{
 	
-	private String citationMicroReference;
-	private String originalNameString;
-	private ReferenceBase citation;
+	private String referencedByUuid;
 
 }

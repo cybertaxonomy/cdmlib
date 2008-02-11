@@ -320,12 +320,16 @@ cdmlib-persistence/src/test/resources/hibernate.properties -text
 cdmlib-persistence/src/test/resources/settings.xml -text
 cdmlib-persistence/src/test/resources/test.cdm.datasource.xml -text
 cdmlib-remote/pom.xml -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/AssociationFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DistributionSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/HomotypicGroupTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IdentifiedString.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/InteractionFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/LocalisedTermTO.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaInstanceTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/NameRelationshipTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/NameSTO.java -text
@@ -336,6 +340,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ReferenceTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ReferencedEntityBaseTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/RelationshipTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/RightsTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SpecimenSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SpecimenTypeDesignationSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SynonymRelationshipTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TagEnum.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaggedText.java -text

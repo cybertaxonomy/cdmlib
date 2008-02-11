@@ -23,11 +23,10 @@ public class ReferenceSTO extends BaseSTO {
 	private String authorship;
 
 	/**
-	 * formatted string containing the entire reference citation including
-	 * authors and microreference
+	 * formatted string containing the entire reference citation including microreference
 	 */
-	private String fullcitation;
+	private String fullCitation;
 
-	private Set<IdentifiedString> media_uri;
+	private Set<IdentifiedString> mediaUri;
 
 }

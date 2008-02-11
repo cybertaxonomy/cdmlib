@@ -38,5 +38,6 @@ public class TaxonTO extends BaseTO {
 	private List<SynonymRelationshipTO> homotypicSynonyms = new ArrayList();
 	private List<HomotypicGroupTO> heterotypicSynonymyGroups = new ArrayList();
 	private Set<TaxonRelationshipTO> taxonRelations = new HashSet();
+	private Set<DescriptionTO> descriptions = new HashSet();
 	
 }

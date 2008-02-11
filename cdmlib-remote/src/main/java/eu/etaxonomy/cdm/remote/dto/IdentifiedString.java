@@ -17,17 +17,10 @@ package eu.etaxonomy.cdm.remote.dto;
  * @created 11.12.2007 14:13:29
  *
  */
-public class IdentifiedString  {
+public class IdentifiedString extends BaseSTO{
 	
-	private String uuid;
 	private String value;
 	
-	public String getUuid() {
-		return uuid;
-	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 	public String getText() {
 		return value;
 	}

@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.remote.dto;
  * Transfer object derived from {@link LanguageString} excluding some {@link CdmBase} fields
  * 
  * Term descriptions are to be delivered by a separate web service request.
+ * The UUID is unique for all representations of this term, 
+ * that is it does not depend on the {@link LocalisedTermTO#language}.
  * 
  * @author a.kohlbecker
  * @author m.doering
@@ -20,17 +22,12 @@ package eu.etaxonomy.cdm.remote.dto;
  * @created 11.12.2007 12:10:45
  *
  */
-public class LocalisedTermTO {
+public class LocalisedTermTO extends BaseSTO{
 
 	/**
 	 * Representation of this term in the specific language as specified by {@link LocalisedTermTO#language}
 	 */
 	private String term;
-	/**
-	 * UID of this term. The UUID is unique for all representations of this term, 
-	 * that is it does not depend on the {@link LocalisedTermTO#language}.
-	 */
-	private String uuid;
 	/**
 	 * The language of this term representation
 	 */

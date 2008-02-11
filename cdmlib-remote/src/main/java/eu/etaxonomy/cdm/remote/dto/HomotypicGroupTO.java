@@ -17,7 +17,8 @@ import java.util.List;
  * List of taxa that are homotypic. 
  * Sorted chronologically starting with the basionym if existing
  */
-public class HomotypicGroupTO {
+public class HomotypicGroupTO extends BaseSTO{
 	// TODO: add type designation infos for this group? No retrieve by separate request!
 	private List<TaxonSTO> taxa = new ArrayList();
+	private List<SpecimenTypeDesignationSTO> typeDesignations;
 }
