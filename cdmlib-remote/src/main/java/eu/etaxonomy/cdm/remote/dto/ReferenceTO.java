@@ -40,5 +40,5 @@ public class ReferenceTO extends BaseTO{
 	 */
 	private String year;
 	
-	private Set<IdentifiedString> media_uri;
+	private Set<IdentifiedString> mediaUri;
 }

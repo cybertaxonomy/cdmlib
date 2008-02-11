@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
-import eu.etaxonomy.cdm.model.common.RightsTerm;
 
 /**
  * 
@@ -21,6 +20,5 @@ import eu.etaxonomy.cdm.model.common.RightsTerm;
 public class RightsTO extends IdentifiedString {
 	private String uri;
 	private String abbreviatedText;
-	//FIXME: transform type into a DTO
-	private RightsTerm type;
+	private LocalisedTermTO type;
 }
