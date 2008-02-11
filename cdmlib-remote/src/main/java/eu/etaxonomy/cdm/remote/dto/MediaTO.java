@@ -13,13 +13,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
-import eu.etaxonomy.cdm.model.common.Rights;
-
-
 /**
- * 
  * @author a.kohlbecker
  * @version 1.0
  * @created 11.12.2007 12:13:42
@@ -58,7 +52,9 @@ public class MediaTO extends BaseTO {
 	 * formats for images for example
 	 */
 	
-	private Set<IdentifiedString> mediaUris;
+	//FIXME: Is it required to have the instances right in here?
+	private Set<MediaInstanceTO> instances = new HashSet();
+	
 	private Set<RightsTO> rights;
 	private IdentifiedString artist;
 	
