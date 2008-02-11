@@ -52,9 +52,7 @@ public class MediaTO extends BaseTO {
 	 * formats for images for example
 	 */
 	
-	//FIXME: Is it required to have the instances right in here?
-	private Set<MediaInstanceTO> instances = new HashSet();
-	
+	private Set<IdentifiedString> mediaUris;
 	private Set<RightsTO> rights;
 	private IdentifiedString artist;
 	
