@@ -23,14 +23,8 @@ public class MediaTO extends BaseTO {
 
 	/**
 	 * The title of the Media instance
-	 * 
-	 * FIXME: no set of title in different languages required,
-	 * since web service request contain information about 
-	 * the preferred languages. Therefore web service responses will 
-	 * return only one string in that language which matches the 
-	 * preference best.
 	 */
-	private Set<LocalisedTermTO> title;
+	private String title;
 	/**	
 	 * creation date of the media (not of the record)
 	 */
@@ -38,14 +32,8 @@ public class MediaTO extends BaseTO {
 	
 	/**
 	 * The description of the Media.
-	 * 
-	 * FIXME: no set of description in different languages required,
-	 * since web service request contain information about 
-	 * the preferred languages. Therefore web service responses will 
-	 * return only one string in that language which matches the 
-	 * preference best.
 	 */
-	private Set<LocalisedTermTO> description;
+	private String description;
 	/**
 	 * A single medium such as a picture can have multiple representations in files. 
 	 * Common are multiple resolutions or file
@@ -53,6 +41,9 @@ public class MediaTO extends BaseTO {
 	 */
 	
 	private Set<IdentifiedString> mediaUris;
+	/**
+	 * several rightTOs in the SAME language, not different languages for the SAME rights UUID
+	 */
 	private Set<RightsTO> rights;
 	private IdentifiedString artist;
 	

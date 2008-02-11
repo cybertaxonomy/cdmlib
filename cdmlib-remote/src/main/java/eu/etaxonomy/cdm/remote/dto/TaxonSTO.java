@@ -25,7 +25,7 @@ import java.util.UUID;
 public class TaxonSTO extends BaseSTO {
 	
 	private NameSTO name;
-	private UUID sec_uuid;
+	private UUID secUuid;
 	private boolean isAccepted;
 	
 }

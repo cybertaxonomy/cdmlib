@@ -6,22 +6,26 @@
     <description>EDIT CDM Community Server</description>
     <display-name>CDM Community Server</display-name>
 
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+    
     <servlet> 
         <description>CDM Remote REST API</description>
         <servlet-name>cdm-rest</servlet-name> 
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> 
-        <load-on-startup>1</load-on-startup> 
+        <init-param>
+            <param-name>logVerbosityLevel</param-name>
+            <param-value>DEBUG</param-value>
+        </init-param> 
+        <load-on-startup>1</load-on-startup>
     </servlet> 
-    <!-- maps the sample dispatcher to *.form --> 
+    
     <servlet-mapping> 
         <servlet-name>cdm-rest</servlet-name> 
-        <url-pattern>*.form</url-pattern> 
+        <url-pattern>/</url-pattern> 
     </servlet-mapping> 
-    <!-- maps the sample dispatcher to *.html --> 
-    <servlet-mapping> 
-        <servlet-name>cdm-rest</servlet-name> 
-        <url-pattern>*.html</url-pattern> 
-    </servlet-mapping>
+    
     
     <session-config>
         <session-timeout>60</session-timeout>

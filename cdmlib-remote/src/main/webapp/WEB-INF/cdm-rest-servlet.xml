@@ -9,23 +9,8 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
     
-    <context:component-scan base-package="eu/etaxonomy/cdm/remote" />
+    <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
     
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 
-        <property name="mappings"> 
-            <value> 
-                /*/account.form=cdmRestController
-                /*/editaccount.form=cdmRestController
-                /ex/view*.html=cdmRestController
-                /**/help.html=cdmRestController
-            </value> 
-        </property> 
-    </bean> 
-    
-    <bean id="cdmRestController" class="eu.etaxonomy.cdm.remote.rest.CdmRestController"> 
-        <property name="cacheSeconds" value="120"/> 
-    </bean>
-
     <bean id="cdmService" class="eu.etaxonomy.cdm.remote.service.CdmServiceImpl" /> 
 </beans>
  
