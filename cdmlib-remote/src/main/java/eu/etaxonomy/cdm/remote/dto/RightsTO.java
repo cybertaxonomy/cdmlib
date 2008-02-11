@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.RightsTerm;
  * @created 05.02.2008 14:59:48
  *
  */
-public class RightsTO extends LocalisedTermTO {
+public class RightsTO extends IdentifiedString {
 	private String uri;
 	private String abbreviatedText;
 	//FIXME: transform type into a DTO
