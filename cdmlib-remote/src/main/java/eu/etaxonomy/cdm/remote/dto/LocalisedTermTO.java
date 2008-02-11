@@ -9,15 +9,13 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-
 /**
  * Transfer object derived from {@link LanguageString} excluding some {@link CdmBase} fields
  * 
  * Term descriptions are to be delivered by a separate web service request.
  * 
  * @author a.kohlbecker
- * @author  m.doering
+ * @author m.doering
  * @version 1.0
  * @created 11.12.2007 12:10:45
  *
@@ -25,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class LocalisedTermTO {
 
 	/**
-	 * representation of this term in the specific language as specified by {@link LocalisedTermTO#language}
+	 * Representation of this term in the specific language as specified by {@link LocalisedTermTO#language}
 	 */
 	private String term;
 	/**
