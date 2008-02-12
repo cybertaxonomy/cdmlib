@@ -52,10 +52,10 @@ public class Synonym extends TaxonBase {
 	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
 		this.synonymRelations = synonymRelations;
 	}
-	public void addSynoynmRelations(SynonymRelationship synonymRelation) {
+	public void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	public void removeSynoynmRelations(SynonymRelationship synonymRelation) {
+	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.remove(synonymRelation);
 	}
 

@@ -35,11 +35,13 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
 
-	public NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
+	protected NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean isRejectedType, boolean isConservedType) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecies(typeSpecies);
 		this.setTypifiedName(typifiedName);
+		// the typified name has to be part of the same homotypical group as the type species
+		typifiedName.setHomotypicalGroup(typeSpecies.getHomotypicalGroup());
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
 	}

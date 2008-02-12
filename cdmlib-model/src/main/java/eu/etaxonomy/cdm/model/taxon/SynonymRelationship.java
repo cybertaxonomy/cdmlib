@@ -26,9 +26,19 @@ import javax.persistence.*;
 @Entity
 public class SynonymRelationship extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
-	private Synonym synoynm;
+	private Synonym synonym;
 	private Taxon acceptedTaxon;
 	private SynonymRelationshipType type;
+
+	 
+	protected SynonymRelationship(Synonym synoynm, Taxon taxon, SynonymRelationshipType type) {
+		super();
+		this.synonym = synoynm;
+		taxon.addSynonymRelation(this);
+		synoynm.addSynonymRelation(this);
+		this.acceptedTaxon = taxon;
+		this.type = type;
+	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -36,7 +46,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 		return this.acceptedTaxon;
 	}
 
-	public void setAcceptedTaxon(Taxon acceptedTaxon){
+	private void setAcceptedTaxon(Taxon acceptedTaxon){
 		this.acceptedTaxon = acceptedTaxon;
 	}
 
@@ -45,7 +55,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	public SynonymRelationshipType getType(){
 		return this.type;
 	}
-	public void setType(SynonymRelationshipType type){
+	private void setType(SynonymRelationshipType type){
 		this.type = type;
 	}
 
@@ -53,11 +63,11 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Synonym getSynoynm(){
-		return this.synoynm;
+		return this.synonym;
 	}
 
-	public void setSynoynm(Synonym synoynm){
-		this.synoynm = synoynm;
+	private void setSynonym(Synonym synoynm){
+		this.synonym = synoynm;
 	}
 
 }

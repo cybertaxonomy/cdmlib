@@ -246,14 +246,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 		return names;
 	}
-	
-	@Transient
 	public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
-		SynonymRelationship synonymRelationship = new SynonymRelationship();
-		synonymRelationship.setSynoynm(synonym);
-		synonymRelationship.setAcceptedTaxon(this);
-		synonymRelationship.setType(synonymType);
-		this.addSynonymRelation(synonymRelationship);
+		// constructor adds relationship instance to both synonym and taxon!
+		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType);
 	}
 
 	public Iterator<Taxon> iterator() {

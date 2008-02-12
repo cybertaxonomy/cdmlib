@@ -29,6 +29,14 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
+/**
+ * A homotypical group represents all names that share the same type specimens.
+ * This also includes supergeneric names like genera or families which usually have a name type designation
+ * that finally (a name type designation can also point to another supergeneric name) points to a species name,
+ * which in turn has a (set of) physical type specimen(s). 
+ * @author markus
+ *
+ */
 @Entity
 public class HomotypicalGroup extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(HomotypicalGroup.class);
@@ -38,7 +46,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	public HomotypicalGroup() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	
