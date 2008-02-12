@@ -14,9 +14,10 @@ import org.apache.log4j.Logger;
 import org.hsqldb.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+//import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
-import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 /**
  * @author a.mueller
