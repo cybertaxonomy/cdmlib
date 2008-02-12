@@ -61,6 +61,9 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	private Set<TaxonNameBase> newCombinations = new HashSet();
 	// bidrectional with newCombinations. Keep congruent
 	private TaxonNameBase basionym;
+	
+	//TODO 
+	protected boolean protectedNameCache;
 
 	protected INameCacheStrategy cacheStrategy;
 
@@ -81,10 +84,26 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 		this.setRank(rank);
 	}
 
+	protected String generateNameCache(){
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
+			return null;
+		}else{
+			return cacheStrategy.getNameCache(this);
+		}
+	}
 	
 	public String getNameCache() {
+		if (protectedNameCache){
+			return this.nameCache;			
+		}
+		// is title dirty, i.e. equal NULL?
+		if (nameCache == null){
+			this.nameCache = generateNameCache();
+		}
 		return nameCache;
 	}
+
 	public void setNameCache(String nameCache) {
 		this.nameCache = nameCache;
 	}
@@ -183,7 +202,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	}
 	
 	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Rank getRank(){
 		return this.rank;
 	}

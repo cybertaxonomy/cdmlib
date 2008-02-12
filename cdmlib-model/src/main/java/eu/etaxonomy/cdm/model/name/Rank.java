@@ -306,7 +306,7 @@ public class Rank extends OrderedTermBase {
 	 *  * not yet complete
 	 */
 	public static Rank getRankByAbbreviation(String abbrev) throws UnknownRankException{
-		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRangByAbbrev");
+		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRankByAbbreviation");
 		}else if (abbrev.equalsIgnoreCase("reg.")){	return Rank.KINGDOM();
 		}else if (abbrev.equalsIgnoreCase("subreg.")){ return Rank.SUBKINGDOM();
 		}else if (abbrev.equalsIgnoreCase("phyl.")){return Rank.PHYLUM();
@@ -402,6 +402,26 @@ public class Rank extends OrderedTermBase {
 			}
 			throw new UnknownRankException("Unknown rank name: " + rankName);
 		}
+	}
+	
+	//TODO
+	//dummy implementation for BerlinModelImport
+	public String getAbbreviation(){
+		if (this.equals(Rank.SPECIES()) ){return "subsp.";}
+		else if (this.equals(Rank.SUBSPECIES()) ){return "subsp.";}
+		else if (this.equals(Rank.VARIETY()) ){return "var.";}
+		else if (this.equals(Rank.CONVAR()) ){return "convar.";}
+		else if (this.equals(Rank.SUBVARIETY()) ){return "subvar.";}
+		else if (this.equals(Rank.FORM()) ){return "var.";}
+		else if (this.equals(Rank.SUBFORM()) ){return "f.";}
+		else if (this.equals(Rank.INFRASPECIFICTAXON()) ){return "tax.infrasp.";}
+		else {
+			logger.warn("Abbreviation for this Rank not yet implemented");
+			return "xxx.";
+		}
+	
+	
+		
 	}
 
 	

@@ -43,11 +43,33 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
+	/**
+	 * @param rank
+	 * @return
+	 */
+	public static BotanicalName NewInstance(Rank rank){
+		return new BotanicalName(rank);
+	}
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
 	public static BotanicalName PARSED_NAME(String fullName){
+		return PARSED_NAME(fullName, Rank.GENUS());
+	}
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
+	public static BotanicalName PARSED_NAME(String fullName, Rank rank){
 		if (nameParser == null){
 			nameParser = new TaxonNameParserBotanicalNameImpl();
 		}
-		return (BotanicalName)nameParser.parseFullName(fullName);
+		return (BotanicalName)nameParser.parseFullName(fullName, rank);
 	}
 	
 	//needed by hibernate
