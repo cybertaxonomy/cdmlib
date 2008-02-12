@@ -304,4 +304,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
 		return null;
 	}
+	
+	@Transient
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+		return this.getHomotypicalGroup().getTypeDesignations();
+	}
+	
 }
