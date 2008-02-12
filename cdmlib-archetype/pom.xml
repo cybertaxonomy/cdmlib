@@ -12,7 +12,7 @@ mvn archetype:create   -DarchetypeGroupId=eu.etaxonomy   -DarchetypeArtifactId=c
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>0.2</version>
+    <version>${cdmlib.version}</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
 
