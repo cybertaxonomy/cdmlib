@@ -3,6 +3,7 @@ cdmLibraryPlugin/target
 cdmParent/.externalToolBuilders
 cdmParent/.project
 cdmParent/target
+cdmlib-archetype/.project
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
