@@ -34,10 +34,14 @@ public class TaxonTO extends BaseTO {
 	 */
 	private ReferenceTO sec;
 
-	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList();
-	private List<SynonymRelationshipTO> homotypicSynonyms = new ArrayList();
-	private List<HomotypicGroupTO> heterotypicSynonymyGroups = new ArrayList();
-	private Set<TaxonRelationshipTO> taxonRelations = new HashSet();
-	private Set<DescriptionTO> descriptions = new HashSet();
+	// homotypic data
+	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
+	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
+	private List<SynonymRelationshipTO> homotypicSynonyms = new ArrayList<SynonymRelationshipTO>();
+	// heterotypic data
+	private List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>();
+	// other
+	private Set<TaxonRelationshipTO> taxonRelations = new HashSet<TaxonRelationshipTO>();
+	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	
 }

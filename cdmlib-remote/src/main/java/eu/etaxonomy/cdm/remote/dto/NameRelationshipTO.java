@@ -19,7 +19,7 @@ import java.util.List;
  * @created 11.12.2007 12:10:57
  *
  */
-public class NameRelationshipTO extends ReferencedEntityBaseTO {
+public class NameRelationshipTO extends ReferencedEntityBaseSTO {
 	
 	private LocalisedTermTO type;
 	

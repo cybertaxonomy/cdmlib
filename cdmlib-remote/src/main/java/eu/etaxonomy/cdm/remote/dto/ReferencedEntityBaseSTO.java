@@ -9,16 +9,17 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 /**
  * 
  * @author a.kohlbecker
  * @version 1.0
- * @created 05.02.2008 14:59:28
+ * @created 05.02.2008 14:59:38
  *
  */
-public class NameTypeDesignationTO extends ReferencedEntityBaseTO {
+public class ReferencedEntityBaseSTO extends BaseSTO{
 	
-	private boolean isRejectedType;
-	private boolean isConservedType;
-	private NameSTO typeSpecies; 
+	private String referencedByUuid;
+
 }
