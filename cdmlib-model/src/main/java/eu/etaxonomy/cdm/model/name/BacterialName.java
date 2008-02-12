@@ -11,10 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**

@@ -17,10 +17,11 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.ZooNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.TaxonNameParserBotanicalNameImpl;
 
 import java.util.*;
 
+import javax.naming.NameParser;
 import javax.persistence.*;
 
 /**
@@ -42,6 +43,13 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
+	public static BotanicalName PARSED_NAME(String fullName){
+		if (nameParser == null){
+			nameParser = new TaxonNameParserBotanicalNameImpl();
+		}
+		return (BotanicalName)nameParser.parseFullName(fullName);
+	}
+	
 	//needed by hibernate
 	protected BotanicalName(){
 		super();

@@ -24,6 +24,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.ITaxonNameParser;
 
 import java.util.*;
 
@@ -63,6 +64,13 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 
 	protected INameCacheStrategy cacheStrategy;
 
+	static protected ITaxonNameParser nameParser;
+	
+//	/**
+//	 * Returns a TaxonNameBase instance 
+//	 * @param fullName
+//	 */
+//	abstract public static TaxonNameBase PARSED_NAME(String fullName);
 	
 	// CONSTRUCTORS	
 	public TaxonNameBase() {
@@ -278,13 +286,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 		return "";
 	}
 
-	/**
-	 * 
-	 * @param fullname    fullname
-	 */
-	public boolean parseName(String fullname){
-		return false;
-	}	
 	
 	/**
 	 * Return a set of taxa that use this name
