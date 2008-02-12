@@ -74,4 +74,20 @@ public class Synonym extends TaxonBase {
 		return taxa;
 	}
 
+	/**
+	 * Return the synonymy relationship type for the relation to a given accepted taxon.
+	 * If no relation exists to that taxon return null.
+	 * @param t
+	 * @return
+	 */
+	@Transient
+	public SynonymRelationshipType getRelationType(Taxon t){
+		for (SynonymRelationship rel:getSynonymRelations()){
+			if (rel.getAcceptedTaxon().equals(t)){
+				return rel.getType();
+			}
+		}
+		// TODO: should we raise an error in case no relationship to the taxon exists? 
+		return null;
+	}
 }

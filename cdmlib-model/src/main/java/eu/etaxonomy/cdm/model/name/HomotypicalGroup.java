@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -22,6 +24,9 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 @Entity
 public class HomotypicalGroup extends AnnotatableEntity {
@@ -70,4 +75,23 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		td.setHomotypicalGroup(this);
 	}
 	
+	/**
+	 * Retrieves the synonyms of reference sec that are part of this homotypical group.
+	 * If other names are part of this group that are not considered synonyms in the respective sec-reference,
+	 * then they will not be included in the resultset.
+	 * @param sec
+	 * @return
+	 */
+	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
+		List<Synonym> result = new ArrayList();
+		for (TaxonNameBase n:this.getTypifiedNames()){
+			for (Synonym s:n.getSynonyms()){
+				if (s.getSec().equals(sec)){
+					result.add(s);
+				}
+			}
+		}
+		// TODO: sort result list according to date first published, see nomenclatural reference
+		return result;
+	}
 }

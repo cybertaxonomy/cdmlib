@@ -14,6 +14,9 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
@@ -282,4 +285,21 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	public boolean parseName(String fullname){
 		return false;
 	}	
+	
+	/**
+	 * Return a set of taxa that use this name
+	 * @return
+	 */
+	public Set<Taxon> getTaxa(){
+		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
+		return null;
+	}
+	/**
+	 * Return a set of synonyms that use this name
+	 * @return
+	 */
+	public Set<Synonym> getSynonyms(){
+		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
+		return null;
+	}
 }

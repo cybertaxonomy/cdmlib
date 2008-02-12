@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -187,9 +188,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	 * @param microcitation 
 	 */
 	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
-		if (parent == null){
-			throw new NullPointerException("Parent Taxon is 'null'");
-		}else{
+		// TODO: remove previously existing parent relationship!!!
+		if (parent != null){
 			addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
 		}
 	}
@@ -274,4 +274,25 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		   public void remove() { throw new UnsupportedOperationException(); }
 	}
 	
+	@Transient
+	public HomotypicalGroup getHomotypicGroup(){
+		return this.getName().getHomotypicalGroup();
+	}
+	
+	@Transient
+	public List<Synonym> getHomotypicSynonyms(){
+		return this.getHomotypicGroup().getSynonymsInGroup(this.getSec());
+	}
+	
+	@Transient
+	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
+		List<HomotypicalGroup> result = new ArrayList();
+		for (TaxonNameBase n:this.getSynonymNames()){
+			if (!result.contains(n.getHomotypicalGroup())){
+				result.add(n.getHomotypicalGroup());
+			}
+		}
+		// TODO: sort list according to date of first published name within each group
+		return result;
+	}	
 }
