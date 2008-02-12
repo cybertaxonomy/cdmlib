@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -82,6 +83,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @param sec
 	 * @return
 	 */
+	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
 		for (TaxonNameBase n:this.getTypifiedNames()){

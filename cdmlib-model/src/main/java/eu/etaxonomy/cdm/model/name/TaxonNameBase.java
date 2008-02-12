@@ -290,6 +290,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	 * Return a set of taxa that use this name
 	 * @return
 	 */
+	@Transient
 	public Set<Taxon> getTaxa(){
 		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
 		return null;
@@ -298,6 +299,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	 * Return a set of synonyms that use this name
 	 * @return
 	 */
+	@Transient
 	public Set<Synonym> getSynonyms(){
 		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
 		return null;
