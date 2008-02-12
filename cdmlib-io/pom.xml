@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+  <parent>
+    <artifactId>cdmParent</artifactId>
+    <groupId>eu.etaxonomy</groupId>
+    <version>${cdmlib.version}</version>
+    <relativePath>../cdmParent/pom.xml</relativePath>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>cdmlib-io</artifactId>
+  <name>EDIT Common Data Model Library - Domain Model</name>
+  <version>${cdmlib.version}</version>
+  <description>The import-export package for EDIT's cdmLibrary</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
+  </scm>
+  
+  <build>
+    <plugins>
+    	<plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+         </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-services</artifactId>
+  		<version>${cdmlib.version}</version>
+  	</dependency>
+  </dependencies>
+</project>
+
+
