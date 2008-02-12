@@ -64,6 +64,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		this.sec = sec;
 	}
 	
+	@Transient
 	public boolean isSaveable(){
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
 			return false;
