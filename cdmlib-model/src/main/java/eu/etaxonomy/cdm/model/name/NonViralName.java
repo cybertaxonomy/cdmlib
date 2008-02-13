@@ -34,7 +34,7 @@ import javax.persistence.*;
 public class NonViralName extends TaxonNameBase {
 	static Logger logger = Logger.getLogger(NonViralName.class);
 	//The suprageneric or the genus name
-	private String uninomial;
+	private String genusOrUninomial;
 	//Genus subdivision epithet
 	private String infraGenericEpithet;
 	//species epithet
@@ -69,7 +69,7 @@ public class NonViralName extends TaxonNameBase {
 	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
 		super(rank);
 		setNameCacheStrategy();
-		setUninomial(genusOrUninomial);
+		setGenusOrUninomial(genusOrUninomial);
 		setSpecificEpithet(specificEpithet);
 		setInfraSpecificEpithet(infraSpecificEpithet);
 		setCombinationAuthorTeam(combinationAuthorTeam);
@@ -94,13 +94,13 @@ public class NonViralName extends TaxonNameBase {
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
-	public String getUninomial(){
-		return this.uninomial;
-	}
-	public void setUninomial(String uninomial){
-		this.uninomial = uninomial;
+	public String getGenusOrUninomial() {
+		return genusOrUninomial;
 	}
 
+	public void setGenusOrUninomial(String genusOrUninomial) {
+		this.genusOrUninomial = genusOrUninomial;
+	}
 
 	public String getInfraGenericEpithet(){
 		return this.infraGenericEpithet;
