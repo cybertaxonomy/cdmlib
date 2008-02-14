@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.location;
 
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -28,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:36
  */
 @Entity
-public class NamedArea extends OrderedTermBase {
+public class NamedArea extends OrderedTermBase<NamedArea> {
 	static Logger logger = Logger.getLogger(NamedArea.class);
 	//description of time valid context of this area. e.g. year range
 	private TimePeriod validPeriod;
