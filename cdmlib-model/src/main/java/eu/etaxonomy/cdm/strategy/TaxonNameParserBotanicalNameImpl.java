@@ -64,6 +64,9 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		BotanicalName result = new BotanicalName(null);
 		String authorString = null;
 		
+		if (fullName == null){
+			return null;
+		}
 		fullName.replaceAll(oWs , " ");
 		//TODO 
 		// OLD: fullName = oWsRE.subst(fullName, " "); //substitute multiple whitespaces		   
