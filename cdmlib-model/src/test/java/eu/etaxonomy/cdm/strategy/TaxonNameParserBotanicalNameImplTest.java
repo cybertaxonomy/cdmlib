@@ -33,6 +33,8 @@ public class TaxonNameParserBotanicalNameImplTest {
 	final private String strNameAbiesAuthor1 = "Abies alba Müller";
 	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Müller";
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döring) D'Müller ex. de Greuther"; 
+	final private String strNameEmpty = "";
+	final private String strNameNull = null;
 	
 	private ITaxonNameParser<BotanicalName> parser ;
 	
@@ -107,39 +109,6 @@ public class TaxonNameParserBotanicalNameImplTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 
-	
-	@Test
-	public final void functionTest() {
-		String start = "^";
-	    String end = "$";
-	    String oWs = "\\s+"; //obligatory whitespaces
-	    String fWs = "\\s*"; //facultative whitespcace
-
-	    String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
-	    String nonCapitalWord = "\\p{javaLowerCase}+";
-	    
-	    String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
-	    String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
-	    String authorPart = "(" + "(D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
-	    String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
-	    
-	    String teamSplitter = fWs + "(&|,)" + fWs;
-	    String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
-	    String exString = "(ex.?)";
-	    String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
-	 
-		
-		String basStart = "\\(";
-	    String basEnd = "\\)";
-	    String basionym = basStart + authorAndExTeam + basEnd + "{1}.*";  // '(' and ')' is for evaluation with RE.paren(x)
-	    //String basionym = basStart + "(" + authorAndExTeam + ")" + basEnd +  "{1}.";  // '(' and ')' is for evaluation with RE.paren(x)
-	    
-	    Pattern pattern = Pattern.compile(basionym);
-		Matcher matcher = pattern.matcher("(Mueller)Ciard");
-		assertTrue(matcher.matches());
-		
-	}
-	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.TaxonNameParserBotanicalNameImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
@@ -182,6 +151,15 @@ public class TaxonNameParserBotanicalNameImplTest {
 			BotanicalName nameProblem = parser.parseFullName(problemString, Rank.SPECIES());
 			assertTrue(nameProblem.getHasProblem());
 			assertEquals(problemString, nameProblem.getTitleCache());
+			
+			//empty
+			BotanicalName nameEmpty = parser.parseFullName(strNameEmpty);
+			assertNotNull(nameEmpty);
+			assertEquals("", nameEmpty.getTitleCache());
+			
+			//null
+			BotanicalName nameNull = parser.parseFullName(strNameNull);
+			assertNull(nameNull);
 	}
 
 	/**
