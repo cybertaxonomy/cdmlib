@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public class PresenceTerm extends PresenceAbsenceTermBase {
+public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	static Logger logger = Logger.getLogger(PresenceTerm.class);
 
 	public PresenceTerm() {

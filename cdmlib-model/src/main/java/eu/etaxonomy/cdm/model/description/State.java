@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:53
  */
 @Entity
-public class State extends OrderedTermBase {
+public class State extends OrderedTermBase<State> {
 	static Logger logger = Logger.getLogger(State.class);
 
 	public State() {

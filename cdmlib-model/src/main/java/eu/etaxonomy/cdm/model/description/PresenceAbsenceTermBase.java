@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:44
  */
 @Entity
-public abstract class PresenceAbsenceTermBase extends OrderedTermBase {
+public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase> extends OrderedTermBase<PresenceAbsenceTermBase> {
 	static Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
 	public PresenceAbsenceTermBase() {
