@@ -10,10 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
-
 import java.util.*;
 import javax.persistence.*;
 
@@ -24,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:38
  */
 @Entity
-public class NameRelationshipType extends RelationshipTermBase {
+public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
