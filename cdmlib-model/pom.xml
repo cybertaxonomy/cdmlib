@@ -99,5 +99,14 @@
 <!--  		<version>2.0</version>-->
 <!--  	</dependency>-->
   </dependencies>
+  <reporting>
+    <!-- The changes-maven-plugin plug-in uses a special XML file (src/changes/changes.xml) to track releases and changes in each release -->
+    <!-- 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>changes-maven-plugin</artifactId>
+      </plugin>
+    -->
+  </reporting>
 </project>
 
