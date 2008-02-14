@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IDefTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -47,8 +49,13 @@ public class TermLoader {
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
 	@Transactional(readOnly = false)
-	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration) throws NoDefinedTermClassException, FileNotFoundException {
-		TermVocabulary<DefinedTermBase> voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+		TermVocabulary voc;
+		if (isOrdered){
+			voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+		}else{
+			voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+		}
 		try {
 			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 			logger.debug("strResourceFileName is " + strResourceFileName);
@@ -74,7 +81,7 @@ public class TermLoader {
 					vocabularySaver.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
-					logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");
+					if (logger.isDebugEnabled()) {logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
 				}
 				if (definedTermsMap != null){
 					DefinedTermBase defTermBase = (DefinedTermBase)term;
@@ -88,26 +95,28 @@ public class TermLoader {
 		return voc;
 	}
 
-	public TermVocabulary loadDefaultTerms(Class termClass) throws NoDefinedTermClassException, FileNotFoundException {
-		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true);
+	public TermVocabulary<DefinedTermBase> loadDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
 	}
 	
 	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
 		// first insert default language english, its used everywhere even for Language!
 		//Language langEN = new Language("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//dao.save(langEN);
+		final boolean ORDERED = true;
+		final boolean NOT_ORDERED = false;
 		
 		logger.debug("load terms");
-		loadDefaultTerms(Language.class);
-		loadDefaultTerms(WaterbodyOrCountry.class);
-		loadDefaultTerms(Continent.class);
-		loadDefaultTerms(Rank.class);
-		loadDefaultTerms(TypeDesignationStatus.class);
-		loadDefaultTerms(NomenclaturalStatusType.class);
-		loadDefaultTerms(SynonymRelationshipType.class);
-		loadDefaultTerms(HybridRelationshipType.class);
-		loadDefaultTerms(NameRelationshipType.class);
-		loadDefaultTerms(TaxonRelationshipType.class);
+		loadDefaultTerms(Language.class, NOT_ORDERED);
+		loadDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
+		loadDefaultTerms(Continent.class, NOT_ORDERED);
+		loadDefaultTerms(Rank.class, ORDERED);
+		loadDefaultTerms(TypeDesignationStatus.class, ORDERED);
+		loadDefaultTerms(NomenclaturalStatusType.class, ORDERED);
+		loadDefaultTerms(SynonymRelationshipType.class, ORDERED);
+		loadDefaultTerms(HybridRelationshipType.class, ORDERED);
+		loadDefaultTerms(NameRelationshipType.class, ORDERED);
+		loadDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		logger.debug("terms loaded");
 	}
 	
