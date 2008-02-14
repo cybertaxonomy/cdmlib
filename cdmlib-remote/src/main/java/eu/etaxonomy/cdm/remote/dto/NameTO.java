@@ -43,4 +43,70 @@ public class NameTO extends BaseTO {
 
 	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
 	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
+	public String getFullname() {
+		return fullname;
+	}
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+	public List<TaggedText> getTaggedName() {
+		return taggedName;
+	}
+	public void setTaggedName(List<TaggedText> taggedName) {
+		this.taggedName = taggedName;
+	}
+	public Set<LocalisedTermTO> getStatus() {
+		return status;
+	}
+	public void setStatus(Set<LocalisedTermTO> status) {
+		this.status = status;
+	}
+	public LocalisedTermTO getRank() {
+		return rank;
+	}
+	public void setRank(LocalisedTermTO rank) {
+		this.rank = rank;
+	}
+	public ReferenceTO getNomenclaturalReference() {
+		return nomenclaturalReference;
+	}
+	public void setNomenclaturalReference(ReferenceTO nomenclaturalReference) {
+		this.nomenclaturalReference = nomenclaturalReference;
+	}
+	public NameTO getBasionym() {
+		return basionym;
+	}
+	public void setBasionym(NameTO basionym) {
+		this.basionym = basionym;
+	}
+	public Set<NameRelationshipTO> getNameRelations() {
+		return nameRelations;
+	}
+	public void setNameRelations(Set<NameRelationshipTO> nameRelations) {
+		this.nameRelations = nameRelations;
+	}
+	public Set<NameTO> getNewCombinations() {
+		return newCombinations;
+	}
+	public void setNewCombinations(Set<NameTO> newCombinations) {
+		this.newCombinations = newCombinations;
+	}
+	public List<NameTypeDesignationSTO> getNameTypeDesignations() {
+		return nameTypeDesignations;
+	}
+	public void setNameTypeDesignations(
+			List<NameTypeDesignationSTO> nameTypeDesignations) {
+		this.nameTypeDesignations = nameTypeDesignations;
+	}
+	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
+		return typeDesignations;
+	}
+	public void setTypeDesignations(
+			List<SpecimenTypeDesignationSTO> typeDesignations) {
+		this.typeDesignations = typeDesignations;
+	}
+	public void addNameToken(TaggedText token){
+		this.taggedName.add(token);
+	}
+
 }
