@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:46
  */
 @Entity
-public class Rank extends OrderedTermBase {
+public class Rank extends OrderedTermBase<Rank> {
 	static Logger logger = Logger.getLogger(Rank.class);
 	
 	private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
