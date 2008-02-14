@@ -208,7 +208,7 @@ public class BerlinModelImport {
 					cdmAttrName = "isTrinomHybrid";
 					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
-					//botanicalName.setProtectedTitleCache(protectedTitleCache)
+					//botanicalName.s
 
 //					dbAttrName = "notes";
 //					cdmAttrName = "isTrinomHybrid";
@@ -226,9 +226,11 @@ public class BerlinModelImport {
 					//Details
 					
 					dbAttrName = "details";
-					cdmAttrName = "nomenclaturalmicroreference";
+					cdmAttrName = "nomenclaturalMicroReference";
 					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
+					//TODO
+					//preliminaryFlag
 					
 					
 					UUID nameUuid = nameService.saveTaxonName(botanicalName);

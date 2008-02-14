@@ -79,6 +79,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/SourceConnectionException.java -text
+cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
