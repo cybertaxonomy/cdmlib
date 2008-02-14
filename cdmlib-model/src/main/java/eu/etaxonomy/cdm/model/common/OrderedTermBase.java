@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -21,12 +20,84 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public abstract class OrderedTermBase extends DefinedTermBase {
+public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase implements Comparable<T> {
 	static Logger logger = Logger.getLogger(OrderedTermBase.class);
+	
+	protected int orderIndex;
+	
 	public OrderedTermBase() {
 		super();
 	}
 	public OrderedTermBase(String term, String label) {
 		super(term, label);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(T orderedTerm) {
+		int orderThat;
+		int orderThis;
+		try {
+			orderThat = orderedTerm.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
+			orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
+		} catch (RuntimeException e) {
+			throw e;
+		}
+		if (orderThis > orderThat){
+			return -1;
+		}else if (orderThis < orderThat){
+			return 1;
+		}else {
+			return 0;
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	@Override
+	public void setVocabulary(TermVocabulary newVocabulary) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.vocabulary == newVocabulary){ return;}
+		if (this.vocabulary != null) { 
+			this.vocabulary.terms.remove(this);
+		}
+		//TODO Exception
+		OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
+		if (voc.getLowestTerm() == null){
+			this.orderIndex = 1;
+		}else{
+			OrderedTermBase otb = voc.getLowestTerm();
+			this.orderIndex = otb.orderIndex + 1;
+		}
+		if (newVocabulary != null) { 
+			newVocabulary.terms.add(this);
+		}
+		this.vocabulary = newVocabulary;		
+	}
+	
+	
+	/** To be used only by OrderedTermVocabulary*/
+	@Deprecated
+	public boolean decreaseIndex(OrderedTermVocabulary<OrderedTermBase> vocabulary){
+		if (vocabulary.indexChangeAllowed(this) == true){
+			orderIndex--;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/** To be used only by OrderedTermVocabulary*/
+	@Deprecated
+	public boolean incrementIndex(OrderedTermVocabulary<OrderedTermBase> vocabulary){
+		if (vocabulary.indexChangeAllowed(this) == true){
+			orderIndex++;
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

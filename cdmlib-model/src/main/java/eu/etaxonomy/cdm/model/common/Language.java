@@ -134,13 +134,14 @@ public class Language extends DefinedTermBase {
 	public static final Language POLISH(){
 		return getUUID(uuidPolish);
 	}
-
-	public void readCsvLine(List<String> csvLine) {
+ 
+	public void readCsvLine(List csvLine) {
 		// read UUID, URI, english label+description
+		List<String> csvLineString = csvLine;
 		super.readCsvLine(csvLine);
 		// iso codes extra
-		this.iso639_1=csvLine.get(4).trim().toCharArray();
-		this.iso639_2=csvLine.get(5).trim().toCharArray();
+		this.iso639_1=csvLineString.get(4).trim().toCharArray();
+		this.iso639_2=csvLineString.get(5).trim().toCharArray();
 	}
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];

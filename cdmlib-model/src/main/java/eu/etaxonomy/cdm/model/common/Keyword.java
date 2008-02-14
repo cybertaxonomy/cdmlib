@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:31
  */
 @Entity
-public class Keyword extends OrderedTermBase {
+public class Keyword extends OrderedTermBase<Keyword> {
 	static Logger logger = Logger.getLogger(Keyword.class);
 
 	public Keyword() {

@@ -21,7 +21,7 @@ import org.hibernate.annotations.CascadeType;
 import au.com.bytecode.opencsv.CSVWriter;
 
 @MappedSuperclass
-public abstract class RelationshipTermBase extends OrderedTermBase {
+public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	private boolean symmetric;
@@ -129,13 +129,14 @@ public abstract class RelationshipTermBase extends OrderedTermBase {
 		return this.getInverseRepresentation(lang).getDescription();
 	}
 	
-	public void readCsvLine(List<String> csvLine) {
+	public void readCsvLine(List csvLine) {
 		// read UUID, URI, english label+description
-		super.readCsvLine(csvLine);
+		List<String> csvLineString = (List<String>)csvLine;
+		super.readCsvLine(csvLineString);
 		// inverse label + 2 booleans
-		this.addInverseRepresentation(new Representation(csvLine.get(4).trim(), csvLine.get(5).trim(), Language.ENGLISH()) );
-		this.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
-		this.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
+		this.addInverseRepresentation(new Representation(csvLineString.get(4).trim(), csvLineString.get(5).trim(), Language.ENGLISH()) );
+		this.setSymmetric(Boolean.parseBoolean(csvLineString.get(6)));
+		this.setTransitive(Boolean.parseBoolean(csvLineString.get(7)));
 	}
 	
 	public void writeCsvLine(CSVWriter writer) {

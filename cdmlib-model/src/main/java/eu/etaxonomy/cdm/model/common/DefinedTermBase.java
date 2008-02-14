@@ -31,7 +31,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DefinedTermBase extends TermBase implements IDefTerm{
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements IDefTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 	//public static IDefinedTermDao dao;
 	//public static ITermService termService;
@@ -43,7 +43,10 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	private DefinedTermBase partOf;
 	private Set<DefinedTermBase> includes = new HashSet<DefinedTermBase>();
 	private Set<Media> media = new HashSet<Media>();
-	private TermVocabulary vocabulary;
+	protected TermVocabulary<T> vocabulary;
+	
+//	protected TermVocabulary<DefinedTermBase> getNewVocabulary(){
+//	}
 	
 	public static void initTermList(ITermLister termLister){
 		logger.debug("initTermList");
@@ -88,16 +91,6 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 		return definedTermsMap;
 	}
 	
-	
-//	public static void setDao(IDefinedTermDao dao) {
-//		logger.warn("Setting DefinedTerm static dao");
-//		DefinedTermBase.dao = dao;
-//	}
-//	
-//	public static void setService(ITermService service) {
-//		logger.warn("Setting DefinedTerm static service");
-//		DefinedTermBase.termService = service;
-//	}
 	
 	public DefinedTermBase() {
 		super();
@@ -209,7 +202,7 @@ public abstract class DefinedTermBase extends TermBase implements IDefTerm{
 	public void setVocabulary(TermVocabulary newVocabulary) {
 		// Hibernate bidirectional cascade hack: 
 		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
-		if(this.vocabulary == newVocabulary) return;
+		if(this.vocabulary == newVocabulary){ return;}
 		if (this.vocabulary != null) { 
 			this.vocabulary.terms.remove(this);
 		}
