@@ -25,6 +25,8 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * An accepted potential taxon defined by the combination of a Name and a sec reference
+ * {@link Iterable} interface is supported to iterate through taxonomic children
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
@@ -246,16 +248,29 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 		return names;
 	}
+	/**
+	 * ass a synonym to this taxon (a taxon can have multiple synonyms that should be proparte synonyms then!)
+	 * The {@link SynonymRelationship} constructor immediately adds a relationship instance to both 
+	 * the synonym and taxon instance!
+	 * @param synonym
+	 * @param synonymType
+	 */
 	public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
-		// constructor adds relationship instance to both synonym and taxon!
 		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Iterable#iterator()
+	 */
 	public Iterator<Taxon> iterator() {
 		return new TaxonIterator(this.getTaxonomicChildren());
 
 	}
-	// inner iterator class for the iterable interface
+	/**
+	 * inner iterator class for the iterable interface
+	 * @author markus
+	 *
+	 */
 	private class TaxonIterator implements Iterator<Taxon> {
 		   private Taxon[] items;
 		   private int i= 0;
