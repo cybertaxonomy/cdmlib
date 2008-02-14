@@ -26,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:39
  */
 @Entity
-public class NomenclaturalStatusType extends OrderedTermBase {
+public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
 
 	public NomenclaturalStatusType() {
