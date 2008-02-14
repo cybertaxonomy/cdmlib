@@ -30,12 +30,12 @@ import eu.etaxonomy.cdm.model.name.Rank;
 		public void testPropertyChange() {
 			NonViralName b = new NonViralName(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
-			b.setUninomial("Abies");
-				assertEquals(b.getUninomial(), lastPropValue);
-			b.setUninomial("Picea");
-				assertEquals(b.getUninomial(), lastPropValue);
-			b.setUninomial("Unipicea");
-				assertEquals(b.getUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Abies");
+				assertEquals(b.getGenusOrUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Picea");
+				assertEquals(b.getGenusOrUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Unipicea");
+				assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
 				assertEquals(b.getSpecificEpithet(), lastPropValue);
 		}
