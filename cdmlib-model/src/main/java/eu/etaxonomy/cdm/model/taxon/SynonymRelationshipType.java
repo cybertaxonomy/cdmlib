@@ -11,10 +11,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import javax.persistence.Entity;
-
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
@@ -24,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @Entity
-public class SynonymRelationshipType extends RelationshipTermBase {
+public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	public SynonymRelationshipType() {

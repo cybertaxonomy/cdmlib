@@ -23,7 +23,7 @@ import java.util.UUID;
  * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @Entity
-public class TaxonRelationshipType extends RelationshipTermBase {
+public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
 
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
