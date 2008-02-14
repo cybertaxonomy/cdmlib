@@ -84,39 +84,39 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		    	//supraGeneric
 				if (rank != Rank.GENUS()){
 					result = new BotanicalName(rank);
-					result.setUninomial(epi[0]);
+					result.setGenusOrUninomial(epi[0]);
 				} 
 				//genus
 				else {
 					result = new BotanicalName(Rank.GENUS());
-					result.setUninomial(epi[0]);
+					result.setGenusOrUninomial(epi[0]);
 				}
 				authorString = fullName.substring(epi[0].length());
 			}
 			//infra genus
 			else if (infraGenusRE.matcher(fullName).matches()){
 				result = new BotanicalName(Rank.getRankByAbbreviation(epi[1]));
-				result.setUninomial(epi[0]);
+				result.setGenusOrUninomial(epi[0]);
 				result.setInfraGenericEpithet(epi[2]);
 				authorString = fullName.substring(epi[0].length() + 1 + epi[1].length()+ 1 + epi[2].length());
 			}
 			//aggr. or group
 			else if (aggrOrGroupRE.matcher(fullName).matches()){
 				result = new BotanicalName(Rank.getRankByAbbreviation(epi[2]));
-				result.setUninomial(epi[0]);
+				result.setGenusOrUninomial(epi[0]);
 				result.setSpecificEpithet(epi[1]);
 			}
 			//species
 			else if (speciesRE.matcher(fullName).matches()){
 				result = new BotanicalName(Rank.SPECIES());
-				result.setUninomial(epi[0]);
+				result.setGenusOrUninomial(epi[0]);
 				result.setSpecificEpithet(epi[1]);
 				authorString = fullName.substring(epi[0].length() + 1 + epi[1].length());
 			}
 			//autonym
 			else if (autonymRE.matcher(fullName).matches()){
 				result = new BotanicalName(Rank.getRankByAbbreviation(epi[epi.length - 2]));
-				result.setUninomial(epi[0]);
+				result.setGenusOrUninomial(epi[0]);
 				result.setSpecificEpithet(epi[1]);
 				result.setInfraSpecificEpithet(epi[epi.length - 1]);
 				int lenSpecies = 2 + epi[0].length()+epi[1].length();
@@ -132,7 +132,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 					infraSpecEpi = epi[4];
 				}
 				result = new BotanicalName(Rank.getRankByAbbreviation(infraSpecRankEpi));
-				result.setUninomial(epi[0]);
+				result.setGenusOrUninomial(epi[0]);
 				result.setSpecificEpithet(epi[1]);
 				result.setInfraSpecificEpithet(infraSpecEpi);
 				authorString = fullName.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankEpi.length() + 1 + infraSpecEpi.length());
@@ -141,7 +141,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 				boolean implemented = false;
 				if (implemented){
 					result = new BotanicalName(Rank.getRankByNameOrAbbreviation(epi[2]));
-					result.setUninomial(epi[0]);
+					result.setGenusOrUninomial(epi[0]);
 					result.setSpecificEpithet(epi[1]);
 					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);
 					authorString = fullName.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
@@ -368,7 +368,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
     static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
     static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
     //Words used in an epethiton
-    static String nonCapitalEpiWord = "[a-zë\\-]+";
+    static String nonCapitalEpiWord = "[a-zï¿½\\-]+";
     static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
     
     

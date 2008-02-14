@@ -23,10 +23,10 @@ public class ZooNameCacheStrategy extends StrategyBase implements
 	public String getNameCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
-		if (tn.getUninomial() != null){
-			result = tn.getUninomial();
+		if (tn.getGenusOrUninomial() != null){
+			result = tn.getGenusOrUninomial();
 		}else{
-			result = tn.getUninomial();
+			result = tn.getGenusOrUninomial();
 			result += (" " + tn.getSpecificEpithet()).trim().replace("null", "");
 			result += (" " + tn.getInfraSpecificEpithet()).trim().replace("null", "");
 		}

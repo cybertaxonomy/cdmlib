@@ -41,8 +41,8 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 			result = getSpeciesNameCache(botanicalName);
 		}else if (botanicalName.getInfraGenericEpithet() != null){
 			result = getInfraGenusNameCache(botanicalName);
-		}else if (botanicalName.getUninomial() != null){
-			result = getUninomialNameCache(botanicalName);
+		}else if (botanicalName.getGenusOrUninomial() != null){
+			result = getGenusOrUninomialNameCache(botanicalName);
 		}else{ 
 			logger.warn("BotanicalName Strategy for Name (UUID: " + botanicalName.getUuid() +  ") not yet implemented");
 			result = "XXX";
@@ -67,16 +67,16 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 
 /************** PRIVATES ****************/
 	
-	protected String getUninomialNameCache(BotanicalName botanicalName){
+	protected String getGenusOrUninomialNameCache(BotanicalName botanicalName){
 		String result;
-		result = botanicalName.getUninomial();
+		result = botanicalName.getGenusOrUninomial();
 		return result;
 	}
 	
 	protected String getInfraGenusNameCache(BotanicalName botanicalName){
 		//FIXME
 		String result;
-		result = botanicalName.getUninomial();
+		result = botanicalName.getGenusOrUninomial();
 		result += " (" + (botanicalName.getInfraGenericEpithet() + ")").trim().replace("null", "");
 		return result;
 	}
@@ -84,7 +84,7 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 	
 	protected String getSpeciesNameCache(BotanicalName botanicalName){
 		String result;
-		result = botanicalName.getUninomial();
+		result = botanicalName.getGenusOrUninomial();
 		result += " " + (botanicalName.getSpecificEpithet()).trim().replace("null", "");
 		return result;
 	}
@@ -92,7 +92,7 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 	
 	protected String getInfraSpeciesNameCache(BotanicalName botanicalName){
 		String result;
-		result = botanicalName.getUninomial();
+		result = botanicalName.getGenusOrUninomial();
 		String specis = botanicalName.getSpecificEpithet();
 		result += " " + (specis.trim()).replace("null", "");
 		result += " " + (botanicalName.getRank().getAbbreviation()).trim().replace("null", "");

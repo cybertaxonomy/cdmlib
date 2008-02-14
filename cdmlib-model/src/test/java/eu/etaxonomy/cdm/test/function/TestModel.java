@@ -49,9 +49,9 @@ public class TestModel {
 		tn3.addPropertyChangeListener(listener);
 
 		// test listeners
-		tn.setUninomial("tn1-Genus1");
-		tn3.setUninomial("tn3-genus");
-		tn3.getUninomial();
+		tn.setGenusOrUninomial("tn1-Genus1");
+		tn3.setGenusOrUninomial("tn3-genus");
+		tn3.getGenusOrUninomial();
 		
 		logger.info("Create new Author agent...");
 		Person team= new Person();
