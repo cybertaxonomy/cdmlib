@@ -123,5 +123,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public Iterator<T> iterator() {
 		return terms.iterator();  // OLD: new TermIterator<T>(this.terms);
 	}
+	
+	public int size(){
+		return terms.size();
+	}
     
 }

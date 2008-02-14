@@ -23,6 +23,7 @@ import javax.persistence.*;
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase implements Comparable<T> {
 	static Logger logger = Logger.getLogger(OrderedTermBase.class);
 	
+	//Order index, value < 1 means that this Term is not in order yet
 	protected int orderIndex;
 	
 	public OrderedTermBase() {
@@ -64,13 +65,17 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		if (this.vocabulary != null) { 
 			this.vocabulary.terms.remove(this);
 		}
-		//TODO Exception
-		OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
-		if (voc.getLowestTerm() == null){
-			this.orderIndex = 1;
-		}else{
-			OrderedTermBase otb = voc.getLowestTerm();
-			this.orderIndex = otb.orderIndex + 1;
+		if (OrderedTermVocabulary.class.isAssignableFrom(newVocabulary.getClass())){
+			OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
+		
+			if (this.orderIndex > 1){
+				//don't change orderIndex
+			}else if (voc.getLowestTerm() == null){
+				this.orderIndex = 1;
+			}else{
+				OrderedTermBase otb = voc.getLowestTerm();
+				this.orderIndex = otb.orderIndex + 1;
+			}
 		}
 		if (newVocabulary != null) { 
 			newVocabulary.terms.add(this);

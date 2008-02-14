@@ -41,22 +41,47 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return new TreeSet<T>();
 	}
 	
+	public SortedSet<T> getHigherAndEqualTerms(T otb) {
+		SortedSet<T> result = new TreeSet<T>();
+		result.addAll( ((SortedSet<T>)terms).tailSet(otb));
+		return result;
+	}
 	public SortedSet<T> getHigherTerms(T otb) {
-		return ((SortedSet<T>)terms).tailSet(otb);
+		SortedSet<T> result = getHigherAndEqualTerms(otb);
+		for (T setObject : terms){
+			if (setObject.compareTo(otb) == 0){
+				result.remove(setObject);
+			}
+		}
+		return result;
 	}
+
+	public SortedSet<T> getLowerAndEqualTerms(T otb) {
+		SortedSet<T> result = new TreeSet<T>();
+		result.addAll( ((SortedSet<T>)terms).headSet(otb));
+		return result;
+	}
+	
 	public SortedSet<T> getLowerTerms(T otb) {
-		return ((SortedSet<T>)terms).headSet(otb);
+		SortedSet<T> result = getLowerAndEqualTerms(otb);
+		for (T setObject : terms){
+			if (setObject.compareTo(otb) == 0){
+				result.remove(setObject);
+			}
+		}
+		return result;
 	}
+	
 	public T getNextHigherTerm(T otb) {
 		try {
-			return ((SortedSet<T>)terms).tailSet(otb).first();
+			return getHigherTerms(otb).last();
 		} catch (NoSuchElementException e) {
 			return null;
 		}
 	}
 	public T getNextLowerTerm(T otb) {
 		try {
-			return ((SortedSet<T>)terms).headSet(otb).last();
+			return getLowerTerms(otb).first();
 		} catch (NoSuchElementException e) {
 			return null;
 		}
@@ -81,7 +106,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 	@Override
 	public void addTerm(T term) throws WrongTermTypeException {
-		int lowestOrderIndex = ((SortedSet<T>)terms).first().orderIndex;
+		SortedSet sortedTerms = ((SortedSet<T>)terms);
+		int lowestOrderIndex;
+		if (sortedTerms.size() == 0){
+			lowestOrderIndex = 1;
+		}else{
+			Object first = (T)sortedTerms.first();
+			lowestOrderIndex = ((T)first).orderIndex;
+		}
 		term.orderIndex = lowestOrderIndex + 1;
 		super.addTerm(term);	
 	}
@@ -107,12 +139,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 
 	public void addTermUnder(T termToBeAdded, T termToPreceed) throws WrongTermTypeException {
-		//compute next higher Term
-//		int orderInd = termToPreceed.orderIndex;
-//		this.mTermToSucceed = getNextTerm(termToPreceed);
-//		while (mTermToSucceed != null &&  mTermToSucceed.orderIndex == orderInd ){
-//			mTermToSucceed = getNextTerm(mTermToSucceed);
-//		}
 		int orderInd = termToPreceed.orderIndex;
 		termToBeAdded.orderIndex = orderInd + 1;
 		Iterator<T> iterator = getLowerTerms(termToPreceed).iterator();
@@ -127,36 +153,13 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 //		mTermToSucceed = null;
 	}
 	
-//	/** To be used only by OrderedTermBase */
-//	@Deprecated
-//	private void addTermIntoTermsList(T termToBeAdded){
-//		if (mTermToSucceed == null){
-//			int highestOrderIndex = ((SortedSet<T>)terms).last().orderIndex;
-//			termToBeAdded.orderIndex = highestOrderIndex + 1;
-//			terms.add(termToBeAdded);
-//		}
-//		int termOrderIndex = termToSucceed.orderIndex;
-//		termToBeAdded.orderIndex = termToSucceed.orderIndex;
-//		
-//		//increase index for all succeeding terms ...
-//		Iterator<T> iterator = getSucceedingTerms(termToSucceed).iterator();
-//		while (iterator.hasNext()){
-//			T otb = iterator.next(); 
-//			toBeChangedByObject = otb;
-//			otb.incrementIndex(this);
-//			toBeChangedByObject = null;
-//		}
-//		// ...  including the succeeding term itself
-//		toBeChangedByObject = termToSucceed;
-//		termToSucceed.incrementIndex(this);
-//		toBeChangedByObject = null;
-//	}
-
-	
 	@Override
 	public void removeTerm(T term) {
-		if (this.getNextHigherTerm(term).compareTo(term) != 0  &&
-						this.getNextLowerTerm(term).compareTo(term) != 0	){
+		if (term == null){
+			return;
+		}
+		if (term.compareTo(this.getNextHigherTerm(term)) != 0  &&
+						term.compareTo(this.getNextLowerTerm(term)) != 0	){
 			Iterator<T> iterator = getLowerTerms(term).iterator();
 			while (iterator.hasNext()){
 				T otb = iterator.next(); 
