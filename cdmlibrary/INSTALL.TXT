@@ -1,3 +1,10 @@
+
+=========================================
+!!! THIS IS AN OLD VERSION. DON'T USE.
+    USE cdmlib-xxx INSTEAD
+=========================================
+
+
 The project uses Maven2
 
  1) 
