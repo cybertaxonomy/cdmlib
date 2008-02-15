@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.strategy;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -16,6 +18,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
  */
 public abstract class NameCacheStrategyBase extends StrategyBase implements INameCacheStrategy {
 	private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
+
+	final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
 
 	/**
 	 * 
