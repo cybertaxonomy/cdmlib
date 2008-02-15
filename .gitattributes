@@ -377,10 +377,12 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/rest/CdmRestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HomePageController.java -text
+cdmlib-remote/src/main/resources/log4j.properties -text
+cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/beans.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdm-rest-servlet.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
-cdmlib-remote/src/main/webapp/index.jsp -text
 cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-services/INSTALL.txt -text
