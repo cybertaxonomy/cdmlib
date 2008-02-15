@@ -53,8 +53,8 @@ public class TestService {
 		
 		
 		// test 
-		tn.setUninomial("tn1-Genus1");
-		tn3.setUninomial("tn3-genus");
+		tn.setGenusOrUninomial("tn1-Genus1");
+		tn3.setGenusOrUninomial("tn3-genus");
 		
 		logger.info("Create new Author agent...");
 		Person team= new Person();
