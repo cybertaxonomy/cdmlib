@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -133,9 +134,17 @@ public class OrderedTermVocabularyTest {
 
 
 	@Test
+	//@Ignore
 	public final void testGetEqualTerms() {
-		fail();
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
+		otbFree.orderIndex = otb2.orderIndex;
+		otbFree.setVocabulary(oVoc1);
+		assertEquals(3, oVoc1.size());
+		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
+		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
+		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
+		fail();  //setVocabulary muss in OrderedTermBase noch sicherer werden, ausserdem sollte OrderedTermVocabulary noch mehr von der Listen 
+		//Mentalität verlieren (es hat jetzt Set semantik)
 	}
 
 	@Test
@@ -181,19 +190,19 @@ public class OrderedTermVocabularyTest {
 		assertEquals(otbFree.getLabel(), oVoc1.getNextLowerTerm(otb2).getLabel());
 		assertEquals(otbFree.getLabel(), oVoc1.getNextHigherTerm(otb3).getLabel());
 	}
-
-	@Test
-	public final void testAddTermEqualLevel() {
-		try {
-			oVoc1.addTermEqualLevel(otbFree, otb2);
-		} catch (WrongTermTypeException e) {
-			fail();
-		}
-		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
-		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
-		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
-		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
-	}
+//
+//	@Test
+//	public final void testAddTermEqualLevel() {
+//		try {
+//			oVoc1.addTermEqualLevel(otbFree, otb2);
+//		} catch (WrongTermTypeException e) {
+//			fail();
+//		}
+//		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
+//		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
+//		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
+//		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
+//	}
 	
 	@Test
 	public final void testIndexChangeAllowed() {

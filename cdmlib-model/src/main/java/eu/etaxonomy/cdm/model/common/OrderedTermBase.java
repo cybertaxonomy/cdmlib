@@ -32,6 +32,14 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public OrderedTermBase(String term, String label) {
 		super(term, label);
 	}
+
+	
+	private int getOrderIndex(){
+		return this.orderIndex;
+	}
+	private void setOrderIndex(int orderIndex){
+		this.orderIndex = orderIndex;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -60,6 +68,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * @param orderedTerm
 	 * @return boolean result of the comparison
 	 */
+	@Transient
 	public boolean isLower(T orderedTerm){
 		return (this.compareTo(orderedTerm) < 0 );
 	}
@@ -71,6 +80,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * @param orderedTerm
 	 * @return boolean result of the comparison
 	 */
+	@Transient
 	public boolean isHigher(T orderedTerm){
 		return (this.compareTo(orderedTerm) > 0 );
 	}

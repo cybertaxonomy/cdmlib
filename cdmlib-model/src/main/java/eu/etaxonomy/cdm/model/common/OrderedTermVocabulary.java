@@ -11,12 +11,15 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 
 /**
  * @author a.mueller
  *
  */
+@Entity
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
 	
@@ -156,11 +159,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(termToBeAdded);
 	}
 	
-	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
-		int orderInd = equalLevelTerm.orderIndex;
-		termToBeAdded.orderIndex = orderInd;
-		super.addTerm(termToBeAdded);
-	}
+//	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
+//		int orderInd = equalLevelTerm.orderIndex;
+//		termToBeAdded.orderIndex = orderInd;
+//		super.addTerm(termToBeAdded);
+//	}
 	
 	@Override
 	public void removeTerm(T term) {

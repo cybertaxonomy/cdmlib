@@ -27,12 +27,12 @@ public class TaxonNameParserBotanicalNameImplTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameParserBotanicalNameImplTest.class);
 	
 	final private String strNameFamily = "Asteraceae";
-	final private String strNameGenus = "Abies MÃ¼ller";
+	final private String strNameGenus = "Abies Müller";
 	final private String strNameAbies1 = "Abies alba";
 	final private String strNameAbiesSub1 = "Abies alba subsp. beta";
-	final private String strNameAbiesAuthor1 = "Abies alba MÃ¼ller";
-	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'MÃ¼ller";
-	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex DÃ¶ring) D'MÃ¼ller ex. de Greuther"; 
+	final private String strNameAbiesAuthor1 = "Abies alba Müller";
+	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Müller";
+	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döring) D'Müller ex. de Greuther"; 
 	final private String strNameEmpty = "";
 	final private String strNameNull = null;
 	
@@ -122,23 +122,23 @@ public class TaxonNameParserBotanicalNameImplTest {
 			BotanicalName nameAuthor = parser.parseFullName(strNameAbiesAuthor1, Rank.SPECIES());
 			assertEquals(nameAuthor.getGenusOrUninomial(), "Abies");
 			assertEquals(nameAuthor.getSpecificEpithet(), "alba");
-			assertEquals(nameAuthor.getCombinationAuthorTeam().getTitleCache(), "MÃ¼ller");
+			assertEquals(nameAuthor.getCombinationAuthorTeam().getTitleCache(), "Müller");
 			
 			BotanicalName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1, Rank.SPECIES());
 			assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 			assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-			assertEquals("D'MÃ¼ller", nameBasionymAuthor.getCombinationAuthorTeam().getTitleCache());
+			assertEquals("D'Müller", nameBasionymAuthor.getCombinationAuthorTeam().getTitleCache());
 			BotanicalName basionym = (BotanicalName)nameBasionymAuthor.getBasionym();
 			assertEquals("Ciardelli", basionym.getCombinationAuthorTeam().getTitleCache());
 			
 			BotanicalName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1, Rank.SPECIES());
 			assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 			assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-			assertEquals("D'MÃ¼ller", nameBasionymExAuthor.getCombinationAuthorTeam().getTitleCache());
+			assertEquals("D'Müller", nameBasionymExAuthor.getCombinationAuthorTeam().getTitleCache());
 			assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getTitleCache());
 			BotanicalName basionym2 = (BotanicalName)nameBasionymExAuthor.getBasionym();
 			assertEquals("Ciardelli", basionym2.getCombinationAuthorTeam().getTitleCache());
-			assertEquals("DÃ¶ring", basionym2.getExCombinationAuthorTeam().getTitleCache());
+			assertEquals("Döring", basionym2.getExCombinationAuthorTeam().getTitleCache());
 			
 			BotanicalName name2 = parser.parseFullName(strNameAbiesSub1, Rank.SPECIES());
 			assertEquals(name2.getGenusOrUninomial(), "Abies");
