@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
 
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
-
+ 
 	//REFERENCES
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;

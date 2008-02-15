@@ -162,16 +162,16 @@ public class BerlinModelImport {
 		IAgentService agentService = cdmApp.getAgentService();
 		boolean delete = deleteAll;
 		
-		if (delete){
-			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
-			while(listAllAgents.size() > 0 ){
-				for (Agent name : listAllAgents ){
-					//FIXME
-					//nameService.remove(name);
-				}
-				listAllAgents =  agentService.getAllAgents(0, 1000);
-			}			
-		}
+//		if (delete){
+//			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
+//			while(listAllAgents.size() > 0 ){
+//				for (Agent name : listAllAgents ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllAgents =  agentService.getAllAgents(0, 1000);
+//			}			
+//		}
 		try {
 			//get data from database
 			String strQuery = 
@@ -203,16 +203,16 @@ public class BerlinModelImport {
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
 		
-		if (delete){
-			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
-			while(listAllReferences.size() > 0 ){
-				for (TaxonNameBase name : listAllReferences ){
-					//FIXME
-					//nameService.remove(name);
-				}
-				listAllReferences =  referenceService.getAllReferences(0, 1000);
-			}			
-		}
+//		if (delete){
+//			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
+//			while(listAllReferences.size() > 0 ){
+//				for (TaxonNameBase name : listAllReferences ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllReferences =  referenceService.getAllReferences(0, 1000);
+//			}			
+//		}
 		try {
 			
 			
@@ -542,16 +542,16 @@ public class BerlinModelImport {
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
 		
-		if (delete){
-			List<TaxonBase> listAllTaxa =  taxonService.getAllTaxa(0, 1000);
-			while(listAllTaxa.size() > 0 ){
-				for (TaxonBase taxon : listAllTaxa ){
-					//FIXME
-					//nameService.remove(name);
-				}
-				listAllTaxa =  taxonService.getAllTaxa(0, 1000);
-			}			
-		}
+//		if (delete){
+//			List<TaxonBase> listAllTaxa =  taxonService.getAllTaxa(0, 1000);
+//			while(listAllTaxa.size() > 0 ){
+//				for (TaxonBase taxon : listAllTaxa ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllTaxa =  taxonService.getAllTaxa(0, 1000);
+//			}			
+//		}
 		try {
 			//get data from database
 			String strQuery = 
@@ -591,12 +591,19 @@ public class BerlinModelImport {
 				}
 				
 				TaxonBase taxonBase;
+				Synonym synonym;
+				Taxon taxon;
 				try {
 					logger.info(statusFk);
 					if (statusFk == 1){
-						taxonBase = Taxon.NewInstance(taxonName, reference);
+						taxon = Taxon.NewInstance(taxonName, reference);
+						taxonBase = taxon;
 					}else if (statusFk == 2){
-						taxonBase = Synonym.NewInstance(taxonName, reference);
+						synonym = Synonym.NewInstance(taxonName, reference);
+						taxonBase = synonym;
+					}else{
+						synonym = Synonym.NewInstance(taxonName, reference);
+						taxonBase = synonym;
 					}
 					
 					dbAttrName = "xxx";
