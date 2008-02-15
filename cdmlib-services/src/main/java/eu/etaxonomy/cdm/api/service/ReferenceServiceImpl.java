@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+
+import java.util.List;
 import java.util.UUID;
 
 
@@ -31,5 +33,10 @@ public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements 
 	public UUID saveReference(ReferenceBase reference) {
 		return super.saveCdmObject(reference);
 	}
+	
+	public List<ReferenceBase> getAllReferences(int limit, int start){
+			return referenceDao.list(limit, start);
+	}
+
 
 }

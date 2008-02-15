@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
@@ -44,5 +45,9 @@ public class AgentServiceImpl extends IdentifiableServiceBase<Agent> implements 
 
 	public UUID saveAgent(Agent agent) {
 		return super.saveCdmObject(agent);
+	}
+	
+	public List<Agent> getAllAgents(int limit, int start){
+		return agentDao.list(limit, start);
 	}
 }

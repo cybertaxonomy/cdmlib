@@ -41,7 +41,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return super.saveCdmObject(taxonName);
 	}
 
-	public List getAllNames(int limit, int start){
+	public List<TaxonNameBase> getAllNames(int limit, int start){
 		return dao.list(limit, start);
 	}
 
