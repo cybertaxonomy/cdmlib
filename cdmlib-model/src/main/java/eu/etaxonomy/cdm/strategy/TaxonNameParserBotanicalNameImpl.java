@@ -85,7 +85,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		    }
 		    else if (genusOrSupraGenusRE.matcher(fullName).matches()){
 		    	//supraGeneric
-				if (rank != Rank.GENUS()){
+				if (rank.isSupraGeneric()){
 					result = new BotanicalName(rank);
 					result.setGenusOrUninomial(epi[0]);
 				} 

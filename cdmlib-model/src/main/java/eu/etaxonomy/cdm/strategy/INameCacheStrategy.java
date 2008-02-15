@@ -15,6 +15,6 @@ public interface INameCacheStrategy extends IStrategy {
 	public String getNameCache(CdmBase object);
 	
 	//returns the composed name string with author and/or year
-	public String getFullNameCache(CdmBase object);
+	public String getTitleCache(CdmBase object);
 	
 }

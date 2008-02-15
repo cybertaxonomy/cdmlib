@@ -144,7 +144,7 @@ public class NonViralName extends TaxonNameBase {
 			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
 			return null;
 		}else{
-			return cacheStrategy.getFullNameCache(this);
+			return cacheStrategy.getTitleCache(this);
 		}
 	}
 

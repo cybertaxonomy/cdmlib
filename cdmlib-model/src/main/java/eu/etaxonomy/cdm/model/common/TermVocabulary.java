@@ -54,20 +54,14 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		super(term, label);
 		setTermSourceUri(termSourceUri);
 	}
-
-//	public boolean isOrdinal(){
-//		return this.isOrdinal;
-//	}
-//	public void setOrdinal(boolean isOrdinal){
-//		this.isOrdinal = isOrdinal;
-//	}
-
 	
 	@OneToMany(mappedBy="vocabulary")
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getTerms() {
-		return terms;
+		Set<T> result = getNewTermSet();
+		result.addAll(terms);
+		return result;
 	}
 	protected void setTerms(Set<T> terms) {
 		this.terms = terms;

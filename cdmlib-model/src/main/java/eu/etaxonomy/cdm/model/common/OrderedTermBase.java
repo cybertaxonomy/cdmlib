@@ -54,6 +54,28 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		}
 	}
 	
+	/**
+	 * If this term is lower than the parameter term, true is returned, else false.
+	 * If the parameter term is null, an Exception is thrown.
+	 * @param orderedTerm
+	 * @return boolean result of the comparison
+	 */
+	public boolean isLower(T orderedTerm){
+		return (this.compareTo(orderedTerm) < 0 );
+	}
+
+	
+	/**
+	 * If this term is higher than the parameter term, true is returned, else false.
+	 * If the parameter term is null, an Exception is thrown.
+	 * @param orderedTerm
+	 * @return boolean result of the comparison
+	 */
+	public boolean isHigher(T orderedTerm){
+		return (this.compareTo(orderedTerm) > 0 );
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
@@ -65,19 +87,19 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		if (this.vocabulary != null) { 
 			this.vocabulary.terms.remove(this);
 		}
-		if (OrderedTermVocabulary.class.isAssignableFrom(newVocabulary.getClass())){
-			OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
-		
-			if (this.orderIndex > 1){
-				//don't change orderIndex
-			}else if (voc.getLowestTerm() == null){
-				this.orderIndex = 1;
-			}else{
-				OrderedTermBase otb = voc.getLowestTerm();
-				this.orderIndex = otb.orderIndex + 1;
-			}
-		}
 		if (newVocabulary != null) { 
+			if (OrderedTermVocabulary.class.isAssignableFrom(newVocabulary.getClass())){
+				OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
+			
+				if (this.orderIndex > 1){
+					//don't change orderIndex
+				}else if (voc.getLowestTerm() == null){
+					this.orderIndex = 1;
+				}else{
+					OrderedTermBase otb = voc.getLowestTerm();
+					this.orderIndex = otb.orderIndex + 1;
+				}
+			}
 			newVocabulary.terms.add(this);
 		}
 		this.vocabulary = newVocabulary;		
@@ -103,6 +125,19 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 			return true;
 		}else{
 			return false;
+		}
+	}
+	
+	public boolean equals(Object o){
+		if (! OrderedTermBase.class.isAssignableFrom(o.getClass())){
+			return false;
+		}else{
+			OrderedTermBase otb = (OrderedTermBase)o;
+			if (otb.getUuid().equals(this.getUuid())){
+				return true;
+			}else{
+				return false;
+			}
 		}
 	}
 }

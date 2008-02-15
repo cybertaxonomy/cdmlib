@@ -77,7 +77,6 @@ public class OrderedTermBaseTest {
 		assertTrue(otb2.compareTo(otb3) == 0  );
 		assertTrue(otb3.compareTo(otb1) < 0  );
 	
-		
 		comp = Rank.GENUS().compareTo(Rank.SPECIES());
 		assertTrue( comp > 0  );
 		assertTrue(Rank.GENUS().compareTo(Rank.GENUS()) == 0  );
@@ -87,12 +86,21 @@ public class OrderedTermBaseTest {
 
 	@Test
 	public final void testDecreaseVoc() {
-		logger.warn("not yet implemented");
+		OrderedTermVocabulary<OrderedTermBase> voc = new OrderedTermVocabulary();
+		int before = otb1.orderIndex;
+		otb1.decreaseIndex(voc);
+		int after = otb1.orderIndex;
+		assertEquals(before, after);
 	}
 
 	@Test
 	public final void testIncrementVoc() {
-		logger.warn("not yet implemented");
+		OrderedTermVocabulary<OrderedTermBase> voc = new OrderedTermVocabulary();
+		assertFalse(voc.indexChangeAllowed(otb1));
+		int before = otb1.orderIndex;
+		otb1.incrementIndex(voc);
+		int after = otb1.orderIndex;
+		assertEquals(before, after);
 	}
 
 }

@@ -80,6 +80,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/SourceConnectionException.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
+cdmlib-model/INSTALL.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
@@ -243,6 +244,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategy.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ITaxonNameParser.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/NameCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameCacheStrategy.java -text
@@ -271,6 +273,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabularyTe
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermLoaderTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermVocabularyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/BotanicNameCacheStrategyTest.java -text

@@ -71,17 +71,27 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 		return result;
 	}
+
+	public SortedSet<T> getEqualTerms(T otb) {
+		SortedSet<T> result = new TreeSet<T>();
+		for (T setObject : terms){
+			if (setObject.compareTo(otb) == 0){
+				result.add(setObject);
+			}
+		}
+		return result;
+	}
 	
 	public T getNextHigherTerm(T otb) {
 		try {
-			return getHigherTerms(otb).last();
+			return getHigherTerms(otb).first();
 		} catch (NoSuchElementException e) {
 			return null;
 		}
 	}
 	public T getNextLowerTerm(T otb) {
 		try {
-			return getLowerTerms(otb).first();
+			return getLowerTerms(otb).last();
 		} catch (NoSuchElementException e) {
 			return null;
 		}
@@ -109,7 +119,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		SortedSet sortedTerms = ((SortedSet<T>)terms);
 		int lowestOrderIndex;
 		if (sortedTerms.size() == 0){
-			lowestOrderIndex = 1;
+			lowestOrderIndex = 0;
 		}else{
 			Object first = (T)sortedTerms.first();
 			lowestOrderIndex = ((T)first).orderIndex;
@@ -118,15 +128,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(term);	
 	}
 
-	private T mTermToSucceed;
-	
-	public void addTermAbove(T termToBeAdded, T termToSucceed) throws WrongTermTypeException {
-//		this.mTermToSucceed = termToSucceed;
-		int orderInd = termToSucceed.orderIndex;
+	public void addTermAbove(T termToBeAdded, T lowerTerm) throws WrongTermTypeException {
+		int orderInd = lowerTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd;
-		
-		//increment all orderIndexes that 
-		//Successors
+		//increment all orderIndexes of terms below 
 		Iterator<T> iterator = terms.iterator();
 		while(iterator.hasNext()){
 			T term = iterator.next();
@@ -135,22 +140,26 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 			}
 		}
 		super.addTerm(termToBeAdded);
-//		this.mTermToSucceed = null;
 	}
 
-	public void addTermUnder(T termToBeAdded, T termToPreceed) throws WrongTermTypeException {
-		int orderInd = termToPreceed.orderIndex;
+	public void addTermBelow(T termToBeAdded, T higherTerm) throws WrongTermTypeException {
+		int orderInd = higherTerm.orderIndex;
 		termToBeAdded.orderIndex = orderInd + 1;
-		Iterator<T> iterator = getLowerTerms(termToPreceed).iterator();
+		//increment all orderIndexes of terms below 
+		Iterator<T> iterator = getLowerTerms(higherTerm).iterator();
 		while(iterator.hasNext()){
 			T term = iterator.next();
 			if (term.orderIndex > orderInd){
 				term.orderIndex++;
 			}
 		}
-		
 		super.addTerm(termToBeAdded);
-//		mTermToSucceed = null;
+	}
+	
+	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
+		int orderInd = equalLevelTerm.orderIndex;
+		termToBeAdded.orderIndex = orderInd;
+		super.addTerm(termToBeAdded);
 	}
 	
 	@Override
@@ -158,8 +167,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		if (term == null){
 			return;
 		}
-		if (term.compareTo(this.getNextHigherTerm(term)) != 0  &&
-						term.compareTo(this.getNextLowerTerm(term)) != 0	){
+		if (this.getEqualTerms(term).size() == 0){
 			Iterator<T> iterator = getLowerTerms(term).iterator();
 			while (iterator.hasNext()){
 				T otb = iterator.next(); 

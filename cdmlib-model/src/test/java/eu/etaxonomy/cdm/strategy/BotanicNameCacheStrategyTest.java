@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.suite.CdmTestSuite;
 
@@ -122,7 +123,7 @@ public class BotanicNameCacheStrategyTest {
 	@Test
 	public final void testGetInfraGenusNameCache() {
 		String methodName = "getInfraGenusNameCache";
-		Method method = getMethod(BotanicNameCacheStrategy.class, methodName, BotanicalName.class);
+		Method method = getMethod(NameCacheStrategyBase.class, methodName, NonViralName.class);
 		
 		BotanicNameCacheStrategy cacheStrategy = BotanicNameCacheStrategy.NewInstance();
 		this.getValue(method, cacheStrategy, subGenusName);
@@ -149,7 +150,7 @@ public class BotanicNameCacheStrategyTest {
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
 		try {
-			method = clazz.getDeclaredMethod("getInfraGenusNameCache", BotanicalName.class);
+			method = clazz.getDeclaredMethod("getInfraGenusNameCache", paramClazzes);
 		} catch (SecurityException e) {
 			logger.error("SecurityException " + e.getMessage());
 			return null;

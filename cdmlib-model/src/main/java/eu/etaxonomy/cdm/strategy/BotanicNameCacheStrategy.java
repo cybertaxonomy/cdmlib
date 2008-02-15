@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  *
  */
-public class BotanicNameCacheStrategy extends StrategyBase implements INameCacheStrategy {
+public class BotanicNameCacheStrategy extends NameCacheStrategyBase implements INameCacheStrategy {
 	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategy.class);
 	
 	public static BotanicNameCacheStrategy NewInstance(){
@@ -26,35 +26,13 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 	private BotanicNameCacheStrategy(){
 		super();
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
-	 */
-	// Test implementation
-	public String getNameCache(CdmBase object) {
-		String result;
-		BotanicalName botanicalName = (BotanicalName)object;
-		
-		if (botanicalName.getInfraSpecificEpithet() != null){
-			result = getInfraSpeciesNameCache(botanicalName);
-		}else if (botanicalName.getSpecificEpithet() != null){
-			result = getSpeciesNameCache(botanicalName);
-		}else if (botanicalName.getInfraGenericEpithet() != null){
-			result = getInfraGenusNameCache(botanicalName);
-		}else if (botanicalName.getGenusOrUninomial() != null){
-			result = getGenusOrUninomialNameCache(botanicalName);
-		}else{ 
-			logger.warn("BotanicalName Strategy for Name (UUID: " + botanicalName.getUuid() +  ") not yet implemented");
-			result = "XXX";
-		}
-		return result;
-	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
 	// Test implementation
-	public String getFullNameCache(CdmBase object) {
+	public String getTitleCache(CdmBase object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
 		result = getNameCache(object);
@@ -65,39 +43,4 @@ public class BotanicNameCacheStrategy extends StrategyBase implements INameCache
 		return result;
 	}
 
-/************** PRIVATES ****************/
-	
-	protected String getGenusOrUninomialNameCache(BotanicalName botanicalName){
-		String result;
-		result = botanicalName.getGenusOrUninomial();
-		return result;
-	}
-	
-	protected String getInfraGenusNameCache(BotanicalName botanicalName){
-		//FIXME
-		String result;
-		result = botanicalName.getGenusOrUninomial();
-		result += " (" + (botanicalName.getInfraGenericEpithet() + ")").trim().replace("null", "");
-		return result;
-	}
-
-	
-	protected String getSpeciesNameCache(BotanicalName botanicalName){
-		String result;
-		result = botanicalName.getGenusOrUninomial();
-		result += " " + (botanicalName.getSpecificEpithet()).trim().replace("null", "");
-		return result;
-	}
-	
-	
-	protected String getInfraSpeciesNameCache(BotanicalName botanicalName){
-		String result;
-		result = botanicalName.getGenusOrUninomial();
-		String specis = botanicalName.getSpecificEpithet();
-		result += " " + (specis.trim()).replace("null", "");
-		result += " " + (botanicalName.getRank().getAbbreviation()).trim().replace("null", "");
-		result += " " + (botanicalName.getInfraSpecificEpithet()).trim().replace("null", "");
-		return result;
-	}
-	
 }

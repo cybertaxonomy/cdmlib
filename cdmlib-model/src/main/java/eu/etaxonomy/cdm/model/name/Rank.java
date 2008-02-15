@@ -91,13 +91,11 @@ public class Rank extends OrderedTermBase<Rank> {
 	
 	
 	public Rank() {
-		// TODO Auto-generated constructor stub
 			super();
 	}
 
 	public Rank(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static final Rank EMPIRE(){
@@ -283,9 +281,48 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank CULTIVAR(){
 	  return (Rank)findByUuid(uuidCultivar);
 	}
+
 	
+	/**
+	 * True, if this Rank is higher than GENUS, else false.
+	 * @return
+	 */
+	public boolean isSupraGeneric(){
+		return (this.isHigher(Rank.GENUS()));
+	}
 	
-	
+	/**
+	 * True, if this Rank equals GENUS, else false.
+	 * @return
+	 */
+	public boolean isGenus(){
+		return (this.equals(Rank.GENUS()));
+	}
+
+	/**
+	 * True, if this Rank is lower than GENUS and higher than SPECIES, else false.
+	 * @return
+	 */
+	public boolean isInfraGeneric(){
+		return (this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
+	}
+
+	/**
+	 * True, if this Rank equals SPECIES, else false.
+	 * @return
+	 */
+	public boolean isSpecies(){
+		return (this.equals(Rank.SPECIES()));
+	}
+
+	/**
+	 * True, if this Rank is lower than SPECIES, else false.
+	 * @return
+	 */
+	public boolean isInfraSpecific(){
+		return (this.isLower(Rank.SPECIES()));
+	}
+
 	/**
 	 * NOT YET COMPLETE !!
 	 * @param strRank
@@ -300,6 +337,7 @@ public class Rank extends OrderedTermBase<Rank> {
 			return getRankByName(strRank);
 		}
 	}
+	
 	
 	/** TODO
 	 * preliminary implementation for BotanicalNameParser
@@ -407,7 +445,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	//TODO
 	//dummy implementation for BerlinModelImport
 	public String getAbbreviation(){
-		if (this.equals(Rank.SPECIES()) ){return "subsp.";}
+		if (this.equals(Rank.SPECIES()) ){return "sp.";}
 		else if (this.equals(Rank.SUBSPECIES()) ){return "subsp.";}
 		else if (this.equals(Rank.VARIETY()) ){return "var.";}
 		else if (this.equals(Rank.CONVAR()) ){return "convar.";}

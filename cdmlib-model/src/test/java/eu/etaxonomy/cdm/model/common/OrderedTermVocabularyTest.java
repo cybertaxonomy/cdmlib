@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.*;
 
-import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -11,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 public class OrderedTermVocabularyTest {
 	private static Logger logger = Logger.getLogger(OrderedTermVocabularyTest.class);
@@ -33,9 +33,9 @@ public class OrderedTermVocabularyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase("otb1", "otb1Label");
-		otb2 = new DerivedOrderedTermBase("term", "label");
-		otb3 = new DerivedOrderedTermBase("otb3", "otb3Label");
+		otb1 = new DerivedOrderedTermBase("otb1", "high");
+		otb2 = new DerivedOrderedTermBase("term", "middel");
+		otb3 = new DerivedOrderedTermBase("otb3", "low");
 		otbFree = new DerivedOrderedTermBase();
 		oVoc1 = new OrderedTermVocabulary<OrderedTermBase>();
 		oVoc1.addTerm(otb1);
@@ -70,9 +70,19 @@ public class OrderedTermVocabularyTest {
 
 	@Test
 	public final void testGetNewTermSet() {
-		logger.warn("Not yet implemented"); // TODO
+		assertNotNull(oVoc1.getNewTermSet());
+		assertTrue(SortedSet.class.isAssignableFrom(oVoc1.getNewTermSet().getClass()));
 	}
 
+	
+
+	@Test
+	public final void testGetTerms() {
+		assertEquals(3, oVoc1.getTerms().size());
+		assertNotSame(oVoc1.terms, oVoc1.getTerms());
+		assertTrue( oVoc1.terms.getClass().isAssignableFrom(oVoc1.getTerms().getClass()));
+	}
+	
 	@Test
 	public final void testAddTerm() {
 		assertEquals(3, oVoc1.size());
@@ -93,55 +103,107 @@ public class OrderedTermVocabularyTest {
 		oVoc1.removeTerm(otb3);
 		assertEquals(2, oVoc1.size());
 		assertEquals(otb2, oVoc1.getLowestTerm());
+		oVoc1.removeTerm(otb1);
+		assertEquals(1, oVoc1.size());
+		assertEquals(otb2, oVoc1.getLowestTerm());
+		assertEquals(otb2, oVoc1.getHighestTerm());
+		oVoc1.removeTerm(otb2);
+		assertEquals(0, oVoc1.size());
+		assertEquals(null, oVoc1.getHighestTerm());
 	}
 
 	@Test
 	public final void testOrderedTermVocabulary() {
-		logger.warn("Not yet implemented"); // TODO
+		assertNotNull(oVoc1);
 	}
 
 	@Test
 	public final void testOrderedTermVocabularyStringStringString() {
+		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>("term", "label", "termSourceUri");
+		assertEquals("label", oVoc2.getLabel());	
+	}
+
+	@Test
+	public final void testGetLowerTerms() {
+		assertEquals(0, oVoc1.getLowerTerms(otb3).size());
+		assertEquals(1, oVoc1.getLowerTerms(otb2).size());
+		assertEquals(2, oVoc1.getLowerTerms(otb1).size());
+		assertEquals(otb2, oVoc1.getLowerTerms(otb1).last());
+	}
+
+
+	@Test
+	public final void testGetEqualTerms() {
+		fail();
 		logger.warn("Not yet implemented"); // TODO
 	}
 
 	@Test
-	public final void testGetPrecedingTerms() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testGetHigherTerms() {
+		assertEquals(2, oVoc1.getHigherTerms(otb3).size());
+		assertEquals(1, oVoc1.getHigherTerms(otb2).size());
+		assertEquals(0, oVoc1.getHigherTerms(otb1).size());
+		assertEquals(otb2, oVoc1.getHigherTerms(otb3).first());
 	}
 
 	@Test
-	public final void testGetSucceedingTerms() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testGetNextHigherTerm() {
+		assertEquals(otb2.getLabel(), oVoc1.getNextHigherTerm(otb3).getLabel());
+		assertEquals(null, oVoc1.getNextHigherTerm(otb1));
 	}
 
 	@Test
-	public final void testGetPreviousTerm() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testGetNextLowerTerm() {
+		assertEquals(otb2.getLabel(), oVoc1.getNextLowerTerm(otb1).getLabel());
+		assertEquals(null, oVoc1.getNextLowerTerm(otb3));
 	}
 
 	@Test
-	public final void testGetNextTerm() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testAddTermAbove() {
+		try {
+			oVoc1.addTermAbove(otbFree, otb2);
+		} catch (WrongTermTypeException e) {
+			fail();
+		}
+		assertEquals(2, oVoc1.getLowerTerms(otbFree).size());
+		assertEquals(otbFree.getLabel(), oVoc1.getNextLowerTerm(otb1).getLabel());
+		assertEquals(otbFree.getLabel(), oVoc1.getNextHigherTerm(otb2).getLabel());
 	}
 
 	@Test
-	public final void testAddTermBefore() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testAddTermBelow() {
+		try {
+			oVoc1.addTermBelow(otbFree, otb2);
+		} catch (WrongTermTypeException e) {
+			fail();
+		}
+		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
+		assertEquals(otbFree.getLabel(), oVoc1.getNextLowerTerm(otb2).getLabel());
+		assertEquals(otbFree.getLabel(), oVoc1.getNextHigherTerm(otb3).getLabel());
 	}
 
 	@Test
-	public final void testAddTermAfter() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testAddTermEqualLevel() {
+		try {
+			oVoc1.addTermEqualLevel(otbFree, otb2);
+		} catch (WrongTermTypeException e) {
+			fail();
+		}
+		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
+		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
+		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
+		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
 	}
-
+	
 	@Test
 	public final void testIndexChangeAllowed() {
-		logger.warn("Not yet implemented"); // TODO
+		assertFalse(oVoc1.indexChangeAllowed(otb1));
 	}
 	
 	@Test
 	public final void testSize() {
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(3, oVoc1.size());
+		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>();
+		assertEquals(0, oVoc2.size());
 	}
 }
