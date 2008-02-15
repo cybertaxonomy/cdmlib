@@ -150,14 +150,17 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 			}
 		}
 	}
-	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microreference) {
+	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
 		TaxonRelationship rel = new TaxonRelationship();
 		rel.setToTaxon(toTaxon);
 		rel.setFromTaxon(this);
 		rel.setType(type);
 		rel.setCitation(citation);
-		rel.setCitationMicroReference(microreference);
+		rel.setCitationMicroReference(microcitation);
 		this.addTaxonRelation(rel);
+	}
+	public void addMisappliedName(Taxon toTaxon, ReferenceBase citation, String microcitation) {
+		addTaxonRelation(toTaxon, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);
 	}
 
 	
