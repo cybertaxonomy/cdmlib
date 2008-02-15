@@ -382,6 +382,9 @@ cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/beans.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/images/poweredBySpring.gif -text
+cdmlib-remote/src/main/webapp/WEB-INF/jsp/home.jsp -text
+cdmlib-remote/src/main/webapp/WEB-INF/jsp/libtest.jsp -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/main/webapp/index.jsp -text
 cdmlib-remote/src/site/apt/index.apt -text
