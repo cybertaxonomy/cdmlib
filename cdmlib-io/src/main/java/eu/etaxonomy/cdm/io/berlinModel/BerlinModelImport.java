@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -12,14 +13,33 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
 
 public class BerlinModelImport {
@@ -91,12 +111,29 @@ public class BerlinModelImport {
 			logger.error(e.getMessage());
 			return;
 		}
+
+		//make and save Authors
+		makeAuthors();
+
+		
+		//make and save References
+		makeReferences();
+
 		
 		//make and save Names
 		makeTaxonNames();
 		
+		//make and save Taxa
+		makeTaxa();
 			
-			
+		
+		//make and save Facts
+		makeRelTaxa();
+		
+		//make and save Facts
+		makeFacts();
+
+		
 		if (false){
 			//make and save publications
 /*				makePublications(root);
@@ -111,8 +148,156 @@ public class BerlinModelImport {
 	}
 	
 	
+	
 	/**
-	 * @param dataSet
+	 * @return
+	 */
+	private boolean makeAuthors(){
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeAuthors ...");
+		logger.warn("Authors not yet implemented !!");
+
+		IAgentService agentService = cdmApp.getAgentService();
+		boolean delete = deleteAll;
+		
+		if (delete){
+			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
+			while(listAllAgents.size() > 0 ){
+				for (Agent name : listAllAgents ){
+					//FIXME
+					//nameService.remove(name);
+				}
+				listAllAgents =  agentService.getAllAgents(0, 1000);
+			}			
+		}
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT *  " +
+                    " FROM AuthorTeam " ;
+			ResultSet rs = source.getResultSet(strQuery) ;
+			
+			
+			
+			
+			
+			logger.info("end makeAuthors ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * @return
+	 */
+	private boolean makeReferences(){
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeReferences ...");
+		IReferenceService referenceService = cdmApp.getReferenceService();
+		boolean delete = deleteAll;
+		
+		if (delete){
+			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
+			while(listAllReferences.size() > 0 ){
+				for (TaxonNameBase name : listAllReferences ){
+					//FIXME
+					//nameService.remove(name);
+				}
+				listAllReferences =  referenceService.getAllReferences(0, 1000);
+			}			
+		}
+		try {
+			
+			
+			//get data from database
+			String strQuery = 
+					" SELECT *  " +
+                    " FROM References " ;
+			ResultSet rs = source.getResultSet(strQuery) ;
+			
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("References handled: " + (i-1));}
+				
+				//create TaxonName element
+				int refId = rs.getInt("refId");
+				int categoryId = rs.getInt("categoryFk");
+				int inRefFk = rs.getInt("inRefFk");
+				
+				StrictReferenceBase ref;
+				try {
+					logger.info(categoryId);
+					
+					if (categoryId == REF_JOURNAL){
+						ref = new Journal();
+					}else if(categoryId == REF_BOOK){
+						ref = new Book();
+					}else if(categoryId == REF_ARTICLE){
+						ref = new Article();
+					}else if(categoryId == REF_DATABASE){
+						ref = new Database();
+					}else if(categoryId == REF_PART_OF_OTHER_TITLE){
+						if (inRefFk == REF_BOOK){
+							//TODO
+							ref = new BookSection();
+						}else{
+							logger.warn("Reference type of part-of-reference not recognized");
+							ref = new Generic();
+						}
+					}else if(categoryId == REF_UNKNOWN){
+						ref = new Generic();
+					}else{
+						ref = new Generic();	
+					}
+					
+					
+					dbAttrName = "refCache";
+					cdmAttrName = "";
+					ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
+					
+					dbAttrName = "nomRefCache";
+					cdmAttrName = "titleCache";
+					ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
+					
+
+//					dbAttrName = "BinomHybFlag";
+//					cdmAttrName = "isBinomHybrid";
+//					ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);
+					
+					//TODO
+					// all attributes
+					
+					
+					UUID refUuid = referenceService.saveReference(ref);
+					referenceMap.put(refId, refUuid);
+					
+				} catch (Exception e) {
+					logger.warn("Reference with id threw Exception and could not be saved");
+				}
+				
+			}	
+				
+
+			logger.info("end makeReferences ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+
+	
+	
+	/**
 	 * @return
 	 */
 	private boolean makeTaxonNames(){
@@ -168,7 +353,7 @@ public class BerlinModelImport {
 					}else{
 						dbAttrName = "genus";
 					}
-					cdmAttrName = "uninomial";
+					cdmAttrName = "genusOrUninomial";
 					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "genusSubdivisionEpi";
@@ -340,6 +525,258 @@ public class BerlinModelImport {
 			return false;
 		}
 	}
+	
+	
+	
+	/**
+	 * @return
+	 */
+	private boolean makeTaxa(){
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeTaxa ...");
+		
+		ITaxonService taxonService = cdmApp.getTaxonService();
+		INameService nameService = cdmApp.getNameService();
+		IReferenceService referenceService = cdmApp.getReferenceService();
+		boolean delete = deleteAll;
+		
+		if (delete){
+			List<TaxonBase> listAllTaxa =  taxonService.getAllTaxa(0, 1000);
+			while(listAllTaxa.size() > 0 ){
+				for (TaxonBase taxon : listAllTaxa ){
+					//FIXME
+					//nameService.remove(name);
+				}
+				listAllTaxa =  taxonService.getAllTaxa(0, 1000);
+			}			
+		}
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT *  " +
+                    " FROM PTaxon " ;
+			ResultSet rs = source.getResultSet(strQuery) ;
+			
+			
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+				
+				//create TaxonName element
+				int taxonId = rs.getInt("taxonId");
+				int statusFk = rs.getInt("statusFk");
+				
+				int nameFk = rs.getInt("nameFk");
+				int refFk = rs.getInt("refFk");
+				
+				TaxonNameBase taxonName;
+				UUID nameUuid = taxonNameMap.get(nameFk);
+				if (nameUuid == null){
+					taxonName = null;
+				}else{
+					taxonName  = nameService.getTaxonNameByUuid(nameUuid);
+				}
+				
+				
+				ReferenceBase reference;
+				UUID refUuid = referenceMap.get(refFk);
+				if (refUuid == null){
+					reference = null;
+				}else{
+					reference  = referenceService.getReferenceByUuid(refUuid);
+				}
+				
+				TaxonBase taxonBase;
+				try {
+					logger.info(statusFk);
+					if (statusFk == 1){
+						taxonBase = Taxon.NewInstance(taxonName, reference);
+					}else if (statusFk == 2){
+						taxonBase = Synonym.NewInstance(taxonName, reference);
+					}
+					
+					dbAttrName = "xxx";
+					cdmAttrName = "yyy";
+					ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
+					
+					dbAttrName = "genusSubdivisionEpi";
+					cdmAttrName = "infraGenericEpithet";
+					ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
+					
+					dbAttrName = "isDoubtful";
+					cdmAttrName = "isDoubtful";
+					ImportHelper.addBooleanValue(rs, taxonBase, dbAttrName, cdmAttrName);
+
+
+					//TODO
+					//Created
+					//Note
+					//ALL
+					
+					UUID taxonUuid = taxonService.saveTaxon(taxonBase);
+					taxonMap.put(taxonId, taxonUuid);
+					
+				} catch (Exception e) {
+					logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
+				}
+				
+			}	
+			
+			logger.info("end makeTaxa ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+	
+
+	/**
+	 * @return
+	 */
+	private boolean makeRelTaxa(){
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeTaxonRelationships ...");
+		logger.warn("RelTaxa not yet implemented !!");
+
+		ITaxonService taxonService = cdmApp.getTaxonService();
+		boolean delete = deleteAll;
+		
+//		if (delete){
+//			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
+//			while(listAllAgents.size() > 0 ){
+//				for (Agent name : listAllAgents ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllAgents =  agentService.getAllAgents(0, 1000);
+//			}			
+//		}
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT *  " +
+                    " FROM RelPTaxon Join Taxon1 Join Taxon2" ;
+			ResultSet rs = source.getResultSet(strQuery) ;
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("RelPTaxa handled: " + (i-1));}
+				
+				
+				int taxon1Id = rs.getInt("taxon1Id");
+				int taxon2Id = rs.getInt("taxon2Id");
+				int factId = rs.getInt("factId");
+				int relTypeFk = rs.getInt("relTypeFk");
+				
+				TaxonBase taxon1 = getTaxonById(taxon1Id, taxonService);
+				TaxonBase taxon2 = getTaxonById(taxon2Id, taxonService);
+				
+				//TODO
+				ReferenceBase citation = null;
+				String microcitation = null;
+
+				
+				if (relTypeFk == IS_INCLUDED_IN){
+					((Taxon)taxon2).addTaxonomicChild((Taxon)taxon1, citation, microcitation);
+				}else if (relTypeFk == IS_SYNONYM_OF){
+					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
+				}else if (relTypeFk == IS_HOMOTYPIC_SYNONYM_OF){
+					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+				}else if (relTypeFk == IS_HETEROTYPIC_SYNONYM_OF){
+					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+				}else if (relTypeFk == IS_MISAPPLIED_NAME_OF){
+					((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
+				}else {
+					//TODO
+					logger.warn("TaxonRelationShipType " + relTypeFk + " not yet implemented");
+				}
+				
+				
+			//....
+			
+			
+			
+			}
+			logger.info("end makeFacts ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+	
+	
+	private TaxonBase getTaxonById(int id, IService<TaxonBase> service){
+		TaxonBase result;
+		UUID uuid = taxonMap.get(id);
+		if (uuid == null){
+			result = null;
+		}else{
+			result  = service.getCdmObjectByUuid(uuid);//  taxonService.getTaxonByUuid(taxonUuid);
+	}
+	
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean makeFacts(){
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeFacts ...");
+		logger.warn("Facts not yet implemented !!");
+
+		//IAgentService agentService = cdmApp.getAgentService();
+		boolean delete = deleteAll;
+		
+//		if (delete){
+//			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
+//			while(listAllAgents.size() > 0 ){
+//				for (Agent name : listAllAgents ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllAgents =  agentService.getAllAgents(0, 1000);
+//			}			
+//		}
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT *  " +
+                    " FROM Facts " ;
+			ResultSet rs = source.getResultSet(strQuery) ;
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
+				
+				//create TaxonName element
+				int factId = rs.getInt("factId");
+
+			//....
+			
+			
+			
+			}
+			logger.info("end makeFacts ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	}
+	
+
 	
 	
 	
