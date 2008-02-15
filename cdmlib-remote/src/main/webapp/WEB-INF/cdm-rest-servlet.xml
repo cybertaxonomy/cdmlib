@@ -9,8 +9,19 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
     
-    <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
+    <!-- 
+        <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
+    -->    
     
-    <bean id="cdmService" class="eu.etaxonomy.cdm.remote.service.CdmServiceImpl" /> 
+    <bean name="/home.htm" class="eu.etaxonomy.cdm.demo.HomePageController"/>
+    
+    <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <bean id="cdmService" class="eu.etaxonomy.cdm.remote.service.CdmServiceImpl" />
+     
 </beans>
  
