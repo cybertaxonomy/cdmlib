@@ -17,10 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.bind.annotation.*;
 
-import com.sdicons.json.mapper.JSONMapper;
-import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.model.JSONValue;
-
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.service.CdmService;
 
@@ -39,13 +35,9 @@ public class CdmRestController {
 	@RequestMapping(value="/taxon.do", method = RequestMethod.GET) 
 	public ModelAndView getTaxon(@RequestParam("uuid") String uuid) {
 		ModelAndView mav = new ModelAndView("hello"); 
-		JSONValue jObj = null;
-		try {
-			jObj = JSONMapper.toJSON(cdmActions.getName(UUID.fromString(uuid)));
-		} catch (MapperException e) {
-			e.printStackTrace();
-		}
-		mav.addObject("message", jObj.render(false) ); 
+		JSONObject jObj = null;
+		jObj = JSONObject.fromObject(cdmActions.getName(UUID.fromString(uuid)));
+		mav.addObject("message", jObj.toString() ); 
 		return mav; 
 	}
 

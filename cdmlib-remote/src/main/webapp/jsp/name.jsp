@@ -2,13 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-	<title>HOME remote</title>
+	<title>TAXON NAMES</title>
 </head>
 <body>
-<h1>Good <c:out value="${greeting}"/>! Welcome to CDM Remote</h1>
-<p align="center">
-	The time on the server is <c:out value="${time}"/>
-</p>
+<h1>  <c:out value="${name}"/>  </h1>
+
+<hr/>
+<p align="center">	The time on the server is <c:out value="${time}"/>  </p>
 <p align="center">  path: <c:out value="${path}"/>  </p>
 <p align="center">  pmap: <c:out value="${pmap}"/>  </p>
 <p align="center">  ctype: <c:out value="${ctype}"/>  </p>

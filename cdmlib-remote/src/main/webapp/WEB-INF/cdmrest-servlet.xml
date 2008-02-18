@@ -9,30 +9,30 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
     
-    <!-- 
-        <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
-    -->    
+    <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
     
     <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
         <!-- see http://www.carbonfive.com/community/archives/2007/06/parameterized_rest_urls_with_spring_mvc.html -->
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/whatis/(*:uuid)">homepage</prop>
-                <prop key="/name/(*:uuid)">homepage</prop>
-                <prop key="/taxon/(*:uuid)">homepage</prop>
-                <prop key="/name/list/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">homepage</prop>
+                <prop key="/whatis/(*:uuid)">namepage</prop>
+                <prop key="/name/(*:uuid)">namepage</prop>
+                <prop key="/taxon/(*:uuid)">namepage</prop>
+                <prop key="/name/list/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">namepage</prop>
             </props>
         </property>
     </bean>
     
-    <bean name="homepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
+    <bean name="namepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
     
+    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
+    <!-- 
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-         
+    -->
 </beans>
  

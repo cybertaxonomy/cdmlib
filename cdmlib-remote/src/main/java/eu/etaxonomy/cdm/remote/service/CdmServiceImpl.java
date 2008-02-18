@@ -1,9 +1,5 @@
 package eu.etaxonomy.cdm.remote.service;
 
-import com.sdicons.json.mapper.*; 
-import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.serializer.marshall.*; 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,10 +25,8 @@ public class CdmServiceImpl implements CdmService {
 		n.addNameToken(new TaggedText(TagEnum.name,"berolina"));
 		n.addNameToken(new TaggedText(TagEnum.name,"subsp."));
 		try {
-			JSONValue jObj1 = JSONMapper.toJSON(n);
-			JSONObject jObj2 = JSONObject.fromObject( n );  
-			n.setUpdatedBy(jObj1.render(false));
-			n.setCreatedBy(jObj2.toString());
+			JSONObject jObj = JSONObject.fromObject( n );  
+			n.setCreatedBy(jObj.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

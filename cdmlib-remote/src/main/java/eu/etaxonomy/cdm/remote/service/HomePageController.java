@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.remote.dto.NameTO;
+
 
 /**
  * Controller to generate the Home Page basics to be rendered by a view.
@@ -23,27 +25,12 @@ public class HomePageController extends AbstractController
 	
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		// the time at the server
-		Calendar cal = Calendar.getInstance();
-		java.util.Date now = cal.getTime();
-
 		// time-of-day dependent greeting
-		String greeting = "Morning";
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		if (hour == 12)
-			greeting = "Day";
-		else if (hour > 18)
-			greeting = "Evening";
-		else if (hour > 12)
-			greeting = "Afternoon";
+		NameTO n = service.getName(UUID.fromString("f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
 
 		ModelAndView mv = new ModelAndView();
-		mv.addObject("time", now);
-		mv.addObject("greeting", greeting);
-		mv.addObject("pmap", request.getParameterMap());
-		mv.addObject("path", request.getPathInfo());
-		mv.addObject("ctype", request.getContentType());
-		mv.setViewName("home");
+		mv.addObject(n);
+		mv.setViewName("json1");
 
 		return mv;
 	}
