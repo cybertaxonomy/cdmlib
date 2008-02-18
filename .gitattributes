@@ -61,9 +61,6 @@ cdmLibraryPlugin/xml-apis.jar -text
 cdmParent/mavenInstall.bat -text
 cdmParent/pom.xml -text
 cdmParent/settings.xml -text
-cdmlib-archetype/pom.xml -text
-cdmlib-archetype/src/main/resources/META-INF/archetype.xml -text
-cdmlib-archetype/src/main/resources/archetype-resources/pom.xml -text
 cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
