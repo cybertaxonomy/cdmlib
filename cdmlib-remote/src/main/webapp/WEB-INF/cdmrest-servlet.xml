@@ -13,15 +13,26 @@
         <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
     -->    
     
-    <bean name="/home.htm" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
+    <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
+        <!-- see http://www.carbonfive.com/community/archives/2007/06/parameterized_rest_urls_with_spring_mvc.html -->
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="mappings">
+            <props>
+                <prop key="/whatis/(*:uuid)">homepage</prop>
+                <prop key="/name/(*:uuid)">homepage</prop>
+                <prop key="/taxon/(*:uuid)">homepage</prop>
+                <prop key="/name/list/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">homepage</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean name="homepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
     
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-    
-    <bean id="cdmService" class="eu.etaxonomy.cdm.remote.service.CdmServiceImpl" />
-     
+         
 </beans>
  

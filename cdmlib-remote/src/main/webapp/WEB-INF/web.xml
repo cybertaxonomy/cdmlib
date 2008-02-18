@@ -27,7 +27,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>cdmrest</servlet-name>
-        <url-pattern>*.htm</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
     
 

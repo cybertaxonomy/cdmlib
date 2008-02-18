@@ -5,6 +5,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -16,18 +18,14 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class HomePageController extends AbstractController
 {
-	protected ModelAndView handleRequestInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception
+	@Autowired
+	private CdmService service;
+	
+	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		// the time at the server
 		Calendar cal = Calendar.getInstance();
 		java.util.Date now = cal.getTime();
-
-		List<Integer> intList = new ArrayList<Integer>();
-		Random random = new Random(now.getTime());
-
-		// 10 random integers
-		for (int i = 0; i < 10; ++i)
-			intList.add(random.nextInt());
 
 		// time-of-day dependent greeting
 		String greeting = "Morning";
@@ -41,8 +39,10 @@ public class HomePageController extends AbstractController
 
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("time", now);
-		mv.addObject("randList", intList);
 		mv.addObject("greeting", greeting);
+		mv.addObject("pmap", request.getParameterMap());
+		mv.addObject("path", request.getPathInfo());
+		mv.addObject("ctype", request.getContentType());
 		mv.setViewName("home");
 
 		return mv;

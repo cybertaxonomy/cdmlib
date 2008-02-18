@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import net.sf.json.JSONObject;
 
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -16,6 +18,7 @@ import eu.etaxonomy.cdm.remote.dto.TaggedText;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 
+@Component
 public class CdmServiceImpl implements CdmService {
 
 	public NameTO getName(UUID uuid) {

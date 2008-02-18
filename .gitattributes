@@ -344,6 +344,10 @@ cdmlib-persistence/src/test/resources/hibernate.properties -text
 cdmlib-persistence/src/test/resources/settings.xml -text
 cdmlib-persistence/src/test/resources/test.cdm.datasource.xml -text
 cdmlib-remote/pom.xml -text
+cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text
+cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
+cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcherException.java -text
+cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedUrlHandlerMapping.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/AssociationFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseTO.java -text
