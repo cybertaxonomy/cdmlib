@@ -54,9 +54,9 @@
 			<classifier>jdk15</classifier>   
 		</dependency>
 		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib-ext-spring</artifactId>
-			<version>1.0</version>
+			<groupId>spring-json</groupId>
+			<artifactId>spring-json</artifactId>
+			<version>0.1-beta-1</version>
 		</dependency>
 
 		<dependency>

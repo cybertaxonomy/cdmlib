@@ -30,7 +30,7 @@ public class HomePageController extends AbstractController
 
 		ModelAndView mv = new ModelAndView();
 		mv.addObject(n);
-		mv.setViewName("json1");
+		mv.setViewName("jsonView");
 
 		return mv;
 	}

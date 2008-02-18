@@ -27,7 +27,8 @@
     <bean name="namepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
     
     <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
-    <!-- 
+
+        <!-- 
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/jsp/"/>
