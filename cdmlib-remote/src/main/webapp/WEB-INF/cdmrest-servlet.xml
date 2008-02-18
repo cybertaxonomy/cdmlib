@@ -13,7 +13,7 @@
         <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
     -->    
     
-    <bean name="/home.htm" class="eu.etaxonomy.cdm.demo.HomePageController"/>
+    <bean name="/home.htm" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
     
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
