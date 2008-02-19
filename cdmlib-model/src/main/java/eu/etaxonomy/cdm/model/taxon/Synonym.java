@@ -29,6 +29,7 @@ import javax.persistence.*;
 @Entity
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
+	
 	private Set<SynonymRelationship> synonymRelations = new HashSet();
 
 

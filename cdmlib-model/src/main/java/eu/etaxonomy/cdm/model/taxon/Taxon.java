@@ -234,7 +234,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public Set<Synonym> getSynonyms(){
 		Set<Synonym> syns = new HashSet();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
-			syns.add(rel.getSynoynm());
+			syns.add(rel.getSynonym());
 		}
 		return syns;
 	}
@@ -247,7 +247,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public Set<TaxonNameBase> getSynonymNames(){
 		Set<TaxonNameBase> names = new HashSet();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
-			names.add(rel.getSynoynm().getName());
+			names.add(rel.getSynonym().getName());
 		}
 		return names;
 	}

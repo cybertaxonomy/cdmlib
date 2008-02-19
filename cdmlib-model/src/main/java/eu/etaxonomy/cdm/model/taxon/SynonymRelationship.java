@@ -62,10 +62,9 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Synonym getSynoynm(){
+	public Synonym getSynonym(){
 		return this.synonym;
 	}
-
 	private void setSynonym(Synonym synoynm){
 		this.synonym = synoynm;
 	}
