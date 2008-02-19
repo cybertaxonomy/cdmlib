@@ -13,7 +13,6 @@ public class HttpStatusError implements JsonErrorHandler {
 	public static final int DEFAULT_JSON_ERROR_STATUS = 311;
 	private int errorCode = DEFAULT_JSON_ERROR_STATUS;
 	
-	@Override
 	public void triggerError(Map model, RequestContext rc, BindingResult br,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {

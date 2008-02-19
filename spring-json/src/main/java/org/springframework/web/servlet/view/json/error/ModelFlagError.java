@@ -14,7 +14,6 @@ public class ModelFlagError implements JsonErrorHandler {
 	private String name = "failure";
 	private String value = "true";
 	
-	@Override
 	public void triggerError(Map model, RequestContext rc, BindingResult br,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
