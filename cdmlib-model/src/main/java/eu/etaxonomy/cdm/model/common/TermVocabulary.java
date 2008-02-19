@@ -42,7 +42,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	protected Class termClass;
 
 	protected Set<T> terms = getNewTermSet();
+	
 	//to be overriden by subclasses, e.g. OrderedTermVocabulary
+	@Transient
 	protected Set<T> getNewTermSet(){
 		return new HashSet<T>();
 	}

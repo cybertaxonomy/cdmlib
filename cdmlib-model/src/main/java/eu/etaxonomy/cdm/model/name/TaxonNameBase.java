@@ -40,7 +40,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity {
+public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
 	private String nameCache;
@@ -60,7 +60,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	private INomenclaturalReference nomenclaturalReference;
 	private Set<TaxonNameBase> newCombinations = new HashSet();
 	// bidrectional with newCombinations. Keep congruent
-	private TaxonNameBase basionym;
+	private T basionym;
 	
 	//TODO 
 	protected boolean protectedNameCache;
@@ -75,7 +75,7 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 //	 */
 //	abstract public static TaxonNameBase PARSED_NAME(String fullName);
 	
-	// CONSTRUCTORS	
+// ************* CONSTRUCTORS *************/	
 	public TaxonNameBase() {
 		super();
 	}
@@ -83,7 +83,9 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 		super();
 		this.setRank(rank);
 	}
-
+	
+//********* METHODS **************************************/
+	
 	protected String generateNameCache(){
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
@@ -107,7 +109,6 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 	public void setNameCache(String nameCache) {
 		this.nameCache = nameCache;
 	}
-
 
 	@Transient
 	public abstract boolean isCodeCompliant();
@@ -182,10 +183,10 @@ public abstract class TaxonNameBase extends IdentifiableEntity<TaxonNameBase> im
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public TaxonNameBase getBasionym(){
+	public T getBasionym(){
 		return this.basionym;
 	}
-	public void setBasionym(TaxonNameBase basionym){
+	public void setBasionym(T basionym){
 		// TODO: add newCombination relation too!
 		this.basionym = basionym;
 	}

@@ -110,7 +110,9 @@ public abstract class CdmBase implements Serializable{
 		return created;
 	}
 	public void setCreated(Calendar created) {
-		created.set(Calendar.MILLISECOND, 0);
+		if (created != null){
+			created.set(Calendar.MILLISECOND, 0);
+		}
 		this.created = created;
 	}
 
@@ -128,7 +130,9 @@ public abstract class CdmBase implements Serializable{
 	@Override
 	// equals if UUID and created timestamp are the same!
 	public boolean equals(Object obj) {
-		if (CdmBase.class.isAssignableFrom(obj.getClass())){
+		if (obj == null){
+			return false;
+		}else if (CdmBase.class.isAssignableFrom(obj.getClass())){
 			CdmBase cdmObj = (CdmBase)obj;
 			boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
 			boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());

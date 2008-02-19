@@ -493,6 +493,10 @@ public class CdmBaseTest {
 		assertEquals(person, cdmBase.getCreatedBy());
 		assertSame(person, cdmBase.getCreatedBy());
 		assertFalse(personFalse.equals(person));
+		//null
+		cdmBase.setCreated(null);
+		assertNull(cdmBase.getCreated());
+
 	}
 
 	/**
@@ -505,6 +509,8 @@ public class CdmBaseTest {
 		cdmBase2.setCreated(cdmBase.getCreated());
 		cdmBase2.setCreatedBy(new Person());
 		assertEquals(cdmBase, cdmBase2);
+		//null
+		assertFalse(cdmBase.equals(null));
 	}
 
 	/**

@@ -31,7 +31,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:39
  */
 @Entity
-public class NonViralName extends TaxonNameBase {
+public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName> {
 	static Logger logger = Logger.getLogger(NonViralName.class);
 	//The suprageneric or the genus name
 	private String genusOrUninomial;
@@ -47,7 +47,7 @@ public class NonViralName extends TaxonNameBase {
 	private Agent exCombinationAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
-
+	
 	//needed by hibernate
 	protected NonViralName(){
 		super();
@@ -76,6 +76,7 @@ public class NonViralName extends TaxonNameBase {
 		setNomenclaturalReference(nomenclaturalReference);
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
 	}
+
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getCombinationAuthorTeam(){
@@ -94,6 +95,55 @@ public class NonViralName extends TaxonNameBase {
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
+
+	@Transient
+	public Agent getBasionymAuthorTeam(){
+		if (getBasionym() == null){
+			return null;
+		}else{
+			return getBasionym().getCombinationAuthorTeam();
+		}
+	}
+	public void setBasionymAuthorTeam(Agent basionymAuthorTeam){
+		if (getBasionym() == null){
+			try {
+				setBasionym(this.getClass().newInstance());
+			} catch (InstantiationException e) {
+				logger.error(e.getMessage());
+				setBasionym(new NonViralName<T>());
+			} catch (IllegalAccessException e) {
+				logger.error(e.getMessage());
+				setBasionym(new NonViralName<T>());
+			}
+		}
+		getBasionym().setCombinationAuthorTeam(basionymAuthorTeam);
+	}
+
+	@Transient
+	public Agent getExBasionymAuthorTeam(){
+		if (getBasionym() == null){
+			return null;
+		}else{
+			return getBasionym().getExCombinationAuthorTeam();
+		}
+	}
+	public void setExBasionymAuthorTeam(Agent exBasionymAuthorTeam){
+		if (getBasionym() == null){
+			try {
+				setBasionym(this.getClass().newInstance());
+			} catch (InstantiationException e) {
+				logger.error(e.getMessage());
+				setBasionym(new NonViralName<T>());
+			} catch (IllegalAccessException e) {
+				logger.error(e.getMessage());
+				setBasionym(new NonViralName<T>());
+			}
+		}
+		getBasionym().setExCombinationAuthorTeam(exBasionymAuthorTeam);
+		
+	}
+
+	
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}

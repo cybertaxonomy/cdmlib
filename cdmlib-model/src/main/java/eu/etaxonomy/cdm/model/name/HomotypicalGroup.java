@@ -93,7 +93,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
-		for (TaxonNameBase n:this.getTypifiedNames()){
+		for (TaxonNameBase<TaxonNameBase> n:this.getTypifiedNames()){
 			for (Synonym s:n.getSynonyms()){
 				if (s.getSec().equals(sec)){
 					result.add(s);
