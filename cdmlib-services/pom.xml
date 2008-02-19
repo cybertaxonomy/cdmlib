@@ -7,14 +7,15 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>${cdmlib.version}</version>
+    <version>0.5.0</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-services</artifactId>
-  <name>EDIT Common Data Model Library</name>
-  <version>${cdmlib.version}</version>
-  <description>EDIT CDM library</description>
+  <name>EDIT CDM Local API</name>
+  <version>0.5.0</version>
+  <description>EDIT CDM library - local API</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</developerConnection>
@@ -22,13 +23,6 @@
   </scm>
   <build>
     <plugins>
-    	<plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -61,7 +55,7 @@
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>
-  		<version>${cdmlib.version}</version>
+  		<version>0.5.0</version>
   	</dependency>
 
   	<dependency>
