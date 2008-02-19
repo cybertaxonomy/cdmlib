@@ -1,0 +1,176 @@
+ -----
+ Spring Json View
+ -----
+ Kai Ulrich
+ -----
+
+Binding - Conversion of Datatypes 
+~~~~~~~~~~~~~~
+
+ [[1.]] Instruction
+ 
+ [[2.]] Simple Binding
+ 
+ [[3.]] Binding to CommandBean-Property
+ 
+ [[4.]] Convert all Model Values
+ 
+ 	[[1.]] Convert all values of Model-Map by CustomEditor
+ 
+ 	[[2.]] Convert specific value in Model-Map by CustomEditor
+ 
+ []
+
+* 1. Instruction 
+~~~~~~~~~~~~~~~~~~~
+
+ You can implement the binding the way you know it from the Spring Command or 
+ FormController. Usually you register a CustomEditor at the ServletRequestDataBinder in the
+ initBinder-method of the controller (see below).
+ 
+ You can bind a CustomEditor to 
+ 
+ [[1.]] Global value class types like java.util.Date
+ 
+ [[2.]] Properties of the ComandBean located by the CommensBeanUtils-Syntax
+ 
+ [[3.]] And exclusively at Spring Json View: To any other object in the model like those added in the referenceData-method. 
+ 
+ []
+ 
+ [Attention :] 
+ Spring Json View can't bind properties of a collection of Beans in the following case :
+ 
+ * Spring provides:
+ 
+ bean.list.property or bean.list[n].property 
+ 
+ The  syntax locates all properties of the collection from index 0-n  
+ 
+ * Spring Json View can locate properties Collection-Beans with EXPIZITE index
+ like:
+ 
+ bean.list[0].property
+ 
+ bean.set[1].list[2].property
+ 
+
+* 2. Simple Binding
+~~~~~~~~~~~~~~~~~~~
+
++-------------------------------------------------------+
+initBinder Source:
+=================
+
+@Override
+protected void initBinder(HttpServletRequest request,  
+			ServletRequestDataBinder binder) throws Exception{
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+	binder.registerCustomEditor(Date.class, editor);
+}
+
+Result:
+=======
+
+{"command":{
+            "birthday":"30-01-2008", 
+            "marriage":"30-01-2008", 
+            "placeofbirth":"Sydney"
+}}
++-------------------------------------------------------+
+
+
+
+* 3. Binding to CommandBean-Property
+~~~~~~~~~~~~~~~~~~~
+
+  Properties of the CommandBean are located by the {{{http://commons.apache.org/beanutils}CommonsBeanUtils-Syntax}}
+
++-------------------------------------------------------+
+initBinder Source: 
+==================
+@Override
+protected void initBinder(HttpServletRequest request,  
+		ServletRequestDataBinder binder) throws Exception{
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+	binder.registerCustomEditor(Date.class, "birthday", editor);
+}
+
+Result:
+======
+
+{"command":{
+          "birthday":"30-01-2008",
+          "marriage":"Wed Jan 30 00:00:00 GMT 2008",
+          "placeofbirth":"Sydney"
+}}
++-------------------------------------------------------+
+
+
+
+* 4. Convert all Model Values
+~~~~~~~~~~~~~~~~~~~
+
+ Spring Jason View does provide the conversion of non CommandBean-Values of the model map.
+ You have to activate this feature by setting the convertAllMapValues property in the JasonWriter-Bean
+ in the view.xml see {{{configuration.html}1. Convert to all Model Values}}.
+ 
+ You can locate them by  registering a CustomEditor for a field starting with (non_commandbean_key).
+ 
+ * (name_in_model_map_key).property
+ 
+ * (key).list[1].property
+ 
+
+
+** 3.1 Convert all values in Model-Map by CustomEditor
+
++-------------------------------------------------------+
+initBinder Source:
+==================
+@Override
+protected void initBinder(HttpServletRequest request,  
+		ServletRequestDataBinder binder) throws Exception{
+ 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+	binder.registerCustomEditor(Date.class, editor);
+}
+	
+Result:
+=======
+
+{"signdate":"30-01-2008",
+ "command":{
+            "birthday":"30-01-2008",
+            "marriage":"30-01-2008",
+            "placeofbirth":"Sydney"
+}}
++-------------------------------------------------------+
+
+** 3.2 Convert  specific values in Model-Map by CustomEditor
+
++-------------------------------------------------------+
+initBinder Source:
+==================
+@Override
+protected void initBinder(HttpServletRequest request,  
+		ServletRequestDataBinder binder) throws Exception{
+ 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+	binder.registerCustomEditor(Date.class, "birthday", editor);
+	binder.registerCustomEditor(Date.class, "(signdate)", editor);
+}
+	
+Result:
+=======
+
+{"signdate":"30-01-2008",
+ "command":{
+            "birthday":"30-01-2008",
+            "marriage":"Wed Jan 30 00:00:00 GMT 2008",
+            "placeofbirth":"Sydney"
+}}
++-------------------------------------------------------+
+

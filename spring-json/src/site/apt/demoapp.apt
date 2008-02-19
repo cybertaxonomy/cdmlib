@@ -1,0 +1,30 @@
+ -----
+ Spring Json View
+ -----
+ Kai Ulrich
+ -----
+
+Demo-Application
+~~~~~~~~~~~~~~
+
+* About
+
+ The DemoApplication shows the json-result strings of the following usecases:
+ 
+ * GET-Request with Controller-Interface  {{{quick_interface.html} [see Quickstart] }}
+ 
+ * Post-Request with Command-Controller  {{{quick_command.html} [see Quickstart] }}
+ 
+ * GET/Post-Request with SimpeForm-Controller  {{{quick_simpleform.html} [see Quickstart] }}
+  
+
+* Install
+~~~~~~~~~
+ 
+ Just download the  war file {{{https://sourceforge.net/project/showfiles.php?group_id=202388}<HERE>}} and deploy it to your application server.
+ 
+ It is tested for apache-tomcat-5.5.25 put the <TOMCAT_HOME>/webapps directory.
+
+
+
+ 

@@ -1,0 +1,181 @@
+ -----
+ Spring Json View
+ -----
+ Kai Ulrich
+ -----
+
+Quickstart - POST request with Command-Controller 
+
+ The Command-Controller serves you a filled CommandBean. 
+ Validating or binding is supported by Spring. But you have to handle binding and validating results in your Controller Class. It is easy to use for simple POST requests.
+
+ 
+ The {{{Result}json-view response}} is just the json-String of the {{{Controller}Model-Map}} created in the {{{Controller}Controller}}. No errors are included or values formated.
+ 
+
+ {{{demoapp.html} [Also see Demo-Application] }}
+
+* Spring ApplicationContext 
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<beans>
+    <bean name="simpleJsonPostFormController" 
+    	  class="org.thing.spring.json.controller.SimpleJsonPostFormController">
+	    <property name="commandClass">
+	        <value>org.thing.spring.json.controller.SpringJsonForm</value>
+	    </property>
+    </bean>
+    <bean name="urlMapping" 
+          class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/hello.json">simpleJsonPostCommandController</prop>
+           </props>
+        </property>
+    </bean>
+    <bean name="viewResolver" 
+     	class="org.springframework.web.servlet.view.XmlViewResolver" />
+</beans>
++-------------------------------------------------------+
+* Spring view.xml
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<beans>
+    <bean name="jsonView" class="org.springframework.web.servlet.view.json.JsonView"/>
+</beans>
++-------------------------------------------------------+
+* form.html
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<head>
+	<title>
+		First Test Spring Json Demo
+	</title>
+	<script type="text/javascript" src="script/prototype.js"></script>
+	<script type="text/javascript" src="script/behaviour.js"></script>
+	<script type="text/javascript" src="script/behaviour-roles.js"></script>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"/>
+</head>
+</head>
+<body>
+	<h1>Spring JSON DEMO</h1>
+	<h2>Spring Ajax Post (SimpleFormControler und CommandController)</h2>
+	<form method="post" id="form">
+		<input id="placeofbirth" type="text" name="placeofbirth" ><br>
+		<input id="birthday" type="text" name="birthday" ><br/>
+		<br/>
+		<b>place of birth : </b><span id="t_placeofbirth"></span><br/>
+		<b>birthday : </b><span id="t_birthday"></span><br/>
+	
+	</form>
+	<br/>
+	<button id="clearData">clear name</button>
+	<button id="cc_postData">send data to CommandController</button>
+</body>
++-------------------------------------------------------+
+
+* JavaScript behaviour-roles.js
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+var printResult = function(transport){
+		var result = 
+			"Status : " + transport.status
+			+ "\n"
+			+ "\n"
+			+ "Json-Result:"
+			+ "\n" + transport.responseText;
+		alert(result);
+};
+var myrules = {
+	'button#clearData' : function(element){
+		element.onclick = function(){
+		 	$('t_placeofbirth').innerHTML = '';
+   			$('t_birthday').innerHTML = '';
+			$('error').innerHTML = '';
+	},
+	'button#cc_postData' : function(element){
+		element.onclick = function(){
+			new Ajax.Request('hello.json', { 
+		 		method:'post',
+		 		parameters: $('form').serialize(false),
+	  			onSuccess: function(transport){
+	  				var json = transport.responseText.evalJSON();
+	  				printResult(transport);
+	  				$('t_placeofbirth').innerHTML = json.placeofbirth;
+	  				$('t_birthday').innerHTML = json.birthday;
+	  				$('error').innerHTML = '';
+	    		},
+	    		onFailure: function(transport){
+	    			printResult(transport);
+	    			addErrors(transport);
+	    		}
+	    		
+  			});
+		}
+	}
+};
+Behaviour.register(myrules);
+
++-------------------------------------------------------+
+* CommandBean
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+public class SpringJsonForm {
+
+	private String placeofbirth;
+	private Date birthday;
+	
+	
+	public String getPlaceofbirth() {
+		return placeofbirth;
+	}
+	public void setPlaceofbirth(String placeofbirth) {
+		this.placeofbirth = placeofbirth;
+	}
+	public Date getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+}
+
++-------------------------------------------------------+
+* {Controller} Source
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+public class SimpleJsonPostCommandController extends AbstractCommandController {
+	@Override
+	protected void initBinder(HttpServletRequest request,  
+			ServletRequestDataBinder binder) throws Exception{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+		binder.registerCustomEditor(Date.class, editor);
+	}
+	
+	@Override
+	protected ModelAndView handle(HttpServletRequest request,
+			HttpServletResponse response, Object command,
+			BindException exception) throws Exception {
+		
+		SpringJsonForm bean = (SpringJsonForm) command;
+		
+		ModelAndView modelAndView = new ModelAndView("jsonView");
+		
+		modelAndView.addObject("birthday",  bean.getBirthday());
+		modelAndView.addObject("placeofbirth",  bean.getPlaceofbirth());
+
+		return modelAndView;
+	}
+
+}
++-------------------------------------------------------+
+
+* {Result}
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+ Status : 200 
+ 
+ Result:
+ {"placeofbirth":"Sydney","birthday":"Wed Jan 30 00:00:00 GMT 2008"}
++-------------------------------------------------------+

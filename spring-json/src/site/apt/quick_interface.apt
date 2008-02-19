@@ -1,0 +1,124 @@
+ -----
+ Spring Json View
+ -----
+ Kai Ulrich
+ -----
+
+Quickstart - GET-Request with Controller-Interface 
+
+ With the Controller-Interface  validating or binding is not supported by spring. It is easy to use it for GET-Requests. 
+ 
+ The {{{Result}json-view response}} is just the json-string of the {{{Controller}Model-Map}} created in the {{{Controller}Controller}}. No errors are included or values formated.
+ 
+ 
+  {{{demoapp.html} [Also see Demo-Application] }}
+ 
+* Spring ApplicationContext 
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<beans>
+    <bean name="simpleJsonGetController" 
+          class="org.thing.spring.json.controller.SimpleJsonGetController"/>
+    <bean name="urlMapping" 
+          class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/hello.json">simpleJsonGetController</prop>
+           </props>
+        </property>
+    </bean>
+    <bean name="viewResolver" 
+     	class="org.springframework.web.servlet.view.XmlViewResolver" />
+</beans>
++-------------------------------------------------------+
+* Spring view.xml
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<beans>
+    <bean name="jsonView" class="org.springframework.web.servlet.view.json.JsonView"/>
+</beans>
++-------------------------------------------------------+
+* form.html
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<head>
+	<title>
+		First Test Spring Json Demo
+	</title>
+	<script type="text/javascript" src="script/prototype.js"></script>
+	<script type="text/javascript" src="script/behaviour.js"></script>
+	<script type="text/javascript" src="script/behaviour-roles.js"></script>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"/>
+</head>
+</head>
+<body>
+	<h1>Spring JSON DEMO</h1>
+	<h2>Spring Ajax Get (ControlerInterface)</h2>
+	<b>firstname : </b><span id="firstname"></span><br/>
+	<b>secondname : </b><span id="secondname"></span><br/>
+	</br>
+	<button id="getName">get name</button>
+	<button id="clearName">clear name</button><br/>
+</body>
++-------------------------------------------------------+
+
+* JavaScript behaviour-roles.js
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+var printResult = function(transport){
+		var result = 
+			"Status : " + transport.status
+			+ "\n"
+			+ "\n"
+			+ "Json-Result:"
+			+ "\n" + transport.responseText;
+		alert(result);
+};
+var myrules = {
+	'button#getName' : function(element){
+		element.onclick = function(){
+		 	new Ajax.Request('hello.json', { method:'get',
+	  			onSuccess: function(transport, json){
+	  			 	var json = transport.responseText.evalJSON();
+	  			 	printResult(transport);
+	  			 	$('firstname').innerHTML = json.firstname;
+	  			 	$('secondname').innerHTML = json.secondname;
+	    		}
+  			});
+		}
+	},
+	'button#clearName' : function(element){
+		element.onclick = function(){
+		 	$('firstname').innerHTML = '';
+   			$('secondname').innerHTML = '';
+
+		}
+	}
+};
+Behaviour.register(myrules);
++-------------------------------------------------------+
+* {Controller} Source
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+public class SimpleJsonGetController implements Controller {
+
+	public ModelAndView handleRequest(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		Map model = new HashMap();
+		model.put("firstname", "Peter");
+		model.put("secondname", "Schmitt");
+
+		return new ModelAndView("jsonView", model);
+	}
+}
+
++-------------------------------------------------------+
+* {Result}
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+ Status : 200 
+ 
+ Result:
+ {"firstname":"Peter","secondname":"Schmitt"}
++-------------------------------------------------------+

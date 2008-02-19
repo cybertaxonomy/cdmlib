@@ -1,0 +1,41 @@
+ -----
+ Spring Json View
+ -----
+ Kai Ulrich
+ -----
+
+Quickstart
+
+ Start setting up a Spring-MVC application base first.
+
+ Further Information: 
+
+ * {{{http://static.springframework.org/spring/docs/2.5.x/reference/index.html}Springframework Doku}}
+
+ * {{{http://www.springframework.org/docs/MVC-step-by-step/Spring-MVC-step-by-step.html}Spring-MVC Step-by-Step}}
+ 
+ []
+ 
+ The easiest way to configurate the Spring Json-View as a bean is to register a XmlViewResolver.
+
+ {{{demoapp.html} [Also see Demo-Application] }}
+ 
+
+* Spring ApplicationContext 
+~~~~~~~~~~~~~~~~~~~
+
++-------------------------------------------------------+
+<beans>
+    [...]
+    <bean name="viewResolver" 
+     	class="org.springframework.web.servlet.view.XmlViewResolver" />
+    [...]
+</beans>
++-------------------------------------------------------+
+* Spring view.xml
+~~~~~~~~~~~~~~~~~~~
++-------------------------------------------------------+
+<beans>
+    <bean name="jsonView" class="org.springframework.web.servlet.view.json.JsonView"/>
+</beans>
++-------------------------------------------------------+
