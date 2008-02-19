@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.model.common.init.IVocabularySaver;
  * @author a.mueller
  *
  */
-public interface ITermVocabularyDao extends ICdmEntityDao, IVocabularySaver {
+public interface ITermVocabularyDao extends ICdmEntityDao {
 	
 	
 }

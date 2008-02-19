@@ -292,6 +292,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDriverManagerDataS
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularySaverImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text

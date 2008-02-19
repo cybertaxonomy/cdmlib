@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -73,7 +72,7 @@ public class CdmEntityDaoBaseTest {
 		if (! isInitialized){  //as long as rollback does not work
 			Rank genus = Rank.GENUS();
 			BotanicalName botanicalName = new BotanicalName(genus);
-			botanicalName.setUninomial("GenusName");
+			botanicalName.setGenusOrUninomial("GenusName");
 			Journal journal = new Journal();
 			journal.setTitle("JournalTitel");
 			

@@ -272,6 +272,7 @@ public class CdmDataSource {
 		insertXmlValueProperty(bean, "driverClassName", databaseTypeEnum.getDriverClassName());
 		insertXmlValueProperty(bean, "url", databaseTypeEnum.getConnectionString(server, database, port));
 		if (username != null) {insertXmlValueProperty(bean, "username", username );}
+		if (password != null) {insertXmlValueProperty(bean, "password", password );}
 		if (startSilent != null) {insertXmlValueProperty(bean, "startSilent", startSilent.toString() );}
 		if (startServer != null) {insertXmlValueProperty(bean, "startServer", startServer.toString() );}
 		if (startServer != null) {insertXmlValueProperty(bean, "databasePath", databasePath );}
