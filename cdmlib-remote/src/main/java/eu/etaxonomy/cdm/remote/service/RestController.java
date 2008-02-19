@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
  */
 // MultiActionController
 @Controller
-public class CdmRestController {
-	static Logger logger = Logger.getLogger(CdmRestController.class);
+public class RestController {
+	static Logger logger = Logger.getLogger(RestController.class);
 
 	@Autowired
 	private CdmService cdmActions;
