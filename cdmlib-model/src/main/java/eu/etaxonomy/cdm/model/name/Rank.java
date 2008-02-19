@@ -287,6 +287,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * True, if this Rank is higher than GENUS, else false.
 	 * @return
 	 */
+	@Transient
 	public boolean isSupraGeneric(){
 		return (this.isHigher(Rank.GENUS()));
 	}
@@ -295,6 +296,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * True, if this Rank equals GENUS, else false.
 	 * @return
 	 */
+	@Transient
 	public boolean isGenus(){
 		return (this.equals(Rank.GENUS()));
 	}
@@ -303,6 +305,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * True, if this Rank is lower than GENUS and higher than SPECIES, else false.
 	 * @return
 	 */
+	@Transient
 	public boolean isInfraGeneric(){
 		return (this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
 	}
@@ -311,6 +314,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * True, if this Rank equals SPECIES, else false.
 	 * @return
 	 */
+	@Transient
 	public boolean isSpecies(){
 		return (this.equals(Rank.SPECIES()));
 	}
@@ -319,6 +323,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * True, if this Rank is lower than SPECIES, else false.
 	 * @return
 	 */
+	@Transient
 	public boolean isInfraSpecific(){
 		return (this.isLower(Rank.SPECIES()));
 	}

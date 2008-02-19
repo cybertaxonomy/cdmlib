@@ -45,9 +45,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	private Set<Media> media = new HashSet<Media>();
 	protected TermVocabulary<T> vocabulary;
 	
-//	protected TermVocabulary<DefinedTermBase> getNewVocabulary(){
-//	}
-	
 	public static void initTermList(ITermLister termLister){
 		logger.debug("initTermList");
 		if (definedTermsMap == null){

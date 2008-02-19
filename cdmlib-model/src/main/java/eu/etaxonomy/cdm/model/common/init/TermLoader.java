@@ -39,9 +39,12 @@ public class TermLoader {
 	
 	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
-	@Autowired
-	//private IVocabularySaver vocabularySaver;
 	private IVocabularySaver vocabularySaver;
+	
+	@Autowired
+	private void setVocabularySaver(IVocabularySaver saver){
+		this.vocabularySaver = saver;
+	}
 	
 	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
 		 definedTermsMap = dtm;

@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,25 +63,37 @@ public abstract class EntityTestBase {
 				strMethods.add(method.getName());
 			}		
 			for (Method method : methods){
+				if (Modifier.isStatic( method.getModifiers())){
+					continue;
+				}
 				String getMethodName = method.getName();
-				String setMethodName = "s" + getMethodName.substring(1);
-					try {
-						if (getMethodName.startsWith("get") && method.getAnnotation(Transient.class) == null){
-							Class params = method.getReturnType();
-							Method setMethod = clazzToTest.getDeclaredMethod(setMethodName, params);
-							if (setMethod == null){fail();}
+				try {
+					if ( ( getMethodName.startsWith("get") || getMethodName.startsWith("is") )
+							&& method.getAnnotation(Transient.class) == null){
+						String setMethodName = null;
+						if ( getMethodName.startsWith("get")){
+							setMethodName = "s" + getMethodName.substring(1);
+						}else if ( getMethodName.startsWith("is")){
+							setMethodName = "set" + getMethodName.substring(2);
 						}else{
-							//no setter - do nothing
+							logger.error("Unknown getter method start");
+							fail();
 						}
-					} catch (SecurityException e) {
-						logger.info(e.getMessage());
-					} catch (Exception e) {
-						String warning = "Missing setter for getter: " + getMethodName;
-						logger.warn(warning);
-						if (! (clazzToTest == (Class)NonViralName.class && getMethodName.equals("getCitation") ) ){
-							fail(warning);
-						}
+						Class params = method.getReturnType();
+						Method setMethod = clazzToTest.getDeclaredMethod(setMethodName, params);
+						if (setMethod == null){fail();}
+					}else{
+						//no setter - do nothing
 					}
+				} catch (SecurityException e) {
+					logger.info(e.getMessage());
+				} catch (Exception e) {
+					String warning = "Missing setter for getter: " + getMethodName;
+					logger.warn(warning);
+					if (! (clazzToTest == (Class)NonViralName.class && getMethodName.equals("getCitation") ) ){
+						fail(warning);
+					}
+				}
 
 			}
 		}
