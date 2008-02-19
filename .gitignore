@@ -60,3 +60,7 @@ cdmlibrary/src/test/java/eu/etaxonomy/cdm/model/view
 cdmlibrary/target
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.settings
+spring-json/.classpath
+spring-json/.settings
+spring-json/lib
+spring-json/target
