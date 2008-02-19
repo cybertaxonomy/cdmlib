@@ -26,14 +26,16 @@
     
     <bean name="namepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
     
-    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
+    <!-- default=views.xml -->
+    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" >
+        <property name="location" value="/WEB-INF/views.xml"/>
+    </bean>
 
-        <!-- 
-    <bean id="viewResolver"
+    <bean id="viewResolverJsp"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-    -->
+
 </beans>
  

@@ -1,22 +1,21 @@
------
-The EDIT CDM Community Store
------
------
- January 2008
------
+ -----
+ EDIT CDM Community Store
+ -----
+ Markus Döring
+ -----
+ 
+What is the EDIT CDM Community Store?
+~~~~~~~~~~~~~~
 
-Introduction
+ A Central datastore for a community of users (taxonomically, geographically or otherwise defined). 
+ The community store server is used to centrally host versionable CommonDataModel data. 
+ The store makes use of the CdmLibrary and exposes webservices based on the CdmLibrary service layer. 
 
-A Central datastore for a community of users (taxonomically, geographically or otherwise defined). 
-The community store server is used to centrally host versionable CommonDataModel data. 
-The store makes use of the CdmLibrary and exposes webservices based on the CdmLibrary service layer. 
+ Planned Services/APIs exposed by the community store are:
+  * REST read operations for portals based on DTOs
+  * RSS search feeds for subscriptions
+  * Sync API, likely based on SyncML
+  * OAI-PMH for aggregation
+  * LSID resolver exposing objects in RDF as TDWG LSID voc
 
-Planned Services/APIs exposed by the community store are:
-
-REST read operations for portals based on DTOs
-RSS search feeds for subscriptions
-Sync API, likely based on SyncML
-OAI-PMH for aggregation
-LSID resolver exposing objects in RDF as TDWG LSID voc
-
-Please see also http://dev.e-taxonomy.eu/trac/wiki/CommunityStore
+ Please see also http://dev.e-taxonomy.eu/trac/wiki/CommunityStore
