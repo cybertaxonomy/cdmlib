@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
   <name>EDIT Common Data Model Library - Domain Model</name>
-  <version>0.5.0</version>
+  <version>1.0-RC1</version>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</connection>
