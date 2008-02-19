@@ -7,14 +7,14 @@
   <parent>
     <artifactId>cdmParent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>${cdmlib.version}</version>
+    <version>0.5.0</version>
     <relativePath>../cdmParent/pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-model</artifactId>
   <name>EDIT Common Data Model Library - Domain Model</name>
-  <version>${cdmlib.version}</version>
+  <version>0.5.0</version>
   <description>The domain model java implementation of EDIT's Common Data Model</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-model/</connection>
@@ -66,7 +66,7 @@
   	<dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-commons</artifactId>
-  		<version>${cdmlib.version}</version>
+  		<version>0.5.0</version>
   	</dependency>
   	<dependency>
   		<groupId>aspectj</groupId>
