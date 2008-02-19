@@ -134,7 +134,7 @@ public class OrderedTermVocabularyTest {
 
 
 	@Test
-	//@Ignore
+	@Ignore
 	public final void testGetEqualTerms() {
 		assertEquals(1, oVoc1.getEqualTerms(otb1).size());
 		otbFree.orderIndex = otb2.orderIndex;

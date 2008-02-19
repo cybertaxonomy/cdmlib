@@ -40,6 +40,7 @@ public class TermLoader {
 	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
 	@Autowired
+	//private IVocabularySaver vocabularySaver;
 	private IVocabularySaver vocabularySaver;
 	
 	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
