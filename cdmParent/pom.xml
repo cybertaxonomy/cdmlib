@@ -140,7 +140,7 @@
 		<system>Trac</system>
 		<url>http://dev.e-taxonomy.eu/trac/</url>
 	</issueManagement>
-
+	
 	<!-- **** REPOSITORIES **** -->
 	<repositories>
 		<!-- sun repository -->
@@ -203,6 +203,13 @@
 				<artifactId>wagon-scm</artifactId>
 				<version>1.0-alpha-5</version>
 			</extension>
+			<!--
+				<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-alpha-5</version>
+				</extension>
+			-->
 			<extension>
 				<groupId>org.apache.maven.scm</groupId>
 				<artifactId>maven-scm-manager-plexus</artifactId>
@@ -231,6 +238,8 @@
 				<configuration>
 					<links>
 						<link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+						<link>http://static.springframework.org/spring/docs/2.5.x/api/</link>
+						<link>http://www.hibernate.org/hib_docs/v3/api/</link>						
 						<!-- more libraries? -->
 					</links>
 				</configuration>
@@ -240,7 +249,29 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 			</plugin>
-			<!--			<plugin>
+			<plugin>
+				<!-- if you use @todo tags to remind you of things to be done (which is a good coding practice), the taglist report will generate a list of all the items marked @todo or TODO -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!-- Test coverage can be a useful indication of the quality of your unit tests. It basically tells you how much of your code is actually run by your unit tests, which, in turn, can give you a good idea of the tests' quality -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<!--
+					<executions>
+					<execution>
+					<id>clean</id>
+					<phase>clean</phase>
+					<goals>
+					<goal>clean</goal>
+					</goals>
+					</execution>
+					</executions>
+				-->
+			</plugin>
+			<!--			
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<reportSets>
@@ -274,27 +305,6 @@
 				<artifactId>changelog-maven-plugin</artifactId>
 			</plugin>
 			-->
-			<plugin>
-				<!-- if you use @todo tags to remind you of things to be done (which is a good coding practice), the taglist report will generate a list of all the items marked @todo or TODO -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<!-- Test coverage can be a useful indication of the quality of your unit tests. It basically tells you how much of your code is actually run by your unit tests, which, in turn, can give you a good idea of the tests' quality -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-			<!--
-				<executions>
-				<execution>
-				<id>clean</id>
-				<phase>clean</phase>
-				<goals>
-				<goal>clean</goal>
-				</goals>
-				</execution>
-				</executions>
-			-->
-			</plugin>
 		</plugins>
 	</reporting>
 	
