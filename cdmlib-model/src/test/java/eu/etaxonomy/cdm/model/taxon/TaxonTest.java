@@ -14,8 +14,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class TaxonTest {
+public class TaxonTest extends EntityTestBase {
 	private ReferenceBase sec;
 	private ZoologicalName name1;
 	private BotanicalName name2;

@@ -14,12 +14,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  *
  */
-public class NonViralNameTest {
+public class NonViralNameTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(NonViralNameTest.class);
 
 	

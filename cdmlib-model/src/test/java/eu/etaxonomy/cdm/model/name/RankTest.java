@@ -9,8 +9,9 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class RankTest {
+public class RankTest extends EntityTestBase {
 	static Logger logger = Logger.getLogger(RankTest.class);
 
 	private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");

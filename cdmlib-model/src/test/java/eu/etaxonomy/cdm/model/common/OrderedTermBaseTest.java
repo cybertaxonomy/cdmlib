@@ -10,8 +10,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class OrderedTermBaseTest {
+public class OrderedTermBaseTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(OrderedTermBaseTest.class);
 
 	private OrderedTermBase otb1;

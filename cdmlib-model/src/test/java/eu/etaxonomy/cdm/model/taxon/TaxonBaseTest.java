@@ -18,12 +18,13 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  *
  */
-public class TaxonBaseTest {
+public class TaxonBaseTest extends EntityTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 	
 	private ReferenceBase sec;
@@ -54,7 +55,7 @@ public class TaxonBaseTest {
 	@Before
 	public void setUp() throws Exception {
 		sec=new Book();
-		sec.setTitleCache("Schoenes saftiges Allgäu");
+		sec.setTitleCache("Schoenes saftiges Allgï¿½u");
 		name1=new ZoologicalName(Rank.SPECIES(),"Panthera","onca",null,null,null,"p.1467");
 		name2=new BotanicalName(Rank.SPECIES(),"Abies","alba",null,null,null,"p.317");
 		// taxa

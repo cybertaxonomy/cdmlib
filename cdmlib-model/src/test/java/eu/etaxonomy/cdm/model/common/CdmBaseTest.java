@@ -20,14 +20,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
 /**
  * @author a.mueller
  *
  */
-public class CdmBaseTest {
-		private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
+public class CdmBaseTest extends EntityTestBase{
+	private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
 	
 	static CdmBase cdmBase;
 

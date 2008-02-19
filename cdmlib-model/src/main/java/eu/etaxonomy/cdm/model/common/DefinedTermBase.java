@@ -87,6 +87,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		return (definedTermsMap != null);
 	}
 	
+	@Transient
 	public static Map<UUID, DefinedTermBase> getDefinedTerms(){
 		return definedTermsMap;
 	}

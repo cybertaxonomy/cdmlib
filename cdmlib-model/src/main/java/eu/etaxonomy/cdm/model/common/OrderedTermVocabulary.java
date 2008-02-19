@@ -12,6 +12,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
@@ -40,15 +41,18 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 	
 	@Override
+	@Transient
 	protected Set<T> getNewTermSet(){
 		return new TreeSet<T>();
 	}
 	
+	@Transient
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		result.addAll( ((SortedSet<T>)terms).tailSet(otb));
 		return result;
 	}
+	@Transient
 	public SortedSet<T> getHigherTerms(T otb) {
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
 		for (T setObject : terms){
@@ -59,12 +63,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 
+	@Transient
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		result.addAll( ((SortedSet<T>)terms).headSet(otb));
 		return result;
 	}
 	
+	@Transient
 	public SortedSet<T> getLowerTerms(T otb) {
 		SortedSet<T> result = getLowerAndEqualTerms(otb);
 		for (T setObject : terms){
@@ -75,6 +81,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 
+	@Transient
 	public SortedSet<T> getEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		for (T setObject : terms){
@@ -85,6 +92,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 	
+	@Transient
 	public T getNextHigherTerm(T otb) {
 		try {
 			return getHigherTerms(otb).first();
@@ -92,6 +100,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 			return null;
 		}
 	}
+	
+	@Transient
 	public T getNextLowerTerm(T otb) {
 		try {
 			return getLowerTerms(otb).last();
@@ -100,6 +110,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
+	@Transient
 	public T getLowestTerm() {
 		try {
 			return ((SortedSet<T>)terms).first();
@@ -108,7 +119,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
-	
+	@Transient
 	public T getHighestTerm() {
 		try {
 			return ((SortedSet<T>)terms).last();

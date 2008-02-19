@@ -14,9 +14,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
-public class TermVocabularyTest {
+public class TermVocabularyTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(TermVocabularyTest.class);
 
 	private DefinedTermBase dtb1;

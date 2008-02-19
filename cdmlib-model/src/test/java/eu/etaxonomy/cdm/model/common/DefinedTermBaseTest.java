@@ -9,7 +9,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DefinedTermBaseTest {
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
+
+public class DefinedTermBaseTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(DefinedTermBaseTest.class);
 
 	@BeforeClass

@@ -12,8 +12,10 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class OrderedTermVocabularyTest {
+
+public class OrderedTermVocabularyTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(OrderedTermVocabularyTest.class);
 	
 	private OrderedTermBase otb1;
@@ -144,7 +146,7 @@ public class OrderedTermVocabularyTest {
 		assertEquals(1, oVoc1.getEqualTerms(otb2).size());
 		assertEquals(1, oVoc1.getEqualTerms(otb3).size());
 		fail();  //setVocabulary muss in OrderedTermBase noch sicherer werden, ausserdem sollte OrderedTermVocabulary noch mehr von der Listen 
-		//Mentalität verlieren (es hat jetzt Set semantik)
+		//Mentalitï¿½t verlieren (es hat jetzt Set semantik)
 	}
 
 	@Test

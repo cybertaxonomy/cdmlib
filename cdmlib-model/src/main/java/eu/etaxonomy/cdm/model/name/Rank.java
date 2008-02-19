@@ -444,6 +444,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	
 	//TODO
 	//dummy implementation for BerlinModelImport
+	@Transient
 	public String getAbbreviation(){
 		if (this.equals(Rank.SPECIES()) ){return "sp.";}
 		else if (this.equals(Rank.SUBSPECIES()) ){return "subsp.";}

@@ -9,8 +9,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.apache.log4j.Logger;
 
-public class BotanicalNameTest {
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
+
+
+public class BotanicalNameTest extends EntityTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicalNameTest.class);
+	
+	private BotanicalName botanicalName1;
+	private BotanicalName botanicalName2;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -22,6 +28,8 @@ public class BotanicalNameTest {
 
 	@Before
 	public void setUp() throws Exception {
+		botanicalName1 = new BotanicalName();
+		botanicalName2 = new BotanicalName();
 	}
 
 	@After
@@ -29,7 +37,7 @@ public class BotanicalNameTest {
 	}
 	
 /****** TESTS *******************************/
-
+	
 	@Test
 	public final void testPARSED_NAME() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
@@ -84,53 +92,48 @@ public class BotanicalNameTest {
 	}
 
 	@Test
-	public final void testIsHybridFormula() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testIsSetHybridFormula() {
+		assertFalse(botanicalName1.isHybridFormula());
+		botanicalName1.setHybridFormula(true);
+		assertTrue(botanicalName1.isHybridFormula());
+		botanicalName1.setHybridFormula(false);
+		assertFalse(botanicalName1.isHybridFormula());
 	}
 
 	@Test
-	public final void testSetHybridFormula() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testIsSetMonomHybrid() {
+		assertFalse(botanicalName1.isMonomHybrid());
+		botanicalName1.setMonomHybrid(true);
+		assertTrue(botanicalName1.isMonomHybrid());
+		botanicalName1.setMonomHybrid(false);
+		assertFalse(botanicalName1.isMonomHybrid());
 	}
 
 	@Test
-	public final void testIsMonomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testSetMonomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testIsBinomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testSetBinomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testIsSetBinomHybrid() {
+		assertFalse(botanicalName1.isBinomHybrid());
+		botanicalName1.setBinomHybrid(true);
+		assertTrue(botanicalName1.isBinomHybrid());
+		botanicalName1.setBinomHybrid(false);
+		assertFalse(botanicalName1.isBinomHybrid());
 	}
 
 	@Test
 	public final void testIsTrinomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testSetTrinomHybrid() {
-		logger.warn("Not yet implemented"); // TODO
+		assertFalse(botanicalName1.isTrinomHybrid());
+		botanicalName1.setTrinomHybrid(true);
+		assertTrue(botanicalName1.isTrinomHybrid());
+		botanicalName1.setTrinomHybrid(false);
+		assertFalse(botanicalName1.isTrinomHybrid());
 	}
 
 	@Test
 	public final void testIsAnamorphic() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public final void testSetAnamorphic() {
-		logger.warn("Not yet implemented"); // TODO
+		assertFalse(botanicalName1.isAnamorphic());
+		botanicalName1.setAnamorphic(true);
+		assertTrue(botanicalName1.isAnamorphic());
+		botanicalName1.setAnamorphic(false);
+		assertFalse(botanicalName1.isAnamorphic());
 	}
 
 }
