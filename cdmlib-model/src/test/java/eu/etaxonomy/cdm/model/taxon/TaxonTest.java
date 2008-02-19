@@ -69,7 +69,7 @@ public class TaxonTest {
 	}
 
 	@Test
-	public void testSssetTaxonomicParent() {
+	public void testSetTaxonomicParent() {
 		child2.setTaxonomicParent(child1, null, null);
 		assertEquals(child1, child2.getTaxonomicParent());
 	}
@@ -104,6 +104,7 @@ public class TaxonTest {
 	public void testAddSynonym() {
 		freeT.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		assertTrue(freeT.getSynonyms().contains(syn1));
+		assertTrue(syn1.getAcceptedTaxa().contains(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
 	}
 
