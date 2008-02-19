@@ -12,7 +12,6 @@
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
-  <groupId>eu.etaxonomy</groupId>
   <artifactId>spring-json</artifactId>
   <name>Spring Json View</name>
   <version>0.1</version>
