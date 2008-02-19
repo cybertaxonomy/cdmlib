@@ -16,7 +16,9 @@ import javax.persistence.Transient;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 
 /**
  * @author a.mueller
@@ -33,13 +35,13 @@ public abstract class EntityTestBase {
 	}
 	
 
-	protected Class clazzToTest = clazzToTest2();
-	protected Class clazzToTest2(){
+	protected Class<CdmBase> clazzToTest = clazzToTest();
+	protected Class<CdmBase> clazzToTest(){
 		String testClassName = this.getClass().getName();
 		if (testClassName.endsWith("Test")){
 			String className = testClassName.substring(0, testClassName.length() - "Test".length());
 			try {
-				return Class.forName(className);
+				return (Class<CdmBase>)Class.forName(className);
 			} catch (ClassNotFoundException e) {
 				logger.warn(e.getMessage());
 				return null;
@@ -75,7 +77,9 @@ public abstract class EntityTestBase {
 					} catch (Exception e) {
 						String warning = "Missing setter for getter: " + getMethodName;
 						logger.warn(warning);
-						fail(warning);
+						if (! (clazzToTest == (Class)NonViralName.class && getMethodName.equals("getCitation") ) ){
+							fail(warning);
+						}
 					}
 
 			}

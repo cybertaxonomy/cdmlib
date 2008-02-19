@@ -329,6 +329,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @return Rank
 	 * @throws UnknownRankException
 	 */
+	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank)
 			throws UnknownRankException{
 		try {
@@ -343,6 +344,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * preliminary implementation for BotanicalNameParser
 	 *  * not yet complete
 	 */
+	@Transient
 	public static Rank getRankByAbbreviation(String abbrev) throws UnknownRankException{
 		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRankByAbbreviation");
 		}else if (abbrev.equalsIgnoreCase("reg.")){	return Rank.KINGDOM();
@@ -392,6 +394,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * preliminary implementation for BotanicalNameParser
 	 * not yet complete
 	 */
+	@Transient
 	public static Rank getRankByName(String rankName)
 			throws UnknownRankException{
 		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
