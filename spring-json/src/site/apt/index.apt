@@ -7,7 +7,7 @@
 What is  Spring Json View ?
 ~~~~~~~~~~~~~~
 
- spring-json is taken from Kai Ulrich and adapted to Spring 2.5 and Java 1.5 to be used by the {{{http://dev.e-taxonomy.eu/trac/wiki/CommunityStore}<EDIT CDM Community Server>}}.
+ spring-json is taken from Kai Ulrich and adapted to Spring 2.5 and Java 1.5 to be used by the {{{http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote}<EDIT CDM Community Server>}}.
  Please see the {{{http://spring-json.sourceforge.net/documentation.html}<original spring-json documentation>}} or this site's java docs for more.
 
  
