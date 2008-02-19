@@ -14,7 +14,7 @@
 	<url>http://wp5.e-taxonomy.eu</url>
 	<packaging>pom</packaging>
 	<properties>
-		<cdmlib.version>0.4.9-SNAPSHOT</cdmlib.version>
+		<cdmlib.version>0.5.0</cdmlib.version>
 		<spring.version>2.5</spring.version>
 	</properties>
 
