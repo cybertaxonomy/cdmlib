@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.remote.rest;
+package eu.etaxonomy.cdm.remote.service;
 
 import java.util.UUID;
 
@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.bind.annotation.*;
 
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
-import eu.etaxonomy.cdm.remote.service.CdmService;
 
 /**
  * @author markus
