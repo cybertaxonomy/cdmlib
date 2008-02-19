@@ -1,45 +1,13 @@
  -----
  Spring Json View
  -----
- Kai Ulrich
+ Kai Ulrich, Markus Döring
  -----
  
-Status
-~~~~~~
-
- [NEWS] The spring-json view is released now --- spring-json 0.1-beta-1 ---
- 		
- 		Feel free to take a look. 
- 	
- 		You can download it {{{https://sourceforge.net/project/showfiles.php?group_id=202388}<HERE>}}
-
-What is  Spring Json View about ?
+What is  Spring Json View ?
 ~~~~~~~~~~~~~~
 
- In the times of web 2.0 Ajax is a popular way to communicate from Client (Browser) to Server.
- In the java server-side universum spring-mvc has become a standard web framework. 
- There are a couple of projects which try to connect  Spring-MVC and json by a view.
- One example is the json-lib-ext-spring project.  
- 
- In our first web 2.0 project we looked for a way to use  sping-mvc knowledge for the server-side for the Ajax-request targets. 
- But there was nothing that was satisfying a fastidious sping-mvc developer. So we started to think about a spring json-view 
- which is supporting all  spring-mvc features.
+ spring-json is taken from Kai Ulrich and adapted to Spring 2.5 and Java 1.5 to be used by the {{{http://dev.e-taxonomy.eu/trac/wiki/CommunityStore}<EDIT CDM Community Server>}}.
+ Please see the {{{http://spring-json.sourceforge.net/documentation.html}<original spring-json documentation>}} or this site's java docs for more.
 
-
-* What is the difference?
-~~~~~~~~~~~~~~~~~~~~
- This Spring Json View is deeply integrated into the spring mvc-module. It can be used with all kind of standard controllers 
- which the springmvc supports by default eg. the SimpleFormController.
  
- 	[Configuration] It can be configurated by the spring way!
- 
- 	[Errorhandling] It supports spring way errorhandling including global, field and binding errors!
- 
- 	[Validating] It supports the spring way validation by ValidatorBeans!
- 
- 	[Binding] It supports the spring way by converting bean property values for the view. (Please see the initBinder() method of the SimpleFormController)!
- 
-   
- 
- This way you are able to swap a "classic" spring application for a web 2.0 application by 
- keeping the backend and just changing the view. 
