@@ -38,6 +38,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	
 	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
 
+	public static void setVocabularyStore(IVocabularyStore vocabularyStore){
+		DefinedTermBase.vocabularyStore = vocabularyStore;
+	}
+	
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
 	private DefinedTermBase partOf;

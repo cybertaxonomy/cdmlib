@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
+import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -25,7 +28,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
  *
  */
 public class TermLoaderTest {
+	static Logger logger = Logger.getLogger(TermLoaderTest.class);
 
+	static TermLoader termLoader;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -45,6 +51,8 @@ public class TermLoaderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		IVocabularyStore vocStore = new DefaultVocabularyStore();
+		termLoader = new TermLoader(vocStore);
 	}
 
 	/**
@@ -57,33 +65,17 @@ public class TermLoaderTest {
 	
 /************** TESTS **********************************/
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.TermLoader#setDefinedTermsMap(java.util.Map)}.
-	 */
-//	@Test
-//	public void testSetDefinedTermsMap() {
-//		Map<UUID, DefinedTermBase> dtm = new HashMap<UUID, DefinedTermBase>();
-//		TermLoader.setDefinedTermsMap(dtm);
-//		TermLoader termLoader = new TermLoader();
-//		
-//		Object result = null;
-//		try {
-//			Field dtmField = TermLoader.class.getDeclaredField("definedTermsMap");
-//			dtmField.setAccessible(true);
-//			result = (Map)dtmField.get(termLoader);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			fail();
-//		}
-//		assertSame(dtm, result);
-//	}
+
+	@Test
+	public void testNewMethods() {
+		logger.warn("test for new mtehods have to be implemented");
+	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.TermLoader#loadTerms(java.lang.Class, java.lang.String, boolean)}.
 	 */
 	@Test
 	public void testLoadTerms() {
-		TermLoader termLoader = new TermLoader();
 		try {
 			String filename = "Rank.csv";
 			boolean isEnumeration = true;
@@ -102,7 +94,6 @@ public class TermLoaderTest {
 	 */
 	@Test
 	public void testLoadDefaultTerms() {
-		TermLoader termLoader = new TermLoader();
 		try {
 			termLoader.loadDefaultTerms(Rank.class, true);
 		} catch (FileNotFoundException e) {
@@ -118,7 +109,6 @@ public class TermLoaderTest {
 	 */
 	@Test
 	public void testLoadAllDefaultTerms() {
-		TermLoader termLoader = new TermLoader();
 		try {
 			termLoader.loadAllDefaultTerms();
 		} catch (FileNotFoundException e) {

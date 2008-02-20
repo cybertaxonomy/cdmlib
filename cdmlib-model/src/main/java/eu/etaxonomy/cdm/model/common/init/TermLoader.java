@@ -44,7 +44,7 @@ public class TermLoader {
 	@Autowired
 	private IVocabularyStore vocabularyStore;
 	
-	public TermLoader(){
+	private TermLoader(){
 		super();
 	}
 	
@@ -59,6 +59,7 @@ public class TermLoader {
 	@Transactional(readOnly = false)
 	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
 		TermVocabulary voc;
+		DefinedTermBase.setVocabularyStore(vocabularyStore); //otherwise DefinedTermBase is not able to find DefaultLanguage
 		if (isOrdered){
 			voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		}else{
