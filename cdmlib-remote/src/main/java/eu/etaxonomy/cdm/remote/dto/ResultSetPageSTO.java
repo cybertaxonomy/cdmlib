@@ -20,7 +20,7 @@ import java.util.List;
  * @created 15.02.2008 15:26:06
  *
  */
-public class ResultSetPageSTO {
+public class ResultSetPageSTO<T extends BaseSTO> {
 
 	/**
 	 * total number of results returned
@@ -43,5 +43,34 @@ public class ResultSetPageSTO {
 	 * The number of items will not exceed the {@link #perPageCount} value.
 	 * The last page may contain less items. 
 	 */
-	private List<BaseSTO> results = new ArrayList<BaseSTO>();
+	private List<T> results = new ArrayList<T>();
+	
+	
+	public long getTotalResultsCount() {
+		return totalResultsCount;
+	}
+	public void setTotalResultsCount(long totalResultsCount) {
+		this.totalResultsCount = totalResultsCount;
+	}
+	public int getPerPageCount() {
+		return perPageCount;
+	}
+	public void setPerPageCount(int perPageCount) {
+		this.perPageCount = perPageCount;
+	}
+	public int getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+	public int getTotalPageCount() {
+		return totalPageCount;
+	}
+	public void setTotalPageCount(int totalPageCount) {
+		this.totalPageCount = totalPageCount;
+	}
+	public List<T> getResults() {
+		return results;
+	}
 }
