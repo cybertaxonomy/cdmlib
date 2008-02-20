@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import net.sf.json.JSONObject;
-
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
@@ -24,12 +22,6 @@ public class CdmServiceImpl implements CdmService {
 		n.addNameToken(new TaggedText(TagEnum.name,"Bella"));
 		n.addNameToken(new TaggedText(TagEnum.name,"berolina"));
 		n.addNameToken(new TaggedText(TagEnum.name,"subsp."));
-		try {
-			JSONObject jObj = JSONObject.fromObject( n );  
-			n.setCreatedBy(jObj.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return n;
 	}
 
