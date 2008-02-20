@@ -1,11 +1,14 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.remote.dto.NameTO;
+import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
+import eu.etaxonomy.cdm.remote.dto.TreeNode;
 
 /*
  * Methods adopted from ws_method as 
@@ -19,9 +22,19 @@ public interface CdmService {
 	
 	public TaxonTO getTaxon(UUID uuid); 
 	
-	public List<TaxonSTO> listNames(String beginsWith, boolean onlyAccepted, int pagesize, int page);
+	/**
+	 * @param q : name querystring
+	 * @param sec
+	 * @param higherTaxa
+	 * @param matchAnywhere
+	 * @param onlyAccepted
+	 * @param pagesize
+	 * @param page
+	 * @return
+	 */
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int pagesize, int page);
 	
-	//TODO to be continued .....
+	public ResultSetPageSTO<TreeNode> getParentTaxa(String beginsWith, boolean onlyAccepted);
 	
 	
 }
