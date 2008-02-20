@@ -100,7 +100,7 @@ public class TermLoader {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage());
 		}
 		return voc;
 	}
