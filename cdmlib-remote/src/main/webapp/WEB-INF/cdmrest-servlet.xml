@@ -16,7 +16,7 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/(whatis:sto/(*:uuid)">restController</prop>
+                <prop key="/(whatis:dto/(*:uuid)">restController</prop>
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(find:action)/(name:dto)/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">restController</prop>
@@ -27,9 +27,7 @@
     <bean name="restController" class="eu.etaxonomy.cdm.remote.service.RestController"/>
     
     <!-- default=views.xml -->
-    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" >
-        <property name="location" value="/WEB-INF/views.xml"/>
-    </bean>
+    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
 
     <bean id="viewResolverJsp"
         class="org.springframework.web.servlet.view.InternalResourceViewResolver">

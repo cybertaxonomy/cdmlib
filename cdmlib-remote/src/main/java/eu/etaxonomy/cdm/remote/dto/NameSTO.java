@@ -24,4 +24,26 @@ public class NameSTO extends BaseSTO {
 	private ReferenceSTO nomenclaturalReference;
 	private List<TaggedText> taggedName = new ArrayList();
 	
+	public String getFullname() {
+		return fullname;
+	}
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+	public ReferenceSTO getNomenclaturalReference() {
+		return nomenclaturalReference;
+	}
+	public void setNomenclaturalReference(ReferenceSTO nomenclaturalReference) {
+		this.nomenclaturalReference = nomenclaturalReference;
+	}
+	public List<TaggedText> getTaggedName() {
+		return taggedName;
+	}
+	public void setTaggedName(List<TaggedText> taggedName) {
+		this.taggedName = taggedName;
+	}
+	public void addNameToken(TaggedText token){
+		this.taggedName.add(token);
+	}
+	
 }

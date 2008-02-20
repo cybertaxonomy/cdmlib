@@ -13,7 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.remote.dto.NameTO;
+import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.view.XmlView;
+import eu.etaxonomy.cdm.remote.service.Utils;
 
 
 /**
@@ -27,26 +29,67 @@ public class RestController extends AbstractController
 
 	@Autowired
 	private CdmService service;
-	
-	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
+
+	/* 
+	 * return page not found http error (400?) for unknown or incorrect UUIDs
+	 * (non-Javadoc)
+	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp) throws Exception
 	{
+		Map<String,String> paras = this.getParameters(req);
 		ModelAndView mv = new ModelAndView();
-		NameTO n = service.getName(UUID.fromString("f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
-		mv.addObject("dto", n);
-		mv.setViewName(getLogicalView(request));
+		if(paras.get("action").equalsIgnoreCase("find")){
+			// validate parameters
+			UUID sec = UUID.fromString(req.getParameter("sec"));
+			Set<UUID> higherTaxa = new HashSet<UUID>();
+			// TODO: take higher taxa UUIDs from req.getParameter("higherTaxa")
+			boolean matchAnywhere = Utils.isTrue(req.getParameter("matchAnywhere")); 
+			boolean onlyAccepted = Utils.isTrue(req.getParameter("onlyAccepted"));
+			// search for taxa
+			mv.addObject(service.findTaxa(req.getParameter("q"), sec, higherTaxa, matchAnywhere, onlyAccepted, (int)Integer.valueOf(req.getParameter("pagesize")), (int)Integer.valueOf(req.getParameter("page")) ));
+		}else{ 
+			// get Object by UUID
+			if(paras.get("dto").equalsIgnoreCase("name")){
+				NameTO n = service.getName(UUID.fromString(paras.get("uuid")));
+				mv.addObject("dto", n);
+			}else if(paras.get("dto").equalsIgnoreCase("taxon")){
+				NameTO n = service.getName(UUID.fromString(paras.get("uuid")));
+				mv.addObject("dto", n);
+			}else if(paras.get("dto").equalsIgnoreCase("whatis")){
+				mv.addObject(service.findTaxa(null, null, null, true, true, 25, 1));
+			}
+		}
+		// set xml or json view
+		mv.setViewName(getLogicalView(req));
 		return mv;
 	}
 	
+	/**
+	 * Read http request parameter "Accept" and decide whether to use JSON or XML for the response.
+	 * Defaults to XML in case no matching header can be identified.
+	 * @param request
+	 * @return
+	 */
 	private String getLogicalView(HttpServletRequest request){
 		String ctype = request.getHeader("Accept");
-		Enumeration headers = request.getHeaderNames();
+		String[] ctypes = ctype.split("[,;]");
+		for (String ct : ctypes){
+			if (ct.endsWith("json")){
+				return "jsonView";
+			}else if (ct.endsWith("xml")){
+				return "xmlView";
+			}
+		}
+		// default to XML
 		return "xmlView";
-		//return "jsonView";
 	}
 	
-	private Map getParameters(HttpServletRequest request){
+	private Map<String,String> getParameters(HttpServletRequest request){
 		// set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
 		return (Map) request.getAttribute("ParameterizedUrlHandlerMapping.path-parameters");
 	}
+
+
 }
 
