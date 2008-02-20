@@ -26,7 +26,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
 
-	private static final Language DEFAULT_LANGUAGE(){
+	public static final Language DEFAULT_LANGUAGE(){
 		return new Language(uuidEnglish);
 	}
 	

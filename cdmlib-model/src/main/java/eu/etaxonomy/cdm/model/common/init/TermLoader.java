@@ -39,14 +39,20 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 	
-//	private static Map<UUID, DefinedTermBase> definedTermsMap;
-	
 	@Autowired
 	private IVocabularyStore vocabularyStore;
 	
-	private TermLoader(){
+	
+	//TODO private -but Autowiring for constructor arguments is needed then for classes that use this class autowired (e.g. CdmTermInitializer)
+	@Deprecated //because still public 
+	public TermLoader(){
 		super();
 	}
+	public void setVocabularyStore(IVocabularyStore vocabularyStore){
+		this.vocabularyStore = vocabularyStore;		
+	}
+	
+	
 	
 	public TermLoader(IVocabularyStore vocabularyStore){
 		super();
@@ -90,13 +96,8 @@ public class TermLoader {
 					vocabularyStore.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
-					if (logger.isDebugEnabled()) {logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
+					if (logger.isDebugEnabled()) {logger.debug("No vocabularyStore exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
 				}
-//				if (definedTermsMap != null){
-//					DefinedTermBase defTermBase = (DefinedTermBase)term;
-//					definedTermsMap.put(defTermBase.getUuid(), defTermBase);	
-//				}
-				
 			}
 		} catch (Exception e) {
 			logger.error(e.getStackTrace());
@@ -105,6 +106,7 @@ public class TermLoader {
 	}
 
 	public TermVocabulary<DefinedTermBase> loadDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+		if (termClass != null){logger.info("load class " + termClass.getName());}
 		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
 	}
 	
