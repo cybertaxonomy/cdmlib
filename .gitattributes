@@ -379,7 +379,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonRelationshipTO.java
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TreeNode.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonTOAssembler.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/AssemblerBase.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssembler.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonSTOAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
