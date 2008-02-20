@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.remote.dto.NameTO;
  * It extends the convenience class AbstractController that encapsulates most
  * of the drudgery involved in handling HTTP requests.
  */
-public class HomePageController extends AbstractController
+public class RestController extends AbstractController
 {
 	@Autowired
 	private CdmService service;

@@ -383,7 +383,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonTOAssembl
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/HomePageController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestControllerANNOTATION.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
