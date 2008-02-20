@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Instances of this class are subsets of the total set of results returned by a search query.
+ * Instances of this class represent page based subsets of the total set of results returned by a search query.
  * 
  * @author a.kohlbecker
  * @version 1.0
