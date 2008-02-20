@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,18 +39,20 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 public class TermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 	
-	private static Map<UUID, DefinedTermBase> definedTermsMap;
-	
-	private IVocabularySaver vocabularySaver;
+//	private static Map<UUID, DefinedTermBase> definedTermsMap;
 	
 	@Autowired
-	private void setVocabularySaver(IVocabularySaver saver){
-		this.vocabularySaver = saver;
+	private IVocabularyStore vocabularyStore;
+	
+	public TermLoader(){
+		super();
 	}
 	
-	public static void setDefinedTermsMap(Map<UUID, DefinedTermBase> dtm){
-		 definedTermsMap = dtm;
+	public TermLoader(IVocabularyStore vocabularyStore){
+		super();
+		this.vocabularyStore = vocabularyStore;
 	}
+
 
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
@@ -81,16 +85,16 @@ public class TermLoader {
 				term.readCsvLine(aList);
 				term.setVocabulary(voc);
 				// save enumeration and all terms to DB
-				if (vocabularySaver != null){
-					vocabularySaver.saveOrUpdate(voc);
+				if (vocabularyStore != null){
+					vocabularyStore.saveOrUpdate(voc);
 				}else{
 					//e.g. in tests when no database connection exists
 					if (logger.isDebugEnabled()) {logger.debug("No dao exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
 				}
-				if (definedTermsMap != null){
-					DefinedTermBase defTermBase = (DefinedTermBase)term;
-					definedTermsMap.put(defTermBase.getUuid(), defTermBase);	
-				}
+//				if (definedTermsMap != null){
+//					DefinedTermBase defTermBase = (DefinedTermBase)term;
+//					definedTermsMap.put(defTermBase.getUuid(), defTermBase);	
+//				}
 				
 			}
 		} catch (Exception e) {
@@ -110,7 +114,7 @@ public class TermLoader {
 		final boolean ORDERED = true;
 		final boolean NOT_ORDERED = false;
 		
-		logger.debug("load terms");
+		logger.warn("load terms");
 		loadDefaultTerms(Language.class, NOT_ORDERED);
 		loadDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
 		loadDefaultTerms(Continent.class, NOT_ORDERED);
@@ -122,6 +126,42 @@ public class TermLoader {
 		loadDefaultTerms(NameRelationshipType.class, ORDERED);
 		loadDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		logger.debug("terms loaded");
+	}
+	
+	/**
+	 * True, if some of the important basic terms are accessible by saver
+	 * @param saver
+	 * @return
+	 */
+	public boolean basicTermsExist(IVocabularyStore saver){
+		if (saver == null){
+			saver = vocabularyStore;
+		}
+		if (saver == null){
+			return false;
+		}	
+		Map<String, UUID> allImportantUuid = new HashMap<String,UUID>();
+		allImportantUuid.put("English", UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+		allImportantUuid.put("Rank", UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a"));
+		for (UUID uuid: allImportantUuid.values()){
+			if (! basicTermExists(uuid, saver)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean basicTermExists(UUID uuid, IVocabularyStore saver){
+		if (saver == null){
+			return false;
+		}
+		DefinedTermBase basicTerm = saver.getTermByUuid(uuid);
+		if ( basicTerm == null || ! basicTerm.getUuid().equals(uuid)){
+			return false;
+		}else{
+			return true;
+		}
+		
 	}
 	
 

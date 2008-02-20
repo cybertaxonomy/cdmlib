@@ -15,11 +15,13 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
-
+import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import java.util.*;
 
 import javax.persistence.*;
+
 
 /**
  * workaround for enumerations, base type according to TDWG.  For linear ordering
@@ -33,10 +35,8 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements IDefTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
-	//public static IDefinedTermDao dao;
-	//public static ITermService termService;
-	//Map for preloading all DefinedTerms
-	static protected Map<UUID, DefinedTermBase> definedTermsMap = null;
+	
+	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
 
 	private DefinedTermBase kindOf;
 	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
@@ -45,50 +45,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	private Set<Media> media = new HashSet<Media>();
 	protected TermVocabulary<T> vocabulary;
 	
-	public static void initTermList(ITermLister termLister){
-		logger.debug("initTermList");
-		if (definedTermsMap == null){
-			if (termLister == null){   //e.g. when used in tests with no database connection
-				definedTermsMap = new HashMap<UUID, DefinedTermBase>();
-				try {
-					String strUuidEnglish = "e9f8cdb7-6819-44e8-95d3-e2d0690c3523";
-					UUID uuidEnglish = UUID.fromString(strUuidEnglish);
-					Language english = new Language(uuidEnglish);
-					definedTermsMap.put(english.getUuid(), english);
-					TermLoader.setDefinedTermsMap(definedTermsMap);
-					new TermLoader().loadAllDefaultTerms();
-				} catch (Exception e) {
-					logger.error("Error ocurred when loading terms");
-				}				
-				
-			}else{
-				List<DefinedTermBase> list = termLister.listTerms();
-				definedTermsMap = new HashMap<UUID, DefinedTermBase>();
-				for (DefinedTermBase dtb: list){
-					definedTermsMap.put(dtb.getUuid(), dtb);
-				}
-			}
-		}
-		logger.debug("initTermList - end");
-	}
-	
+
 	public static DefinedTermBase findByUuid(UUID uuid){
-		//in tests tems may no be initialised by database access
-		if (!isInitialized()){
-			initTermList(null);
-		}
-		return definedTermsMap.get(uuid);
+		return vocabularyStore.getTermByUuid(uuid);
 	}
-	
-	public static boolean isInitialized(){
-		return (definedTermsMap != null);
-	}
-	
-	@Transient
-	public static Map<UUID, DefinedTermBase> getDefinedTerms(){
-		return definedTermsMap;
-	}
-	
 	
 	public DefinedTermBase() {
 		super();

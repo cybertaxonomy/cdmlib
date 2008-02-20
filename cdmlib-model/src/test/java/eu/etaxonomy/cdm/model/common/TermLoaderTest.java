@@ -60,23 +60,23 @@ public class TermLoaderTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.TermLoader#setDefinedTermsMap(java.util.Map)}.
 	 */
-	@Test
-	public void testSetDefinedTermsMap() {
-		Map<UUID, DefinedTermBase> dtm = new HashMap<UUID, DefinedTermBase>();
-		TermLoader.setDefinedTermsMap(dtm);
-		TermLoader termLoader = new TermLoader();
-		
-		Object result = null;
-		try {
-			Field dtmField = TermLoader.class.getDeclaredField("definedTermsMap");
-			dtmField.setAccessible(true);
-			result = (Map)dtmField.get(termLoader);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-		assertSame(dtm, result);
-	}
+//	@Test
+//	public void testSetDefinedTermsMap() {
+//		Map<UUID, DefinedTermBase> dtm = new HashMap<UUID, DefinedTermBase>();
+//		TermLoader.setDefinedTermsMap(dtm);
+//		TermLoader termLoader = new TermLoader();
+//		
+//		Object result = null;
+//		try {
+//			Field dtmField = TermLoader.class.getDeclaredField("definedTermsMap");
+//			dtmField.setAccessible(true);
+//			result = (Map)dtmField.get(termLoader);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			fail();
+//		}
+//		assertSame(dtm, result);
+//	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.TermLoader#loadTerms(java.lang.Class, java.lang.String, boolean)}.

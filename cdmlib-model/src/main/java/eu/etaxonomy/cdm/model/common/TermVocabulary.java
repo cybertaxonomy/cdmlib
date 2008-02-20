@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import java.util.*;
+
 import javax.persistence.*;
 
 
@@ -29,11 +30,26 @@ import javax.persistence.*;
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	
-	//The order of the enumeration list is a linear order that can be used for statistical purposes. Measurement scale =
-	//ordinal
-	//private boolean isOrdinal;
+	private static final UUID uuidLanguage = UUID.fromString("17ba1c02-256d-47cf-bed0-2964ec1108ba");
+	private static final UUID uuidRank = UUID.fromString("b17451eb-4278-4179-af68-44f27aa3d151");
+	private static final UUID uuidContinent = UUID.fromString("ed4e5948-172a-424c-83d6-6fc7c7da70ed");
 	
 	
+	public static TermVocabulary findByUuid(UUID uuid){
+		//in tests tems may no be initialised by database access
+//		if (!isInitialized()){
+//			initTermList(null);
+//		}
+//		return termVocabularyMap.get(uuid);
+		//TODO
+		return null;
+	}
+	public static final TermVocabulary getUUID(UUID uuid){
+		return (TermVocabulary)findByUuid(uuid);
+	}
+	public static final TermVocabulary LANGUAGE(){
+		return getUUID(uuidLanguage);
+	}
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
