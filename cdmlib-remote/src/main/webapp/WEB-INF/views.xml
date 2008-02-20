@@ -9,4 +9,7 @@
         <property name="encoding"><value>ISO-8859-1</value></property>
         <property name="contentType"><value>application/json</value></property>
     </bean>
+
+    <bean name="xmlView" class="eu.etaxonomy.cdm.remote.view.XmlView"/>
+
 </beans>

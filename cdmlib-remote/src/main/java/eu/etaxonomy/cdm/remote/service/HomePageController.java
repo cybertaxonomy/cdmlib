@@ -29,8 +29,9 @@ public class HomePageController extends AbstractController
 		NameTO n = service.getName(UUID.fromString("f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
 
 		ModelAndView mv = new ModelAndView();
-		mv.addObject(n);
-		mv.setViewName("jsonView");
+		mv.addObject("dto", n);
+		//mv.setViewName("jsonView");
+		mv.setViewName("xmlView");
 
 		return mv;
 	}
