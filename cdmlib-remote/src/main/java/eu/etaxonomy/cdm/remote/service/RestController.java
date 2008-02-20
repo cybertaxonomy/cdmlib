@@ -38,7 +38,8 @@ public class RestController extends AbstractController
 	}
 	
 	private String getLogicalView(HttpServletRequest request){
-		String ctype = request.getContentType();
+		String ctype = request.getHeader("Accept");
+		Enumeration headers = request.getHeaderNames();
 		return "xmlView";
 		//return "jsonView";
 	}
