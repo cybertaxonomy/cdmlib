@@ -27,7 +27,21 @@ public class ResultSetPageSTO {
 	 */
 	private long totalResultsCount;
 	/**
-	 * A list containing the items for this result page 
+	 * Then number of items per page
+	 */
+	int perPageCount;
+	/**
+	 * The number of this page. First page has index 1.
+	 */
+	int pageNumber;
+	/**
+	 * Total number of pages
+	 */
+	int totalPageCount;
+	/**
+	 * A list containing the items for this result page.
+	 * The number of items will not exceed the {@link #perPageCount} value.
+	 * The last page may contain less items. 
 	 */
 	private List<BaseSTO> results = new ArrayList<BaseSTO>();
 }
