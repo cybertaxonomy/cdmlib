@@ -16,15 +16,15 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/whatis/(*:uuid)">namepage</prop>
-                <prop key="/name/(*:uuid)">namepage</prop>
-                <prop key="/taxon/(*:uuid)">namepage</prop>
-                <prop key="/name/list/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">namepage</prop>
+                <prop key="/(whatis:sto/(*:uuid)">restController</prop>
+                <prop key="/(name:dto)/(*:uuid)">restController</prop>
+                <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
+                <prop key="/(find:action)/(name:dto)/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">restController</prop>
             </props>
         </property>
     </bean>
     
-    <bean name="namepage" class="eu.etaxonomy.cdm.remote.service.HomePageController"/>
+    <bean name="restController" class="eu.etaxonomy.cdm.remote.service.RestController"/>
     
     <!-- default=views.xml -->
     <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" >

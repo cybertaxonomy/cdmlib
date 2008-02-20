@@ -6,7 +6,7 @@
     
     <!-- http://spring-json.sourceforge.net/documentation.html -->
     <bean name="jsonView" class="org.springframework.web.servlet.view.json.JsonView">
-        <property name="encoding"><value>ISO-8859-1</value></property>
+        <property name="encoding"><value>UTF-8</value></property>
         <property name="contentType"><value>application/json</value></property>
     </bean>
 

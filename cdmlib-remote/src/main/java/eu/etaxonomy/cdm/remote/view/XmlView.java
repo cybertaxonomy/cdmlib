@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
