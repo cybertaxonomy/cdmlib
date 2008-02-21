@@ -59,7 +59,7 @@ public class ResultSetPageSTO<T extends BaseSTO> {
 		if(totalResultsCount % pageSize > 0){
 			this.totalPageCount++;	
 		}
-		this.resultsOnPage = 1 + (totalResultsCount-1) % pageSize;
+		this.resultsOnPage = Math.max(0, Math.min(pageSize, totalResultsCount - pageSize*(pageNumber-1)));
 	}
 	public int getPageSize() {
 		return pageSize;

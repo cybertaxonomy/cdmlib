@@ -36,6 +36,8 @@ public class ResultSetPageSTOTest {
 
 	@Test
 	public void testGetResultsOnPage() {
+		assertEquals(25, rs.getResultsOnPage());
+		rs.setPageNumber(2);
 		assertEquals(12, rs.getResultsOnPage());
 	}
 

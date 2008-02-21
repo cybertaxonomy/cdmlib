@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.remote.dto.assembler.TaxonSTOAssembler;
 
 @Component
 public class CdmServiceImpl implements CdmService {
-	Random random = new Random();
 
 	@Autowired
 	private NameSTOAssembler nameSTOAssembler;	
@@ -53,6 +52,7 @@ public class CdmServiceImpl implements CdmService {
 	}
 
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int pagesize, int page) {
+		Random random = new Random();
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		rs.setPageSize(pagesize);
 		rs.setPageNumber(page);
