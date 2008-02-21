@@ -27,6 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	
@@ -42,6 +43,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 //		}
 //		return termVocabularyMap.get(uuid);
 		//TODO
+		logger.error("Not yet implemented");
 		return null;
 	}
 	public static final TermVocabulary getUUID(UUID uuid){
