@@ -244,7 +244,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 
 	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<NameTypeDesignation> getNameTypeDesignations() {
 		return nameTypeDesignations;
 	}
