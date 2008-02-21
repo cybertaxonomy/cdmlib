@@ -4,17 +4,19 @@
 package eu.etaxonomy.cdm.strategy;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.mueller
  *
  */
-public interface INameCacheStrategy extends IStrategy {
+public interface INameCacheStrategy<T extends NonViralName> extends IStrategy {
 	
 	//returns the composed name string without author or year
-	public String getNameCache(CdmBase object);
+	public String getNameCache(T object);
 	
 	//returns the composed name string with author and/or year
-	public String getTitleCache(CdmBase object);
+	public String getTitleCache(T object);
 	
 }

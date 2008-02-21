@@ -7,16 +7,16 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
+
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author AM
  *
  */
-public abstract class NameCacheStrategyBase extends StrategyBase implements INameCacheStrategy {
+public abstract class NameCacheStrategyBase<T extends NonViralName> extends StrategyBase implements INameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
 
 	final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
@@ -32,7 +32,7 @@ public abstract class NameCacheStrategyBase extends StrategyBase implements INam
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */
 	// Test implementation
-	public String getNameCache(CdmBase object) {
+	public String getNameCache(T object) {
 		String result;
 		NonViralName name = (NonViralName)object;
 		Rank rank = name.getRank();
@@ -59,7 +59,7 @@ public abstract class NameCacheStrategyBase extends StrategyBase implements INam
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	abstract public String getTitleCache(CdmBase object);
+	abstract public String getTitleCache(T object);
 	
 
 	/************** PRIVATES ****************/

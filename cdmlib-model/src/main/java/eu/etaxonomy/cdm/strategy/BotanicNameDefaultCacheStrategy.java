@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  *
  */
-public class BotanicNameCacheStrategy extends NameCacheStrategyBase implements INameCacheStrategy {
-	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategy.class);
+public class BotanicNameDefaultCacheStrategy extends NameCacheStrategyBase<BotanicalName> implements INameCacheStrategy<BotanicalName> {
+	private static final Logger logger = Logger.getLogger(BotanicNameDefaultCacheStrategy.class);
 	
 	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 	
@@ -28,20 +28,21 @@ public class BotanicNameCacheStrategy extends NameCacheStrategyBase implements I
 	}
 
 	
-	public static BotanicNameCacheStrategy NewInstance(){
-		return new BotanicNameCacheStrategy();
+	public static BotanicNameDefaultCacheStrategy NewInstance(){
+		return new BotanicNameDefaultCacheStrategy();
 	}
 	
-	private BotanicNameCacheStrategy(){
+	private BotanicNameDefaultCacheStrategy(){
 		super();
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
 	// Test implementation
-	public String getTitleCache(CdmBase object) {
+	@Override
+	public String getTitleCache(BotanicalName object) {
 		String result;
 		NonViralName tn = (NonViralName)object;
 		result = getNameCache(object);
