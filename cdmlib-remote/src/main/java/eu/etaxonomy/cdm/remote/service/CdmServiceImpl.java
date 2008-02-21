@@ -54,14 +54,16 @@ public class CdmServiceImpl implements CdmService {
 
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int pagesize, int page) {
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
+		rs.setPageSize(pagesize);
+		rs.setPageNumber(page);
 		// random results
-		rs.setTotalResultsCount(random.nextInt(30));
+		int x = random.nextInt(30);
+		rs.setTotalResultsCount(x);
 		for (int i=0; i<rs.getResultsOnPage(); i++){
-			rs.getResults().add(getTaxonSTO());
+			TaxonSTO tx = getTaxonSTO();
+			rs.getResults().add(tx);
 		}
 		// result set metadata
-		//rs.setPageSize(pagesize);
-		//rs.setPageNumber(page);
 		return rs;
 	}
 

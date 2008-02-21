@@ -37,26 +37,46 @@ public class RestController extends AbstractController
 	 */
 	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp) throws Exception
 	{
-		Map<String,String> paras = this.getParameters(req);
 		ModelAndView mv = new ModelAndView();
-		if(paras.get("action").equalsIgnoreCase("find")){
-			// validate parameters
-			UUID sec = UUID.fromString(req.getParameter("sec"));
+		if(getStringPara("action",req).equalsIgnoreCase("find")){
+			//
+			// retrieve meaningful parameters
+			UUID sec = null;
+			try{
+				sec = UUID.fromString(getStringPara("sec",req));
+			}catch (Exception e){
+				// TODO: throw HTTP Error400
+			}
 			Set<UUID> higherTaxa = new HashSet<UUID>();
-			// TODO: take higher taxa UUIDs from req.getParameter("higherTaxa")
-			boolean matchAnywhere = Utils.isTrue(req.getParameter("matchAnywhere")); 
-			boolean onlyAccepted = Utils.isTrue(req.getParameter("onlyAccepted"));
+			// TODO: take higher taxa UUIDs from "higherTaxa"
+			Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
+			if (matchAnywhere==null){
+				matchAnywhere=false;
+			};
+			Boolean onlyAccepted = getBoolPara("onlyAccepted",req);
+			if (onlyAccepted==null){
+				onlyAccepted=false;
+			};
+			Integer page = getIntPara("page",req);
+			if (page==null){
+				page=1;
+			};
+			Integer pagesize = getIntPara("pagesize",req);
+			if (pagesize==null){
+				pagesize=25;
+			};
+			//
 			// search for taxa
-			mv.addObject(service.findTaxa(req.getParameter("q"), sec, higherTaxa, matchAnywhere, onlyAccepted, (int)Integer.valueOf(req.getParameter("pagesize")), (int)Integer.valueOf(req.getParameter("page")) ));
+			mv.addObject(service.findTaxa(getStringPara("q",req), sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize));
 		}else{ 
 			// get Object by UUID
-			if(paras.get("dto").equalsIgnoreCase("name")){
-				NameTO n = service.getName(UUID.fromString(paras.get("uuid")));
+			if(getStringPara("dto",req).equalsIgnoreCase("name")){
+				NameTO n = service.getName(UUID.fromString(getStringPara("uuid",req)));
 				mv.addObject("dto", n);
-			}else if(paras.get("dto").equalsIgnoreCase("taxon")){
-				NameTO n = service.getName(UUID.fromString(paras.get("uuid")));
+			}else if(getStringPara("dto",req).equalsIgnoreCase("taxon")){
+				NameTO n = service.getName(UUID.fromString(getStringPara("uuid",req)));
 				mv.addObject("dto", n);
-			}else if(paras.get("dto").equalsIgnoreCase("whatis")){
+			}else if(getStringPara("dto",req).equalsIgnoreCase("whatis")){
 				mv.addObject(service.findTaxa(null, null, null, true, true, 25, 1));
 			}
 		}
@@ -65,6 +85,44 @@ public class RestController extends AbstractController
 		return mv;
 	}
 	
+	/**
+	 * return the value for the given parameter name as a string. 
+	 * in case the parameters doesnt exist return an empty string "", not null.
+	 * @param parameterName
+	 * @param req
+	 * @return
+	 */
+	private String getStringPara(String parameterName, HttpServletRequest req){
+		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
+		Object map = req.getAttribute("ParameterizedUrlHandlerMapping.path-parameters");
+		String result = null;
+		if (map!=null){
+			// first look into url parameters
+			Map<String,String> urlParas = (Map) map;
+			result = urlParas.get(parameterName);
+		}
+		if (result == null){
+			// alternatively try querystring parameters
+			result = req.getParameter(parameterName);
+		}
+		return result;
+	}
+	private Integer getIntPara(String parameterName, HttpServletRequest req){
+		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
+		Integer result;
+		String tmp = getStringPara(parameterName, req);
+		try{
+			result = Integer.valueOf(tmp);
+		}catch (Exception e){
+			result = null;
+		}
+		return result;
+	}
+	private Boolean getBoolPara(String parameterName, HttpServletRequest req){
+		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
+		String tmp = getStringPara(parameterName, req);
+		return Utils.isTrue(tmp);
+	}
 	/**
 	 * Read http request parameter "Accept" and decide whether to use JSON or XML for the response.
 	 * Defaults to XML in case no matching header can be identified.
@@ -83,11 +141,6 @@ public class RestController extends AbstractController
 		}
 		// default to XML
 		return "xmlView";
-	}
-	
-	private Map<String,String> getParameters(HttpServletRequest request){
-		// set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
-		return (Map) request.getAttribute("ParameterizedUrlHandlerMapping.path-parameters");
 	}
 
 

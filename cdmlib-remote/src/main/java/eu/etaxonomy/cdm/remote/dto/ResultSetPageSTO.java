@@ -25,50 +25,57 @@ public class ResultSetPageSTO<T extends BaseSTO> {
 	/**
 	 * Total number of matching records. Maybe distributed across several pages
 	 */
-	private long totalResultsCount;
+	private int totalResultsCount=0;
 	/**
 	 * Total number of pages
 	 */
-	private int totalPageCount;
+	private int totalPageCount=0;
 	/**
 	 * Then number of items per page. Defaults to 25
 	 */
-	private int pageSize = 25;
+	private int pageSize=25;
 	/**
 	 * The number of this page. First default page has index 1.
 	 */
-	private int pageNumber = 1;
+	private int pageNumber=1;
 	/**
 	 * The number of records on this page
 	 */
-	private int resultsOnPage;
+	private int resultsOnPage=0;
 	/**
 	 * A list containing the items for this result page.
 	 * The number of items will not exceed the {@link #pageSize} value.
 	 * The last page may contain less items. 
 	 */
 	private List<T> results = new ArrayList<T>();
+
 	
-	
-	public long getTotalResultsCount() {
+	public int getTotalResultsCount() {
 		return totalResultsCount;
 	}
-	public void setTotalResultsCount(long totalResultsCount) {
+	public void setTotalResultsCount(int totalResultsCount) {
 		this.totalResultsCount = totalResultsCount;
-		this.totalPageCount = (int) Math.ceil(totalResultsCount / pageSize);
+		this.totalPageCount = totalResultsCount / pageSize;
+		if(totalResultsCount % pageSize > 0){
+			this.totalPageCount++;	
+		}
+		this.resultsOnPage = 1 + (totalResultsCount-1) % pageSize;
 	}
 	public int getPageSize() {
 		return pageSize;
 	}
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+		// recalc other properties via totalResults setter
+		setTotalResultsCount(getTotalResultsCount());
 	}
 	public int getPageNumber() {
 		return pageNumber;
 	}
 	public void setPageNumber(int pageNumber) {
 		this.pageNumber = pageNumber;
-		this.resultsOnPage = (int) (totalResultsCount-(pageNumber-1)*pageSize);
+		// recalc other properties via totalResults setter
+		setTotalResultsCount(getTotalResultsCount());
 	}
 	public int getTotalPageCount() {
 		return totalPageCount;
