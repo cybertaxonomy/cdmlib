@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.NonViralNameDefaultCacheStrategy;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -53,8 +54,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	private void setNameCacheStrategy(){
 		if (getClass() == NonViralName.class){
-			this.cacheStrategy = BotanicNameCacheStrategy.NewInstance();
-			logger.warn("NonViralName uses BotanicNameCacheStrategy");
+			this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		}
 		
 	}
@@ -144,7 +144,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}
-
+	
 	public void setGenusOrUninomial(String genusOrUninomial) {
 		this.genusOrUninomial = genusOrUninomial;
 	}

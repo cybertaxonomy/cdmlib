@@ -84,16 +84,16 @@ public class BotanicNameCacheStrategyTest {
 /********* TEST *******************************************/
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#NewInstance()}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#NewInstance()}.
 	 */
 	@Test
 	public final void testNewInstance() {
-		BotanicNameCacheStrategy cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+		BotanicNameDefaultCacheStrategy cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		assertNotNull(cacheStrategy);
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetNameCache() {
@@ -101,7 +101,7 @@ public class BotanicNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetFullNameCache() {
@@ -110,7 +110,7 @@ public class BotanicNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetUninomialNameCache() {
@@ -118,20 +118,20 @@ public class BotanicNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetInfraGenusNameCache() {
 		String methodName = "getInfraGenusNameCache";
 		Method method = getMethod(NameCacheStrategyBase.class, methodName, NonViralName.class);
 		
-		BotanicNameCacheStrategy cacheStrategy = BotanicNameCacheStrategy.NewInstance();
+		BotanicNameDefaultCacheStrategy cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		this.getValue(method, cacheStrategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", subGenusName.getNameCache());
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetSpeciesNameCache() {
@@ -139,7 +139,7 @@ public class BotanicNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetInfraSpeciesNameCache() {
