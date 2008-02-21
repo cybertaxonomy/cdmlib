@@ -569,6 +569,7 @@ updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.0.jar -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.1.jar -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.4.jar -text
 updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.5.jar -text
+updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
 updateSite/index.html -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.2.5.jar -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.0.jar -text
@@ -579,6 +580,7 @@ updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.4.jar -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.0.jar -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.1.jar -text
 updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.5.jar -text
+updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
 updateSite/site.xml -text
 updateSite/web/site.css -text
 updateSite/web/site.xsl -text
