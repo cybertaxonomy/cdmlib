@@ -55,11 +55,9 @@ public class ResultSetPageSTO<T extends BaseSTO> {
 	}
 	public void setTotalResultsCount(int totalResultsCount) {
 		this.totalResultsCount = totalResultsCount;
-		this.totalPageCount = totalResultsCount / pageSize;
-		if(totalResultsCount % pageSize > 0){
-			this.totalPageCount++;	
-		}
+		this.totalPageCount = (int) Math.ceil((double) totalResultsCount / (double) pageSize);
 		this.resultsOnPage = Math.max(0, Math.min(pageSize, totalResultsCount - pageSize*(pageNumber-1)));
+		this.pageSize=25;
 	}
 	public int getPageSize() {
 		return pageSize;

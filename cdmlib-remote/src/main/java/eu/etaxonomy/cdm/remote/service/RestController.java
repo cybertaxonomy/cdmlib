@@ -38,7 +38,8 @@ public class RestController extends AbstractController
 	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp) throws Exception
 	{
 		ModelAndView mv = new ModelAndView();
-		if(getStringPara("action",req).equalsIgnoreCase("find")){
+		String action = getNonNullPara("action",req);
+		if(action!=null && action.equalsIgnoreCase("find")){
 			//
 			// retrieve meaningful parameters
 			UUID sec = null;
@@ -67,17 +68,40 @@ public class RestController extends AbstractController
 			};
 			//
 			// search for taxa
-			mv.addObject(service.findTaxa(getStringPara("q",req), sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize));
+			Object obj = service.findTaxa(getStringPara("q",req), sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+			mv.addObject(obj);
 		}else{ 
 			// get Object by UUID
-			if(getStringPara("dto",req).equalsIgnoreCase("name")){
-				NameTO n = service.getName(UUID.fromString(getStringPara("uuid",req)));
-				mv.addObject("dto", n);
-			}else if(getStringPara("dto",req).equalsIgnoreCase("taxon")){
-				NameTO n = service.getName(UUID.fromString(getStringPara("uuid",req)));
-				mv.addObject("dto", n);
-			}else if(getStringPara("dto",req).equalsIgnoreCase("whatis")){
-				mv.addObject(service.findTaxa(null, null, null, true, true, 25, 1));
+			String dto = getNonNullPara("dto",req);
+			String uuid = getNonNullPara("uuid",req);
+			if(dto.equalsIgnoreCase("name")){
+				try{
+					NameTO n = service.getName(UUID.fromString(uuid));
+					mv.addObject(n);
+				}catch(IllegalArgumentException e){
+					//TODO: raise http400 error
+					resp.sendError(404, uuid + " is no valid UUID");
+					return null;
+				}
+			}else if(dto.equalsIgnoreCase("taxon")){
+				try{
+					NameTO n = service.getName(UUID.fromString(uuid));
+					mv.addObject(n);
+				}catch(IllegalArgumentException e){
+					//TODO: raise http400 error
+					resp.sendError(404, uuid + " is no valid UUID");
+					return null;
+				}
+			}else if(dto.equalsIgnoreCase("whatis")){
+				//TODO: somehow the whatis url path is not delegatzed to this controller ?!#!??
+				try{
+					NameTO n = service.getName(UUID.fromString(uuid));
+					mv.addObject(n);
+				}catch(IllegalArgumentException e){
+					//TODO: raise http400 error
+					resp.sendError(404, uuid + " is no valid UUID");
+					return null;
+				}
 			}
 		}
 		// set xml or json view
@@ -106,6 +130,13 @@ public class RestController extends AbstractController
 			result = req.getParameter(parameterName);
 		}
 		return result;
+	}
+	private String getNonNullPara(String parameterName, HttpServletRequest req){
+		String val = getStringPara(parameterName, req);
+		if (val==null){
+			return "";
+		}
+		return val;
 	}
 	private Integer getIntPara(String parameterName, HttpServletRequest req){
 		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping

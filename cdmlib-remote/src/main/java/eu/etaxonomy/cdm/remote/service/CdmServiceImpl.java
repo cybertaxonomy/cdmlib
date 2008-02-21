@@ -51,7 +51,7 @@ public class CdmServiceImpl implements CdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int pagesize, int page) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize) {
 		Random random = new Random();
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		rs.setPageSize(pagesize);

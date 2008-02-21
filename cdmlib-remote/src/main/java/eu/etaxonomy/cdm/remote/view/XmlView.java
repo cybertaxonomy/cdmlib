@@ -24,7 +24,7 @@ public class XmlView implements View {
 	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// Retrieve data from model
-		Object dto = model.get("dto");
+		Object dto = model.values().toArray()[0];
 		
 		// Write the XML document to the reponse output stream
 		OutputStream out = response.getOutputStream();
