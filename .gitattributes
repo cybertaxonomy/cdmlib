@@ -289,11 +289,11 @@ cdmlib-persistence/INSTALL.TXT -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDriverManagerDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularySaverImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularyStoreImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text

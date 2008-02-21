@@ -7,18 +7,22 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
         
-    <bean id="defaultDataSource"  
-    		lazy-init="true" 
-    		class="eu.etaxonomy.cdm.database.CdmDriverManagerDataSource"
-    		init-method="init"
-    		
-    		>
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_lib" />
-		<property name="username" value="edit" />
-		<property name="password" value="wp5" />
-	</bean>
-	
+<!--    <bean id="defaultDataSource"  -->
+<!--    		lazy-init="true" -->
+<!--    		class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+<!--		<property name="driverClassName" value="com.mysql.jdbc.Driver" />-->
+<!--		<property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_lib" />-->
+<!--		<property name="username" value="edit" />-->
+<!--		<property name="password" value="wp5" />-->
+<!--	</bean>-->
+ 
+    <bean id="defaultDataSource" lazy-init="true" 
+    		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />
+		<property name="url" value="jdbc:microsoft:sqlserver://Paddie:1433;DataBase=edit_test;SelectMethod=direct"/>
+		<property name="username" value="andreas" />
+		<property name="password" value="r56" />
+	</bean>	
 	
 <!--   -->
 <!--    <bean id="defaultDataSource" -->
