@@ -113,7 +113,10 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public T getLowestTerm() {
 		try {
-			return ((SortedSet<T>)terms).first();
+			SortedSet<T> sortedSet = new TreeSet();
+			sortedSet.addAll(terms);
+			return sortedSet.first();
+			//return ((SortedSet<T>)terms).first();
 		} catch (NoSuchElementException e) {
 			return null;
 		}

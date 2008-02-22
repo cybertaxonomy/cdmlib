@@ -59,7 +59,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	private String termSourceUri;
 	protected Class termClass;
 
-	protected Set<T> terms = getNewTermSet();
+	//TODO Changed
+	public Set<T> terms = getNewTermSet();
 	
 	//to be overriden by subclasses, e.g. OrderedTermVocabulary
 	@Transient
@@ -79,9 +80,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getTerms() {
-		Set<T> result = getNewTermSet();
-		result.addAll(terms);
-		return result;
+		//Set<T> result = getNewTermSet();
+		//result.addAll(terms);
+		//return result;
+		return terms;
 	}
 	protected void setTerms(Set<T> terms) {
 		this.terms = terms;

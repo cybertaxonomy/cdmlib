@@ -41,7 +41,13 @@ public aspect PropertyChangeAspect {
 				// Also get methods for booleans start with "is" or "has"
 				Object oldValue = property.get(cb);
 				proceed( cb );
-				cb.firePropertyChange( propertyName, oldValue, property.get(cb));
+				Object newValue = property.get(cb);
+//				logger.error ("Prop: " + propertyName);
+//				logger.warn("OLD:" + oldValue);
+//				logger.warn("New:" + newValue);
+				if (! isPersistentSet(newValue) && ! isPersistentSet(oldValue)  ){
+					cb.firePropertyChange( propertyName, oldValue, newValue);
+				}
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 				proceed( cb );
@@ -55,6 +61,19 @@ public aspect PropertyChangeAspect {
 				e.printStackTrace();
 				proceed( cb );
 			}
+		}
+	}
+	
+	private boolean isPersistentSet(Object value){
+		if (value == null){
+			//logger.debug("(null) is not PS");
+			return false;
+		}else if (value.getClass().getName().equals("PersistentSet")){
+			//logger.warn(value.getClass() + " is PS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return true;
+		}else{
+			//logger.warn(value.getClass().getSimpleName() + " is is not PS");
+			return false;
 		}
 	}
 

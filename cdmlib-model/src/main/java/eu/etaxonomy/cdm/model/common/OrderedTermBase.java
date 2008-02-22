@@ -101,7 +101,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 			if (OrderedTermVocabulary.class.isAssignableFrom(newVocabulary.getClass())){
 				OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
 			
-				if (this.orderIndex > 1){
+				if (this.orderIndex > 0){
 					//don't change orderIndex
 				}else if (voc.getLowestTerm() == null){
 					this.orderIndex = 1;
