@@ -84,9 +84,11 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 		return vocabularyDao.findByUuid(uuid);
 	}
 	
+	public boolean initialize(){
+		return loadBasicTerms();
+	}	
 	
-	
-	public void initialize(){
+	public boolean loadBasicTerms(){
 		if (! initialized){
 			logger.info("inititialize start ...");
 			try {
@@ -102,10 +104,12 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 			} catch (Exception e) {
 				logger.error("Error ocurred when initializing and loading terms");
 				initialized = false;
+				return false;
 			}
 			initialized = true;
 			logger.info("initTermsMap end ...");
 		}
+		return true;
 	}
 
 }
