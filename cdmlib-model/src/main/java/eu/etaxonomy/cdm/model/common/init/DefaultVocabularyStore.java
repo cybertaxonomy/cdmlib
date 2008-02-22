@@ -5,14 +5,12 @@ package eu.etaxonomy.cdm.model.common.init;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ITermLister;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -25,6 +23,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	
 	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
+	private boolean isInitialized = false;
 
 	public static final Language DEFAULT_LANGUAGE(){
 		return new Language(uuidEnglish);
@@ -39,9 +38,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getTermByUuid(java.util.UUID)
 	 */
 	public DefinedTermBase getTermByUuid(UUID uuid) {
-		if (!isInitialized()){
-			initMaps();
-		}
+		if (!isInitialized  &&  ! loadBasicTerms()){ return null;}
 		return definedTermsMap.get(uuid);
 	}
 
@@ -49,23 +46,17 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getVocabularyByUuid(java.util.UUID)
 	 */
 	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid) {
-		if (!isInitialized()){
-			initMaps();
-		}
+		if (!isInitialized  &&  ! loadBasicTerms()){ return null;}
 		return termVocabularyMap.get(uuid);
 	}
 	
-	
-	public static boolean isInitialized(){
-		return (definedTermsMap != null);
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
-		initMaps();
+		loadBasicTerms();
 		while (termIterator.hasNext()){
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
 			definedTermsMap.put(term.getUuid(), term);
@@ -73,7 +64,8 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 		termVocabularyMap.put(vocabulary.getUuid(), vocabulary);
 	}
 	
-	public void initMaps(){
+	
+	public boolean loadBasicTerms() {
 		if (definedTermsMap == null){
 			logger.warn("initTermsMap start ...");
 			definedTermsMap = new HashMap<UUID, DefinedTermBase>();
@@ -83,6 +75,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 				termLoader.loadAllDefaultTerms();
 			} catch (Exception e) {
 				logger.error("Error ocurred when loading terms");
+				return false;
 			}				
 			logger.debug("initTermsMap end ...");
 		}
@@ -91,6 +84,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 			termVocabularyMap = new HashMap<UUID, TermVocabulary<DefinedTermBase>>();
 			logger.debug("initVocabularyMap end ...");
 		}
+		return false;
 	}
 
 //public void initTermList(ITermLister termLister){

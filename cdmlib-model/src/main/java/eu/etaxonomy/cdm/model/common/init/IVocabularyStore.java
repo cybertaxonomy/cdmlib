@@ -17,6 +17,9 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 public interface IVocabularyStore {
 	
+	/**
+	 * @param vocabulary
+	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary);
 	
 	 /** ATTENTION: Be aware that TermLoader indirectly calls getTermByUuid(uuid)
@@ -25,6 +28,10 @@ public interface IVocabularyStore {
 	 */
 	public DefinedTermBase getTermByUuid(UUID uuid);
 	
+	/**
+	 * @param uuid
+	 * @return
+	 */
 	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid);
 	
 	/** Initializes the IVocabularStore by making sure that all basic terms that are
