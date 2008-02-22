@@ -1,4 +1,5 @@
 cdmLibraryPlugin/.settings
+cdmLibraryPlugin/dist
 cdmLibraryPlugin/target
 cdmParent/.externalToolBuilders
 cdmParent/.project
