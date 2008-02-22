@@ -23,7 +23,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	
 	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
-	private boolean isInitialized = false;
+	private static boolean isInitialized = false;
 
 	public static final Language DEFAULT_LANGUAGE(){
 		return new Language(uuidEnglish);
@@ -84,6 +84,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 			termVocabularyMap = new HashMap<UUID, TermVocabulary<DefinedTermBase>>();
 			logger.debug("initVocabularyMap end ...");
 		}
+		isInitialized =true;
 		return false;
 	}
 
