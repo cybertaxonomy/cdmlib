@@ -40,6 +40,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	public UUID saveTaxonName(TaxonNameBase taxonName) {
 		return super.saveCdmObject(taxonName);
 	}
+	
+	@Transactional(readOnly = false)
+	public UUID removeTaxon(TaxonNameBase taxonName) {
+		return super.removeCdmObject(taxonName);
+	}
 
 	public List<TaxonNameBase> getAllNames(int limit, int start){
 		return dao.list(limit, start);

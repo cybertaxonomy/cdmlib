@@ -172,7 +172,6 @@ public class CdmApplicationController {
 		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");
 		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
 		termService = (ITermService)applicationContext.getBean("termServiceImpl");
-		DefinedTermBase.initTermList(termService);
 		databaseService = (IDatabaseService)applicationContext.getBean("databaseServiceHibernateImpl");
 		databaseService.setApplicationController(this);
 	}
