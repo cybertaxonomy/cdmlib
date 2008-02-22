@@ -84,4 +84,13 @@ public class ResultSetPageSTO<T extends BaseSTO> {
 	public int getResultsOnPage() {
 		return resultsOnPage;
 	}
+	private void setTotalPageCount(int totalPageCount) {
+		this.totalPageCount = totalPageCount;
+	}
+	private void setResultsOnPage(int resultsOnPage) {
+		this.resultsOnPage = resultsOnPage;
+	}
+	private void setResults(List<T> results) {
+		this.results = results;
+	}
 }
