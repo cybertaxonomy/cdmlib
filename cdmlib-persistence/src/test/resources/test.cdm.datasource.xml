@@ -16,7 +16,13 @@
 		<property name="password" value="wp5" />
 	</bean>
  
-
+<!--    <bean id="defaultDataSource" lazy-init="true" -->
+<!--    		class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+<!--		<property name="driverClassName" value="com.microsoft.jdbc.sqlserver.SQLServerDriver" />-->
+<!--		<property name="url" value="jdbc:microsoft:sqlserver://Paddie:1433;DataBase=edit_test;SelectMethod=direct"/>-->
+<!--		<property name="username" value="andreas" />-->
+<!--		<property name="password" value="r56" />-->
+<!--	</bean>	-->
 	
 <!--   -->
 <!--    <bean id="defaultDataSource" -->
