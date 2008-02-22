@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.collection.AbstractPersistentCollection;
+import org.hibernate.collection.PersistentSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
+
+import java.lang.reflect.Field;
 import java.util.*;
 
 import javax.persistence.*;
@@ -149,12 +153,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		this.media.remove(media);
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
 	 */
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE })
+	@Transient
 	public TermVocabulary getVocabulary() {
 		return this.vocabulary;
 	}
@@ -169,7 +171,52 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 			this.vocabulary.terms.remove(this);
 		}
 		if (newVocabulary!= null) { 
-			newVocabulary.terms.add(this);
+		}
+		this.vocabulary = newVocabulary;		
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
+	 */
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	protected TermVocabulary getPersistentVocabulary() {
+		return this.vocabulary;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	protected void setPersistentVocabulary(TermVocabulary newVocabulary) {
+		// Hibernate bidirectional cascade hack: 
+		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
+		if(this.vocabulary == newVocabulary){ return;}
+		if (this.vocabulary != null) { 
+			this.vocabulary.terms.remove(this);
+		}
+		if (newVocabulary!= null) { 
+			try {
+				Field fieldInitializing = AbstractPersistentCollection.class.getDeclaredField("initializing");
+				fieldInitializing.setAccessible(true);
+				if (AbstractPersistentCollection.class.isAssignableFrom(newVocabulary.terms.getClass())){
+					boolean initValue = fieldInitializing.getBoolean(newVocabulary.terms);
+					if (initValue == false){
+						newVocabulary.terms.add(this);
+					}else{
+						//nothing
+					}
+				}else{
+					newVocabulary.terms.add(this);
+				}
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 		this.vocabulary = newVocabulary;		
 	}

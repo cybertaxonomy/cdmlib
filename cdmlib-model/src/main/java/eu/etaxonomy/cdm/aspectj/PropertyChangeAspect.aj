@@ -68,8 +68,8 @@ public aspect PropertyChangeAspect {
 		if (value == null){
 			//logger.debug("(null) is not PS");
 			return false;
-		}else if (value.getClass().getName().equals("PersistentSet")){
-			//logger.warn(value.getClass() + " is PS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		}else if (value.getClass().getSimpleName().equals("PersistentSet")){
+			logger.debug("Don't throw event for setter of Persistent Set");
 			return true;
 		}else{
 			//logger.warn(value.getClass().getSimpleName() + " is is not PS");

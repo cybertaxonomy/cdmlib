@@ -76,9 +76,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		setTermSourceUri(termSourceUri);
 	}
 	
-	@OneToMany(mappedBy="vocabulary")
-	@Type(type="DefinedTermBase")
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public Set<T> getTerms() {
 		//Set<T> result = getNewTermSet();
 		//result.addAll(terms);
@@ -86,6 +84,16 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return terms;
 	}
 	protected void setTerms(Set<T> terms) {
+		this.terms = terms;
+	}
+	
+	@OneToMany(mappedBy="persistentVocabulary")
+	@Type(type="DefinedTermBase")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<T> getPersistentTerms() {
+		return terms;
+	}
+	protected void setPersistentTerms(Set<T> terms) {
 		this.terms = terms;
 	}
 	public void addTerm(T term) throws WrongTermTypeException {
