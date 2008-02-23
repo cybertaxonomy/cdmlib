@@ -50,7 +50,7 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 	@Test
 	public void listOneTerm() {
 		logger.debug("TEST: List 1 defined term");
-		List<DefinedTermBase> terms = dao.list(1, 1);
+		List<DefinedTermBase> terms = dao.list(3, 3);
 		for (DefinedTermBase dt:terms){
 			logger.debug("Loaded term: "+dt.toString());
 		}

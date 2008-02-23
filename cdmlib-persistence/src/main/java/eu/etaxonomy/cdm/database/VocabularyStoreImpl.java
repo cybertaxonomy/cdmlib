@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.cdm.database;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,12 +10,10 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -61,13 +58,15 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
 		initialize();
-		vocabularyDao.saveOrUpdate(vocabulary);
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
+			if (definedTermsMap.get(term.getUuid()) != null){
+				term.setId(definedTermsMap.get(term.getUuid()).getId()); // to avoid duplicates in the default Language
+			}
 			definedTermsMap.put(term.getUuid(), term);
 		}
-
+		vocabularyDao.saveOrUpdate(vocabulary);
 	}
 
 	public DefinedTermBase getTermByUuid(UUID uuid) {

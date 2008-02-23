@@ -15,11 +15,14 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImplTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( 
 		{ 	
-			DatabaseEnumTest.class,
+			//database
+			DatabaseEnumTest.class,			
+			//dao.common
 			CdmEntityDaoBaseTest.class,
 			DaoBaseTest.class,
 			DefinedTermDaoImplTest.class,
 			IdentifiableDaoBaseTest.class,
+			//dao.Taxon
 			TaxonDaoHibernateImplTest.class
 		}
 	)
@@ -32,12 +35,15 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
-				DatabaseEnumTest.class,
+				//database
+				DatabaseEnumTest.class,			
+				//dao.common
 				CdmEntityDaoBaseTest.class,
 				DaoBaseTest.class,
 				DefinedTermDaoImplTest.class,
 				IdentifiableDaoBaseTest.class,
+				//dao.Taxon
 				TaxonDaoHibernateImplTest.class
-			);
+					);
 	}
 }
