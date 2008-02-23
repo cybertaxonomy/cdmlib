@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -59,7 +60,23 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	abstract public String getTitleCache(T object);
+	public String getTitleCache(T name){
+		String result;
+		Agent agent= name.getCombinationAuthorTeam();
+		if (isAutonym(name)){
+			result = getSpeciesNameCache(name);
+			if (agent != null){
+				result += " " + agent.getTitleCache();
+			}
+			result += " " + (nz(name.getInfraSpecificEpithet())).trim().replace("null", "");
+		}else{
+			result = getNameCache(name);
+			if (agent != null){
+				result += " " + agent.getTitleCache();
+			}
+		}
+		return result;
+	}
 	
 
 	/************** PRIVATES ****************/
@@ -74,7 +91,7 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 			//FIXME
 			String result;
 			result = name.getGenusOrUninomial();
-			result += " (" + (name.getInfraGenericEpithet() + ")").trim().replace("null", "");
+			result += " (" + (nz(name.getInfraGenericEpithet()) + ")").trim().replace("null", "");
 			return result;
 		}
 
@@ -82,7 +99,7 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 		protected String getSpeciesNameCache(NonViralName name){
 			String result;
 			result = name.getGenusOrUninomial();
-			result += " " + (name.getSpecificEpithet()).trim().replace("null", "");
+			result += " " + nz(name.getSpecificEpithet()).trim().replace("null", "");
 			return result;
 		}
 		
@@ -90,12 +107,30 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 		protected String getInfraSpeciesNameCache(NonViralName name){
 			String result;
 			result = name.getGenusOrUninomial();
-			String specis = name.getSpecificEpithet();
-			result += " " + (specis.trim()).replace("null", "");
-			result += " " + (name.getRank().getAbbreviation()).trim().replace("null", "");
-			result += " " + (name.getInfraSpecificEpithet()).trim().replace("null", "");
+			result += " " + (nz(name.getSpecificEpithet()).trim()).replace("null", "");
+			if (! isAutonym(name)){
+				result += " " + (name.getRank().getAbbreviation()).trim().replace("null", "");
+			}
+			result += " " + (nz(name.getInfraSpecificEpithet())).trim().replace("null", "");
 			return result;
 		}
 		
+		
+		/**
+		 * @param name
+		 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet
+		 */
+		private boolean isAutonym(NonViralName name){
+			if (name.getRank() != null && name.getRank().isInfraSpecific() && name.getSpecificEpithet() != null && name.getSpecificEpithet().equals(name.getInfraSpecificEpithet())){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		/* Returns "" if nzString is null, identity function otherwise*/ 
+		private String nz(String nzString){
+			return (nzString == null)? "" : nzString;
+		}
 
 }

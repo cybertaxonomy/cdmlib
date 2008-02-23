@@ -117,7 +117,7 @@ public class TermLoader {
 		final boolean ORDERED = true;
 		final boolean NOT_ORDERED = false;
 		
-		logger.warn("load terms");
+		logger.info("load terms");
 		loadDefaultTerms(Language.class, NOT_ORDERED);
 		loadDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
 		loadDefaultTerms(Continent.class, NOT_ORDERED);

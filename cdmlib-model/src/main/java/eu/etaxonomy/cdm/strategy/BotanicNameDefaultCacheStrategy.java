@@ -43,14 +43,7 @@ public class BotanicNameDefaultCacheStrategy extends NameCacheStrategyBase<Botan
 	// Test implementation
 	@Override
 	public String getTitleCache(BotanicalName object) {
-		String result;
-		NonViralName tn = (NonViralName)object;
-		result = getNameCache(object);
-		Agent agent= tn.getCombinationAuthorTeam();
-		if (agent != null){
-			result += " " + agent.getTitleCache();
-		}
-		return result;
+		return super.getTitleCache(object);
 	}
 
 }

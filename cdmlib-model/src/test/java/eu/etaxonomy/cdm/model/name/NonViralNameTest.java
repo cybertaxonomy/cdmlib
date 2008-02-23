@@ -64,7 +64,12 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testGenerateTitle() {
-		logger.warn("Not yet implemented"); // TODO
+		String fullName = "Abies alba subsp. beta (L.) Mill.";
+		nonViralName1.setGenusOrUninomial("Genus");
+		nonViralName1.setSpecificEpithet("spec");
+		nonViralName1.setRank(Rank.SPECIES());
+		assertEquals("Genus spec", nonViralName1.generateTitle());
+		assertEquals("", nonViralName2.generateTitle());
 	}
 
 	/**

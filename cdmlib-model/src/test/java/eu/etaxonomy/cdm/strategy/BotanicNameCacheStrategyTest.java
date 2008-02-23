@@ -17,6 +17,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Suite.SuiteClasses;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -40,7 +42,9 @@ public class BotanicNameCacheStrategyTest {
 	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
 	private final String subSpeciesNameString = "Abies alba subsp. beta";
+	private final Agent author = new Person();;
 	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -70,6 +74,8 @@ public class BotanicNameCacheStrategyTest {
 		
 		speciesName = BotanicalName.PARSED_NAME(speciesNameString);
 		subSpeciesName = BotanicalName.PARSED_NAME(subSpeciesNameString);
+
+		author.setTitleCache("L.");
 		
 	}
 
@@ -104,8 +110,10 @@ public class BotanicNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
-	public final void testGetFullNameCache() {
+	public final void testGetTileCache() {
+		subSpeciesName.setCombinationAuthorTeam(author);
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
+		assertEquals(subSpeciesNameString + " L.", subSpeciesName.getTitleCache());
 		logger.warn("Not yet fully implemented"); // TODO
 	}
 
@@ -113,7 +121,7 @@ public class BotanicNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
-	public final void testGetUninomialNameCache() {
+	public final void testGetGenusOrUninomialNameCache() {
 		assertEquals(familyNameString, familyName.getNameCache());
 	}
 
@@ -146,6 +154,17 @@ public class BotanicNameCacheStrategyTest {
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
 	}
 	
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 */
+	@Test
+	public final void testAutonyms() {
+		subSpeciesName.setInfraSpecificEpithet("alba");
+		subSpeciesName.setCombinationAuthorTeam(author);
+		assertEquals("Abies alba alba", subSpeciesName.getNameCache());
+		assertEquals("Abies alba L. alba", subSpeciesName.getTitleCache());
+	}
 	
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
