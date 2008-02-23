@@ -2,13 +2,22 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -48,41 +57,110 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Test
 	public final void testBotanicalName() {
-		logger.warn("Not yet implemented"); // TODO
+		assertNotNull(botanicalName1);
+		assertNull(botanicalName1.getRank());
 	}
 
 	@Test
 	public final void testBotanicalNameRank() {
-		logger.warn("Not yet implemented"); // TODO
+		BotanicalName rankName = new BotanicalName(Rank.GENUS());
+		assertNotNull(rankName);
+		assertSame(Rank.GENUS(), rankName.getRank());
+		assertTrue(rankName.getRank().isGenus());
+		BotanicalName nullRankName = new BotanicalName(null);
+		assertNotNull(nullRankName);
+		assertNull(nullRankName.getRank());
 	}
 
 	@Test
 	public final void testBotanicalNameRankStringStringStringAgentINomenclaturalReferenceString() {
-		logger.warn("Not yet implemented"); // TODO
+		Rank rank = Rank.SPECIALFORM();
+		String genusOrUninomial = "Genus";
+		String specificEpithet = "specEpi";
+		String infraSpecificEpithet = "infraSpecificEpi";
+		Agent combinationAuthorTeam = new Team();
+		INomenclaturalReference nomenclaturalReference = new Article();
+		String nomenclMicroRef = "microRef";
+		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+		assertEquals(Rank.SPECIALFORM(), fullName.getRank());
+		assertEquals("Genus", fullName.getGenusOrUninomial());
+		assertEquals("specEpi", fullName.getSpecificEpithet());
+		assertEquals("infraSpecificEpi", fullName.getInfraSpecificEpithet());
+		assertEquals(combinationAuthorTeam, fullName.getCombinationAuthorTeam());
+		assertEquals(nomenclaturalReference, fullName.getNomenclaturalReference());
+		assertEquals("microRef", fullName.getNomenclaturalMicroReference());	
 	}
 
 	@Test
 	public final void testGetHybridRelationships() {
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		HybridRelationship hybridRelationship = new HybridRelationship();
+		botanicalName1.addHybridRelationship(hybridRelationship);
+		assertEquals(1, botanicalName1.getHybridRelationships().size());
+		assertEquals(hybridRelationship, botanicalName1.getHybridRelationships().iterator().next());
+		botanicalName2.addHybridRelationship(null);
+		assertEquals(1, botanicalName2.getHybridRelationships().size());
 	}
 
 	@Test
+	@Ignore
 	public final void testSetHybridRelationships() {
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		
+		HybridRelationship hybridRelationship1 = new HybridRelationship();
+		HybridRelationship hybridRelationship2 = new HybridRelationship();
+		Set set = new HashSet<HybridRelationship>();
+		set.add(hybridRelationship1);
+		set.add(hybridRelationship2);
+		botanicalName1.setHybridRelationships(set);
+		assertEquals(2, botanicalName1.getHybridRelationships().size());
+		botanicalName1.setHybridRelationships(set);
+		set.add("sdfds");
+		//TODO
+		//assertEquals(2, botanicalName1.getHybridRelationships().size());
+		logger.warn("not yet fully implemented");
+		botanicalName2.setHybridRelationships(null);
+		//TODO how should this be defined??
+		assertNull(botanicalName2.getHybridRelationships());
 	}
 
 	@Test
 	public final void testAddHybridRelationship() {
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		HybridRelationship hybridRelationship = new HybridRelationship();
+		botanicalName1.addHybridRelationship(hybridRelationship);
+		assertEquals(1, botanicalName1.getHybridRelationships().size());
+		botanicalName1.addHybridRelationship(hybridRelationship);
+		assertEquals(1, botanicalName1.getHybridRelationships().size());
+		assertEquals(hybridRelationship, botanicalName1.getHybridRelationships().iterator().next());
+		botanicalName2.addHybridRelationship(null);
+		//TODO is this wanted or should it be 0 ??
+		assertEquals(1, botanicalName2.getHybridRelationships().size());
 	}
 
 	@Test
 	public final void testRemoveHybridRelationship() {
-		logger.warn("Not yet implemented"); // TODO
+		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		HybridRelationship hybridRelationship1 = new HybridRelationship();
+		HybridRelationship hybridRelationship2 = new HybridRelationship();
+		botanicalName1.addHybridRelationship(hybridRelationship1);
+		botanicalName1.addHybridRelationship(hybridRelationship2);
+		assertEquals(2, botanicalName1.getHybridRelationships().size());
+		botanicalName1.removeHybridRelationship(hybridRelationship1);
+		assertEquals(1, botanicalName1.getHybridRelationships().size());
+		assertEquals(hybridRelationship2, botanicalName1.getHybridRelationships().iterator().next());
+		botanicalName1.removeHybridRelationship(hybridRelationship2);
+		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		
+		//null
+		botanicalName2.addHybridRelationship(null);
+		botanicalName2.removeHybridRelationship(null);
+		assertEquals(0, botanicalName2.getHybridRelationships().size());
 	}
 
 	@Test
 	public final void testGetParentRelationships() {
+		assertEquals(0, botanicalName1.getParentRelationships().size());
 		logger.warn("Not yet implemented"); // TODO
 	}
 

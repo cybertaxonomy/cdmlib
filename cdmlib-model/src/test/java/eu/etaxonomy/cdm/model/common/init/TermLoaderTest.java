@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.common.init;
 
 import static org.junit.Assert.*;
 
@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
