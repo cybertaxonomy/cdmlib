@@ -97,8 +97,8 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (DefinedTermBase.class.isAssignableFrom(obj.getClass())){
-			DefinedTermBase dtb = (DefinedTermBase)obj;
+		if (TermBase.class.isAssignableFrom(obj.getClass())){
+			TermBase dtb = (TermBase)obj;
 			if (dtb.getUuid().equals(this.getUuid())){
 				return true;
 			}

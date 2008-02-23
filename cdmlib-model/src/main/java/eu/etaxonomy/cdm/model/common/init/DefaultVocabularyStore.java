@@ -21,12 +21,10 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class DefaultVocabularyStore implements IVocabularyStore {
 	static Logger logger = Logger.getLogger(DefaultVocabularyStore.class);
 	
-	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-
 	private static boolean isInitialized = false;
 
-	public static final Language DEFAULT_LANGUAGE(){
-		return new Language(uuidEnglish);
+	public static final Language DEFAULT_LANGUAGE() {
+		return new Language(Language.uuidEnglish);
 	}
 	
 	
@@ -55,10 +53,14 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
-		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		loadBasicTerms();
+		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
+
 		while (termIterator.hasNext()){
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
+			if (definedTermsMap.get(term.getUuid()) != null){
+				term.setId(definedTermsMap.get(term.getUuid()).getId()); // to avoid duplicates in the default Language
+			}
 			definedTermsMap.put(term.getUuid(), term);
 		}
 		termVocabularyMap.put(vocabulary.getUuid(), vocabulary);
@@ -67,7 +69,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	
 	public boolean loadBasicTerms() {
 		if (definedTermsMap == null){
-			logger.warn("initTermsMap start ...");
+			logger.info("initTermsMap start ...");
 			definedTermsMap = new HashMap<UUID, DefinedTermBase>();
 			try {
 				definedTermsMap.put(DEFAULT_LANGUAGE().getUuid(), DEFAULT_LANGUAGE());
@@ -80,12 +82,12 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 			logger.debug("initTermsMap end ...");
 		}
 		if (termVocabularyMap == null){
-			logger.warn("initVocabularyMap start ...");
+			logger.info("initVocabularyMap start ...");
 			termVocabularyMap = new HashMap<UUID, TermVocabulary<DefinedTermBase>>();
 			logger.debug("initVocabularyMap end ...");
 		}
 		isInitialized =true;
-		return false;
+		return true;
 	}
 
 //public void initTermList(ITermLister termLister){

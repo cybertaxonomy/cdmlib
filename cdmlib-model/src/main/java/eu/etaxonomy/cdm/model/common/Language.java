@@ -32,7 +32,7 @@ public class Language extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Language.class);
 
 	private static final UUID uuidChinese = UUID.fromString("a9fc2782-5b2a-466f-b9c3-64d9ca6614c4");
-	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+	public static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 	private static final UUID uuidSpanish = UUID.fromString("511d8125-f5e6-445d-aee2-6327375238be");
 	private static final UUID uuidHindi = UUID.fromString("0a1d9d1d-135d-4575-b172-669b51673c39");
 	private static final UUID uuidArabic = UUID.fromString("4d3ec2eb-536f-4aab-81c5-34e37a3edbba");
