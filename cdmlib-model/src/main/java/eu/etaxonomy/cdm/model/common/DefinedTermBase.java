@@ -171,6 +171,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 			this.vocabulary.terms.remove(this);
 		}
 		if (newVocabulary!= null) { 
+			newVocabulary.terms.add(this);
 		}
 		this.vocabulary = newVocabulary;		
 	}
