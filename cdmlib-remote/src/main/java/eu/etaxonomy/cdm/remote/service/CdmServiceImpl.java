@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -22,6 +23,7 @@ import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
 
 @Component
+@Transactional(readOnly = true)
 public class CdmServiceImpl implements CdmService {
 
 	@Autowired
