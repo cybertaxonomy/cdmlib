@@ -59,12 +59,15 @@ public interface CdmService {
 
 	/**
 	 * @param uuid
-	 *            the UUID of a {@link eu.etaxonomy.model.taxon.Taxon}
-	 * @return the taxon which is the accepted synonym for the taxon given as
-	 *         parameter uuid. If the taxon specified by uuid is itself the
+	 *            the UUID of a {@link eu.etaxonomy.model.taxon.TaxonBase}
+	 * @return the accepted taxon of a synonym given as
+	 *         parameter uuid. If the synonym specified by uuid is itself the
 	 *         accepted taxon, this one will be returned.
+	 *         
+	 *         For pro parte synonyms there might exist more than 1 accepted taxon,
+	 *         therefore we use the ResultSetPageSTO wrapper
 	 */
-	public TaxonSTO getAcceptedTaxon(UUID uuid);
+	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid);
 
 	/**
 	 * Find taxa matching the query defined by the given parameters.

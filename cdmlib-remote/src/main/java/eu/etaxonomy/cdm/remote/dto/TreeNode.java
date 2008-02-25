@@ -48,4 +48,36 @@ public class TreeNode extends BaseSTO {
 	 * A atomised version of the fullname of this taxons scientific name 
 	 */
 	private List<TaggedText> taggedName = new ArrayList();
+
+	public Set<UUID> getAlternativeConceptRefs() {
+		return alternativeConceptRefs;
+	}
+
+	public void setAlternativeConceptRefs(Set<UUID> alternativeConceptRefs) {
+		this.alternativeConceptRefs = alternativeConceptRefs;
+	}
+
+	public int getHasChildren() {
+		return hasChildren;
+	}
+
+	public void setHasChildren(int hasChildren) {
+		this.hasChildren = hasChildren;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public List<TaggedText> getTaggedName() {
+		return taggedName;
+	}
+
+	public void setTaggedName(List<TaggedText> taggedName) {
+		this.taggedName = taggedName;
+	}
 }

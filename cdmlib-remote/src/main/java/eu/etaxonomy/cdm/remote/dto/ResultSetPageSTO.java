@@ -81,6 +81,21 @@ public class ResultSetPageSTO<T extends BaseSTO> {
 	public List<T> getResults() {
 		return results;
 	}
+	/**
+	 * add a new result to the resultset.
+	 * automatically increase totalResultCount and extend pagesize if needed
+	 * @param result
+	 */
+	public void addResultToFirstPage(T result){
+		pageNumber = 1;
+		results.add(result);
+		totalResultsCount++;
+		if (totalResultsCount > pageSize){
+			pageSize++;
+		}
+		// recalc
+		setTotalResultsCount(this.totalResultsCount);
+	}
 	public int getResultsOnPage() {
 		return resultsOnPage;
 	}

@@ -26,7 +26,6 @@
 	
 	<properties>
 		<cxf.version>2.0.4-incubator</cxf.version>
-		<cdm.version>0.5.0-SNAPSHOT</cdm.version>
 	</properties>
 
 	<dependencies>
@@ -38,7 +37,7 @@
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-persistence</artifactId>
-			<version>${cdm.version}</version>
+			<version>0.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -76,89 +75,8 @@
 			<version>1.1.3.3</version>
 		</dependency>
 		
-			<!-- TAG libs -->
-		<!-- 
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>x</artifactId>
-			<version>1.1.2</version>
-			<type>tld</type>
-		</dependency>
-		-->
-		<!-- 
-			<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-http</artifactId>
-			<version>${cxf.version}</version>
-			</dependency>
-			<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf.version}</version>
-			</dependency>
-			<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>${cxf.version}</version>
-			</dependency>
-			<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>${cxf.version}</version>
-			</dependency>
-		<dependency>
-			<groupId>org.codehaus.xfire</groupId>
-			<artifactId>xfire-xmlbeans</artifactId>
-			<version>1.2.3</version>
-		</dependency>   
-		<dependency>
-			<groupId>org.codehaus.xfire</groupId>
-			<artifactId>xfire-spring</artifactId>
-			<version>1.2.3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-		<groupId>com.caucho</groupId>
-		<artifactId>hessian</artifactId>
-		<version>3.1.3</version>
-		</dependency>
-		-->
 	</dependencies>
 
-	<repositories>
-		<!-- 
-		<repository>
-			<id>apache-snapshots</id>
-			<name>Apache SNAPSHOT Repository</name>
-			<url>http://people.apache.org/repo/m2-snapshot-repository/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>apache-incubating</id>
-			<name>Apache Incubating Repository</name>
-			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
-		</repository>
-		-->
-		<!-- for jaxb-impl -->
-		<repository>
-			<id>java.net</id>
-			<url>http://download.java.net/maven/1/</url>
-			<layout>legacy</layout>
-		</repository>
-	</repositories>
-	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>apache-plugin-snapshots</id>

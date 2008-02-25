@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
+import eu.etaxonomy.cdm.remote.dto.TreeNode;
 
 @Component
 public class TaxonAssembler extends AssemblerBase{
@@ -40,5 +41,10 @@ public class TaxonAssembler extends AssemblerBase{
 		t.setName(nameAssembler.getSTO(taxonBase.getName()));
 		//TODO: add more mapppings
 		return t;
+	}
+	public TreeNode getTreeNode(Taxon taxon){
+		// TODO:
+		TreeNode tn = new TreeNode();
+		return tn;
 	}
 }
