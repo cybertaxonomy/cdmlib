@@ -44,4 +44,57 @@ public class TaxonTO extends BaseTO {
 	private Set<TaxonRelationshipTO> taxonRelations = new HashSet<TaxonRelationshipTO>();
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	
+	
+	public NameSTO getName() {
+		return name;
+	}
+	public void setName(NameSTO name) {
+		this.name = name;
+	}
+	public ReferenceTO getSec() {
+		return sec;
+	}
+	public void setSec(ReferenceTO sec) {
+		this.sec = sec;
+	}
+	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
+		return typeDesignations;
+	}
+	public void setTypeDesignations(
+			List<SpecimenTypeDesignationSTO> typeDesignations) {
+		this.typeDesignations = typeDesignations;
+	}
+	public List<NameTypeDesignationSTO> getNameTypeDesignations() {
+		return nameTypeDesignations;
+	}
+	public void setNameTypeDesignations(
+			List<NameTypeDesignationSTO> nameTypeDesignations) {
+		this.nameTypeDesignations = nameTypeDesignations;
+	}
+	public List<SynonymRelationshipTO> getHomotypicSynonyms() {
+		return homotypicSynonyms;
+	}
+	public void setHomotypicSynonyms(List<SynonymRelationshipTO> homotypicSynonyms) {
+		this.homotypicSynonyms = homotypicSynonyms;
+	}
+	public List<HomotypicTaxonGroupSTO> getHeterotypicSynonymyGroups() {
+		return heterotypicSynonymyGroups;
+	}
+	public void setHeterotypicSynonymyGroups(
+			List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups) {
+		this.heterotypicSynonymyGroups = heterotypicSynonymyGroups;
+	}
+	public Set<TaxonRelationshipTO> getTaxonRelations() {
+		return taxonRelations;
+	}
+	public void setTaxonRelations(Set<TaxonRelationshipTO> taxonRelations) {
+		this.taxonRelations = taxonRelations;
+	}
+	public Set<DescriptionTO> getDescriptions() {
+		return descriptions;
+	}
+	public void setDescriptions(Set<DescriptionTO> descriptions) {
+		this.descriptions = descriptions;
+	}
+	
 }

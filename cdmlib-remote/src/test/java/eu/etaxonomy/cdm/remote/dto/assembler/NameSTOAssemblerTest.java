@@ -7,10 +7,10 @@ import org.junit.Test;
 
 public class NameSTOAssemblerTest {
 
-	private NameSTOAssembler ass;
+	private NameAssembler ass;
 	@Before
 	public void setUp() throws Exception {
-		ass = new NameSTOAssembler();
+		ass = new NameAssembler();
 	}
 
 	@Test

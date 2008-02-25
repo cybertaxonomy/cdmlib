@@ -35,6 +35,11 @@
 			<version>0.4.7</version>
 		</dependency>
 		<dependency>
+			<groupId>eu.etaxonomy</groupId>
+			<artifactId>cdmlib-persistence</artifactId>
+			<version>0.4.7</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>

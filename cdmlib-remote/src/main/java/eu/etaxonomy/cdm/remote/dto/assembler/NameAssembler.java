@@ -5,14 +5,18 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
+import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
+import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 
 
 
 @Component
-public class NameSTOAssembler extends AssemblerBase{
+public class NameAssembler extends AssemblerBase{
 	
 	private String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
 	private String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
@@ -44,4 +48,18 @@ public class NameSTOAssembler extends AssemblerBase{
 		}
 		return n;
 	}
+	
+	public NameSTO getSTO(TaxonNameBase namedom){		
+		NameSTO n = this.getRandom();
+		setIdentifiableEntity(namedom, n);
+		//TODO: add more mapppings
+		return n;
+	}	
+	public NameTO getTO(TaxonNameBase namedom){		
+		NameTO n = new NameTO();
+		setIdentifiableEntity(namedom, n);
+		//TODO: add more mapppings and remove maria magdalena
+		n.setFullname("Maria magdalena subsp. hebrea");
+		return n;
+	}	
 }

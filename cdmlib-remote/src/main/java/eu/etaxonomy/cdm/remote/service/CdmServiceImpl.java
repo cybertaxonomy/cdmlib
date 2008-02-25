@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
@@ -17,34 +18,29 @@ import eu.etaxonomy.cdm.remote.dto.TaggedText;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
-import eu.etaxonomy.cdm.remote.dto.assembler.NameSTOAssembler;
-import eu.etaxonomy.cdm.remote.dto.assembler.TaxonSTOAssembler;
+import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
+import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
 
 @Component
 public class CdmServiceImpl implements CdmService {
 
 	@Autowired
-	private NameSTOAssembler nameSTOAssembler;	
+	private NameAssembler nameAssembler;	
 	@Autowired
-	private TaxonSTOAssembler taxonSTOAssembler;
+	private TaxonAssembler taxonAssembler;
+	@Autowired
+	private ITaxonDao taxonDAO;
+
 	
 	public NameTO getName(UUID uuid) {
-		NameTO n=new NameTO();
-		n.setFullname("Bella berolina subsp. rosa");
-		n.setUuid(uuid.toString());
+		// FIXME: use real name DAO not taxon DAO!
+		NameTO n = nameAssembler.getTO(taxonDAO.findByUuid(uuid).getName());
 		return n;
-	}
-	public NameSTO getNameSTO() {
-		return nameSTOAssembler.getRandom();
 	}
 	
 	public TaxonTO getTaxon(UUID uuid) {
-		TaxonTO t=new TaxonTO();
-		t.setUuid(uuid.toString());
+		TaxonTO t = taxonAssembler.getTO(taxonDAO.findByUuid(uuid));
 		return t;
-	}
-	public TaxonSTO getTaxonSTO() {
-		return taxonSTOAssembler.getRandom();
 	}
 	
 	public Class whatis(UUID uuid) {
@@ -60,7 +56,7 @@ public class CdmServiceImpl implements CdmService {
 		int x = random.nextInt(30);
 		rs.setTotalResultsCount(x);
 		for (int i=0; i<rs.getResultsOnPage(); i++){
-			TaxonSTO tx = getTaxonSTO();
+			TaxonSTO tx = taxonAssembler.getRandom();
 			rs.getResults().add(tx);
 		}
 		// result set metadata
