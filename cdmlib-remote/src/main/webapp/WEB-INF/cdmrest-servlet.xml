@@ -19,7 +19,7 @@
                 <prop key="/(whatis:dto/(*:uuid)">restController</prop>
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(find:action)/(name:dto)/(*:beginsWith)/(*:onlyAccepted)/(*:page)/(*:pagesize)">restController</prop>
+                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
             </props>
         </property>
     </bean>

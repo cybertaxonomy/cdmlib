@@ -42,6 +42,10 @@ public class RestController extends AbstractController
 		if(action!=null && action.equalsIgnoreCase("find")){
 			//
 			// retrieve meaningful parameters
+			String q = getStringPara("q",req);
+			if (q==null){
+				q="";
+			};
 			UUID sec = null;
 			try{
 				sec = UUID.fromString(getStringPara("sec",req));
@@ -68,7 +72,7 @@ public class RestController extends AbstractController
 			};
 			//
 			// search for taxa
-			Object obj = service.findTaxa(getStringPara("q",req), sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+			Object obj = service.findTaxa(q, sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
 			mv.addObject(obj);
 		}else{ 
 			// get Object by UUID
