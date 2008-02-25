@@ -46,7 +46,7 @@ public interface CdmService {
 	/**
 	 * @param uuid
 	 *            the name UUID
-	 * @return a Set of typer designation which are assigned to the name given
+	 * @return a Set of type designation which are assigned to the name given
 	 *         as parameter. The Set may contain {@link NameTypeDesignationSTO}
 	 *         and {@link SpecimenTypeDesignationSTO}
 	 */
