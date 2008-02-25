@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -61,5 +62,8 @@ public class NameAssembler extends AssemblerBase{
 		//TODO: add more mapppings and remove maria magdalena
 		n.setFullname("Maria magdalena subsp. hebrea");
 		return n;
-	}	
+	}
+	public List<TaggedText> getTaggedName(TaxonNameBase tnb){
+		return getSTO(tnb).getTaggedName();
+	}
 }

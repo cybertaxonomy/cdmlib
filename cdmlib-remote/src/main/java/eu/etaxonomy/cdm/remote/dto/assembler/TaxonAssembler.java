@@ -43,8 +43,11 @@ public class TaxonAssembler extends AssemblerBase{
 		return t;
 	}
 	public TreeNode getTreeNode(Taxon taxon){
-		// TODO:
 		TreeNode tn = new TreeNode();
+		setIdentifiableEntity(taxon, tn);
+		tn.setFullname(taxon.getTitleCache());
+		tn.setHasChildren(taxon.getTaxonomicChildren().size());
+		tn.setTaggedName(nameAssembler.getTaggedName(taxon.getName()));
 		return tn;
 	}
 }
