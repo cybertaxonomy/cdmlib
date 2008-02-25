@@ -396,9 +396,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/sessionfactory.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
-cdmlib-remote/src/main/webapp/images/poweredBySpring.gif -text
 cdmlib-remote/src/main/webapp/index.jsp -text
 cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text

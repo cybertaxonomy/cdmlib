@@ -48,8 +48,5 @@
 </TABLE>
 </form>
 
-<hr/>
-<img src="<c:url value="/images/poweredBySpring.gif"/>" alt="Powered By Spring"/>
-
 </body>
 </html>

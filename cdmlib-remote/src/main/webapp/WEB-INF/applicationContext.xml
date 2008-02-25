@@ -2,5 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
-    
+
+    <bean id="defaultDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test" />
+        <property name="username" value="edit" />
+        <property name="password" value="wp5" />
+    </bean>
 </beans>
