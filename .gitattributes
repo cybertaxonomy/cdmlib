@@ -458,8 +458,6 @@ cdmlibrary/src/test/resources/hibernate.properties -text
 cdmlibrary/src/test/resources/settings.xml -text
 cdmlibrary/src/test/resources/test.cdm.datasource.xml -text
 cdmlibrary/updateAnnotatedClasses.py -text
-docs/layers.graffle -text
-docs/layers.png -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
