@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="cdmLibrary">
+<!-- http://www.javaworld.com/javaworld/jw-02-2006/jw-0227-maven.html?page=4#resources -->
+  <publishDate format="dd-MM-yyyy"/>  
+  <poweredBy>
+		<logo name="Funded by EDIT" href="http://www.e-taxonomy.eu/" img="http://wp5.e-taxonomy.eu/cdmlib/site/logo_edit.png" />
+		<logo name="Build with Maven 2" href="http://maven.apache.org" img="images/logos/maven-feather.png" />
+  </poweredBy>
+    <body>
+    <links>
+      <item name="Edit" href="http://www.e-taxonomy.eu/" />
+      <item name="WP5" href="http://wp5.e-taxonomy.eu/blog/index.php"/>
+      <item name="Wiki" href="http://dev.e-taxonomy.eu/wiki"/>
+    </links>
+
+    <menu name="CdmCommunityStore">
+      <item name="About	" href="/index.html"/>
+      <item name="Download" href="/source-repository.html"/>
+     </menu>
+    
+	${reports}
+	
+  </body>
+</project>

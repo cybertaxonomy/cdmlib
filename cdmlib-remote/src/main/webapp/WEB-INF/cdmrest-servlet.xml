@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+    
+    <context:component-scan base-package="eu.etaxonomy.cdm.remote" />
+    
+    <import resource="sessionfactory.xml"/>
+    
+    <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
+        <!-- see http://www.carbonfive.com/community/archives/2007/06/parameterized_rest_urls_with_spring_mvc.html -->
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="mappings">
+            <props>
+                <prop key="/(whatis:dto/(*:uuid)">restController</prop>
+                <prop key="/(name:dto)/(*:uuid)">restController</prop>
+                <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
+                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean name="restController" class="eu.etaxonomy.cdm.remote.service.RestController"/>
+    
+    <!-- default=views.xml -->
+    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
+
+    <bean id="viewResolverJsp"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
+ 

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+  <parent>
+    <artifactId>cdmParent</artifactId>
+    <groupId>eu.etaxonomy</groupId>
+  	<version>0.5.0</version>
+    <relativePath>../cdmParent/pom.xml</relativePath>
+  </parent>
+	
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.etaxonomy</groupId>
+	<artifactId>cdmlib-remote</artifactId>
+  <packaging>war</packaging>
+  <version>0.1-SNAPSHOT</version>
+  <name>EDIT CDM Community Server</name>
+  <description>The EDIT CDM Community Server allows remote access to the common data model via webservices in the wider sense</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</connection>
+  	<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</developerConnection>
+  	<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/</url>
+  </scm>
+	
+	<properties>
+		<cxf.version>2.0.4-incubator</cxf.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>eu.etaxonomy</groupId>
+			<artifactId>cdmlib-model</artifactId>
+			<version>1.0-RC1</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.etaxonomy</groupId>
+			<artifactId>cdmlib-persistence</artifactId>
+			<version>0.5.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<!-- JsonView -->
+		<dependency>
+			<groupId>eu.etaxonomy</groupId>
+			<artifactId>spring-json</artifactId>
+			<version>0.1</version>
+		</dependency>
+
+		<!-- XmlView -->
+		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>[1.1,)</version>
+		</dependency>
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>1.1.3.3</version>
+		</dependency>
+		
+	</dependencies>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache-plugin-snapshots</id>
+			<name>Apache Maven Plugin Snapshots</name>
+			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>apache-plugin-incubating</id>
+			<name>Apache Plugin Incubating Repository</name>
+			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
+		</pluginRepository>
+	</pluginRepositories>
+		
+	<build>
+		<finalName>cdmserver</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>			
+			<plugin><!--use mvn tomcat:deploy -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<server>tomcat-local</server>
+					<!-- 					  
+						<server>tomcat-edit</server>
+						<url>http://search.biocase.org:8080/manager</url>
+					-->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.geronimo.specs</groupId>
+						<artifactId>geronimo-j2ee_1.4_spec</artifactId>
+						<version>1.1</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>8080</port>
+							<maxIdleTime>3600000</maxIdleTime>
+						</connector>
+					</connectors>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
+				</configuration>
+			</plugin>	
+			
+			<!-- use mvn cxf-codegen:java2wsdl  OR  mvn process-classes  -->
+			<!-- 
+
+								ONLY FOR SOAP !!!
+			
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+						<version>${cxf.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-rt-frontend-jaxws</artifactId>
+						<version>${cxf.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>generate-wsdl</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<className>
+						eu.etaxonomy.cdm.remote.service.HelloWorld
+							</className>
+						</configuration>
+						<goals>
+							<goal>java2wsdl</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->				
+		</plugins>
+	</build>
+	
+</project>
+

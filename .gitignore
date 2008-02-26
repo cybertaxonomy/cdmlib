@@ -13,3 +13,7 @@ cdmlib-persistence/.project
 cdmlib-persistence/.settings
 cdmlib-persistence/src/test/resources/Copy[!!-~]of[!!-~]test.cdm.datasource.xml
 cdmlib-persistence/target
+cdmlib-remote/.classpath
+cdmlib-remote/.project
+cdmlib-remote/.settings
+cdmlib-remote/target

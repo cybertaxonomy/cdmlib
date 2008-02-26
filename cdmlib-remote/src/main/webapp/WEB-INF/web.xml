@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <description>EDIT CDM Community Server</description>
+    <display-name>CDM Community Server</display-name>
+
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+            <!-- defaults to /WEB-INF/applicationContext.xml -->
+        </listener-class>
+    </listener>
+    
+    <servlet>
+        <description>CDM Remote REST API</description>
+        <servlet-name>cdmrest</servlet-name> 
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 
+        <init-param>
+            <param-name>logVerbosityLevel</param-name>
+            <param-value>DEBUG</param-value>
+        </init-param> 
+        -->
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cdmrest</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+</web-app>
