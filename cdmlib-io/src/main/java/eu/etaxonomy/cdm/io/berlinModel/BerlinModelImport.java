@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -17,11 +16,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.io.source.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -30,7 +25,6 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
@@ -38,7 +32,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
 
 public class BerlinModelImport {
@@ -46,26 +39,11 @@ public class BerlinModelImport {
 	
 	private boolean deleteAll = false;
 	
-	//Connection
+	//BerlinModelDB
 	private Source source;
 	
 	//CdmApplication
 	private CdmApplicationController cdmApp;
-
-	//	DatabaseData
-	static String dbms = "SQLServer";
-	static String strServer = "BGBM111";
-	static String strDB = "EuroPlusMed_00_Edit";
-	static int port = 1247;
-	static String userName = "webUser";
-	static String pwd = "";
-	
-	static DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-	static String cdmServer = "192.168.2.10";
-	static String cdmDB = "cdm_test_lib";
-	//static int cdmPort = 1247;
-	static String cdmUserName = "edit";
-	static String cdmPwd = "wp5";
 	
 	//Constants
 	//final boolean OBLIGATORY = true; 
@@ -79,61 +57,35 @@ public class BerlinModelImport {
 	private Map<Integer, UUID> taxonMap = new HashMap<Integer, UUID>();
 
 
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel ...");
-		BerlinModelImport bmImport = new BerlinModelImport();
-		bmImport.doImport();
-		System.out.println("End import from BerlinModel ...");
-	}
-	
 	/**
 	 * Executes the whole 
 	 */
-	private boolean doImport(){
-		makeSource(dbms, strServer, strDB, port, userName, pwd);
-			
-		//Start
-		String dataSourceName = "cdmImportLibrary";
-		CdmDataSource dataSource;
-		try {
-			dataSource = CdmDataSource.NewInstance(dataSourceName);
-		} catch (DataSourceNotFoundException e1) {
-			dataSource = CdmDataSource.save(dataSourceName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
+	public boolean doImport(Source source, CdmApplicationController cdmApp){
+		if (source == null || cdmApp == null){
+			throw new NullPointerException("Source and CdmApplicationController must not be null");
 		}
-		try {
-			cdmApp = new CdmApplicationController(dataSource);
-		} catch (DataSourceNotFoundException e) {
-			logger.error(e.getMessage());
-			return false;
-		}
+		this.source = source;
+		this.cdmApp = cdmApp;
 
 		//make and save Authors
 		makeAuthors();
-
 		
 		//make and save References
 		if (! makeReferences()){
 			return false;
 		}
-
 		
 		//make and save Names
 		makeTaxonNames();
 		
 		//make and save Taxa
 		makeTaxa();
-			
 		
 		//make and save Facts
 		makeRelTaxa();
 		
 		//make and save Facts
 		makeFacts();
-
 		
 		if (false){
 			//make and save publications
@@ -803,22 +755,6 @@ public class BerlinModelImport {
 
 	
 	
-	
-	/**
-	 * initializes source
-	 * @return true, if connection establisehd
-	 */
-	private boolean makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd){
-		//establish connection
-		try {
-			source = new Source(dbms, strServer, strDB);
-			source.setPort(port);
-			source.setUserAndPwd(userName, pwd);
-			return true;
-		} catch (Exception e) {
-			logger.error(e);
-			return false;
-		}
-	}
+
 
 }
