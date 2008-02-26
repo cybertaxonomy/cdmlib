@@ -22,6 +22,7 @@ import org.junit.Test;
 public class DatabaseEnumTest {
 	private static final Logger logger = Logger.getLogger(DatabaseEnumTest.class);
 	private static DatabaseTypeEnum dbEnum;
+	private static DatabaseTypeEnum dbEnumSql2005;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -29,6 +30,7 @@ public class DatabaseEnumTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		dbEnum = DatabaseTypeEnum.MySQL;
+		dbEnumSql2005 = DatabaseTypeEnum.SqlServer2005;
 	}
 
 
@@ -85,6 +87,7 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetConnectionStringStringString() {
 		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", this.dbEnum.getConnectionString("192.168.2.10", "cdm_test"));
+		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", this.dbEnumSql2005.getConnectionString("192.168.2.10", "cdm_test"));
 	}
 
 	/**
