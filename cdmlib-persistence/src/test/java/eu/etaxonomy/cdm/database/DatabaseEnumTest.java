@@ -93,12 +93,13 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = dbEnum.getAllTypes();
-		assertEquals(5, typeList.size());
+		assertEquals(6, typeList.size());
 		assertEquals(dbEnum.HSqlDb, typeList.get(0));
 		assertEquals(dbEnum.MySQL, typeList.get(1));
 		assertEquals(dbEnum.ODBC, typeList.get(2));
 		assertEquals(dbEnum.PostgreSQL, typeList.get(3));
-		assertEquals(dbEnum.SqlServer, typeList.get(4));
+		assertEquals(dbEnum.SqlServer2000, typeList.get(4));
+		assertEquals(dbEnum.SqlServer2005, typeList.get(5));
 	}
 	
 
@@ -107,7 +108,8 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetDatabaseEnumByDriverClass() {
-		assertEquals(dbEnum.SqlServer, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
+		assertEquals(dbEnum.SqlServer2000, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
+		assertEquals(dbEnum.SqlServer2005, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
 		assertEquals(null, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.xxx"));	
 	}
 

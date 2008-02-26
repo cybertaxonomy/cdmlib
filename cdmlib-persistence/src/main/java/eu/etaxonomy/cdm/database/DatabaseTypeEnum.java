@@ -13,7 +13,8 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
 import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
-import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServer2005DatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServer2000DatabaseType;
 
 /**
  * @author a.mueller
@@ -24,7 +25,8 @@ public enum DatabaseTypeEnum {
 	MySQL(2),
 	ODBC(3),
 	PostgreSQL(4),
-	SqlServer(5)
+	SqlServer2000(5),
+	SqlServer2005(6)
 	;
 
 	/**
@@ -43,7 +45,9 @@ public enum DatabaseTypeEnum {
         	case 4:
             	this.dbType = new PostgreSQLDatabaseType(); break;
             case 5:
-            	this.dbType = new SqlServerDatabaseType(); break;
+            	this.dbType = new SqlServer2000DatabaseType(); break;
+            case 6:
+            	this.dbType = new SqlServer2005DatabaseType(); break;
             default:
                 //TODO Exception
         }

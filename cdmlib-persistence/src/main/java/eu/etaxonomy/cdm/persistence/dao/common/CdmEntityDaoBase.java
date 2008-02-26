@@ -47,7 +47,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
-		getSession().saveOrUpdate(transientObject);
+		Session session = getSession();
+		session.saveOrUpdate(transientObject);
 		return transientObject.getUuid();
 	}
 

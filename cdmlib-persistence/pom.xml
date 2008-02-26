@@ -155,7 +155,11 @@
   		<artifactId>msbase</artifactId>
   		<version>2000.3</version>
   	</dependency>
-  	
+  	<dependency>
+  		<groupId>com.microsoft.sqlserver</groupId>
+  		<artifactId>jdbc</artifactId>
+  		<version>1.2</version>
+  	</dependency>
   	<!--  	<dependency>-->
 <!--  		<groupId>oracle</groupId>-->
 <!--  		<artifactId>ojdbc14</artifactId>-->

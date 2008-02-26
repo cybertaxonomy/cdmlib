@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class SqlServerDatabaseType extends AbstractDatabaseType {
+public class SqlServer2000DatabaseType extends AbstractDatabaseType {
 
 	//name
 	protected String typeName = "SQL Server";
@@ -30,7 +30,7 @@ public class SqlServerDatabaseType extends AbstractDatabaseType {
     }
 	
 	//Constructor
-    public SqlServerDatabaseType() {
+    public SqlServer2000DatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
 
