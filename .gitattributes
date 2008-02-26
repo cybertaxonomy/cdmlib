@@ -1,0 +1,17 @@
+* text=auto !eol
+/INSTALL.TXT -text
+/pom.xml -text
+src/changes/changes.xml -text
+src/main/resources/applicationContext.xml -text
+src/main/resources/log4j.properties -text
+src/site/apt/index.apt -text
+src/site/fml/faq.fml -text
+src/site/site.xml -text
+src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
+src/test/java/extern/TestJarMain.java -text
+src/test/resources/appInitContext.xml -text
+src/test/resources/applicationContext-test.xml -text
+src/test/resources/hibernate.properties -text
+src/test/resources/settings.xml -text
+src/test/resources/test.cdm.datasource.xml -text
+/updateAnnotatedClasses.py -text
