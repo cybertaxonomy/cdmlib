@@ -8,3 +8,8 @@ cdmlib-model/.settings
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java
 cdmlib-model/target
+cdmlib-persistence/.classpath
+cdmlib-persistence/.project
+cdmlib-persistence/.settings
+cdmlib-persistence/src/test/resources/Copy[!!-~]of[!!-~]test.cdm.datasource.xml
+cdmlib-persistence/target
