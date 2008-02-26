@@ -331,3 +331,4 @@ cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/ResultSetPageSTOTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssemblerTest.java -text
+/pom.xml -text
