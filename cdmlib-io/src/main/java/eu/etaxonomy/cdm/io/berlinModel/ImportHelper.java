@@ -21,32 +21,7 @@ public class ImportHelper {
 	
 	
 	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		try {
-			String strValue = rs.getString(dbAttrName);
-			if (logger.isInfoEnabled()) { logger.info("addStringValue: " + strValue);}
-			String methodName = "set" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
-			Method cdmMethod = cdmBase.getClass().getMethod(methodName, String.class);
-			cdmMethod.invoke(cdmBase, strValue);
-			return true;
-		} catch (IllegalArgumentException e) {
-			logger.error(e.getMessage());
-			return false;
-		} catch (IllegalAccessException e) {
-			logger.error(e.getMessage());
-			return false;
-		} catch (InvocationTargetException e) {
-			logger.error(e.getMessage());
-			return false;
-		}catch (SecurityException e) {
-			logger.error(e.getMessage());
-			return false;
-		} catch (NoSuchMethodException e) {
-			logger.error(e.getMessage());
-			return false;
-		}catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class);
 	}
 	
 	
@@ -58,10 +33,16 @@ public class ImportHelper {
 		try {
 			String methodName;
 			Object strValue = rs.getObject(dbAttrName);
-			if (logger.isInfoEnabled()) { logger.info("addValue: " + strValue);}
+			if (logger.isDebugEnabled()) { logger.debug("addValue: " + strValue);}
 			if (clazz == boolean.class || clazz == Boolean.class){
+				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
+				}
 				methodName = "set" + cdmAttrName.substring(2, 3).toUpperCase() + cdmAttrName.substring(3) ;
 			}else if(clazz == String.class) {
+				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+					throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
+				}
 				methodName = "set" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
 			}else{
 				logger.error("Class not supported: " + clazz.toString());

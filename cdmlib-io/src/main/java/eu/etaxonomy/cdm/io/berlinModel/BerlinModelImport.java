@@ -1,8 +1,6 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -11,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -94,7 +93,7 @@ public class BerlinModelImport {
 	/**
 	 * Executes the whole 
 	 */
-	private void doImport(){
+	private boolean doImport(){
 		makeSource(dbms, strServer, strDB, port, userName, pwd);
 			
 		//Start
@@ -109,7 +108,7 @@ public class BerlinModelImport {
 			cdmApp = new CdmApplicationController(dataSource);
 		} catch (DataSourceNotFoundException e) {
 			logger.error(e.getMessage());
-			return;
+			return false;
 		}
 
 		//make and save Authors
@@ -117,7 +116,9 @@ public class BerlinModelImport {
 
 		
 		//make and save References
-		makeReferences();
+		if (! makeReferences()){
+			return false;
+		}
 
 		
 		//make and save Names
@@ -145,6 +146,7 @@ public class BerlinModelImport {
 				makeConcepts(root);
 				saveToXml(root.getChild("TaxonConcepts", nsTcs), outputPath, outputFileName + "_TaxonConcepts", format);
 */		}
+		return true;
 	}
 	
 	
@@ -172,7 +174,7 @@ public class BerlinModelImport {
 //				listAllAgents =  agentService.getAllAgents(0, 1000);
 //			}			
 //		}
-		try {
+//		try {
 			//get data from database
 			String strQuery = 
 					" SELECT *  " +
@@ -185,10 +187,10 @@ public class BerlinModelImport {
 			
 			logger.info("end makeAuthors ...");
 			return true;
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
+//		} catch (SQLException e) {
+//			logger.error("SQLException:" +  e);
+//			return false;
+//		}
 	}
 	
 	
@@ -198,11 +200,12 @@ public class BerlinModelImport {
 	private boolean makeReferences(){
 		String dbAttrName;
 		String cdmAttrName;
+		boolean success = true;
 		
 		logger.info("start makeReferences ...");
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
-		
+
 //		if (delete){
 //			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
 //			while(listAllReferences.size() > 0 ){
@@ -218,8 +221,13 @@ public class BerlinModelImport {
 			
 			//get data from database
 			String strQuery = 
-					" SELECT *  " +
-                    " FROM References " ;
+					" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
+						" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk " +
+                    " FROM Reference AS InInReference " +
+                    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
+                    	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk ";
+			
+			
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
@@ -230,30 +238,31 @@ public class BerlinModelImport {
 				
 				//create TaxonName element
 				int refId = rs.getInt("refId");
-				int categoryId = rs.getInt("categoryFk");
+				int categoryFk = rs.getInt("refCategoryFk");
 				int inRefFk = rs.getInt("inRefFk");
+				int inRefCategoryFk = rs.getInt("InRefCategoryFk");
 				
 				StrictReferenceBase ref;
 				try {
-					logger.info(categoryId);
+					logger.debug("RefCategoryFk: " + categoryFk);
 					
-					if (categoryId == REF_JOURNAL){
+					if (categoryFk == REF_JOURNAL){
 						ref = new Journal();
-					}else if(categoryId == REF_BOOK){
+					}else if(categoryFk == REF_BOOK){
 						ref = new Book();
-					}else if(categoryId == REF_ARTICLE){
+					}else if(categoryFk == REF_ARTICLE){
 						ref = new Article();
-					}else if(categoryId == REF_DATABASE){
+					}else if(categoryFk == REF_DATABASE){
 						ref = new Database();
-					}else if(categoryId == REF_PART_OF_OTHER_TITLE){
-						if (inRefFk == REF_BOOK){
+					}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
+						if (inRefCategoryFk == REF_BOOK){
 							//TODO
 							ref = new BookSection();
 						}else{
 							logger.warn("Reference type of part-of-reference not recognized");
 							ref = new Generic();
 						}
-					}else if(categoryId == REF_UNKNOWN){
+					}else if(categoryFk == REF_UNKNOWN){
 						ref = new Generic();
 					}else{
 						ref = new Generic();	
@@ -261,14 +270,15 @@ public class BerlinModelImport {
 					
 					
 					dbAttrName = "refCache";
-					cdmAttrName = "";
-					ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
+					cdmAttrName = "titleCache";
+					//TODO wohin kommt der refCache
+					//INomenclaturalReference hat nur getNomenclaturalCitation , müsste es nicht so was wie setAbbrevTitle geben? 
+					success &= ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "nomRefCache";
 					cdmAttrName = "titleCache";
-					ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, ref, dbAttrName, cdmAttrName);
 					
-
 //					dbAttrName = "BinomHybFlag";
 //					cdmAttrName = "isBinomHybrid";
 //					ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);
@@ -278,17 +288,21 @@ public class BerlinModelImport {
 					
 					
 					UUID refUuid = referenceService.saveReference(ref);
+					//Session sess = new Session().
 					referenceMap.put(refId, refUuid);
 					
 				} catch (Exception e) {
-					logger.warn("Reference with id threw Exception and could not be saved");
+					logger.warn("Reference with id " + refId +  " threw Exception and could not be saved");
+					e.printStackTrace();
+					success = false;
+					return success;
 				}
 				
 			}	
 				
 
 			logger.info("end makeReferences ...");
-			return true;
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
@@ -303,6 +317,7 @@ public class BerlinModelImport {
 	private boolean makeTaxonNames(){
 		String dbAttrName;
 		String cdmAttrName;
+		boolean success = true ;
 		
 		logger.info("start makeTaxonNames ...");
 		INameService nameService = cdmApp.getNameService();
@@ -354,44 +369,44 @@ public class BerlinModelImport {
 						dbAttrName = "genus";
 					}
 					cdmAttrName = "genusOrUninomial";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "genusSubdivisionEpi";
 					cdmAttrName = "infraGenericEpithet";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "speciesEpi";
 					cdmAttrName = "specificEpithet";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 
 					dbAttrName = "infraSpeciesEpi";
 					cdmAttrName = "infraSpecificEpithet";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "unnamedNamePhrase";
 					cdmAttrName = "appendedPhrase";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "preliminaryFlag";
 					cdmAttrName = "XX" + "protectedTitleCache";
-					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					dbAttrName = "HybridFormulaFlag";
 					cdmAttrName = "isHybridFormula";
-					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					dbAttrName = "MonomHybFlag";
 					cdmAttrName = "isMonomHybrid";
-					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					dbAttrName = "BinomHybFlag";
 					cdmAttrName = "isBinomHybrid";
-					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					dbAttrName = "TrinomHybFlag";
 					cdmAttrName = "isTrinomHybrid";
-					ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					//botanicalName.s
 
@@ -412,7 +427,7 @@ public class BerlinModelImport {
 					
 					dbAttrName = "details";
 					cdmAttrName = "nomenclaturalMicroReference";
-					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
 					//TODO
 					//preliminaryFlag
@@ -423,6 +438,7 @@ public class BerlinModelImport {
 					
 				} catch (UnknownRankException e) {
 					logger.warn("Name with id " + nameId + " has unknown rankId " + rankId + " and could not be saved.");
+					success = false; 
 				}
 				
 			}	
@@ -519,7 +535,7 @@ public class BerlinModelImport {
 //			makeNameSpecificData(nameMap);
 			//cdmApp.flush();
 			logger.info("end makeTaxonNames ...");
-			return true;
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
@@ -727,8 +743,9 @@ public class BerlinModelImport {
 		if (uuid == null){
 			result = null;
 		}else{
-			result  = service.getCdmObjectByUuid(uuid);//  taxonService.getTaxonByUuid(taxonUuid);
-	}
+			result  = ((ITaxonService)service).getTaxonByUuid(uuid); //.getCdmObjectByUuid(uuid);//  taxonService.getTaxonByUuid(taxonUuid);
+		}
+		return result;
 	
 	}
 
