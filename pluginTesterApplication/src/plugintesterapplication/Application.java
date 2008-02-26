@@ -11,6 +11,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.
 
 /**
  * This class controls all aspects of the application's execution
