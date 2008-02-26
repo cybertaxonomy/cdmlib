@@ -11,7 +11,7 @@
 	<description>
 		Parent project for all EDIT common data model projects
 	</description>
-	<url>http://wp5.e-taxonomy.eu</url>
+	<url>http://wp5.e-taxonomy.eu/cdmlib/site/</url>
 	<packaging>pom</packaging>
 	<properties>
 		<cdmlib.version>0.5.0</cdmlib.version>
