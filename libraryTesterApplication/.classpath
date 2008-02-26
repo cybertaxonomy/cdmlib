@@ -45,6 +45,9 @@
 	<classpathentry kind="lib" path="lib/spring-tx-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/cdmLibrary-0.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-commons-0.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-model-0.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-persistence-0.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-services-0.4.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

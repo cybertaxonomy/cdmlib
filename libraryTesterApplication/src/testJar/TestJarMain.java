@@ -33,6 +33,7 @@ public class TestJarMain {
 	}
 	
 	private static void testDirectory(){
+		System.out.println("Start testDirectory ...");
 		InputStream is2;
 		File f = new File("C:/Dokumente und Einstellungen/a.mueller/.cdmLibrary/writableResources/applicationContext.xml");
 		System.out.println(f.exists());
@@ -50,28 +51,28 @@ public class TestJarMain {
 			logger.info(app.getNameService());
 			app.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Exception: " + e.getMessage());
 		}
+		System.out.println("End testDirectory ...");
 	}
 
 	private static void test(){
 		NonViralName tn;
-		System.out.println("Start Test");
+		System.out.println("Start Test ...");
 		Logger.getRootLogger().setLevel(Level.WARN);
 		//INameService ns = new CdmApplicationController().getNameService();
 		//tn = (TaxonName)ns.getAllNames().get(0);
 		tn = new NonViralName(null);
 		logger.setLevel(Level.DEBUG);
 		System.out.println("****************");
-		tn.setUninomial("Test");
-		System.out.println(tn.getUninomial());
+		tn.setUninomial("TestUninomialName");
+		logger.info(tn.getUninomial());
 		if (tn != null){
 			logger.info("Uuid for TaxonName(1): " + tn.getUuid());
 		}else{
 			logger.warn("No name with id = 1");
 		}
-		System.out.println("End Success");
+		System.out.println("End Test (successful");
 	}
 
 }
