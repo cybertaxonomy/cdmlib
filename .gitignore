@@ -17,3 +17,7 @@ cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings
 cdmlib-remote/target
+spring-json/.classpath
+spring-json/.settings
+spring-json/lib
+spring-json/target
