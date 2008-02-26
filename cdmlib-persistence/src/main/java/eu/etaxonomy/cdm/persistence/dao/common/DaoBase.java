@@ -10,7 +10,8 @@ public abstract class DaoBase {
 	private SessionFactory factory;
 	
 	protected Session getSession(){
-		return factory.getCurrentSession();
+		Session session = factory.getCurrentSession();
+		return session;
 	}
 
 }

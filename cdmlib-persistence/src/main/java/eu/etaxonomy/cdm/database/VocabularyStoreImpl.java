@@ -92,6 +92,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 			logger.info("inititialize start ...");
 			try {
 				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE().getUuid());
+				
 				if (defaultLanguage == null){
 					termDao.saveOrUpdate(DEFAULT_LANGUAGE());
 					definedTermsMap = new HashMap<UUID, DefinedTermBase>();
@@ -99,6 +100,9 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 					initialized = true;
 					TermLoader termLoader = new TermLoader(this);
 					termLoader.loadAllDefaultTerms();
+				}else if (definedTermsMap == null){
+						definedTermsMap = new HashMap<UUID, DefinedTermBase>();
+						definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
 				}
 			} catch (Exception e) {
 				logger.error("Error ocurred when initializing and loading terms");

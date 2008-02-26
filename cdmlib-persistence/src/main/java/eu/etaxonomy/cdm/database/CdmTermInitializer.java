@@ -39,18 +39,25 @@ public class CdmTermInitializer {
 	
 	@PostConstruct
 	public void initializeTerms(){
-		logger.warn("CdmTermInitializer initializeTerms start ...");
-		termLoader.setVocabularyStore(saver);
-		if (! termLoader.basicTermsExist(saver)){
-			try {
-				termLoader.loadAllDefaultTerms();
-			} catch (FileNotFoundException e) {
-				logger.error(e.getMessage());
-			} catch (NoDefinedTermClassException e) {
-				logger.error(e.getMessage());
+		try {
+			logger.warn("CdmTermInitializer initializeTerms start ...");
+			termLoader.setVocabularyStore(saver);
+			if (! termLoader.basicTermsExist(saver)){
+				try {
+					termLoader.loadAllDefaultTerms();
+				} catch (FileNotFoundException e) {
+					logger.error(e.getMessage());
+				} catch (NoDefinedTermClassException e) {
+					logger.error(e.getMessage());
+				}
 			}
+			logger.warn("CdmTermInitializer initializeTerms end ...");
+		} catch (RuntimeException e) {
+			// TODO Auto-generated catch block
+			logger.error("RuntimeException when initializing Terms");
+			e.printStackTrace();
+			throw e;
 		}
-		logger.warn("CdmTermInitializer initializeTerms end ...");
 	}
 
 }
