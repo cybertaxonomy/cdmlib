@@ -47,7 +47,7 @@ public class TestDatabase {
 		bn.setInfraGenericEpithet("test");
 		nameService.saveTaxonName(bn);
 		//change connection
-		dbService.connectToDatabase(DatabaseTypeEnum.SqlServer, "LAPTOPHP", "cdmTest", "sa", "sa");
+		dbService.connectToDatabase(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", "sa", "sa");
 		//dbService.connectToDatabase(DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
 		logger.info(dbService.getDatabaseEnum().getName());
 		logger.info(dbService.getUrl());

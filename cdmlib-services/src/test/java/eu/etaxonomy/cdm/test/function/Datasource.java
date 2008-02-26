@@ -40,7 +40,7 @@ public class Datasource {
 //		String user = "edit";
 //		String pwd = "wp5";
 //		
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
@@ -53,7 +53,26 @@ public class Datasource {
 	}
 
 	private void testSqlServer(){
-		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer;
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2000;
+		String server = "LAPTOPHP";
+		String database = "cdmTest";
+		String username = "edit";
+		String password = "wp5";
+		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
+		try {
+			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			Person agent = new Person();
+			appCtr.getAgentService().saveAgent(agent);
+			TaxonNameBase tn = new BotanicalName(null);
+			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Unknown datasource");
+		}
+	}
+
+	private void testSqlServer2005(){
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2005;
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
