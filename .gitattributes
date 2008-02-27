@@ -61,7 +61,6 @@ cdmLibraryPlugin/spring-tx-2.5.jar -text
 cdmLibraryPlugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
-cdmParent/mavenInstall.bat -text
 cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text

@@ -1,9 +1,6 @@
 cdmLibraryPlugin/.settings
 cdmLibraryPlugin/dist
 cdmLibraryPlugin/target
-cdmParent/.externalToolBuilders
-cdmParent/.project
-cdmParent/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
