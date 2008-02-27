@@ -4,85 +4,42 @@
   <!-- 
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
    -->
-  <parent>
-    <artifactId>cdmParent</artifactId>
-    <groupId>eu.etaxonomy</groupId>
-    <version>0.5.0</version>
-    <relativePath>../cdmParent/pom.xml</relativePath>
-  </parent>
+	<parent>
+		<groupId>eu.etaxonomy</groupId>
+		<artifactId>cdmlib-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-services</artifactId>
-  <name>EDIT Common Data Model Library</name>
-  <version>0.5.0-SNAPSHOT</version>
-  <description>EDIT CDM library</description>
+  <name>EDIT CDM Library Services</name>
+  <description>EDIT CDM library services. The local API and basis for webservices too.</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlibrary/</url>
   </scm>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        	<systemProperties>
-        		<property>
-        			<name>hibernate.connection.driver_class</name>
-        			<value>${hibernate.connection.driver_class}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.url</name>
-        			<value>${hibernate.connection.url}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.username</name>
-        			<value>${hibernate.connection.username}</value>
-        		</property>
-        		<property>
-        			<name>hibernate.connection.password</name>
-        			<value>${hibernate.connection.password}</value>
-        		</property>
-        	</systemProperties>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
   <dependencies>
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>
-  		<version>0.5.0-SNAPSHOT</version>
   	</dependency>
-
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-test</artifactId>
-  		<version>${spring.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>xerces</groupId>
   		<artifactId>xercesImpl</artifactId>
-  		<version>2.7.1</version>
   	</dependency>
   	<dependency>
   		<groupId>jaxen</groupId>
   		<artifactId>jaxen</artifactId>
-  		<version>1.1</version>
   	</dependency>
-<!-- may be used later, don't delete -->
-<!--  	<dependency>-->
-<!--  		<groupId>org.dbunit</groupId>-->
-<!--  		<artifactId>dbunit</artifactId>-->
-<!--  		<version>2.2</version>-->
-<!--  	</dependency>-->
   	<dependency>
   		<groupId>org.eclipse</groupId>
   		<artifactId>osgi</artifactId>
-  		<version>3.2.1-R32x_v20060919</version>
   	</dependency>
 
   </dependencies>

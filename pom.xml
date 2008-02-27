@@ -6,18 +6,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
-	<artifactId>cdmParent</artifactId>
-	<version>${cdmlib.version}</version>
-	<description>
-		Parent project for all EDIT common data model projects
-	</description>
+	<artifactId>cdmlib-parent</artifactId>
+	<version>0.0.1</version>
+	<name>CDM Mother POM</name>
+	<description>Mother of all cdmlib POMs</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/site/</url>
 	<packaging>pom</packaging>
-	<properties>
-		<cdmlib.version>0.5.0</cdmlib.version>
-		<spring.version>2.5</spring.version>
-	</properties>
-
+	<modules>
+		<module>cdmlib-commons</module>
+		<module>cdmlib-model</module>
+	</modules>
+		
 	<mailingLists>
 		<mailingList>
 			<name>dev-edit</name>
@@ -160,13 +159,39 @@
 	<!-- **** PLUGINS **** -->
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
+	    	<plugin>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <configuration>
+		          <source>1.5</source>
+		          <target>1.5</target>
+		        </configuration>
+		      </plugin>
+		      <plugin>
+		        <artifactId>maven-surefire-plugin</artifactId>
+		        <configuration>
+		          <includes>
+		            <include>**/*Test.java</include>
+		          </includes>
+	        	<systemProperties>
+	        		<property>
+	        			<name>hibernate.connection.driver_class</name>
+	        			<value>${hibernate.connection.driver_class}</value>
+	        		</property>
+	        		<property>
+	        			<name>hibernate.connection.url</name>
+	        			<value>${hibernate.connection.url}</value>
+	        		</property>
+	        		<property>
+	        			<name>hibernate.connection.username</name>
+	        			<value>${hibernate.connection.username}</value>
+	        		</property>
+	        		<property>
+	        			<name>hibernate.connection.password</name>
+	        			<value>${hibernate.connection.password}</value>
+	        		</property>
+	        	</systemProperties>
+	         </configuration>
+  	        </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
@@ -332,27 +357,243 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<!--			<version>1.2.15</version>-->
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+		  	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-commons</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-model</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+		   	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-persistence</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+		   	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-services</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+		   	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-io</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+		   	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-remote</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
+			<dependency>
+				<groupId>eu.etaxonomy</groupId>
+				<artifactId>spring-json</artifactId>
+		  		<version>${project.version}</version>
+			</dependency>
+		  	<!-- ******* VARIOUS ******* -->
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.15</version>
 			</dependency>
 			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.4</version>
+				<scope>test</scope>
+			</dependency>
+		  	<dependency>
+		  		<groupId>aspectj</groupId>
+		  		<artifactId>aspectjrt</artifactId>
+		  		<version>1.5.2a</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>net.sf.opencsv</groupId>
+		  		<artifactId>opencsv</artifactId>
+		  		<version>1.8</version>
+		  	</dependency>
+			<dependency>
+				<groupId>org.dbunit</groupId>
+				<artifactId>dbunit</artifactId>
+				<version>2.2</version>
+			</dependency>
+		  	<dependency>
+		  		<groupId>org.eclipse</groupId>
+		  		<artifactId>osgi</artifactId>
+		  		<version>3.2.1-R32x_v20060919</version>
+		  	</dependency>
+				
+		  	<!-- ******* XML ******* -->
+			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
 				<version>2.0.2</version>
 			</dependency>
+		  	<dependency>
+		  		<groupId>xerces</groupId>
+		  		<artifactId>xercesImpl</artifactId>
+		  		<version>2.7.1</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>jaxen</groupId>
+		  		<artifactId>jaxen</artifactId>
+		  		<version>1.1</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>jdom</groupId>
+		  		<artifactId>jdom</artifactId>
+		  		<version>1.0</version>
+		  	</dependency>
+			<dependency>
+				<groupId>xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>xpp3</groupId>
+				<artifactId>xpp3</artifactId>
+				<version>1.1.3.3</version>
+			</dependency>
+
+		  	<!-- ******* HIBERNATE / EJB3 ******* -->
+		  	<dependency>
+		  		<groupId>javax.persistence</groupId>
+		  		<artifactId>ejb</artifactId>
+		  		<version>3</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.hibernate</groupId>
+		  		<artifactId>hibernate-annotations</artifactId>
+		  		<version>3.3.0.ga</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.hibernate</groupId>
+		  		<artifactId>hibernate-commons-annotations</artifactId>
+		  		<version>3.3.0.ga</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.hibernate</groupId>
+		  		<artifactId>hibernate</artifactId>
+		  		<version>3.3.0.ga</version>
+		  	</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+			</dependency>
+		
+		  	<!-- ******* SPRING ******* -->
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring</artifactId>
+		  		<version>2.5</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-beans</artifactId>
+		  		<version>2.5</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-orm</artifactId>
+		  		<version>2.5</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-jdbc</artifactId>
+		  		<version>2.5</version>
+		  	</dependency>
+		  	<dependency>
+		  		<groupId>org.springframework</groupId>
+		  		<artifactId>spring-test</artifactId>
+		  		<version>2.5</version>
+		  	</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>2.5</version>
+			</dependency>
+
+		  	<!-- ******* SERVLET/JSP/JSF ******* -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+			</dependency>
+
+	  	<!-- ******* DATABASES DRIVER ******* -->
+	  	<dependency>
+		  	<!-- SQL Server and Sybase -->
+	    	<groupId>net.sourceforge.jtds</groupId>
+	    	<artifactId>jtds</artifactId>
+	    	<version>1.2.2</version>
+		</dependency>
+	  	<dependency>
+	  		<groupId>mysql</groupId>
+	  		<artifactId>mysql-connector-java</artifactId>
+	  		<version>5.0.5</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>postgresql</groupId>
+	  		<artifactId>postgresql</artifactId>
+	  		<version>8.2-504.jdbc4</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>hsqldb</groupId>
+	  		<artifactId>hsqldb</artifactId>
+	  		<version>1.8.0.7</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>com.microsoft.jdbcdriver</groupId>
+	  		<artifactId>mssqlserver</artifactId>
+	  		<version>2000.3</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>com.microsoft.jdbcdriver</groupId>
+	  		<artifactId>msutil</artifactId>
+	  		<version>2000.3</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>com.microsoft.jdbcdriver</groupId>
+	  		<artifactId>msbase</artifactId>
+	  		<version>2000.3</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>com.microsoft.sqlserver</groupId>
+	  		<artifactId>jdbc</artifactId>
+	  		<version>1.2</version>
+	  	</dependency>
+          	<dependency>
+        	<groupId>oracle</groupId>
+        	<artifactId>ojdbc14</artifactId>
+        	<version>10.2.0.2</version>
+        </dependency>
+        <dependency>
+        	<groupId>oracle</groupId>
+        	<artifactId>ojdbc14</artifactId>
+        	<version>9i</version>
+        </dependency>
+        <dependency>
+        	<groupId>oracle</groupId>
+        	<artifactId>ojdbc14</artifactId>
+        	<version>9.2.0.5</version>
+        </dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
