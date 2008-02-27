@@ -379,6 +379,7 @@ cdmlib-services/src/test/resources/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/hibernate.properties -text
 cdmlib-services/src/test/resources/settings.xml -text
 cdmlib-services/src/test/resources/test.cdm.datasource.xml -text
+eclipse-feature/.classpath -text
 eclipse-feature/.project -text
 eclipse-feature/build.properties -text
 eclipse-feature/feature.xml -text
