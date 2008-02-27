@@ -7,7 +7,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.etaxonomy</groupId>
 	<artifactId>cdmlib-parent</artifactId>
-	<version>0.0.1</version>
+    <version>1.0.0-SNAPSHOT</version>
+
 	<name>CDM Mother POM</name>
 	<description>Mother of all cdmlib POMs</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/site/</url>
@@ -15,6 +16,11 @@
 	<modules>
 		<module>cdmlib-commons</module>
 		<module>cdmlib-model</module>
+		<module>cdmlib-persistence</module>
+		<module>cdmlib-services</module>
+		<module>cdmlib-remote</module>
+		<module>cdmlib-io</module>
+		<module>spring-json</module>
 	</modules>
 		
 	<mailingLists>
@@ -417,6 +423,11 @@
 		  		<artifactId>aspectjrt</artifactId>
 		  		<version>1.5.2a</version>
 		  	</dependency>
+			<dependency>
+			    <groupId>javax.annotation</groupId>
+			    <artifactId>jsr250-api</artifactId>
+			    <version>1.0</version>
+			</dependency>
 		  	<dependency>
 		  		<groupId>net.sf.opencsv</groupId>
 		  		<artifactId>opencsv</artifactId>
@@ -432,7 +443,42 @@
 		  		<artifactId>osgi</artifactId>
 		  		<version>3.2.1-R32x_v20060919</version>
 		  	</dependency>
-				
+		    <dependency>
+		      <groupId>cglib</groupId>
+		      <artifactId>cglib-full</artifactId>
+		      <version>2.0.2</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>commons-lang</groupId>
+		      <artifactId>commons-lang</artifactId>
+		      <version>2.2</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>commons-collections</groupId>
+		      <artifactId>commons-collections</artifactId>
+		      <version>3.2</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>net.sf.ezmorph</groupId>
+		      <artifactId>ezmorph</artifactId>
+		      <version>1.0.4</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>commons-beanutils</groupId>
+		      <artifactId>commons-beanutils</artifactId>
+		      <version>1.7.0</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>sojo</groupId>
+		      <artifactId>sojo-optional</artifactId>
+		      <version>0.5.0</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>net.sf.json-lib</groupId>
+		      <artifactId>json-lib</artifactId>
+		      <version>2.2</version>
+		    </dependency>
+						
 		  	<!-- ******* XML ******* -->
 			<dependency>
 				<groupId>xml-apis</groupId>
@@ -484,7 +530,7 @@
 		  	<dependency>
 		  		<groupId>org.hibernate</groupId>
 		  		<artifactId>hibernate</artifactId>
-		  		<version>3.3.0.ga</version>
+		  		<version>3.2.5.ga</version>
 		  	</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>

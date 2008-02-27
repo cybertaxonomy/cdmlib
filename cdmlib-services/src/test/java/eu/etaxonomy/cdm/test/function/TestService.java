@@ -119,13 +119,14 @@ public class TestService {
 		ITermService ts = (ITermService)appCtr.getTermService();
 		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//logger.warn(dt.toString());
-		List<DefinedTermBase> dts = ts.listTerms(); 
-		int i = 0;
-		for (DefinedTermBase d: dts){
-			i++;
-			if (i > 10) break;
-			logger.info(d.toString());
-		}
+		//TODO: fix ts.listTerms(0,100)
+//		List<DefinedTermBase> dts = ts.listTerms(0,100); 
+//		int i = 0;
+//		for (DefinedTermBase d: dts){
+//			i++;
+//			if (i > 10) break;
+//			logger.info(d.toString());
+//		}
 	}
 	
 	public void testDeleteTaxa(){

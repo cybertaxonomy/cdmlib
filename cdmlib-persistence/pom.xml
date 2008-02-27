@@ -28,7 +28,10 @@
   	<dependency>
   		<groupId>javax.persistence</groupId>
   		<artifactId>ejb</artifactId>
-  		<version>3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>javax.annotation</groupId>
+  		<artifactId>jsr250-api</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.hibernate</groupId>
@@ -90,10 +93,11 @@
   		<groupId>com.microsoft.jdbcdriver</groupId>
   		<artifactId>msbase</artifactId>
   	</dependency>
-  	<dependency>
+  	<!-- 
+  		<dependency>
   		<groupId>com.microsoft.sqlserver</groupId>
   		<artifactId>jdbc</artifactId>
   	</dependency>
-
+  	-->
   </dependencies>
 </project>
