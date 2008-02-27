@@ -1,7 +1,4 @@
 * text=auto !eol
-cdmLibraryFeature/.project -text
-cdmLibraryFeature/build.properties -text
-cdmLibraryFeature/feature.xml -text
 cdmLibraryPlugin/.classpath -text
 cdmLibraryPlugin/.project -text
 cdmLibraryPlugin/META-INF/MANIFEST.MF -text
@@ -441,6 +438,9 @@ cdmlib-services/src/test/resources/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/hibernate.properties -text
 cdmlib-services/src/test/resources/settings.xml -text
 cdmlib-services/src/test/resources/test.cdm.datasource.xml -text
+eclipse-feature/.project -text
+eclipse-feature/build.properties -text
+eclipse-feature/feature.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
