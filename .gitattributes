@@ -62,7 +62,6 @@ cdmLibraryPlugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java 
 cdmLibraryPlugin/xercesImpl.jar -text
 cdmLibraryPlugin/xml-apis.jar -text
 cdmParent/mavenInstall.bat -text
-cdmParent/settings.xml -text
 cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
@@ -533,6 +532,7 @@ pluginTesterApplication/src/plugintesterapplication/Perspective.java -text
 pluginTesterApplication/src/plugintesterapplication/View.java -text
 pluginTesterApplication/src/test/testClass.java -text
 /pom.xml -text
+/settings.xml -text
 spring-json/LICENSE-2.0.txt -text
 spring-json/README.txt -text
 spring-json/pom.xml -text
