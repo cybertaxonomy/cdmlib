@@ -68,7 +68,7 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		logger.info("setUp");
+		logger.debug("setUp");
 		if (! isInitialized){  //as long as rollback does not work
 			Rank genus = Rank.GENUS();
 			BotanicalName botanicalName = new BotanicalName(genus);
@@ -79,7 +79,7 @@ public class CdmEntityDaoBaseTest {
 			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
 			UUID uuid = cdmEntityDaoBaseTester.saveOrUpdate(taxon);
 			taxonUUID = UUID.fromString(uuid.toString());
-			logger.info("setUpEnd");
+			logger.debug("setUpEnd");
 			isInitialized = true;
 		}
 	}
