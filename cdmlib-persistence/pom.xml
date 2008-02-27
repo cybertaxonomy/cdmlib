@@ -15,9 +15,9 @@
   <name>EDIT CDM Library Persistence</name>
   <description>EDIT CDM library persistence layer. Mainly DAOs</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlibrary/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlibrary/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
   </scm>
 
   <dependencies>
@@ -93,11 +93,10 @@
   		<groupId>com.microsoft.jdbcdriver</groupId>
   		<artifactId>msbase</artifactId>
   	</dependency>
-  	<!-- 
-  		<dependency>
+  	<dependency>
   		<groupId>com.microsoft.sqlserver</groupId>
   		<artifactId>jdbc</artifactId>
   	</dependency>
-  	-->
+  	
   </dependencies>
 </project>
