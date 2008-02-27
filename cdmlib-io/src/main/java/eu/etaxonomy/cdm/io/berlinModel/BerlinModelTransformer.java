@@ -15,10 +15,11 @@ public final class BerlinModelTransformer {
 	public static int REF_ARTICLE = 1;
 	public static int REF_PART_OF_OTHER_TITLE = 2;
 	public static int REF_BOOK = 3;
-	public static int REF_4 = 4;
-	public static int REF_5 = 5;
-	public static int REF_6 = 6;
-	public static int REF_DATABASE = 7;
+	public static int REF_DATABASE = 4;
+	public static int REF_INFORMAL = 5;
+	public static int REF_NOT_APPLICABLE = 6;
+	public static int REF_WEBSITE = 7;
+	public static int REF_CD = 8;
 	public static int REF_JOURNAL = 9;
 	public static int REF_UNKNOWN = 10;
 	

@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController.HBM2DDL;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -29,19 +30,19 @@ public class BerlinModelImportActivator {
 
 	
 	
-	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
-	static String cdmServer = "LAPTOPHP";
-	static String cdmDB = "cdmTest";
-	//static int cdmPort = 1433;
-	static String cdmUserName = "edit";
-	static String cdmPwd = "wp5";
-//	
-//	static DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-//	static String cdmServer = "192.168.2.10";
-//	static String cdmDB = "cdm_test_lib";
-//	//static int cdmPort = 1247;
+//	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+//	static String cdmServer = "LAPTOPHP";
+//	static String cdmDB = "cdmTest";
+//	//static int cdmPort = 1433;
 //	static String cdmUserName = "edit";
 //	static String cdmPwd = "wp5";
+	
+	static DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+	static String cdmServer = "192.168.2.10";
+	static String cdmDB = "cdm_test_lib";
+	//static int cdmPort = 1247;
+	static String cdmUserName = "edit";
+	static String cdmPwd = "wp5";
 
 	
 	
@@ -56,11 +57,15 @@ public class BerlinModelImportActivator {
 		
 		//make BerlinModel Source
 		source = makeSource(dbms, strServer, strDB, port, userName, pwd);
-		
+		if (source == null){
+			logger.error("Connection to BerlinModel could not be established");
+			System.out.println("End import from BerlinModel ...");
+			return;
+		}
 		//make CdmApplication
 		String dataSourceName;
 		dataSourceName = "cdmImportLibrary";
-		dataSourceName = "testSqlServer";
+//		dataSourceName = "testSqlServer";
 		
 		CdmDataSource dataSource;
 		try {
@@ -69,7 +74,8 @@ public class BerlinModelImportActivator {
 			dataSource = CdmDataSource.save(dataSourceName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
 		}
 		try {
-			cdmApp = new CdmApplicationController(dataSource);
+			HBM2DDL hbm2dll = HBM2DDL.CREATE;
+			cdmApp = new CdmApplicationController(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			logger.error(e.getMessage());
 			return;
