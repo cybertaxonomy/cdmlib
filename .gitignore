@@ -1,6 +1,3 @@
-cdmLibraryPlugin/.settings
-cdmLibraryPlugin/dist
-cdmLibraryPlugin/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
@@ -28,6 +25,9 @@ cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings
 cdmlib-services/target
+eclipse-plugin/.settings
+eclipse-plugin/dist
+eclipse-plugin/target
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.settings
 spring-json/.classpath
