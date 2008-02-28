@@ -28,11 +28,11 @@ public class BerlinModelImport {
 	private boolean makeAuthors = false;
 	private boolean makeReferences = true;
 	private boolean makeTaxonNames = true;
+	private boolean makeTaxa = true;
 	private boolean makeRelNames = false;
 	private boolean makeNameStatus = false;
-	private boolean makeTaxa = true;
 	private boolean makeRelTaxa = true;
-	private boolean makeFacts = false;
+	private boolean makeFacts = true;
 	
 	
 	//BerlinModelDB
@@ -119,71 +119,17 @@ public class BerlinModelImport {
 		//makeRelTaxa();
 		
 		//make and save Facts
-		if(makeRelTaxa){
-			makeFacts();
+		if(makeFacts){
+			if (! BerlinModelFactsIO.invoke(source, cdmApp, deleteAll, taxonStore, referenceStore)){
+				return false;
+			}
+		}else{
+			logger.warn("No Facts imported");
 		}
 		
 		//return
 		return true;
 	}
 	
-
-	
-	
-	/**
-	 * @return
-	 */
-	private boolean makeFacts(){
-		String dbAttrName;
-		String cdmAttrName;
-		
-		logger.info("start makeFacts ...");
-		logger.warn("Facts not yet implemented !!");
-
-		//IAgentService agentService = cdmApp.getAgentService();
-		boolean delete = deleteAll;
-		
-//		if (delete){
-//			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
-//			while(listAllAgents.size() > 0 ){
-//				for (Agent name : listAllAgents ){
-//					//FIXME
-//					//nameService.remove(name);
-//				}
-//				listAllAgents =  agentService.getAllAgents(0, 1000);
-//			}			
-//		}
-		try {
-			//get data from database
-			String strQuery = 
-					" SELECT *  " +
-                    " FROM Facts " ;
-			ResultSet rs = source.getResultSet(strQuery) ;
-			int i = 0;
-			//for each reference
-			while (rs.next()){
-				
-				if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
-				
-				//create TaxonName element
-				int factId = rs.getInt("factId");
-
-			//....
-			
-			
-			
-			}
-			logger.info("end makeFacts ...");
-			return true;
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	}
-	
-
-	
-	
-
 
 }

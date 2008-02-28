@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -24,15 +25,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
 public class BerlinModelTaxonNameIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameIO.class);
 
-	private static int modCount = 1000;
+	private static int modCount = 5000;
 
-	//TODO
-	static boolean invokeRelations(Source source, CdmApplicationController cdmApp, 
-			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
-		return false;
-	}
-	
 	//TODO
 	static boolean invokeStatus(Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
@@ -53,24 +47,12 @@ public class BerlinModelTaxonNameIO {
 		INameService nameService = cdmApp.getNameService();
 		boolean delete = deleteAll;
 		
-		
-//		if (delete){
-//			List<TaxonNameBase> listAllNames =  nameService.getAllNames(0, 1000);
-//			while(listAllNames.size() > 0 ){
-//				for (TaxonNameBase name : listAllNames ){
-//					//FIXME
-//					//nameService.remove(name);
-//				}
-//				listAllNames =  nameService.getAllNames(0, 1000);
-//			}
-//		}
-		
 		try {
 			
 			
 			//get data from database
 			String strQuery = 
-					"SELECT TOP 2000 Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
+					"SELECT TOP 200 Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
                       		" RefDetail.SecondarySources, RefDetail.IdInSource " +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
@@ -89,7 +71,7 @@ public class BerlinModelTaxonNameIO {
 				//create TaxonName element
 				int nameId = rs.getInt("nameId");
 				int rankId = rs.getInt("rankFk");
-				Object nomRefFk = rs.getInt("NomRefFk");
+				Object nomRefFk = rs.getObject("NomRefFk");
 				
 				try {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
@@ -172,8 +154,9 @@ public class BerlinModelTaxonNameIO {
 							int nomRefFkInt = (Integer)nomRefFk;
 							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
 							if (nomenclaturalReference == null){
-								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-								" was not found in reference store. Relation was not set!!");
+								//TODO
+//								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+//								" was not found in reference store. Relation was not set!!");
 							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
 								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
@@ -189,6 +172,10 @@ public class BerlinModelTaxonNameIO {
 					//TODO
 					// Annotation annotation = new Annotation("Berlin Model nameId: " + String.valueOf(refId), Language.DEFAULT());
 					// botanicalName.addAnnotations(annotation);
+					
+					OriginalSource originalSource = new OriginalSource();
+					originalSource.setIdInSource(String.valueOf(nameId));
+					botanicalName.addSource(originalSource);
 					
 					taxonNameMap.put(nameId, botanicalName);
 					
@@ -217,6 +204,13 @@ public class BerlinModelTaxonNameIO {
 			return false;
 		}
 
+	}
+	
+	//TODO
+	static boolean invokeRelations(Source source, CdmApplicationController cdmApp, 
+			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
+		return false;
 	}
 	
 }

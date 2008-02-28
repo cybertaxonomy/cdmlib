@@ -7,7 +7,9 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -33,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 public class BerlinModelTaxonIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
 
-	private static int modCount = 1000;
+	private static int modCount = 30000;
 
 	public static boolean invoke(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
@@ -67,6 +69,7 @@ public class BerlinModelTaxonIO {
 				
 				int nameFk = rs.getInt("PTNameFk");
 				int refFk = rs.getInt("PTRefFk");
+				String doubtful = rs.getString("DoubtfulFlag");
 				
 				TaxonNameBase taxonName = null;
 				if (taxonNameMap != null){
@@ -79,17 +82,17 @@ public class BerlinModelTaxonIO {
 				}
 				
 				if (taxonName == null ){
-					logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
+					//logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
 					continue;
 				}else if (reference == null ){
-					logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be transported");
+					//logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
 					continue;
 				}else{
 					TaxonBase taxonBase;
 					Synonym synonym;
 					Taxon taxon;
 					try {
-						logger.info(statusFk);
+						logger.debug(statusFk);
 						if (statusFk == T_STATUS_ACCEPTED){
 							taxon = Taxon.NewInstance(taxonName, reference);
 							taxonBase = taxon;
@@ -106,15 +109,15 @@ public class BerlinModelTaxonIO {
 //						cdmAttrName = "Micro";
 //						ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
 						
-						dbAttrName = "isDoubtful";
-						cdmAttrName = "isDoubtful";
-						ImportHelper.addBooleanValue(rs, taxonBase, dbAttrName, cdmAttrName);
+						if (doubtful.equals("a")){
+							taxonBase.setDoubtful(false);
+						}else if(doubtful.equals("d")){
+							taxonBase.setDoubtful(true);
+						}else if(doubtful.equals("i")){
+							//TODO
+							logger.warn("Doubtful = i (inactivated) not yet implemented. Doubtful set to false");
+						}
 						
-						dbAttrName = "isDoubtful";
-						cdmAttrName = "isDoubtful";
-						ImportHelper.addBooleanValue(rs, taxonBase, dbAttrName, cdmAttrName);
-	
-	
 						//TODO
 						//
 						//Created
@@ -127,6 +130,7 @@ public class BerlinModelTaxonIO {
 					}
 				}
 			}
+			logger.info("saving taxa ...");
 			taxonService.saveTaxonAll(taxonMap.objects());
 			
 			logger.info("end makeTaxa ...");
@@ -142,23 +146,20 @@ public class BerlinModelTaxonIO {
 	public static boolean invokeRelations(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 
-		MapWrapper<TaxonRelationship> relTaxonStore = new MapWrapper<TaxonRelationship>(null);
+		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 
-		
 		String dbAttrName;
 		String cdmAttrName;
 		
 		logger.info("start makeTaxonRelationships ...");
-		logger.warn("RelTaxa not yet implemented !!");
-
+		
 		ITaxonService taxonService = cdmApp.getTaxonService();
-		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
 
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon1Id " + 
+					" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id " + 
 					" FROM PTaxon as FromTaxon INNER JOIN " +
                       	" RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 INNER JOIN " +
                       	" PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk "+
@@ -169,8 +170,9 @@ public class BerlinModelTaxonIO {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+				if ((i++ % modCount) == 0){ logger.info("RelPTaxa handled: " + (i-1));}
 				
+				int relPTaxonId = rs.getInt("RelPTaxonId");
 				int taxon1Id = rs.getInt("taxon1Id");
 				int taxon2Id = rs.getInt("taxon2Id");
 				int relRefFk = rs.getInt("relRefFk");
@@ -183,24 +185,38 @@ public class BerlinModelTaxonIO {
 				ReferenceBase citation = null;
 				String microcitation = null;
 
-				
-				if (relQualifierFk == IS_INCLUDED_IN){
-					((Taxon)taxon2).addTaxonomicChild((Taxon)taxon1, citation, microcitation);
-				}else if (relQualifierFk == IS_SYNONYM_OF){
-					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
-				}else if (relQualifierFk == IS_HOMOTYPIC_SYNONYM_OF){
-					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-				}else if (relQualifierFk == IS_HETEROTYPIC_SYNONYM_OF){
-					((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-				}else if (relQualifierFk == IS_MISAPPLIED_NAME_OF){
-					((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
-				}else {
+				if (taxon2 != null && taxon1 != null){
+					if (relQualifierFk == IS_INCLUDED_IN){
+						((Taxon)taxon2).addTaxonomicChild((Taxon)taxon1, citation, microcitation);
+					}else if (relQualifierFk == IS_SYNONYM_OF){
+						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
+					}else if (relQualifierFk == IS_HOMOTYPIC_SYNONYM_OF){
+						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					}else if (relQualifierFk == IS_HETEROTYPIC_SYNONYM_OF){
+						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
+							((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+						}else{
+							logger.warn("Taxon (RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
+						}
+					}else if (relQualifierFk == IS_MISAPPLIED_NAME_OF){
+						((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
+					}else {
+						//TODO
+						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+					}
+					taxonStore.add(taxon2);
+					
 					//TODO
-					logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+					//Reference
+					//ID
+					//etc.
+				}else{
+					//TODO
+					//logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
 				}
-				//put
 			}
-			taxonService.saveTaxonAll(taxonMap.objects());
+			logger.info("Taxa to save: " + taxonStore.size());
+			//taxonService.saveTaxonAll(taxonStore);
 			
 			logger.info("end makeRelTaxa ...");
 			return true;

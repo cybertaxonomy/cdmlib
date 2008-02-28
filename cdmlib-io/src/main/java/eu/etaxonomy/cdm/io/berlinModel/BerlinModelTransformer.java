@@ -40,6 +40,19 @@ public final class BerlinModelTransformer {
 	public static int T_STATUS_ORPHANED = 6;
 	
 	
+	//Facts
+	public static int FACT_DESCRIPTION = 1;
+	public static int FACT_GROWTH_FORM = 2;
+	public static int FACT_HARDINESS = 3;
+	public static int FACT_ECOLOGY = 4;
+	public static int FACT_PHENOLOGY = 5;
+	public static int FACT_KARYOLOGY = 6;
+	public static int FACT_ILLUSTRATION = 7;
+	public static int FACT_IDENTIFICATION = 8;
+	public static int FACT_OBSERVATION = 9;
+	public static int FACT_DISTIRBUTION_EM = 10;
+	public static int FACT_DISTIRBUTION_WORLD = 11;
+	
 	/** Creates an cdm-Rank by the berlinModel rankId
 	 * @param doubt doubtfulFalg
 	 * @return "true" if doubt = "a"
