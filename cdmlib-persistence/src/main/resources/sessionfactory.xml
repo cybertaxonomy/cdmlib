@@ -81,12 +81,13 @@
             <value>eu.etaxonomy.cdm.model.common.WrongTermTypeException</value>
             <value>eu.etaxonomy.cdm.model.description.AbsenceTerm</value>
             <value>eu.etaxonomy.cdm.model.description.CategoricalData</value>
-            <value>eu.etaxonomy.cdm.model.description.CharacterTree</value>
             <value>eu.etaxonomy.cdm.model.description.CommonTaxonName</value>
             <value>eu.etaxonomy.cdm.model.description.DescriptionBase</value>
             <value>eu.etaxonomy.cdm.model.description.Distribution</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureBase</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureType</value>
+            <value>eu.etaxonomy.cdm.model.description.FeatureNode</value>
+            <value>eu.etaxonomy.cdm.model.description.FeatureTree</value>
             <value>eu.etaxonomy.cdm.model.description.IdentificationKey</value>
             <value>eu.etaxonomy.cdm.model.description.IndividualsAssociation</value>
             <value>eu.etaxonomy.cdm.model.description.MeasurementUnit</value>
