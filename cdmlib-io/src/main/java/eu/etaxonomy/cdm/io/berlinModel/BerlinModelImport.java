@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -57,9 +58,9 @@ public class BerlinModelImport {
 
 	
 	//Hashmaps for Joins
+	//OLD: private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
+	private MapWrapper<Agent> authorStore= new MapWrapper<Agent>(null);
 	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
-
-	//private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
 	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(null);
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(null);
 
@@ -75,11 +76,16 @@ public class BerlinModelImport {
 		this.cdmApp = cdmApp;
 
 		//make and save Authors
-		makeAuthors();
-		
+		if (false){
+			if (! BerlinModelAuthorIO.invoke(source, cdmApp, deleteAll, authorStore)){
+				return false;
+			}
+		}else{
+			referenceStore = null;
+		}
 		//make and save References
 		if (false){
-			if (! BerlinModelReferenceIO.invoke(source, cdmApp, deleteAll, referenceStore)){
+			if (! BerlinModelReferenceIO.invoke(source, cdmApp, deleteAll, referenceStore, authorStore)){
 				return false;
 			}
 		}else{
@@ -87,7 +93,7 @@ public class BerlinModelImport {
 		}
 		
 		//make and save Names
-		if (! BerlinModelTaxonNameIO.invoke(source, cdmApp, deleteAll, taxonNameStore, referenceStore)){
+		if (! BerlinModelTaxonNameIO.invoke(source, cdmApp, deleteAll, taxonNameStore, referenceStore, authorStore)){
 			return false;
 		}
 		
@@ -120,51 +126,6 @@ public class BerlinModelImport {
 		return true;
 	}
 	
-	
-	
-	/**
-	 * @return
-	 */
-	private boolean makeAuthors(){
-		String dbAttrName;
-		String cdmAttrName;
-		
-		logger.info("start makeAuthors ...");
-		logger.warn("Authors not yet implemented !!");
-
-		IAgentService agentService = cdmApp.getAgentService();
-		boolean delete = deleteAll;
-		
-//		if (delete){
-//			List<Agent> listAllAgents =  agentService.getAllAgents(0, 1000);
-//			while(listAllAgents.size() > 0 ){
-//				for (Agent name : listAllAgents ){
-//					//FIXME
-//					//nameService.remove(name);
-//				}
-//				listAllAgents =  agentService.getAllAgents(0, 1000);
-//			}			
-//		}
-//		try {
-			//get data from database
-			String strQuery = 
-					" SELECT *  " +
-                    " FROM AuthorTeam " ;
-			ResultSet rs = source.getResultSet(strQuery) ;
-			
-			
-			
-			
-			
-			logger.info("end makeAuthors ...");
-			return true;
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			return false;
-//		}
-	}
-	
-
 	/**
 	 * @return
 	 */

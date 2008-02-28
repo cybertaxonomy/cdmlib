@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.reference.Article;
@@ -45,11 +46,8 @@ public class BerlinModelReferenceIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(
-			Source source, 
-			CdmApplicationController cdmApp, 
-			boolean deleteAll, 
-			MapWrapper<ReferenceBase> referenceMap){
+	public static boolean invoke(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
 		
 		String dbAttrName;
 		String cdmAttrName;

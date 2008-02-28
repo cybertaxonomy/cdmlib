@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -25,12 +26,9 @@ public class BerlinModelTaxonNameIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(
-			Source source, 
-			CdmApplicationController cdmApp, 
-			boolean deleteAll, 
-			MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap){
+	public static boolean invoke(Source source, CdmApplicationController cdmApp, 
+			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
 		
 		
 		String dbAttrName;
