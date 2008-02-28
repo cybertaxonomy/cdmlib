@@ -10,6 +10,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController.HBM2DDL;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.io.berlinModel.test.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
 
 /**
@@ -19,18 +20,22 @@ import eu.etaxonomy.cdm.io.source.Source;
 public class BerlinModelImportActivator {
 	private static Logger logger = Logger.getLogger(BerlinModelImportActivator.class);
 
+	//database validation status (create, update, validate ...)
+	static HBM2DDL hbm2dll = HBM2DDL.CREATE;
 
-	//	BerlinModelDatabase
-	static String dbms = "SQLServer";
-	static String strServer = "BGBM111";
-	static String strDB = "EuroPlusMed_00_Edit";
-	static int port = 1247;
-	static String userName = "webUser";
-	static String pwd = "";
-
+	//Berlin MOdel Source
+	static final Source berlinModelSource = BerlinModelSources.euroMed();
+	//static final Source berlinModelSource = BerlinModelSources.editWP6();
+//	
+////	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2000;
+////	static String cdmServer = "BGBM10/ENTWICKLUNG";
+////	static String cdmDB = "cdmlib_test_1";
+////	static int cdmPort = 1433;
+////	static String cdmUserName = "edit";
+////	static String cdmPwd = "wp5";
+////	
 	
-	
-//	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+	//	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
 //	static String cdmServer = "LAPTOPHP";
 //	static String cdmDB = "cdmTest";
 //	//static int cdmPort = 1433;
@@ -44,8 +49,8 @@ public class BerlinModelImportActivator {
 	static String cdmUserName = "edit";
 	static String cdmPwd = "wp5";
 
+
 	
-	static HBM2DDL hbm2dll = HBM2DDL.CREATE;
 	
 	
 	/**
@@ -53,21 +58,22 @@ public class BerlinModelImportActivator {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Start import from BerlinModel ...");
-		Source source;
+		Source source = berlinModelSource;
 		CdmApplicationController cdmApp;
 		
+		//make CdmApplication
+		String dataSourceName;
+		dataSourceName = "cdmImportLibrary";
+//		dataSourceName = "testSqlServer";	
+		
 		//make BerlinModel Source
-		source = makeSource(dbms, strServer, strDB, port, userName, pwd);
+		source = BerlinModelSources.euroMed();
 		if (source == null){
 			logger.error("Connection to BerlinModel could not be established");
 			System.out.println("End import from BerlinModel ...");
 			return;
 		}
-		//make CdmApplication
-		String dataSourceName;
-		dataSourceName = "cdmImportLibrary";
-//		dataSourceName = "testSqlServer";
-		
+	
 		CdmDataSource dataSource;
 		try {
 			dataSource = CdmDataSource.NewInstance(dataSourceName);
@@ -90,22 +96,7 @@ public class BerlinModelImportActivator {
 	}
 	
 	
-	/**
-	 * initializes source
-	 * @return true, if connection establisehd
-	 */
-	private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd){
-		//establish connection
-		try {
-			Source source = new Source(dbms, strServer, strDB);
-			source.setPort(port);
-			source.setUserAndPwd(userName, pwd);
-			return source;
-		} catch (Exception e) {
-			logger.error(e);
-			return null;
-		}
-	}
+
 	
 	
 

@@ -31,6 +31,14 @@ public final class BerlinModelTransformer {
 	public static int IS_HETEROTYPIC_SYNONYM_OF = 7;
 	
 	
+	//TaxonRelationShip
+	public static int T_STATUS_ACCEPTED = 1;
+	public static int T_STATUS_SYNONYM = 2;
+	public static int T_STATUS_PARTIAL_SYN = 3;
+	public static int T_STATUS_PRO_PARTE_SYN = 4;
+	public static int T_STATUS_UNRESOLVED = 5;
+	public static int T_STATUS_ORPHANED = 6;
+	
 	
 	/** Creates an cdm-Rank by the berlinModel rankId
 	 * @param doubt doubtfulFalg

@@ -26,6 +26,20 @@ public class BerlinModelTaxonNameIO {
 
 	private static int modCount = 1000;
 
+	//TODO
+	static boolean invokeRelations(Source source, CdmApplicationController cdmApp, 
+			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
+		return false;
+	}
+	
+	//TODO
+	static boolean invokeStatus(Source source, CdmApplicationController cdmApp, 
+			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
+		return false;
+	}
+	
 	public static boolean invoke(Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
@@ -37,7 +51,6 @@ public class BerlinModelTaxonNameIO {
 		
 		logger.info("start makeTaxonNames ...");
 		INameService nameService = cdmApp.getNameService();
-		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
 		
 		
@@ -57,11 +70,14 @@ public class BerlinModelTaxonNameIO {
 			
 			//get data from database
 			String strQuery = 
-					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
+					"SELECT TOP 2000 Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
                       		" RefDetail.SecondarySources, RefDetail.IdInSource " +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
-                    " Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk"; 
+                    	" Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk" +
+                    " WHERE (1=1) AND Name.Created_When > '03.03.2004'";
+			
+			
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
@@ -76,7 +92,7 @@ public class BerlinModelTaxonNameIO {
 				Object nomRefFk = rs.getInt("NomRefFk");
 				
 				try {
-					logger.info(rankId);
+					if (logger.isDebugEnabled()){logger.debug(rankId);}
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
 					//FIXME
 					//BotanicalName name = BotanicalName.NewInstance(BerlinModelTransformer.rankId2Rank(rankId));
@@ -155,11 +171,14 @@ public class BerlinModelTaxonNameIO {
 						if (nomRefFk != null){
 							int nomRefFkInt = (Integer)nomRefFk;
 							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
-							if (INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
-								botanicalName.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
-							}else{
+							if (nomenclaturalReference == null){
+								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+								" was not found in reference store. Relation was not set!!");
+							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-										" is not assignable from INomenclaturalReference. Relation was not set!!");
+								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
+							}else{
+								botanicalName.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
 							}
 						}
 					}
@@ -181,73 +200,7 @@ public class BerlinModelTaxonNameIO {
 			} //while rs.hasNext()
 			nameService.saveTaxonNameAll(taxonNameMap.objects());
 			
-				
-//				//Code
-//				strAttrName = "nomenclaturalCode";
-//				strValue = "Botanical";
-//				parent = elTaxonName;
-//				xml.addStringAttribute(strValue, parent,  strAttrName, NS_NULL);
-//				
-//				//Simple
-//				strDbAttr = "FullNameCache";
-//				strElName = "Simple";
-//				parent = elTaxonName;
-//				xml.addElement(rs,strDbAttr, parent, strElName, nsTcs, OBLIGATORY);
-//				
-//				if (fullVersion){
-//					//Rank
-//					strDbAttr = "RankAbbrev";
-//					strElName = "Rank";
-//					parent = elTaxonName;
-//					xml.addElement(rs,strDbAttr, parent, strElName, nsTcs, OBLIGATORY);
-//					
-//					//CanonicalName
-//					parent = elTaxonName;
-//					makeCanonicalName(rs, parent);
-//					
-//					
-//					//CanonicalAuthorship
-//					parent = elTaxonName;
-//					makeCanonicalAuthorship(rs, parent);
-//				
-//				}  //fi fullVersion
-//				
-//				//PublishedIn
-//				strDbAttr = "NomRefFk";
-//				strAttrName = "ref";
-//				strElName = "PublishedIn";
-//				parent = elTaxonName;
-//				Attribute attrPublRef = xml.addAttributeInElement(rs, strDbAttr, parent, strAttrName, strElName, nsTcs, FACULTATIVE);
-//				
-//				if (attrPublRef != null){
-//					//does Publication exist?
-//					String ref = attrPublRef.getValue();
-//					if (! publicationMap.containsKey(ref)){
-//						logger.error("PublishedIn ref " + ref + " for " + nameId + " does not exist.");
-//					}
-//				}
-//				
-//				
-//				if (fullVersion){
-//					//Year
-//					String year = rs.getString("RefYear");
-//					if (year == null) {
-//						year = rs.getString("HigherRefYear");
-//					}
-//					strValue = year;
-//					strElName = "Year";
-//					parent = elTaxonName;
-//					xml.addStringElement(strValue, parent, strElName, nsTcs, FACULTATIVE);
-//					
-//					//MicroReference
-//					strDbAttr = "Details";
-//					strElName = "MicroReference";
-//					parent = elTaxonName;
-//					xml.addElement(rs,strDbAttr, parent, strElName, nsTcs, FACULTATIVE);
-//
-//				}//fi fullversion
-//			}//while
-//			
+		
 //			//insert related Names (Basionyms, ReplacedSyns, etc.
 //			makeSpellingCorrections(nameMap);
 //			makeBasionyms(nameMap);

@@ -36,7 +36,7 @@ public class BerlinModelAuthorIO {
 		logger.info("start makeAuthors ...");
 		logger.warn("Authors not yet implemented !!");
 
-		IAgentService agentService = cdmApp.getAgentService();
+//		IAgentService agentService = cdmApp.getAgentService();
 		boolean delete = deleteAll;
 		
 		//		if (delete){

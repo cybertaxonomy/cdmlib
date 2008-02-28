@@ -80,20 +80,20 @@ public class BerlinModelReferenceIO {
 						" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk " +
                     " FROM Reference AS InInReference " +
                     	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
-                    	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk ";
-			
+                    	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk " + 
+					" WHERE (1=1) AND Reference.refId = 7000000 " ;
 			String strQueryNoInRef = strQueryBase + 
-				" WHERE (Reference.InRefFk is NULL) ";
+				" AND (Reference.InRefFk is NULL) ";
 
 			
 			String strQuery1InRef = strQueryBase + 
-				" WHERE (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) ";
+				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) ";
 
 			String strQuery2InRef = strQueryBase + 
-				" WHERE (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) ";
+				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) ";
 
 			String strQueryTesMaxRecursion = strQueryBase + 
-				" WHERE (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
+				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
 
 			ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTesMaxRecursion);
 			if (testMaxRecursionResultSet.next() == true){
