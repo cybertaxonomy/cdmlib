@@ -32,6 +32,8 @@ public class ZoologicalName extends NonViralName {
 
 	//Name of the breed of an animal
 	private String breed;
+	private Integer publicationYear;
+	private Integer originalPublicationYear;
 
 	private ZoologicalName() {
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
@@ -51,6 +53,20 @@ public class ZoologicalName extends NonViralName {
 	}
 	public void setBreed(String breed){
 		this.breed = breed;
+	}
+
+	public Integer getPublicationYear() {
+		return publicationYear;
+	}
+	public void setPublicationYear(Integer publicationYear) {
+		this.publicationYear = publicationYear;
+	}
+
+	public Integer getOriginalPublicationYear() {
+		return originalPublicationYear;
+	}
+	public void setOriginalPublicationYear(Integer originalPublicationYear) {
+		this.originalPublicationYear = originalPublicationYear;
 	}
 
 }

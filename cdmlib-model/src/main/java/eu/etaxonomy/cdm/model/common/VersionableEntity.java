@@ -34,8 +34,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	private CdmBase previousVersion;
 
 	
-	//@OneToOne(mappedBy="previousVersion")
-	@Transient
+	@OneToOne(mappedBy="previousVersion")
 	public CdmBase getNextVersion(){
 		return this.nextVersion;
 	}
@@ -43,8 +42,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 		this.nextVersion = nextVersion;
 	}
 
-	//@OneToOne
-	@Transient
+	@OneToOne
 	public CdmBase getPreviousVersion(){
 		return this.previousVersion;
 	}

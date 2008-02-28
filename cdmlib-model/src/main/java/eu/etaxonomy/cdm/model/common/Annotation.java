@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.common;
 import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import javax.persistence.*;
 
@@ -31,7 +33,11 @@ public class Annotation extends LanguageString {
 	//Human annotation
 	private Person commentator;
 	private AnnotatableEntity annotatedObj;
-
+	// for external annotations/comments the URL of these can be set.
+	// should be useful to implement trackback, pingback or linkback:
+	// http://en.wikipedia.org/wiki/Linkback
+	private URL linkbackUrl;
+	
 	@Transient
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
@@ -56,5 +62,23 @@ public class Annotation extends LanguageString {
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
 	}
-
+	
+	@Transient
+	public URL getLinkbackUrl() {
+		return linkbackUrl;
+	}
+	public void setLinkbackUrl(URL linkbackUrl) {
+		this.linkbackUrl = linkbackUrl;
+	}
+	
+	/**
+	 * private get/set methods for Hibernate that allows us to save the URL as strings
+	 * @return
+	 */
+	private String getLinkbackUrlStr() {
+		return linkbackUrl.toString();
+	}
+	private void setLinkbackUrlStr(String linkbackUrl) throws MalformedURLException {
+		this.linkbackUrl = new URL(linkbackUrl);
+	}
 }

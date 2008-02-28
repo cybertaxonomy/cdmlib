@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.agent.Agent;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -33,6 +35,8 @@ public class Rights extends LanguageString {
 	private String uri;
 	private String abbreviatedText;
 	private RightsTerm type;
+	// owner etc as defined by the rightstype
+	private Agent agent;
 
 	public Rights(String text, Language lang) {
 		super(text, lang);
@@ -62,6 +66,16 @@ public class Rights extends LanguageString {
 	}
 	public void setAbbreviatedText(String abbreviatedStatement){
 		this.abbreviatedText = abbreviatedStatement;
+	}
+
+
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Agent getAgent() {
+		return agent;
+	}
+	public void setAgent(Agent agent) {
+		this.agent = agent;
 	}
 
 }

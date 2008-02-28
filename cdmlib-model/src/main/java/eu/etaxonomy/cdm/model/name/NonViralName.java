@@ -43,6 +43,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	private Agent combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
 	private Agent exCombinationAuthorTeam;
+	//Author team that published the original publication
+	private Agent basionymAuthorTeam;
+	//Author team that contributed to the original publication of the name
+	private Agent exBasionymAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 	
@@ -92,55 +96,24 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
-
-	@Transient
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getBasionymAuthorTeam(){
-		if (getBasionym() == null){
-			return null;
-		}else{
-			return getBasionym().getCombinationAuthorTeam();
-		}
+		return basionymAuthorTeam;
 	}
-	public void setBasionymAuthorTeam(Agent basionymAuthorTeam){
-		if (getBasionym() == null){
-			try {
-				setBasionym(this.getClass().newInstance());
-			} catch (InstantiationException e) {
-				logger.error(e.getMessage());
-				setBasionym(new NonViralName<T>());
-			} catch (IllegalAccessException e) {
-				logger.error(e.getMessage());
-				setBasionym(new NonViralName<T>());
-			}
-		}
-		getBasionym().setCombinationAuthorTeam(basionymAuthorTeam);
+	public void setBasionymAuthorTeam(Agent basionymAuthorTeam) {
+		this.basionymAuthorTeam = basionymAuthorTeam;
 	}
 
-	@Transient
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getExBasionymAuthorTeam(){
-		if (getBasionym() == null){
-			return null;
-		}else{
-			return getBasionym().getExCombinationAuthorTeam();
-		}
+		return exBasionymAuthorTeam;
 	}
-	public void setExBasionymAuthorTeam(Agent exBasionymAuthorTeam){
-		if (getBasionym() == null){
-			try {
-				setBasionym(this.getClass().newInstance());
-			} catch (InstantiationException e) {
-				logger.error(e.getMessage());
-				setBasionym(new NonViralName<T>());
-			} catch (IllegalAccessException e) {
-				logger.error(e.getMessage());
-				setBasionym(new NonViralName<T>());
-			}
-		}
-		getBasionym().setExCombinationAuthorTeam(exBasionymAuthorTeam);
-		
+	public void setExBasionymAuthorTeam(Agent exBasionymAuthorTeam) {
+		this.exBasionymAuthorTeam = exBasionymAuthorTeam;
 	}
 
-	
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}
