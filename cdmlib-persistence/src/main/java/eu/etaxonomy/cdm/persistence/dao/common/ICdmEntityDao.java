@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public interface ICdmEntityDao<T extends CdmBase> {
 	
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException;
+
+	//public UUID saveOrUpdateAll(Collection<T> transientObjects) throws DataAccessException;
 	
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	

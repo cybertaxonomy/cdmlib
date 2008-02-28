@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
