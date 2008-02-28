@@ -3,7 +3,9 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -46,6 +48,12 @@ public class AgentServiceImpl extends IdentifiableServiceBase<Agent> implements 
 	public UUID saveAgent(Agent agent) {
 		return super.saveCdmObject(agent);
 	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection){
+		return saveCdmObjectAll(agentCollection);
+	}
+
 	
 	public List<Agent> getAllAgents(int limit, int start){
 		return agentDao.list(limit, start);

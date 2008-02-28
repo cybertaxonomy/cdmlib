@@ -47,16 +47,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
-	//TODO generic
 	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<TaxonNameBase> taxonNameCollection){
-		Map<UUID, TaxonNameBase> resultMap = new HashMap<UUID, TaxonNameBase>();
-		Iterator<TaxonNameBase> iterator = taxonNameCollection.iterator();
-		while(iterator.hasNext()){
-			TaxonNameBase taxonNameBase = iterator.next();
-			UUID uuid = saveTaxonName(taxonNameBase);
-			resultMap.put(uuid, taxonNameBase);
-		}
-		return resultMap;
+		return saveCdmObjectAll(taxonNameCollection);
 	}
 	
 	@Transactional(readOnly = false)

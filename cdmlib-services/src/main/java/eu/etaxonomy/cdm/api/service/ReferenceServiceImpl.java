@@ -39,16 +39,8 @@ public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements 
 	}
 
 	@Transactional(readOnly = false)
-	//TODO generic
 	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection) {
-		Map<UUID, ReferenceBase> resultMap = new HashMap<UUID, ReferenceBase>();
-		Iterator<ReferenceBase> iterator = referenceCollection.iterator();
-		while(iterator.hasNext()){
-			ReferenceBase refBase = iterator.next();
-			UUID uuid = saveReference(refBase);
-			resultMap.put(uuid, refBase);
-		}
-		return resultMap;
+		return saveCdmObjectAll(referenceCollection);
 	}
 
 	

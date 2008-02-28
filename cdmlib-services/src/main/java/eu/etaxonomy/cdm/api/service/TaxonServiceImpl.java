@@ -42,16 +42,8 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 	
 	@Transactional(readOnly = false)
-	//TODO generic
 	public Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection){
-		Map<UUID, TaxonBase> resultMap = new HashMap<UUID, TaxonBase>();
-		Iterator<TaxonBase> iterator = taxonCollection.iterator();
-		while(iterator.hasNext()){
-			TaxonBase taxonBase = iterator.next();
-			UUID uuid = saveTaxon(taxonBase);
-			resultMap.put(uuid, taxonBase);
-		}
-		return resultMap;
+		return saveCdmObjectAll(taxonCollection);
 	}
 
 	
