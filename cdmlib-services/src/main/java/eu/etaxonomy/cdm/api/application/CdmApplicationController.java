@@ -40,8 +40,26 @@ public class CdmApplicationController {
 	private IDatabaseService databaseService;
 	private ITermService termService;
 	
-	
 	private Server hsqldbServer;
+
+	public enum HBM2DDL{
+		VALIDATE,
+		UPDATE,
+		CREATE;
+	
+		public String getHibernateString(){
+			switch (this){
+				case VALIDATE:
+					return "validate";
+				case UPDATE:
+					return "update";
+				case CREATE:
+					return "create";
+				default: 
+					throw new IllegalArgumentException( "Unknown enumeration type" );
+			}
+		}
+	}
 	
 	
 	/**
@@ -51,7 +69,8 @@ public class CdmApplicationController {
 	public CdmApplicationController() {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
-		setNewDataSource(dataSource);
+		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+		setNewDataSource(dataSource, hbm2dll);
 	}
 	
 	/**
@@ -61,7 +80,21 @@ public class CdmApplicationController {
 	public CdmApplicationController(CdmDataSource dataSource) 
 			throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
-		if (setNewDataSource(dataSource) == false){
+		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+		if (setNewDataSource(dataSource, hbm2dll) == false){
+			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
+		}
+	}
+	
+	
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
+	 * @param dataSource
+	 */
+	public CdmApplicationController(CdmDataSource dataSource, HBM2DDL hbm2dll) 
+			throws DataSourceNotFoundException{
+		logger.info("Start CdmApplicationController with datasource: " + dataSource);
+		if (setNewDataSource(dataSource, hbm2dll) == false){
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
 	}
@@ -71,8 +104,11 @@ public class CdmApplicationController {
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(CdmDataSource dataSource) {
-		dataSource.updateSessionFactory("validate");
+	private boolean setNewDataSource(CdmDataSource dataSource, HBM2DDL hbm2dll) {
+		if (hbm2dll == null){
+			hbm2dll = hbm2dll.VALIDATE;
+		}
+		dataSource.updateSessionFactory(hbm2dll.getHibernateString());
 		logger.info("Connecting to '" + dataSource.getName() + "'");
 		FileSystemXmlApplicationContext appContext;
 		try {
@@ -80,10 +116,20 @@ public class CdmApplicationController {
 			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());
 		} catch (BeanCreationException e) {
 			// create new schema
-			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
-			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
-			dataSource.updateSessionFactory("create"); 
-			appContext = new FileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());		
+			if (hbm2dll == HBM2DDL.VALIDATE) {
+				logger.error("ApplicationContext could not be created. " +
+					" Maybe your database schema is not up-to-date, " +
+					" but there might be other BeanCreation problems too." +
+					" Try to run CdmApplicationController with hbm2dll.CREATE or hbm2dll.UPDATE option. ");
+			} else {
+				logger.error("BeanCreationException (CdmApplicationController startet with " + hbm2dll.getHibernateString() + " option.");
+			}
+			e.printStackTrace();
+			return false;
+//			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
+//			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
+//			dataSource.updateSessionFactory("create"); 
+//			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());		
 		}
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
@@ -126,7 +172,16 @@ public class CdmApplicationController {
 	 */
 	public boolean changeDataSource(CdmDataSource dataSource) {
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource);
+		return setNewDataSource(dataSource, HBM2DDL.VALIDATE);
+	}
+	
+	/**
+	 * Changes the ApplicationContext to the new dataSource
+	 * @param dataSource
+	 */
+	public boolean changeDataSource(CdmDataSource dataSource, HBM2DDL hbm2dll) {
+		logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource, hbm2dll);
 	}
 	
 	/**

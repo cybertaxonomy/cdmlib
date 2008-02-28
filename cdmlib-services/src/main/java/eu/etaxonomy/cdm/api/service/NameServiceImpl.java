@@ -7,10 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -39,6 +44,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	@Transactional(readOnly = false)
 	public UUID saveTaxonName(TaxonNameBase taxonName) {
 		return super.saveCdmObject(taxonName);
+	}
+	
+	@Transactional(readOnly = false)
+	//TODO generic
+	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<TaxonNameBase> taxonNameCollection){
+		Map<UUID, TaxonNameBase> resultMap = new HashMap<UUID, TaxonNameBase>();
+		Iterator<TaxonNameBase> iterator = taxonNameCollection.iterator();
+		while(iterator.hasNext()){
+			TaxonNameBase taxonNameBase = iterator.next();
+			UUID uuid = saveTaxonName(taxonNameBase);
+			resultMap.put(uuid, taxonNameBase);
+		}
+		return resultMap;
 	}
 	
 	@Transactional(readOnly = false)

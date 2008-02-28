@@ -10,7 +10,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -36,6 +40,20 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
 	}
+	
+	@Transactional(readOnly = false)
+	//TODO generic
+	public Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection){
+		Map<UUID, TaxonBase> resultMap = new HashMap<UUID, TaxonBase>();
+		Iterator<TaxonBase> iterator = taxonCollection.iterator();
+		while(iterator.hasNext()){
+			TaxonBase taxonBase = iterator.next();
+			UUID uuid = saveTaxon(taxonBase);
+			resultMap.put(uuid, taxonBase);
+		}
+		return resultMap;
+	}
+
 	
 
 	@Transactional(readOnly = false)

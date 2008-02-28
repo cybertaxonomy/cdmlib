@@ -7,7 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -33,6 +37,20 @@ public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements 
 	public UUID saveReference(ReferenceBase reference) {
 		return super.saveCdmObject(reference);
 	}
+
+	@Transactional(readOnly = false)
+	//TODO generic
+	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection) {
+		Map<UUID, ReferenceBase> resultMap = new HashMap<UUID, ReferenceBase>();
+		Iterator<ReferenceBase> iterator = referenceCollection.iterator();
+		while(iterator.hasNext()){
+			ReferenceBase refBase = iterator.next();
+			UUID uuid = saveReference(refBase);
+			resultMap.put(uuid, refBase);
+		}
+		return resultMap;
+	}
+
 	
 	public List<ReferenceBase> getAllReferences(int limit, int start){
 			return referenceDao.list(limit, start);
