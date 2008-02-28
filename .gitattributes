@@ -12,6 +12,7 @@ cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-io/INSTALL.txt -text
 cdmlib-io/pom.xml -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelReferenceIO.java -text
