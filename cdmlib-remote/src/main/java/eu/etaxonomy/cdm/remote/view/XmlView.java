@@ -1,6 +1,9 @@
 package eu.etaxonomy.cdm.remote.view;
 
+import java.io.BufferedWriter;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +24,10 @@ public class XmlView implements View {
 		return "text/xml";
 	}
 
-	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		// Retrieve data from model
 		Object dto = model.values().toArray()[0];
-		
 		// Write the XML document to the reponse output stream
-		OutputStream out = response.getOutputStream();
 		XppDriver xpp = new XppDriver();
 		XStream xstream = new XStream(xpp);
 		/* 
@@ -36,7 +36,9 @@ public class XmlView implements View {
 		 * */ 
 		xstream.setMode(XStream.NO_REFERENCES);
 		// serialize DTO into XML
-		xstream.toXML(dto,out);
+		Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
+		xstream.toXML(dto, out);
+		
 	}
 
 }
