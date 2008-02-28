@@ -34,9 +34,10 @@ public class BerlinModelTaxonIO {
 			Source source, 
 			CdmApplicationController cdmApp, 
 			boolean deleteAll, 
-			Map<Integer, UUID> taxonMap,
-			Map<Integer, UUID> taxonNameMap,
-			Map<Integer, UUID> referenceMap){
+			MapWrapper<TaxonBase> taxonMap,
+			MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap){
+		
 		String dbAttrName;
 		String cdmAttrName;
 		
@@ -79,21 +80,10 @@ public class BerlinModelTaxonIO {
 				int refFk = rs.getInt("refFk");
 				
 				TaxonNameBase taxonName;
-				UUID nameUuid = taxonNameMap.get(nameFk);
-				if (nameUuid == null){
-					taxonName = null;
-				}else{
-					taxonName  = nameService.getTaxonNameByUuid(nameUuid);
-				}
-				
-				
+				taxonName  = taxonNameMap.get(nameFk);
+								
 				ReferenceBase reference;
-				UUID refUuid = referenceMap.get(refFk);
-				if (refUuid == null){
-					reference = null;
-				}else{
-					reference  = referenceService.getReferenceByUuid(refUuid);
-				}
+				reference = referenceMap.get(refFk);
 				
 				TaxonBase taxonBase;
 				Synonym synonym;
@@ -130,7 +120,7 @@ public class BerlinModelTaxonIO {
 					//ALL
 					
 					UUID taxonUuid = taxonService.saveTaxon(taxonBase);
-					taxonMap.put(taxonId, taxonUuid);
+					taxonMap.put(taxonId, taxonBase);
 					
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");

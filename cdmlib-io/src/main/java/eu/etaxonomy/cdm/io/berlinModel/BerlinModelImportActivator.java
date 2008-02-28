@@ -45,6 +45,7 @@ public class BerlinModelImportActivator {
 	static String cdmPwd = "wp5";
 
 	
+	static HBM2DDL hbm2dll = HBM2DDL.CREATE;
 	
 	
 	/**
@@ -74,7 +75,6 @@ public class BerlinModelImportActivator {
 			dataSource = CdmDataSource.save(dataSourceName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
 		}
 		try {
-			HBM2DDL hbm2dll = HBM2DDL.CREATE;
 			cdmApp = new CdmApplicationController(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			logger.error(e.getMessage());

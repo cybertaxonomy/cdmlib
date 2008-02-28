@@ -57,9 +57,11 @@ public class BerlinModelImport {
 
 	
 	//Hashmaps for Joins
-	private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
-	private Map<Integer, UUID> taxonNameMap = new HashMap<Integer, UUID>();
-	private Map<Integer, UUID> taxonMap = new HashMap<Integer, UUID>();
+	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
+
+	//private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
+	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(null);
+	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(null);
 
 
 	/**
@@ -76,16 +78,16 @@ public class BerlinModelImport {
 		makeAuthors();
 		
 		//make and save References
-		if (true){
-			if (! BerlinModelReferenceIO.invoke(source, cdmApp, deleteAll, referenceMap)){
+		if (false){
+			if (! BerlinModelReferenceIO.invoke(source, cdmApp, deleteAll, referenceStore)){
 				return false;
 			}
 		}else{
-			referenceMap = null;
+			referenceStore = null;
 		}
 		
 		//make and save Names
-		if (! BerlinModelTaxonNameIO.invoke(source, cdmApp, deleteAll, taxonNameMap, referenceMap)){
+		if (! BerlinModelTaxonNameIO.invoke(source, cdmApp, deleteAll, taxonNameStore, referenceStore)){
 			return false;
 		}
 		
@@ -94,7 +96,7 @@ public class BerlinModelImport {
 		}
 		
 		//make and save Taxa
-		if (! BerlinModelTaxonIO.invoke(source, cdmApp, deleteAll, taxonMap, taxonNameMap, referenceMap)){
+		if (! BerlinModelTaxonIO.invoke(source, cdmApp, deleteAll, taxonStore, taxonNameStore, referenceStore)){
 			return false;
 		}
 		
@@ -204,8 +206,8 @@ public class BerlinModelImport {
 				int factId = rs.getInt("factId");
 				int relTypeFk = rs.getInt("relTypeFk");
 				
-				TaxonBase taxon1 = getTaxonById(taxon1Id, taxonService);
-				TaxonBase taxon2 = getTaxonById(taxon2Id, taxonService);
+				TaxonBase taxon1 = taxonStore.get(taxon1Id);
+				TaxonBase taxon2 = taxonStore.get(taxon2Id);
 				
 				//TODO
 				ReferenceBase citation = null;
@@ -242,18 +244,6 @@ public class BerlinModelImport {
 	}
 	
 	
-	private TaxonBase getTaxonById(int id, IService<TaxonBase> service){
-		TaxonBase result;
-		UUID uuid = taxonMap.get(id);
-		if (uuid == null){
-			result = null;
-		}else{
-			result  = ((ITaxonService)service).getTaxonByUuid(uuid); //.getCdmObjectByUuid(uuid);//  taxonService.getTaxonByUuid(taxonUuid);
-		}
-		return result;
-	
-	}
-
 	/**
 	 * @return
 	 */

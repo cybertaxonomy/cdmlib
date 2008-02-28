@@ -15,8 +15,6 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +49,13 @@ public class BerlinModelReferenceIO {
 			Source source, 
 			CdmApplicationController cdmApp, 
 			boolean deleteAll, 
-			Map<Integer, UUID> referenceMap){
+			MapWrapper<ReferenceBase> referenceMap){
 		
 		String dbAttrName;
 		String cdmAttrName;
 		boolean success = true;
-		Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
+		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
+		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
 		
 		
 		logger.info("start makeReferences ...");
@@ -138,8 +137,8 @@ public class BerlinModelReferenceIO {
 							if (inRefFk != null){
 								if (inRefCategoryFk == REF_JOURNAL){
 									int inRefFkInt = (Integer)inRefFk;
-									if (referenceCollectionMap.containsKey(inRefFkInt)){
-										ReferenceBase inJournal = referenceCollectionMap.get(inRefFkInt);
+									if (referenceStore.containsId(inRefFkInt)){
+										ReferenceBase inJournal = referenceStore.get(inRefFkInt);
 										if (Journal.class.isAssignableFrom(inJournal.getClass())){
 											((Article)referenceBase).setInJournal((Journal)inJournal);
 										}else{
@@ -162,8 +161,8 @@ public class BerlinModelReferenceIO {
 								referenceBase = new BookSection();
 								if (inRefFk != null){
 									int inRefFkInt = (Integer)inRefFk;
-									if (referenceCollectionMap.containsKey(inRefFkInt)){
-										ReferenceBase inBook = referenceCollectionMap.get(inRefFkInt);
+									if (referenceStore.containsId(inRefFkInt)){
+										ReferenceBase inBook = referenceStore.get(inRefFkInt);
 										if (Book.class.isAssignableFrom(inBook.getClass())){
 											((BookSection)referenceBase).setInBook((Book)inBook);
 										}else{
@@ -223,9 +222,9 @@ public class BerlinModelReferenceIO {
 						//TODO
 						// all attributes
 						
-						if (! referenceCollectionMap.containsKey(refId)){
-							referenceCollectionMap.put(refId, referenceBase);
-							referenceMap.put(refId, referenceBase.getUuid());
+						if (! referenceStore.containsId(refId)){
+							referenceStore.put(refId, referenceBase);
+							referenceMap.put(refId, referenceBase);
 						}else{
 							logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
 						}
@@ -238,7 +237,7 @@ public class BerlinModelReferenceIO {
 					
 				} // end resultSet
 				//save and store in map
-				referenceService.saveReference(referenceCollectionMap.values());
+				referenceService.saveReferenceAll(referenceStore.objects());
 			}//end resultSetList	
 
 			logger.info("end makeReferences ...");

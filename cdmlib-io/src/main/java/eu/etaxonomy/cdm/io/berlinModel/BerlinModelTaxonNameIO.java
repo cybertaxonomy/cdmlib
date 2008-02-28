@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,8 +29,8 @@ public class BerlinModelTaxonNameIO {
 			Source source, 
 			CdmApplicationController cdmApp, 
 			boolean deleteAll, 
-			Map<Integer, UUID> taxonNameMap,
-			Map<Integer, UUID> referenceMap){
+			MapWrapper<TaxonNameBase> taxonNameMap,
+			MapWrapper<ReferenceBase> referenceMap){
 		
 		
 		String dbAttrName;
@@ -41,23 +42,24 @@ public class BerlinModelTaxonNameIO {
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = deleteAll;
 		
-		if (delete){
-			List<TaxonNameBase> listAllNames =  nameService.getAllNames(0, 1000);
-			while(listAllNames.size() > 0 ){
-				for (TaxonNameBase name : listAllNames ){
-					//FIXME
-					//nameService.remove(name);
-				}
-				listAllNames =  nameService.getAllNames(0, 1000);
-			}
-		}
+		
+//		if (delete){
+//			List<TaxonNameBase> listAllNames =  nameService.getAllNames(0, 1000);
+//			while(listAllNames.size() > 0 ){
+//				for (TaxonNameBase name : listAllNames ){
+//					//FIXME
+//					//nameService.remove(name);
+//				}
+//				listAllNames =  nameService.getAllNames(0, 1000);
+//			}
+//		}
 		
 		try {
 			
 			
 			//get data from database
 			String strQuery = 
-					"SELECT TOP 102   Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
+					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
                       		" RefDetail.SecondarySources, RefDetail.IdInSource " +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
@@ -154,8 +156,7 @@ public class BerlinModelTaxonNameIO {
 					if (referenceMap != null){
 						if (nomRefFk != null){
 							int nomRefFkInt = (Integer)nomRefFk;
-							UUID referenceUuid = referenceMap.get(nomRefFkInt);
-							ReferenceBase nomenclaturalReference = referenceService.getReferenceByUuid(referenceUuid); 
+							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
 							if (INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 								botanicalName.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
 							}else{
@@ -172,16 +173,16 @@ public class BerlinModelTaxonNameIO {
 					// Annotation annotation = new Annotation("Berlin Model nameId: " + String.valueOf(refId), Language.DEFAULT());
 					// botanicalName.addAnnotations(annotation);
 					
-					
-					UUID nameUuid = nameService.saveTaxonName(botanicalName);
-					taxonNameMap.put(nameId, nameUuid);
+					taxonNameMap.put(nameId, botanicalName);
 					
 				} catch (UnknownRankException e) {
 					logger.warn("Name with id " + nameId + " has unknown rankId " + rankId + " and could not be saved.");
 					success = false; 
 				}
 				
-			}	
+			} //while rs.hasNext()
+			nameService.saveTaxonNameAll(taxonNameMap.objects());
+			
 				
 //				//Code
 //				strAttrName = "nomenclaturalCode";
