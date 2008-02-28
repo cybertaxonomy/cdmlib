@@ -82,11 +82,12 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/AbsenceTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CharacterTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
