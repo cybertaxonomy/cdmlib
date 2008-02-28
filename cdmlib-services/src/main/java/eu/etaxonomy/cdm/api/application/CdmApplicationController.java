@@ -133,6 +133,7 @@ public class CdmApplicationController {
 		}
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
+		//TODO not necessary any more
 		if (testDefinedTermsAreMissing()){
 			TermLoader termLoader = (TermLoader) appContext.getBean("termLoader");
 			try {
