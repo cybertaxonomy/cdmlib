@@ -3,12 +3,15 @@
  */
 package eu.etaxonomy.cdm.strategy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -77,7 +80,28 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 		}
 		return result;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
+	public List<Object> getTaggedName(T nvn) {
+		List<Object> tags = new ArrayList<Object>();
+		tags.add(nvn.getGenusOrUninomial());
+		if (nvn.isSpecies() || nvn.isInfraSpecific()){
+			tags.add(nvn.getSpecificEpithet());			
+		}
+		if (nvn.isInfraSpecific()){
+			tags.add(nvn.getRank());			
+			tags.add(nvn.getInfraSpecificEpithet());			
+		}
+		Team at = new Team();
+		at.setProtectedTitleCache(true);
+		at.setTitleCache(nvn.getAuthorshipCache());
+		tags.add(at);			
+		tags.add(nvn.getNomenclaturalReference());			
+		return tags;
+	}
+
 
 	/************** PRIVATES ****************/
 		
