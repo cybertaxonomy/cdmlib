@@ -7,9 +7,8 @@
 <body>
 <h1>Links to access the CDM server</h1>
 <ul>
-	<li><a href="name/#uuid#">Names by UUID</a></li>
-	<li><a href="taxon/#uuid#">Taxa by UUID</a></li>
-	<li><a href="find/taxon/#uuid#">Taxa by UUID</a></li>
+	<li><a href="name/550e8400-e29b-41d4-a716-446655440000">Names by UUID</a></li>
+	<li><a href="taxon/550e8400-e29b-41d4-a716-446655440000">Taxa by UUID</a></li>
 </ul>
 
 <p>
