@@ -41,7 +41,8 @@ public class CdmServiceImpl implements ICdmService {
 
 	
 	/**
-	 * find matching taxonbase instance and take care of errorhandling for springmvc
+	 * find matching taxonbase instance or throw CdmObjectNonExisting exception.
+	 * never returns null!
 	 * @param uuid
 	 * @return
 	 * @throws CdmObjectNonExisting 
@@ -65,12 +66,14 @@ public class CdmServiceImpl implements ICdmService {
 	
 	public NameTO getName(UUID uuid) throws CdmObjectNonExisting{
 		// FIXME: use real name DAO not taxon DAO!
-		NameTO n = nameAssembler.getTO(getCdmTaxonBase(uuid).getName());
+		TaxonBase tb = getCdmTaxonBase(uuid);
+		NameTO n = nameAssembler.getTO(tb.getName());
 		return n;
 	}
 	
 	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting{
-		TaxonTO t = taxonAssembler.getTO(getCdmTaxonBase(uuid));
+		TaxonBase tb = getCdmTaxonBase(uuid);
+		TaxonTO t = taxonAssembler.getTO(tb);
 		return t;
 	}
 	

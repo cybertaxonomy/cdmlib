@@ -22,8 +22,12 @@ public abstract class AssemblerBase {
 	public void setIdentifiableEntity(IdentifiableEntity identObj, BaseTO to){				
 		to.setUuid(identObj.getUuid().toString());
 		to.setCreated(identObj.getCreated());
-		to.setCreatedBy(identObj.getCreatedBy().toString());
+		if(identObj.getCreatedBy()!=null){
+			to.setCreatedBy(identObj.getCreatedBy().toString());			
+		}
 		to.setUpdated(identObj.getUpdated());
-		to.setUpdatedBy(identObj.getUpdatedBy().toString());
+		if(identObj.getUpdatedBy()!=null){
+			to.setUpdatedBy(identObj.getUpdatedBy().toString());
+		}
 	}
 }

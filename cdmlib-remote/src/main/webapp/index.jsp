@@ -8,14 +8,14 @@
 <h1>Links to access the CDM server</h1>
 <h3>Get Primary Objects</h3>
 <ul>
-	<li><a href="name/550e8400-e29b-41d4-a716-446655440000">Names by UUID</a></li>
-	<li><a href="taxon/550e8400-e29b-41d4-a716-446655440000">Taxa by UUID</a></li>
-	<li><a href="whatis/550e8400-e29b-41d4-a716-446655440000">Whatis this UUID</a></li>
+	<li><a href="name/d8ebc0cc-da5b-4064-8822-61ce6e45d64d">Names by UUID</a></li>
+	<li><a href="taxon/d8ebc0cc-da5b-4064-8822-61ce6e45d64d">Taxa by UUID</a></li>
+	<li><a href="whatis/d8ebc0cc-da5b-4064-8822-61ce6e45d64d">Whatis this UUID</a></li>
 </ul>
 <h3>Taxonomy methods</h3>
 <ul>
-	<li><a href="taxonomy/550e8400-e29b-41d4-a716-446655440000/parent">Parent taxon by UUID</a></li>
-	<li><a href="taxonomy/550e8400-e29b-41d4-a716-446655440000/children">Child taxa by UUID</a></li>
+	<li><a href="taxonomy/d8ebc0cc-da5b-4064-8822-61ce6e45d64d/parent">Parent taxon by UUID</a></li>
+	<li><a href="taxonomy/d8ebc0cc-da5b-4064-8822-61ce6e45d64d/children">Child taxa by UUID</a></li>
 </ul>
 
 <a href="insert">Insert test taxon</a>
