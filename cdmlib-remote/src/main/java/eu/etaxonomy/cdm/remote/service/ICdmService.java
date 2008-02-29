@@ -35,12 +35,31 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
  */
 public interface ICdmService {
 
-	public Class whatis(UUID uuid);
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public Class whatis(UUID uuid) throws CdmObjectNonExisting;
 
-	public NameTO getName(UUID uuid);// throws BusinessLogicException;
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public NameTO getName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
 
-	public TaxonTO getTaxon(UUID uuid);
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting;
 
+	/**
+	 * @param uuid
+	 * @return
+	 */
 	public ReferenceTO getReference(UUID uuid);
 
 	/**
@@ -66,8 +85,14 @@ public interface ICdmService {
 	 *         
 	 *         For pro parte synonyms there might exist more than 1 accepted taxon,
 	 *         therefore we use the ResultSetPageSTO wrapper
+	 * @throws CdmObjectNonExisting 
 	 */
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid);
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * Find taxa matching the query defined by the given parameters.
@@ -107,8 +132,9 @@ public interface ICdmService {
 	 * @return A List of all parent taxa including the one referenced by the
 	 *         parameter uuid. The {@link TreeNode} elements are ordered in the
 	 *         direction from root up to the references taxon.
+	 * @throws CdmObjectNonExisting 
 	 */
-	public List<TreeNode> getParentTaxa(UUID uuid);
+	public List<TreeNode> getParentTaxa(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * Getter to retrieve the children of the taxon referenced by the parameter
@@ -118,8 +144,9 @@ public interface ICdmService {
 	 *            the UUID of the {@link eu.etaxonomy.model.taxon.Taxon}
 	 * @return A List of all taxa which are children in of the referenced taxon
 	 *         in the concept tree.
+	 * @throws CdmObjectNonExisting 
 	 */
-	public List<TreeNode> getChildrenTaxa(UUID uuid);
+	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * Gets the root nodes of the taxonomic concept tree for the concept

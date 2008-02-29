@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.remote.service;
 
+import java.io.IOException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,18 +84,18 @@ public class RestController extends AbstractController
 					NameTO n = service.getName(UUID.fromString(uuid));
 					mv.addObject(n);
 				}catch(IllegalArgumentException e){
-					//TODO: raise http400 error
-					resp.sendError(404, uuid + " is no valid UUID");
-					return null;
+					sendNonValidUuidError(resp,uuid);
+				}catch(CdmObjectNonExisting e){
+					sendNonExistingUuidError(resp,uuid);
 				}
 			}else if(dto.equalsIgnoreCase("taxon")){
 				try{
 					NameTO n = service.getName(UUID.fromString(uuid));
 					mv.addObject(n);
 				}catch(IllegalArgumentException e){
-					//TODO: raise http400 error
-					resp.sendError(404, uuid + " is no valid UUID");
-					return null;
+					sendNonValidUuidError(resp,uuid);
+				}catch(CdmObjectNonExisting e){
+					sendNonExistingUuidError(resp,uuid);
 				}
 			}else if(dto.equalsIgnoreCase("whatis")){
 				//TODO: somehow the whatis url path is not delegatzed to this controller ?!#!??
@@ -102,9 +103,9 @@ public class RestController extends AbstractController
 					NameTO n = service.getName(UUID.fromString(uuid));
 					mv.addObject(n);
 				}catch(IllegalArgumentException e){
-					//TODO: raise http400 error
-					resp.sendError(404, uuid + " is no valid UUID");
-					return null;
+					sendNonValidUuidError(resp,uuid);
+				}catch(CdmObjectNonExisting e){
+					sendNonExistingUuidError(resp,uuid);
 				}
 			}
 		}
@@ -113,6 +114,12 @@ public class RestController extends AbstractController
 		return mv;
 	}
 	
+	private void sendNonValidUuidError(HttpServletResponse resp, String uuid) throws IOException{
+		resp.sendError(404, uuid + " is no valid UUID");		
+	}
+	private void sendNonExistingUuidError(HttpServletResponse resp, String uuid) throws IOException{
+		resp.sendError(404, uuid + " not existing in CDM");		
+	}
 	/**
 	 * return the value for the given parameter name as a string. 
 	 * in case the parameters doesnt exist return an empty string "", not null.

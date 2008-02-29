@@ -1,5 +1,8 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +52,12 @@ public class TaxonAssembler extends AssemblerBase{
 		tn.setHasChildren(taxon.getTaxonomicChildren().size());
 		tn.setTaggedName(nameAssembler.getTaggedName(taxon.getName()));
 		return tn;
+	}
+	public List<TreeNode> getTreeNodeList(Taxon[] taxa){
+		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
+		for (Taxon t : taxa){
+			result.add(this.getTreeNode(t));
+		}
+		return result;
 	}
 }

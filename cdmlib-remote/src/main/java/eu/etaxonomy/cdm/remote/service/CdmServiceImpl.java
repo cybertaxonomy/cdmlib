@@ -44,26 +44,37 @@ public class CdmServiceImpl implements ICdmService {
 	 * find matching taxonbase instance and take care of errorhandling for springmvc
 	 * @param uuid
 	 * @return
+	 * @throws CdmObjectNonExisting 
 	 */
-	private TaxonBase getCdmTaxonBase(UUID uuid){
-		return taxonDAO.findByUuid(uuid);
+	private TaxonBase getCdmTaxonBase(UUID uuid) throws CdmObjectNonExisting{
+		TaxonBase tb = taxonDAO.findByUuid(uuid);
+		if (tb==null){
+			throw new CdmObjectNonExisting(uuid, TaxonBase.class);
+		}
+		return tb;
 	}
-	private Taxon getCdmTaxon(UUID uuid){
-		return (Taxon) getCdmTaxonBase(uuid);
+	private Taxon getCdmTaxon(UUID uuid) throws CdmObjectNonExisting{
+		Taxon t = null;
+		try {
+			t = (Taxon) getCdmTaxonBase(uuid);
+		} catch (ClassCastException e) {
+			throw new CdmObjectNonExisting(uuid, Taxon.class);
+		}
+		return t;
 	}
 	
-	public NameTO getName(UUID uuid) {
+	public NameTO getName(UUID uuid) throws CdmObjectNonExisting{
 		// FIXME: use real name DAO not taxon DAO!
 		NameTO n = nameAssembler.getTO(getCdmTaxonBase(uuid).getName());
 		return n;
 	}
 	
-	public TaxonTO getTaxon(UUID uuid) {
+	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting{
 		TaxonTO t = taxonAssembler.getTO(getCdmTaxonBase(uuid));
 		return t;
 	}
 	
-	public Class whatis(UUID uuid) {
+	public Class whatis(UUID uuid) throws CdmObjectNonExisting{
 		return this.getClass();
 	}
 
@@ -83,7 +94,7 @@ public class CdmServiceImpl implements ICdmService {
 		return rs;
 	}
 
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid) {
+	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid) throws CdmObjectNonExisting {
 		TaxonBase tb = getCdmTaxonBase(uuid);
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		rs.setPageNumber(1);
@@ -107,7 +118,7 @@ public class CdmServiceImpl implements ICdmService {
 		return null;
 	}
 
-	public List<TreeNode> getChildrenTaxa(UUID uuid) {
+	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting {
 		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
 		Taxon tx = getCdmTaxon(uuid);
 		for (Taxon t : tx.getTaxonomicChildren()){
@@ -116,7 +127,7 @@ public class CdmServiceImpl implements ICdmService {
 		return result;
 	}
 
-	public List<TreeNode> getParentTaxa(UUID uuid) {
+	public List<TreeNode> getParentTaxa(UUID uuid) throws CdmObjectNonExisting {
 		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
 		Taxon tx = getCdmTaxon(uuid);
 		result.add(taxonAssembler.getTreeNode(tx));
@@ -134,8 +145,8 @@ public class CdmServiceImpl implements ICdmService {
 	}
 
 	public List<TreeNode> getRootTaxa(UUID uuid) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Taxon> taxa = taxonDAO.getRootTaxa(null);
+		return taxonAssembler.getTreeNodeList(taxa.toArray(new Taxon[0]));
 	}
 
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid) {
