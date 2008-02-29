@@ -332,4 +332,29 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		return this.getHomotypicalGroup().getTypeDesignations();
 	}
 	
+	// Rank comparison shortcuts
+	@Transient
+	public boolean isSupraGeneric() {
+		return getRank().isSupraGeneric();
+	}
+	@Transient
+	public boolean isGenus() {
+		return getRank().isGenus();
+	}
+	@Transient
+	public boolean isInfraGeneric() {
+		return getRank().isInfraGeneric();
+	}
+	@Transient
+	public boolean isSpecies() {
+		return getRank().isSpecies();
+	}
+	@Transient
+	public boolean isInfraSpecific() {
+		return getRank().isInfraSpecific();
+	}
+	@Transient
+	public boolean isSupraGeneric(Rank rank) {
+		return getRank().isHigher(rank);
+	}
 }
