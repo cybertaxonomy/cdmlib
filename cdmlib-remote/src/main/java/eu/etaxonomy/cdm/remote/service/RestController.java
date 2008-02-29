@@ -38,44 +38,44 @@ public class RestController extends AbstractController
 	 */
 	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp) throws Exception
 	{
-		ModelAndView mv = new ModelAndView();
-		String action = getNonNullPara("action",req);
-		if(action!=null && action.equalsIgnoreCase("find")){
-			//
-			// retrieve meaningful parameters
-			String q = getStringPara("q",req);
-			if (q==null){
-				q="";
-			};
-			UUID sec = null;
-			sec = getUuid(resp,getStringPara("sec",req));
-			Set<UUID> higherTaxa = new HashSet<UUID>();
-			// TODO: take higher taxa UUIDs from "higherTaxa"
-			Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
-			if (matchAnywhere==null){
-				matchAnywhere=false;
-			};
-			Boolean onlyAccepted = getBoolPara("onlyAccepted",req);
-			if (onlyAccepted==null){
-				onlyAccepted=false;
-			};
-			Integer page = getIntPara("page",req);
-			if (page==null){
-				page=1;
-			};
-			Integer pagesize = getIntPara("pagesize",req);
-			if (pagesize==null){
-				pagesize=25;
-			};
-			//
-			// search for taxa
-			Object obj = service.findTaxa(q, sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
-			mv.addObject(obj);
-		}else{ 
-			// get Object by UUID
-			String dto = getNonNullPara("dto",req);
-			String uuid = getNonNullPara("uuid",req);
-			try{
+		try{
+			ModelAndView mv = new ModelAndView();
+			String action = getNonNullPara("action",req);
+			if(action!=null && action.equalsIgnoreCase("find")){
+				//
+				// retrieve meaningful parameters
+				String q = getStringPara("q",req);
+				if (q==null){
+					q="";
+				};
+				UUID sec = null;
+				sec = getUuid(resp,getStringPara("sec",req));
+				Set<UUID> higherTaxa = new HashSet<UUID>();
+				// TODO: take higher taxa UUIDs from "higherTaxa"
+				Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
+				if (matchAnywhere==null){
+					matchAnywhere=false;
+				};
+				Boolean onlyAccepted = getBoolPara("onlyAccepted",req);
+				if (onlyAccepted==null){
+					onlyAccepted=false;
+				};
+				Integer page = getIntPara("page",req);
+				if (page==null){
+					page=1;
+				};
+				Integer pagesize = getIntPara("pagesize",req);
+				if (pagesize==null){
+					pagesize=25;
+				};
+				//
+				// search for taxa
+				Object obj = service.findTaxa(q, sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+				mv.addObject(obj);
+			}else{ 
+				// get Object by UUID
+				String dto = getNonNullPara("dto",req);
+				String uuid = getNonNullPara("uuid",req);
 				if(dto.equalsIgnoreCase("name")){
 					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
@@ -87,26 +87,27 @@ public class RestController extends AbstractController
 					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
 				}
-			}catch(CdmObjectNonExisting e){
-				sendNonExistingUuidError(resp,uuid);
 			}
+			// set xml or json view
+			mv.setViewName(getLogicalView(req));
+			return mv;
+		}catch(CdmObjectNonExisting e){
+			sendNonExistingUuidError(resp, e);
+			return null;
 		}
-		// set xml or json view
-		mv.setViewName(getLogicalView(req));
-		return mv;
 	}
 	
-	private UUID getUuid(HttpServletResponse resp, String uuid) throws IOException{
+	private UUID getUuid(HttpServletResponse resp, String uuid) throws CdmObjectNonExisting{
 		UUID u=null;
 		try{
 			u = UUID.fromString(uuid);
 		}catch(IllegalArgumentException e){
-			resp.sendError(404, uuid + " is no valid UUID");		
+			throw new CdmObjectNonExisting(uuid);
 		}
 		return u;
 	}
-	private void sendNonExistingUuidError(HttpServletResponse resp, String uuid) throws IOException{
-		resp.sendError(404, uuid + " not existing in CDM");		
+	private void sendNonExistingUuidError(HttpServletResponse resp, CdmObjectNonExisting e) throws IOException{
+		resp.sendError(404, e.getMessage() );		
 	}
 	/**
 	 * return the value for the given parameter name as a string. 

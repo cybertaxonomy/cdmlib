@@ -9,8 +9,12 @@ import java.util.UUID;
  *
  */
 public class CdmObjectNonExisting extends Exception {
-	   public CdmObjectNonExisting(UUID uuid, Class clas)
+	   public CdmObjectNonExisting(String uuid)
 	   { 
-	      super("CDM object of class "+ clas.getSimpleName() +" not existing: "+uuid.toString());
+	      super("CDM object not existing: "+uuid);
+	   }
+	   public CdmObjectNonExisting(String uuid, Class clas)
+	   { 
+	      super("CDM object of class "+ clas.getSimpleName() +" not existing: "+uuid);
 	   }
 }

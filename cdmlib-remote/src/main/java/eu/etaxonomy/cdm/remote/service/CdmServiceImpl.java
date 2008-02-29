@@ -49,7 +49,7 @@ public class CdmServiceImpl implements ICdmService {
 	private TaxonBase getCdmTaxonBase(UUID uuid) throws CdmObjectNonExisting{
 		TaxonBase tb = taxonDAO.findByUuid(uuid);
 		if (tb==null){
-			throw new CdmObjectNonExisting(uuid, TaxonBase.class);
+			throw new CdmObjectNonExisting(uuid.toString(), TaxonBase.class);
 		}
 		return tb;
 	}
@@ -58,7 +58,7 @@ public class CdmServiceImpl implements ICdmService {
 		try {
 			t = (Taxon) getCdmTaxonBase(uuid);
 		} catch (ClassCastException e) {
-			throw new CdmObjectNonExisting(uuid, Taxon.class);
+			throw new CdmObjectNonExisting(uuid.toString(), Taxon.class);
 		}
 		return t;
 	}
