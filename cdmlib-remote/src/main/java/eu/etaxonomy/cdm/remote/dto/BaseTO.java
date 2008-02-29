@@ -20,20 +20,13 @@ import java.util.Calendar;
  * @created 11.12.2007 11:14:44
  *
  */
-public class BaseTO {
+public abstract class BaseTO extends BaseSTO{
 	
-	private String uuid;
 	private Calendar created;
 	private String createdBy;
 	private Calendar updated;
 	private String updatedBy;
 	
-	public String getUuid() {
-		return uuid;
-	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 	public Calendar getCreated() {
 		return created;
 	}

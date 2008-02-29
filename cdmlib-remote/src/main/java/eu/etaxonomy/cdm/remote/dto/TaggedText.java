@@ -37,6 +37,10 @@ public class TaggedText {
 	public TaggedText() {
 		super();
 	}
+	public TaggedText(String text) {
+		super();
+		this.text = text;
+	}
 	public TaggedText(TagEnum type, String text) {
 		super();
 		this.text = text;

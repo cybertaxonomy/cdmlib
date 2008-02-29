@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.remote.dto;
  * @created 05.02.2008 14:58:55
  *
  */
-public class BaseSTO {
+public abstract class BaseSTO {
 
 	private String uuid;
 	

@@ -1,12 +1,17 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -64,6 +69,35 @@ public class NameAssembler extends AssemblerBase{
 		return n;
 	}
 	public List<TaggedText> getTaggedName(TaxonNameBase tnb){
-		return getSTO(tnb).getTaggedName();
+		List<TaggedText> tags = new ArrayList<TaggedText>();
+		for (Object token : tnb.getCacheStrategy().getTaggedName(tnb)){
+			TaggedText tag = new TaggedText();
+			if (String.class.isInstance(token)){
+				tag.setText((String)token);
+				tag.setType(TagEnum.name);
+			}
+			else if (Rank.class.isInstance(token)){
+				Rank r = (Rank)token;
+				tag.setText(r.getAbbreviation());
+				tag.setType(TagEnum.rank);
+			}
+			else if (ReferenceBase.class.isAssignableFrom(token.getClass())){
+				ReferenceBase ref = (ReferenceBase)token;
+				tag.setText(ref.getTitleCache());
+				tag.setType(TagEnum.reference);
+			}
+			else if (Date.class.isInstance(token.getClass())){
+				Date d = (Date)token;
+				tag.setText(String.valueOf(d.getYear()));
+				tag.setType(TagEnum.year);
+			}
+			else if (Team.class.isInstance(token.getClass())){
+				Team t = (Team)token;
+				tag.setText(String.valueOf(t.getTitleCache()));
+				tag.setType(TagEnum.authors);
+			}
+			tags.add(tag);
+		}
+		return tags;
 	}
 }
