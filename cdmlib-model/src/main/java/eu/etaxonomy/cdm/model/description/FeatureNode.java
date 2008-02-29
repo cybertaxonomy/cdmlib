@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,7 @@ public class FeatureNode extends VersionableEntity {
 		this.type = type;
 	}
 	
+	@ManyToOne
 	public FeatureNode getParent() {
 		return parent;
 	}
