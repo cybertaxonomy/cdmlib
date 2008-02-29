@@ -83,7 +83,7 @@ public class RestController extends AbstractController
 					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("whatis")){
-					//TODO: somehow the whatis url path is not delegatzed to this controller ?!#!??
+					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
 					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
 				}
