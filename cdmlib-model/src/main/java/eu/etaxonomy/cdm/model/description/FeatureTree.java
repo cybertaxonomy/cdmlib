@@ -43,6 +43,7 @@ public class FeatureTree extends TermBase {
 		this.nodes = nodes;
 	}
 
+	@ManyToOne
 	public FeatureNode getRoot() {
 		return root;
 	}

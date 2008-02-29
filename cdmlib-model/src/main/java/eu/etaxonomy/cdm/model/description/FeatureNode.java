@@ -29,6 +29,7 @@ public class FeatureNode extends VersionableEntity {
 	private FeatureNode parent;
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 	
+	@ManyToOne
 	public FeatureType getType() {
 		return type;
 	}
