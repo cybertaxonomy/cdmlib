@@ -22,6 +22,9 @@
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
+                <prop key="/(taxonomy:action)/(*:uuid)/(parent:operation)">restController</prop>
+                <prop key="/(taxonomy:action)/(*:uuid)/(children:operation)">restController</prop>
+                <prop key="/(insert:action)">restController</prop>
             </props>
         </property>
     </bean>

@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
+import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.view.XmlView;
 import eu.etaxonomy.cdm.remote.service.Utils;
 
@@ -30,6 +33,8 @@ public class RestController extends AbstractController
 
 	@Autowired
 	private ICdmService service;
+	@Autowired
+	private ITaxonDao taxonDAO;
 
 	/* 
 	 * return page not found http error (400?) for unknown or incorrect UUIDs
@@ -41,15 +46,31 @@ public class RestController extends AbstractController
 		try{
 			ModelAndView mv = new ModelAndView();
 			String action = getNonNullPara("action",req);
-			if(action!=null && action.equalsIgnoreCase("find")){
+			String op = getNonNullPara("operation",req);
+			String dto = getNonNullPara("dto",req);
+			String uuid = getNonNullPara("uuid",req);
+			String sec = getStringPara("sec",req);
+
+			if(action==null){
+				// get Object by UUID
+				if(dto.equalsIgnoreCase("name")){
+					NameTO n = service.getName( getUuid(uuid));
+					mv.addObject(n);
+				}else if(dto.equalsIgnoreCase("taxon")){
+					NameTO n = service.getName( getUuid(uuid));
+					mv.addObject(n);
+				}else if(dto.equalsIgnoreCase("whatis")){
+					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
+					NameTO n = service.getName( getUuid(uuid));
+					mv.addObject(n);
+				}
+			}else if(action.equalsIgnoreCase("find")){
 				//
 				// retrieve meaningful parameters
 				String q = getStringPara("q",req);
 				if (q==null){
 					q="";
 				};
-				UUID sec = null;
-				sec = getUuid(resp,getStringPara("sec",req));
 				Set<UUID> higherTaxa = new HashSet<UUID>();
 				// TODO: take higher taxa UUIDs from "higherTaxa"
 				Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
@@ -70,23 +91,25 @@ public class RestController extends AbstractController
 				};
 				//
 				// search for taxa
-				Object obj = service.findTaxa(q, sec, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+				Object obj = service.findTaxa(q, getUuid(sec), higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
 				mv.addObject(obj);
-			}else{ 
-				// get Object by UUID
-				String dto = getNonNullPara("dto",req);
-				String uuid = getNonNullPara("uuid",req);
-				if(dto.equalsIgnoreCase("name")){
-					NameTO n = service.getName( getUuid(resp,uuid));
-					mv.addObject(n);
-				}else if(dto.equalsIgnoreCase("taxon")){
-					NameTO n = service.getName( getUuid(resp,uuid));
-					mv.addObject(n);
-				}else if(dto.equalsIgnoreCase("whatis")){
-					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
-					NameTO n = service.getName( getUuid(resp,uuid));
-					mv.addObject(n);
+			}else if(action.equalsIgnoreCase("taxonomy")){
+				Object obj = null; 
+				if(op!=null && op.equalsIgnoreCase("children")){
+					obj = service.getChildrenTaxa(getUuid(uuid));
 				}
+				else if(op!=null && op.equalsIgnoreCase("parent")){
+					obj = service.getParentTaxa(getUuid(uuid));
+				}
+				mv.addObject(obj);
+			}else if(action.equalsIgnoreCase("insert")){
+				// insert test data.
+				//
+				// TODO: THIS OPERATION IS FOR TESTING ONLY AND SHOULD BE REMOVED !!!
+				//
+				Taxon t = TestDataGenerator.getTestTaxon();
+				taxonDAO.save(t);
+				mv.addObject("status", "Test data inserted");
 			}
 			// set xml or json view
 			mv.setViewName(getLogicalView(req));
@@ -97,7 +120,7 @@ public class RestController extends AbstractController
 		}
 	}
 	
-	private UUID getUuid(HttpServletResponse resp, String uuid) throws CdmObjectNonExisting{
+	private UUID getUuid(String uuid) throws CdmObjectNonExisting{
 		UUID u=null;
 		try{
 			u = UUID.fromString(uuid);
