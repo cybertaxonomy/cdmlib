@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
@@ -29,12 +28,10 @@ import eu.etaxonomy.cdm.remote.service.Utils;
  */
 public class RestController extends AbstractController
 {
-	Log log = LogFactory.getLog(XmlView.class);
+	Log log = LogFactory.getLog(RestController.class);
 
 	@Autowired
 	private ICdmService service;
-	@Autowired
-	private ITaxonDao taxonDAO;
 
 	/* 
 	 * return page not found http error (400?) for unknown or incorrect UUIDs
@@ -50,7 +47,9 @@ public class RestController extends AbstractController
 			String dto = getNonNullPara("dto",req);
 			String uuid = getNonNullPara("uuid",req);
 			String sec = getStringPara("sec",req);
-
+			
+			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
+			
 			if(action==null){
 				// get Object by UUID
 				if(dto.equalsIgnoreCase("name")){
@@ -108,7 +107,7 @@ public class RestController extends AbstractController
 				// TODO: THIS OPERATION IS FOR TESTING ONLY AND SHOULD BE REMOVED !!!
 				//
 				Taxon t = TestDataGenerator.getTestTaxon();
-				taxonDAO.save(t);
+				service.saveTaxon(t);
 				mv.addObject("status", "Test data inserted");
 			}
 			// set xml or json view
@@ -120,6 +119,13 @@ public class RestController extends AbstractController
 		}
 	}
 	
+	/**
+	 * return a proper UUID for a string resembling a UUID
+	 * If the uuid string is not a valid UUID, a CdmObjectNonExisting exception is thrown
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
 	private UUID getUuid(String uuid) throws CdmObjectNonExisting{
 		UUID u=null;
 		try{

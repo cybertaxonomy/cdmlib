@@ -154,6 +154,9 @@ public class CdmServiceImpl implements ICdmService {
 		return null;
 	}
 
-
+	@Transactional(readOnly = false)
+	public void saveTaxon(Taxon t){
+		taxonDAO.save(t);
+	}
 
 }

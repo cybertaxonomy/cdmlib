@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
@@ -157,5 +158,11 @@ public interface ICdmService {
 	 * @return the List of root {@link TreeNode}s
 	 */
 	public List<TreeNode> getRootTaxa(UUID uuid);
+
+	/**
+	 * For testing only. To be removed soon!
+	 * @param t
+	 */
+	public void saveTaxon(Taxon t);
 
 }
