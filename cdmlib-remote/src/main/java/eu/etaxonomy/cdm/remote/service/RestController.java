@@ -48,11 +48,7 @@ public class RestController extends AbstractController
 				q="";
 			};
 			UUID sec = null;
-			try{
-				sec = UUID.fromString(getStringPara("sec",req));
-			}catch (Exception e){
-				// TODO: throw HTTP Error400
-			}
+			sec = getUuid(resp,getStringPara("sec",req));
 			Set<UUID> higherTaxa = new HashSet<UUID>();
 			// TODO: take higher taxa UUIDs from "higherTaxa"
 			Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
@@ -79,34 +75,20 @@ public class RestController extends AbstractController
 			// get Object by UUID
 			String dto = getNonNullPara("dto",req);
 			String uuid = getNonNullPara("uuid",req);
-			if(dto.equalsIgnoreCase("name")){
-				try{
-					NameTO n = service.getName(UUID.fromString(uuid));
+			try{
+				if(dto.equalsIgnoreCase("name")){
+					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
-				}catch(IllegalArgumentException e){
-					sendNonValidUuidError(resp,uuid);
-				}catch(CdmObjectNonExisting e){
-					sendNonExistingUuidError(resp,uuid);
-				}
-			}else if(dto.equalsIgnoreCase("taxon")){
-				try{
-					NameTO n = service.getName(UUID.fromString(uuid));
+				}else if(dto.equalsIgnoreCase("taxon")){
+					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
-				}catch(IllegalArgumentException e){
-					sendNonValidUuidError(resp,uuid);
-				}catch(CdmObjectNonExisting e){
-					sendNonExistingUuidError(resp,uuid);
-				}
-			}else if(dto.equalsIgnoreCase("whatis")){
-				//TODO: somehow the whatis url path is not delegatzed to this controller ?!#!??
-				try{
-					NameTO n = service.getName(UUID.fromString(uuid));
+				}else if(dto.equalsIgnoreCase("whatis")){
+					//TODO: somehow the whatis url path is not delegatzed to this controller ?!#!??
+					NameTO n = service.getName( getUuid(resp,uuid));
 					mv.addObject(n);
-				}catch(IllegalArgumentException e){
-					sendNonValidUuidError(resp,uuid);
-				}catch(CdmObjectNonExisting e){
-					sendNonExistingUuidError(resp,uuid);
 				}
+			}catch(CdmObjectNonExisting e){
+				sendNonExistingUuidError(resp,uuid);
 			}
 		}
 		// set xml or json view
@@ -114,8 +96,14 @@ public class RestController extends AbstractController
 		return mv;
 	}
 	
-	private void sendNonValidUuidError(HttpServletResponse resp, String uuid) throws IOException{
-		resp.sendError(404, uuid + " is no valid UUID");		
+	private UUID getUuid(HttpServletResponse resp, String uuid) throws IOException{
+		UUID u=null;
+		try{
+			u = UUID.fromString(uuid);
+		}catch(IllegalArgumentException e){
+			resp.sendError(404, uuid + " is no valid UUID");		
+		}
+		return u;
 	}
 	private void sendNonExistingUuidError(HttpServletResponse resp, String uuid) throws IOException{
 		resp.sendError(404, uuid + " not existing in CDM");		
