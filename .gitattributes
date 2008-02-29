@@ -334,8 +334,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/AssemblerBase.
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/NameAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/ICdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text

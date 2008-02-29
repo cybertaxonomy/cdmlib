@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
  * @version 1.0
  * @created 30.1.2008
  */
-public interface CdmService {
+public interface ICdmService {
 
 	public Class whatis(UUID uuid);
 

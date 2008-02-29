@@ -28,7 +28,7 @@ public class RestController extends AbstractController
 	Log log = LogFactory.getLog(XmlView.class);
 
 	@Autowired
-	private CdmService service;
+	private ICdmService service;
 
 	/* 
 	 * return page not found http error (400?) for unknown or incorrect UUIDs

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
 
 @Component
 @Transactional(readOnly = true)
-public class CdmServiceImpl implements CdmService {
+public class CdmServiceImpl implements ICdmService {
 
 	@Autowired
 	private NameAssembler nameAssembler;	
