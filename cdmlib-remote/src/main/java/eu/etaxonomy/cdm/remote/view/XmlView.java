@@ -26,7 +26,10 @@ public class XmlView implements View {
 
 	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		// Retrieve data from model
-		Object dto = model.values().toArray()[0];
+		Object dto = null;
+		if (model!=null && model.values().size()>0){
+			dto = model.values().toArray()[0];
+		}
 		// Write the XML document to the reponse output stream
 		XppDriver xpp = new XppDriver();
 		XStream xstream = new XStream(xpp);

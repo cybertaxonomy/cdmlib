@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
+import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.view.XmlView;
 import eu.etaxonomy.cdm.remote.service.Utils;
@@ -50,18 +51,18 @@ public class RestController extends AbstractController
 			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
-			if(action==null){
+			if(action==null || action==""){
 				// get Object by UUID
 				if(dto.equalsIgnoreCase("name")){
 					NameTO n = service.getName( getUuid(uuid));
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					NameTO n = service.getName( getUuid(uuid));
-					mv.addObject(n);
+					TaxonTO t = service.getTaxon(getUuid(uuid));
+					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("whatis")){
 					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
-					NameTO n = service.getName( getUuid(uuid));
-					mv.addObject(n);
+					Object cl = service.whatis(getUuid(uuid));
+					mv.addObject(cl);
 				}
 			}else if(action.equalsIgnoreCase("find")){
 				//
@@ -109,6 +110,9 @@ public class RestController extends AbstractController
 				Taxon t = TestDataGenerator.getTestTaxon();
 				service.saveTaxon(t);
 				mv.addObject("status", "Test data inserted");
+			}else{
+				// nothing matches
+				mv.addObject("status", "Controller does not know this operation");
 			}
 			// set xml or json view
 			mv.setViewName(getLogicalView(req));
