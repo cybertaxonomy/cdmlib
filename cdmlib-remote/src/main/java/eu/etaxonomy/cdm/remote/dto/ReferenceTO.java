@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 
@@ -41,4 +42,59 @@ public class ReferenceTO extends BaseTO{
 	private String year;
 	
 	private Set<IdentifiedString> mediaUri;
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public String getAuthorship() {
+		return authorship;
+	}
+
+	public void setAuthorship(String authorship) {
+		this.authorship = authorship;
+	}
+
+	public String getCitation() {
+		return citation;
+	}
+
+	public void setCitation(String citation) {
+		this.citation = citation;
+	}
+
+	public String getMicroReference() {
+		return microReference;
+	}
+
+	public void setMicroReference(String microReference) {
+		this.microReference = microReference;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public Set<IdentifiedString> getMediaUri() {
+		return mediaUri;
+	}
+
+	public void setMediaUri(Set<IdentifiedString> mediaUri) {
+		this.mediaUri = mediaUri;
+	}
+
+	public void addMediaUri(String mediaUri, UUID mediaUUID) {
+		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID.toString()));
+	}
+	public void addMediaUri(String mediaUri, String mediaUUID) {
+		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
+	}
 }

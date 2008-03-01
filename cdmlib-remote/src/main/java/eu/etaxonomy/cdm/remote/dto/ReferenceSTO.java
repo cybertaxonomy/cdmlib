@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 
@@ -28,5 +29,35 @@ public class ReferenceSTO extends BaseSTO {
 	private String fullCitation;
 
 	private Set<IdentifiedString> mediaUri;
+
+	public String getAuthorship() {
+		return authorship;
+	}
+
+	public void setAuthorship(String authorship) {
+		this.authorship = authorship;
+	}
+
+	public String getFullCitation() {
+		return fullCitation;
+	}
+
+	public void setFullCitation(String fullCitation) {
+		this.fullCitation = fullCitation;
+	}
+
+	public Set<IdentifiedString> getMediaUri() {
+		return mediaUri;
+	}
+
+	public void setMediaUri(Set<IdentifiedString> mediaUri) {
+		this.mediaUri = mediaUri;
+	}
+	public void addMediaUri(String mediaUri, UUID mediaUUID) {
+		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID.toString()));
+	}
+	public void addMediaUri(String mediaUri, String mediaUUID) {
+		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
+	}
 
 }

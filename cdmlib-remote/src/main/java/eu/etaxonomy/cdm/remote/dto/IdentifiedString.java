@@ -21,6 +21,13 @@ public class IdentifiedString extends BaseSTO{
 	
 	private String value;
 	
+	public IdentifiedString() {
+		super();
+	}
+	public IdentifiedString(String value, String uuid) {
+		super(uuid);
+		this.value = value;
+	}
 	public String getText() {
 		return value;
 	}

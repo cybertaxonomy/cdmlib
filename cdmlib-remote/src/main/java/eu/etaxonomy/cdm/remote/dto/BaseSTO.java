@@ -20,6 +20,12 @@ public abstract class BaseSTO {
 
 	private String uuid;
 	
+	public BaseSTO(String uuid) {
+		super();
+		this.uuid = uuid;
+	}
+	public BaseSTO() {
+	}
 	public String getUuid() {
 		return uuid;
 	}

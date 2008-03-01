@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -29,7 +30,9 @@ public class NameAssembler extends AssemblerBase{
 	private String[] ranks = {"subsp", "var", "f"}; 
 	
 	private Random rnd = new Random();
-
+	@Autowired
+	private ReferenceAssembler refAssembler;
+	
 	private String getRandomToken(String[] en){
 		return en[rnd.nextInt(en.length)];
 	}
@@ -55,17 +58,20 @@ public class NameAssembler extends AssemblerBase{
 		return n;
 	}
 	
-	public NameSTO getSTO(TaxonNameBase namedom){		
-		NameSTO n = this.getRandom();
-		setIdentifiableEntity(namedom, n);
-		//TODO: add more mapppings
+	public NameSTO getSTO(TaxonNameBase tnb){		
+		NameSTO n = new NameSTO();
+		setIdentifiableEntity(tnb, n);
+		n.setFullname(tnb.getTitleCache());
+		n.setTaggedName(getTaggedName(tnb));
+		n.setNomenclaturalReference(refAssembler.getSTO(tnb.getNomenclaturalReference()));
 		return n;
 	}	
-	public NameTO getTO(TaxonNameBase namedom){		
+	public NameTO getTO(TaxonNameBase tnb){		
 		NameTO n = new NameTO();
-		setIdentifiableEntity(namedom, n);
-		//TODO: add more mapppings and remove maria magdalena
-		n.setFullname("Maria magdalena subsp. hebrea");
+		setIdentifiableEntity(tnb, n);
+		n.setFullname(tnb.getTitleCache());
+		n.setTaggedName(getTaggedName(tnb));
+		n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference()));
 		return n;
 	}
 	public List<TaggedText> getTaggedName(TaxonNameBase tnb){
