@@ -8,9 +8,7 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-    
-    <context:component-scan base-package="eu.etaxonomy.cdm" />
-        
+            
     <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
         <!-- see http://www.carbonfive.com/community/archives/2007/06/parameterized_rest_urls_with_spring_mvc.html -->
         <property name="alwaysUseFullPath" value="true"/>
