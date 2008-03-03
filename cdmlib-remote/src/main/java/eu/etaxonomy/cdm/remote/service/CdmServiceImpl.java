@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -38,7 +40,8 @@ public class CdmServiceImpl implements ICdmService {
 	private TaxonAssembler taxonAssembler;
 	@Autowired
 	private ITaxonDao taxonDAO;
-
+	@Autowired
+	private ITaxonNameDao nameDAO;
 	
 	/**
 	 * find matching taxonbase instance or throw CdmObjectNonExisting exception.
@@ -63,18 +66,23 @@ public class CdmServiceImpl implements ICdmService {
 		}
 		return t;
 	}
+	private TaxonNameBase getCdmTaxonNameBase(UUID uuid) throws CdmObjectNonExisting{
+		TaxonNameBase tnb = nameDAO.findByUuid(uuid);
+		if (tnb==null){
+			throw new CdmObjectNonExisting(uuid.toString(), TaxonNameBase.class);
+		}
+		return tnb;
+	}
 	
 	public NameTO getName(UUID uuid) throws CdmObjectNonExisting{
-		// FIXME: use real name DAO not taxon DAO!
-		TaxonBase tb = getCdmTaxonBase(uuid);
-		NameTO n = nameAssembler.getTO(tb.getName());
+		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
+		NameTO n = nameAssembler.getTO(tnb);
 		return n;
 	}
 	
-	public NameTO getSimpleName(UUID uuid) throws CdmObjectNonExisting{
-		// FIXME: use real name DAO not taxon DAO!
-		TaxonBase tb = getCdmTaxonBase(uuid);
-		NameTO n = nameAssembler.getSTO(tb.getName());
+	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting{
+		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
+		NameSTO n = nameAssembler.getSTO(tnb);
 		return n;
 	}
 	
