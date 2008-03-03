@@ -1,2 +1,0 @@
-The project uses Maven2
-see parent ../INSTALL.TXT for instructions
