@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
  * Methods adopted from ws_method as found in
  * http://dev.e-taxonomy.eu/svn/trunk/drupal/modules/cdm_dataportal/cdm_api.module
  * 
+ * For URL mappings to these services please see:
+ * src/main/webapp/WEB-INF/cdmrest-servlet.xml
+ * 
  * @author m.doering
  * @author a.kohlbecker
  * @version 1.0
