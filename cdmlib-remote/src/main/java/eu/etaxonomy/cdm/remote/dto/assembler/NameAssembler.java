@@ -74,7 +74,7 @@ public class NameAssembler extends AssemblerBase{
 		n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference()));
 		return n;
 	}
-	public List<TaggedText> getTaggedName(TaxonNameBase tnb){
+	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase> tnb){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		for (Object token : tnb.getCacheStrategy().getTaggedName(tnb)){
 			TaggedText tag = new TaggedText();
