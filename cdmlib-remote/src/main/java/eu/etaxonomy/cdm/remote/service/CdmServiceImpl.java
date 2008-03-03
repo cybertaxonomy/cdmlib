@@ -71,9 +71,22 @@ public class CdmServiceImpl implements ICdmService {
 		return n;
 	}
 	
+	public NameTO getSimpleName(UUID uuid) throws CdmObjectNonExisting{
+		// FIXME: use real name DAO not taxon DAO!
+		TaxonBase tb = getCdmTaxonBase(uuid);
+		NameTO n = nameAssembler.getSTO(tb.getName());
+		return n;
+	}
+	
 	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting{
 		TaxonBase tb = getCdmTaxonBase(uuid);
 		TaxonTO t = taxonAssembler.getTO(tb);
+		return t;
+	}
+	
+	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting{
+		TaxonBase tb = getCdmTaxonBase(uuid);
+		TaxonSTO t = taxonAssembler.getSTO(tb);
 		return t;
 	}
 	

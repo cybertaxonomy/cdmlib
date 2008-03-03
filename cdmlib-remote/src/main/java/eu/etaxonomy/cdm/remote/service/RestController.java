@@ -14,8 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
+import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.view.XmlView;
@@ -64,6 +66,16 @@ public class RestController extends AbstractController
 					Object cl = service.whatis(getUuid(uuid));
 					mv.addObject(cl);
 				}
+			}else if(action.equalsIgnoreCase("simple")){
+				if(dto.equalsIgnoreCase("name")){
+					NameSTO n = service.getSimpleName( getUuid(uuid));
+					mv.addObject(n);
+				}else if(dto.equalsIgnoreCase("taxon")){
+					TaxonSTO t = service.getSimpleTaxon(getUuid(uuid));
+					mv.addObject(t);
+				}/*else if(dto.equalsIgnoreCase("ref")){
+					//TODO
+				}*/
 			}else if(action.equalsIgnoreCase("find")){
 				//
 				// retrieve meaningful parameters
