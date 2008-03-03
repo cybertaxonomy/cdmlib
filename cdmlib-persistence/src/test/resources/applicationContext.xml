@@ -9,6 +9,6 @@
 
 
 	<import resource="cdm-persistence.xml" />
-	<import resource="cdm-jdbc-datasource.xml" />
+	<import resource="cdm-hsql-datasource.xml" />
     
 </beans>

@@ -15,7 +15,7 @@ public class TestSessionFactory {
 	
 	
 	private boolean testFromApplication(){
-		String appContextString = "applicationContext-test.xml";
+		String appContextString = "applicationContext.xml";
 		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(appContextString);
 		appContext.close();
 		return true;

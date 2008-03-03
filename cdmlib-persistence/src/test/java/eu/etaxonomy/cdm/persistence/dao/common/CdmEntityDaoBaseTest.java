@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/applicationContext-test.xml"})
+@ContextConfiguration(locations={"/applicationContext.xml"})
 @TransactionConfiguration(defaultRollback=false)   //TODO rollback=true does not work yet because of Terms
 @Transactional
 public class CdmEntityDaoBaseTest {
