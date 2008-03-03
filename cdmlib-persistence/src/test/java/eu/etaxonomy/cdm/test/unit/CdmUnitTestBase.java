@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Basic CDM unit testing class that incorporates the Spring Context for DI
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/applicationContext-test.xml"})
+@ContextConfiguration(locations={"/applicationContext.xml"})
 @TransactionConfiguration(defaultRollback=true)
 @Transactional
 public abstract class CdmUnitTestBase{

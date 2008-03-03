@@ -273,10 +273,10 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IRef
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/ReferenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDaoHibernateImpl.java -text
-cdmlib-persistence/src/main/resources/applicationContext.xml -text
-cdmlib-persistence/src/main/resources/cdm.datasource.xml -text
+cdmlib-persistence/src/main/resources/cdm-hsql-datasource.xml -text
+cdmlib-persistence/src/main/resources/cdm-jdbc-datasource.xml -text
+cdmlib-persistence/src/main/resources/cdm-persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
-cdmlib-persistence/src/main/resources/sessionfactory.xml -text
 cdmlib-persistence/src/site/apt/index.apt -text
 cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
@@ -291,11 +291,8 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-persistence/src/test/resources/appInitContext.xml -text
-cdmlib-persistence/src/test/resources/applicationContext-test.xml -text
-cdmlib-persistence/src/test/resources/hibernate.properties -text
-cdmlib-persistence/src/test/resources/settings.xml -text
-cdmlib-persistence/src/test/resources/test.cdm.datasource.xml -text
+cdmlib-persistence/src/test/resources/applicationContext.xml -text
+cdmlib-persistence/src/test/resources/db.properties -text
 cdmlib-remote/pom.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathMatcher.java -text
