@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
@@ -52,6 +53,13 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting
 	 */
 	public NameTO getName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
+	
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
 
 	/**
 	 * @param uuid
@@ -59,6 +67,14 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting
 	 */
 	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting;
+	
+	/**
+	 * @param uuid
+	 * @return 
+	 * @throws CdmObjectNonExisting
+	 */
+	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting;
+	
 
 	/**
 	 * @param uuid
