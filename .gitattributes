@@ -343,6 +343,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/TestDataGenerator.ja
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
+cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
@@ -352,7 +353,6 @@ cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/ResultSetPageSTOTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssemblerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/CdmServiceImplTestSupport.java -text
-cdmlib-remote/src/test/resources/db.properties -text
 cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
