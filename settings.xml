@@ -5,4 +5,18 @@
                         <username>edit</username>
                 </server>
         </servers>
+	    <profiles>
+	        <profile>
+	            <id>edit-integration-test</id>
+	            <properties>
+					<hibernate.connection.driver_class>com.mysql.jdbc.Driver</hibernate.connection.driver_class>
+	                <hibernate.connection.url>jdbc:mysql://192.168.2.10/cdm_test_lib</hibernate.connection.url>
+	                <hibernate.connection.username>edit</hibernate.connection.username>
+	                <hibernate.connection.password>xxx</hibernate.connection.password>
+	            </properties>
+	        </profile>
+	    </profiles>
+	    <activeProfiles>
+	        <activeProfile>edit-integration-test</activeProfile>
+	    </activeProfiles>
 </settings>
