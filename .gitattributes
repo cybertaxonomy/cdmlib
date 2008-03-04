@@ -385,11 +385,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -t
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-services/src/test/resources/appInitContext.xml -text
-cdmlib-services/src/test/resources/applicationContext-test.xml -text
-cdmlib-services/src/test/resources/hibernate.properties -text
-cdmlib-services/src/test/resources/settings.xml -text
-cdmlib-services/src/test/resources/test.cdm.datasource.xml -text
+cdmlib-services/src/test/resources/applicationContext.xml -text
 eclipse-feature/.classpath -text
 eclipse-feature/.project -text
 eclipse-feature/build.properties -text

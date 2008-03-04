@@ -9,6 +9,7 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
     
-    <import resource="classpath:cdm-persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <context:component-scan base-package="eu/etaxonomy/cdm"/>
     
     </beans>
