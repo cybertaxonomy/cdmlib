@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.hibernate.cache.CacheProvider;
+import org.hibernate.cache.NoCacheProvider;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -45,6 +47,48 @@ public class CdmDataSource {
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
 	private final static Format format = Format.getPrettyFormat(); 
+
+	
+	public enum DbProperties{
+		DRIVER_CLASS,
+		URL,
+		USERNAME,
+		PASSWORD;
+
+		public String toString(){
+			switch (this){
+				case DRIVER_CLASS:
+					return "driverClassName";
+				case URL:
+					return "url";
+				case USERNAME:
+					return "username";
+				case PASSWORD:
+					return "password";
+				default: 
+					throw new IllegalArgumentException( "Unknown enumeration type" );
+			}
+		}
+	}
+	
+	public enum HBM2DDL{
+		VALIDATE,
+		UPDATE,
+		CREATE;
+
+		public String getHibernateString(){
+			switch (this){
+				case VALIDATE:
+					return "validate";
+				case UPDATE:
+					return "update";
+				case CREATE:
+					return "create";
+				default: 
+					throw new IllegalArgumentException( "Unknown enumeration type" );
+			}
+		}
+	}
 	
 	//name
 	protected String dataSourceName;
@@ -138,20 +182,77 @@ public class CdmDataSource {
 			}
 		}
 	}
+
 	
+	
+	/**
+	 * Returns the url of . 
+	 * @return the database type of the data source. Null if the bean or the url property does not exist.
+	 */
+	public String getDbProperty(DbProperties dbProp){
+		Element bean = getDatasourceBeanXml(this.dataSourceName);
+		if (bean == null){
+			return null;
+		}else{
+			Element elProperty = XmlHelp.getFirstAttributedChild(bean, "property", "name", dbProp.toString());
+			if (elProperty == null){
+				logger.warn("Unknown property: " + dbProp.toString());
+		    	return null;
+			}else{
+				String strValue = elProperty.getAttributeValue("value");
+				return strValue;
+			}
+		}
+	}
+	
+	/**
+	 * Returns a BeanDefinition object of type  DriverManagerDataSource that contains
+	 * datsource properties (url, username, password, ...)
+	 * @return
+	 */
 	public BeanDefinition getDatasourceBean(){
 		AbstractBeanDefinition bd = new RootBeanDefinition(DriverManagerDataSource.class);
-		DatabaseTypeEnum dbtype = getDatabaseType();
+		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDbProperty(DbProperties.DRIVER_CLASS));
 		//TODO: read real values
 		MutablePropertyValues props = new MutablePropertyValues();
 		props.addPropertyValue("driverClassName", dbtype.getDriverClassName());
-		props.addPropertyValue("url", "jdbc:mysql://192.168.2.10/cdm_build");
-		props.addPropertyValue("username", "edit");
-		props.addPropertyValue("password", "wp5");
+		props.addPropertyValue("url", getDbProperty(DbProperties.URL));
+		props.addPropertyValue("username", getDbProperty(DbProperties.USERNAME));
+		props.addPropertyValue("password", getDbProperty(DbProperties.PASSWORD));
 		bd.setPropertyValues(props);
 		return bd;
 	}
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, boolean showSql){
+	
+	/**
+	 * @param hbm2dll
+	 * @param showSql
+	 * @return
+	 */
+	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll){
+		boolean showSql = false;
+		boolean formatSql = false;
+		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
+		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, cacheProviderClass);
+	}
+	
+	
+	/**
+	 * @param hbm2dll
+	 * @param showSql
+	 * @return
+	 */
+	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
+		//Hibernate default values
+		if (showSql == null){
+			showSql = false;
+		}
+		if (formatSql == null){
+			formatSql = false;
+		}
+		if (cacheProviderClass == null){
+			cacheProviderClass = NoCacheProvider.class;
+		}
+		
 		DatabaseTypeEnum dbtype = getDatabaseType();
 		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
 		MutablePropertyValues hibernateProps = new MutablePropertyValues();
@@ -159,14 +260,15 @@ public class CdmDataSource {
 		Properties props = new Properties();
 		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.getHibernateString());
 		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
-		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
-		props.setProperty("hibernate.format_sql", String.valueOf(false));
+		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
 
 		hibernateProps.addPropertyValue("properties",props);
 		bd.setPropertyValues(hibernateProps);
 		return bd;
 	}
+	
 	
 	/**
 	 * Tests existing of the datsource in the according config  file.
@@ -365,27 +467,6 @@ public class CdmDataSource {
 		File f = CdmApplicationUtils.getWritableResourceDir();
 		return f.getPath();
 	}
-	
-//	/**
-//	 * Returns the session factory config file input stream.
-//	 * @return session factory config file
-//	 */
-//	private FileInputStream get22SessionFactoryInputStream(){
-//		String dir = getResourceDirectory();
-//		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-//		return fileInputStream(file);
-//	}
-//	
-//	/**
-//	 * Returns the session factory output stream.
-//	 * @return 
-//	 */
-//	private FileOutputStream get22SessionFactoryOutputStream(){
-//		String dir = getResourceDirectory();
-//		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-//		return fileOutputStream(file);
-//	}
-//	
 	
 	static private FileInputStream fileInputStream(File file){
 		try {
