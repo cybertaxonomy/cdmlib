@@ -31,41 +31,6 @@ public class TestDatabase {
 		CdmApplicationController appCtr = new CdmApplicationController();
 		IDatabaseService dbService = appCtr.getDatabaseService();
 		INameService nameService = appCtr.getNameService();
-		
-		//existing connection
-		logger.info(dbService.getDatabaseEnum().getName());
-		logger.info(dbService.getUrl());
-		
-		List<TaxonNameBase> list = appCtr.getNameService().getAllNames(1000, 0);
-		logger.info("Count: " + list.size());
-		
-		BotanicalName bn = new BotanicalName(null);
-		logger.info("ID:" + bn.getId());
-		nameService.saveTaxonName(bn);
-		logger.info("ID:" + bn.getId());
-		
-		bn.setInfraGenericEpithet("test");
-		nameService.saveTaxonName(bn);
-		//change connection
-		dbService.connectToDatabase(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", "sa", "sa");
-		//dbService.connectToDatabase(DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_test", "edit", "wp5");
-		logger.info(dbService.getDatabaseEnum().getName());
-		logger.info(dbService.getUrl());
-		list = nameService.getAllNames(1000, 0);
-		logger.info("Count: " + list.size());
-		
-		BotanicalName bn2 = new BotanicalName(null);
-		logger.info("bn2 created");
-		//tn2.setId(51);
-		logger.info("ID (before):" + bn2.getId());
-		
-		nameService.saveTaxonName(bn2);
-		logger.info("ID:" + bn2.getId());
-		
-		
-		nameService.saveTaxonName(bn);
-		logger.info("ID:" + bn.getId());
-		
 		appCtr.close();
 	}
 	

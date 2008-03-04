@@ -7,9 +7,15 @@ import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hsqldb.Server;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveFileSystemXmlApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -20,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.HBM2DDL;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -41,25 +48,6 @@ public class CdmApplicationController {
 	private ITermService termService;
 	
 	private Server hsqldbServer;
-
-	public enum HBM2DDL{
-		VALIDATE,
-		UPDATE,
-		CREATE;
-	
-		public String getHibernateString(){
-			switch (this){
-				case VALIDATE:
-					return "validate";
-				case UPDATE:
-					return "update";
-				case CREATE:
-					return "create";
-				default: 
-					throw new IllegalArgumentException( "Unknown enumeration type" );
-			}
-		}
-	}
 	
 	
 	/**
@@ -108,12 +96,24 @@ public class CdmApplicationController {
 		if (hbm2dll == null){
 			hbm2dll = hbm2dll.VALIDATE;
 		}
-		dataSource.updateSessionFactory(hbm2dll.getHibernateString());
 		logger.info("Connecting to '" + dataSource.getName() + "'");
-		FileSystemXmlApplicationContext appContext;
+
+
+		GenericApplicationContext appContext;
 		try {
-			//logger.debug("Start spring-2.5 ApplicationContex with 'hibernate.hbm2ddl.auto'='default'");
-			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());
+			appContext = new GenericApplicationContext();
+			
+			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
+			appContext.registerBeanDefinition("dataSource", datasourceBean);
+			
+			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(hbm2dll, false);
+			appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
+			
+			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
+			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/persistence.xml"));		 
+			
+			appContext.refresh();
+			appContext.start();
 		} catch (BeanCreationException e) {
 			// create new schema
 			if (hbm2dll == HBM2DDL.VALIDATE) {
@@ -189,7 +189,7 @@ public class CdmApplicationController {
 	 * Sets a new application Context.
 	 * @param ac
 	 */
-	public void setApplicationContext(AbstractXmlApplicationContext ac){
+	public void setApplicationContext(AbstractApplicationContext ac){
 		closeApplicationContext(); //closes old application context if necessary
 		applicationContext = ac;
 		applicationContext.registerShutdownHook();
