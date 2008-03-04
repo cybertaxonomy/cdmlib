@@ -9,7 +9,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.database.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.io.berlinModel.test.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
 
