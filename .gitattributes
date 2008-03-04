@@ -294,7 +294,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFacto
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-persistence/src/test/resources/applicationContext.xml -text
-cdmlib-persistence/src/test/resources/db.properties -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text
