@@ -466,7 +466,8 @@ public class CdmDataSource {
 		}else{
 	    	Element xmlBean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
 			if (xmlBean == null){
-				logger.warn("Unknown Element 'bean id=" +strDataSourceName + "' ");
+				//TODO warn or info
+				logger.debug("Unknown Element 'bean id=" +strDataSourceName + "' ");
 			};
 			return xmlBean;
 		}

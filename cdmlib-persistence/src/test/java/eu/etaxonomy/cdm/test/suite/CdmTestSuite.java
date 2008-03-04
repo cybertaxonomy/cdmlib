@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.CdmDataSourceTest;
 import eu.etaxonomy.cdm.database.DatabaseEnumTest;
 import eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.common.DaoBaseTest;
@@ -16,6 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImplTest;
 @Suite.SuiteClasses( 
 		{ 	
 			//database
+			CdmDataSourceTest.class,
 			DatabaseEnumTest.class,			
 			//dao.common
 			CdmEntityDaoBaseTest.class,
@@ -36,6 +38,7 @@ public class CdmTestSuite {
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
 				//database
+				CdmDataSourceTest.class,
 				DatabaseEnumTest.class,			
 				//dao.common
 				CdmEntityDaoBaseTest.class,

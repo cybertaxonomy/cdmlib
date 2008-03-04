@@ -62,7 +62,6 @@ public class DaoBaseTest  extends CdmUnitTestBase{
 	 */
 	@Test
 	public void testGetSession() {
-		//logger.warn(daoBaseTester.getSession());
 		assertNotNull(daoBaseTester.getSession());
 	}
 

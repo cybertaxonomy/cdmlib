@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.hamcrest.core.IsInstanceOf;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
 import org.junit.After;
