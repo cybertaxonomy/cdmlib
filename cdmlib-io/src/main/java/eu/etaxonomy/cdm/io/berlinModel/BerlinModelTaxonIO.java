@@ -191,6 +191,7 @@ public class BerlinModelTaxonIO {
 					}else if (relQualifierFk == IS_SYNONYM_OF){
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
 					}else if (relQualifierFk == IS_HOMOTYPIC_SYNONYM_OF){
+						//TODO castexceptioin
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 					}else if (relQualifierFk == IS_HETEROTYPIC_SYNONYM_OF){
 						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
