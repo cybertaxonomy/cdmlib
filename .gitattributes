@@ -281,6 +281,7 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/apt/index.apt -text
 cdmlib-persistence/src/site/site.xml -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/CdmEntityDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/common/DaoBaseTest.java -text
@@ -293,7 +294,8 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
-cdmlib-persistence/src/test/resources/applicationContext.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasource.xml -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text

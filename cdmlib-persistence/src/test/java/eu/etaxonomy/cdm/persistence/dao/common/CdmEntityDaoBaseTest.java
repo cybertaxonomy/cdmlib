@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/applicationContext.xml"})
+@ContextConfiguration(locations={"/eu/etaxonomy/cdm/applicationContext.xml"})
 @TransactionConfiguration(defaultRollback=false)   //TODO rollback=true does not work yet because of Terms
 @Transactional
 public class CdmEntityDaoBaseTest {
@@ -45,7 +45,7 @@ public class CdmEntityDaoBaseTest {
 	private static boolean isInitialized;
 	
 	@Autowired
-	private TaxonDaoHibernateImpl cdmEntityDaoBaseTester;
+	private TaxonDaoHibernateImpl cdmEntityDaoBase;
 
 	/**
 	 * @throws java.lang.Exception
@@ -77,7 +77,9 @@ public class CdmEntityDaoBaseTest {
 			journal.setTitle("JournalTitel");
 			
 			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
-			UUID uuid = cdmEntityDaoBaseTester.saveOrUpdate(taxon);
+		logger.warn("Taxon: " + taxon);
+			UUID uuid = cdmEntityDaoBase.saveOrUpdate(taxon);
+		logger.warn("UUID: " + uuid);
 			taxonUUID = UUID.fromString(uuid.toString());
 			logger.debug("setUpEnd");
 			isInitialized = true;
@@ -99,7 +101,7 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testCdmEntityDaoBase() {
-		logger.warn("Not yet implemented");
+		assertNotNull(cdmEntityDaoBase);
 	}
 
 	/**
@@ -107,7 +109,9 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSaveCdmObj() {
-		CdmBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+	logger.warn("cdmEntityDaoBaseTester: " + cdmEntityDaoBase);
+	logger.warn("cdmBase: " + cdmBase);
 		assertNotNull(cdmBase);
 	}
 
@@ -116,16 +120,16 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSaveOrUpdate() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		UUID oldUuid = cdmBase.getUuid();
 		cdmBase.setUuid(UUID.randomUUID());
-		UUID newUuid = cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(newUuid);
+		UUID newUuid = cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
 		assertEquals(cdmBase.getId(), cdmBase2.getId());
 		
 		//oldValue
 		cdmBase.setUuid(oldUuid);
-		cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 	}
 
 	/**
@@ -133,19 +137,19 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testSave() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		int oldId = cdmBase.getId();
 		
 		UUID oldUuid = cdmBase.getUuid();
 		UUID newUuid = UUID.randomUUID();
 		cdmBase.setUuid(newUuid);
-		cdmEntityDaoBaseTester.save(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(newUuid);
+		cdmEntityDaoBase.save(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
 		logger.warn("semantic unclear");
 		//assertFalse(cdmBase.getId() == cdmBase2.getId());
 		//oldValue
 		cdmBase.setUuid(oldUuid);
-		cdmEntityDaoBaseTester.saveOrUpdate(cdmBase);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 	}
 
 	/**
@@ -162,8 +166,8 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testFindById() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
-		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findById(cdmBase.getId());
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		TaxonBase cdmBase2 = cdmEntityDaoBase.findById(cdmBase.getId());
 		assertSame(cdmBase, cdmBase2);
 	}
 
@@ -172,7 +176,7 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testFindByUuid() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNotNull(cdmBase);
 	}
 
@@ -181,10 +185,10 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testExists() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
-		boolean exists = cdmEntityDaoBaseTester.exists(cdmBase.getUuid());
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		boolean exists = cdmEntityDaoBase.exists(cdmBase.getUuid());
 		assertTrue(exists);
-		boolean existsRandom = cdmEntityDaoBaseTester.exists(UUID.randomUUID());
+		boolean existsRandom = cdmEntityDaoBase.exists(UUID.randomUUID());
 		assertFalse(existsRandom);
 	}
 
@@ -193,7 +197,7 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testList() {
-		List<TaxonBase> list = cdmEntityDaoBaseTester.list(1000, 0);
+		List<TaxonBase> list = cdmEntityDaoBase.list(1000, 0);
 		assertNotNull(list);
 		assertTrue(list.size()>0);
 	}
@@ -203,10 +207,10 @@ public class CdmEntityDaoBaseTest {
 	 */
 	@Test
 	public void testDelete() {
-		TaxonBase cdmBase = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNotNull(cdmBase);
-		cdmEntityDaoBaseTester.delete(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBaseTester.findByUuid(taxonUUID);
+		cdmEntityDaoBase.delete(cdmBase);
+		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNull(cdmBase2);
 		//oldValue
 //		cdmBase.setId(0);

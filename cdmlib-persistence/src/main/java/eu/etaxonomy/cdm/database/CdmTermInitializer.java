@@ -40,7 +40,7 @@ public class CdmTermInitializer {
 	@PostConstruct
 	public void initializeTerms(){
 		try {
-			logger.warn("CdmTermInitializer initializeTerms start ...");
+			logger.info("CdmTermInitializer initializeTerms start ...");
 			termLoader.setVocabularyStore(saver);
 			if (! termLoader.basicTermsExist(saver)){
 				try {
@@ -51,7 +51,7 @@ public class CdmTermInitializer {
 					logger.error(e.getMessage());
 				}
 			}
-			logger.warn("CdmTermInitializer initializeTerms end ...");
+			logger.info("CdmTermInitializer initializeTerms end ...");
 		} catch (RuntimeException e) {
 			// TODO Auto-generated catch block
 			logger.error("RuntimeException when initializing Terms");

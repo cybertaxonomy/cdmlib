@@ -55,6 +55,7 @@ public class CdmDataSource {
 		USERNAME,
 		PASSWORD;
 
+		@Override
 		public String toString(){
 			switch (this){
 				case DRIVER_CLASS:
@@ -74,9 +75,11 @@ public class CdmDataSource {
 	public enum HBM2DDL{
 		VALIDATE,
 		UPDATE,
-		CREATE;
+		CREATE,
+		CREATE_DROP;
 
-		public String getHibernateString(){
+		@Override
+		public String toString(){
 			switch (this){
 				case VALIDATE:
 					return "validate";
@@ -84,6 +87,8 @@ public class CdmDataSource {
 					return "update";
 				case CREATE:
 					return "create";
+				case CREATE_DROP:
+					return "create-drop";
 				default: 
 					throw new IllegalArgumentException( "Unknown enumeration type" );
 			}
@@ -243,6 +248,9 @@ public class CdmDataSource {
 	 */
 	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
 		//Hibernate default values
+		if (hbm2dll == null){
+			hbm2dll = HBM2DDL.VALIDATE;
+		}
 		if (showSql == null){
 			showSql = false;
 		}
@@ -258,7 +266,7 @@ public class CdmDataSource {
 		MutablePropertyValues hibernateProps = new MutablePropertyValues();
 
 		Properties props = new Properties();
-		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.getHibernateString());
+		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
 		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
 		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
@@ -457,7 +465,9 @@ public class CdmDataSource {
 			return null;
 		}else{
 	    	Element xmlBean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
-			if (xmlBean == null){logger.warn("Unknown Element 'bean' ");};
+			if (xmlBean == null){
+				logger.warn("Unknown Element 'bean id=" +strDataSourceName + "' ");
+			};
 			return xmlBean;
 		}
 	}
@@ -496,5 +506,17 @@ public class CdmDataSource {
 		public boolean accept(File dir, String name) {
 	        return (name.endsWith(DATASOURCE_FILE_NAME));
 	    }
+	}
+	
+	public boolean equals(Object obj){
+		if (obj == null){
+			return false;
+		}else if (! CdmDataSource.class.isAssignableFrom(obj.getClass())){
+			return false;
+		}else{
+			CdmDataSource dataSource = (CdmDataSource)obj;
+			return (this.dataSourceName == dataSource.dataSourceName);
+		}
+
 	}
 }

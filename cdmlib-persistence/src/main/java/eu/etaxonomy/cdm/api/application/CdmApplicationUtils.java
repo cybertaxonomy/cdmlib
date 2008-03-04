@@ -31,7 +31,7 @@ public class CdmApplicationUtils {
 		//compute only once
 		if (fileResourceDir == null){
 			//workaround to find out in which environment the library is executed
-			URL url = CdmUtils.class.getResource("/"+ MUST_EXIST_FILE);
+			URL url = CdmUtils.class.getResource("/eu/etaxonomy/cdm/"+ MUST_EXIST_FILE);
 			if (url != null){
 				File file = new File(url.getPath()); 
 				if (file.exists()){

@@ -166,15 +166,17 @@ public class LocalHsqldb extends DriverManagerDataSource {
 		} catch (SQLException e) {
 			try {
 				//server is probably not runing on the url (or login is wrong !!)
-				logger.warn("Start HsqldbServer"); //TODO make it .info
+				logger.info("Start HsqldbServer"); 
 				hsqldbServer = new Server();
 				hsqldbServer.setSilent(this.isSilent);
-				for (int i = 0; i < 10; i++){
-					logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, true));
-					logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, false));
-					logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, true));
-					logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, false));
-					logger.info("DatabaseType " + i + ": " + hsqldbServer.getDatabaseType(i));
+				if (logger.isDebugEnabled()){
+					for (int i = 0; i < 10; i++){
+						logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, true));
+						logger.info("DatabaseName " + i + ": " + hsqldbServer.getDatabaseName(i, false));
+						logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, true));
+						logger.info("DatabasePath " + i + ": " + hsqldbServer.getDatabasePath(i, false));
+						logger.info("DatabaseType " + i + ": " + hsqldbServer.getDatabaseType(i));
+					}
 				}
 				hsqldbServer.setDatabaseName(0, getDbName());
 				hsqldbServer.setDatabasePath(0,  getDatabasePath());
