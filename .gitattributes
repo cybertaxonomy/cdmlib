@@ -451,6 +451,11 @@ eclipse-plugin/spring-tx-2.5.jar -text
 eclipse-plugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 eclipse-plugin/xercesImpl.jar -text
 eclipse-plugin/xml-apis.jar -text
+eclipse-updateSite/.project -text
+eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
+eclipse-updateSite/index.html -text
+eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
+eclipse-updateSite/site.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
