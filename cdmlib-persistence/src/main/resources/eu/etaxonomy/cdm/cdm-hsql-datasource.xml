@@ -35,7 +35,6 @@
                 <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
-        <property name="location" value="classpath:db.properties"/> 
     </bean>    
 </beans>
 
