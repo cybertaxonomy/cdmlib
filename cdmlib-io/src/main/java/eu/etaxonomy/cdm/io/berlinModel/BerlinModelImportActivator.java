@@ -6,10 +6,10 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.application.CdmApplicationController.HBM2DDL;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.HBM2DDL;
 import eu.etaxonomy.cdm.io.berlinModel.test.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
 
@@ -24,8 +24,8 @@ public class BerlinModelImportActivator {
 	static HBM2DDL hbm2dll = HBM2DDL.CREATE;
 
 	//Berlin MOdel Source
-	static final Source berlinModelSource = BerlinModelSources.euroMed();
-	//static final Source berlinModelSource = BerlinModelSources.editWP6();
+	//static final Source berlinModelSource = BerlinModelSources.euroMed();
+	static final Source berlinModelSource = BerlinModelSources.editWP6();
 //	
 ////	static DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2000;
 ////	static String cdmServer = "BGBM10/ENTWICKLUNG";
@@ -44,7 +44,7 @@ public class BerlinModelImportActivator {
 	
 	static DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 	static String cdmServer = "192.168.2.10";
-	static String cdmDB = "cdm_test_lib";
+	static String cdmDB = "cdm_1_1";
 	//static int cdmPort = 1247;
 	static String cdmUserName = "edit";
 	static String cdmPwd = "wp5";
