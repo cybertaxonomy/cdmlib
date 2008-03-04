@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -106,7 +106,7 @@ public class CdmApplicationController {
 			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
 			appContext.registerBeanDefinition("dataSource", datasourceBean);
 			
-			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(hbm2dll, false);
+			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(hbm2dll);
 			appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
 			
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
@@ -122,7 +122,7 @@ public class CdmApplicationController {
 					" but there might be other BeanCreation problems too." +
 					" Try to run CdmApplicationController with hbm2dll.CREATE or hbm2dll.UPDATE option. ");
 			} else {
-				logger.error("BeanCreationException (CdmApplicationController startet with " + hbm2dll.getHibernateString() + " option.");
+				logger.error("BeanCreationException (CdmApplicationController startet with " + hbm2dll.toString() + " option.");
 			}
 			e.printStackTrace();
 			return false;

@@ -9,7 +9,7 @@
     
     <bean id="defaultDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_lib" />
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_build" />
         <property name="username" value="edit" />
         <property name="password" value="wp5" />
     </bean>
