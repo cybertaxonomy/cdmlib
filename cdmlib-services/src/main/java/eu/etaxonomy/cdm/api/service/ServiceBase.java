@@ -53,11 +53,14 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 	protected Map<UUID, T> saveCdmObjectAll(Collection<T> cdmObjCollection){
 		Map<UUID, T> resultMap = new HashMap<UUID, T>();
 		Iterator<T> iterator = cdmObjCollection.iterator();
+		int i = 0;
 		while(iterator.hasNext()){
+			if ( ( (i % 5000) == 0)   && ( logger.isInfoEnabled()) ){logger.info("Saved " + i + " objects");}
 			T cdmObj = iterator.next();
 			UUID uuid = saveCdmObject(cdmObj);
 			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 			resultMap.put(uuid, cdmObj);
+			i++;
 		}
 		return resultMap;
 	}
