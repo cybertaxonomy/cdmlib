@@ -9,6 +9,6 @@
 
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
-    <import resource="classpath:/eu/etaxonomy/cdm/cdm-hsql-datasource.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/hsql-datasource.xml" />
     
 </beans>

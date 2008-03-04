@@ -275,8 +275,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IRef
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/ReferenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDaoHibernateImpl.java -text
-cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm-hsql-datasource.xml -text
-cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm-jdbc-datasource.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/apt/index.apt -text
