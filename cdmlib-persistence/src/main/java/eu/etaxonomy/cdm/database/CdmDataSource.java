@@ -6,13 +6,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
@@ -35,9 +43,7 @@ public class CdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
-	public static final String SESSION_FACTORY_FILE = "sessionfactory.xml";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
-	public final static String APPLICATION_CONTEXT_FILE_NAME = "applicationContext.xml";
 	private final static Format format = Format.getPrettyFormat(); 
 	
 	//name
@@ -113,57 +119,6 @@ public class CdmDataSource {
 
 	
 	/**
-	 * Updates the session factory config file for using this database.
-	 * Writes the datasource property and the dialect property into the session factory.
-	 * @param hibernateHbm2ddlAuto value for the hibernate property hibernate.hbm2dll.auto . If null the properties is not changed. Possible values are 'validate', 'create', 'update' and 'create-drop'.
-	 * @return true if successful.
-	 */
-	public boolean updateSessionFactory(String hibernateHbm2ddlAuto){
-		Element root = getRoot(getSessionFactoryInputStream());
-		if (root == null){
-			return false;
-		}
-		//get sessionFactory bean
-		Element sessionFactoryBean = getFirstAttributedChild(root, "bean", "id", "sessionFactory");
-		//sessionFactory must exist 
-		if  (sessionFactoryBean == null){
-			return false;
-		}
-		
-		//set dataSource property
-		Element dataSourceProperty = getFirstAttributedChild(sessionFactoryBean, "property", "name", "dataSource");
-		if (dataSourceProperty == null){
-			dataSourceProperty = insertXmlRefProperty(sessionFactoryBean, "dataSource", getBeanName(this.dataSourceName));
-		}
-		Attribute attrRef = dataSourceProperty.getAttribute("ref");
-		if (attrRef == null){
-			dataSourceProperty.setAttribute("ref", getBeanName(this.dataSourceName));
-		}else{
-			attrRef.setValue(getBeanName(this.dataSourceName));
-		}
-		
-		//set dialect
-		Element elHibernateProperties = getOrAddChild(sessionFactoryBean, "property", "name", "hibernateProperties");
-		Element props = getOrAddChild(elHibernateProperties, "props", null, null);
-		Element elDialectProp = getOrAddChild(props, "prop", "key", "hibernate.dialect");
-		elDialectProp.setText(this.getDatabaseType().getHibernateDialect());
-		
-		//set hibernateHbm2ddlAuto
-		if (hibernateHbm2ddlAuto != null){
-			if (hibernateHbm2ddlAuto != "validate" && hibernateHbm2ddlAuto != "create"  && hibernateHbm2ddlAuto != "update "  && hibernateHbm2ddlAuto != "create-drop"  ){
-				logger.warn("Invalid value " + hibernateHbm2ddlAuto + " for property hibernate.hbm2ddl.auto");
-			}
-			Element elHbm2ddlAutoProp = getOrAddChild(props, "prop", "key", "hibernate.hbm2ddl.auto");
-			elHbm2ddlAutoProp.setText(hibernateHbm2ddlAuto);
-		}
-		
-		//save
-		saveToXml(root.getDocument(), getSessionFactoryOutputStream() , format );
-		return true;
-	}
-
-	
-	/**
 	 * Returns the database type of the data source. 
 	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
 	 */
@@ -182,6 +137,35 @@ public class CdmDataSource {
 				return dbType;
 			}
 		}
+	}
+	
+	public BeanDefinition getDatasourceBean(){
+		AbstractBeanDefinition bd = new RootBeanDefinition(DriverManagerDataSource.class);
+		DatabaseTypeEnum dbtype = getDatabaseType();
+		//TODO: read real values
+		MutablePropertyValues props = new MutablePropertyValues();
+		props.addPropertyValue("driverClassName", dbtype.getDriverClassName());
+		props.addPropertyValue("url", "jdbc:mysql://192.168.2.10/cdm_build");
+		props.addPropertyValue("username", "edit");
+		props.addPropertyValue("password", "wp5");
+		bd.setPropertyValues(props);
+		return bd;
+	}
+	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, boolean showSql){
+		DatabaseTypeEnum dbtype = getDatabaseType();
+		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
+		MutablePropertyValues hibernateProps = new MutablePropertyValues();
+
+		Properties props = new Properties();
+		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.getHibernateString());
+		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
+		props.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
+		props.setProperty("hibernate.format_sql", String.valueOf(false));
+
+		hibernateProps.addPropertyValue("properties",props);
+		bd.setPropertyValues(hibernateProps);
+		return bd;
 	}
 	
 	/**
@@ -382,26 +366,26 @@ public class CdmDataSource {
 		return f.getPath();
 	}
 	
-	/**
-	 * Returns the session factory config file input stream.
-	 * @return session factory config file
-	 */
-	private FileInputStream getSessionFactoryInputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-		return fileInputStream(file);
-	}
-	
-	/**
-	 * Returns the session factory output stream.
-	 * @return 
-	 */
-	private FileOutputStream getSessionFactoryOutputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
-		return fileOutputStream(file);
-	}
-	
+//	/**
+//	 * Returns the session factory config file input stream.
+//	 * @return session factory config file
+//	 */
+//	private FileInputStream get22SessionFactoryInputStream(){
+//		String dir = getResourceDirectory();
+//		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
+//		return fileInputStream(file);
+//	}
+//	
+//	/**
+//	 * Returns the session factory output stream.
+//	 * @return 
+//	 */
+//	private FileOutputStream get22SessionFactoryOutputStream(){
+//		String dir = getResourceDirectory();
+//		File file = new File(dir + File.separator +  SESSION_FACTORY_FILE);
+//		return fileOutputStream(file);
+//	}
+//	
 	
 	static private FileInputStream fileInputStream(File file){
 		try {

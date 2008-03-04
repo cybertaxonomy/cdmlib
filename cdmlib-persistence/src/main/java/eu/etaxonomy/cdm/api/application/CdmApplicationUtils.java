@@ -53,8 +53,6 @@ public class CdmApplicationUtils {
 	
 	static private void copyResources(File directory){
 		copyResource(directory, CdmDataSource.DATASOURCE_FILE_NAME);
-		copyResource(directory, CdmDataSource.SESSION_FACTORY_FILE);
-		copyResource(directory, CdmDataSource.APPLICATION_CONTEXT_FILE_NAME);
 	}
 	
 	
@@ -73,16 +71,6 @@ public class CdmApplicationUtils {
 		} catch (IOException e) {
 			logger.error("File "  + resourceFileName + " + could not be created");
 		}
-	}
-	
-	
-	/**
-	 * Returns the string to the applicationContext.xml to be used.
-	 * @return
-	 */
-	public static String getApplicationContextString(){
-		String result = "file:" + CdmApplicationUtils.getWritableResourceDir() + File.separator + CdmDataSource.APPLICATION_CONTEXT_FILE_NAME;
-		return result;
 	}
 	
 
