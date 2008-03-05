@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
 
-@Component
+@Service
 @Transactional(readOnly = true)
 public class CdmServiceImpl implements ICdmService {
 
@@ -87,7 +88,10 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	
 	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting{
-		TaxonBase tb = getCdmTaxonBase(uuid);
+		TaxonBase tb = taxonDAO.findByUuid(uuid);
+		if (tb==null){
+			throw new CdmObjectNonExisting(uuid.toString(), TaxonBase.class);
+		}
 		TaxonTO t = taxonAssembler.getTO(tb);
 		return t;
 	}

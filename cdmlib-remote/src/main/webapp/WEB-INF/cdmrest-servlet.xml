@@ -28,8 +28,6 @@
         </property>
     </bean>
     
-    <bean name="restController" class="eu.etaxonomy.cdm.remote.service.RestController"/>
-    
     <!-- default=views.xml -->
     <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
 

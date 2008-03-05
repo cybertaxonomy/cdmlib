@@ -343,7 +343,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmObjectNonExisting
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/ICdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/TestDataGenerator.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
@@ -356,8 +355,9 @@ cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/ResultSetPageSTOTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssemblerTest.java -text
-cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/CdmServiceImplTestSupport.java -text
+cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/CdmServiceImplTest.java -text
 cdmlib-remote/src/test/resources/applicationContext.xml -text
+cdmlib-remote/src/test/resources/log4j.properties -text
 cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text

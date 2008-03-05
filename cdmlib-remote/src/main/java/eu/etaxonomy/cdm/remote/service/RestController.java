@@ -9,10 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.remote.service.Utils;
  * It extends the convenience class AbstractController that encapsulates most
  * of the drudgery involved in handling HTTP requests.
  */
+@Controller("restController")
 public class RestController extends AbstractController
 {
 	Log log = LogFactory.getLog(RestController.class);
@@ -37,7 +39,7 @@ public class RestController extends AbstractController
 	private ICdmService service;
 
 	/* 
-	 * return page not found http error (400?) for unknown or incorrect UUIDs
+	 * return page not found http error (404) for unknown or incorrect UUIDs
 	 * (non-Javadoc)
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -53,7 +55,7 @@ public class RestController extends AbstractController
 			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
-			if(action==null || action==""){
+			if(action==""){
 				// get Object by UUID
 				if(dto.equalsIgnoreCase("name")){
 					NameTO n = service.getName( getUuid(uuid));
@@ -73,9 +75,7 @@ public class RestController extends AbstractController
 				}else if(dto.equalsIgnoreCase("taxon")){
 					TaxonSTO t = service.getSimpleTaxon(getUuid(uuid));
 					mv.addObject(t);
-				}/*else if(dto.equalsIgnoreCase("ref")){
-					//TODO
-				}*/
+				}
 			}else if(action.equalsIgnoreCase("find")){
 				//
 				// retrieve meaningful parameters
@@ -119,7 +119,7 @@ public class RestController extends AbstractController
 				//
 				// TODO: THIS OPERATION IS FOR TESTING ONLY AND SHOULD BE REMOVED !!!
 				//
-				Taxon t = TestDataGenerator.getTestTaxon();
+				Taxon t = TaxonGenerator.getTestTaxon();
 				service.saveTaxon(t);
 				mv.addObject("status", "Test data inserted");
 			}else{
