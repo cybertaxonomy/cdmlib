@@ -73,7 +73,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 
-	@OneToMany
+	@OneToMany(mappedBy="acceptedTaxon")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
