@@ -65,6 +65,7 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 	 */
 	public String getTitleCache(T name){
 		String result;
+		//TODO use authorCache + TODO exAuthors
 		Agent agent= name.getCombinationAuthorTeam();
 		if (isAutonym(name)){
 			result = getSpeciesNameCache(name);
