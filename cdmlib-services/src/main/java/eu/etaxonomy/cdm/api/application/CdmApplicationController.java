@@ -9,15 +9,10 @@ import org.hsqldb.Server;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
-import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveFileSystemXmlApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -58,6 +53,20 @@ public class CdmApplicationController {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
 		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+		setNewDataSource(dataSource, hbm2dll);
+	}
+	
+	
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
+	 * @param dataSource
+	 */
+	public CdmApplicationController(HBM2DDL hbm2dll) {
+		logger.info("Start CdmApplicationController with default data source");
+		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
+		if (hbm2dll == null){
+			hbm2dll = HBM2DDL.VALIDATE;
+		}
 		setNewDataSource(dataSource, hbm2dll);
 	}
 	
@@ -126,10 +135,6 @@ public class CdmApplicationController {
 			}
 			e.printStackTrace();
 			return false;
-//			logger.warn("Database schema not up-to-date. Schema must be updated. All DefindeTerms are deleted and created new!");
-//			logger.debug("Start spring-2.5 ApplicationContex with hibernate.hbm2ddl.auto 'CREATE' property");
-//			dataSource.updateSessionFactory("create"); 
-//			appContext = new EclipseRcpSaveFileSystemXmlApplicationContext(CdmApplicationUtils.getApplicationContextString());		
 		}
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
