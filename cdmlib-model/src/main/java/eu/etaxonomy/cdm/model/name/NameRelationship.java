@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -34,12 +38,29 @@ public class NameRelationship extends ReferencedEntityBase {
 	private NameRelationshipType type;
 	private TaxonNameBase toName;
 
+	/**
+	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
+	 * @param toName
+	 * @param fromName
+	 * @param type
+	 * @param ruleConsidered
+	 */
+	protected NameRelationship(TaxonNameBase toName, TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered) {
+		super();
+		setFromName(fromName);
+		setToName(toName);
+		setType(type);
+		setRuleConsidered(ruleConsidered);
+		fromName.addNameRelationship(this);
+		toName.addNameRelationship(this);
+	}
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getFromName(){
 		return this.fromName;
 	}
-	public void setFromName(TaxonNameBase fromName){
+	private void setFromName(TaxonNameBase fromName){
 		this.fromName = fromName;
 	}
 
@@ -47,7 +68,7 @@ public class NameRelationship extends ReferencedEntityBase {
 	public NameRelationshipType getType(){
 		return this.type;
 	}
-	public void setType(NameRelationshipType type){
+	private void setType(NameRelationshipType type){
 		this.type = type;
 	}
 
@@ -56,14 +77,14 @@ public class NameRelationship extends ReferencedEntityBase {
 	public TaxonNameBase getToName(){
 		return this.toName;
 	}
-	public void setToName(TaxonNameBase toName){
+	private void setToName(TaxonNameBase toName){
 		this.toName = toName;
 	}
 
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
 	}
-	public void setRuleConsidered(String ruleConsidered){
+	private void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
 	}
 

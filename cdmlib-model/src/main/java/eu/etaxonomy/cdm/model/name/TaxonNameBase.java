@@ -15,8 +15,11 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
@@ -53,14 +56,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	private boolean hasProblem = false;
 	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet();
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
-	private Set<NameRelationship> nameRelations = new HashSet();
+	private Set<NameRelationship> relationsFromThisName = new HashSet();
+	private Set<NameRelationship> relationsToThisName = new HashSet();
 	private Set<NomenclaturalStatus> status = new HashSet();
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
-	private Set<TaxonNameBase> newCombinations = new HashSet();
-	// bidrectional with newCombinations. Keep congruent
-	private T basionym;
+
 	
 	//TODO 
 	protected boolean protectedNameCache;
@@ -114,35 +116,51 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public abstract boolean isCodeCompliant();
 	
 
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public Set<NameRelationship> getNameRelations() {
-		return nameRelations;
+		Set<NameRelationship> rels = new HashSet<NameRelationship>();
+		rels.addAll(getRelationsFromThisName());
+		rels.addAll(getRelationsToThisName());
+		return rels;
 	}
-	protected void setNameRelations(Set<NameRelationship> nameRelations) {
-		this.nameRelations = nameRelations;
+	/**
+	 * Add a name relationship to both names involved
+	 * @param rel
+	 */
+	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
+		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
 	}
-	public void addNameRelation(NameRelationship nameRelation) {
-		// checks whether this is a normal relation or an inverse one 
-		// and adds it to the appropiate set
-		//this.inverseNameRelations
-		this.nameRelations.add(nameRelation);
+	protected void addNameRelationship(NameRelationship rel) {
+		if (rel!=null && rel.getToName().equals(this)){
+			this.relationsToThisName.add(rel);
+		}else if(rel!=null && rel.getFromName().equals(this)){
+			this.relationsFromThisName.add(rel);			
+		}else{
+			//TODO: raise error???
+		}
 	}
-	public void removeNameRelation(NameRelationship nameRelation) {
-		// this.inverseNameRelations
-		this.nameRelations.remove(nameRelation);
+	public void removeNameRelationship(NameRelationship nameRelation) {
+		this.relationsToThisName.remove(nameRelation);
+		this.relationsFromThisName.remove(nameRelation);
 	}
 	
 	
-	@Transient
-	public Set<NameRelationship> getIncomingNameRelations() {
-		// FIXME: filter relations
-		return nameRelations;
+	@OneToMany(mappedBy="fromName")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<NameRelationship> getRelationsFromThisName() {
+		return relationsFromThisName;
 	}
-	@Transient
-	public Set<NameRelationship> getOutgoingNameRelations() {
-		// FIXME: filter relations
-		return nameRelations;
+	private void setRelationsFromThisName(Set<NameRelationship> relationsFromThisName) {
+		this.relationsFromThisName = relationsFromThisName;
+	}
+	
+	@OneToMany(mappedBy="toName")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<NameRelationship> getRelationsToThisName() {
+		return relationsToThisName;
+	}
+	private void setRelationsToThisName(Set<NameRelationship> relationsToThisName) {
+		this.relationsToThisName = relationsToThisName;
 	}
 
 	
@@ -163,32 +181,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 
 
-
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<TaxonNameBase> getNewCombinations() {
-		return newCombinations;
-	}
-	protected void setNewCombinations(Set<TaxonNameBase> newCombinations) {
-		this.newCombinations = newCombinations;
-	}
-	public void addNewCombination(TaxonNameBase newCombination) {
-		// TODO: add basionym relation too!
-		this.newCombinations.add(newCombination);
-	}
-	public void removeNewCombination(TaxonNameBase newCombination) {
-		this.newCombinations.remove(newCombination);
-	}
-
-
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public T getBasionym(){
-		return this.basionym;
+		//TODO: pick the right name relationships...
+		return null;
 	}
 	public void setBasionym(T basionym){
-		// TODO: add newCombination relation too!
-		this.basionym = basionym;
+		setBasionym(basionym, null);
+	}
+	public void setBasionym(T basionym, String ruleConsidered){
+		basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), null);
 	}
 
 

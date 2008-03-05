@@ -57,7 +57,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 
-	@OneToMany
+	@OneToMany(mappedBy="taxon")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
@@ -137,10 +137,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public void addTaxonRelation(TaxonRelationship rel) {
 		if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel)){
 			if (rel.getFromTaxon().equals(this)){
-				Taxon toTaxon=rel.getToTaxon();
 				relationsFromThisTaxon.add(rel);
 				// also add relation to other taxon object
-				toTaxon.addTaxonRelation(rel);
+				Taxon toTaxon=rel.getToTaxon();
+				if (toTaxon!=null){
+					toTaxon.addTaxonRelation(rel);
+				}
 				// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
 				if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
 					this.setTaxonomicParentCache(rel.getToTaxon());
@@ -267,7 +269,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	 */
 	public Iterator<Taxon> iterator() {
 		return new TaxonIterator(this.getTaxonomicChildren());
-
 	}
 	/**
 	 * inner iterator class for the iterable interface

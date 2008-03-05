@@ -20,6 +20,9 @@ public class TaxonGenerator {
 	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
+		Person deCandolle = new Person();
+		deCandolle.setTitleCache("DC.");
+		
         BotanicalName botName = new BotanicalName(Rank.GENUS()); 
         botName.setTitleCache("Hieracium L."); 
         botName.setGenusOrUninomial("Hieracium"); 
@@ -29,6 +32,12 @@ public class TaxonGenerator {
         genusTaxon.setName(botName); 
         genusTaxon.setSec(null); 
                         
+        BotanicalName basionym = new BotanicalName(Rank.GENUS()); 
+        basionym.setTitleCache("Hieracilla DC."); 
+        basionym.setGenusOrUninomial("Hieracilla"); 
+        basionym.setCombinationAuthorTeam(deCandolle); 
+        botName.setBasionym(basionym, "¤216");
+        
         BotanicalName botSpecies = new BotanicalName(Rank.SPECIES()); 
         botSpecies.setTitleCache("Hieracium asturianum Pau"); 
         botSpecies.setGenusOrUninomial("Hieracium"); 
@@ -55,8 +64,7 @@ public class TaxonGenerator {
         botSpecies3.setTitleCache("Hieracium lupium DC."); 
         botSpecies3.setGenusOrUninomial("Hieracium"); 
         botSpecies3.setSpecificEpithet("lupium"); 
-        botSpecies3.setCombinationAuthorTeam(new Person()); 
-        botSpecies3.getCombinationAuthorTeam().setTitleCache("DC."); 
+        botSpecies3.setCombinationAuthorTeam(deCandolle); 
         Synonym synonym = new Synonym(); 
         synonym.setName(botSpecies3); 
         synonym.setSec(null);
