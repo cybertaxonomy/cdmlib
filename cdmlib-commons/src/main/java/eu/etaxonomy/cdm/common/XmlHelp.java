@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -72,6 +73,18 @@ public class XmlHelp {
 		return null;
 	}
 	
+	static public List<Element> getAttributedChildList(Element parent, String elementName, String attributeName){
+		List<Element> resultList = new ArrayList<Element>();
+		Namespace ns = parent.getNamespace();
+		List<Element> elList = parent.getChildren(elementName, ns);
+		for (Element el : elList){
+			Attribute attr =  el.getAttribute(attributeName);
+			if (attr != null){
+				resultList.add(el);
+			}
+		}
+		return resultList;
+	}	
 
 	/**
 	 * @param parent
