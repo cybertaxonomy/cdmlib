@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import org.springframework.stereotype.Component;
+
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -9,6 +11,7 @@ import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 
+@Component
 public class ReferenceAssembler extends AssemblerBase {
 	public ReferenceSTO getSTO(ReferenceBase rb){		
 		ReferenceSTO r = new ReferenceSTO();
