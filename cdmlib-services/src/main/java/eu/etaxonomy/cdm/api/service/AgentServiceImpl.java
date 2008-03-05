@@ -10,15 +10,12 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+
 
 
 /**
@@ -27,35 +24,35 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
  */
 @Service
 @Transactional
-public class AgentServiceImpl extends IdentifiableServiceBase<Agent> implements IAgentService {
+public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T> implements IAgentService<T> {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
 	private IAgentDao agentDao;
 	@Autowired
 	protected void setDao(IAgentDao dao) {
-		this.dao = dao;
+		this.dao = (ICdmEntityDao)dao;
 		this.agentDao = dao;
 	}
 
-	public List<Agent> findAgentsByTitle(String title) {
+	public List<T> findAgentsByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
 
-	public Agent getAgentByUuid(UUID uuid) {
+	public T getAgentByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid);
 	}
 
-	public UUID saveAgent(Agent agent) {
+	public UUID saveAgent(T agent) {
 		return super.saveCdmObject(agent);
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection){
+	public Map<UUID, T> saveAgentAll(Collection<T> agentCollection){
 		return saveCdmObjectAll(agentCollection);
 	}
 
 	
-	public List<Agent> getAllAgents(int limit, int start){
+	public List<? extends Agent> getAllAgents(int limit, int start){
 		return agentDao.list(limit, start);
 	}
 }

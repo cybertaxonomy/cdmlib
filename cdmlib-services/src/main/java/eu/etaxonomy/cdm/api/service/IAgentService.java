@@ -7,16 +7,16 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 
-public interface IAgentService extends IIdentifiableEntityService<Agent> {
+public interface IAgentService<T extends Agent> extends IIdentifiableEntityService<T> {
 	
-	public abstract Agent getAgentByUuid(UUID uuid);
+	public abstract T getAgentByUuid(UUID uuid);
 
-	public abstract UUID saveAgent(Agent agent);
+	public abstract UUID saveAgent(T agent);
 	
-	public abstract Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection);
+	public abstract Map<UUID, T> saveAgentAll(Collection<T> agentCollection);
 	
-	public abstract List<Agent> findAgentsByTitle(String title);
+	public abstract List<T> findAgentsByTitle(String title);
 
-	public abstract List<Agent> getAllAgents(int limit, int start);
+	public abstract List<? extends Agent> getAllAgents(int limit, int start);
 
 }
