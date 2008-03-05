@@ -49,4 +49,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	
 	public Boolean exists(UUID uuid) throws DataAccessException;
 	
+	public void flush();
+	
 }
