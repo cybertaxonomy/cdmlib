@@ -225,8 +225,9 @@ public class CdmDataSource {
 			List<Element> elProperties = XmlHelp.getAttributedChildList(bean, "property", "name");
 			Iterator<Element> iterator = elProperties.iterator();
 			while(iterator.hasNext()){
-				String strName = iterator.next().getAttributeValue("name");
-				String strValue = iterator.next().getAttributeValue("value");
+				Element next = iterator.next();
+				String strName = next.getAttributeValue("name");
+				String strValue = next.getAttributeValue("value");
 				result.put(strName, strValue);
 			}
 		}
