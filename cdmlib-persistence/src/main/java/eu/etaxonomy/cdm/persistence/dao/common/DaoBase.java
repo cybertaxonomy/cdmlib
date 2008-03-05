@@ -13,5 +13,10 @@ public abstract class DaoBase {
 		Session session = factory.getCurrentSession();
 		return session;
 	}
+	
+	public void flush(){
+		getSession().flush();
+	}
+	
 
 }
