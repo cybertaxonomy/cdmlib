@@ -172,12 +172,8 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 				}
 				result.setCombinationAuthorTeam(authors[0]);
 				result.setExCombinationAuthorTeam(authors[1]);
-				if (authors[2] != null || authors[3] != null){
-					BotanicalName basionymName = new BotanicalName(result.getRank());
-					basionymName.setCombinationAuthorTeam(authors[2]);
-					basionymName.setExCombinationAuthorTeam(authors[3]);
-					result.setBasionym(basionymName);
-				}
+				result.setBasionymAuthorTeam(authors[2]);
+				result.setExBasionymAuthorTeam(authors[3]);
 			}	
 			//return
 			if (result != null){
