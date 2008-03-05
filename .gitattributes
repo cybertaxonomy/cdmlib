@@ -378,7 +378,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
-cdmlib-services/src/main/resources/log4j.properties -text
 cdmlib-services/src/site/apt/index.apt -text
 cdmlib-services/src/site/site.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
@@ -391,6 +390,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -tex
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
+cdmlib-services/src/test/resources/log4j.properties -text
 eclipse-feature/.classpath -text
 eclipse-feature/.project -text
 eclipse-feature/build.properties -text

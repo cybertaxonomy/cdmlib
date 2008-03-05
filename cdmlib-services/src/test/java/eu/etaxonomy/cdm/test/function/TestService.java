@@ -11,6 +11,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -29,37 +32,50 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestService {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestService.class);
+	private static CdmApplicationController appCtr;
 	
 	
-	public void testAppController(){
-		CdmApplicationController appCtr = new CdmApplicationController();
-		
+	private void init(){
+		try {
+			appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
+		} catch (DataSourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName tn = new NonViralName(Rank.SPECIES());
-		BotanicalName tn3 = new BotanicalName(Rank.SUBSPECIES());
-		ZoologicalName parentName = new ZoologicalName(Rank.FAMILY());
+		NonViralName nvn = new NonViralName(Rank.SPECIES());
+ 		appCtr.getNameService().saveTaxonName(nvn);
+ 		
+		BotanicalName bn = new BotanicalName(Rank.SUBSPECIES());
+		ZoologicalName zn = new ZoologicalName(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
 		ReferenceBase sec = new Journal();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
-		Taxon childTaxon = Taxon.NewInstance(tn, sec);
-		Synonym syn = Synonym.NewInstance(tn3, sec);
+		Taxon childTaxon = Taxon.NewInstance(nvn, sec);
+		Synonym syn = Synonym.NewInstance(bn, sec);
 		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
-		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
+ 		appCtr.getTaxonService().saveTaxon(childTaxon);
+
+ 		
+ 		Taxon parentTaxon = Taxon.NewInstance(zn, sec);
 		parentTaxon.setUuid(TEST_TAXON_UUID);
 		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
 		
 		
 		// test 
-		tn.setGenusOrUninomial("tn1-Genus1");
-		tn3.setGenusOrUninomial("tn3-genus");
+		nvn.setGenusOrUninomial("Nonvirala");
+		bn.setGenusOrUninomial("Abies");
 		
 		logger.info("Create new Author agent...");
 		Person team= new Person();
 		team.setTitleCache("AuthorAgent1");
-		tn.setCombinationAuthorTeam(team);
+		nvn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
  		appCtr.getTaxonService().saveTaxon(parentTaxon);
@@ -83,12 +99,9 @@ public class TestService {
 		}
 		
 		// close 
-		appCtr.close();
 	}
 
 	public void testRootTaxa(){
-		
-		CdmApplicationController appCtr = new CdmApplicationController();
 		// load Name list 
 		logger.info("Load existing names from db...");
 		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
@@ -109,13 +122,9 @@ public class TestService {
 				}
 			}
 		}
-		
-		// close 
-		appCtr.close();
 	}
 
 	public void testTermApi(){
-		CdmApplicationController appCtr = new CdmApplicationController();
 		ITermService ts = (ITermService)appCtr.getTermService();
 		//DefinedTermBase dt = ts.getTermByUri("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 		//logger.warn(dt.toString());
@@ -130,7 +139,6 @@ public class TestService {
 	}
 	
 	public void testDeleteTaxa(){
-		CdmApplicationController appCtr = new CdmApplicationController();
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
 		ReferenceBase ref = new Journal();
@@ -147,7 +155,6 @@ public class TestService {
 	}
 
 	public void testDeleteRelationship(){
-		CdmApplicationController appCtr = new CdmApplicationController();
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
 		ReferenceBase ref = new Journal();
@@ -173,12 +180,10 @@ public class TestService {
 	
 	private void test(){
 		System.out.println("Start ...");
-		TestService sc = new TestService();
-    	//testTermApi();
     	testAppController();
 		//testRootTaxa();
 		//testTermApi();
-		//testDeleteTaxa();
+		testDeleteTaxa();
 		testDeleteRelationship();
     	System.out.println("\nEnd ...");
 	}
@@ -188,7 +193,9 @@ public class TestService {
 	 */
 	public static void  main(String[] args) {
 		TestService sc = new TestService();
+		sc.init();
     	sc.test();
+		appCtr.close();
 	}
 
 }
