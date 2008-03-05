@@ -7,16 +7,13 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -28,14 +25,10 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 
-import static eu.etaxonomy.cdm.common.XmlHelp.getFirstAttributedChild;
-import static eu.etaxonomy.cdm.common.XmlHelp.getOrAddChild;
 import static eu.etaxonomy.cdm.common.XmlHelp.getRoot;
 import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
-import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlRefProperty;
 import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
 import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 

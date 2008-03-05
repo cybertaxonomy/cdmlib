@@ -202,8 +202,8 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	private static final String getDefaultPath(){
 		//String path = System.getProperty("user.dir");
 		File path = CdmApplicationUtils.getWritableResourceDir();
-		String supPath = File.separator + "db" + File.separator + "LocalHsqldb"; 
-		return  path + supPath;
+		String subPath = File.separator + "hsqlDb" + File.separator + "LocalHsqldb"; 
+		return  path + subPath;
 	}
 
 	/**
