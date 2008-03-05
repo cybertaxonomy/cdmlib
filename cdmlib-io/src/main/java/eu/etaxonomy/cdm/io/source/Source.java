@@ -327,5 +327,13 @@ public class Source {
 		return this;
 	}
     
+    public String getDatabase(){
+    	return mDb;
+    }
+    
+    public String getServer(){
+    	return mServer;
+    }
+    
 
 }

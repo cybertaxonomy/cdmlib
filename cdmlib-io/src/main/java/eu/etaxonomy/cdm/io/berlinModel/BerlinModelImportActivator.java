@@ -57,8 +57,7 @@ public class BerlinModelImportActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel ...");
-		Source source = berlinModelSource;
+		System.out.println("Start import from BerlinModel ("+ berlinModelSource.getDatabase() + ") ...");
 		CdmApplicationController cdmApp;
 		
 		//make CdmApplication
@@ -67,7 +66,7 @@ public class BerlinModelImportActivator {
 //		dataSourceName = "testSqlServer";	
 		
 		//make BerlinModel Source
-		source = BerlinModelSources.euroMed();
+		Source source = berlinModelSource;
 		if (source == null){
 			logger.error("Connection to BerlinModel could not be established");
 			System.out.println("End import from BerlinModel ...");
@@ -92,7 +91,7 @@ public class BerlinModelImportActivator {
 			BerlinModelImport bmImport = new BerlinModelImport();
 			bmImport.doImport(source, cdmApp);
 		}
-		System.out.println("End import from BerlinModel ...");
+		System.out.println("End import from BerlinModel ("+ berlinModelSource.getDatabase() + ")...");
 	}
 	
 	

@@ -19,7 +19,7 @@ public class BerlinModelSources {
 	}
 	
 	public static Source editWP6(){
-		//	BerlinModel - Euro+Med
+		//	BerlinModel - EditWp6
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
 		String strDB = "EditWP6";

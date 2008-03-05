@@ -52,7 +52,7 @@ public class BerlinModelTaxonNameIO {
 			
 			//get data from database
 			String strQuery = 
-					"SELECT TOP 20002 Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
+					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
                       		" RefDetail.SecondarySources, RefDetail.IdInSource " +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
