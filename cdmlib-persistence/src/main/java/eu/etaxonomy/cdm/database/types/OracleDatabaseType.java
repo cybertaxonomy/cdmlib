@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class OracleDatabaseType extends AbstractDatabaseType {
+public class OracleDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "Oracle";

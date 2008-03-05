@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class SqlServer2005DatabaseType extends AbstractDatabaseType {
+public class SqlServer2005DatabaseType extends DatabaseTypeBase {
 
 	//name
 	protected String typeName = "SQL Server";

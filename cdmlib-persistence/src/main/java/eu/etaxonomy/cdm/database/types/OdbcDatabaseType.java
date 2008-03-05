@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class OdbcDatabaseType extends AbstractDatabaseType {
+public class OdbcDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "ODBC";

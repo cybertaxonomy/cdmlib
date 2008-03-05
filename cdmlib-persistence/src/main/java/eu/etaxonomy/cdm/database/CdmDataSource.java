@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -45,10 +47,9 @@ public class CdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
-	public final static String DATASOURCE_FILE_NAME = "cdm.datasource.xml";
+	public final static String DATASOURCE_FILE_NAME = "cdm.datasources.xml";
 	private final static Format format = Format.getPrettyFormat(); 
 
-	
 	public enum DbProperties{
 		DRIVER_CLASS,
 		URL,
@@ -189,10 +190,10 @@ public class CdmDataSource {
 	}
 
 	
-	
+
 	/**
-	 * Returns the url of . 
-	 * @return the database type of the data source. Null if the bean or the url property does not exist.
+	 * Returns a defined property of the datasource
+	 * @return the property of the data source. NULL if the datasource bean or the property does not exist.
 	 */
 	public String getDbProperty(DbProperties dbProp){
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
@@ -210,20 +211,49 @@ public class CdmDataSource {
 		}
 	}
 	
+	
+	/**
+	 * Returns the list of properties that are defined in the datasource    
+	 * @return 
+	 */
+	public Properties getDbProperties(){
+		Properties result = new Properties();
+		Element bean = getDatasourceBeanXml(this.dataSourceName);
+		if (bean == null){
+			return null;
+		}else{
+			List<Element> elProperties = XmlHelp.getAttributedChildList(bean, "property", "name");
+			Iterator<Element> iterator = elProperties.iterator();
+			while(iterator.hasNext()){
+				String strName = iterator.next().getAttributeValue("name");
+				String strValue = iterator.next().getAttributeValue("value");
+				result.put(strName, strValue);
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Returns a BeanDefinition object of type  DriverManagerDataSource that contains
 	 * datsource properties (url, username, password, ...)
 	 * @return
 	 */
 	public BeanDefinition getDatasourceBean(){
-		AbstractBeanDefinition bd = new RootBeanDefinition(DriverManagerDataSource.class);
 		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDbProperty(DbProperties.DRIVER_CLASS));
-		//TODO: read real values
+		
+		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDriverManagerDataSourceClass());
+		
 		MutablePropertyValues props = new MutablePropertyValues();
-		props.addPropertyValue("driverClassName", dbtype.getDriverClassName());
-		props.addPropertyValue("url", getDbProperty(DbProperties.URL));
-		props.addPropertyValue("username", getDbProperty(DbProperties.USERNAME));
-		props.addPropertyValue("password", getDbProperty(DbProperties.PASSWORD));
+		Properties persistentProperties = getDbProperties();
+		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
+		while (keys.hasMoreElements()){
+			String key = (String)keys.nextElement();
+			props.addPropertyValue(key, persistentProperties.getProperty(key));
+		}
+//		props.addPropertyValue("driverClassName", dbtype.getDriverClassName());
+//		props.addPropertyValue("url", getDbProperty(DbProperties.URL));
+//		props.addPropertyValue("username", getDbProperty(DbProperties.USERNAME));
+//		props.addPropertyValue("password", getDbProperty(DbProperties.PASSWORD));
 		bd.setPropertyValues(props);
 		return bd;
 	}

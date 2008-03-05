@@ -244,7 +244,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundExc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularyStoreImpl.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/AbstractDatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -text
@@ -275,8 +275,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IRef
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/ReferenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/TaxonDaoHibernateImpl.java -text
-cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
-cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/apt/index.apt -text
@@ -295,7 +294,9 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFacto
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasource.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text

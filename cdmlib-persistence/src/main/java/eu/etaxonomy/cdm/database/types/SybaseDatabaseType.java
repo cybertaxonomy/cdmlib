@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class SybaseDatabaseType extends AbstractDatabaseType {
+public class SybaseDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "Sybase";

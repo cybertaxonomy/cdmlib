@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class Db2DatabaseType extends AbstractDatabaseType {
+public class Db2DatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "DB2 Universal";

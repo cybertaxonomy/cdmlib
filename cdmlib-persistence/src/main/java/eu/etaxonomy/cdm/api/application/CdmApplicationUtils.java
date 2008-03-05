@@ -20,11 +20,14 @@ public class CdmApplicationUtils {
 	
 	//directory of the resources (configfiles etc.)
 	static File fileResourceDir;
-	static final String MUST_EXIST_FILE = "applicationContext.xml";
+	static final String MUST_EXIST_FILE = CdmDataSource.DATASOURCE_FILE_NAME;
+
+//	static final String MUST_EXIST_FILE = "persistence.xml";
+//	static final String MUST_EXIST_FILE = "applicationContext.xml";
 
 	/**
-	 * Returns the directory path to the writable resources. (Resources must be copied to this directory, this is automatically done for
-	 * the cdm.datasource.xml, sessionfactory.xml and applicationContext.xml
+	 * Returns the directory path to the writable resources (cdm.datasources.xml and hsqldb databases).
+	 * (Resources must be copied to this directory, this is automatically done for the cdm.datasources.xml)
 	 * @return 
 	 */
 	public static File getWritableResourceDir(){
@@ -46,7 +49,7 @@ public class CdmApplicationUtils {
 					fileResourceDir = file;
 				}
 			}
-			logger.debug("Resource directory: " + (fileResourceDir == null?"null":fileResourceDir.getAbsolutePath()));		
+			logger.info("Resource directory: " + (fileResourceDir == null?"null":fileResourceDir.getAbsolutePath()));		
 		}
 		return fileResourceDir;
 	}

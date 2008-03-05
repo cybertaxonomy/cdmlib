@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.database.types;
 
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
 public interface IDatabaseType {
 	/**
 	 * @return
@@ -39,5 +41,11 @@ public interface IDatabaseType {
 	 * @return the connection String
 	 */
 	public String getConnectionString(String server, String database);
+
+	/**
+	 * Returns the DriverManagerDataSource class that that the datasource needs to create a spring bean
+	 * @return the DriverManagerDataSource class
+	 */
+	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass();
 	
 }

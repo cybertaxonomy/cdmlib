@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
@@ -70,6 +71,14 @@ public enum DatabaseTypeEnum {
 	 */
 	public String getDriverClassName(){
 		return dbType.getClassString();
+	}
+    
+	/**
+	 * Returns the DriverManagerDataSource class that that the datasource needs to create a spring bean
+	 * @return the DriverManagerDataSource class
+	 */
+	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass(){
+		return dbType.getDriverManagerDataSourceClass();
 	}
 	
 	/**
@@ -145,6 +154,7 @@ public enum DatabaseTypeEnum {
     	logger.warn("Unknown driver class " + strDriverClass==null ? "null" : strDriverClass);
     	return null;
     }
+
  
 }
 

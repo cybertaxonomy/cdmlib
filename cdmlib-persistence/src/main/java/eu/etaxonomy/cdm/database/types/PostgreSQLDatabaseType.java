@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class PostgreSQLDatabaseType extends AbstractDatabaseType {
+public class PostgreSQLDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "PostgreSQL";

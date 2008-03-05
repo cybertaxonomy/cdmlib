@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.database.types;
  * @author a.mueller
  *
  */
-public class MySQLDatabaseType extends AbstractDatabaseType {
+public class MySQLDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	protected String typeName = "MySQL";

@@ -3,12 +3,16 @@
  */
 package eu.etaxonomy.cdm.database.types;
 
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import eu.etaxonomy.cdm.database.LocalHsqldb;
+
 
 /**
  * @author a.mueller
  *
  */
-public class HSqlDbDatabaseType extends AbstractDatabaseType {
+public class HSqlDbDatabaseType extends DatabaseTypeBase {
 
 	//typeName
 	private String typeName = "Hypersonic SQL DB (HSqlDb)";
@@ -34,6 +38,11 @@ public class HSqlDbDatabaseType extends AbstractDatabaseType {
     
     public HSqlDbDatabaseType() {
 		init (typeName, classString, urlString, defaultPort,  hibernateDialect );
+	}
+
+	@Override
+	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
+		return LocalHsqldb.class;
 	}
 
 

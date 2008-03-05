@@ -3,12 +3,14 @@
  */
 package eu.etaxonomy.cdm.database.types;
 
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
 
 /**
  * @author a.mueller
  *
  */
-abstract class AbstractDatabaseType implements IDatabaseType {
+abstract class DatabaseTypeBase implements IDatabaseType {
 	//typeName
 	private String typeName;
 	//String for DriverClass
@@ -69,7 +71,14 @@ abstract class AbstractDatabaseType implements IDatabaseType {
 	 */
 	public String getConnectionString(String server, String database){
 		return getConnectionString(server, database, defaultPort);
-    } 
+    }
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDriverManagerDataSourceClass()
+	 */
+	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
+		return DriverManagerDataSource.class;
+	} 
 	
 	
 }
