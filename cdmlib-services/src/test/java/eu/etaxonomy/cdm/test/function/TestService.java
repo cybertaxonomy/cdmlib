@@ -35,19 +35,9 @@ public class TestService {
 	private static CdmApplicationController appCtr;
 	
 	
-	private void init(){
-		try {
-			appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
-		} catch (DataSourceNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void testAppController() {
 		logger.info("Create name objects...");
 		NonViralName nvn = new NonViralName(Rank.SPECIES());
- 		appCtr.getNameService().saveTaxonName(nvn);
  		
 		BotanicalName bn = new BotanicalName(Rank.SUBSPECIES());
 		ZoologicalName zn = new ZoologicalName(Rank.FAMILY());
@@ -86,19 +76,6 @@ public class TestService {
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
-		
-		// load Name list 
-		logger.info("Load taxon from db...");
-		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(parentTaxon.getUuid());
-		logger.info("Parent: "+ taxon.toString());
-		for (Taxon child: taxon.getTaxonomicChildren()){
-			logger.info("Child: "+ child.toString());
-			for (Synonym synonym: child.getSynonyms()){
-				logger.info("Synonym: "+ synonym.toString());
-			}
-		}
-		
-		// close 
 	}
 
 	public void testRootTaxa(){
@@ -188,6 +165,16 @@ public class TestService {
     	System.out.println("\nEnd ...");
 	}
 	
+	private void init(){
+		try {
+			//appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
+			appCtr = new CdmApplicationController(HBM2DDL.CREATE);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * @param args
 	 */
