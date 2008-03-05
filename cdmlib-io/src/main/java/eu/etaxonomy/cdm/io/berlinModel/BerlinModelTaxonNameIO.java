@@ -1,11 +1,9 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +14,7 @@ import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -207,11 +206,90 @@ public class BerlinModelTaxonNameIO {
 
 	}
 	
-	//TODO
-	static boolean invokeRelations(Source source, CdmApplicationController cdmApp, 
-			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
-		return false;
+	public static boolean invokeRelations(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){
+
+//		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
+
+		String dbAttrName;
+		String cdmAttrName;
+		
+		logger.info("start makeNameRelationships ...");
+		
+		INameService nameService = cdmApp.getNameService();
+		boolean delete = deleteAll;
+
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id " + 
+					" FROM Name as FromName INNER JOIN " +
+                      	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
+                      	" Name AS ToName ON RelName.NameFk2 = ToName.NameId "+
+                    " WHERE (1=1)";
+			ResultSet rs = source.getResultSet(strQuery) ;
+			
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("RelName handled: " + (i-1));}
+				
+				int relNameId = rs.getInt("RelNameId");
+				int name1Id = rs.getInt("name1Id");
+				int name2Id = rs.getInt("name2Id");
+				int relRefFk = rs.getInt("refFk");
+				int relQualifierFk = rs.getInt("relNameQualifierFk");
+				
+				TaxonNameBase name1 = nameMap.get(name1Id);
+				TaxonNameBase name2 = nameMap.get(name2Id);
+				
+				//TODO
+				ReferenceBase citation = null;
+				String microcitation = null;
+
+				if (name1 != null && name2 != null){
+					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
+						//TODO references, mikroref, etc
+						name2.setBasionym(name1);
+					}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
+						NameRelationship nameRelation = new NameRelationship();
+						nameRelation.setFromName(name1);
+						nameRelation.setToName(name2);
+						name2.addNameRelation(nameRelation);
+						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+						//TODO name2.add
+					}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
+						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+						//TODO name2.add
+					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
+						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+						//TODO name2.add
+					}else {
+						//TODO
+						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+					}
+					//nameStore.add(taxon2);
+					
+					//TODO
+					//Reference
+					//ID
+					//etc.
+				}else{
+					//TODO
+					//logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
+				}
+			}
+			//logger.info("Taxa to save: " + taxonStore.size());
+			//nameService.saveTaxonNameAll(nameStore);
+			
+			logger.info("end makeRelTaxa ...");
+			return true;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+
 	}
 	
 }

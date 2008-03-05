@@ -1,22 +1,13 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 @Service
@@ -29,7 +20,7 @@ public class BerlinModelImport {
 	private boolean makeReferences = true;
 	private boolean makeTaxonNames = true;
 	private boolean makeTaxa = true;
-	private boolean makeRelNames = false;
+	private boolean makeRelNames = true;
 	private boolean makeNameStatus = false;
 	private boolean makeRelTaxa = true;
 	private boolean makeFacts = true;
@@ -59,6 +50,7 @@ public class BerlinModelImport {
 	 * Executes the whole 
 	 */
 	public boolean doImport(Source source, CdmApplicationController cdmApp){
+		System.out.println("Start import from BerlinModel ("+ source.getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		if (source == null || cdmApp == null){
 			throw new NullPointerException("Source and CdmApplicationController must not be null");
 		}
@@ -94,6 +86,17 @@ public class BerlinModelImport {
 			logger.warn("No TaxonNames imported");
 			taxonNameStore = null;
 		}
+
+		
+		//make and save RelNames
+		if(makeRelNames){
+			if (! BerlinModelTaxonNameIO.invokeRelations(source, cdmApp, deleteAll, taxonNameStore, referenceStore)){
+				return false;
+			}
+		}else{
+			logger.warn("No RelPTaxa imported");
+		}
+
 		
 		//make and save Taxa
 		if(makeTaxa){
@@ -128,6 +131,7 @@ public class BerlinModelImport {
 		}
 		
 		//return
+		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		return true;
 	}
 	

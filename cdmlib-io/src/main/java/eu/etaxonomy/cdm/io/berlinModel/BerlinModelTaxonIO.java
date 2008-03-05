@@ -130,10 +130,12 @@ public class BerlinModelTaxonIO {
 					}
 				}
 			}
+			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving taxa ...");
 			taxonService.saveTaxonAll(taxonMap.objects());
 			
 			logger.info("end makeTaxa ...");
+			
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -186,20 +188,20 @@ public class BerlinModelTaxonIO {
 				String microcitation = null;
 
 				if (taxon2 != null && taxon1 != null){
-					if (relQualifierFk == IS_INCLUDED_IN){
+					if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
 						((Taxon)taxon2).addTaxonomicChild((Taxon)taxon1, citation, microcitation);
-					}else if (relQualifierFk == IS_SYNONYM_OF){
+					}else if (relQualifierFk == TAX_REL_IS_SYNONYM_OF){
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
-					}else if (relQualifierFk == IS_HOMOTYPIC_SYNONYM_OF){
+					}else if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF){
 						//TODO castexceptioin
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-					}else if (relQualifierFk == IS_HETEROTYPIC_SYNONYM_OF){
+					}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
 						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
 							((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 						}else{
 							logger.warn("Taxon (RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
 						}
-					}else if (relQualifierFk == IS_MISAPPLIED_NAME_OF){
+					}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
 						((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
 					}else {
 						//TODO
@@ -213,11 +215,11 @@ public class BerlinModelTaxonIO {
 					//etc.
 				}else{
 					//TODO
-					//logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
+					logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
 				}
 			}
 			logger.info("Taxa to save: " + taxonStore.size());
-			//taxonService.saveTaxonAll(taxonStore);
+			taxonService.saveTaxonAll(taxonStore);
 			
 			logger.info("end makeRelTaxa ...");
 			return true;

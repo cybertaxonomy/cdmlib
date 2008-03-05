@@ -22,16 +22,61 @@ public final class BerlinModelTransformer {
 	public static int REF_CD = 8;
 	public static int REF_JOURNAL = 9;
 	public static int REF_UNKNOWN = 10;
+
+	
+	//NameStatus
+	public static int NAME_ST_NOM_INVAL = 1;
+	public static int NAME_ST_NOM_ILLEG = 2;
+	public static int NAME_ST_NOM_NUD = 3;
+	public static int NAME_ST_NOM_REJ = 4;
+	public static int NAME_ST_NOM_REJ_PROP = 5;
+	public static int NAME_ST_NOM_UTIQUE_REJ = 6;
+	public static int NAME_ST_NOM_UTIQUE_REJ_PROP = 7;
+	public static int NAME_ST_NOM_CONS = 8;
+	public static int NAME_ST_NOM_CONS_PROP = 9;
+	public static int NAME_ST_ORTH_CONS = 10;
+	public static int NAME_ST_ORTH_CONS_PROP = 11;
+	public static int NAME_ST_NOM_SUPERFL = 12;
+	public static int NAME_ST_NOM_AMBIG = 13;
+	public static int NAME_ST_NOM_PROVIS = 14;
+	public static int NAME_ST_NOM_DUB = 15;
+	public static int NAME_ST_NOM_NOV = 16;
+	public static int NAME_ST_NOM_CONFUS = 17;
+	public static int NAME_ST_NOM_ALTERN = 18;
+	public static int NAME_ST_COMB_INVAL = 19;
+	
+	
+	//NameRelationShip
+	public static int NAME_REL_IS_BASIONYM_FOR = 1;
+	public static int NAME_REL_IS_LATER_HOMONYM_OF = 2;
+	public static int NAME_REL_IS_REPLACED_SYNONYM_FOR = 3;
+	public static int NAME_REL_IS_VALIDATION_OF = 4;
+	public static int NAME_REL_IS_LATER_VALIDATION_OF = 5;
+	public static int NAME_REL_IS_TYPE_OF = 6;
+	public static int NAME_REL_IS_CONSERVED_TYPE_OF =7;
+	public static int NAME_REL_IS_REJECTED_TYPE_OF = 8;
+	public static int NAME_REL_IS_FIRST_PARENT_OF = 9;
+	public static int NAME_REL_IS_SECOND_PARENT_OF = 10;
+	public static int NAME_REL_IS_FEMALE_PARENT_OF = 11;
+	public static int NAME_REL_IS_MALE_PARENT_OF = 12;
+	public static int NAME_REL_IS_CONSERVED_AGAINST =13;
+	public static int NAME_REL_IS_REJECTED_IN_FAVOUR_OF = 14;
+	public static int NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF = 15;
+	public static int NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF = 16;
+	public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
+	public static int NAME_REL_IS_LECTOTYPE_OF = 61;
+	public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
+	
 	
 	//TaxonRelationShip
-	public static int IS_INCLUDED_IN = 1;
-	public static int IS_SYNONYM_OF = 2;
-	public static int IS_MISAPPLIED_NAME_OF = 3;
-	public static int IS_HOMOTYPIC_SYNONYM_OF = 6;
-	public static int IS_HETEROTYPIC_SYNONYM_OF = 7;
+	public static int TAX_REL_IS_INCLUDED_IN = 1;
+	public static int TAX_REL_IS_SYNONYM_OF = 2;
+	public static int TAX_REL_IS_MISAPPLIED_NAME_OF = 3;
+	public static int TAX_REL_IS_HOMOTYPIC_SYNONYM_OF = 6;
+	public static int TAX_REL_IS_HETEROTYPIC_SYNONYM_OF = 7;
 	
-	
-	//TaxonRelationShip
+
+	//TaxonStatus
 	public static int T_STATUS_ACCEPTED = 1;
 	public static int T_STATUS_SYNONYM = 2;
 	public static int T_STATUS_PARTIAL_SYN = 3;
