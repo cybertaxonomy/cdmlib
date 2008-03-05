@@ -10,11 +10,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:applicationContext.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/applicationContext.xml"})
 @TransactionConfiguration(defaultRollback=true)
 public class CdmServiceImplTestSupport {
 
-	//@Test
+	@Test
 	public void testGetName() {
 		fail("Not yet implemented");
 	}
