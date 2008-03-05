@@ -24,10 +24,7 @@ public class BerlinModelAuthorIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(
-			Source source, 
-			CdmApplicationController cdmApp, 
-			boolean deleteAll, 
+	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<Agent> agentMap){
 		
 		String dbAttrName;

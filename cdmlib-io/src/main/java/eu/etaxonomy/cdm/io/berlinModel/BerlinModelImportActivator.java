@@ -12,6 +12,8 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.io.berlinModel.test.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
@@ -86,10 +88,14 @@ public class BerlinModelImportActivator {
 			return;
 		}
 		
+		//BerlinModel database reference name
+		ReferenceBase berlinModelRef = new Database();
+		berlinModelRef.setTitleCache(source.getDatabase());
+		
 		// invoke import
 		if (source != null){
 			BerlinModelImport bmImport = new BerlinModelImport();
-			bmImport.doImport(source, cdmApp);
+			bmImport.doImport(berlinModelRef, source, cdmApp);
 		}
 		System.out.println("End import from BerlinModel ("+ berlinModelSource.getDatabase() + ")...");
 	}

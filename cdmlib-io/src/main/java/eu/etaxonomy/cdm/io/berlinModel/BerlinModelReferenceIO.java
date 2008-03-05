@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -46,7 +47,7 @@ public class BerlinModelReferenceIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
 		
 		String dbAttrName;
@@ -207,13 +208,11 @@ public class BerlinModelReferenceIO {
 						cdmAttrName = "titleCache";
 						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
 						
-						
-						//refId
-						//TODO
-//						Annotation annotation = new Annotation("Berlin Model id: " + String.valueOf(refId), Language.DEFAULT());
-//						referenceBase.addAnnotations(annotation);
-						//referenceBase.setLsid(String.valueOf(refId));
-						
+						OriginalSource originalSource = new OriginalSource();
+						originalSource.setIdInSource(String.valueOf(refId));
+						originalSource.setCitation(berlinModelRef);
+						referenceBase.addSource(originalSource);
+					
 						//	dbAttrName = "BinomHybFlag";
 						//	cdmAttrName = "isBinomHybrid";
 						//	ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);

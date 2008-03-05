@@ -11,13 +11,24 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
  *
  */
 public class ImportHelper {
 	private static final Logger logger = Logger.getLogger(ImportHelper.class);
+	
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase berlinModelRef, int berlinModelId){
+		OriginalSource originalSource = new OriginalSource();
+		originalSource.setIdInSource(String.valueOf(berlinModelId));
+		originalSource.setCitation(berlinModelRef);
+		idEntity.addSource(originalSource);
+		return true;
+	}
 	
 	
 	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){

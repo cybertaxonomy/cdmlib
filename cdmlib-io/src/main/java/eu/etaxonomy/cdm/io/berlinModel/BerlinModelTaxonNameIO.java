@@ -4,6 +4,8 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -12,7 +14,6 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -27,13 +28,13 @@ public class BerlinModelTaxonNameIO {
 	private static int modCount = 5000;
 
 	//TODO
-	static boolean invokeStatus(Source source, CdmApplicationController cdmApp, 
+	static boolean invokeStatus(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
 		return false;
 	}
 	
-	public static boolean invoke(Source source, CdmApplicationController cdmApp, 
+	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
 		
@@ -172,10 +173,8 @@ public class BerlinModelTaxonNameIO {
 					// Annotation annotation = new Annotation("Berlin Model nameId: " + String.valueOf(refId), Language.DEFAULT());
 					// botanicalName.addAnnotations(annotation);
 					
-					OriginalSource originalSource = new OriginalSource();
-					originalSource.setIdInSource(String.valueOf(nameId));
-					//originalSource.setCitation(originalCitation);
-					botanicalName.addSource(originalSource);
+					//nameId
+					ImportHelper.setOriginalSource(botanicalName, berlinModelRef, nameId);
 					
 					taxonNameMap.put(nameId, botanicalName);
 					
@@ -187,16 +186,8 @@ public class BerlinModelTaxonNameIO {
 			} //while rs.hasNext()
 			nameService.saveTaxonNameAll(taxonNameMap.objects());
 			
-		
-//			//insert related Names (Basionyms, ReplacedSyns, etc.
-//			makeSpellingCorrections(nameMap);
-//			makeBasionyms(nameMap);
-//			makeLaterHomonyms(nameMap);
-//			makeReplacedNames(nameMap);
-//			
-//			//insert Status infos
 //			makeNameSpecificData(nameMap);
-			//cdmApp.flush();
+
 			logger.info("end makeTaxonNames ...");
 			return success;
 		} catch (SQLException e) {
@@ -206,10 +197,10 @@ public class BerlinModelTaxonNameIO {
 
 	}
 	
-	public static boolean invokeRelations(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invokeRelations(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){
 
-//		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
+		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 
 		String dbAttrName;
 		String cdmAttrName;
@@ -269,7 +260,7 @@ public class BerlinModelTaxonNameIO {
 						//TODO
 						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
 					}
-					//nameStore.add(taxon2);
+					nameStore.add(name1);
 					
 					//TODO
 					//Reference
@@ -277,13 +268,13 @@ public class BerlinModelTaxonNameIO {
 					//etc.
 				}else{
 					//TODO
-					//logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
+					logger.warn("TaxonNames for RelName (" + relNameId + ") do not exist in store");
 				}
 			}
-			//logger.info("Taxa to save: " + taxonStore.size());
+			logger.info("TaxonName to save: " + nameStore.size());
 			//nameService.saveTaxonNameAll(nameStore);
 			
-			logger.info("end makeRelTaxa ...");
+			logger.info("end makeRelName ...");
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

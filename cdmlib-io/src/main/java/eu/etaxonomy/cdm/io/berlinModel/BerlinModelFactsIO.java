@@ -24,7 +24,7 @@ public class BerlinModelFactsIO {
 	private static int modCount = 10000;
 
 
-	public static boolean invoke(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 
 		String dbAttrName;

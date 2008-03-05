@@ -37,7 +37,7 @@ public class BerlinModelTaxonIO {
 
 	private static int modCount = 30000;
 
-	public static boolean invoke(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
 		
 		String dbAttrName;
@@ -82,10 +82,10 @@ public class BerlinModelTaxonIO {
 				}
 				
 				if (taxonName == null ){
-					//logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
+					logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
 					continue;
 				}else if (reference == null ){
-					//logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
+					logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
 					continue;
 				}else{
 					TaxonBase taxonBase;
@@ -118,6 +118,10 @@ public class BerlinModelTaxonIO {
 							logger.warn("Doubtful = i (inactivated) not yet implemented. Doubtful set to false");
 						}
 						
+						//nameId
+						ImportHelper.setOriginalSource(taxonBase, berlinModelRef, taxonId);
+
+						
 						//TODO
 						//
 						//Created
@@ -145,7 +149,7 @@ public class BerlinModelTaxonIO {
 	}
 	
 
-	public static boolean invokeRelations(Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invokeRelations(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
