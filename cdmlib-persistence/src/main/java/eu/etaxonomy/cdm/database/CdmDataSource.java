@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -203,7 +204,21 @@ public class CdmDataSource {
 			}
 		}
 	}
-	
+
+	/**
+	 * Returns the list of properties that are defined in the datasource    
+	 * @return 
+	 */
+	public List<Attribute> getDatasourceAttributes(){
+		List<Attribute> result = new ArrayList<Attribute>();
+		Element bean = getDatasourceBeanXml(this.dataSourceName);
+		if (bean == null){
+			return null;
+		}else{
+			result = bean.getAttributes();
+		}
+		return result;
+	}
 	
 	/**
 	 * Returns the list of properties that are defined in the datasource    
@@ -236,7 +251,24 @@ public class CdmDataSource {
 		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDbProperty(DbProperties.DRIVER_CLASS));
 		
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDriverManagerDataSourceClass());
+		//attributes
+		Iterator<Attribute> iterator = getDatasourceAttributes().iterator();
+		while(iterator.hasNext()){
+			Attribute attribute = iterator.next();
+			if (attribute.getName().equals("lazy-init")){
+				bd.setLazyInit(Boolean.valueOf(attribute.getValue()));
+			}
+			if (attribute.getName().equals("init-method")){
+				bd.setInitMethodName(attribute.getValue());
+			}
+			if (attribute.getName().equals("destroy-method")){
+				bd.setDestroyMethodName(attribute.getValue());
+			}
+			//Attribute attribute = iterator.next();
+			//bd.setAttribute(attribute.getName(), attribute.getValue());
+		}
 		
+		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
 		Properties persistentProperties = getDbProperties();
 		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
@@ -244,10 +276,7 @@ public class CdmDataSource {
 			String key = (String)keys.nextElement();
 			props.addPropertyValue(key, persistentProperties.getProperty(key));
 		}
-//		props.addPropertyValue("driverClassName", dbtype.getDriverClassName());
-//		props.addPropertyValue("url", getDbProperty(DbProperties.URL));
-//		props.addPropertyValue("username", getDbProperty(DbProperties.USERNAME));
-//		props.addPropertyValue("password", getDbProperty(DbProperties.PASSWORD));
+
 		bd.setPropertyValues(props);
 		return bd;
 	}
