@@ -136,7 +136,7 @@ public class CdmDataSourceTest {
 	 */
 	@Test
 	public void testGetDbProperty() {
-		assertEquals("com.mysql.jdbc.Driver", dataSource.getDbProperty(DbProperties.DRIVER_CLASS));
+		assertEquals("com.mysql.jdbc.Driver", dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
 	}
 
 	/**
@@ -248,10 +248,10 @@ public class CdmDataSourceTest {
 			fail();
 		}
 		assertEquals(databaseType, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), dataSource.getDbProperty(DbProperties.DRIVER_CLASS));
-		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", dataSource.getDbProperty(DbProperties.URL));
-		assertEquals(username, dataSource.getDbProperty(DbProperties.USERNAME));
-		assertEquals(password, dataSource.getDbProperty(DbProperties.PASSWORD));
+		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
+		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", dataSource.getDatasourceProperty(DbProperties.URL));
+		assertEquals(username, dataSource.getDatasourceProperty(DbProperties.USERNAME));
+		assertEquals(password, dataSource.getDatasourceProperty(DbProperties.PASSWORD));
 		//delete
 		try {
 			CdmDataSource.delete(CdmDataSource.NewInstance(dataSourceString));
@@ -292,10 +292,10 @@ public class CdmDataSourceTest {
 			fail();
 		}
 		assertEquals(DatabaseTypeEnum.HSqlDb, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.HSqlDb.getDriverClassName(), dataSource.getDbProperty(DbProperties.DRIVER_CLASS));
-		assertEquals("jdbc:hsqldb:hsql://localhost:9001/testHsqlDb", dataSource.getDbProperty(DbProperties.URL));
-		assertEquals(username, dataSource.getDbProperty(DbProperties.USERNAME));
-		assertEquals(password, dataSource.getDbProperty(DbProperties.PASSWORD));
+		assertEquals(DatabaseTypeEnum.HSqlDb.getDriverClassName(), dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
+		assertEquals("jdbc:hsqldb:hsql://localhost:9001/testHsqlDb", dataSource.getDatasourceProperty(DbProperties.URL));
+		assertEquals(username, dataSource.getDatasourceProperty(DbProperties.USERNAME));
+		assertEquals(password, dataSource.getDatasourceProperty(DbProperties.PASSWORD));
 	}
 
 	/**

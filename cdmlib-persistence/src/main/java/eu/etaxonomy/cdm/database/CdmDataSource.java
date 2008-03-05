@@ -183,13 +183,27 @@ public class CdmDataSource {
 		}
 	}
 
-	
+
+	/**
+	 * Returns the list of properties that are defined in the datasource    
+	 * @return 
+	 */
+	public List<Attribute> getDatasourceAttributes(){
+		List<Attribute> result = new ArrayList<Attribute>();
+		Element bean = getDatasourceBeanXml(this.dataSourceName);
+		if (bean == null){
+			return null;
+		}else{
+			result = bean.getAttributes();
+		}
+		return result;
+	}	
 
 	/**
 	 * Returns a defined property of the datasource
 	 * @return the property of the data source. NULL if the datasource bean or the property does not exist.
 	 */
-	public String getDbProperty(DbProperties dbProp){
+	public String getDatasourceProperty(DbProperties dbProp){
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
 		if (bean == null){
 			return null;
@@ -205,26 +219,12 @@ public class CdmDataSource {
 		}
 	}
 
-	/**
-	 * Returns the list of properties that are defined in the datasource    
-	 * @return 
-	 */
-	public List<Attribute> getDatasourceAttributes(){
-		List<Attribute> result = new ArrayList<Attribute>();
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			result = bean.getAttributes();
-		}
-		return result;
-	}
 	
 	/**
 	 * Returns the list of properties that are defined in the datasource    
 	 * @return 
 	 */
-	public Properties getDbProperties(){
+	public Properties getDatasourceProperties(){
 		Properties result = new Properties();
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
 		if (bean == null){
@@ -248,7 +248,7 @@ public class CdmDataSource {
 	 * @return
 	 */
 	public BeanDefinition getDatasourceBean(){
-		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDbProperty(DbProperties.DRIVER_CLASS));
+		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDatasourceProperty(DbProperties.DRIVER_CLASS));
 		
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDriverManagerDataSourceClass());
 		//attributes
@@ -270,7 +270,7 @@ public class CdmDataSource {
 		
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
-		Properties persistentProperties = getDbProperties();
+		Properties persistentProperties = getDatasourceProperties();
 		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
@@ -513,7 +513,8 @@ public class CdmDataSource {
 	 * @return
 	 */
 	private static Element getDatasourceBeanXml(String strDataSourceName){
-		Element root = getRoot(getDataSourceInputStream());
+		FileInputStream inStream = getDataSourceInputStream();
+		Element root = getRoot(inStream);
 		if (root == null){
 			return null;
 		}else{
