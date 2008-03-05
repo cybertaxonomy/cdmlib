@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
 	static Logger logger = Logger.getLogger(ServiceBase.class);
 	
-	int flushAfterNo = 5000;
+	int flushAfterNo = 2000;
 	protected ApplicationContext appContext;
 	protected ICdmEntityDao<T> dao;
 	
@@ -63,6 +63,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 			resultMap.put(uuid, cdmObj);
 			i++;
 			if ( (i % flushAfterNo) == 0){
+				logger.info("flush");
 				dao.flush();
 			}
 		}
