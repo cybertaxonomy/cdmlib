@@ -17,13 +17,19 @@ public class BerlinModelImport {
 	private boolean deleteAll = false;
 	
 	private boolean makeAuthors = false;
+
+	//references
 	private boolean makeReferences = true;
+
+	//names
 	private boolean makeTaxonNames = true;
-	private boolean makeTaxa = true;
-	private boolean makeRelNames = false;
+	private boolean makeRelNames = true;
 	private boolean makeNameStatus = false;
+
+	//taxa
+	private boolean makeTaxa = true;
 	private boolean makeRelTaxa = true;
-	private boolean makeFacts = true;
+	private boolean makeFacts = false;
 	
 	
 	//BerlinModelDB

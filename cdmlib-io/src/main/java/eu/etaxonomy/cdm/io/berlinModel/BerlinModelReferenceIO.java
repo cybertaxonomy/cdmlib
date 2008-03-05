@@ -208,11 +208,9 @@ public class BerlinModelReferenceIO {
 						cdmAttrName = "titleCache";
 						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
 						
-						OriginalSource originalSource = new OriginalSource();
-						originalSource.setIdInSource(String.valueOf(refId));
-						originalSource.setCitation(berlinModelRef);
-						referenceBase.addSource(originalSource);
-					
+						//refId
+						ImportHelper.setOriginalSource(referenceBase, berlinModelRef, refId);
+						
 						//	dbAttrName = "BinomHybFlag";
 						//	cdmAttrName = "isBinomHybrid";
 						//	ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);

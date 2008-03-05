@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -57,7 +57,8 @@ public class BerlinModelTaxonNameIO {
                       		" RefDetail.SecondarySources, RefDetail.IdInSource " +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
                     	" Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk" +
-                    " WHERE (1=1) AND Name.Created_When > '03.03.2004'";
+                    " WHERE (1=1) ";
+					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 			
 			
 			ResultSet rs = source.getResultSet(strQuery) ;
@@ -155,8 +156,8 @@ public class BerlinModelTaxonNameIO {
 							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
 							if (nomenclaturalReference == null){
 								//TODO
-//								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-//								" was not found in reference store. Relation was not set!!");
+								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+								" was not found in reference store. Relation was not set!!");
 							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
 								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
@@ -166,8 +167,6 @@ public class BerlinModelTaxonNameIO {
 						}
 					}
 					
-					
-					//name ID
 					//refId
 					//TODO
 					// Annotation annotation = new Annotation("Berlin Model nameId: " + String.valueOf(refId), Language.DEFAULT());
@@ -184,6 +183,7 @@ public class BerlinModelTaxonNameIO {
 				}
 				
 			} //while rs.hasNext()
+			logger.info(i + " names handled");
 			nameService.saveTaxonNameAll(taxonNameMap.objects());
 			
 //			makeNameSpecificData(nameMap);
@@ -232,35 +232,37 @@ public class BerlinModelTaxonNameIO {
 				int relRefFk = rs.getInt("refFk");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				
-				TaxonNameBase name1 = nameMap.get(name1Id);
-				TaxonNameBase name2 = nameMap.get(name2Id);
+				TaxonNameBase nameFrom = nameMap.get(name1Id);
+				TaxonNameBase nameTo = nameMap.get(name2Id);
 				
 				//TODO
 				ReferenceBase citation = null;
 				String microcitation = null;
 
-				if (name1 != null && name2 != null){
+				if (nameFrom != null && nameTo != null){
 					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
 						//TODO references, mikroref, etc
-						name2.setBasionym(name1);
+						nameTo.setBasionym(nameFrom);
 					}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
-						NameRelationship nameRelation = new NameRelationship();
-						nameRelation.setFromName(name1);
-						nameRelation.setToName(name2);
-						name2.addNameRelation(nameRelation);
-						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-						//TODO name2.add
+						String rule = null;  //TODO
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), rule) ;
+						//TODO reference
 					}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
+						String rule = null;  //TODO
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
+						//TODO reference
+					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF){
 						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-						//TODO name2.add
+						//TODO reference
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
-						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-						//TODO name2.add
+						String rule = null;  //TODO
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;
+						//TODO reference
 					}else {
 						//TODO
 						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
 					}
-					nameStore.add(name1);
+					nameStore.add(nameFrom);
 					
 					//TODO
 					//Reference
@@ -268,11 +270,16 @@ public class BerlinModelTaxonNameIO {
 					//etc.
 				}else{
 					//TODO
-					logger.warn("TaxonNames for RelName (" + relNameId + ") do not exist in store");
+					if (nameFrom == null){
+						 logger.warn("from TaxonName for RelName (" + relNameId + ") does not exist in store");
+					}
+					if (nameTo == null){
+						logger.warn("to TaxonNames for RelName (" + relNameId + ") does not exist in store");
+					}
 				}
 			}
 			logger.info("TaxonName to save: " + nameStore.size());
-			//nameService.saveTaxonNameAll(nameStore);
+			nameService.saveTaxonNameAll(nameStore);
 			
 			logger.info("end makeRelName ...");
 			return true;
