@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -36,7 +37,7 @@ public class BerlinModelTaxonNameIO {
 	
 	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
 		
 		
 		String dbAttrName;
@@ -72,6 +73,10 @@ public class BerlinModelTaxonNameIO {
 				//create TaxonName element
 				int nameId = rs.getInt("nameId");
 				int rankId = rs.getInt("rankFk");
+				Object authorFk = rs.getObject("AuthorTeamFk");
+				Object exAuthorFk = rs.getObject("ExAuthorTeamFk");
+				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
+				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				Object nomRefFk = rs.getObject("NomRefFk");
 				
 				try {
@@ -150,6 +155,15 @@ public class BerlinModelTaxonNameIO {
 					//TODO
 					//preliminaryFlag
 					
+					//authorTeams
+					if (authorMap != null){
+						botanicalName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId));
+						botanicalName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId));
+						botanicalName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId));
+						botanicalName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId));
+					}
+					
+					//nomenclatural Reference
 					if (referenceMap != null){
 						if (nomRefFk != null){
 							int nomRefFkInt = (Integer)nomRefFk;
@@ -196,6 +210,24 @@ public class BerlinModelTaxonNameIO {
 		}
 
 	}
+	
+	private static Team getAuthorTeam(MapWrapper<Team> authorMap, Object teamIdObject, int nameId){
+		if (teamIdObject == null){
+			return null;
+		}else {
+			int teamId = (Integer)teamIdObject;
+			Team team = authorMap.get(teamId);
+			if (team == null){
+				//TODO
+				logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
+				" was not found in authorTeam store. Relation was not set!!");
+				return null;
+			}else{
+				return team;
+			}
+		}
+	}
+	
 	
 	public static boolean invokeRelations(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
 			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){

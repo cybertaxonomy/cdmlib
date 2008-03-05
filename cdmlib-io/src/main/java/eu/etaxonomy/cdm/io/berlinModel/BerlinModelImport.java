@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -14,9 +15,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class BerlinModelImport {
 	private static final Logger logger = Logger.getLogger(BerlinModelImport.class);
 	
+	//TODO
 	private boolean deleteAll = false;
 	
-	private boolean makeAuthors = false;
+	private boolean makeAuthors = true;
 
 	//references
 	private boolean makeReferences = true;
@@ -24,12 +26,12 @@ public class BerlinModelImport {
 	//names
 	private boolean makeTaxonNames = true;
 	private boolean makeRelNames = true;
-	private boolean makeNameStatus = false;
+		private boolean makeNameStatus = false;
 
 	//taxa
 	private boolean makeTaxa = true;
 	private boolean makeRelTaxa = true;
-	private boolean makeFacts = false;
+		private boolean makeFacts = false;
 	
 	
 	//BerlinModelDB
@@ -46,7 +48,7 @@ public class BerlinModelImport {
 	
 	//Hashmaps for Joins
 	//OLD: private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
-	private MapWrapper<Agent> authorStore= new MapWrapper<Agent>(null);
+	private MapWrapper<Team> authorStore= new MapWrapper<Team>(null);
 	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(null);
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(null);
