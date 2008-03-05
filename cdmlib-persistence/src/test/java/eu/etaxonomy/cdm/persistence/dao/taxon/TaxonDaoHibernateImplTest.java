@@ -12,7 +12,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBaseTest;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
@@ -20,18 +23,20 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
  * @author a.mueller
  *
  */
+@TransactionConfiguration(defaultRollback=false)
 public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImplTest.class);
 	
 	@Autowired
-	private  TaxonDaoHibernateImpl taxonDaoHibernateImplTester;
-
+	private  TaxonDaoHibernateImpl taxonDao;
+	private static TaxonGenerator taxGen;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		taxGen = new TaxonGenerator();
 	}
 
 	/**
@@ -71,8 +76,7 @@ public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 	 */
 	@Test
 	public void testGetRootTaxa() {
-		//taxonDaoHibernateImplTester.getRootTaxa(sec);
-		logger.warn("testGetRootTaxa - Not yet implemented");//TODO
+		//taxonDao.getRootTaxa(null);
 	}
 
 	/**
@@ -84,4 +88,9 @@ public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 		logger.warn("testGetTaxaByName - Not yet implemented");//TODO
 	}
 
+	@Test
+	public void testSaveTaxon() {
+		Taxon t = taxGen.getTestTaxon();
+		taxonDao.save(t);
+	}
 }
