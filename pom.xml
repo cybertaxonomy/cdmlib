@@ -20,7 +20,6 @@
 		<module>cdmlib-services</module>
 		<module>cdmlib-remote</module>
 		<module>cdmlib-io</module>
-		<module>spring-json</module>
 	</modules>
 		
 	<mailingLists>
@@ -401,11 +400,6 @@
 		  		<artifactId>cdmlib-remote</artifactId>
 		  		<version>${project.version}</version>
 		  	</dependency>
-			<dependency>
-				<groupId>eu.etaxonomy</groupId>
-				<artifactId>spring-json</artifactId>
-		  		<version>${project.version}</version>
-			</dependency>
 		  	<!-- ******* VARIOUS ******* -->
 			<dependency>
 				<groupId>log4j</groupId>
@@ -481,7 +475,7 @@
 		    <dependency>
 		      <groupId>net.sf.json-lib</groupId>
 		      <artifactId>json-lib</artifactId>
-		      <version>2.2</version>
+		      <version>2.2.1</version>
 		    </dependency>
 						
 		  	<!-- ******* XML ******* -->
