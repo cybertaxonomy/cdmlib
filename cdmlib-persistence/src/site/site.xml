@@ -9,15 +9,11 @@
   <publishDate format="dd-MM-yyyy"/>  
   <body>
     <links>
+      <item name="About	" href="/index.html"/>
       <item name="Edit" href="http://www.e-taxonomy.eu/" />
       <item name="WP5" href="http://wp5.e-taxonomy.eu/blog/index.php"/>
       <item name="Wiki" href="http://dev.e-taxonomy.eu/wiki"/>
     </links>
-
-    <menu name="CdmLibraryPersistence">
-      <item name="About	" href="/index.html"/>
-      <item name="Download" href="/source-repository.html"/>
-     </menu>
     
 	${reports}
 	
