@@ -25,34 +25,34 @@ public class CdmServiceImplTest {
 	@Autowired
 	private  ICdmService service;
 
-	//@Test
+	@Test
 	public void testGetName() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 
-	//@Test
+	@Test
 	public void testGetSimpleName() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 
-	//@Test
+	@Test
 	public void testGetTaxon() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 
-	//@Test
+	@Test
 	public void testGetSimpleTaxon() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 
-	//@Test
+	@Test
 	public void testGetChildrenTaxa() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 
-	//@Test
+	@Test
 	public void testGetParentTaxa() {
-		fail("Not yet implemented");
+		logger.warn("Not yet implemented");
 	}
 	
 	@Test
