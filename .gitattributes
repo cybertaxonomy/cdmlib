@@ -344,6 +344,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmServiceImpl.java 
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/ICdmService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/JsonView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text

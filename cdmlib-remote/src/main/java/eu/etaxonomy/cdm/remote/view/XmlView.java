@@ -16,8 +16,7 @@ import org.springframework.web.servlet.View;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
-public class XmlView implements View {
-
+public class XmlView extends BaseView implements View {
 	Log log = LogFactory.getLog(XmlView.class);
 	
 	public String getContentType() {
@@ -26,10 +25,7 @@ public class XmlView implements View {
 
 	public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		// Retrieve data from model
-		Object dto = null;
-		if (model!=null && model.values().size()>0){
-			dto = model.values().toArray()[0];
-		}
+		Object dto = getResponseData(model);
 		// Write the XML document to the reponse output stream
 		XppDriver xpp = new XppDriver();
 		XStream xstream = new XStream(xpp);
