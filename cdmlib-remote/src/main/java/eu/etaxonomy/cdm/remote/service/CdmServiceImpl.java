@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +22,6 @@ import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 import eu.etaxonomy.cdm.remote.dto.ReferencedEntityBaseSTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
-import eu.etaxonomy.cdm.remote.dto.TagEnum;
-import eu.etaxonomy.cdm.remote.dto.TaggedText;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;

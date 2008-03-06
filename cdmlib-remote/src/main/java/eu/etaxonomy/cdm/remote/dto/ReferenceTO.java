@@ -19,12 +19,16 @@ import java.util.UUID;
  * @created 05.02.2008 14:59:44
  *
  */
-public class ReferenceTO extends BaseTO{
+public class ReferenceTO extends BaseTO implements IReferenceSTO{
 	
 	/**
 	 * 	URIs like DOIs, LSIDs or Handles for this reference
 	 */
 	private String uri;
+	/**
+	 * formatted string containing the entire reference citation including microreference
+	 */
+	private String fullCitation;
 	/**
 	 * 
 	 */
@@ -97,4 +101,13 @@ public class ReferenceTO extends BaseTO{
 	public void addMediaUri(String mediaUri, String mediaUUID) {
 		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
 	}
+
+	public String getFullCitation() {
+		return fullCitation;
+	}
+
+	public void setFullCitation(String fullCitation) {
+		this.fullCitation = fullCitation;
+	}
+
 }

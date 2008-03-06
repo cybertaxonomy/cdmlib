@@ -3,9 +3,10 @@ package eu.etaxonomy.cdm.remote.dto.assembler;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
+import eu.etaxonomy.cdm.remote.dto.IBaseSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 
 public abstract class AssemblerBase {
@@ -16,7 +17,7 @@ public abstract class AssemblerBase {
 	public UUID getUUID(String uuid){
 		return UUID.fromString(uuid);
 	}
-	public void setIdentifiableEntity(IdentifiableEntity identObj, BaseSTO sto){		
+	public void setIdentifiableEntity(IdentifiableEntity identObj, IBaseSTO sto){		
 		sto.setUuid(identObj.getUuid().toString());
 	}
 	public void setIdentifiableEntity(IdentifiableEntity identObj, BaseTO to){				

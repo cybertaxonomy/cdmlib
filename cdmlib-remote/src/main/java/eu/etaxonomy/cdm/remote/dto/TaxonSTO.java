@@ -29,21 +29,39 @@ public class TaxonSTO extends BaseSTO {
 	private boolean isAccepted;
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#getName()
+	 */
 	public NameSTO getName() {
 		return name;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#setName(eu.etaxonomy.cdm.remote.dto.NameSTO)
+	 */
 	public void setName(NameSTO name) {
 		this.name = name;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#getSecUuid()
+	 */
 	public String getSecUuid() {
 		return secUuid;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#setSecUuid(java.lang.String)
+	 */
 	public void setSecUuid(String secUuid) {
 		this.secUuid = secUuid;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#isAccepted()
+	 */
 	public boolean isAccepted() {
 		return isAccepted;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.ITaxonSTO#setAccepted(boolean)
+	 */
 	public void setAccepted(boolean isAccepted) {
 		this.isAccepted = isAccepted;
 	}

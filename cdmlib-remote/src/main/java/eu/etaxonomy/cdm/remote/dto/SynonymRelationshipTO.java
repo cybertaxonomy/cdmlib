@@ -20,5 +20,17 @@ public class SynonymRelationshipTO {
 	
 	private TaxonSTO synoynm;
 	private LocalisedTermTO type;
+	public TaxonSTO getSynoynm() {
+		return synoynm;
+	}
+	public void setSynoynm(TaxonSTO synoynm) {
+		this.synoynm = synoynm;
+	}
+	public LocalisedTermTO getType() {
+		return type;
+	}
+	public void setType(LocalisedTermTO type) {
+		this.type = type;
+	}
 
 }

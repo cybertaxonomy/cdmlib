@@ -20,6 +20,7 @@ cdmlib-persistence/target
 cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings
+cdmlib-remote/null
 cdmlib-remote/target
 cdmlib-services/.classpath
 cdmlib-services/.project

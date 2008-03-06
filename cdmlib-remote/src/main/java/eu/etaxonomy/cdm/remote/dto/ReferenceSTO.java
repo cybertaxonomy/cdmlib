@@ -19,7 +19,7 @@ import java.util.UUID;
  * @created 05.02.2008 14:58:36
  *
  */
-public class ReferenceSTO extends BaseSTO {
+public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 
 	private String authorship;
 
@@ -30,22 +30,37 @@ public class ReferenceSTO extends BaseSTO {
 
 	private Set<IdentifiedString> mediaUri;
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getAuthorship()
+	 */
 	public String getAuthorship() {
 		return authorship;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#setAuthorship(java.lang.String)
+	 */
 	public void setAuthorship(String authorship) {
 		this.authorship = authorship;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getFullCitation()
+	 */
 	public String getFullCitation() {
 		return fullCitation;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#setFullCitation(java.lang.String)
+	 */
 	public void setFullCitation(String fullCitation) {
 		this.fullCitation = fullCitation;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getMediaUri()
+	 */
 	public Set<IdentifiedString> getMediaUri() {
 		return mediaUri;
 	}
@@ -53,9 +68,15 @@ public class ReferenceSTO extends BaseSTO {
 	public void setMediaUri(Set<IdentifiedString> mediaUri) {
 		this.mediaUri = mediaUri;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#addMediaUri(java.lang.String, java.util.UUID)
+	 */
 	public void addMediaUri(String mediaUri, UUID mediaUUID) {
 		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID.toString()));
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#addMediaUri(java.lang.String, java.lang.String)
+	 */
 	public void addMediaUri(String mediaUri, String mediaUUID) {
 		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
 	}

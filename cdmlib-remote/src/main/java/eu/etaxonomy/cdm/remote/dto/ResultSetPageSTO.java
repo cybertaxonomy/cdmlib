@@ -20,7 +20,7 @@ import java.util.List;
  * @created 15.02.2008 15:26:06
  *
  */
-public class ResultSetPageSTO<T extends BaseSTO> {
+public class ResultSetPageSTO<T extends IBaseSTO> {
 
 	/**
 	 * Total number of matching records. Maybe distributed across several pages

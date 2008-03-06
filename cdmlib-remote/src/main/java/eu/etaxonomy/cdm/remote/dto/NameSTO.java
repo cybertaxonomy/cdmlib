@@ -21,7 +21,7 @@ import java.util.List;
 public class NameSTO extends BaseSTO {
 	
 	private String fullname;
-	private ReferenceSTO nomenclaturalReference;
+	private IReferenceSTO nomenclaturalReference;
 	private List<TaggedText> taggedName = new ArrayList();
 	
 	public String getFullname() {
@@ -30,10 +30,10 @@ public class NameSTO extends BaseSTO {
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
 	}
-	public ReferenceSTO getNomenclaturalReference() {
+	public IReferenceSTO getNomenclaturalReference() {
 		return nomenclaturalReference;
 	}
-	public void setNomenclaturalReference(ReferenceSTO nomenclaturalReference) {
+	public void setNomenclaturalReference(IReferenceSTO nomenclaturalReference) {
 		this.nomenclaturalReference = nomenclaturalReference;
 	}
 	public List<TaggedText> getTaggedName() {

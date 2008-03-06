@@ -9,8 +9,8 @@
 	<artifactId>cdmlib-parent</artifactId>
 	<version>1.1.0</version>
 
-	<name>CDM Mother POM</name>
-	<description>Mother of all cdmlib POMs</description>
+	<name>CDM Library</name>
+	<description>The CDM Library implementation for EDIT's internet platform for cybertaxonomy</description>
 	<url>http://wp5.e-taxonomy.eu/cdmlib/site/</url>
 	<packaging>pom</packaging>
 	<modules>

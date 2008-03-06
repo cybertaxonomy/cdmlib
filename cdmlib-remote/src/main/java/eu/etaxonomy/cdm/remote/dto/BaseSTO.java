@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.remote.dto;
  * @created 05.02.2008 14:58:55
  *
  */
-public abstract class BaseSTO {
+public abstract class BaseSTO implements IBaseSTO {
 
 	private String uuid;
 	
@@ -26,9 +26,15 @@ public abstract class BaseSTO {
 	}
 	public BaseSTO() {
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IBaseSTO#getUuid()
+	 */
 	public String getUuid() {
 		return uuid;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.IBaseSTO#setUuid(java.lang.String)
+	 */
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}

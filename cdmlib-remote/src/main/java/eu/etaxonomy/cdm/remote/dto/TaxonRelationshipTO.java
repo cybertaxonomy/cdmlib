@@ -21,5 +21,17 @@ public class TaxonRelationshipTO {
 	
 	private LocalisedTermTO type;
 	private TaxonSTO taxon;
+	public LocalisedTermTO getType() {
+		return type;
+	}
+	public void setType(LocalisedTermTO type) {
+		this.type = type;
+	}
+	public TaxonSTO getTaxon() {
+		return taxon;
+	}
+	public void setTaxon(TaxonSTO taxon) {
+		this.taxon = taxon;
+	}
 
 }

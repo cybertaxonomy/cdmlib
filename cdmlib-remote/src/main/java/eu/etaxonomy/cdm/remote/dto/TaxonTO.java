@@ -26,7 +26,7 @@ import java.util.Set;
  * @created 11.12.2007 12:11:29
  *
  */
-public class TaxonTO extends BaseTO {
+public class TaxonTO extends BaseTO{
 
 	private NameSTO name;
 	/**
