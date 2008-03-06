@@ -331,7 +331,7 @@ public class CdmDataSourceTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDataSourceInputStream()}.
 	 */
-	@Test
+	//@Test
 	public void testGetDataSourceInputStream() {
 		logger.warn("Not yet implemented");
 	}
@@ -339,7 +339,7 @@ public class CdmDataSourceTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDataSourceOutputStream()}.
 	 */
-	@Test
+	//@Test
 	public void testGetDataSourceOutputStream() {
 		logger.warn("Not yet implemented");
 	}
