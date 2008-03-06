@@ -62,6 +62,13 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting
 	 */
 	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
+	
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public List<NameSTO> getSimpleNames(Set<UUID> uuids) throws CdmObjectNonExisting;// throws BusinessLogicException;
 
 	/**
 	 * @param uuid
@@ -77,12 +84,32 @@ public interface ICdmService {
 	 */
 	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting;
 	
+	/**
+	 * @param uuid
+	 * @return 
+	 * @throws CdmObjectNonExisting
+	 */
+	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids) throws CdmObjectNonExisting;
+	
+	
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public ResultSetPageSTO<TaxonSTO> getAternativeTaxa(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * @param uuid
 	 * @return
 	 */
 	public ReferenceTO getReference(UUID uuid);
+	
+	/**
+	 * @param uuid
+	 * @return
+	 */
+	public List<ReferenceSTO> getSimpleReferences(Set<UUID> uuids);
 
 	/**
 	 * @param uuid
@@ -94,7 +121,7 @@ public interface ICdmService {
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid);
 
 	/**
-	 * @return A Set of all available concept references
+	 * @return A Set of all available concept references, that is references for treatments.
 	 */
 	public Set<ReferenceSTO> getAllSecReferences();
 

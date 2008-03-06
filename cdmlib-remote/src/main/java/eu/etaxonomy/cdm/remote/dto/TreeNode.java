@@ -29,10 +29,9 @@ import java.util.UUID;
 public class TreeNode extends BaseSTO {
 
 	/**
-	 * A collection of UUIDs of alternative concept references of the same name
-	 * i.e. 'secundum' references which exist for this Taxon
+	 * A flag indicating if alternative taxa  for this name exist.
 	 */
-	private Set<UUID> alternativeConceptRefs;
+	private boolean hasAlternativeTaxa;
 
 	/**
 	 * the number of children of this taxon tree node
@@ -49,12 +48,13 @@ public class TreeNode extends BaseSTO {
 	 */
 	private List<TaggedText> taggedName = new ArrayList();
 
-	public Set<UUID> getAlternativeConceptRefs() {
-		return alternativeConceptRefs;
+	
+	public boolean isHasAlternativeTaxa() {
+		return hasAlternativeTaxa;
 	}
 
-	public void setAlternativeConceptRefs(Set<UUID> alternativeConceptRefs) {
-		this.alternativeConceptRefs = alternativeConceptRefs;
+	public void setHasAlternativeTaxa(boolean hasAlternativeTaxa) {
+		this.hasAlternativeTaxa = hasAlternativeTaxa;
 	}
 
 	public int getHasChildren() {
