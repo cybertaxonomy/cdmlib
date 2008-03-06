@@ -58,20 +58,26 @@ public class NameAssembler extends AssemblerBase{
 		return n;
 	}
 	
-	public NameSTO getSTO(TaxonNameBase tnb){		
-		NameSTO n = new NameSTO();
-		setIdentifiableEntity(tnb, n);
-		n.setFullname(tnb.getTitleCache());
-		n.setTaggedName(getTaggedName(tnb));
-		n.setNomenclaturalReference(refAssembler.getSTO(tnb.getNomenclaturalReference()));
+	public NameSTO getSTO(TaxonNameBase tnb){
+		NameSTO n = null;
+		if (tnb !=null){
+			n = new NameSTO();
+			setIdentifiableEntity(tnb, n);
+			n.setFullname(tnb.getTitleCache());
+			n.setTaggedName(getTaggedName(tnb));
+			n.setNomenclaturalReference(refAssembler.getSTO(tnb.getNomenclaturalReference()));
+		}
 		return n;
 	}	
 	public NameTO getTO(TaxonNameBase tnb){		
-		NameTO n = new NameTO();
-		setIdentifiableEntity(tnb, n);
-		n.setFullname(tnb.getTitleCache());
-		n.setTaggedName(getTaggedName(tnb));
-		n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference()));
+		NameTO n = null;
+		if (tnb !=null){
+			n = new NameTO();
+			setIdentifiableEntity(tnb, n);
+			n.setFullname(tnb.getTitleCache());
+			n.setTaggedName(getTaggedName(tnb));
+			n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference()));
+		}
 		return n;
 	}
 	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase> tnb){
@@ -87,22 +93,25 @@ public class NameAssembler extends AssemblerBase{
 				tag.setText(r.getAbbreviation());
 				tag.setType(TagEnum.rank);
 			}
-			else if (ReferenceBase.class.isAssignableFrom(token.getClass())){
+			else if (token !=null && ReferenceBase.class.isAssignableFrom(token.getClass())){
 				ReferenceBase ref = (ReferenceBase)token;
 				tag.setText(ref.getTitleCache());
 				tag.setType(TagEnum.reference);
 			}
-			else if (Date.class.isInstance(token.getClass())){
+			else if (Date.class.isInstance(token)){
 				Date d = (Date)token;
 				tag.setText(String.valueOf(d.getYear()));
 				tag.setType(TagEnum.year);
 			}
-			else if (Team.class.isInstance(token.getClass())){
+			else if (Team.class.isInstance(token)){
 				Team t = (Team)token;
 				tag.setText(String.valueOf(t.getTitleCache()));
 				tag.setType(TagEnum.authors);
 			}
-			tags.add(tag);
+
+			if (tag!=null){
+				tags.add(tag);
+			}
 		}
 		return tags;
 	}

@@ -29,28 +29,37 @@ public class TaxonAssembler extends AssemblerBase{
 		return t;
 	}
 
-	public TaxonSTO getSTO(TaxonBase taxonBase){		
-		TaxonSTO t = new TaxonSTO();
-		setIdentifiableEntity(taxonBase, t);
-		t.setName(nameAssembler.getSTO(taxonBase.getName()));
-		//TODO: add more mapppings
-		t.setSecUuid(getRandomUUID());
-		t.setAccepted(true);
+	public TaxonSTO getSTO(TaxonBase tb){		
+		TaxonSTO t = null;
+		if (tb!=null){
+			t = new TaxonSTO();
+			setIdentifiableEntity(tb, t);
+			t.setName(nameAssembler.getSTO(tb.getName()));
+			//TODO: add more mapppings
+			t.setSecUuid(getRandomUUID());
+			t.setAccepted(true);
+		}
 		return t;
 	}
-	public TaxonTO getTO(TaxonBase taxonBase){		
-		TaxonTO t = new TaxonTO();
-		setIdentifiableEntity(taxonBase, t);
-		t.setName(nameAssembler.getSTO(taxonBase.getName()));
-		//TODO: add more mapppings
+	public TaxonTO getTO(TaxonBase tb){
+		TaxonTO t = null;
+		if(tb!=null){
+			t = new TaxonTO();
+			setIdentifiableEntity(tb, t);
+			t.setName(nameAssembler.getSTO(tb.getName()));
+			//TODO: add more mapppings
+		}
 		return t;
 	}
-	public TreeNode getTreeNode(Taxon taxon){
-		TreeNode tn = new TreeNode();
-		setIdentifiableEntity(taxon, tn);
-		tn.setFullname(taxon.getTitleCache());
-		tn.setHasChildren(taxon.getTaxonomicChildren().size());
-		tn.setTaggedName(nameAssembler.getTaggedName(taxon.getName()));
+	public TreeNode getTreeNode(Taxon t){
+		TreeNode tn = null;
+		if(t!=null){
+			tn = new TreeNode();
+			setIdentifiableEntity(t, tn);
+			tn.setFullname(t.getTitleCache());
+			tn.setHasChildren(t.getTaxonomicChildren().size());
+			tn.setTaggedName(nameAssembler.getTaggedName(t.getName()));
+		}
 		return tn;
 	}
 	public List<TreeNode> getTreeNodeList(Taxon[] taxa){
