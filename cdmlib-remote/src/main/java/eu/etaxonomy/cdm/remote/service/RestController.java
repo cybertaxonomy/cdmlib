@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
+import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
+import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
@@ -51,7 +53,7 @@ public class RestController extends AbstractController
 			String op = getNonNullPara("operation",req);
 			String dto = getNonNullPara("dto",req);
 			String uuid = getNonNullPara("uuid",req);
-			String sec = getStringPara("sec",req);
+			String sec = getNonNullPara("sec",req);
 			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
@@ -63,18 +65,25 @@ public class RestController extends AbstractController
 				}else if(dto.equalsIgnoreCase("taxon")){
 					TaxonTO t = service.getTaxon(getUuid(uuid));
 					mv.addObject(t);
+				}else if(dto.equalsIgnoreCase("ref")){
+					ReferenceTO r = service.getReference(getUuid(uuid));
+					mv.addObject(r);
 				}else if(dto.equalsIgnoreCase("whatis")){
 					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
 					Object cl = service.whatis(getUuid(uuid));
 					mv.addObject(cl);
 				}
 			}else if(action.equalsIgnoreCase("simple")){
+				Set<UUID> uuids = getUuids(uuid);
 				if(dto.equalsIgnoreCase("name")){
-					NameSTO n = service.getSimpleName( getUuid(uuid));
+					List<NameSTO> n = service.getSimpleNames(uuids);
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					TaxonSTO t = service.getSimpleTaxon(getUuid(uuid));
+					List<TaxonSTO> t = service.getSimpleTaxa(uuids);
 					mv.addObject(t);
+				}else if(dto.equalsIgnoreCase("ref")){
+					List<ReferenceSTO> r = service.getSimpleReferences(uuids);
+					mv.addObject(r);
 				}
 			}else if(action.equalsIgnoreCase("find")){
 				//
@@ -106,14 +115,22 @@ public class RestController extends AbstractController
 				Object obj = service.findTaxa(q, getUuid(sec), higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
 				mv.addObject(obj);
 			}else if(action.equalsIgnoreCase("taxonomy")){
-				Object obj = null; 
-				if(op!=null && op.equalsIgnoreCase("children")){
-					obj = service.getChildrenTaxa(getUuid(uuid));
+				List results = null; 
+				if(op.equalsIgnoreCase("children")){
+					results = service.getChildrenTaxa(getUuid(uuid));
 				}
-				else if(op!=null && op.equalsIgnoreCase("parent")){
-					obj = service.getParentTaxa(getUuid(uuid));
+				else if(op.equalsIgnoreCase("parents")){
+					results = service.getParentTaxa(getUuid(uuid));
 				}
-				mv.addObject(obj);
+				else if(op.equalsIgnoreCase("root")){
+					UUID u = null;
+						try {
+							u = getUuid(uuid);
+						} catch (CdmObjectNonExisting e) {
+						}
+					results = service.getRootTaxa(u);
+				}
+				mv.addObject( (List)results );
 			}else if(action.equalsIgnoreCase("insert")){
 				// insert test data.
 				//
@@ -151,6 +168,19 @@ public class RestController extends AbstractController
 		}
 		return u;
 	}
+	private Set<UUID> getUuids(String uuid) {
+		String [] temp = uuid.trim().split(",");
+		Set<UUID> uuids = new HashSet<UUID>();
+		for (String u : temp){
+			try {
+				uuids.add(getUuid(u));
+			} catch (CdmObjectNonExisting e) {
+				logger.warn(u+" is not valid UUID!");
+			}
+		}
+		return uuids;
+	}
+	
 	private void sendNonExistingUuidError(HttpServletResponse resp, CdmObjectNonExisting e) throws IOException{
 		resp.sendError(404, e.getMessage() );		
 	}
@@ -206,17 +236,18 @@ public class RestController extends AbstractController
 	 * @return
 	 */
 	private String getLogicalView(HttpServletRequest request){
+		String XML_VIEW = "jsonView";
 		String ctype = request.getHeader("Accept");
 		String[] ctypes = ctype.split("[,;]");
 		for (String ct : ctypes){
 			if (ct.endsWith("json")){
 				return "jsonView";
 			}else if (ct.endsWith("xml")){
-				return "xmlView";
+				return XML_VIEW;
 			}
 		}
 		// default to XML
-		return "xmlView";
+		return XML_VIEW;
 	}
 
 

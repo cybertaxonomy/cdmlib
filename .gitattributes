@@ -312,6 +312,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DistributionSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/HomotypicTaxonGroupSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IBaseSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IReferenceSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IdentifiedString.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/InteractionFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/LocalisedTermTO.java -text

@@ -21,8 +21,9 @@
                 <prop key="/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(ref:dto)/(*:uuid)">restController</prop>
                 <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                <prop key="/(taxonomy:action)/(*:uuid)/(parent:operation)">restController</prop>
-                <prop key="/(taxonomy:action)/(*:uuid)/(children:operation)">restController</prop>
+                <prop key="/(taxonomy:action)/(root:operation)/(*:uuid)">restController</prop>
+                <prop key="/(taxonomy:action)/(parents:operation)/(*:uuid)">restController</prop>
+                <prop key="/(taxonomy:action)/(children:operation)/(*:uuid)">restController</prop>
                 <prop key="/(insert:action)">restController</prop>
             </props>
         </property>

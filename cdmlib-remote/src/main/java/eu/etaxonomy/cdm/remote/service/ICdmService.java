@@ -102,9 +102,13 @@ public interface ICdmService {
 	/**
 	 * @param uuid
 	 * @return
+	 * @throws CdmObjectNonExisting 
 	 */
-	public ReferenceTO getReference(UUID uuid);
+	public ReferenceTO getReference(UUID uuid) throws CdmObjectNonExisting;
 	
+	
+	public ReferenceSTO getSimpleReference(UUID uuid) throws CdmObjectNonExisting;
+
 	/**
 	 * @param uuid
 	 * @return
@@ -119,11 +123,6 @@ public interface ICdmService {
 	 *         and {@link SpecimenTypeDesignationSTO}
 	 */
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid);
-
-	/**
-	 * @return A Set of all available concept references, that is references for treatments.
-	 */
-	public Set<ReferenceSTO> getAllSecReferences();
 
 	/**
 	 * @param uuid
@@ -200,6 +199,7 @@ public interface ICdmService {
 	/**
 	 * Gets the root nodes of the taxonomic concept tree for the concept
 	 * reference specified by the uuid parameter.
+	 * If uuid is null return all available root taxa.
 	 * 
 	 * @param uuid
 	 *            the concept reference uuid

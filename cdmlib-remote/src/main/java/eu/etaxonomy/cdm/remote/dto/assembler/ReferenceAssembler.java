@@ -1,7 +1,9 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -14,7 +16,9 @@ import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 
 @Component
 public class ReferenceAssembler extends AssemblerBase {
-	public IReferenceSTO getSTO(ReferenceBase rb){
+	static Logger logger = Logger.getLogger(ReferenceAssembler.class);
+
+	public ReferenceSTO getSTO(ReferenceBase rb){
 		ReferenceSTO r = null;
 		if (rb !=null){
 			r = new ReferenceSTO();

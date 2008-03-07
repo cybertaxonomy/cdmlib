@@ -34,11 +34,12 @@ public class JsonView extends BaseView implements View{
 		Writer out = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream()));
 		// create JSON Object
 		if (Collection.class.isAssignableFrom(dto.getClass())){
-			JSONArray jObj = JSONArray.fromObject(dto); 
+			JSONArray jObj = JSONArray.fromObject(dto);
 			out.append(jObj.toString());
 		}else{
 			JSONObject jObj = JSONObject.fromObject(dto);
 			out.append(jObj.toString());
 		}
+		out.flush();
 	}
 }
