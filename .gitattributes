@@ -28,6 +28,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/test/BerlinModelSources.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/SourceConnectionException.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
+cdmlib-io/src/site/site.xml -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
