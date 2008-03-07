@@ -5,11 +5,6 @@
         http://maven.apache.org/plugins/maven-site-plugin/examples/sitedescriptor.html
     -->
     
-    <poweredBy>
-        <logo name="Funded by EDIT" href="http://www.e-taxonomy.eu/" img="http://wp5.e-taxonomy.eu/cdmlib/site/logo_edit.png" />
-        <logo name="Build with Maven 2" href="http://maven.apache.org" img="images/logos/maven-feather.png" />
-    </poweredBy>
-    
     <body>
         <links>
             <item name="Edit" href="http://www.e-taxonomy.eu/" />
@@ -31,7 +26,7 @@
             <item name="CDM Server" href="/cdmlib-remote/"/>        
         </menu>
         
-        ${reports}
+        <menu ref="reports"/>
         
     </body>
     

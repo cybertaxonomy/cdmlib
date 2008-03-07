@@ -6,7 +6,6 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
-cdmlib-commons/src/site/apt/index.apt -text
 cdmlib-commons/src/site/site.xml -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
@@ -214,7 +213,6 @@ cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
-cdmlib-model/src/site/apt/index.apt -text
 cdmlib-model/src/site/site.xml -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
@@ -282,7 +280,6 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
-cdmlib-persistence/src/site/apt/index.apt -text
 cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
@@ -356,7 +353,6 @@ cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/main/webapp/index.jsp -text
-cdmlib-remote/src/site/apt/index.apt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/ResultSetPageSTOTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssemblerTest.java -text
@@ -385,7 +381,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
-cdmlib-services/src/site/apt/index.apt -text
 cdmlib-services/src/site/site.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
