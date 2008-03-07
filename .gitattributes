@@ -554,16 +554,3 @@ pluginTesterApplication/src/plugintesterapplication/View.java -text
 pluginTesterApplication/src/test/testClass.java -text
 /pom.xml -text
 /settings.xml -text
-spring-json/LICENSE-2.0.txt -text
-spring-json/README.txt -text
-spring-json/pom.xml -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/JsonErrorHandler.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/JsonStringWriter.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/JsonView.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/converter/DefaultJsonStringWriter.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/converter/JsonViewWalkerInterceptor.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/converter/MapGraphWalker.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/error/HttpStatusError.java -text
-spring-json/src/main/java/org/springframework/web/servlet/view/json/error/ModelFlagError.java -text
-spring-json/src/site/apt/index.apt -text
-spring-json/src/site/site.xml -text

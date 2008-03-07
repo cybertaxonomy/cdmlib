@@ -32,8 +32,3 @@ eclipse-plugin/target
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
-spring-json/.classpath
-spring-json/.project
-spring-json/.settings
-spring-json/lib
-spring-json/target
