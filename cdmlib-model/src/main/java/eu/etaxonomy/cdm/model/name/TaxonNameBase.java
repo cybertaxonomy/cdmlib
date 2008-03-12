@@ -130,6 +130,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
 		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
 	}
+	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
+		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
+	}
 	protected void addNameRelationship(NameRelationship rel) {
 		if (rel!=null && rel.getToName().equals(this)){
 			this.relationsToThisName.add(rel);
