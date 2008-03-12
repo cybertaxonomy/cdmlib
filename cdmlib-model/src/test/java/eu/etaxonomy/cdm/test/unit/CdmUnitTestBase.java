@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 /**
- * @author markus
+ * @author m.doering
  * Basic CDM unit testing class that incorporates the Spring Context for DI
  */
 @RunWith(SpringJUnit4ClassRunner.class)

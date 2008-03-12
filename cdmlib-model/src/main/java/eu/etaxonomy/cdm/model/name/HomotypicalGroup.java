@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * This also includes supergeneric names like genera or families which usually have a name type designation
  * that finally (a name type designation can also point to another supergeneric name) points to a species name,
  * which in turn has a (set of) physical type specimen(s). 
- * @author markus
+ * @author m.doering
  *
  */
 @Entity

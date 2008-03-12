@@ -274,7 +274,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 	/**
 	 * inner iterator class for the iterable interface
-	 * @author markus
+	 * @author m.doering
 	 *
 	 */
 	private class TaxonIterator implements Iterator<Taxon> {

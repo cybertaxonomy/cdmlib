@@ -21,6 +21,13 @@ import java.util.Set;
 import javax.persistence.*;
 
 /**
+ * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
+ * All subclasses inherit the ability to store additional properties that are stored as {@link Extension Extensions}, basically a string value with a type term.
+ * Any number of right statements can be attached as well as multiple {@link OriginalSource} objects. 
+ * Original sources carry a reference to the source, an ID within that source and the original title/label of this object as it was used in that source (originalNameString).
+ * A Taxon for example that was taken from 2 sources like FaunaEuropaea and IPNI would have two originalSource objects.
+ * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
+ *  
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:27

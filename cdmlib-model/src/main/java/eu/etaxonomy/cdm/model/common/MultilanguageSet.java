@@ -18,7 +18,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 /**
- * @author markus
+ * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
 //@Entity

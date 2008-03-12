@@ -34,11 +34,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * will fire bean change events to all registered listeners. Listener registration and event firing
  * is done with the help of the {@link PropertyChangeSupport} class.
  * 
- * @author markus
- *
- */
-/**
- * @author markus
+ * @author m.doering
  *
  */
 @MappedSuperclass

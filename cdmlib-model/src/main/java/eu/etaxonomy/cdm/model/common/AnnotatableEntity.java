@@ -17,6 +17,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
