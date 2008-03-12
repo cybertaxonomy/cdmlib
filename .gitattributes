@@ -157,6 +157,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Observation.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/PreservationMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Specimen.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Article.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BibtexEntryType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BibtexReference.java -text

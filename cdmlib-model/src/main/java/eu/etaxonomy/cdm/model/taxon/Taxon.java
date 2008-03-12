@@ -208,7 +208,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
-			if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+			TaxonRelationshipType tt = rel.getType();
+			TaxonRelationshipType incl = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
+			if (tt.equals(incl)){
 				taxa.add(rel.getFromTaxon());
 			}
 		}
