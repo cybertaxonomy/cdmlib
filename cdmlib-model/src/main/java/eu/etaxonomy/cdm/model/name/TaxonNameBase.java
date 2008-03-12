@@ -90,7 +90,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	
 	protected String generateNameCache(){
 		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
+			logger.warn("No CacheStrategy defined for taxonName: " + this.toString());
 			return null;
 		}else{
 			return cacheStrategy.getNameCache(this);

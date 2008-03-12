@@ -65,8 +65,6 @@ public abstract class CdmBase implements Serializable{
 
 	/**
 	 * see {@link PropertyChangeSupport#addPropertyChangeListener(String, PropertyChangeListener)}
-	 * @param propertyName
-	 * @param listener
 	 */
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
@@ -74,7 +72,6 @@ public abstract class CdmBase implements Serializable{
 
 	/**
 	 * see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
-	 * @param listener
 	 */
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
