@@ -7,7 +7,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 
 /**
  * FeatureSTO is used to represent {@linkplain QuantitativeData}, {@linkplain CategoricalData}, {@linkplain TextData} or {@linkplain CommonTaxonName}
- * @author markus
+ * @author m.doering
  *
  */
 public class FeatureSTO extends BaseSTO {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author markus
+ * @author m.doering
  * List of taxa that are homotypic. 
  * Sorted chronologically starting with the basionym if existing
  */

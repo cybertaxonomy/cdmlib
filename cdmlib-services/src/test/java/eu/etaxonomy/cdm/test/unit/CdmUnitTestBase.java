@@ -8,7 +8,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author markus
+ * @author m.doering
  * Basic CDM unit testing class that incorporates the Spring Context for DI
  */
 @RunWith(SpringJUnit4ClassRunner.class)
