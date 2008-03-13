@@ -54,6 +54,7 @@ public class RestController extends AbstractController
 			String dto = getNonNullPara("dto",req);
 			String uuid = getNonNullPara("uuid",req);
 			String sec = getNonNullPara("sec",req);
+			String q = getNonNullPara("q",req);
 			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
@@ -88,10 +89,11 @@ public class RestController extends AbstractController
 			}else if(action.equalsIgnoreCase("find")){
 				//
 				// retrieve meaningful parameters
-				String q = getStringPara("q",req);
-				if (q==null){
-					q="";
-				};
+				UUID u = null;
+				try {
+					u = getUuid(uuid);
+				} catch (CdmObjectNonExisting e) {
+				}
 				Set<UUID> higherTaxa = new HashSet<UUID>();
 				// TODO: take higher taxa UUIDs from "higherTaxa"
 				Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
@@ -112,7 +114,7 @@ public class RestController extends AbstractController
 				};
 				//
 				// search for taxa
-				Object obj = service.findTaxa(q, getUuid(sec), higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+				Object obj = service.findTaxa(q, u, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
 				mv.addObject(obj);
 			}else if(action.equalsIgnoreCase("taxonomy")){
 				List results = null; 
