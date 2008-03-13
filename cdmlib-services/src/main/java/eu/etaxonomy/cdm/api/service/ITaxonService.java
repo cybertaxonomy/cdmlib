@@ -30,7 +30,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
-	
-	
+		
 	
 }

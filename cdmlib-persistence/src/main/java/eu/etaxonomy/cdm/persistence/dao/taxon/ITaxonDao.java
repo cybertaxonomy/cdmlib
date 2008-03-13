@@ -21,4 +21,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec);
 	
 	public List<Taxon> getRootTaxa(ReferenceBase sec);
+
+	/**
+	 * @param pagesize max maximum number of returned taxa
+	 * @param page page to start, with 0 being first page 
+	 * @return
+	 */
+	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page);
 }

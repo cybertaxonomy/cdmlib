@@ -55,4 +55,9 @@ public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T
 	public List<? extends Agent> getAllAgents(int limit, int start){
 		return agentDao.list(limit, start);
 	}
+
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -38,6 +38,22 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	// The concept reference
 	private ReferenceBase sec;
 
+	@Override
+	public String generateTitle() {
+		String title;
+		if (name != null){
+			title = name.getTitleCache() + " sec. ";
+			if (sec != null){
+				title += sec.getTitleCache();
+			}else{
+				title += "???";
+			}
+		}else{
+			title = this.toString();
+		}
+		return title;
+	}
+	
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public TaxonNameBase getName(){

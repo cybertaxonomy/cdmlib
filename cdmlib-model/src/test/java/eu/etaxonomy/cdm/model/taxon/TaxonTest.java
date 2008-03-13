@@ -55,7 +55,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testGenerateTitle() {
-		assertTrue(rootT.generateTitle().startsWith("Taxon"));
+		assertTrue(rootT.generateTitle().startsWith(rootT.getName().getTitleCache()));
 	}
 
 	@Test

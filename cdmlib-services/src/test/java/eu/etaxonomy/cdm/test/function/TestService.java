@@ -154,21 +154,28 @@ public class TestService {
 //		}
 		
 	}
+
+	public void regenerateTaxonTitleCache(){
+		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		taxonService.generateTitleCache();
+	}
 	
 	private void test(){
 		System.out.println("Start ...");
-    	testAppController();
+    	//testAppController();
 		//testRootTaxa();
 		//testTermApi();
-		testDeleteTaxa();
-		testDeleteRelationship();
+		//testDeleteTaxa();
+		//testDeleteRelationship();
+		regenerateTaxonTitleCache();
     	System.out.println("\nEnd ...");
 	}
 	
 	private void init(){
 		try {
 			//appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
-			appCtr = new CdmApplicationController(HBM2DDL.CREATE);
+			appCtr = new CdmApplicationController(CdmDataSource.NewInstance("rel1_1"));
+			//appCtr = new CdmApplicationController(HBM2DDL.CREATE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

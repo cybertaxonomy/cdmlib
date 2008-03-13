@@ -65,4 +65,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return null;
 	}
 
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

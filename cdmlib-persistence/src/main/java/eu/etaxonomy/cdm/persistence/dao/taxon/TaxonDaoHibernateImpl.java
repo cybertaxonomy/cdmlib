@@ -37,5 +37,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO add reference filter
 		return this.findByTitle(name);
 	}
+
+	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page) {
+		Criteria crit = getSession().createCriteria(TaxonBase.class);
+		List<TaxonBase> results = crit.list();
+		// TODO add page & pagesize criteria
+		return results;
+	}
 	
 }

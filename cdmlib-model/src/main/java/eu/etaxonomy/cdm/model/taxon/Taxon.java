@@ -166,13 +166,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 	
-	
-	
-	@Override
-	public String generateTitle(){
-		return this.toString();
-	}
-
 	@Transient
 	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
 		if (child == null){
@@ -207,7 +200,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
-		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
+		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+		for (TaxonRelationship rel: rels){
 			TaxonRelationshipType tt = rel.getType();
 			TaxonRelationshipType incl = TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
 			if (tt.equals(incl)){

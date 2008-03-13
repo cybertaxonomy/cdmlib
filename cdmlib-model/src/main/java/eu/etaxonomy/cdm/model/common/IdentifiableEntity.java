@@ -68,7 +68,11 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(true);
 	}
-
+	public void setTitleCache(String titleCache, boolean protectCache){
+		this.titleCache = titleCache;
+		this.setProtectedTitleCache(protectCache);
+	}
+	
 	@ManyToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){

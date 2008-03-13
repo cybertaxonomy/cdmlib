@@ -49,4 +49,10 @@ public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements 
 	}
 
 
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

@@ -13,7 +13,7 @@
         <property name="username" value="testUser"/>
         <property name="password" value="testPassword"/>
     </bean>
-	
+	    
 	<bean id="localDefaultHsqlDataSource" 
 			lazy-init="true"
   			class="eu.etaxonomy.cdm.database.LocalHsqldb" 	

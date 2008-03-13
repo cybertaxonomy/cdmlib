@@ -61,11 +61,6 @@ public class Synonym extends TaxonBase {
 	}
 
 
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 	@Transient
 	public Set<Taxon> getAcceptedTaxa() {
 		Set<Taxon>taxa=new HashSet();

@@ -204,8 +204,9 @@ public interface ICdmService {
 	 * @param uuid
 	 *            the concept reference uuid
 	 * @return the List of root {@link TreeNode}s
+	 * @throws CdmObjectNonExisting for non existing reference UUIDs
 	 */
-	public List<TreeNode> getRootTaxa(UUID uuid);
+	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * For testing only. To be removed soon!

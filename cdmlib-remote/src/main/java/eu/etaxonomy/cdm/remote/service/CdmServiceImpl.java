@@ -1,7 +1,10 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -121,18 +124,16 @@ public class CdmServiceImpl implements ICdmService {
 	}
 
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize) {
-		Random random = new Random();
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
-		rs.setPageSize(pagesize);
-		rs.setPageNumber(page);
-		// random results
-		int x = random.nextInt(30);
-		rs.setTotalResultsCount(x);
-		for (int i=0; i<rs.getResultsOnPage(); i++){
-			TaxonSTO tx = taxonAssembler.getRandom();
+		// TODO: add other criteria. Has to be done in DAO...
+		List<TaxonBase> results = taxonDAO.findByTitle(q);
+		rs.setPageSize(100);
+		rs.setPageNumber(1);
+		rs.setTotalResultsCount(results.size());
+		for (TaxonBase tb : results){
+			TaxonSTO tx = taxonAssembler.getSTO(tb);
 			rs.getResults().add(tx);
 		}
-		// result set metadata
 		return rs;
 	}
 
@@ -156,12 +157,8 @@ public class CdmServiceImpl implements ICdmService {
 	}
 
 	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting {
-		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
 		Taxon tx = getCdmTaxon(uuid);
-		for (Taxon t : tx.getTaxonomicChildren()){
-			result.add(taxonAssembler.getTreeNode(t));
-		}
-		return result;
+		return taxonAssembler.getTreeNodeListSortedByName(tx.getTaxonomicChildren());
 	}
 
 	public List<TreeNode> getParentTaxa(UUID uuid) throws CdmObjectNonExisting {
@@ -186,9 +183,15 @@ public class CdmServiceImpl implements ICdmService {
 		ReferenceSTO r =  refAssembler.getSTO(ref);
 		return r;
 	}
-	public List<TreeNode> getRootTaxa(UUID uuid) {
-		List<Taxon> taxa = taxonDAO.getRootTaxa(null);
-		return taxonAssembler.getTreeNodeList(taxa.toArray(new Taxon[0]));
+	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting {
+		ReferenceBase sec = null;
+		try{
+			sec = getCdmReferenceBase(uuid);
+		}catch (Exception e){
+			// TODO: should this really be caught?
+			sec = null;
+		}
+		return taxonAssembler.getTreeNodeListSortedByName(taxonDAO.getRootTaxa(sec));
 	}
 
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid) {

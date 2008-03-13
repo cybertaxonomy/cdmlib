@@ -521,7 +521,7 @@ public class CdmBaseTest extends EntityTestBase{
 	 */
 	@Test
 	public void testToString() {
-		String expected = cdmBase.getClass().getSimpleName()+"<"+cdmBase.getUuid()+">";
+		String expected = cdmBase.getClass().getSimpleName()+"#"+cdmBase.getId()+"<"+cdmBase.getUuid()+">";
 		assertEquals(expected, cdmBase.toString());
 	}
 
