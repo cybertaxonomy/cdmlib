@@ -230,24 +230,24 @@ public class RestController extends AbstractController
 		return Utils.isTrue(tmp);
 	}
 	/**
+	 * Return logical spring view name to be used for rendering
 	 * Read http request parameter "Accept" and decide whether to use JSON or XML for the response.
 	 * Defaults to XML in case no matching header can be identified.
 	 * @param request
 	 * @return
 	 */
 	private String getLogicalView(HttpServletRequest request){
-		String XML_VIEW = "jsonView";
+		String DEFAULT_VIEW = "xmlView";
 		String ctype = request.getHeader("Accept");
 		String[] ctypes = ctype.split("[,;]");
 		for (String ct : ctypes){
 			if (ct.endsWith("json")){
 				return "jsonView";
 			}else if (ct.endsWith("xml")){
-				return XML_VIEW;
+				return "xmlView";
 			}
 		}
-		// default to XML
-		return XML_VIEW;
+		return DEFAULT_VIEW;
 	}
 
 

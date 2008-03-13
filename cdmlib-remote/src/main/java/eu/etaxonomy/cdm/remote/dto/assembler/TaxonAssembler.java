@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,11 +73,16 @@ public class TaxonAssembler extends AssemblerBase{
 	}
 
 	public List<TreeNode> getTreeNodeListSortedByName(Iterable<Taxon> taxa){
-		Map<String, TreeNode> results = new HashMap<String, TreeNode>();
+		Map<String, TreeNode> nameMap = new HashMap<String, TreeNode>();
 		for (Taxon t : taxa){
-			results.put(t.getTitleCache()+t.getUuid().toString(), this.getTreeNode(t));
+			nameMap.put(t.getTitleCache()+"  "+t.getUuid().toString(), this.getTreeNode(t));
 		}
-		ArrayList<TreeNode> treeNodeList = new ArrayList<TreeNode>(results.values());
+		ArrayList<TreeNode> treeNodeList = new ArrayList<TreeNode>();
+		ArrayList<String> keys = new ArrayList<String>(nameMap.keySet());
+		Collections.sort(keys);
+		for (String name : keys){
+			treeNodeList.add(nameMap.get(name));
+		}
 		return treeNodeList;
 	}
 
