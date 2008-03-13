@@ -1,5 +1,7 @@
 * text=auto !eol
 /INSTALL.TXT -text
+/LICENSE.TXT -text
+cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
@@ -11,6 +13,7 @@ cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorIO.java -text
@@ -28,6 +31,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/SourceConnectionException.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
+cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
@@ -239,6 +243,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonName
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/EntityTestBase.java -text
+cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
@@ -300,6 +305,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
+cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
 cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedPathFilter.java -text
@@ -362,6 +368,7 @@ cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/NameSTOAssembl
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/CdmServiceImplTest.java -text
 cdmlib-remote/src/test/resources/applicationContext.xml -text
 cdmlib-remote/src/test/resources/log4j.properties -text
+cdmlib-services/LICENSE.TXT -text
 cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
