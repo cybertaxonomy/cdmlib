@@ -37,6 +37,7 @@ import javax.persistence.*;
  * The upmost (abstract) class for scientific taxon names regardless of the any
  * particular nomenclatural code. The scientific name including author strings and
  * maybe year is stored in IdentifiableEntity.titleCache
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:57
