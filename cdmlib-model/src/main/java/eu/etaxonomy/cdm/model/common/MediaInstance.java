@@ -28,8 +28,6 @@ public class MediaInstance extends VersionableEntity {
 	static Logger logger = Logger.getLogger(MediaInstance.class);
 	//http://www.iana.org/assignments/media-types
 	private String mimeType;
-	//filename suffix defining the media-type as an alternative to the proper MIME type
-	private String suffix;
 	//where the media file is stored
 	private String uri;
 	//in bytes
@@ -46,18 +44,6 @@ public class MediaInstance extends VersionableEntity {
 	 */
 	public void setMimeType(String mimeType){
 		this.mimeType = mimeType;
-	}
-
-	public String getSuffix(){
-		return this.suffix;
-	}
-
-	/**
-	 * 
-	 * @param suffix    suffix
-	 */
-	public void setSuffix(String suffix){
-		this.suffix = suffix;
 	}
 
 	public String getUri(){
