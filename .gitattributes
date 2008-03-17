@@ -343,6 +343,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IReferenceSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IdentifiedString.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/InteractionFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/LocalisedTermTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaInstanceSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/NameRelationshipTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/NameSTO.java -text
@@ -352,7 +353,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ReferenceSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ReferenceTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ReferencedEntityBaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/ResultSetPageSTO.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/RightsTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/RightsSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SpecimenSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SpecimenTypeDesignationSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/SynonymRelationshipTO.java -text

@@ -25,10 +25,6 @@ public class MediaTO extends BaseTO {
 	 * The title of the Media instance
 	 */
 	private String title;
-	/**	
-	 * creation date of the media (not of the record)
-	 */
-	private Calendar mediaCreated;
 	
 	/**
 	 * The description of the Media.
@@ -40,11 +36,45 @@ public class MediaTO extends BaseTO {
 	 * formats for images for example
 	 */
 	
-	private Set<IdentifiedString> mediaUris;
+	private Set<MediaInstanceSTO> instances;
 	/**
 	 * several rightTOs in the SAME language, not different languages for the SAME rights UUID
 	 */
-	private Set<RightsTO> rights;
+	private Set<RightsSTO> rights;
 	private IdentifiedString artist;
+	
+	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Set<MediaInstanceSTO> getInstances() {
+		return instances;
+	}
+	public void setInstances(Set<MediaInstanceSTO> instances) {
+		this.instances = instances;
+	}
+	public void addInstance(String uri, String mimeType, Integer heigth, Integer width){
+		MediaInstanceSTO mi = new MediaInstanceSTO();
+		mi.setHeigth(heigth);
+		mi.setWidth(width);
+		mi.setUri(uri);
+		mi.setMimeType(mimeType);
+		this.instances.add(mi);
+	}
+	public IdentifiedString getArtist() {
+		return artist;
+	}
+	public void setArtist(IdentifiedString artist) {
+		this.artist = artist;
+	}
 	
 }

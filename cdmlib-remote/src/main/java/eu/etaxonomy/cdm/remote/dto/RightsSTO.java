@@ -17,7 +17,7 @@ package eu.etaxonomy.cdm.remote.dto;
  * @created 05.02.2008 14:59:48
  *
  */
-public class RightsTO extends IdentifiedString {
+public class RightsSTO extends IdentifiedString {
 	private String uri;
 	private String abbreviatedText;
 	private LocalisedTermTO type;
