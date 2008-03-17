@@ -5,17 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NameSTOAssemblerTest {
+public class NameSTOAssemblerTest extends AssemblerTestBase{
 
 	private NameAssembler ass;
+
 	@Before
 	public void setUp() throws Exception {
 		ass = new NameAssembler();
-	}
-
-	@Test
-	public void testGetRandom() {
-		ass.getRandom();
 	}
 
 }
