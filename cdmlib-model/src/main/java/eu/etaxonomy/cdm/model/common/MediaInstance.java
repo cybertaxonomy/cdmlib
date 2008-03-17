@@ -32,7 +32,7 @@ public class MediaInstance extends VersionableEntity {
 	private String uri;
 	//in bytes
 	private int size;
-	
+	private Media media;
 	
 	public String getMimeType(){
 		return this.mimeType;
@@ -68,6 +68,15 @@ public class MediaInstance extends VersionableEntity {
 	 */
 	public void setSize(int size){
 		this.size = size;
+	}
+
+	@ManyToOne	
+	public Media getMedia() {
+		return media;
+	}
+
+	public void setMedia(Media media) {
+		this.media = media;
 	}
 
 }

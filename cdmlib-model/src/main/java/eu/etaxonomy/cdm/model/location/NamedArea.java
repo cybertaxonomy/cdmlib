@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -31,7 +32,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	//description of time valid context of this area. e.g. year range
 	private TimePeriod validPeriod;
 	//Binary shape definition for user's defined area as polygon
-	private MediaInstance shapeFile;
+	private Media shape;
 	private Point pointApproximation;
 	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet();
 	private NamedAreaType type;
@@ -72,11 +73,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public MediaInstance getShapeFile(){
-		return this.shapeFile;
+	public Media getShape(){
+		return this.shape;
 	}
-	public void setShapeFile(MediaInstance shapeFile){
-		this.shapeFile = shapeFile;
+	public void setShape(Media shape){
+		this.shape = shape;
 	}
 
 

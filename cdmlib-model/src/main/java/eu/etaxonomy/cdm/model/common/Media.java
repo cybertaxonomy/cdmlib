@@ -43,7 +43,7 @@ public class Media extends AnnotatableEntity {
 	private Set<Rights> rights = new HashSet();
 	private Agent artist;
 
-	@OneToMany
+	@OneToMany(mappedBy="media")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<MediaInstance> getInstances(){
 		return this.instances;
