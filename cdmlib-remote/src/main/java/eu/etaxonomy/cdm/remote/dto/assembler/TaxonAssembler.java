@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
 
 @Component
-public class TaxonAssembler extends AssemblerBase{
+public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	
 	@Autowired
 	private NameAssembler nameAssembler;
@@ -30,7 +30,7 @@ public class TaxonAssembler extends AssemblerBase{
 		TaxonSTO t = null;
 		if (tb!=null){
 			t = new TaxonSTO();
-			setIdentifiableEntity(tb, t);
+			setVersionableEntity(tb, t);
 			t.setName(nameAssembler.getSTO(tb.getName()));
 			t.setSecUuid(tb.getSec().getUuid().toString());
 			if (Taxon.class.isInstance(tb)){
@@ -46,7 +46,7 @@ public class TaxonAssembler extends AssemblerBase{
 		TaxonTO t = null;
 		if(tb!=null){
 			t = new TaxonTO();
-			setIdentifiableEntity(tb, t);
+			setVersionableEntity(tb, t);
 			t.setName(nameAssembler.getSTO(tb.getName()));
 			t.setSec(refAssembler.getTO(tb.getSec()));
 			//TODO: add more mapppings
@@ -57,7 +57,7 @@ public class TaxonAssembler extends AssemblerBase{
 		TreeNode tn = null;
 		if(t!=null){
 			tn = new TreeNode();
-			setIdentifiableEntity(t, tn);
+			setVersionableEntity(t, tn);
 			tn.setFullname(t.getName().getTitleCache());
 			tn.setHasChildren(t.getTaxonomicChildren().size());
 			tn.setTaggedName(nameAssembler.getTaggedName(t.getName()));

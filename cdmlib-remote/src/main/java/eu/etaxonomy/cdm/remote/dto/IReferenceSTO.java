@@ -13,10 +13,8 @@ public interface IReferenceSTO extends IBaseSTO{
 
 	public abstract void setFullCitation(String fullCitation);
 
-	public abstract Set<IdentifiedString> getMediaUri();
+	public abstract Set<MediaSTO> getMedia();
 
-	public abstract void addMediaUri(String mediaUri, UUID mediaUUID);
-
-	public abstract void addMediaUri(String mediaUri, String mediaUUID);
+	public abstract void addMedia(MediaSTO media);
 
 }

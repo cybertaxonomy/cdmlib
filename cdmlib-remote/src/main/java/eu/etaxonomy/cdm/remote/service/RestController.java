@@ -91,8 +91,9 @@ public class RestController extends AbstractController
 				// retrieve meaningful parameters
 				UUID u = null;
 				try {
-					u = getUuid(uuid);
+					u = getUuid(sec);
 				} catch (CdmObjectNonExisting e) {
+					log.warn("Concept sec reference UUID is not valid. Ignore");
 				}
 				Set<UUID> higherTaxa = new HashSet<UUID>();
 				// TODO: take higher taxa UUIDs from "higherTaxa"
@@ -127,8 +128,9 @@ public class RestController extends AbstractController
 				else if(op.equalsIgnoreCase("root")){
 					UUID u = null;
 						try {
-							u = getUuid(uuid);
+							u = getUuid(sec);
 						} catch (CdmObjectNonExisting e) {
+							log.warn("Concept sec reference UUID is not valid. Ignore");
 						}
 					results = service.getRootTaxa(u);
 				}

@@ -23,46 +23,15 @@ import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 
 
 @Component
-public class NameAssembler extends AssemblerBase{
-	
-	private String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
-	private String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
-	private String[] ranks = {"subsp", "var", "f"}; 
-	
-	private Random rnd = new Random();
+public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>{
 	@Autowired
 	private ReferenceAssembler refAssembler;
-	
-	private String getRandomToken(String[] en){
-		return en[rnd.nextInt(en.length)];
-	}
-	
-	public NameSTO getRandom(){
-		NameSTO n = new NameSTO();
-		n.setUuid(getRandomUUID());
-		n.setNomenclaturalReference(null);
-		String tmp = getRandomToken(genera);
-		n.setFullname(tmp);
-		n.addNameToken(new TaggedText(TagEnum.name, tmp));
-		tmp = getRandomToken(epitheta);
-		n.setFullname(n.getFullname() + " " + tmp);
-		n.addNameToken(new TaggedText(TagEnum.name, tmp));
-		if (rnd.nextInt(5)<4){
-			tmp = getRandomToken(ranks);
-			n.setFullname(n.getFullname() + " " + tmp+".");
-			n.addNameToken(new TaggedText(TagEnum.name, tmp));
-			tmp = getRandomToken(epitheta);
-			n.setFullname(n.getFullname() + " " + tmp);
-			n.addNameToken(new TaggedText(TagEnum.name, tmp));
-		}
-		return n;
-	}
 	
 	public NameSTO getSTO(TaxonNameBase tnb){
 		NameSTO n = null;
 		if (tnb !=null){
 			n = new NameSTO();
-			setIdentifiableEntity(tnb, n);
+			setVersionableEntity(tnb, n);
 			n.setFullname(tnb.getTitleCache());
 			n.setTaggedName(getTaggedName(tnb));
 			n.setNomenclaturalReference(refAssembler.getSTO(tnb.getNomenclaturalReference()));
@@ -73,7 +42,7 @@ public class NameAssembler extends AssemblerBase{
 		NameTO n = null;
 		if (tnb !=null){
 			n = new NameTO();
-			setIdentifiableEntity(tnb, n);
+			setVersionableEntity(tnb, n);
 			n.setFullname(tnb.getTitleCache());
 			n.setTaggedName(getTaggedName(tnb));
 			n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference()));

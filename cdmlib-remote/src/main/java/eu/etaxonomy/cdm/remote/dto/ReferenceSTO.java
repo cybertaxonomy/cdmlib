@@ -28,7 +28,7 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 	 */
 	private String fullCitation;
 
-	private Set<IdentifiedString> mediaUri;
+	private Set<MediaSTO> media;
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getAuthorship()
@@ -58,27 +58,17 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 		this.fullCitation = fullCitation;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getMediaUri()
-	 */
-	public Set<IdentifiedString> getMediaUri() {
-		return mediaUri;
+	
+	public Set<MediaSTO> getMedia() {
+		return media;
+	}
+	public void setMedia(Set<MediaSTO> media) {
+		this.media = media;
 	}
 
-	public void setMediaUri(Set<IdentifiedString> mediaUri) {
-		this.mediaUri = mediaUri;
+	public void addMedia(MediaSTO media) {
+		this.media.add(media);
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#addMediaUri(java.lang.String, java.util.UUID)
-	 */
-	public void addMediaUri(String mediaUri, UUID mediaUUID) {
-		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID.toString()));
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#addMediaUri(java.lang.String, java.lang.String)
-	 */
-	public void addMediaUri(String mediaUri, String mediaUUID) {
-		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
-	}
+
 
 }

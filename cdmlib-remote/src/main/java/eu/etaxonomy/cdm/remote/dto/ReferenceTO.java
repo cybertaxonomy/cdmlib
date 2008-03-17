@@ -44,9 +44,11 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 	 * year of the publication 
 	 */
 	private String year;
-	
-	private Set<IdentifiedString> mediaUri;
 
+	private Set<MediaSTO> media;
+
+
+	
 	public String getUri() {
 		return uri;
 	}
@@ -87,20 +89,6 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 		this.year = year;
 	}
 
-	public Set<IdentifiedString> getMediaUri() {
-		return mediaUri;
-	}
-
-	public void setMediaUri(Set<IdentifiedString> mediaUri) {
-		this.mediaUri = mediaUri;
-	}
-
-	public void addMediaUri(String mediaUri, UUID mediaUUID) {
-		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID.toString()));
-	}
-	public void addMediaUri(String mediaUri, String mediaUUID) {
-		this.mediaUri.add(new IdentifiedString(mediaUri, mediaUUID));
-	}
 
 	public String getFullCitation() {
 		return fullCitation;
@@ -110,4 +98,16 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 		this.fullCitation = fullCitation;
 	}
 
+
+	public void addMedia(MediaSTO media) {
+		this.media.add(media);
+	}
+
+	public Set<MediaSTO> getMedia() {
+		return media;
+	}
+
+	public void setMedia(Set<MediaSTO> media) {
+		this.media = media;
+	}
 }

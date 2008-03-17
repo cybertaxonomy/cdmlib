@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
-import eu.etaxonomy.cdm.remote.dto.RightsTO;
+import eu.etaxonomy.cdm.remote.dto.RightsSTO;
 import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
 import eu.etaxonomy.cdm.remote.dto.SpecimenTypeDesignationSTO;
 import eu.etaxonomy.cdm.remote.dto.SynonymRelationshipTO;
@@ -64,7 +64,7 @@ public class XmlView extends BaseView implements View {
 		xstream.alias("NameRelationshipTO", NameRelationshipTO.class);
 		xstream.alias("NameTO", NameTO.class);
 		xstream.alias("ReferenceTO", ReferenceTO.class);
-		xstream.alias("RightsTO", RightsTO.class);
+		xstream.alias("RightsTO", RightsSTO.class);
 		xstream.alias("TaxonTO", TaxonTO.class);
 		xstream.alias("SynonymRelationshipTO", SynonymRelationshipTO.class);
 		xstream.alias("TaxonRelationshipTO", TaxonRelationshipTO.class);

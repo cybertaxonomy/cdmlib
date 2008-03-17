@@ -10,12 +10,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.remote.dto.IReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.IdentifiedString;
+import eu.etaxonomy.cdm.remote.dto.MediaSTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 
 @Component
-public class ReferenceAssembler extends AssemblerBase {
+public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO, ReferenceBase> {
 	static Logger logger = Logger.getLogger(ReferenceAssembler.class);
 
 	public ReferenceSTO getSTO(ReferenceBase rb){
@@ -38,14 +39,17 @@ public class ReferenceAssembler extends AssemblerBase {
 		return r;
 	}	
 	private IReferenceSTO fillReferenceSTO(IReferenceSTO r, ReferenceBase rb){
-		setIdentifiableEntity(rb, r);
+		setVersionableEntity(rb, r);
 		if (rb.getAuthorTeam() != null){
 			r.setAuthorship(rb.getAuthorTeam().getTitleCache());
 		}
 		for (Media m : rb.getMedia()){
+			MediaSTO msto = new MediaSTO();
 			for (MediaInstance mi : m.getInstances()){
-				r.addMediaUri(mi.getUri(), m.getUuid());
+				//TODO: add height+width for Images&Video. test class...
+				msto.addInstance(mi.getUri(), mi.getMimeType(), null, null);
 			}
+			r.addMedia(msto);
 		}
 		return null;
 	}

@@ -19,7 +19,7 @@ import java.util.Set;
  * @created 11.12.2007 12:13:42
  *
  */
-public class MediaTO extends BaseTO implements IBaseSTO{
+public class MediaSTO extends BaseSTO implements IBaseSTO{
 
 	/**
 	 * The title of the Media instance
@@ -27,21 +27,12 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	private String title;
 	
 	/**
-	 * The description of the Media.
-	 */
-	private String description;
-	/**
 	 * A single medium such as a picture can have multiple representations in files. 
 	 * Common are multiple resolutions or file
 	 * formats for images for example
 	 */
 	
 	private Set<MediaInstanceSTO> instances;
-	/**
-	 * several rightTOs in the SAME language, not different languages for the SAME rights UUID
-	 */
-	private Set<RightsSTO> rights;
-	private IdentifiedString artist;
 	
 	
 	public String getTitle() {
@@ -49,12 +40,6 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	}
 	public void setTitle(String title) {
 		this.title = title;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	public Set<MediaInstanceSTO> getInstances() {
 		return instances;
@@ -69,12 +54,6 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 		mi.setUri(uri);
 		mi.setMimeType(mimeType);
 		this.instances.add(mi);
-	}
-	public IdentifiedString getArtist() {
-		return artist;
-	}
-	public void setArtist(IdentifiedString artist) {
-		this.artist = artist;
 	}
 	
 }
