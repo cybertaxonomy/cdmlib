@@ -146,7 +146,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	 * @return
 	 */
 	@Transient
-	public GatheringEvent getOriginalUnit(){
+	public SpecimenOrObservationBase getOriginalUnit(){
 		return null;
 	}
 

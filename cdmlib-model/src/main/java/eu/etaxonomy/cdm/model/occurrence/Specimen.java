@@ -16,6 +16,9 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * A specimen is regarded as derived from an field observation, 
+ * so locality and gathering related information is captured as a separate FieldObservation object
+ * related to a specimen via a derivation event
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:52

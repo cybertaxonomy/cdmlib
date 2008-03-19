@@ -23,13 +23,42 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 @Entity
-public class DerivedUnit extends SpecimenOrObservationBase {
+public abstract class DerivedUnit extends SpecimenOrObservationBase {
 
 	private Collection collection;
 	private String catalogNumber;
 	private TaxonNameBase storedUnder;
 	private DerivationEvent derivedFrom;
 
+
+	public DerivedUnit() {
+		super();
+	}
+	/**
+	 * create new unit derived from an existing field observation
+	 * @param fieldObservation existing field observation from where this unit is derived
+	 */
+	public DerivedUnit(FieldObservation fieldObservation) {
+		super();
+		DerivationEvent derivedFrom = new DerivationEvent();
+		// TODO: should be done in a more controlled way. Probably by making derivation event implement a general relationship interface (for bidirectional add/remove etc)
+		fieldObservation.addDerivationEvent(derivedFrom);
+		derivedFrom.getOriginals().add(fieldObservation);
+		derivedFrom.getDerivatives().add(this);
+		this.setDerivedFrom(derivedFrom);
+	}
+	/**
+	 * create new unit derived from an existing gathering event, 
+	 * thereby creating a new empty field observation
+	 * @param gatheringEvent the gathering event this unit was collected at 
+	 */
+	public DerivedUnit(GatheringEvent gatheringEvent) {
+		this(new FieldObservation());
+		FieldObservation field = (FieldObservation) this.getOriginalUnit();
+		field.setGatheringEvent(gatheringEvent);
+	}
+	
+	
 	
 	@ManyToOne
 	public DerivationEvent getDerivedFrom() {

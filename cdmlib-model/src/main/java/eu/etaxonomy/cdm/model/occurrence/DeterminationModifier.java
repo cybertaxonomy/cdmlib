@@ -7,6 +7,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
 
+/**
+ * modifier for a determination.
+ * can be cf. det. rev. conf. for example
+ * @author m.doering
+ *
+ */
 @Entity
 public class DeterminationModifier extends Modifier {
 	static Logger logger = Logger.getLogger(DeterminationModifier.class);
