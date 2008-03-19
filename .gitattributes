@@ -570,6 +570,9 @@ musiclib-hibernatetest/src/test/java/org/bgbm/persistence/dao/DatabaseInitialise
 musiclib-hibernatetest/src/test/java/org/bgbm/persistence/dao/RecordDaoImplTest.java -text
 musiclib-hibernatetest/src/test/java/org/bgbm/persistence/dao/TestIt.java -text
 musiclib-hibernatetest/target/mvn-eclipse-cache.properties -text
+pdfdocs/cdmlib-config.properties -text
+pdfdocs/cdmlib-doc.sh -text
+pdfdocs/pdfdoclet-1.0.2-all.jar -text
 pluginTesterApplication/.classpath -text
 pluginTesterApplication/.project -text
 pluginTesterApplication/META-INF/MANIFEST.MF -text
