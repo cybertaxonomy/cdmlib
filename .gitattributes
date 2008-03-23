@@ -121,6 +121,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TaxonDescription.j
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TaxonInteraction.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TextData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TextFormat.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Continent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedArea.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaLevel.java -text
