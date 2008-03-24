@@ -129,11 +129,13 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaType.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Point.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/ReferenceSystem.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/WaterbodyOrCountry.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/GenBankAccession.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Locus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/PhylogeneticTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BotanicalName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/CultivarPlantName.java -text
@@ -152,6 +154,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ZoologicalName.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Collection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEventType.java -text
@@ -166,6 +169,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Observation.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/PreservationMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Specimen.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Article.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BibtexEntryType.java -text
