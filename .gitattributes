@@ -196,6 +196,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/SectionBase.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/StrictReferenceBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Thesis.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/WebPage.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationshipType.java -text
@@ -203,6 +204,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Taxon.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
