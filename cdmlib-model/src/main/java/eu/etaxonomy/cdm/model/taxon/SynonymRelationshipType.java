@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -24,6 +26,13 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
+	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
+	private static final UUID uuidProParteSynonymOf = UUID.fromString("130b752d-2eff-4a62-a132-104ed8d13e5e");
+	private static final UUID uuidPartialSynonymOf = UUID.fromString("8b0d1d34-cc00-47cb-999d-b67f98d1af6e");
+	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
+	private static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
+
+	
 	public SynonymRelationshipType() {
 		super();
 	}
@@ -33,24 +42,29 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 		// TODO Auto-generated constructor stub
 	}
 
+
+	public static final SynonymRelationshipType getUUID(UUID uuid){
+		return (SynonymRelationshipType) findByUuid(uuid);
+	}
+	
 	public static final SynonymRelationshipType SYNONYM_OF(){
-		return null;
+		return getUUID(uuidSynonymOf);
 	}
 
 	public static final SynonymRelationshipType PRO_PARTE_SYNONYM_OF(){
-		return null;
+		return getUUID(uuidProParteSynonymOf);
 	}
 
 	public static final SynonymRelationshipType PARTIAL_SYNONYM_OF(){
-		return null;
+		return getUUID(uuidPartialSynonymOf);
 	}
 
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
-		return null;
+		return getUUID(uuidHomotypicSynonymOf);
 	}
 
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
-		return null;
+		return getUUID(uuidHeterotypicSynonymOf);
 	}
 
 }

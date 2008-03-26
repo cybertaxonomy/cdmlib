@@ -51,7 +51,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 
 
-
 	public static final TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN(){
 		return getUUID(uuidTaxonomicallyIncludedIn);
 	}
