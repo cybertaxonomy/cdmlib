@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # shell script producing PDF documentation for the CDM model packages
+# http://sourceforge.net/projects/pdfdoclet/
 # PLEASE ADJUST JAVA_HOME
 JAVA_HOME=/Library/Java/Home
 
@@ -18,4 +19,4 @@ JARS=pdfdoclet-$VERSION-all.jar
 
 export JAVA_HOME PATH DOCLET JARS PACKAGES
 
-javadoc -doclet $DOCLET -docletpath $JARS -config $CFG -sourcepath $SRC $PACKAGES
+javadoc -J-Xmx128M -doclet $DOCLET -docletpath $JARS -config $CFG -sourcepath $SRC $PACKAGES
