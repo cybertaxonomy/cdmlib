@@ -29,9 +29,9 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
 	//publication. {if the citationMicroReference exists then there must be also a reference}
+	private ReferenceBase citation;
 	private String citationMicroReference;
 	private String originalNameString;
-	private ReferenceBase citation;
 
 	public ReferencedEntityBase() {
 		super();

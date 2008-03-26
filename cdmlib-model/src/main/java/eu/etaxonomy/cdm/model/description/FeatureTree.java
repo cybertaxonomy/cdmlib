@@ -23,7 +23,7 @@ import javax.persistence.*;
 /**
  * Feature trees arrange concepts and features/characters. They may also be used to
  * define flat char. subsets for filtering purposes. 
- * A feature tree is build out of feature nodes, which can be hierarchihcally organised
+ * A feature tree is build out of feature nodes, which can be hierarchically organised
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16

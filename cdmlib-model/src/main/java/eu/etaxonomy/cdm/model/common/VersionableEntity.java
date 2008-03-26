@@ -40,8 +40,8 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	//time of last update for this object
 	private Calendar updated;
 	private Person updatedBy;
-	private CdmBase nextVersion;
-	private CdmBase previousVersion;
+	private T nextVersion;
+	private T previousVersion;
 
 	
 	/**
@@ -50,19 +50,19 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	 */
 	//@OneToOne(mappedBy="previousVersion")
 	@Transient
-	public CdmBase getNextVersion(){
+	public T getNextVersion(){
 		return this.nextVersion;
 	}
-	public void setNextVersion(CdmBase nextVersion){
+	public void setNextVersion(T nextVersion){
 		this.nextVersion = nextVersion;
 	}
 
 	//@OneToOne
 	@Transient
-	public CdmBase getPreviousVersion(){
+	public T getPreviousVersion(){
 		return this.previousVersion;
 	}
-	public void setPreviousVersion(CdmBase previousVersion){
+	public void setPreviousVersion(T previousVersion){
 		this.previousVersion = previousVersion;
 	}
 

@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @MappedSuperclass
 public abstract class DescriptionBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DescriptionBase.class);
-	private String label;
 	private Set<FeatureBase> features = new HashSet();
 	private ReferenceBase source;
 	@Override
@@ -64,18 +63,6 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	public void removeFeature(FeatureBase feature) {
 		this.features.remove(feature);
-	}
-
-
-
-	public String getLabel() {
-		return this.label;
-	}
-
-
-
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 }

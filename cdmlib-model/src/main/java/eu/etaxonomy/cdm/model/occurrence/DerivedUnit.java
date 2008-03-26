@@ -22,6 +22,12 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
+/**
+ * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
+ * http://www.bgbm.org/biodivinf/docs/CollectionModel/
+ * @author markus
+ *
+ */
 @Entity
 public abstract class DerivedUnit extends SpecimenOrObservationBase {
 
