@@ -70,9 +70,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isInvalidType(){
-		//TODO
-		//ValidatedByName,
-		//LaterValidatedByName
 		if (this.equals(INVALID()) || 
 				this.equals(NUDUM()) || 
 				this.equals(PROVISIONAL()) ||
@@ -86,11 +83,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isLegitimateType(){
-		//TODO
-		//Basionym,
-		//ReplacedSynonym,
-		//AlternativeName,
-		//ConservedAgainst,
 		if (this.equals(LEGITIMATE()) || 
 				this.equals(NOVUM()) || 
 				this.equals(ALTERNATIVE()) ||
@@ -107,10 +99,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isIllegitimateType(){
-		//TODO:
-		//LaterHomonym,
-		//TreatedAsLaterHomonym,
-		//RejectedInFavour,
 		if (this.equals(ILLEGITIMATE()) || 
 				this.equals(SUPERFLUOUS()) || 
 				this.equals(REJECTED()) ||

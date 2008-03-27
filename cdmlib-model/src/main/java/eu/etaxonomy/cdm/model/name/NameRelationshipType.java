@@ -11,8 +11,11 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.location.Continent;
+
 import org.apache.log4j.Logger;
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -45,86 +48,77 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 
+	public static final NameRelationshipType getUUID(UUID uuid){
+		return (NameRelationshipType)findByUuid(uuid);
+	}
+
 	@Transient
 	public boolean isInvalidType(){
-		//TODO: implement isX method. Maybe as persistent class attribute?
-		//True, if enum is of type:
-		//Invalid,
-		//Nudum,
-		//Provisional,
-		//CombinationInvalid,
-		//ValidatedByName,
-		//LaterValidatedByName
-
-		return false;
+		if (this.equals(VALIDATED_BY_NAME()) || 
+				this.equals(LATER_VALIDATED_BY_NAME())
+			){
+			return true;	
+		}else{
+			return false;
+		}
 	}
 
 	@Transient
 	public boolean isLegitimateType(){
-		//TODO: implement isX method. Maybe as persistent class attribute?
-		//True, if enum is of type:
-		//Legitimate,
-		//Basionym,
-		//ReplacedSynonym,
-		//Novum,
-		//AlternativeName,
-		//Alternativ,
-		//ConservedAgainst,
-		//Conserved,
-		//OrthographyConserved,
-		//RejectedProp,
-		//UtiqueRejectedProp
-
-		return false;
+		if (this.equals(BASIONYM()) || 
+				this.equals(REPLACED_SYNONYM()) || 
+				this.equals(ALTERNATIVE_NAME()) ||
+				this.equals(CONSERVED_AGAINST())
+			){
+			return true;	
+		}else{
+			return false;
+		}
 	}
 
 	@Transient
 	public boolean isIllegitimateType(){
 		//TODO: implement isX method. Maybe as persistent class attribute?
-		//True, if enum is of type:
-		//Illegitimate,
-		//Superfluous,
-		//LaterHomonym,
-		//TreatedAsLaterHomonym,
-		//RejectedInFavour,
-		//Rejected,
-		//UtiqueRejected,
-		//ConservedProp,
-		//OrthographyConservedProp
-
-		return false;
+		//TODO: RejectedInFavour,
+		if (this.equals(LATER_HOMONYM()) || 
+				this.equals(TREATED_AS_LATER_HOMONYM())
+			){
+			return true;	
+		}else{
+			return false;
+		}
 	}
 
 	
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
-		  return (NameRelationshipType)findByUuid(uuidOrthographicVariant);
-		}
-		public static final NameRelationshipType LATER_HOMONYM(){
-		  return (NameRelationshipType)findByUuid(uuidLaterHomonym);
-		}
-		public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
-		  return (NameRelationshipType)findByUuid(uuidTreatedAsLaterHomonym);
-		}
-		public static final NameRelationshipType ALTERNATIVE_NAME(){
-		  return (NameRelationshipType)findByUuid(uuidAlternativeName);
-		}
-		public static final NameRelationshipType BASIONYM(){
-		  return (NameRelationshipType)findByUuid(uuidBasionym);
-		}
-		public static final NameRelationshipType REPLACED_SYNONYM(){
-		  return (NameRelationshipType)findByUuid(uuidReplacedSynonym);
-		}
-		public static final NameRelationshipType CONSERVED_AGAINST(){
-		  return (NameRelationshipType)findByUuid(uuidConservedAgainst);
-		}
-		public static final NameRelationshipType VALIDATED_BY_NAME(){
-		  return (NameRelationshipType)findByUuid(uuidValidatedByName);
-		}
-		public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
-		  return (NameRelationshipType)findByUuid(uuidLaterValidatedByName);
-		}
-		public static final NameRelationshipType BLOCKING_NAME_FOR(){
-		  return (NameRelationshipType)findByUuid(uuidBlockingNameFor);
-		}
+		  return getUUID(uuidOrthographicVariant);
+	}
+	public static final NameRelationshipType LATER_HOMONYM(){
+	  return getUUID(uuidLaterHomonym);
+	}
+	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
+	  return getUUID(uuidTreatedAsLaterHomonym);
+	}
+	public static final NameRelationshipType ALTERNATIVE_NAME(){
+	  return getUUID(uuidAlternativeName);
+	}
+	public static final NameRelationshipType BASIONYM(){
+	  return getUUID(uuidBasionym);
+	}
+	public static final NameRelationshipType REPLACED_SYNONYM(){
+	  return getUUID(uuidReplacedSynonym);
+	}
+	public static final NameRelationshipType CONSERVED_AGAINST(){
+	  return getUUID(uuidConservedAgainst);
+	}
+	public static final NameRelationshipType VALIDATED_BY_NAME(){
+	  return getUUID(uuidValidatedByName);
+	}
+	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
+	  return getUUID(uuidLaterValidatedByName);
+	}
+	public static final NameRelationshipType BLOCKING_NAME_FOR(){
+	  return getUUID(uuidBlockingNameFor);
+	}
 
 }

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
@@ -24,6 +26,12 @@ import javax.persistence.*;
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
+	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");
+	private static final UUID uuidSecondParent = UUID.fromString("0485fc3d-4755-4f53-8832-b82774484c43");
+	private static final UUID uuidFemaleParent = UUID.fromString("189a3ed9-6860-4943-8be8-a1f60133be2a");
+	private static final UUID uuidMaleParent = UUID.fromString("8b7324c5-cc6c-4109-b708-d49b187815c4");
+
+	
 	public HybridRelationshipType() {
 		super();
 	}
@@ -33,20 +41,24 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 
 
+	public static final HybridRelationshipType getUUID(UUID uuid){
+		return (HybridRelationshipType) findByUuid(uuid);
+	}
+
 	public static final HybridRelationshipType FIRST_PARENT(){
-		return null;
+		return getUUID(uuidFirstParent);
 	}
 
 	public static final HybridRelationshipType SECOND_PARENT(){
-		return null;
+		return getUUID(uuidSecondParent);
 	}
 
 	public static final HybridRelationshipType FEMALE_PARENT(){
-		return null;
+		return getUUID(uuidFemaleParent);
 	}
 
 	public static final HybridRelationshipType MALE_PARENT(){
-		return null;
+		return getUUID(uuidMaleParent);
 	}
 
 }
