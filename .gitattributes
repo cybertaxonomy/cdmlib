@@ -99,9 +99,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTypeNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTypeTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.java -text

@@ -21,33 +21,33 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * Feature trees arrange concepts and features/characters. They may also be used to
- * define flat char. subsets for filtering purposes. 
- * A feature tree is build out of feature nodes, which can be hierarchically organised
+ * Feature type trees arrange feature types (characters). They may also be used to
+ * define flat feature types subsets for filtering purposes. 
+ * A feature type tree is build out of feature type nodes, which can be hierarchically organised.
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
-public class FeatureTree extends TermBase {
-	static Logger logger = Logger.getLogger(FeatureTree.class);
-	private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
-	private FeatureNode root;
+public class FeatureTypeTree extends TermBase {
+	static Logger logger = Logger.getLogger(FeatureTypeTree.class);
+	private Set<FeatureTypeNode> nodes = new HashSet<FeatureTypeNode>();
+	private FeatureTypeNode root;
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<FeatureNode> getNodes() {
+	public Set<FeatureTypeNode> getNodes() {
 		return nodes;
 	}
-	public void setNodes(Set<FeatureNode> nodes) {
+	public void setNodes(Set<FeatureTypeNode> nodes) {
 		this.nodes = nodes;
 	}
 
 	@ManyToOne
-	public FeatureNode getRoot() {
+	public FeatureTypeNode getRoot() {
 		return root;
 	}
-	public void setRoot(FeatureNode root) {
+	public void setRoot(FeatureTypeNode root) {
 		this.root = root;
 	}
 

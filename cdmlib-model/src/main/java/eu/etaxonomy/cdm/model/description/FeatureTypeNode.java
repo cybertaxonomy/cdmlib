@@ -23,11 +23,11 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 @Entity
-public class FeatureNode extends VersionableEntity {
-	static Logger logger = Logger.getLogger(FeatureNode.class);
+public class FeatureTypeNode extends VersionableEntity {
+	static Logger logger = Logger.getLogger(FeatureTypeNode.class);
 	private FeatureType type;
-	private FeatureNode parent;
-	private List<FeatureNode> children = new ArrayList<FeatureNode>();
+	private FeatureTypeNode parent;
+	private List<FeatureTypeNode> children = new ArrayList<FeatureTypeNode>();
 	
 	@ManyToOne
 	public FeatureType getType() {
@@ -38,18 +38,18 @@ public class FeatureNode extends VersionableEntity {
 	}
 	
 	@ManyToOne
-	public FeatureNode getParent() {
+	public FeatureTypeNode getParent() {
 		return parent;
 	}
-	public void setParent(FeatureNode parent) {
+	public void setParent(FeatureTypeNode parent) {
 		this.parent = parent;
 	}
 	
 	@OneToMany(mappedBy="parent")
-	@Cascade({CascadeType.SAVE_UPDATE})	public List<FeatureNode> getChildren() {
+	@Cascade({CascadeType.SAVE_UPDATE})	public List<FeatureTypeNode> getChildren() {
 		return children;
 	}
-	public void setChildren(List<FeatureNode> children) {
+	public void setChildren(List<FeatureTypeNode> children) {
 		this.children = children;
 	}
 }
