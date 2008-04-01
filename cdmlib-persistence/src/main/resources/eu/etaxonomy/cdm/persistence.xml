@@ -86,8 +86,8 @@
             <value>eu.etaxonomy.cdm.model.description.Distribution</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureBase</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureType</value>
-            <value>eu.etaxonomy.cdm.model.description.FeatureNode</value>
-            <value>eu.etaxonomy.cdm.model.description.FeatureTree</value>
+            <value>eu.etaxonomy.cdm.model.description.FeatureTypeNode</value>
+            <value>eu.etaxonomy.cdm.model.description.FeatureTypeTree</value>
             <value>eu.etaxonomy.cdm.model.description.IdentificationKey</value>
             <value>eu.etaxonomy.cdm.model.description.IndividualsAssociation</value>
             <value>eu.etaxonomy.cdm.model.description.MeasurementUnit</value>
