@@ -65,8 +65,8 @@ public class TestJarMain {
 		tn = new NonViralName(null);
 		logger.setLevel(Level.DEBUG);
 		System.out.println("****************");
-		tn.setUninomial("TestUninomialName");
-		logger.info(tn.getUninomial());
+		tn.setGenusOrUninomial("TestUninomialName");
+		logger.info(tn.getGenusOrUninomial());
 		if (tn != null){
 			logger.info("Uuid for TaxonName(1): " + tn.getUuid());
 		}else{
