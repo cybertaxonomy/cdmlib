@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.strategy;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,9 +59,13 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
 	public BotanicalName parseFullName(String fullName, Rank rank) {
-		BotanicalName result = new BotanicalName(null);
-		parseFullName(result, fullName, rank);
-		return result;
+		if (fullName == null){
+			return null;
+		}else{
+			BotanicalName result = new BotanicalName(null);
+			parseFullName(result, fullName, rank);
+			return result;
+		}
 	}
 		
 	
@@ -73,6 +78,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			//return null;
 			return;
 		}
+		makeEmpty(nameToBeFilled);
 		fullName.replaceAll(oWs , " ");
 		//TODO 
 		// OLD: fullName = oWsRE.subst(fullName, " "); //substitute multiple whitespaces		   
@@ -199,6 +205,40 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			//return result;
 			return;
 		}
+	}
+	
+	private void makeEmpty(BotanicalName nameToBeFilled){
+		nameToBeFilled.setAnamorphic(false);
+		nameToBeFilled.setAppendedPhrase(null);
+		nameToBeFilled.setAuthorshipCache(null);
+		//TODO ??
+		//nameToBeFilled.setBasionym(basionym);
+		nameToBeFilled.setBasionymAuthorTeam(null);
+		nameToBeFilled.setBinomHybrid(false);
+		nameToBeFilled.setCombinationAuthorTeam(null);
+		nameToBeFilled.setExBasionymAuthorTeam(null);
+		
+		
+		nameToBeFilled.setExCombinationAuthorTeam(null);
+		nameToBeFilled.setGenusOrUninomial(null);
+		nameToBeFilled.setHasProblem(false);
+		// TODO ?
+		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
+		nameToBeFilled.setHybridFormula(false);
+		nameToBeFilled.setInfraGenericEpithet(null);
+		nameToBeFilled.setInfraSpecificEpithet(null);
+		nameToBeFilled.setMonomHybrid(false);
+		nameToBeFilled.setNameCache(null);
+		nameToBeFilled.setNomenclaturalMicroReference(null);
+		nameToBeFilled.setNomenclaturalReference(null);
+		nameToBeFilled.setProtectedTitleCache(false);
+		nameToBeFilled.setRank(null);
+		nameToBeFilled.setSpecificEpithet(null);
+		nameToBeFilled.setTitleCache(null, false);
+		nameToBeFilled.setTrinomHybrid(false);
+		nameToBeFilled.setUpdated(Calendar.getInstance());
+		// TODO nameToBeFilled.setUpdatedBy(updatedBy);
+			
 	}
 	
 	

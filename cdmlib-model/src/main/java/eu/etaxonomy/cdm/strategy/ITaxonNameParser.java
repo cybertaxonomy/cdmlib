@@ -32,8 +32,9 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	public T parseFullName(String fullName, Rank rank);
 
 	/**
- 	 * TODO What happens with existing data in nameToBeFilled 
-	 * Parses the taxonname String and fills the result into the existing TaxonNameBase nameToBeFilled. 
+ 	 * Parses the taxonname String and fills the result into the existing TaxonNameBase nameToBeFilled. 
+	 * Name related fields are set to default (null for Strings and other objects like Authors and References and false for booleans).
+	 * NameRelations are not changed.
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * No change is done to nameToBeFilled if fullName == null.
 	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,

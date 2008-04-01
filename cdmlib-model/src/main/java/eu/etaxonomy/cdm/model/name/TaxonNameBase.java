@@ -109,9 +109,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		return nameCache;
 	}
 
-	public void setNameCache(String nameCache) {
+	public void setNameCache(String nameCache){
 		this.nameCache = nameCache;
+		// TODO this.setProtectedNameCache(true);
 	}
+//TODO 
+//	public void setTitleCache(String titleCache, boolean protectCache){
+//		this.titleCache = titleCache;
+//		this.setProtectedTitleCache(protectCache);
+//	}
+	
 
 	@Transient
 	public abstract boolean isCodeCompliant();
