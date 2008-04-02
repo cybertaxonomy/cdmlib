@@ -44,7 +44,7 @@ public interface ICdmService {
 
 	/**
 	 * @param uuid
-	 * @return
+	 * @return 
 	 * @throws CdmObjectNonExisting
 	 */
 	public Class whatis(UUID uuid) throws CdmObjectNonExisting;

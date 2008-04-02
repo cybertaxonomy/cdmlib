@@ -14,11 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -52,7 +55,7 @@ public class CdmServiceImpl implements ICdmService {
 	private ITaxonNameDao nameDAO;
 	@Autowired
 	private IReferenceDao refDAO;
-	
+		
 	
 	/**
 	 * find matching taxonbase instance or throw CdmObjectNonExisting exception.
@@ -120,6 +123,7 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	
 	public Class whatis(UUID uuid) throws CdmObjectNonExisting{
+		//CdmBase cb = entityDAO.findByUuid(uuid);
 		return this.getClass();
 	}
 

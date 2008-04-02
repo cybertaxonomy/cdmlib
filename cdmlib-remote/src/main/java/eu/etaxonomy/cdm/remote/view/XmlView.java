@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,8 @@ public class XmlView extends BaseView implements View {
 		xstream.alias("SpecimenTypeDesignationSTO", SpecimenTypeDesignationSTO.class);
 		xstream.alias("TaxonSTO", TaxonSTO.class);
 		// serialize DTO into XML
-		Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
+		// TODO determine preferred charset from HTTP Accept-Charset header
+		Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "UTF-8"));
 		out.append("<?xml version='1.0'?>");
 		xstream.toXML(dto, out);		
 	}

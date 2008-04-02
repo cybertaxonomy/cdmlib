@@ -13,5 +13,11 @@ public class NameSTOAssemblerTest extends AssemblerTestBase{
 	public void setUp() throws Exception {
 		ass = new NameAssembler();
 	}
+	
+	@Test
+	public void emptyTest() {
+	
+	}
+	
 
 }
