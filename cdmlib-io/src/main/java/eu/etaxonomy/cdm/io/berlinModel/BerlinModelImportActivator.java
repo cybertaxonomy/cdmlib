@@ -46,7 +46,7 @@ public class BerlinModelImportActivator {
 	
 	static DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 	static String cdmServer = "192.168.2.10";
-	static String cdmDB = "cdm_1_1";
+	static String cdmDB = "cdm_1_1"; // values: "cdm_1_1"  "cdm_build"
 	//static int cdmPort = 1247;
 	static String cdmUserName = "edit";
 	static String cdmPwd = "wp5";
@@ -63,8 +63,8 @@ public class BerlinModelImportActivator {
 		CdmApplicationController cdmApp;
 		
 		//make CdmApplication
-		String dataSourceName;
-		dataSourceName = "cdmImportLibrary";
+		String dataDestinationName;
+		dataDestinationName = "cdmImportLibrary";
 //		dataSourceName = "testSqlServer";	
 		
 		//make BerlinModel Source
@@ -77,9 +77,9 @@ public class BerlinModelImportActivator {
 	
 		CdmDataSource dataSource;
 		try {
-			dataSource = CdmDataSource.NewInstance(dataSourceName);
+			dataSource = CdmDataSource.NewInstance(dataDestinationName);
 		} catch (DataSourceNotFoundException e1) {
-			dataSource = CdmDataSource.save(dataSourceName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
+			dataSource = CdmDataSource.save(dataDestinationName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
 		}
 		try {
 			cdmApp = new CdmApplicationController(dataSource, hbm2dll);
