@@ -14,7 +14,7 @@
 <!--
      <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_build"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_1_1"/>
         <property name="username" value="edit"/>
         <property name="password" value="wp5"/>
     </bean>
@@ -36,7 +36,7 @@ class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <!--  
         hibernate.dialect=org.hibernate.dialect.MySQLDialect
         db.driver_class=com.mysql.jdbc.Driver
-        db.url=jdbc:mysql://192.168.2.10/cdm_build
+        db.url=jdbc:mysql://192.168.2.10/cdm_1_1
         db.username=edit
         db.password=wp5
         
