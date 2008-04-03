@@ -28,7 +28,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		crit.add(Restrictions.isNull("taxonomicParentCache"));
-		crit.createCriteria("sec").add(Restrictions.eq("strUuid", sec.getUuid().toString()));
+		if(sec != null){
+			crit.createCriteria("sec").add(Restrictions.eq("strUuid", sec.getUuid().toString()));
+		}
 		List<Taxon> results = crit.list();
 		return results;
 	}
