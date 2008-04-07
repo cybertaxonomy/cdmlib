@@ -17,8 +17,12 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * An author team may exist for itself or may be built with the persons who belong
- * to it. {At least one otf the attributes shortName or fullName must exist.}
+ * A team exists for itself or is built with the persons who belong to it.
+ * In the first case the inherited attribute {@link common.IdentifiableEntity#titleCache titleCache} is to be used.
+ * In the second case at least all abbreviated names (the attributes Person.titleCache)
+ * or all full names (the strings returned by Person.generateTitle)
+ * of the persons must exist.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:58

@@ -19,7 +19,11 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * http://rs.tdwg.org/ontology/voc/Institution.rdf
+ * A public or private institution.
+ * It includes name, contact details and institution type.
+ * <p>
+ * See also the <a href="http://rs.tdwg.org/ontology/voc/Institution.rdf">TDWG Ontology</a>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
@@ -32,7 +36,7 @@ public class Institution extends Agent {
 	}
 
 	static Logger logger = Logger.getLogger(Institution.class);
-	//Acronym, code or initialism by which the insitution is generally known
+	//Acronym, code or initials by which the institution is generally known
 	private String code;
 	private String name;
 	private Set<InstitutionType> types = new HashSet();

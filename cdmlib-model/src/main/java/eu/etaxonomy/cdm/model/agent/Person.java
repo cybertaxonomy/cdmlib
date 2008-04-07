@@ -22,7 +22,16 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * http://rs.tdwg.org/ontology/voc/Person.rdf
+ * A representation of a human being, living or dead.
+ * It includes name parts, contact details, institutional membership,
+ * and other possible information such as life period,
+ * taxonomical and/or geographical specialization. For a short name
+ * the inherited attribute {@link common.IdentifiableEntity#titleCache titleCache} is to be used.
+ * For other alternative (string-)names instances of {@link common.OriginalSource OriginalSource} must be created
+ * and the inherited attribute {@link common.ReferencedEntityBase#originalNameString originalNameString} must be used.
+ * <p>
+ * See also the <a href="http://rs.tdwg.org/ontology/voc/Person.rdf">TDWG Ontology</a>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:42
