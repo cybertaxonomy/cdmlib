@@ -21,7 +21,7 @@ import javax.persistence.*;
 
 /**
  * A single enumeration must only contain DefinedTerm instances of one kind
- * (=class)
+ * (this means a subclass of DefinedTerm).
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:23

@@ -19,7 +19,12 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails
+ * Information on how to contact a {@link Person person} or an {@link Institution institution}.
+ * It includes telecommunication contacts and electronic
+ * as well as postal addresses.
+ * <p>
+ * See also the <a href="http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails">TDWG Ontology</a>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:18

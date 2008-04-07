@@ -20,7 +20,12 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * http://rs.tdwg.org/ontology/voc/InstitutionType
+ * Represents a term of a controlled vocabulary for different kinds of institutions.
+ * Each term belongs to one {@link common.TermVocabulary vocabulary}.
+ * <p>
+ * See also the <a href="http://rs.tdwg.org/ontology/voc/InstitutionType">TDWG Ontology</a>
+ * 
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:30

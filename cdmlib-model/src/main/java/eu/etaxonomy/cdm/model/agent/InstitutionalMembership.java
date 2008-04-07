@@ -20,6 +20,11 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * Allows to keep one {@link Institution institution} to which a {@link Person person} is affiliated.
+ * It includes time period of membership and role of the person
+ * in this institution. In case one person belongs to several institutions
+ * the corresponding number of instances have to be created.  
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:30

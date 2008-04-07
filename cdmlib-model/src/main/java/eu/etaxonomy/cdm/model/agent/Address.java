@@ -18,8 +18,10 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * taken from TDWG & VCard  http://rs.tdwg.
- * org/ontology/voc/ContactDetails#Address
+ * Representation of an atomized postal address.
+ * <p>
+ * See also the <a href="http://rs.tdwg.org/ontology/voc/ContactDetails#Address">TDWG Ontology</a>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:09
