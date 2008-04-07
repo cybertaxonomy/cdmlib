@@ -1,0 +1,18 @@
+EDIT
+CDMLIB - PROJECT
+
+INSTALL WORKSPACE
+=====================================
+0) * install maven 2.0.x commandline tools locally (http://maven.apache.org/download.html)
+   * make sure Java JDK is installed (JRE is not enough)
+
+1) Checkout (from outside eclipse) http://dev.e-taxononomy.eu/svn/trunk/cdmLib into a new folder (newFolder).
+2) Open newFolder as a new workspace in eclipse (switch to the new workspace by File - Switch Workspace - Other ...)
+3) Set in Eclipse preferences (not project properties) java - buildPath - Classpath Variables M2_REPO , pointing to your local repository. 
+      - In OSX for example    /Users/USERNAME/.m2/repository 
+      - In WinXP for example  C:\Documents and Settings\USERNAME\.m2\repository
+3 Alternative) use mvn -Declipse.workspace=<path-to-eclipse-workspace> eclipse:add-maven-repo 
+4) make each subfolder an eclipse project (new - project - from existing source ...
+5) run "mvn eclipse:eclipse" in the parent folder (cdmlib) from command line (e.g. $/eclipse/cdmlib>mvn eclipse:eclipse)
+
+
