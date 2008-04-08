@@ -407,6 +407,7 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
