@@ -65,15 +65,17 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	public void generateTitleCache() {
 		generateTitleCache(true);
 	}
+	//TODO
 	public void generateTitleCache(boolean forceProtected) {
-		for (TaxonBase tb : taxonDao.getAllTaxa(null,null)){
-			logger.warn("Old taxon title: " + tb.getTitleCache());
-			if (forceProtected || !tb.isProtectedTitleCache() ){
-				tb.setTitleCache(tb.generateTitle(), false);
-				taxonDao.update(tb);
-				logger.warn("New title: " + tb.getTitleCache());
-			}
-		}
+		logger.warn("generateTitleCache not yet fully implemented!");
+//		for (TaxonBase tb : taxonDao.getAllTaxa(null,null)){
+//			logger.warn("Old taxon title: " + tb.getTitleCache());
+//			if (forceProtected || !tb.isProtectedTitleCache() ){
+//				tb.setTitleCache(tb.generateTitle(), false);
+//				taxonDao.update(tb);
+//				logger.warn("New title: " + tb.getTitleCache());
+//			}
+//		}
 		
 	}
 }

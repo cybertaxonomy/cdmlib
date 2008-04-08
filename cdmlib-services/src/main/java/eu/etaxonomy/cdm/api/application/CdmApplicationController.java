@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.hibernate.SessionFactory;
 import org.hsqldb.Server;
 import org.springframework.beans.factory.BeanCreationException;
@@ -13,6 +14,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
+import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -21,10 +23,13 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 
 /**
@@ -95,7 +100,7 @@ public class CdmApplicationController {
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
 	}
-
+	
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
@@ -110,7 +115,7 @@ public class CdmApplicationController {
 
 		GenericApplicationContext appContext;
 		try {
-			appContext = new GenericApplicationContext();
+			appContext = new EclipseRcpSaveGenericApplicationContext();
 			
 			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
 			appContext.registerBeanDefinition("dataSource", datasourceBean);
@@ -225,11 +230,24 @@ public class CdmApplicationController {
 		}
 	}
 	
+	//TODO delete
+	public static void toDelete(){
+		System.out.println("Test");
+	}
+	
 	private void init(){
 		logger.debug("Init " +  this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()){for (String beanName : applicationContext.getBeanDefinitionNames()){ logger.debug(beanName);}}
-		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
+		//TODO delete next row (was just for testing)
+		if (logger.isInfoEnabled()){
+			logger.info("Registered Beans: ");
+			String[] beans = applicationContext.getBeanDefinitionNames();
+			for (String bean:beans){
+				logger.info(bean);
+			}
+		}
 		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
+		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
 		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");
 		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
 		termService = (ITermService)applicationContext.getBean("termServiceImpl");
