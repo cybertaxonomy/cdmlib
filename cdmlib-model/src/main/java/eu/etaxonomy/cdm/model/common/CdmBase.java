@@ -53,7 +53,6 @@ public abstract class CdmBase implements Serializable{
 		this.uuid = UUID.randomUUID();
 		this.setCreated(Calendar.getInstance());
 	}
-
 	
 	/**
 	 * see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
