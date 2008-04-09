@@ -57,7 +57,7 @@ public class BerlinModelImport {
 	/**
 	 * Executes the whole 
 	 */
-	public boolean doImport(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp){
+	public boolean doImport(BerlinModelImportConfigurator bmiConfig, ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp){
 		System.out.println("Start import from BerlinModel ("+ source.getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		if (source == null || cdmApp == null){
 			throw new NullPointerException("Source and CdmApplicationController must not be null");

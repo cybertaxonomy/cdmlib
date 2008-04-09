@@ -95,7 +95,7 @@ public class BerlinModelImportActivator {
 		// invoke import
 		if (source != null){
 			BerlinModelImport bmImport = new BerlinModelImport();
-			bmImport.doImport(berlinModelRef, source, cdmApp);
+			bmImport.doImport(null, berlinModelRef, source, cdmApp);
 		}
 		System.out.println("End import from BerlinModel ("+ berlinModelSource.getDatabase() + ")...");
 	}
