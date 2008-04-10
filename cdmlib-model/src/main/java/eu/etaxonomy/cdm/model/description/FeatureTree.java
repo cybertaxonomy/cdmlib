@@ -29,25 +29,25 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
-public class FeatureTypeTree extends TermBase {
-	static Logger logger = Logger.getLogger(FeatureTypeTree.class);
-	private Set<FeatureTypeNode> nodes = new HashSet<FeatureTypeNode>();
-	private FeatureTypeNode root;
+public class FeatureTree extends TermBase {
+	static Logger logger = Logger.getLogger(FeatureTree.class);
+	private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
+	private FeatureNode root;
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<FeatureTypeNode> getNodes() {
+	public Set<FeatureNode> getNodes() {
 		return nodes;
 	}
-	public void setNodes(Set<FeatureTypeNode> nodes) {
+	public void setNodes(Set<FeatureNode> nodes) {
 		this.nodes = nodes;
 	}
 
 	@ManyToOne
-	public FeatureTypeNode getRoot() {
+	public FeatureNode getRoot() {
 		return root;
 	}
-	public void setRoot(FeatureTypeNode root) {
+	public void setRoot(FeatureNode root) {
 		this.root = root;
 	}
 
