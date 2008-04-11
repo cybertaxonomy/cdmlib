@@ -16,7 +16,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * simple keywords. could be taxonomic scope, geographic scope or anything else
+ * simple keywords. could be taxonomic scope/skill , geographic scope or anything else
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
