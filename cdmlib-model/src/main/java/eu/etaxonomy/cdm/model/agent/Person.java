@@ -232,7 +232,7 @@ public class Person extends Agent {
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
-	 * @return  the full name string of this person
+	 * @return  the string with the full name of this person
 	 */
 	public String generateTitle(){
 		return "";
