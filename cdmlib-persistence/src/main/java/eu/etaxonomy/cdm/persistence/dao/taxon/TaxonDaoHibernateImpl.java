@@ -28,16 +28,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		crit.add(Restrictions.isNull("taxonomicParentCache"));
-		if(sec != null){
-			crit.createCriteria("sec").add(Restrictions.eq("strUuid", sec.getUuid().toString()));
+		if (sec != null){
+			crit.add(Restrictions.eq("sec", sec) );
 		}
 		List<Taxon> results = crit.list();
 		return results;
 	}
 
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
-		// TODO add reference filter
-		return this.findByTitle(name);
+		Criteria crit = getSession().createCriteria(Taxon.class);
+		if (sec != null){
+			crit.add(Restrictions.eq("sec", sec ) );
+		}
+		crit.createCriteria("name").add(Restrictions.eq("titleCache", name));
+		List<TaxonBase> results = crit.list();
+		return results;
 	}
 
 	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page) {

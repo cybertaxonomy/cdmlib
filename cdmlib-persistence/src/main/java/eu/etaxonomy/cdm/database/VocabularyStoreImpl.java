@@ -70,11 +70,15 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	}
 
 	public DefinedTermBase getTermByUuid(UUID uuid) {
-		initialize();
-		if (definedTermsMap.get(uuid) != null){
-			return definedTermsMap.get(uuid);
+		if (initialize()){
+			if (definedTermsMap.get(uuid) != null){
+				return definedTermsMap.get(uuid);
+			}else{
+				return termDao.findByUuid(uuid);
+			}
 		}else{
-			return termDao.findByUuid(uuid);
+			logger.error("Vocabulary Store could not be initialized");
+			throw new RuntimeException("Vocabulary Store could not be initialized");
 		}
 	}
 	
@@ -105,7 +109,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 						definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
 				}
 			} catch (Exception e) {
-				logger.error("Error ocurred when initializing and loading terms");
+				logger.error("loadBasicTerms: Error ocurred when initializing and loading terms");
 				initialized = false;
 				return false;
 			}
