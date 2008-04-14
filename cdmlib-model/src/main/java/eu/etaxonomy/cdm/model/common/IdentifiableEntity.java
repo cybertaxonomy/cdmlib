@@ -131,5 +131,9 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	public void removeSource(OriginalSource source) {
 		this.sources.remove(source);		
 	}
+	@Override
+	public String toString() {
+		return this.getTitleCache();
+	}
 
 }

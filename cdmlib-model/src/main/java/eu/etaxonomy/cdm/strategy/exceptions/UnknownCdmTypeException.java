@@ -7,26 +7,26 @@ package eu.etaxonomy.cdm.strategy.exceptions;
  * @author a.mueller
  *
  */
-public class UnknownRankException extends Exception {
+public class UnknownCdmTypeException extends Exception {
 
 	/**
 	 * 
 	 */
-	public UnknownRankException() {
+	public UnknownCdmTypeException() {
 		super();
 	}
 
 	/**
 	 * @param message
 	 */
-	public UnknownRankException(String message) {
+	public UnknownCdmTypeException(String message) {
 		super(message);
 	}
 	
 	/**
 	 * @param cause
 	 */
-	public UnknownRankException(Throwable cause) {
+	public UnknownCdmTypeException(Throwable cause) {
 		super(cause);
 	}
 
@@ -34,7 +34,7 @@ public class UnknownRankException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public UnknownRankException(String message, Throwable cause) {
+	public UnknownCdmTypeException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

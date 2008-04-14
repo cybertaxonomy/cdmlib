@@ -181,14 +181,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
 	}
-	protected void setStatus(Set<NomenclaturalStatus> status) {
-		this.status = status;
+	protected void setStatus(Set<NomenclaturalStatus> nomStatus) {
+		this.status = nomStatus;
 	}
-	public void addStatus(NomenclaturalStatus status) {
-		this.status.add(status);
+	public void addStatus(NomenclaturalStatus nomStatus) {
+		this.status.add(nomStatus);
 	}
-	public void removeStatus(NomenclaturalStatus status) {
-		this.status.remove(status);
+	public void removeStatus(NomenclaturalStatus nomStatus) {
+		this.status.remove(nomStatus);
 	}
 
 

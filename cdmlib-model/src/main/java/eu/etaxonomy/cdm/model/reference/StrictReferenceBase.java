@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.reference;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**

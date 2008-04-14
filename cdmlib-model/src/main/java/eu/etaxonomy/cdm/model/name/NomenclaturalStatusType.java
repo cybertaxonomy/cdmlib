@@ -12,11 +12,11 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
 
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -194,6 +194,40 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getUUID(uuidProvisional);
+	}
+	
+	
+//TODO Soraya
+//	nom. subnud.: nomen subnudum
+//	orth. var.: orthographic variant
+//	opus utique oppr.: operautique oppressa
+//	pro syn.: pro synonymo
+	
+	/** TODO
+	 * preliminary implementation for BotanicalNameParser
+	 *  * not yet complete
+	 */
+	@Transient
+	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation) throws UnknownCdmTypeException{
+		if (statusAbbreviation == null){ throw new NullPointerException("statusAbbreviation is 'null' in getNomenclaturalStatusTypeByAbbreviation");
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. illeg.")){return NomenclaturalStatusType.ILLEGITIMATE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
+		//TODO
+		//}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.su;
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
+		//TODO
+		}else { 
+			if (statusAbbreviation == null){
+				statusAbbreviation = "(null)";
+			}
+			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusAbbreviation);
+		}
 	}
 
 }

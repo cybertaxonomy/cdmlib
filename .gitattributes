@@ -217,7 +217,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownRankException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text

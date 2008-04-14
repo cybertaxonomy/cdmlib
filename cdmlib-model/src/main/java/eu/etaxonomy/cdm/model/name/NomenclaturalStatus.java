@@ -30,6 +30,13 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	private String ruleConsidered;
 	private NomenclaturalStatusType type;
 
+	public static NomenclaturalStatus NewInstance(NomenclaturalStatusType nomStatusType){
+		NomenclaturalStatus status = new NomenclaturalStatus();
+		status.setType(nomStatusType);
+		return status;
+	}
+	
+
 	@ManyToOne
 	public NomenclaturalStatusType getType(){
 		return this.type;

@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
 
@@ -332,14 +332,14 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * NOT YET COMPLETE !!
 	 * @param strRank
 	 * @return Rank
-	 * @throws UnknownRankException
+	 * @throws UnknownCdmTypeException
 	 */
 	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank)
-			throws UnknownRankException{
+			throws UnknownCdmTypeException{
 		try {
 			return getRankByAbbreviation(strRank);
-		} catch (UnknownRankException e) {
+		} catch (UnknownCdmTypeException e) {
 			return getRankByName(strRank);
 		}
 	}
@@ -350,7 +350,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 *  * not yet complete
 	 */
 	@Transient
-	public static Rank getRankByAbbreviation(String abbrev) throws UnknownRankException{
+	public static Rank getRankByAbbreviation(String abbrev) throws UnknownCdmTypeException{
 		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRankByAbbreviation");
 		}else if (abbrev.equalsIgnoreCase("reg.")){	return Rank.KINGDOM();
 		}else if (abbrev.equalsIgnoreCase("subreg.")){ return Rank.SUBKINGDOM();
@@ -391,7 +391,7 @@ public class Rank extends OrderedTermBase<Rank> {
 			if (abbrev == null){
 				abbrev = "(null)";
 			}
-			throw new UnknownRankException("Unknown rank abbreviation: " + abbrev);
+			throw new UnknownCdmTypeException("Unknown rank abbreviation: " + abbrev);
 		}
 	}
 	
@@ -401,7 +401,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	 */
 	@Transient
 	public static Rank getRankByName(String rankName)
-			throws UnknownRankException{
+			throws UnknownCdmTypeException{
 		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
 		}else if (rankName.equalsIgnoreCase("Subregnum")){ return Rank.SUBKINGDOM();
 		}else if (rankName.equalsIgnoreCase("Phylum")){ return Rank.PHYLUM();
@@ -446,7 +446,7 @@ public class Rank extends OrderedTermBase<Rank> {
 			if (rankName == null){
 				rankName = "(null)";
 			}
-			throw new UnknownRankException("Unknown rank name: " + rankName);
+			throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
 		}
 	}
 	

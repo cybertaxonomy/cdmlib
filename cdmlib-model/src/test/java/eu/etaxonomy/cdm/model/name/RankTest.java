@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class RankTest extends EntityTestBase {
@@ -475,7 +475,7 @@ public class RankTest extends EntityTestBase {
 		try {
 			assertEquals(Rank.VARIETY(), Rank.getRankByAbbreviation("var."));
 			assertEquals(Rank.GENUS(), Rank.getRankByName("genus"));
-		} catch (UnknownRankException e) {
+		} catch (UnknownCdmTypeException e) {
 			fail();
 		}
 		logger.warn("Not yet fully implemented");
@@ -485,7 +485,7 @@ public class RankTest extends EntityTestBase {
 	public void testGetRankByAbbreviation() {
 		try {
 			assertEquals(Rank.SPECIES(), Rank.getRankByAbbreviation("sp."));
-		} catch (UnknownRankException e) {
+		} catch (UnknownCdmTypeException e) {
 			fail();
 		}
 		logger.warn("Not yet fully implemented");
@@ -495,7 +495,7 @@ public class RankTest extends EntityTestBase {
 	public void testGetRankByName() {
 		try {
 			assertEquals(Rank.SPECIES(), Rank.getRankByName("species"));
-		} catch (UnknownRankException e) {
+		} catch (UnknownCdmTypeException e) {
 			fail();
 		}
 		logger.warn("Not yet fully implemented");

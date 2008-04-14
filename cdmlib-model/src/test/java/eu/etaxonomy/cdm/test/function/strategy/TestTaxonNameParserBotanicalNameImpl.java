@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.ITaxonNameParser;
 import eu.etaxonomy.cdm.strategy.TaxonNameParserBotanicalNameImpl;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
+import eu.etaxonomy.cdm.test.function.TestModel;
 
 /**
  * @author a.mueller
@@ -35,6 +36,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	final private String strNameAbiesAuthor1 = "Abies alba Müller";
 	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Müller";
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döhring) D'Müller ex. de Greuther"; 
+	final private String strNameAbiesBasionymAuthorUe = "Abies alba (Ciardelli) D'Mueller";
 	
 	private ITaxonNameParser<BotanicalName> parser ;
 
@@ -43,34 +45,63 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	
 	@Test
 	public final void functionTest() {
-		String start = "^";
-	    String end = "$";
-	    String oWs = "\\s+"; //obligatory whitespaces
-	    String fWs = "\\s*"; //facultative whitespcace
-
-	    String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
-	    String nonCapitalWord = "\\p{javaLowerCase}+";
-	    
-	    String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
-	    String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
-	    String authorPart = "(" + "(D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
-	    String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
-	    
-	    String teamSplitter = fWs + "(&|,)" + fWs;
-	    String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
-	    String exString = "(ex.?)";
-	    String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
-	 
 		
-		String basStart = "\\(";
-	    String basEnd = "\\)";
-	    String basionym = basStart + authorAndExTeam + basEnd + "{1}.*";  // '(' and ')' is for evaluation with RE.paren(x)
-	    //String basionym = basStart + "(" + authorAndExTeam + ")" + basEnd +  "{1}.";  // '(' and ')' is for evaluation with RE.paren(x)
-	    
-	    Pattern pattern = Pattern.compile(basionym);
-		Matcher matcher = pattern.matcher("(Mueller)Ciard");
-		assertTrue(matcher.matches());
 		
+		if (false){
+			String start = "^";
+		    String end = "$";
+		    String oWs = "\\s+"; //obligatory whitespaces
+		    String fWs = "\\s*"; //facultative whitespcace
+	
+		    String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
+		    String nonCapitalWord = "\\p{javaLowerCase}+";
+		    
+		    String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
+		    String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
+		    String authorPart = "(" + "(D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
+		    String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
+		    
+		    String teamSplitter = fWs + "(&|,)" + fWs;
+		    String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
+		    String exString = "(ex.?)";
+		    String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
+		 
+			
+			String basStart = "\\(";
+		    String basEnd = "\\)";
+		    String basionym = basStart + authorAndExTeam + basEnd + "{1}.*";  // '(' and ')' is for evaluation with RE.paren(x)
+		    //String basionym = basStart + "(" + authorAndExTeam + ")" + basEnd +  "{1}.";  // '(' and ')' is for evaluation with RE.paren(x)
+		    
+		    Pattern pattern = Pattern.compile(basionym);
+			Matcher matcher = pattern.matcher("(Mueller)Ciard");
+			assertTrue(matcher.matches());
+		}
+		
+		
+	}
+	
+	
+	private void testRefParser(){
+		BotanicalName botanicalName = BotanicalName.NewInstance(null);
+		TaxonNameParserBotanicalNameImpl parser = new TaxonNameParserBotanicalNameImpl();
+		
+		String reference1 = "Sp. P.: 755. 1753., nom. inval.";
+		//String reference1 = "Sp. P.";
+		String fullRef1 = strNameAbiesBasionymAuthorUe + ", " + reference1;
+		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);
+		parser.parseFullReference(fullRef1, null);
+		
+		System.out.println("Name: " + botanicalName.getTitleCache());
+		System.out.println("Reference: " + botanicalName.getTitleCache());
+	}
+	
+	
+	/**
+	 * @param args
+	 */
+	public static void  main(String[] args) {
+		TestTaxonNameParserBotanicalNameImpl test = new TestTaxonNameParserBotanicalNameImpl();
+    	test.testRefParser();
 	}
 	
 
