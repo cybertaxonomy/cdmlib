@@ -439,6 +439,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -t
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
+eclipse-feature-sources/build.properties -text
 eclipse-feature-sources/feature.xml -text
 eclipse-feature/.classpath -text
 eclipse-feature/.project -text
