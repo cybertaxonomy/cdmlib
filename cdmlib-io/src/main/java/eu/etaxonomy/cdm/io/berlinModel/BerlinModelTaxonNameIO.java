@@ -21,7 +21,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+
 
 public class BerlinModelTaxonNameIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameIO.class);
@@ -191,7 +192,8 @@ public class BerlinModelTaxonNameIO {
 					
 					taxonNameMap.put(nameId, botanicalName);
 					
-				} catch (UnknownRankException e) {
+				}
+				catch (UnknownCdmTypeException e) {
 					logger.warn("Name with id " + nameId + " has unknown rankId " + rankId + " and could not be saved.");
 					success = false; 
 				}

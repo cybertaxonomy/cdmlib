@@ -6,7 +6,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownRankException;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public final class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
@@ -102,7 +102,7 @@ public final class BerlinModelTransformer {
 	 * @param doubt doubtfulFalg
 	 * @return "true" if doubt = "a"
 	 */
-	public static Rank rankId2Rank (int rankId) throws UnknownRankException{
+	public static Rank rankId2Rank (int rankId) throws UnknownCdmTypeException{
 		switch (rankId){
 			case 1: return Rank.KINGDOM();
 			case 3: return Rank.SUBKINGDOM();
@@ -139,7 +139,7 @@ public final class BerlinModelTransformer {
 			case 98: return Rank.INFRAGENERICTAXON();
 			case 99: return Rank.INFRASPECIFICTAXON();
 			default: {
-				throw new UnknownRankException("Unknown Rank id" + Integer.valueOf(rankId).toString());
+				throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
 			}
 		}		
 	}
