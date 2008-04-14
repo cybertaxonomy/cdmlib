@@ -29,12 +29,12 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 			BotanicalName b = new BotanicalName(null);
 			logger.debug("startTest");
 			b.addPropertyChangeListener(this);
-			b.setUninomial("Abies");
-			Assert.assertEquals(b.getUninomial(), lastPropValue);
-			b.setUninomial("Picea");
-			assertEquals(b.getUninomial(), lastPropValue);
-			b.setUninomial("Unipicea");
-			assertEquals(b.getUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Abies");
+			Assert.assertEquals(b.getGenusOrUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Picea");
+			assertEquals(b.getGenusOrUninomial(), lastPropValue);
+			b.setGenusOrUninomial("Unipicea");
+			assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
 			assertEquals(b.getSpecificEpithet(), lastPropValue);
 		}

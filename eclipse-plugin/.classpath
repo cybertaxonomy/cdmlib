@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-services-1.2-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
@@ -34,10 +35,9 @@
 	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="xercesImpl.jar"/>
-	<classpathentry kind="lib" path="cdmlib-commons-0.4.7.jar"/>
-	<classpathentry kind="lib" path="cdmlib-model-0.4.7.jar"/>
-	<classpathentry kind="lib" path="cdmlib-persistence-0.4.7.jar"/>
-	<classpathentry kind="lib" path="cdmlib-services-0.4.7.jar"/>
+	<classpathentry kind="lib" path="cdmlib-commons-1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="cdmlib-model-1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="cdmlib-persistence-1.2-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
