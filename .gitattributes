@@ -443,6 +443,8 @@ eclipse-feature/.classpath -text
 eclipse-feature/.project -text
 eclipse-feature/build.properties -text
 eclipse-feature/feature.xml -text
+eclipse-plugin-sources/plugin.xml -text
+eclipse-plugin-sources/pom.xml -text
 eclipse-plugin/.classpath -text
 eclipse-plugin/.project -text
 eclipse-plugin/META-INF/MANIFEST.MF -text
