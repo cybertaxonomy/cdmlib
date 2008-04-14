@@ -493,7 +493,6 @@ eclipse-plugin/mssqlserver-2000.3.jar -text
 eclipse-plugin/msutil-2000.3.jar -text
 eclipse-plugin/mysql-connector-java-3.1.14-bin.jar -text
 eclipse-plugin/opencsv-1.8.jar -text
-eclipse-plugin/plugin.xml -text
 eclipse-plugin/pom.xml -text
 eclipse-plugin/postgresql-8.2-504.jdbc4.jar -text
 eclipse-plugin/spring-2.5.jar -text
