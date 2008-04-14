@@ -20,8 +20,9 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * Represents a term of a controlled vocabulary for different kinds of institutions.
- * Each term belongs to one {@link common.TermVocabulary vocabulary}.
+ * Represents an element of a controlled vocabulary
+ * for different kinds of institutions.
+ * Each element belongs to one {@link common.TermVocabulary vocabulary}.
  * <p>
  * See also the <a href="http://rs.tdwg.org/ontology/voc/InstitutionType">TDWG Ontology</a>
  * 
@@ -34,11 +35,26 @@ import javax.persistence.*;
 public class InstitutionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(InstitutionType.class);
 
+	/** 
+	 * Class constructor.
+	 * 
+	 * @see #InstitutionType(String, String)
+	 */
 	public InstitutionType() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	/** 
+	 * Class constructor using both term and label strings.
+	 *
+	 * @param  term   the string describing this vocabulary element
+	 * 				  in the default language
+	 * @param  label  the string which identifies this vocabulary element
+	 * 				  irrespective of the language
+	 * @see           common.Representation
+	 * @see           common.TermBase#TermBase(String, String)
+	 */
 	public InstitutionType(String term, String label) {
 		super(term, label);
 		// TODO Auto-generated constructor stub

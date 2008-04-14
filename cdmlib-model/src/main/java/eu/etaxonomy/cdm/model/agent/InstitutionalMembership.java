@@ -20,7 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * Allows to keep one {@link Institution institution} to which a {@link Person person} is affiliated.
+ * Allows to hold one {@link Institution institution} to which a {@link Person person} is affiliated.
  * It includes time period of membership and role of the person
  * in this institution. In case one person belongs to several institutions
  * the corresponding number of instances have to be created.  
@@ -43,6 +43,21 @@ public class InstitutionalMembership extends VersionableEntity {
 	private Person person;
 	
 	
+	/** 
+	 * Class constructor using an institution, a person, a time period,
+	 * a department name string and a role string.
+	 *
+	 * @param  institute   the institution in which the person is a member
+	 * @param  person      the person who is a member of the institution
+	 * @param  period  	   the time period during which the person belonged
+	 * 					   to the institution
+	 * @param  department  the name string of the department (within the institution)
+	 * 					   this person was working in
+	 * @param  role  	   the string which identifies the role played by the person
+	 * 					   in the institution (or in the department)
+	 * @see                Person
+	 * @see                Institution
+	 */
 	public InstitutionalMembership(Institution institute, Person person, TimePeriod period, String department,
 			String role) {
 		super();
@@ -56,6 +71,15 @@ public class InstitutionalMembership extends VersionableEntity {
 	public Person getPerson() {
 		return person;
 	}
+	/** 
+	 * Assigns a new person to this institutional membership.
+	 * This method also updates the set of institutions
+	 * the two persons (the new one and the substituted one) belong to. 
+	 *
+	 * @param  newPerson  the new person involved in this institutional membership
+	 * @see               Person#institutionalMemberships
+	 * @see               Person#removeInstitutionalMembership(InstitutionalMembership)
+	 */
 	public void setPerson(Person newPerson) {
 		// Hibernate bidirectional cascade hack: 
 		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
@@ -74,6 +98,11 @@ public class InstitutionalMembership extends VersionableEntity {
 	public Institution getInstitute(){
 		return this.institute;
 	}
+	/** 
+	 * Assigns an institution to this institutional membership.
+	 *
+	 * @param  newInstitute  the institution involved in this institutional membership
+	 */
 	public void setInstitute(Institution newInstitute){
 		this.institute = newInstitute;
 	}
@@ -83,8 +112,10 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a time period applying for this institutional membership.
 	 * 
-	 * @param period    period
+	 * @param period  the time period during which the person belonged
+	 * 				  to the institution
 	 */
 	public void setPeriod(TimePeriod period){
 		this.period = period;
@@ -95,8 +126,10 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a department within the institution involved
+	 * in this institutional membership.
 	 * 
-	 * @param department    department
+	 * @param department  the string for the department name within the institution
 	 */
 	public void setDepartment(String department){
 		this.department = department;
@@ -107,8 +140,10 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a role to the person within the institution (or department).
 	 * 
-	 * @param role    role
+	 * @param role  the string which identifies the role played by the person
+	 * 				within the institution (or within the department)
 	 */
 	public void setRole(String role){
 		this.role = role;

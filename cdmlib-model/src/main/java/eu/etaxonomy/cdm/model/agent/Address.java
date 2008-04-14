@@ -29,14 +29,10 @@ import javax.persistence.*;
 @Entity
 public class Address extends VersionableEntity {
 	static Logger logger = Logger.getLogger(Address.class);
-	//Post Office Box
 	private String pobox;
-	//including number
 	private String street;
 	private String postcode;
-	//town,locality,suburb
 	private String locality;
-	//Region/State
 	private String region;
 	private WaterbodyOrCountry country;
 	private Point location;
@@ -48,6 +44,15 @@ public class Address extends VersionableEntity {
 	public Contact getContact() {
 		return contact;
 	}
+	/** 
+	 * Assigns this postal address to a new contact.
+	 * This method also updates the sets of postal addresses
+	 * which belong to the two contacts (the new one and the substituted one). 
+	 *
+	 * @param  newContact  the new contact to which this postal address should belong
+	 * @see                Contact#addAddress(Address)
+	 * @see                Contact#removeAddress(Address)
+	 */
 	protected void setContact(Contact newContact) {
 		// Hibernate bidirectional cascade hack: 
 		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
@@ -68,8 +73,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a country to this postal address.
 	 * 
-	 * @param country    country
+	 * @param country  the (waterbody or) country 
 	 */
 	public void setCountry(WaterbodyOrCountry country){
 		this.country = country;
@@ -80,8 +86,10 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a geophysical location to this postal address.
 	 * 
-	 * @param location    location
+	 * @param location  the point corresponding to this address
+	 * @see				location.Point
 	 */
 	public void setLocation(Point location){
 		this.location = location;
@@ -92,8 +100,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a post office box to this postal address.
 	 * 
-	 * @param pobox    pobox
+	 * @param pobox  string describing a post office box
 	 */
 	public void setPobox(String pobox){
 		this.pobox = pobox;
@@ -104,8 +113,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a street name and number to this postal address.
 	 * 
-	 * @param street    street
+	 * @param street  string containing a street name and a street number
 	 */
 	public void setStreet(String street){
 		this.street = street;
@@ -116,8 +126,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a post code number to this postal address.
 	 * 
-	 * @param postcode    postcode
+	 * @param postcode  string representing a post code
 	 */
 	public void setPostcode(String postcode){
 		this.postcode = postcode;
@@ -128,8 +139,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a town (possibly with locality or suburb) to this postal address.
 	 * 
-	 * @param locality    locality
+	 * @param locality  string representing a town (may include locality or suburb)
 	 */
 	public void setLocality(String locality){
 		this.locality = locality;
@@ -140,8 +152,9 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a region or state to this postal address.
 	 * 
-	 * @param region    region
+	 * @param region  string representing a region or a state
 	 */
 	public void setRegion(String region){
 		this.region = region;

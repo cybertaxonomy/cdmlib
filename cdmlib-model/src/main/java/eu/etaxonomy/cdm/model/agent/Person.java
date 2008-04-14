@@ -82,6 +82,7 @@ public class Person extends Agent {
 	}
 	/** 
 	 * Adds a new membership of this person in an institution.
+	 * This method also creates a new institutional membership instance.
 	 *
 	 * @param  institution  the institution this person belongs to
 	 * @param  period       the time period for which this person has been a member of the institution
@@ -94,7 +95,7 @@ public class Person extends Agent {
 		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role); 
 	}
 	/** 
-	 * Removes one element of the set of institutional memberships of this person.
+	 * Removes one element from the set of institutional memberships of this person.
 	 *
 	 * @param  ims  the institutional membership of this person which should be deleted
 	 * @see         #addInstitutionalMembership(Institution, TimePeriod, String, String)
@@ -115,16 +116,17 @@ public class Person extends Agent {
 		this.keywords = keywords;
 	}
 	/** 
-	 * Adds a new keyword to describe better this person or circumscribe his activities.
+	 * Adds a new keyword from the keyword vocabulary to describe better this person
+	 * or circumscribe his activities.
 	 *
-	 * @param  keyword  any relevant keyword for this person or for his activities
+	 * @param  keyword  any keyword relevant for this person or for his activities
 	 * @see 			common.Keyword
 	 */
 	public void addKeyword(Keyword keyword){
 		this.keywords.add(keyword);
 	}
 	/** 
-	 * Removes one element of the set of keywords for this person.
+	 * Removes one element from the set of keywords for this person.
 	 *
 	 * @param  keyword  the keyword describing this person or his activities which should be deleted
 	 * @see             #addKeyword(Keyword)
@@ -226,9 +228,9 @@ public class Person extends Agent {
 
 	@Override
 	/**
-	 * Generates the "full" name string of this person on the basis of the attributes:
+	 * Generates the "full" name string of this person. The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
-	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}
+	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 

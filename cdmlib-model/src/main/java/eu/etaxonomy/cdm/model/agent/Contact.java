@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -20,8 +21,8 @@ import javax.persistence.*;
 
 /**
  * Information on how to contact a {@link Person person} or an {@link Institution institution}.
- * It includes telecommunication contacts and electronic
- * as well as postal addresses.
+ * It includes telecommunication data
+ * and electronic as well as multiple postal addresses.
  * <p>
  * See also the <a href="http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails">TDWG Ontology</a>
  * 
@@ -31,6 +32,9 @@ import javax.persistence.*;
  */
 @Entity
 public class Contact extends VersionableEntity {
+	/** 
+	 * Class constructor.
+	 */
 	public Contact() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -52,9 +56,22 @@ public class Contact extends VersionableEntity {
 	protected void setAddresses(Set<Address> addresses){
 		this.addresses = addresses;
 	}
+	/** 
+	 * Adds a new postal address to the set of postal addresses of this contact.
+	 *
+	 * @param  address  the address to be added to the the set of addresses
+	 * 					of postal addresses of this contact
+	 * @see 			Address
+	 */
 	public void addAddress(Address address){
 		address.setContact(this);
 	}
+	/** 
+	 * Removes one element from the set of postal addresses of this contact.
+	 *
+	 * @param  address  the postal address of this contact which should be deleted
+	 * @see         	#addAddress(Address)
+	 */
 	public void removeAddress(Address address){
 		address.setContact(null);
 	}
@@ -65,8 +82,9 @@ public class Contact extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns an email address to this contact.
 	 * 
-	 * @param email    email
+	 * @param email  string representing an electronic mail address
 	 */
 	public void setEmail(String email){
 		this.email = email;
@@ -77,8 +95,9 @@ public class Contact extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns an url address to this contact.
 	 * 
-	 * @param url    url
+	 * @param url  string representing an "Uniform Resource Locator"
 	 */
 	public void setUrl(String url){
 		this.url = url;
@@ -89,8 +108,9 @@ public class Contact extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a phone number to this contact.
 	 * 
-	 * @param phone    phone
+	 * @param phone  string representing a phone number
 	 */
 	public void setPhone(String phone){
 		this.phone = phone;
@@ -101,8 +121,9 @@ public class Contact extends VersionableEntity {
 	}
 
 	/**
+	 * Assigns a fax number to this contact.
 	 * 
-	 * @param fax    fax
+	 * @param fax  string representing a fax number
 	 */
 	public void setFax(String fax){
 		this.fax = fax;
