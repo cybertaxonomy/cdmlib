@@ -31,7 +31,7 @@ public class CdmDataSource implements ICdmDataSource {
 	private String destroyMethodName = null;
 	private HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
 	private boolean showSql = false;
-	private boolean formatSql;
+	private boolean formatSql = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;;
 
 	static public ICdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
@@ -99,9 +99,8 @@ public class CdmDataSource implements ICdmDataSource {
 	private Properties getDatasourceProperties(){
 		Properties result = new Properties();
 		result.put("driverClassName", dbType.getDriverClassName());
-		if (port > 1){
-			result.put("url", dbType.getConnectionString(server, database, port));
-		}
+		String connectionString = ( port > 1 ? dbType.getConnectionString(server, database, port) : dbType.getConnectionString(server, database));
+		result.put("url", connectionString);
 		result.put("username", username);
 		result.put("password", password);
 		return result;
