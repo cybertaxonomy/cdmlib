@@ -6,10 +6,10 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.io.berlinModel.test.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -75,11 +75,11 @@ public class BerlinModelImportActivator {
 			return;
 		}
 	
-		CdmDataSource dataSource;
+		CdmPersistentDataSource dataSource;
 		try {
-			dataSource = CdmDataSource.NewInstance(dataDestinationName);
+			dataSource = CdmPersistentDataSource.NewInstance(dataDestinationName);
 		} catch (DataSourceNotFoundException e1) {
-			dataSource = CdmDataSource.save(dataDestinationName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
+			dataSource = CdmPersistentDataSource.save(dataDestinationName, dbType, cdmServer, cdmDB, cdmUserName, cdmPwd);
 		}
 		try {
 			cdmApp = new CdmApplicationController(dataSource, hbm2dll);

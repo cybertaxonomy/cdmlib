@@ -21,6 +21,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorIO.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelFactsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelReferenceIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonNameIO.java -text
