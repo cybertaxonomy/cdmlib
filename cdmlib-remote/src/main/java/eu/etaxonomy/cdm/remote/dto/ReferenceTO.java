@@ -25,10 +25,12 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 	 * 	URIs like DOIs, LSIDs or Handles for this reference
 	 */
 	private String uri;
+	
 	/**
 	 * formatted string containing the entire reference citation including microreference
 	 */
 	private String fullCitation;
+	
 	/**
 	 * 
 	 */
@@ -40,6 +42,7 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 	 * tables or any other element of a publication. {only if a nomenclatural reference exists}
 	 */
 	private String microReference;
+	
 	/**
 	 * year of the publication 
 	 */
