@@ -1,5 +1,4 @@
 * text=auto !eol
-/INSTALL.TXT -text
 /INSTALL.txt -text
 /LICENSE.TXT -text
 cdmlib-commons/LICENSE.TXT -text
