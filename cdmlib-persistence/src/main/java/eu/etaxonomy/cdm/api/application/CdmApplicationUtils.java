@@ -13,14 +13,14 @@ import org.jdom.output.Format;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
 public class CdmApplicationUtils {
 	private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
 	
 	//directory of the resources (configfiles etc.)
 	static File fileResourceDir;
-	static final String MUST_EXIST_FILE = CdmDataSource.DATASOURCE_FILE_NAME;
+	static final String MUST_EXIST_FILE = CdmPersistentDataSource.DATASOURCE_FILE_NAME;
 
 //	static final String MUST_EXIST_FILE = "persistence.xml";
 //	static final String MUST_EXIST_FILE = "applicationContext.xml";
@@ -55,7 +55,7 @@ public class CdmApplicationUtils {
 	}
 	
 	static private void copyResources(File directory){
-		copyResource(directory, CdmDataSource.DATASOURCE_FILE_NAME);
+		copyResource(directory, CdmPersistentDataSource.DATASOURCE_FILE_NAME);
 	}
 	
 	

@@ -20,8 +20,8 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
-import eu.etaxonomy.cdm.database.CdmDataSource.DbProperties;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 
 /**
  * @author a.mueller
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 public class CdmDataSourceTest {
 	private static final Logger logger = Logger.getLogger(CdmDataSourceTest.class);
 	
-	private static CdmDataSource dataSource;
+	private static CdmPersistentDataSource dataSource;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -51,16 +51,16 @@ public class CdmDataSourceTest {
 	 */
 	//@Before
 	public void setUp() throws Exception {
-		dataSource = CdmDataSource.NewInstance("default");
+		dataSource = CdmPersistentDataSource.NewInstance("default");
 		//delete tmp
 		String dataSourceString = "tmp";
 		//delete
 		try {
-			CdmDataSource.delete(CdmDataSource.NewInstance(dataSourceString));
+			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			//;
 		}
-		assertFalse(CdmDataSource.exists(dataSourceString));
+		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 
 	}
 
@@ -73,11 +73,11 @@ public class CdmDataSourceTest {
 		String dataSourceString = "tmp";
 		//delete
 		try {
-			CdmDataSource.delete(CdmDataSource.NewInstance(dataSourceString));
+			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			//;
 		}
-		assertFalse(CdmDataSource.exists(dataSourceString));
+		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 
 	}
 	
@@ -89,31 +89,31 @@ public class CdmDataSourceTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewDefaultInstance()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#NewDefaultInstance()}.
 	 */
 	//@Test
 	public void testNewDefaultInstance() {
 		try {
-			assertEquals(CdmDataSource.NewInstance("default"), CdmDataSource.NewDefaultInstance());
+			assertEquals(CdmPersistentDataSource.NewInstance("default"), CdmPersistentDataSource.NewDefaultInstance());
 		} catch (DataSourceNotFoundException e) {
 			fail();
 		}
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewLocalHsqlInstance()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#NewLocalHsqlInstance()}.
 	 */
 	//@Test
 	public void testNewLocalHsqlInstance() {
 		try {
-			assertEquals(CdmDataSource.NewInstance("localDefaultHsql"), CdmDataSource.NewLocalHsqlInstance());
+			assertEquals(CdmPersistentDataSource.NewInstance("localDefaultHsql"), CdmPersistentDataSource.NewLocalHsqlInstance());
 		} catch (DataSourceNotFoundException e) {
 			fail();
 		}
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewInstance(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#NewInstance(java.lang.String)}.
 	 */
 	//@Test
 	public void testNewInstance() {
@@ -121,7 +121,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getName()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getName()}.
 	 */
 	//@Test
 	public void testGetName() {
@@ -129,7 +129,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDatabaseType()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDatabaseType()}.
 	 */
 	//@Test
 	public void testGetDatabaseType() {
@@ -137,7 +137,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDbProperty(eu.etaxonomy.cdm.database.CdmDataSource.DbProperties)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDbProperty(eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties)}.
 	 */
 	//@Test
 	public void testGetDbProperty() {
@@ -145,7 +145,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDatasourceBean()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDatasourceBean()}.
 	 */
 	//@Test
 	public void testGetDatasourceBean() {
@@ -162,7 +162,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL)}.
 	 */
 	//@Test
 	public void testGetHibernatePropertiesBeanHBM2DDL() {
@@ -194,7 +194,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)}.
 	 */
 	//@Test
 	public void testGetHibernatePropertiesBeanHBM2DDLBooleanBooleanClassOfQextendsCacheProvider() {
@@ -219,22 +219,22 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#exists(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#exists(java.lang.String)}.
 	 */
 	//@Test
 	public void testExists() {
-		assertTrue(CdmDataSource.exists("default"));
-		assertTrue(CdmDataSource.exists("localDefaultHsql"));
-		assertFalse(CdmDataSource.exists("xlsjödfl"));
+		assertTrue(CdmPersistentDataSource.exists("default"));
+		assertTrue(CdmPersistentDataSource.exists("localDefaultHsql"));
+		assertFalse(CdmPersistentDataSource.exists("xlsjödfl"));
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	//@Test
 	public void testSaveStringDatabaseTypeEnumStringStringIntStringString() {
 		String dataSourceString = "tmp";
-		assertFalse(CdmDataSource.exists(dataSourceString));
+		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 		
 		DatabaseTypeEnum databaseType = DatabaseTypeEnum.SqlServer2005;
 		String servername = "server";
@@ -243,12 +243,12 @@ public class CdmDataSourceTest {
 		String password = "password";
 		int port = 1234;
 		
-		CdmDataSource.save(dataSourceString, databaseType, servername, db, port, username, password);
-		assertTrue(CdmDataSource.exists(dataSourceString));
+		CdmPersistentDataSource.save(dataSourceString, databaseType, servername, db, port, username, password);
+		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
 		
-		CdmDataSource dataSource = null;
+		CdmPersistentDataSource dataSource = null;
 		try {
-			dataSource = CdmDataSource.NewInstance(dataSourceString);
+			dataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
 		} catch (DataSourceNotFoundException e1) {
 			fail();
 		}
@@ -259,15 +259,15 @@ public class CdmDataSourceTest {
 		assertEquals(password, dataSource.getDatasourceProperty(DbProperties.PASSWORD));
 		//delete
 		try {
-			CdmDataSource.delete(CdmDataSource.NewInstance(dataSourceString));
+			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			fail();
 		}
-		assertFalse(CdmDataSource.exists(dataSourceString));
+		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#save(java.lang.String, eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
 	 */
 	//@Test
 	public void testSaveStringDatabaseTypeEnumStringStringStringString() {
@@ -275,24 +275,24 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#saveLocalHsqlDb(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#saveLocalHsqlDb(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	//@Test
 	public void testSaveLocalHsqlDb() {
 		String dataSourceString = "tmp";
-		assertFalse(CdmDataSource.exists(dataSourceString));
+		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 		
 		String servername = "server";
 		String db = "testHsqlDb";
 		String username = "username";
 		String password = "password";
 		
-		CdmDataSource.saveLocalHsqlDb(dataSourceString, CdmApplicationUtils.getWritableResourceDir().getAbsolutePath(), db, username, password);
-		assertTrue(CdmDataSource.exists(dataSourceString));
+		CdmPersistentDataSource.saveLocalHsqlDb(dataSourceString, CdmApplicationUtils.getWritableResourceDir().getAbsolutePath(), db, username, password);
+		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
 		
-		CdmDataSource dataSource = null;
+		CdmPersistentDataSource dataSource = null;
 		try {
-			dataSource = CdmDataSource.NewInstance(dataSourceString);
+			dataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
 		} catch (DataSourceNotFoundException e1) {
 			fail();
 		}
@@ -304,7 +304,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#delete(eu.etaxonomy.cdm.database.CdmDataSource)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#delete(eu.etaxonomy.cdm.database.CdmPersistentDataSource)}.
 	 */
 	//@Test
 	public void testDelete() {
@@ -312,29 +312,29 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getAllDataSources()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getAllDataSources()}.
 	 */
 	//@Test
 	public void testGetAllDataSources() {
-		assertEquals(2, CdmDataSource.getAllDataSources().size());
-		assertEquals("default", CdmDataSource.getAllDataSources().get(0).getName());
+		assertEquals(2, CdmPersistentDataSource.getAllDataSources().size());
+		assertEquals("default", CdmPersistentDataSource.getAllDataSources().get(0).getName());
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#toString()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#toString()}.
 	 */
 	//@Test
 	public void testToString() {
 		String dataSourceName = "default";
 		try {
-			assertEquals(dataSourceName, CdmDataSource.NewInstance(dataSourceName).toString());
+			assertEquals(dataSourceName, CdmPersistentDataSource.NewInstance(dataSourceName).toString());
 		} catch (DataSourceNotFoundException e) {
 			fail();
 		}
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDataSourceInputStream()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDataSourceInputStream()}.
 	 */
 	//@Test
 	public void testGetDataSourceInputStream() {
@@ -342,7 +342,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#getDataSourceOutputStream()}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#getDataSourceOutputStream()}.
 	 */
 	//@Test
 	public void testGetDataSourceOutputStream() {

@@ -37,8 +37,8 @@ import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 /**
  * class to access an CdmDataSource
  */
-public class CdmDataSource {
-	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
+public class CdmPersistentDataSource {
+	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasources.xml";
@@ -98,7 +98,7 @@ public class CdmDataSource {
 	 * Returns the default CdmDataSource
 	 * @return the default CdmDataSource
 	 */
-	public final static CdmDataSource NewDefaultInstance(){
+	public final static CdmPersistentDataSource NewDefaultInstance(){
 		try {
 			return NewInstance("default");
 		} catch (DataSourceNotFoundException e) {
@@ -112,7 +112,7 @@ public class CdmDataSource {
 	 * Returns the default CdmDataSource
 	 * @return the default CdmDataSource
 	 */
-	public final static CdmDataSource NewLocalHsqlInstance(){
+	public final static CdmPersistentDataSource NewLocalHsqlInstance(){
 		try {
 			return NewInstance("localDefaultHsql");
 		} catch (DataSourceNotFoundException e) {
@@ -126,10 +126,10 @@ public class CdmDataSource {
 	 * @param strDataSource
 	 * @return
 	 */
-	public final static CdmDataSource NewInstance(String dataSourceName) 
+	public final static CdmPersistentDataSource NewInstance(String dataSourceName) 
 				throws DataSourceNotFoundException{
 		if (exists(dataSourceName)){
-			return new CdmDataSource(dataSourceName);
+			return new CdmPersistentDataSource(dataSourceName);
 		}else{
 			throw new DataSourceNotFoundException("Datasource not found: " + dataSourceName);
 		}
@@ -139,7 +139,7 @@ public class CdmDataSource {
 	 * Private Constructor. Use NewXXX factory methods for creating a new instance of CdmDataSource!
 	 * @param strDataSource
 	 */
-	private CdmDataSource(String strDataSource){
+	private CdmPersistentDataSource(String strDataSource){
 		dataSourceName = strDataSource;
 	}
 	
@@ -352,7 +352,7 @@ public class CdmDataSource {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
-	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
+	public static CdmPersistentDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 			String username, String password){
 		return save(strDataSourceName, databaseTypeEnum, server, database, 
 				databaseTypeEnum.getDefaultPort(), username, password);
@@ -369,14 +369,14 @@ public class CdmDataSource {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
-	public static CdmDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
+	public static CdmPersistentDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 				int port, String username, String password){
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
 		return save(strDataSourceName, databaseTypeEnum, server, database, port, username, password, driverManagerDataSource, null, null, null, null, null);
 	}
 	
 	
-	public static CdmDataSource saveLocalHsqlDb(String strDataSourceName, String databasePath, String databaseName, String username, String password){
+	public static CdmPersistentDataSource saveLocalHsqlDb(String strDataSourceName, String databasePath, String databaseName, String username, String password){
 		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.HSqlDb;
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalHsqldb.class;
 		String server = "localhost";
@@ -385,7 +385,7 @@ public class CdmDataSource {
 	}
 	
 	//
-	private static CdmDataSource save(String strDataSourceName, 
+	private static CdmPersistentDataSource save(String strDataSourceName, 
 			DatabaseTypeEnum databaseTypeEnum, 
 			String server, 
 			String database, 
@@ -439,7 +439,7 @@ public class CdmDataSource {
 	 * Deletes a dataSource
 	 * @param dataSource
 	 */
-	public static void delete (CdmDataSource dataSource){
+	public static void delete (CdmPersistentDataSource dataSource){
 		Element bean = getDatasourceBeanXml(dataSource.getName());
 		if (bean != null){
 			Document doc = bean.getDocument();
@@ -453,8 +453,8 @@ public class CdmDataSource {
 	 * Returns a list of all datasources stored in the datasource config file
 	 * @return all existing data sources
 	 */
-	static public List<CdmDataSource> getAllDataSources(){
-		List<CdmDataSource> dataSources = new ArrayList<CdmDataSource>();
+	static public List<CdmPersistentDataSource> getAllDataSources(){
+		List<CdmPersistentDataSource> dataSources = new ArrayList<CdmPersistentDataSource>();
 		
 		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
@@ -466,7 +466,7 @@ public class CdmDataSource {
 	    		String strId = elBean.getAttributeValue("id");
 	    		if (strId != null && strId.endsWith(DATASOURCE_BEAN_POSTFIX)){
 	    			strId = strId.replace(DATASOURCE_BEAN_POSTFIX, "");
-	    			dataSources.add(new CdmDataSource(strId));
+	    			dataSources.add(new CdmPersistentDataSource(strId));
 	    		}
 	    	}
 		}
@@ -566,10 +566,10 @@ public class CdmDataSource {
 	public boolean equals(Object obj){
 		if (obj == null){
 			return false;
-		}else if (! CdmDataSource.class.isAssignableFrom(obj.getClass())){
+		}else if (! CdmPersistentDataSource.class.isAssignableFrom(obj.getClass())){
 			return false;
 		}else{
-			CdmDataSource dataSource = (CdmDataSource)obj;
+			CdmPersistentDataSource dataSource = (CdmPersistentDataSource)obj;
 			return (this.dataSourceName == dataSource.dataSourceName);
 		}
 
