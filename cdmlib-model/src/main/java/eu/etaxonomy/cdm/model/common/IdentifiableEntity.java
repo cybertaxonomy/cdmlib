@@ -131,9 +131,20 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	public void removeSource(OriginalSource source) {
 		this.sources.remove(source);		
 	}
+	
+	private boolean executesToString = false;
 	@Override
 	public String toString() {
-		return this.getTitleCache();
+		String result;
+		if (executesToString){
+			result = super.toString();
+		}else{
+			//avoid recursiv toString call
+			executesToString = true;
+			result = this.getTitleCache();
+			executesToString = false;
+		}
+		return result;	
 	}
 
 }

@@ -161,7 +161,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@Override
 	public String generateTitle(){
 		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for nonViralName: " + this.toString());
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
 			return null;
 		}else{
 			return cacheStrategy.getTitleCache(this);
