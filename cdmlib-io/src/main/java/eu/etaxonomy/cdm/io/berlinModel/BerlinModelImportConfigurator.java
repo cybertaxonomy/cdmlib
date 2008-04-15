@@ -1,11 +1,15 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class BerlinModelImportConfigurator {
+	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
 	//TODO
 	private boolean deleteAll = false;
@@ -25,32 +29,47 @@ public class BerlinModelImportConfigurator {
 	private boolean doFacts = false;
 
 	
-	private Source berlinModelSource;
-	
+	private Source source;
 	private ReferenceBase sourceReference;
-	private CdmApplicationController destination;
+	private ICdmDataSource destination;
 	
 	private HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
 
 /* *****************CONSTRUCTOR *****************************/
 	
 	
+	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource,
+			eu.etaxonomy.cdm.database.ICdmDataSource destination){
+		return new BerlinModelImportConfigurator(berlinModelSource, destination);
+	}
 	
 	
-/**
+	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
 	 * @param destination
 	 */
-	public BerlinModelImportConfigurator(Source berlinModelSource,
-			ReferenceBase sourceReference, CdmApplicationController destination) {
+	private BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
 		super();
-		this.berlinModelSource = berlinModelSource;
-		this.sourceReference = sourceReference;
+		this.source = berlinModelSource;
 		this.destination = destination;
 	}
 	
-	/* ****************** GETTER/SETTER **************************/	
+
+	public boolean isValid(){
+		boolean result = true;
+		if (source == null){
+			logger.warn("Connection to BerlinModel could not be established");
+			result = false;
+		}
+		
+		
+		return result;
+	}
+	
+	
+	
+/* ****************** GETTER/SETTER **************************/	
 	public boolean isDeleteAll() {
 		return deleteAll;
 	}
@@ -111,32 +130,47 @@ public class BerlinModelImportConfigurator {
 	public void setDoFacts(boolean doFacts) {
 		this.doFacts = doFacts;
 	}
-	public Source getBerlinModelSource() {
-		return berlinModelSource;
+	public Source getSource() {
+		return source;
 	}
-	public void setBerlinModelSource(Source berlinModelSource) {
-		this.berlinModelSource = berlinModelSource;
+	public void setSource(Source berlinModelSource) {
+		this.source = berlinModelSource;
 	}
-	public ReferenceBase getSourceReference() {
-		return sourceReference;
-	}
-	public void setSourceReference(ReferenceBase sourceReference) {
-		this.sourceReference = sourceReference;
-	}
-	public CdmApplicationController getDestination() {
+	public ICdmDataSource getDestination() {
 		return destination;
 	}
-	public void setDestination(CdmApplicationController destination) {
+	public void setDestination(ICdmDataSource destination) {
 		this.destination = destination;
 	}
 
 	public HBM2DDL getHbm2dll() {
 		return hbm2dll;
 	}
-
 	public void setHbm2dll(HBM2DDL hbm2dll) {
 		this.hbm2dll = hbm2dll;
 	}
+
+	public ReferenceBase getSourceReference() {
+		ReferenceBase result = sourceReference;
+		if (sourceReference == null){
+			result =  new Database();
+			if (source != null){
+				result.setTitleCache(source.getDatabase());
+			}
+		}
+		return result;
+	}
+	public void setSourceReference(ReferenceBase sourceReference) {
+		this.sourceReference = sourceReference;
+	}
+	public String getSourceReferenceTitle() {
+		return getSourceReference().getTitleCache();
+	}
+	public void setSourceReferenceTitle(String sourceReferenceTitle) {
+		getSourceReference().setTitleCache(sourceReferenceTitle);
+	}
+	
+	
 	
 	
 	

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -26,16 +27,16 @@ public class BerlinModelImport {
 	//names
 	private boolean makeTaxonNames = true;
 	private boolean makeRelNames = true;
-		private boolean makeNameStatus = false;
+		private boolean makeNameStatus = true;
 
 	//taxa
 	private boolean makeTaxa = true;
 	private boolean makeRelTaxa = true;
-		private boolean makeFacts = false;
+		private boolean makeFacts = true;
 	
 	
 	//BerlinModelDB
-	private Source source;
+	private Source sourceX;
 	
 	//CdmApplication
 	private CdmApplicationController cdmApp;
@@ -57,17 +58,29 @@ public class BerlinModelImport {
 	/**
 	 * Executes the whole 
 	 */
-	public boolean doImport(BerlinModelImportConfigurator bmiConfig, ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp){
-		System.out.println("Start import from BerlinModel ("+ source.getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
-		if (source == null || cdmApp == null){
-			throw new NullPointerException("Source and CdmApplicationController must not be null");
+	public boolean doImport(BerlinModelImportConfigurator bmiConfig){
+		CdmApplicationController cdmApp;
+		if (bmiConfig == null){
+			logger.warn("BerlinModelImportConfiguration is null");
+			return false;
+		}else if (! bmiConfig.isValid()){
+			logger.warn("BerlinModelImportConfiguration is not valid");
+			return false;
 		}
-		this.source = source;
-		this.cdmApp = cdmApp;
+		try {
+			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination());
+		} catch (DataSourceNotFoundException e) {
+			logger.warn("could not connect to destination database");
+			return false;
+		}
+		Source source = bmiConfig.getSource();
+		ReferenceBase sourceReference = bmiConfig.getSourceReference();
+		System.out.println("Start import from BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		
 
 		//Authors
 		if (makeAuthors){
-			if (! BerlinModelAuthorIO.invoke(berlinModelRef ,source, cdmApp, deleteAll, authorStore)){
+			if (! BerlinModelAuthorIO.invoke(sourceReference ,source, cdmApp, deleteAll, authorStore)){
 				logger.warn("No Authors imported");
 				return false;
 			}
@@ -77,7 +90,7 @@ public class BerlinModelImport {
 		
 		//References
 		if (makeReferences){
-			if (! BerlinModelReferenceIO.invoke(berlinModelRef ,source, cdmApp, deleteAll, referenceStore, authorStore)){
+			if (! BerlinModelReferenceIO.invoke(sourceReference ,source, cdmApp, deleteAll, referenceStore, authorStore)){
 				return false;
 			}
 		}else{
@@ -87,7 +100,7 @@ public class BerlinModelImport {
 		
 		//TaxonNames
 		if (makeTaxonNames){
-			if (! BerlinModelTaxonNameIO.invoke(berlinModelRef ,source, cdmApp, deleteAll, taxonNameStore, referenceStore, authorStore)){
+			if (! BerlinModelTaxonNameIO.invoke(sourceReference ,source, cdmApp, deleteAll, taxonNameStore, referenceStore, authorStore)){
 				//return false;
 			}
 		}else{
@@ -98,7 +111,7 @@ public class BerlinModelImport {
 		
 		//make and save RelNames
 		if(makeRelNames){
-			if (! BerlinModelTaxonNameIO.invokeRelations(berlinModelRef ,source, cdmApp, deleteAll, taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonNameIO.invokeRelations(sourceReference ,source, cdmApp, deleteAll, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -110,7 +123,7 @@ public class BerlinModelImport {
 		
 		//make and save Taxa
 		if(makeTaxa){
-			if (! BerlinModelTaxonIO.invoke(berlinModelRef, source, cdmApp, deleteAll, taxonStore, taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonIO.invoke(sourceReference, source, cdmApp, deleteAll, taxonStore, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -120,7 +133,7 @@ public class BerlinModelImport {
 		
 		//make and save RelPTaxa
 		if(makeRelTaxa){
-			if (! BerlinModelTaxonIO.invokeRelations(berlinModelRef, source, cdmApp, deleteAll, taxonStore, referenceStore)){
+			if (! BerlinModelTaxonIO.invokeRelations(sourceReference, source, cdmApp, deleteAll, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -129,7 +142,7 @@ public class BerlinModelImport {
 		
 		//make and save Facts
 		if(makeFacts){
-			if (! BerlinModelFactsIO.invoke(berlinModelRef, source, cdmApp, deleteAll, taxonStore, referenceStore)){
+			if (! BerlinModelFactsIO.invoke(sourceReference, source, cdmApp, deleteAll, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{

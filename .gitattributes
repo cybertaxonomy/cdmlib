@@ -19,7 +19,6 @@ cdmlib-io/pom.xml -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelFactsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelReferenceIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonIO.java -text
@@ -27,7 +26,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonNameIO.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/MapWrapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/test/BerlinModelSources.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/source/SourceConnectionException.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
