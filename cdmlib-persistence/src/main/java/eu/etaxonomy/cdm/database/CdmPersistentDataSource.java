@@ -37,7 +37,7 @@ import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 /**
  * class to access an CdmDataSource
  */
-public class CdmPersistentDataSource {
+public class CdmPersistentDataSource implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
