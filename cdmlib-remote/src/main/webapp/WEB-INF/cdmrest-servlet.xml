@@ -17,6 +17,7 @@
                 <prop key="/(whatis:dto)/(*:uuid)">restController</prop>
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
+                <prop key="/(ref:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(ref:dto)/(*:uuid)">restController</prop>
