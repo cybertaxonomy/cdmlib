@@ -523,6 +523,7 @@ eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
 eclipse-updateSite/index.html -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
 eclipse-updateSite/site.xml -text
+imports/pom.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
