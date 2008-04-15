@@ -33,6 +33,10 @@ eclipse-plugin-sources/target
 eclipse-plugin/.settings
 eclipse-plugin/dist
 eclipse-plugin/target
+imports/.classpath
+imports/.project
+imports/.settings
+imports/target
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
