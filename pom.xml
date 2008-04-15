@@ -225,6 +225,14 @@
 					<stylesheet>maven</stylesheet>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>	
+				</configuration>
+			</plugin>
 		</plugins>
 		<!--  -->
 		<extensions>
@@ -623,7 +631,7 @@
 	  		<artifactId>jdbc</artifactId>
 	  		<version>1.2</version>
 	  	</dependency>
-          	<dependency>
+        <dependency>
         	<groupId>oracle</groupId>
         	<artifactId>ojdbc14</artifactId>
         	<version>10.2.0.2</version>
