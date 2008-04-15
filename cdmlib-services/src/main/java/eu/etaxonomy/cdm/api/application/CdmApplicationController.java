@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
 
@@ -43,69 +44,72 @@ public class CdmApplicationController {
 	private IAgentService agentService;
 	private IDatabaseService databaseService;
 	private ITermService termService;
-	
 	private Server hsqldbServer;
 	
+	final static HBM2DDL defaultHbm2dll = HBM2DDL.VALIDATE;
+	
+	
 	
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
-	 * @param dataSource
 	 */
-	public CdmApplicationController() {
+	public static CdmApplicationController NewInstance()  throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
-		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
-		setNewDataSource(dataSource, hbm2dll);
+		HBM2DDL hbm2dll = defaultHbm2dll;
+		return new CdmApplicationController(dataSource, hbm2dll);
 	}
+
 	
 	
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
-	 * @param dataSource
+	 * @param hbm2dll validation type for database schema
 	 */
-	public CdmApplicationController(HBM2DDL hbm2dll) {
+	public static CdmApplicationController NewInstance(HBM2DDL hbm2dll)  throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		if (hbm2dll == null){
-			hbm2dll = HBM2DDL.VALIDATE;
+			hbm2dll = defaultHbm2dll;
 		}
-		setNewDataSource(dataSource, hbm2dll);
+		return new CdmApplicationController(dataSource, hbm2dll);
+	}
+
+	
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source and the
+	 * default database schema validation type
+	 * @param dataSource
+	 */
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) throws DataSourceNotFoundException{
+		return new CdmApplicationController(dataSource, defaultHbm2dll);
 	}
 	
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, HBM2DDL hbm2dll) throws DataSourceNotFoundException{
+		return new CdmApplicationController(dataSource, hbm2dll);
+	}
+
+
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
 	 */
-	public CdmApplicationController(CdmPersistentDataSource dataSource) 
-			throws DataSourceNotFoundException{
-		logger.info("Start CdmApplicationController with datasource: " + dataSource);
-		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+	private CdmApplicationController(ICdmDataSource dataSource, HBM2DDL hbm2dll) throws DataSourceNotFoundException{
+		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 		if (setNewDataSource(dataSource, hbm2dll) == false){
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
+	
 	}
-	
-	
-	/**
-	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
-	 * @param dataSource
-	 */
-	public CdmApplicationController(CdmPersistentDataSource dataSource, HBM2DDL hbm2dll) 
-			throws DataSourceNotFoundException{
-		logger.info("Start CdmApplicationController with datasource: " + dataSource);
-		if (setNewDataSource(dataSource, hbm2dll) == false){
-			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
-		}
-	}
-	
+
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(CdmPersistentDataSource dataSource, HBM2DDL hbm2dll) {
+	private boolean setNewDataSource(ICdmDataSource dataSource, HBM2DDL hbm2dll) {
 		if (hbm2dll == null){
-			hbm2dll = hbm2dll.VALIDATE;
+			hbm2dll = defaultHbm2dll;
 		}
 		logger.info("Connecting to '" + dataSource.getName() + "'");
 
@@ -225,11 +229,6 @@ public class CdmApplicationController {
 			logger.info("Close ApplicationContext");
 			applicationContext.close();
 		}
-	}
-	
-	//TODO delete
-	public static void toDelete(){
-		System.out.println("Test");
 	}
 	
 	private void init(){
