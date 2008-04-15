@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
  *
  */
 public class CdmDataSource implements ICdmDataSource {
-	
+
 	private DatabaseTypeEnum dbType;
 	private String server;
 	private String database; 
@@ -55,6 +55,14 @@ public class CdmDataSource implements ICdmDataSource {
 		this.port = port;
 		this.username = username;
 		this.password = password;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getName()
+	 */
+	public String getName() {
+		return database;
 	}
 	
 	/* (non-Javadoc)

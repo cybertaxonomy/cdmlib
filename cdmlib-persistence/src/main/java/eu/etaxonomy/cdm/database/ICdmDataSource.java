@@ -28,4 +28,12 @@ public interface ICdmDataSource {
 	 */
 	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass);
 
+	
+	/**
+	 * @param hbm2dll
+	 * @param showSql
+	 * @return
+	 */
+	public String getName();
+
 }
