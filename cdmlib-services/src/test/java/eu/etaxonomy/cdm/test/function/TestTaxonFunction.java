@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -20,7 +20,7 @@ public class TestTaxonFunction {
 	private CdmApplicationController getCdmApplicationController(String strDataSource, HBM2DDL hbm2dll){
 		CdmApplicationController cdmApp= null;
 		try {
-			CdmDataSource dataSource = CdmDataSource.NewInstance(strDataSource);
+			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewInstance(strDataSource);
 			cdmApp = new CdmApplicationController(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
@@ -34,7 +34,7 @@ public class TestTaxonFunction {
 	}
 
 	private void initDatabase(){
-		HBM2DDL hbm2dll = CdmDataSource.HBM2DDL.CREATE;
+		HBM2DDL hbm2dll = CdmPersistentDataSource.HBM2DDL.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 			
 		INameService nameService = cdmApp.getNameService();

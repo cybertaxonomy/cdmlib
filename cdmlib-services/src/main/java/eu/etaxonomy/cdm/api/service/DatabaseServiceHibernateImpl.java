@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 
@@ -48,7 +48,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatasource(eu.etaxonomy.cdm.database.CdmDataSource)
 	 */
-	public boolean connectToDatasource(CdmDataSource dataSource) {
+	public boolean connectToDatasource(CdmPersistentDataSource dataSource) {
 		this.application.changeDataSource(dataSource);
 		logger.debug("DataSource changed to " + dataSource.getName());
 		return true;
@@ -59,9 +59,9 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password, int port) {
-		CdmDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, databaseTypeEnum, server, database, username, password);
+		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, databaseTypeEnum, server, database, username, password);
 		boolean result = connectToDatasource(tmpDataSource);
-		CdmDataSource.delete(tmpDataSource);
+		CdmPersistentDataSource.delete(tmpDataSource);
 		return result;
 	}
 
@@ -78,23 +78,23 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public CdmDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
 			String server, String database, String username, String password) {
-		return CdmDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
+		return CdmPersistentDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
-	public CdmDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
-		return CdmDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
+	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
+		return CdmPersistentDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
 	 */
 	public boolean useLocalDefaultHsqldb() {
-			CdmDataSource dataSource = CdmDataSource.NewLocalHsqlInstance();
+		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewLocalHsqlInstance();
 			return connectToDatasource(dataSource);
 	}
 
@@ -103,7 +103,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
 	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
-		CdmDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
+		CdmPersistentDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
 		return connectToDatasource(dataSource);
 	}
 	

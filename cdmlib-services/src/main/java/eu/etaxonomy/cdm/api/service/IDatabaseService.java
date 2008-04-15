@@ -4,7 +4,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
 /**
@@ -90,7 +90,7 @@ public interface IDatabaseService extends IService {
 	 * @param dataSource
 	 * @return returns true if successful
 	 */
-	public boolean connectToDatasource(CdmDataSource dataSource);
+	public boolean connectToDatasource(CdmPersistentDataSource dataSource);
 
 	/**
 	 * Saves a new CdmDatasource into the datasource config file.
@@ -102,7 +102,7 @@ public interface IDatabaseService extends IService {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
-	public CdmDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
 	
 	/**
 	 * Saves a new hsqldb datasource into the datasource config file.
@@ -113,7 +113,7 @@ public interface IDatabaseService extends IService {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
-	public CdmDataSource saveLocalHsqldb(String strDataSourceName, String path, String database, String username, String password, boolean silent, boolean startServer);
+	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String path, String database, String username, String password, boolean silent, boolean startServer);
 	
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
 }

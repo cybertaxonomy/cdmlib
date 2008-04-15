@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -17,11 +17,11 @@ public class Datasource {
 
 	
 	private void testNewConfigControler(){
-		List<CdmDataSource> lsDataSources = CdmDataSource.getAllDataSources();
+		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
 		System.out.println(lsDataSources);
-		CdmDataSource dataSource = lsDataSources.get(0);
+		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		CdmDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
+		CdmPersistentDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
 		CdmApplicationController appCtr;
 		try {
 			appCtr = new CdmApplicationController(dataSource);
@@ -58,7 +58,7 @@ public class Datasource {
 		String database = "cdmTest";
 		String username = "edit";
 		String password = "wp5";
-		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
 			Person agent = new Person();
@@ -77,7 +77,7 @@ public class Datasource {
 		String database = "cdmTest";
 		String username = "edit";
 		String password = "wp5";
-		CdmDataSource ds = CdmDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
 			Person agent = new Person();
@@ -96,7 +96,7 @@ public class Datasource {
 		String database = "cdm_test";
 		String username = "edit";
 		String password = "wp5";
-		CdmDataSource ds = CdmDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
 			Person agent = new Person();
@@ -111,7 +111,7 @@ public class Datasource {
 	
 	private void testLocalHsql(){
 		try {
-			CdmDataSource ds = CdmDataSource.NewLocalHsqlInstance();
+			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 			CdmApplicationController appCtr = new CdmApplicationController(ds);
 			try {
 				List l = appCtr.getNameService().getAllNames(5, 1);

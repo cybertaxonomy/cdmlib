@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.hibernate.SessionFactory;
 import org.hsqldb.Server;
 import org.springframework.beans.factory.BeanCreationException;
@@ -21,15 +20,13 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+
 
 
 /**
@@ -56,7 +53,7 @@ public class CdmApplicationController {
 	 */
 	public CdmApplicationController() {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
 		setNewDataSource(dataSource, hbm2dll);
 	}
@@ -68,7 +65,7 @@ public class CdmApplicationController {
 	 */
 	public CdmApplicationController(HBM2DDL hbm2dll) {
 		logger.info("Start CdmApplicationController with default data source");
-		CdmDataSource dataSource = CdmDataSource.NewDefaultInstance();
+		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		if (hbm2dll == null){
 			hbm2dll = HBM2DDL.VALIDATE;
 		}
@@ -79,7 +76,7 @@ public class CdmApplicationController {
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
 	 */
-	public CdmApplicationController(CdmDataSource dataSource) 
+	public CdmApplicationController(CdmPersistentDataSource dataSource) 
 			throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
 		HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
@@ -93,7 +90,7 @@ public class CdmApplicationController {
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
 	 */
-	public CdmApplicationController(CdmDataSource dataSource, HBM2DDL hbm2dll) 
+	public CdmApplicationController(CdmPersistentDataSource dataSource, HBM2DDL hbm2dll) 
 			throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource);
 		if (setNewDataSource(dataSource, hbm2dll) == false){
@@ -106,7 +103,7 @@ public class CdmApplicationController {
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(CdmDataSource dataSource, HBM2DDL hbm2dll) {
+	private boolean setNewDataSource(CdmPersistentDataSource dataSource, HBM2DDL hbm2dll) {
 		if (hbm2dll == null){
 			hbm2dll = hbm2dll.VALIDATE;
 		}
@@ -181,7 +178,7 @@ public class CdmApplicationController {
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(CdmDataSource dataSource) {
+	public boolean changeDataSource(CdmPersistentDataSource dataSource) {
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, HBM2DDL.VALIDATE);
 	}
@@ -190,7 +187,7 @@ public class CdmApplicationController {
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(CdmDataSource dataSource, HBM2DDL hbm2dll) {
+	public boolean changeDataSource(CdmPersistentDataSource dataSource, HBM2DDL hbm2dll) {
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, hbm2dll);
 	}

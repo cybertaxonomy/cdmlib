@@ -11,9 +11,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -174,7 +174,7 @@ public class TestService {
 	private void init(){
 		try {
 			//appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
-			appCtr = new CdmApplicationController(CdmDataSource.NewInstance("rel1_1"));
+			appCtr = new CdmApplicationController(CdmPersistentDataSource.NewInstance("rel1_1"));
 			//appCtr = new CdmApplicationController(HBM2DDL.CREATE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
