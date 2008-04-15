@@ -39,7 +39,7 @@ public class TaxonServiceImplTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationController app = new CdmApplicationController(defaultSource, HBM2DDL.CREATE);
+		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, HBM2DDL.CREATE);
 		service = app.getTaxonService();
 	}
 

@@ -174,7 +174,7 @@ public class TestService {
 	private void init(){
 		try {
 			//appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
-			appCtr = new CdmApplicationController(CdmPersistentDataSource.NewInstance("rel1_1"));
+			appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("rel1_1"));
 			//appCtr = new CdmApplicationController(HBM2DDL.CREATE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

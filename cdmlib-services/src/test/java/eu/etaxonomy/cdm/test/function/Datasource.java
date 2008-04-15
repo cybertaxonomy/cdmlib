@@ -24,7 +24,7 @@ public class Datasource {
 		CdmPersistentDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
 		CdmApplicationController appCtr;
 		try {
-			appCtr = new CdmApplicationController(dataSource);
+			appCtr = CdmApplicationController.NewInstance(dataSource);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
@@ -32,24 +32,29 @@ public class Datasource {
 	}
 	
 	private void testDatabaseChange(){
-		CdmApplicationController appCtr = new CdmApplicationController();
+		CdmApplicationController appCtr;
+		try {
+			appCtr = CdmApplicationController.NewInstance();
 		
-//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-//		String server = "192.168.2.10";
-//		String database = "cdm_test_andreas";
-//		String user = "edit";
-//		String pwd = "wp5";
-//		
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
-		String server = "LAPTOPHP";
-		String database = "cdmTest";
-		String username = "edit";
-		String password = "wp5";
-		
-		appCtr.getDatabaseService().saveDataSource("testSqlServer", dbType, server, database, username, password);
-		appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
-		
-		appCtr.close();
+	//		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+	//		String server = "192.168.2.10";
+	//		String database = "cdm_test_andreas";
+	//		String user = "edit";
+	//		String pwd = "wp5";
+	//		
+			DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+			String server = "LAPTOPHP";
+			String database = "cdmTest";
+			String username = "edit";
+			String password = "wp5";
+			
+			appCtr.getDatabaseService().saveDataSource("testSqlServer", dbType, server, database, username, password);
+			appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
+			
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		}
 	}
 
 	private void testSqlServer(){
@@ -60,7 +65,7 @@ public class Datasource {
 		String password = "wp5";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
-			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = new Person();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
@@ -79,7 +84,7 @@ public class Datasource {
 		String password = "wp5";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
-			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = new Person();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
@@ -98,7 +103,7 @@ public class Datasource {
 		String password = "wp5";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		try {
-			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = new Person();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
@@ -112,7 +117,7 @@ public class Datasource {
 	private void testLocalHsql(){
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
-			CdmApplicationController appCtr = new CdmApplicationController(ds);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			try {
 				List l = appCtr.getNameService().getAllNames(5, 1);
 				System.out.println(l);

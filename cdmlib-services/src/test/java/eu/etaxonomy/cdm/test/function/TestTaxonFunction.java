@@ -21,7 +21,7 @@ public class TestTaxonFunction {
 		CdmApplicationController cdmApp= null;
 		try {
 			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewInstance(strDataSource);
-			cdmApp = new CdmApplicationController(dataSource, hbm2dll);
+			cdmApp = CdmApplicationController.NewInstance(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
 		}
