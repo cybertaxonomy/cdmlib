@@ -524,6 +524,9 @@ eclipse-updateSite/index.html -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_0.4.7.6.jar -text
 eclipse-updateSite/site.xml -text
 imports/pom.xml -text
+imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
+imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelSources.java -text
+imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmDestinations.java -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
