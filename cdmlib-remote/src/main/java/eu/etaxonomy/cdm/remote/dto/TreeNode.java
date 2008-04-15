@@ -27,6 +27,11 @@ import java.util.UUID;
  * 
  */
 public class TreeNode extends BaseSTO {
+	
+	/**
+	 * The uuid of this taxons concept reference
+	 */
+	private String secUuid;
 
 	/**
 	 * A flag indicating if alternative taxa  for this name exist.
@@ -48,7 +53,14 @@ public class TreeNode extends BaseSTO {
 	 */
 	private List<TaggedText> taggedName = new ArrayList();
 
-	
+	public String getSecUuid() {
+		return secUuid;
+	}
+
+	public void setSecUuid(String secUuid) {
+		this.secUuid = secUuid;
+	}
+
 	public boolean isHasAlternativeTaxa() {
 		return hasAlternativeTaxa;
 	}
