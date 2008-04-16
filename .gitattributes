@@ -527,6 +527,7 @@ imports/pom.xml -text
 imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
 imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelSources.java -text
 imports/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmDestinations.java -text
+imports/src/main/resources/log4j.properties -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text

@@ -22,11 +22,26 @@ public class BerlinModelImportActivator {
 	static final Source berlinModelSource = BerlinModelSources.editWP6();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_1_1();
 	
+	static final  boolean doAuthors = false;
+	//references
+	static final  boolean doReferences = false;
+	//names
+	static final  boolean doTaxonNames = false;
+	static final  boolean doRelNames = false;
+	static final  boolean doNameStatus = false;
+	static final  boolean doTypes = false;
+	
+	//taxa
+	static final  boolean doTaxa = false;
+	static final  boolean doRelTaxa = false;
+	static final  boolean doFacts = false;
+
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import cichorieae from BerlinModel ("+ berlinModelSource.getDatabase() + ") ...");
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		CdmApplicationController cdmApp;
 		
 		//make BerlinModel Source
@@ -34,10 +49,16 @@ public class BerlinModelImportActivator {
 		ICdmDataSource destination = cdmDestination;
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
-		bmImportConfigurator.setDoNameStatus(false);
-//		bmImportConfigurator.setDoTaxa(false);
+		bmImportConfigurator.setDoAuthors(doAuthors);
+		bmImportConfigurator.setDoReferences(doReferences);
+		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
+		bmImportConfigurator.setDoRelNames(doRelNames);
+		bmImportConfigurator.setDoNameStatus(doNameStatus);
+		bmImportConfigurator.setDoNameStatus(doTypes);
+		
+		bmImportConfigurator.setDoTaxa(doTaxa);
+		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(false);
-//		bmImportConfigurator.setDoRelNames(false);
 		bmImportConfigurator.setHbm2dll(HBM2DDL.CREATE);
 		
 		// invoke import
@@ -46,10 +67,5 @@ public class BerlinModelImportActivator {
 
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
-	
-	
-
-	
-	
 
 }
