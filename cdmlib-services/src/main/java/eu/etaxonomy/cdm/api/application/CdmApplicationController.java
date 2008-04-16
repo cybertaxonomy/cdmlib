@@ -46,7 +46,7 @@ public class CdmApplicationController {
 	private ITermService termService;
 	private Server hsqldbServer;
 	
-	final static DbSchemaValidation defaultHbm2dll = DbSchemaValidation.VALIDATE;
+	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
 	
 	
@@ -56,23 +56,23 @@ public class CdmApplicationController {
 	public static CdmApplicationController NewInstance()  throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
-		DbSchemaValidation hbm2dll = defaultHbm2dll;
-		return new CdmApplicationController(dataSource, hbm2dll);
+		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
+		return new CdmApplicationController(dataSource, dbSchemaValidation);
 	}
 
 	
 	
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the default data source
-	 * @param hbm2dll validation type for database schema
+	 * @param dbSchemaValidation validation type for database schema
 	 */
-	public static CdmApplicationController NewInstance(DbSchemaValidation hbm2dll)  throws DataSourceNotFoundException {
+	public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation)  throws DataSourceNotFoundException {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
-		if (hbm2dll == null){
-			hbm2dll = defaultHbm2dll;
+		if (dbSchemaValidation == null){
+			dbSchemaValidation = defaultDbSchemaValidation;
 		}
-		return new CdmApplicationController(dataSource, hbm2dll);
+		return new CdmApplicationController(dataSource, dbSchemaValidation);
 	}
 
 	
@@ -82,11 +82,11 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 */
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) throws DataSourceNotFoundException{
-		return new CdmApplicationController(dataSource, defaultHbm2dll);
+		return new CdmApplicationController(dataSource, defaultDbSchemaValidation);
 	}
 	
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation hbm2dll) throws DataSourceNotFoundException{
-		return new CdmApplicationController(dataSource, hbm2dll);
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException{
+		return new CdmApplicationController(dataSource, dbSchemaValidation);
 	}
 
 
@@ -94,9 +94,9 @@ public class CdmApplicationController {
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
 	 */
-	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation hbm2dll) throws DataSourceNotFoundException{
+	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
-		if (setNewDataSource(dataSource, hbm2dll) == false){
+		if (setNewDataSource(dataSource, dbSchemaValidation) == false){
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
 	
@@ -107,9 +107,9 @@ public class CdmApplicationController {
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation hbm2dll) {
-		if (hbm2dll == null){
-			hbm2dll = defaultHbm2dll;
+	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
+		if (dbSchemaValidation == null){
+			dbSchemaValidation = defaultDbSchemaValidation;
 		}
 		logger.info("Connecting to '" + dataSource.getName() + "'");
 
@@ -121,7 +121,7 @@ public class CdmApplicationController {
 			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
 			appContext.registerBeanDefinition("dataSource", datasourceBean);
 			
-			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(hbm2dll);
+			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(dbSchemaValidation);
 			appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
 			
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
@@ -131,13 +131,13 @@ public class CdmApplicationController {
 			appContext.start();
 		} catch (BeanCreationException e) {
 			// create new schema
-			if (hbm2dll == DbSchemaValidation.VALIDATE) {
+			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
 				logger.error("ApplicationContext could not be created. " +
 					" Maybe your database schema is not up-to-date, " +
 					" but there might be other BeanCreation problems too." +
-					" Try to run CdmApplicationController with hbm2dll.CREATE or hbm2dll.UPDATE option. ");
+					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
 			} else {
-				logger.error("BeanCreationException (CdmApplicationController startet with " + hbm2dll.toString() + " option.");
+				logger.error("BeanCreationException (CdmApplicationController startet with " + dbSchemaValidation.toString() + " option.");
 			}
 			e.printStackTrace();
 			return false;
@@ -191,9 +191,9 @@ public class CdmApplicationController {
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation hbm2dll) {
+	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, hbm2dll);
+		return setNewDataSource(dataSource, dbSchemaValidation);
 	}
 	
 	/**
