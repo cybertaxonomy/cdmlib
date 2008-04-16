@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.common;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,6 +86,24 @@ public class CdmUtils {
 	static public String testMe(){
 		System.out.println("Shit");
 		return "Oje";
+	}
+	
+	static public String readInputLine(String inputQuestion){
+		try {
+			
+			System.out.print(inputQuestion);
+			BufferedReader in = new BufferedReader( new java.io.InputStreamReader( System.in )); 
+			String input; 
+			input = in.readLine(); 
+			return input;
+		} catch (IOException e) {
+			logger.warn("IOExeption");
+			return null;
+		}
+	}
+	
+	static public String Nz(String value){
+		return (value == null ? "" : value);
 	}
 	
 }
