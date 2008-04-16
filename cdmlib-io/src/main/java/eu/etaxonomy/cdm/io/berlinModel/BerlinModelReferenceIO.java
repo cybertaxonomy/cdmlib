@@ -17,19 +17,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -48,9 +42,9 @@ public class BerlinModelReferenceIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
-		
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		boolean success = true;
@@ -60,7 +54,7 @@ public class BerlinModelReferenceIO {
 		
 		logger.info("start makeReferences ...");
 		IReferenceService referenceService = cdmApp.getReferenceService();
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 
 //		if (delete){
 //			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
@@ -210,7 +204,7 @@ public class BerlinModelReferenceIO {
 						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
 						
 						//refId
-						ImportHelper.setOriginalSource(referenceBase, berlinModelRef, refId);
+						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);
 						
 						//	dbAttrName = "BinomHybFlag";
 						//	cdmAttrName = "isBinomHybrid";

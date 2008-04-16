@@ -24,15 +24,16 @@ public class BerlinModelFactsIO {
 	private static int modCount = 10000;
 
 
-	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
-
+		Source source = bmiConfig.getSource();
+		
 		String dbAttrName;
 		String cdmAttrName;
 		
 		logger.info("start makeFacts ...");
 		
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database

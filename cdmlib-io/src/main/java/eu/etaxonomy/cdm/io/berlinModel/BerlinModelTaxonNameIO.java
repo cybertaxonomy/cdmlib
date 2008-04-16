@@ -36,18 +36,17 @@ public class BerlinModelTaxonNameIO {
 		return false;
 	}
 	
-	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
-			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
+			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
 		
-		
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		boolean success = true ;
 		
 		logger.info("start makeTaxonNames ...");
 		INameService nameService = cdmApp.getNameService();
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 		
 		try {
 			
@@ -188,7 +187,7 @@ public class BerlinModelTaxonNameIO {
 					// botanicalName.addAnnotations(annotation);
 					
 					//nameId
-					ImportHelper.setOriginalSource(botanicalName, berlinModelRef, nameId);
+					ImportHelper.setOriginalSource(botanicalName, bmiConfig.getSourceReference(), nameId);
 					
 					taxonNameMap.put(nameId, botanicalName);
 					
@@ -231,18 +230,18 @@ public class BerlinModelTaxonNameIO {
 	}
 	
 	
-	public static boolean invokeRelations(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invokeRelations(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
 			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		
 		logger.info("start makeNameRelationships ...");
 		
 		INameService nameService = cdmApp.getNameService();
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database

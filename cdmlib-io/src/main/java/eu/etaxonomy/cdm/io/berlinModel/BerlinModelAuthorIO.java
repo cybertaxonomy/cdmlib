@@ -24,9 +24,10 @@ public class BerlinModelAuthorIO {
 
 	private static int modCount = 1000;
 
-	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<Team> teamMap){
 		
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 
@@ -67,7 +68,7 @@ public class BerlinModelAuthorIO {
 				//notes
 				
 				//authorTeamId
-				ImportHelper.setOriginalSource(team, berlinModelRef, teamId);
+				ImportHelper.setOriginalSource(team, bmiConfig.getSourceReference(), teamId);
 				
 				teamMap.put(teamId, team);
 			} //while rs.hasNext()

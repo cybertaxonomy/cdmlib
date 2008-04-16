@@ -37,16 +37,16 @@ public class BerlinModelTaxonIO {
 
 	private static int modCount = 30000;
 
-	public static boolean invoke(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
-		
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		
 		logger.info("start makeTaxa ...");
 		
 		ITaxonService taxonService = cdmApp.getTaxonService();
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database
@@ -119,7 +119,7 @@ public class BerlinModelTaxonIO {
 						}
 						
 						//nameId
-						ImportHelper.setOriginalSource(taxonBase, berlinModelRef, taxonId);
+						ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId);
 
 						
 						//TODO
@@ -149,18 +149,18 @@ public class BerlinModelTaxonIO {
 	}
 	
 
-	public static boolean invokeRelations(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, boolean deleteAll, 
+	public static boolean invokeRelations(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		
 		logger.info("start makeTaxonRelationships ...");
 		
 		ITaxonService taxonService = cdmApp.getTaxonService();
-		boolean delete = deleteAll;
+		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database

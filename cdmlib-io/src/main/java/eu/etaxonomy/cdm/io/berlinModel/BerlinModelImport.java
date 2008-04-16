@@ -43,7 +43,7 @@ public class BerlinModelImport {
 			return false;
 		}
 		try {
-			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination());
+			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getHbm2dll());
 		} catch (DataSourceNotFoundException e) {
 			logger.warn("could not connect to destination database");
 			return false;
@@ -55,7 +55,7 @@ public class BerlinModelImport {
 
 		//Authors
 		if (bmiConfig.isDoAuthors()){
-			if (! BerlinModelAuthorIO.invoke(sourceReference ,source, cdmApp, bmiConfig.isDeleteAll(), authorStore)){
+			if (! BerlinModelAuthorIO.invoke(bmiConfig, cdmApp, authorStore)){
 				logger.warn("No Authors imported");
 				return false;
 			}
@@ -65,7 +65,7 @@ public class BerlinModelImport {
 		
 		//References
 		if (bmiConfig.isDoReferences()){
-			if (! BerlinModelReferenceIO.invoke(sourceReference ,source, cdmApp, bmiConfig.isDeleteAll(), referenceStore, authorStore)){
+			if (! BerlinModelReferenceIO.invoke(bmiConfig, cdmApp, referenceStore, authorStore)){
 				return false;
 			}
 		}else{
@@ -75,7 +75,7 @@ public class BerlinModelImport {
 		
 		//TaxonNames
 		if (bmiConfig.isDoTaxonNames()){
-			if (! BerlinModelTaxonNameIO.invoke(sourceReference ,source, cdmApp, bmiConfig.isDeleteAll(), taxonNameStore, referenceStore, authorStore)){
+			if (! BerlinModelTaxonNameIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore, authorStore)){
 				//return false;
 			}
 		}else{
@@ -86,7 +86,7 @@ public class BerlinModelImport {
 		
 		//make and save RelNames
 		if(bmiConfig.isDoRelNames()){
-			if (! BerlinModelTaxonNameIO.invokeRelations(sourceReference ,source, cdmApp, bmiConfig.isDeleteAll(), taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonNameIO.invokeRelations(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -98,7 +98,7 @@ public class BerlinModelImport {
 		
 		//make and save Taxa
 		if(bmiConfig.isDoTaxa()){
-			if (! BerlinModelTaxonIO.invoke(sourceReference, source, cdmApp, bmiConfig.isDeleteAll(), taxonStore, taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonIO.invoke(bmiConfig, cdmApp, taxonStore, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -108,7 +108,7 @@ public class BerlinModelImport {
 		
 		//make and save RelPTaxa
 		if(bmiConfig.isDoRelTaxa()){
-			if (! BerlinModelTaxonIO.invokeRelations(sourceReference, source, cdmApp, bmiConfig.isDeleteAll(), taxonStore, referenceStore)){
+			if (! BerlinModelTaxonIO.invokeRelations(bmiConfig, cdmApp, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -117,7 +117,7 @@ public class BerlinModelImport {
 		
 		//make and save Facts
 		if(bmiConfig.isDoFacts()){
-			if (! BerlinModelFactsIO.invoke(sourceReference, source, cdmApp, bmiConfig.isDeleteAll(), taxonStore, referenceStore)){
+			if (! BerlinModelFactsIO.invoke(bmiConfig, cdmApp, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{

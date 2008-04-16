@@ -154,14 +154,13 @@ public class BerlinModelImportConfigurator {
 	}
 
 	public ReferenceBase getSourceReference() {
-		ReferenceBase result = sourceReference;
 		if (sourceReference == null){
-			result =  new Database();
+			sourceReference =  new Database();
 			if (source != null){
-				result.setTitleCache(source.getDatabase());
+				sourceReference.setTitleCache(source.getDatabase());
 			}
 		}
-		return result;
+		return sourceReference;
 	}
 	public void setSourceReference(ReferenceBase sourceReference) {
 		this.sourceReference = sourceReference;
