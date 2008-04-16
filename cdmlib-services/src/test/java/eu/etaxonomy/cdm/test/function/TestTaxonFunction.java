@@ -7,7 +7,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TestTaxonFunction {
 
-	private CdmApplicationController getCdmApplicationController(String strDataSource, HBM2DDL hbm2dll){
+	private CdmApplicationController getCdmApplicationController(String strDataSource, DbSchemaValidation hbm2dll){
 		CdmApplicationController cdmApp= null;
 		try {
 			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewInstance(strDataSource);
@@ -34,7 +34,7 @@ public class TestTaxonFunction {
 	}
 
 	private void initDatabase(){
-		HBM2DDL hbm2dll = CdmPersistentDataSource.HBM2DDL.CREATE;
+		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 			
 		INameService nameService = cdmApp.getNameService();
@@ -84,7 +84,7 @@ public class TestTaxonFunction {
 		if (false){
 			initDatabase();
 		}
-		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", HBM2DDL.VALIDATE);
+		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
 		ReferenceBase sec = cdmApp.getReferenceService().getReferenceByUuid(getRefUuid());
 		List<Taxon> rootList = cdmApp.getTaxonService().getRootTaxa(sec);
 		for (Taxon taxon:rootList){

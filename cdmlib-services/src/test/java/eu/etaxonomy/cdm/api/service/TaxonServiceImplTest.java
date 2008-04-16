@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -39,7 +39,7 @@ public class TaxonServiceImplTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, HBM2DDL.CREATE);
+		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
 		service = app.getTaxonService();
 	}
 

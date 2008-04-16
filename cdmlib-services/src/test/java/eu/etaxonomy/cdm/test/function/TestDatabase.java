@@ -1,8 +1,6 @@
 /* just for testing */
 
-
 package eu.etaxonomy.cdm.test.function;
-
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +9,8 @@ import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 
 
@@ -21,7 +20,7 @@ public class TestDatabase {
 	
 	public void testNewDatabaseConnection(){
 		try {
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(HBM2DDL.CREATE);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
 			IDatabaseService dbService = appCtr.getDatabaseService();
 			INameService nameService = appCtr.getNameService();
 			appCtr.close();
@@ -35,9 +34,9 @@ public class TestDatabase {
 			String server = "192.168.2.10";
 			String database = "cdm_1_1";
 			String username = "edit";
-			String password = "xxx";
-			CdmDataSource.NewMySqlInstance("", database, username, password);
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(HBM2DDL.CREATE);
+			String password = "wp5";
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, DbSchemaValidation.CREATE);
 			IDatabaseService dbService = appCtr.getDatabaseService();
 			INameService nameService = appCtr.getNameService();
 			appCtr.close();
