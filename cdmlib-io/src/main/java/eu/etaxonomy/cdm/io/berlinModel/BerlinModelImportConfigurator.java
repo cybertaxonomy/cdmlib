@@ -62,7 +62,10 @@ public class BerlinModelImportConfigurator {
 			logger.warn("Connection to BerlinModel could not be established");
 			result = false;
 		}
-		
+		if (destination == null){
+			logger.warn("Connection to Cdm could not be established");
+			result = false;
+		}
 		
 		return result;
 	}
