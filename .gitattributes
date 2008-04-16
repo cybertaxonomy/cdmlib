@@ -280,6 +280,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmPersistentDataSour
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularyStoreImpl.java -text

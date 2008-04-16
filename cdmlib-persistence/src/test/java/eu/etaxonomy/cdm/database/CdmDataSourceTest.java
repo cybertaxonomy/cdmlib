@@ -10,9 +10,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.PropertyValue;
@@ -21,7 +19,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 /**
  * @author a.mueller
@@ -166,7 +164,7 @@ public class CdmDataSourceTest {
 	 */
 	//@Test
 	public void testGetHibernatePropertiesBeanHBM2DDL() {
-		HBM2DDL hbm2dll = HBM2DDL.CREATE;
+		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll);
 		PropertyValues propValues = beanDef.getPropertyValues();
 		String propName =  "properties"; 
@@ -190,7 +188,7 @@ public class CdmDataSourceTest {
 		assertTrue( propValue.getValue() instanceof Properties);
 		
 		properties = (Properties)propValue.getValue();
-		assertEquals(HBM2DDL.VALIDATE.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
+		assertEquals(DbSchemaValidation.VALIDATE.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
 	}
 
 	/**
@@ -198,7 +196,7 @@ public class CdmDataSourceTest {
 	 */
 	//@Test
 	public void testGetHibernatePropertiesBeanHBM2DDLBooleanBooleanClassOfQextendsCacheProvider() {
-		HBM2DDL hbm2dll = HBM2DDL.CREATE;
+		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		boolean showSql = false;
 		boolean formatSql = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;

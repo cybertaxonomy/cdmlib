@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.database;
 import org.hibernate.cache.CacheProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 public interface ICdmDataSource {
 
@@ -19,14 +19,14 @@ public interface ICdmDataSource {
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll);
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll);
 	
 	/**
 	 * @param hbm2dll
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass);
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass);
 
 	
 	/**

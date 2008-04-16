@@ -12,7 +12,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 /**
  * @author a.mueller
@@ -29,16 +29,16 @@ public class CdmDataSource implements ICdmDataSource {
 	private boolean isLazy = true;
 	private String initMethodName = null;
 	private String destroyMethodName = null;
-	private HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+	private DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 	private boolean showSql = false;
 	private boolean formatSql = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;;
 
-	static public ICdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
+	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password);
 	}
 	
-	static public ICdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password){
+	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password);
 	}
 
@@ -110,7 +110,7 @@ public class CdmDataSource implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL)
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
@@ -120,7 +120,7 @@ public class CdmDataSource implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = this.hbm2dll;

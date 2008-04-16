@@ -67,29 +67,6 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 		}
 	}
 	
-	public enum HBM2DDL{
-		VALIDATE,
-		UPDATE,
-		CREATE,
-		CREATE_DROP;
-
-		@Override
-		public String toString(){
-			switch (this){
-				case VALIDATE:
-					return "validate";
-				case UPDATE:
-					return "update";
-				case CREATE:
-					return "create";
-				case CREATE_DROP:
-					return "create-drop";
-				default: 
-					throw new IllegalArgumentException( "Unknown enumeration type" );
-			}
-		}
-	}
-	
 	//name
 	protected String dataSourceName;
 
@@ -286,7 +263,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
@@ -299,10 +276,10 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(HBM2DDL hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
-			hbm2dll = HBM2DDL.VALIDATE;
+			hbm2dll = DbSchemaValidation.VALIDATE;
 		}
 		if (showSql == null){
 			showSql = false;
