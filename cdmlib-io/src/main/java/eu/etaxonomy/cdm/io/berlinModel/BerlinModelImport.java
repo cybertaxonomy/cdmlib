@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.source.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -43,7 +42,7 @@ public class BerlinModelImport {
 			return false;
 		}
 		try {
-			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getHbm2dll());
+			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getDbSchemaValidation());
 		} catch (DataSourceNotFoundException e) {
 			logger.warn("could not connect to destination database");
 			return false;

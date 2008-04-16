@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -33,7 +33,7 @@ public class BerlinModelImportConfigurator {
 	private ReferenceBase sourceReference;
 	private ICdmDataSource destination;
 	
-	private HBM2DDL hbm2dll = HBM2DDL.VALIDATE;
+	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
 /* *****************CONSTRUCTOR *****************************/
 	
@@ -146,11 +146,11 @@ public class BerlinModelImportConfigurator {
 		this.destination = destination;
 	}
 
-	public HBM2DDL getHbm2dll() {
-		return hbm2dll;
+	public DbSchemaValidation getDbSchemaValidation() {
+		return dbSchemaValidation;
 	}
-	public void setHbm2dll(HBM2DDL hbm2dll) {
-		this.hbm2dll = hbm2dll;
+	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
+		this.dbSchemaValidation = dbSchemaValidation;
 	}
 
 	public ReferenceBase getSourceReference() {
