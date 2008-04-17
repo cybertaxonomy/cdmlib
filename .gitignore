@@ -26,6 +26,8 @@ cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings
 cdmlib-services/target
+eclipse-feature-sources/.classpath
+eclipse-feature-sources/.project
 eclipse-plugin-sources/.classpath
 eclipse-plugin-sources/.project
 eclipse-plugin-sources/.settings
