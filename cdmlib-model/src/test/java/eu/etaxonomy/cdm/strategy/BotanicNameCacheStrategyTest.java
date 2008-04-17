@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runners.Suite.SuiteClasses;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -42,7 +43,7 @@ public class BotanicNameCacheStrategyTest {
 	private final String genusNameString = "Genus";
 	private final String speciesNameString = "Abies alba";
 	private final String subSpeciesNameString = "Abies alba subsp. beta";
-	private final Agent author = new Person();;
+	private final INomenclaturalAgent author = new Person();;
 	
 
 	/**

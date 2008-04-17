@@ -25,12 +25,22 @@ import javax.persistence.*;
 public class Keyword extends OrderedTermBase<Keyword> {
 	static Logger logger = Logger.getLogger(Keyword.class);
 
-	public Keyword() {
+	public static Keyword NewInstance(){
+		return new Keyword();
+	}
+
+
+	public static Keyword NewInstance(String term, String label){
+		return new Keyword(term, label);
+	}
+
+	
+	private Keyword() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Keyword(String term, String label) {
+	private Keyword(String term, String label) {
 		super(term, label);
 		// TODO Auto-generated constructor stub
 	}

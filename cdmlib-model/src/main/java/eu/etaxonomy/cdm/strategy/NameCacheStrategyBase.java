@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -66,17 +67,17 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 	public String getTitleCache(T name){
 		String result;
 		//TODO use authorCache + TODO exAuthors
-		Agent agent= name.getCombinationAuthorTeam();
+		INomenclaturalAgent agent= name.getCombinationAuthorTeam();
 		if (isAutonym(name)){
 			result = getSpeciesNameCache(name);
 			if (agent != null){
-				result += " " + agent.getTitleCache();
+				result += " " + agent.getNomenclaturalTitle();
 			}
 			result += " " + (nz(name.getInfraSpecificEpithet())).trim().replace("null", "");
 		}else{
 			result = getNameCache(name);
 			if (agent != null){
-				result += " " + agent.getTitleCache();
+				result += " " + agent.getNomenclaturalTitle();
 			}
 		}
 		return result;
@@ -95,7 +96,7 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 			tags.add(nvn.getRank());			
 			tags.add(nvn.getInfraSpecificEpithet());			
 		}
-		Team at = new Team();
+		Team at = Team.NewInstance();
 		at.setProtectedTitleCache(true);
 		at.setTitleCache(nvn.getAuthorshipCache());
 		tags.add(at);			

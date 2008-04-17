@@ -10,9 +10,6 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Keyword;
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -65,6 +62,7 @@ public class Institution extends Agent {
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}
+	
 	/** 
 	 * Adds a new institutional type from the corresponding vocabulary
 	 * to describe better this institution or circumscribe its activities.
@@ -72,17 +70,18 @@ public class Institution extends Agent {
 	 * @param  t  any type of institution relevant for describing this institution
 	 * @see 	  InstitutionType
 	 */
-	public void addTypes(InstitutionType t){
+	public void addType(InstitutionType t){
 		this.types.add(t);
 	}
+	
 	/** 
 	 * Removes one element from the set of institution types for this institution.
 	 *
 	 * @param  t  the institution type describing this institution or its activities
 	 * 			  which should be deleted
-	 * @see       #addTypes(InstitutionType)
+	 * @see       #addType(InstitutionType)
 	 */
-	public void removeTypes(InstitutionType t){
+	public void removeType(InstitutionType t){
 		this.types.remove(t);
 	}
 	protected void setTypes(Set<InstitutionType> types){

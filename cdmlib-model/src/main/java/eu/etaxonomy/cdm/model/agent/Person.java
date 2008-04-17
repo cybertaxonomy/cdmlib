@@ -37,7 +37,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:42
  */
 @Entity
-public class Person extends Agent {
+public class Person extends Agent implements INomenclaturalAgent {
 	static Logger logger = Logger.getLogger(Person.class);
 
 	private String prefix;
@@ -56,6 +56,7 @@ public class Person extends Agent {
 	 */
 	public Person() {
 	}
+	
 	/** 
 	 * Class constructor using a "forenames" string (including initials),
 	 * a surname (family name) and an abbreviated name.
@@ -80,6 +81,7 @@ public class Person extends Agent {
 	protected void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
 		this.institutionalMemberships = institutionalMemberships;
 	}
+	
 	/** 
 	 * Adds a new membership of this person in an institution.
 	 * This method also creates a new institutional membership instance.
@@ -94,6 +96,7 @@ public class Person extends Agent {
 	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
 		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role); 
 	}
+	
 	/** 
 	 * Removes one element from the set of institutional memberships of this person.
 	 *
@@ -101,9 +104,11 @@ public class Person extends Agent {
 	 * @see         #addInstitutionalMembership(Institution, TimePeriod, String, String)
 	 */
 	public void removeInstitutionalMembership(InstitutionalMembership ims){
+		//TODO to be implemented?
+		logger.warn("not yet fully implemented?");
 		ims.setInstitute(null);
 		ims.setPerson(null);
-		//this.institutionalMemberships.remove(ims);
+		this.institutionalMemberships.remove(ims);
 	}
 
 
@@ -238,6 +243,12 @@ public class Person extends Agent {
 	 */
 	public String generateTitle(){
 		return "";
+	}
+	
+	
+	public String getNomenclaturalTitle() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

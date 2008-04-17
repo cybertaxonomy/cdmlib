@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -78,7 +79,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		String genusOrUninomial = "Genus";
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
-		Agent combinationAuthorTeam = new Team();
+		INomenclaturalAgent combinationAuthorTeam = Team.NewInstance();
 		INomenclaturalReference nomenclaturalReference = new Article();
 		String nomenclMicroRef = "microRef";
 		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);

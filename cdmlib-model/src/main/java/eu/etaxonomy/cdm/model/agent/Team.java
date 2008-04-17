@@ -9,10 +9,8 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-
-import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.type.OrderedSetType;
 
 import java.util.*;
 import javax.persistence.*;
@@ -23,24 +21,29 @@ import javax.persistence.*;
  * In the first case the inherited attribute {@link common.IdentifiableEntity#titleCache titleCache} is to be used.
  * In the second case at least all abbreviated names (the attributes Person.titleCache)
  * or all full names (the strings returned by Person.generateTitle)
- * of the persons must exist. A team is an ordered set of persons.
+ * of the persons must exist. A team is a {@link java.util.List list} of persons.
  * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
  */
 @Entity
-public class Team extends Agent {
+public class Team extends Agent implements INomenclaturalAgent {
 	static Logger logger = Logger.getLogger(Team.class);
 
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
-	private List<Person> teamMembers = new ArrayList();
+	private List<Person> teamMembers = new ArrayList<Person>();
+	
+	
+	static public Team NewInstance(){
+		return new Team();
+	}
 	
 	/** 
 	 * Class constructor
 	 */
-	public Team() {
+	private Team() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -52,6 +55,7 @@ public class Team extends Agent {
 	protected void setTeamMembers(List<Person> teamMembers){
 		this.teamMembers = teamMembers;
 	}
+	
 	/** 
 	 * Adds a new person to this team at the end of the members' list. 
 	 *
@@ -61,6 +65,21 @@ public class Team extends Agent {
 	public void addTeamMember(Person person){
 		this.teamMembers.add(person);
 	}
+	
+	/** 
+	 * Adds a new person to this team at the end of the members' list. 
+	 *
+	 * @param  person  the person who should be added to the other team members
+	 * @see 		   Person
+	 */
+	public void addTeamMember(Person person, int index){
+		int oldIndex = teamMembers.indexOf(person);
+		if (oldIndex != -1 ){
+			teamMembers.remove(person);
+		}
+		this.teamMembers.add(index, person);
+	}
+	
 	/** 
 	 * Removes one person from the list of members of this team.
 	 *
@@ -71,7 +90,6 @@ public class Team extends Agent {
 		this.teamMembers.remove(person);
 	}
 
-	@Override
 	/**
 	 * Generates an identification string for this team.
 	 * This string might be built with the full names or with the abbreviated names
@@ -82,8 +100,17 @@ public class Team extends Agent {
 	 * 
 	 * @return  the string which identifies this team
 	 */
+	//TODO public?
+	@Override
 	public String generateTitle() {
 		// TODO Auto-generated method stub
+		
+		return null;
+	}
+	
+	public String getNomenclaturalTitle() {
+		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

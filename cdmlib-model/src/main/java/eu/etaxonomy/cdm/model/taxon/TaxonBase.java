@@ -19,6 +19,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import javax.persistence.*;
@@ -59,8 +60,25 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	public TaxonNameBase getName(){
 		return this.name;
 	}
-	public void setName(TaxonNameBase name){
-		this.name = name;
+	public void setName(TaxonNameBase newName){
+		try {
+			//TODO make static for performance reasons
+			Field taxonBaseField = TaxonNameBase.class.getDeclaredField("taxonBases");
+			taxonBaseField.setAccessible(true);
+			if(this.name == newName) return;
+			if (name != null) { 
+				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(name);
+				taxonBases.remove(this);
+			}
+			if (newName != null) { 
+				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(newName);
+				taxonBases.add(this);
+			}
+			this.name = newName;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.getStackTrace();
+		} 	
 	}
 
 	public boolean isDoubtful(){

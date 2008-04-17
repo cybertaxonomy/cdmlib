@@ -55,11 +55,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	private String nomenclaturalMicroReference;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
-	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet();
+	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet<NameTypeDesignation>();
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
-	private Set<NameRelationship> relationsFromThisName = new HashSet();
-	private Set<NameRelationship> relationsToThisName = new HashSet();
-	private Set<NomenclaturalStatus> status = new HashSet();
+	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
+	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
+	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
+	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
+
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
@@ -324,6 +326,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		}
 	}
 
+	@OneToMany
+	public Set<TaxonBase> getTaxonBases() {
+		return this.taxonBases;
+	}
+	protected void setTaxonBases(Set<TaxonBase> taxonBases) {
+		if (taxonBases == null){
+			taxonBases = new HashSet<TaxonBase>();
+		}else{
+			this.taxonBases = taxonBases;
+		}
+	}
+//	public void addSynonym(Synonym synonym) {
+//		synonym.setName(this);
+//	}
+//	public void removeSynonym(Synonym synonym) {
+//		synonym.setName(null);
+//	}	
 	
 	/**
 	 * Return a set of taxa that use this name
@@ -331,18 +350,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 */
 	@Transient
 	public Set<Taxon> getTaxa(){
-		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
-		return null;
+		Set<Taxon> result = new HashSet<Taxon>();
+		for (TaxonBase taxonBase : this.taxonBases){
+			if (taxonBase instanceof Taxon){
+				result.add((Taxon)taxonBase);
+			}
+		}
+		return result;
 	}
+	
 	/**
 	 * Return a set of synonyms that use this name
 	 * @return
 	 */
+	// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
+	//@OneToMany
+	
 	@Transient
-	public Set<Synonym> getSynonyms(){
-		
-		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
-		return null;
+	public Set<Synonym> getSynonyms() {
+		Set<Synonym> result = new HashSet<Synonym>();
+		for (TaxonBase taxonBase : this.taxonBases){
+			if (taxonBase instanceof Synonym){
+				result.add((Synonym)taxonBase);
+			}
+		}
+		return result;
 	}
 	
 	@Transient

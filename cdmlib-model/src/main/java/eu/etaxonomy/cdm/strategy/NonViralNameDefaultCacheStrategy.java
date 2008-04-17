@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 
@@ -44,9 +45,9 @@ public class NonViralNameDefaultCacheStrategy extends NameCacheStrategyBase<NonV
 		String result;
 		NonViralName tn = (NonViralName)object;
 		result = getNameCache(object);
-		Agent agent= tn.getCombinationAuthorTeam();
+		INomenclaturalAgent agent= tn.getCombinationAuthorTeam();
 		if (agent != null){
-			result += " " + agent.getTitleCache();
+			result += " " + agent.getNomenclaturalTitle();
 		}
 		return result;
 	}

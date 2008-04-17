@@ -38,6 +38,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/INomenclaturalAgent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Institution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/InstitutionType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembership.java -text

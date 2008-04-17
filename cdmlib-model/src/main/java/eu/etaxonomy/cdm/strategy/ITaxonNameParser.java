@@ -41,8 +41,12 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	 * @param rank
 	 * @param nameToBeFilled The TaxonNameBaseToBeFilled
 	 */
-	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank);
+	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
+	public BotanicalName parseFullReference(String fullReference, Rank rank);
+
+	public void parseFullReference(BotanicalName nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
+	
 	
 	/**
 	 * Parses the taxonname String and returns a TaxonNameBase. 

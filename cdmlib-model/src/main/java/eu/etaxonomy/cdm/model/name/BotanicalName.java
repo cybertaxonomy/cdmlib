@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.TaxonNameParserBotanicalNameImpl;
@@ -81,7 +82,7 @@ public class BotanicalName extends NonViralName {
 		super(rank);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
-	public BotanicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+	public BotanicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, INomenclaturalAgent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
 		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}

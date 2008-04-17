@@ -32,7 +32,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	private BotanicalName name2;
 	private Taxon rootT;
 	private Taxon taxon1;
-	private Taxon taxon2;
+	private Synonym synonym1;
 	private Taxon freeT;
 	/**
 	 * @throws java.lang.Exception
@@ -60,7 +60,7 @@ public class TaxonBaseTest extends EntityTestBase {
 		name2=new BotanicalName(Rank.SPECIES(),"Abies","alba",null,null,null,"p.317");
 		// taxa
 		taxon1=Taxon.NewInstance(name1,sec);
-		taxon2=Taxon.NewInstance(name2,sec);
+		synonym1=Synonym.NewInstance(name2,sec);
 		freeT = Taxon.NewInstance(null, null);
 	}
 
@@ -91,6 +91,8 @@ public class TaxonBaseTest extends EntityTestBase {
 		freeT.setName(name2);
 		assertNotNull(freeT.getName());
 		assertSame(freeT.getName(), name2);
+		assertTrue(name1.getTaxa().contains(taxon1));
+		assertTrue(name2.getSynonyms().contains(synonym1));
 	}
 
 	/**

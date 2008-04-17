@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
@@ -39,12 +40,12 @@ public class ZooNameDefaultCacheStrategy extends NameCacheStrategyBase<Zoologica
 		if (tn.getPublicationYear() != null) {
 			result = (" " + tn.getPublicationYear()).trim();	
 		}
-		Agent team= tn.getCombinationAuthorTeam();
+		INomenclaturalAgent team= tn.getCombinationAuthorTeam();
 		if (team != null){
 			if (tn.getPublicationYear() != null) {
 				result = ",";	
 			} 
-			result += " " + team.getTitleCache();
+			result += " " + team.getNomenclaturalTitle();
 		}
 		return result;
 	}

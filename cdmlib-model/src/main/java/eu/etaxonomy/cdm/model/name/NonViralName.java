@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.NonViralNameDefaultCacheStrategy;
@@ -40,13 +41,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	//Species subdivision epithet
 	private String infraSpecificEpithet;
 	//Author team that published the present combination
-	private Agent combinationAuthorTeam;
+	private INomenclaturalAgent combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
-	private Agent exCombinationAuthorTeam;
+	private INomenclaturalAgent exCombinationAuthorTeam;
 	//Author team that published the original publication
-	private Agent basionymAuthorTeam;
+	private INomenclaturalAgent basionymAuthorTeam;
 	//Author team that contributed to the original publication of the name
-	private Agent exBasionymAuthorTeam;
+	private INomenclaturalAgent exBasionymAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 	
@@ -67,7 +68,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		super(rank);
 		setNameCacheStrategy();
 	}
-	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, Agent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, INomenclaturalAgent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
 		super(rank);
 		setNameCacheStrategy();
 		setGenusOrUninomial(genusOrUninomial);
@@ -80,37 +81,37 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getCombinationAuthorTeam(){
+	public INomenclaturalAgent getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
-	public void setCombinationAuthorTeam(Agent combinationAuthorTeam){
+	public void setCombinationAuthorTeam(INomenclaturalAgent combinationAuthorTeam){
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getExCombinationAuthorTeam(){
+	public INomenclaturalAgent getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
-	public void setExCombinationAuthorTeam(Agent exCombinationAuthorTeam){
+	public void setExCombinationAuthorTeam(INomenclaturalAgent exCombinationAuthorTeam){
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getBasionymAuthorTeam(){
+	public INomenclaturalAgent getBasionymAuthorTeam(){
 		return basionymAuthorTeam;
 	}
-	public void setBasionymAuthorTeam(Agent basionymAuthorTeam) {
+	public void setBasionymAuthorTeam(INomenclaturalAgent basionymAuthorTeam) {
 		this.basionymAuthorTeam = basionymAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getExBasionymAuthorTeam(){
+	public INomenclaturalAgent getExBasionymAuthorTeam(){
 		return exBasionymAuthorTeam;
 	}
-	public void setExBasionymAuthorTeam(Agent exBasionymAuthorTeam) {
+	public void setExBasionymAuthorTeam(INomenclaturalAgent exBasionymAuthorTeam) {
 		this.exBasionymAuthorTeam = exBasionymAuthorTeam;
 	}
 

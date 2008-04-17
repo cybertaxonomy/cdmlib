@@ -103,7 +103,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
-		Team agent = new Team();
+		Team agent = Team.NewInstance();
 		Article article = new Article();
 		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS(), "Genus", "species", "infraSpec", agent, article, "mikro");
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
@@ -120,7 +120,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testGetSetCombinationAuthorTeam() {
-		Team team1 = new Team();
+		Team team1 = Team.NewInstance();
 		nonViralName1.setCombinationAuthorTeam(team1);
 		assertEquals(team1, nonViralName1.getCombinationAuthorTeam());
 		nonViralName1.setCombinationAuthorTeam(null);
@@ -135,7 +135,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testGetSetExCombinationAuthorTeam() {
-		Team team1 = new Team();
+		Team team1 = Team.NewInstance();
 		nonViralName1.setExCombinationAuthorTeam(team1);
 		assertEquals(team1, nonViralName1.getExCombinationAuthorTeam());
 		nonViralName1.setExCombinationAuthorTeam(null);
@@ -151,7 +151,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testGetSetBasionymAuthorTeam() {
-		Team team1 = new Team();
+		Team team1 = Team.NewInstance();
 		nonViralName1.setBasionymAuthorTeam(team1);
 		assertEquals(team1, nonViralName1.getBasionymAuthorTeam());
 		nonViralName1.setBasionymAuthorTeam(null);
@@ -166,7 +166,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testGetSetExBasionymAuthorTeam() {
-		Team team1 = new Team();
+		Team team1 = Team.NewInstance();
 		nonViralName1.setExBasionymAuthorTeam(team1);
 		assertEquals(team1, nonViralName1.getExBasionymAuthorTeam());
 		nonViralName1.setExBasionymAuthorTeam(null);

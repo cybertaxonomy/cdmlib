@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.cdm.strategy;
 
-import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +33,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 	
-	public static ITaxonNameParser<BotanicalName> NEW_INSTANCE(){
+	public static TaxonNameParserBotanicalNameImpl NEW_INSTANCE(){
 		return new TaxonNameParserBotanicalNameImpl();
 	}
 	
@@ -69,6 +68,9 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
+	 */
 	public void parseFullReference(BotanicalName nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty) {
 		if (fullReference == null){
 			//return null;
@@ -101,7 +103,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		    reference = parseNomStatus(reference, nameToBeFilled);
 		    
 		    //parse subparts
-		    parseFullName(nameToBeFilled, name, rank);
+		    parseFullName(nameToBeFilled, name, rank, makeEmpty);
 		    parseReference(nameToBeFilled, reference, isInReference); 
 		
 		}else{
@@ -238,22 +240,23 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			return null;
 		}else{
 			BotanicalName result = new BotanicalName(null);
-			parseFullName(result, fullName, rank);
+			parseFullName(result, fullName, rank, false);
 			return result;
 		}
 	}
 		
 	
-	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank) {
+	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
 		
 		String authorString = null;
 		
 		if (fullName == null){
-			//return null;
 			return;
 		}
-		makeEmpty(nameToBeFilled);
+		if (makeEmpty){
+			makeEmpty(nameToBeFilled);
+		}
 		fullName.replaceAll(oWs , " ");
 		//TODO 
 		// OLD: fullName = oWsRE.subst(fullName, " "); //substitute multiple whitespaces		   
@@ -493,7 +496,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		else if ((authorTeamString = authorTeamString.trim()).length() == 0)
 			return null;
 		else {
-			Team result = new Team ();
+			Team result = Team.NewInstance();
 			result.setTitleCache(authorTeamString);
 			//TODO result = atomizedAuthor(authorTeamString); 
 			return result;
