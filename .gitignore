@@ -33,6 +33,7 @@ eclipse-plugin-sources/target
 eclipse-plugin/.settings
 eclipse-plugin/dist
 eclipse-plugin/target
+eclipse-updateSite/.classpath
 imports/.classpath
 imports/.project
 imports/.settings
