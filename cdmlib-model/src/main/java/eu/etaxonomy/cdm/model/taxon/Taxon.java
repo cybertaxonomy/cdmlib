@@ -73,7 +73,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 
-	@OneToMany(mappedBy="acceptedTaxon")
+	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
+	@OneToMany(mappedBy="acceptedTaxon", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;

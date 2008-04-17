@@ -316,8 +316,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * reference does not exist
 	 */
 	@Transient
-	public String getYear(){
-		return "";
+	public String getReferenceYear(){
+		if (this.getNomenclaturalReference() != null ){
+			return this.getNomenclaturalReference().getYear();
+		}else{
+			return null;
+		}
 	}
 
 	
@@ -336,6 +340,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 */
 	@Transient
 	public Set<Synonym> getSynonyms(){
+		
 		// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
 		return null;
 	}

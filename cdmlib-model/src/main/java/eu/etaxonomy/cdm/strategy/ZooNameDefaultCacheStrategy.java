@@ -34,14 +34,14 @@ public class ZooNameDefaultCacheStrategy extends NameCacheStrategyBase<Zoologica
 	@Override
 	public String getTitleCache(ZoologicalName object) {
 		String result;
-		NonViralName tn = (NonViralName)object;
+		ZoologicalName tn = object;
 		result = getNameCache(object);
-		if (tn.getYear() != null) {
-			result = (" " + tn.getYear()).trim();	
+		if (tn.getPublicationYear() != null) {
+			result = (" " + tn.getPublicationYear()).trim();	
 		}
 		Agent team= tn.getCombinationAuthorTeam();
 		if (team != null){
-			if (tn.getYear() != null) {
+			if (tn.getPublicationYear() != null) {
 				result = ",";	
 			} 
 			result += " " + team.getTitleCache();
