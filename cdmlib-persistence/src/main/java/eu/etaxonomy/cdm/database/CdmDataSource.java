@@ -42,6 +42,16 @@ public class CdmDataSource implements ICdmDataSource {
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password);
 	}
 
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, String username, String password){
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password);
+	}
+	
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password){
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password);
+	}
+
+	
+	
 	/**
 	 * @param server
 	 * @param database

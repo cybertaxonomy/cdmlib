@@ -14,6 +14,8 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBase;
@@ -30,5 +32,6 @@ public class TaxonNameDaoHibernateImpl
 	public TaxonNameDaoHibernateImpl() {
 		super(TaxonNameBase.class); 
 	}
+	
 	
 }

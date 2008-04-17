@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -12,6 +13,5 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  */
 public interface ITermVocabularyDao extends ICdmEntityDao<TermVocabulary<DefinedTermBase>> {
-	
-	
+		
 }
