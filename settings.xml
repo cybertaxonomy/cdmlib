@@ -1,10 +1,9 @@
 <settings>
-        <servers
+        <servers>
             <server>
                   <id>edit-wp5</id>
                   <username>edit</username>
-		          <password>xxx</password>
-            </server>	
+		          <password>xxx</password>	
             </server>
 		    <server>
 		          <id>tomcat-local</id>
