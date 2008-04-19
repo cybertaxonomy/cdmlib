@@ -11,7 +11,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -32,8 +34,10 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	
 	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
-	public static final Language DEFAULT_LANGUAGE(){
-		return new Language(uuidEnglish);
+	public static final Language DEFAULT_LANGUAGE= makeDefaultLanguage();
+	private static Language makeDefaultLanguage() {
+		Language defaultLanguage = new Language(uuidEnglish);
+		return defaultLanguage;
 	}
 	
 	static protected Map<UUID, DefinedTermBase> definedTermsMap = null;
@@ -56,7 +60,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularySaver#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
-	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
+	public void saveOrUpdate2(TermVocabulary<DefinedTermBase> vocabulary) {
 		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
@@ -97,12 +101,12 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 		if (! initialized){
 			logger.info("inititialize VocabularyStoreImpl ...");
 			try {
-				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE().getUuid());
+				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE.getUuid());
 				
 				if (defaultLanguage == null){
-					termDao.saveOrUpdate(DEFAULT_LANGUAGE());
+					termDao.saveOrUpdate(DEFAULT_LANGUAGE);
 					definedTermsMap = new HashMap<UUID, DefinedTermBase>();
-					definedTermsMap.put(DEFAULT_LANGUAGE().getUuid(), DEFAULT_LANGUAGE());
+					definedTermsMap.put(DEFAULT_LANGUAGE.getUuid(), DEFAULT_LANGUAGE);
 					initialized = true;
 					TermLoader termLoader = new TermLoader(this);
 					termLoader.loadAllDefaultTerms();
