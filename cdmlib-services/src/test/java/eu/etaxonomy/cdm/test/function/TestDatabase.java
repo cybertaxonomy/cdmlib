@@ -64,8 +64,9 @@ public class TestDatabase {
 			String database = "edit_test";
 			String username = "andreas";
 			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, username, password);
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, DbSchemaValidation.VALIDATE);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, validation);
 			
 			Rank genus = Rank.GENUS();
 			BotanicalName botanicalName = new BotanicalName(genus);
