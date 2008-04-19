@@ -54,7 +54,7 @@ public class TestModel {
 		tn3.getGenusOrUninomial();
 		
 		logger.info("Create new Author agent...");
-		Person team= new Person();
+		Person team= Person.NewInstance();
 		team.addPropertyChangeListener(listener);
 		team.setTitleCache("AuthorAgent1");
 		tn.setCombinationAuthorTeam(team);

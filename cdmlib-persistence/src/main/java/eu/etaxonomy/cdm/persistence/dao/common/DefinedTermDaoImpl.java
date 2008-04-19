@@ -1,12 +1,16 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Query;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 @Repository
 public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implements IDefinedTermDao{
@@ -21,6 +25,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		query.setParameter("label", queryString);
 		return (List<DefinedTermBase>) query.list();
 	}
+	
 
 //	@Override
 //	public List<DefinedTermBase> list(int limit, int start) {

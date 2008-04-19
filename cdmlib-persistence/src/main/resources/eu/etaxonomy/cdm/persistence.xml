@@ -38,6 +38,7 @@
             <value>eu.etaxonomy.cdm.model.agent.InstitutionType</value>
             <value>eu.etaxonomy.cdm.model.agent.Person</value>
             <value>eu.etaxonomy.cdm.model.agent.Team</value>
+            <value>eu.etaxonomy.cdm.model.agent.TeamOrPersonBase</value>
             <value>eu.etaxonomy.cdm.model.common.AnnotatableEntity</value>
             <value>eu.etaxonomy.cdm.model.common.Annotation</value>
             <value>eu.etaxonomy.cdm.model.common.AudioFile</value>

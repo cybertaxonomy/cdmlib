@@ -10,9 +10,10 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import org.apache.log4j.Logger;
-import org.hibernate.type.OrderedSetType;
+import eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -28,9 +29,11 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:58
  */
 @Entity
-public class Team extends Agent implements INomenclaturalAgent {
+public class Team extends TeamOrPersonBase {
 	static Logger logger = Logger.getLogger(Team.class);
+	private boolean protectedNomenclaturalTitleCache;
 
+	
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
 	private List<Person> teamMembers = new ArrayList<Person>();
@@ -43,9 +46,9 @@ public class Team extends Agent implements INomenclaturalAgent {
 	/** 
 	 * Class constructor
 	 */
-	private Team() {
+	public Team() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
 	}
 
 	@ManyToMany
@@ -100,18 +103,37 @@ public class Team extends Agent implements INomenclaturalAgent {
 	 * 
 	 * @return  the string which identifies this team
 	 */
-	//TODO public?
 	@Override
 	public String generateTitle() {
-		// TODO Auto-generated method stub
-		
-		return null;
+		return cacheStrategy.getTitleCache(this);
 	}
 	
+	
+	@Override
+	@Transient
 	public String getNomenclaturalTitle() {
-		// TODO Auto-generated method stub
-		
-		return null;
+		if (protectedNomenclaturalTitleCache == PROTECTED){
+			return this.nomenclaturalTitle;
+		}
+		if (nomenclaturalTitle == null){
+			this.nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
+		}
+		return nomenclaturalTitle;	
 	}
+	
+	@Override
+	public void setNomenclaturalTitle(String nomenclaturalTitle) {
+		setNomenclaturalTitle(nomenclaturalTitle, PROTECTED );
+		this.nomenclaturalTitle = nomenclaturalTitle;
+	}
+
+	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
+		this.nomenclaturalTitle = nomenclaturalTitle;
+		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
+	}
+
+	
+	
+	
 
 }

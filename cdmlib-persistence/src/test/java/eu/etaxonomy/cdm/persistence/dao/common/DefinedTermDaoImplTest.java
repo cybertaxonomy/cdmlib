@@ -27,7 +27,7 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 		TermVocabulary<DefinedTermBase> vocabulary	= new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain","http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
-			Keyword term = new Keyword(r,r);
+			Keyword term = Keyword.NewInstance(r,r);
 			vocabulary.addTerm(term);			
 		}
 		for (DefinedTermBase dt : vocabulary){

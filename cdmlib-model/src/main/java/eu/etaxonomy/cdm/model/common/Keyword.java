@@ -35,12 +35,12 @@ public class Keyword extends OrderedTermBase<Keyword> {
 	}
 
 	
-	private Keyword() {
+	public Keyword() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	private Keyword(String term, String label) {
+	public Keyword(String term, String label) {
 		super(term, label);
 		// TODO Auto-generated constructor stub
 	}

@@ -2,15 +2,24 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl;
 
 
 
@@ -45,11 +54,49 @@ public class TestDatabase {
 		}
 	}
 	
+	public void testPaddie(){
+		 UUID taxonUUID;
+		 boolean isInitialized;
+		
+
+		try {
+			String server = "PADDIE";
+			String database = "edit_test";
+			String username = "andreas";
+			String password = CdmUtils.readInputLine("Password: ");
+			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, username, password);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, DbSchemaValidation.VALIDATE);
+			
+			Rank genus = Rank.GENUS();
+			BotanicalName botanicalName = new BotanicalName(genus);
+			botanicalName.setGenusOrUninomial("GenusName");
+		
+			Journal journal = new Journal();
+			journal.setTitle("JournalTitel");
+			
+			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
+//			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
+	//		botanicalName.getTitleCache();
+			Rank.SPECIES();
+			appCtr.getNameService().saveTaxonName(botanicalName);
+			
+//			appCtr.getTaxonService().saveTaxon(taxon2);
+//			appCtr.getTaxonService().saveTaxon(taxon);
+			
+			IDatabaseService dbService = appCtr.getDatabaseService();
+			INameService nameService = appCtr.getNameService();
+			appCtr.close();
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		}
+	}
+	
 	
 	private void test(){
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
-		testNewDatasourceClass();
+	//	testNewDatasourceClass();
+		testPaddie();
 		System.out.println("\nEnd TestDatabase");
 	}
 	

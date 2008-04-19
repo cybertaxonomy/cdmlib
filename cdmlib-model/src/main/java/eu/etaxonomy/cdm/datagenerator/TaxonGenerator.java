@@ -20,14 +20,14 @@ public class TaxonGenerator {
 	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
-		Person deCandolle = new Person();
+		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.");
 		
         BotanicalName botName = new BotanicalName(Rank.GENUS()); 
         botName.setTitleCache("Hieracium L."); 
         botName.setGenusOrUninomial("Hieracium"); 
-        botName.setCombinationAuthorTeam(new Person()); 
-        botName.getCombinationAuthorTeam().setTitleCache("L."); 
+        botName.setCombinationAuthorTeam(Person.NewInstance()); 
+        botName.getCombinationAuthorTeam().setNomenclaturalTitle("L."); 
         Taxon genusTaxon = new Taxon(); 
         genusTaxon.setName(botName); 
         genusTaxon.setSec(null); 
@@ -42,8 +42,8 @@ public class TaxonGenerator {
         botSpecies.setTitleCache("Hieracium asturianum Pau"); 
         botSpecies.setGenusOrUninomial("Hieracium"); 
         botSpecies.setSpecificEpithet("asturianum"); 
-        botSpecies.setCombinationAuthorTeam(new Person()); 
-        botSpecies.getCombinationAuthorTeam().setTitleCache("Pau"); 
+        botSpecies.setCombinationAuthorTeam(Person.NewInstance()); 
+        botSpecies.getCombinationAuthorTeam().setNomenclaturalTitle("Pau"); 
         Taxon childTaxon = new Taxon(); 
         childTaxon.setName(botSpecies); 
         childTaxon.setSec(null); 
@@ -53,8 +53,8 @@ public class TaxonGenerator {
         botSpecies2.setTitleCache("Hieracium wolffii Zahn"); 
         botSpecies2.setGenusOrUninomial("Hieracium"); 
         botSpecies2.setSpecificEpithet("wolffii"); 
-        botSpecies2.setCombinationAuthorTeam(new Person()); 
-        botSpecies2.getCombinationAuthorTeam().setTitleCache("Zahn"); 
+        botSpecies2.setCombinationAuthorTeam(Person.NewInstance()); 
+        botSpecies2.getCombinationAuthorTeam().setNomenclaturalTitle("Zahn"); 
         Taxon childTaxon2 = new Taxon(); 
         childTaxon2.setName(botSpecies2); 
         childTaxon2.setSec(null); 

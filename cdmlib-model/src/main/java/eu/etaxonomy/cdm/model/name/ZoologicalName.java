@@ -13,10 +13,11 @@ package eu.etaxonomy.cdm.model.name;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.ZooNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
 
 import java.util.*;
 import javax.persistence.*;
@@ -44,7 +45,7 @@ public class ZoologicalName extends NonViralName {
 		super(rank);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
-	public ZoologicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, INomenclaturalAgent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+	public ZoologicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
 		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}

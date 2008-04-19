@@ -74,7 +74,9 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 			if (definedTermsMap.get(uuid) != null){
 				return definedTermsMap.get(uuid);
 			}else{
-				return termDao.findByUuid(uuid);
+				DefinedTermBase term = termDao.findByUuid(uuid);
+				definedTermsMap.put(term.getUuid(), term);
+				return term;
 			}
 		}else{
 			logger.error("Vocabulary Store could not be initialized");
@@ -93,7 +95,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	
 	public boolean loadBasicTerms(){
 		if (! initialized){
-			logger.info("inititialize start ...");
+			logger.info("inititialize VocabularyStoreImpl ...");
 			try {
 				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE().getUuid());
 				

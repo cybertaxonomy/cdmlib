@@ -30,7 +30,12 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	private Taxon acceptedTaxon;
 	private SynonymRelationshipType type;
 
-	 
+	
+	//for hibernate, don't use
+	@Deprecated
+	private SynonymRelationship(){
+	}
+	
 	protected SynonymRelationship(Synonym synoynm, Taxon taxon, SynonymRelationshipType type) {
 		super();
 		this.synonym = synoynm;

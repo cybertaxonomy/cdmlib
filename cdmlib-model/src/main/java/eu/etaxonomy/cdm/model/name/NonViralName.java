@@ -10,15 +10,15 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAgent;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.NonViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Target;
 
 import javax.persistence.*;
 
@@ -41,13 +41,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	//Species subdivision epithet
 	private String infraSpecificEpithet;
 	//Author team that published the present combination
-	private INomenclaturalAgent combinationAuthorTeam;
+	private INomenclaturalAuthor combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
-	private INomenclaturalAgent exCombinationAuthorTeam;
+	private INomenclaturalAuthor exCombinationAuthorTeam;
 	//Author team that published the original publication
-	private INomenclaturalAgent basionymAuthorTeam;
+	private INomenclaturalAuthor basionymAuthorTeam;
 	//Author team that contributed to the original publication of the name
-	private INomenclaturalAgent exBasionymAuthorTeam;
+	private INomenclaturalAuthor exBasionymAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 	
@@ -68,7 +68,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		super(rank);
 		setNameCacheStrategy();
 	}
-	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, INomenclaturalAgent combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
+	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
 		super(rank);
 		setNameCacheStrategy();
 		setGenusOrUninomial(genusOrUninomial);
@@ -81,37 +81,41 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public INomenclaturalAgent getCombinationAuthorTeam(){
+	@Target(TeamOrPersonBase.class)
+	public INomenclaturalAuthor getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
-	public void setCombinationAuthorTeam(INomenclaturalAgent combinationAuthorTeam){
+	public void setCombinationAuthorTeam(INomenclaturalAuthor combinationAuthorTeam){
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public INomenclaturalAgent getExCombinationAuthorTeam(){
+	@Target(TeamOrPersonBase.class)
+	public INomenclaturalAuthor getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
-	public void setExCombinationAuthorTeam(INomenclaturalAgent exCombinationAuthorTeam){
+	public void setExCombinationAuthorTeam(INomenclaturalAuthor exCombinationAuthorTeam){
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public INomenclaturalAgent getBasionymAuthorTeam(){
+	@Target(TeamOrPersonBase.class)
+	public INomenclaturalAuthor getBasionymAuthorTeam(){
 		return basionymAuthorTeam;
 	}
-	public void setBasionymAuthorTeam(INomenclaturalAgent basionymAuthorTeam) {
+	public void setBasionymAuthorTeam(INomenclaturalAuthor basionymAuthorTeam) {
 		this.basionymAuthorTeam = basionymAuthorTeam;
 	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public INomenclaturalAgent getExBasionymAuthorTeam(){
+	@Target(TeamOrPersonBase.class)
+	public INomenclaturalAuthor getExBasionymAuthorTeam(){
 		return exBasionymAuthorTeam;
 	}
-	public void setExBasionymAuthorTeam(INomenclaturalAgent exBasionymAuthorTeam) {
+	public void setExBasionymAuthorTeam(INomenclaturalAuthor exBasionymAuthorTeam) {
 		this.exBasionymAuthorTeam = exBasionymAuthorTeam;
 	}
 

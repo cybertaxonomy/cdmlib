@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import org.apache.log4j.Logger;
 
 
 /**

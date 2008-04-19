@@ -43,7 +43,7 @@ public class TestTaxonFunction {
 		botanicalName.setTitleCache("Hieracium L.");
 		botanicalName.setGenusOrUninomial("Hieracium");
 //		botanicalName.setUninomial("Hieracium");
-		botanicalName.setCombinationAuthorTeam(new Person());
+		botanicalName.setCombinationAuthorTeam(Person.NewInstance());
 		botanicalName.getCombinationAuthorTeam().setTitleCache("L.");
 		Taxon genusTaxon = new Taxon();
 		genusTaxon.setName(botanicalName);
@@ -56,7 +56,7 @@ public class TestTaxonFunction {
 		botSpecies.setGenusOrUninomial("Hieracium");
 //		botSpecies.setUninomial("Hieracium");
 		botSpecies.setSpecificEpithet("asturianum");
-		botSpecies.setCombinationAuthorTeam(new Person());
+		botSpecies.setCombinationAuthorTeam(Person.NewInstance());
 		botSpecies.getCombinationAuthorTeam().setTitleCache("Pau");
 		Taxon childTaxon = new Taxon();
 		childTaxon.setName(botSpecies);
@@ -68,7 +68,7 @@ public class TestTaxonFunction {
 		botSpecies2.setGenusOrUninomial("Hieracium");
 //		botSpecies2.setUninomial("Hieracium");
 		botSpecies2.setSpecificEpithet("wolffii");
-		botSpecies2.setCombinationAuthorTeam(new Person());
+		botSpecies2.setCombinationAuthorTeam(Person.NewInstance());
 		botSpecies2.getCombinationAuthorTeam().setTitleCache("Zahn");
 		Taxon childTaxon2 = new Taxon();
 		childTaxon2.setName(botSpecies2);

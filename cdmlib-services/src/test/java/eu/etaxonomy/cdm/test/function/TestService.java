@@ -60,7 +60,7 @@ public class TestService {
 		bn.setGenusOrUninomial("Abies");
 		
 		logger.info("Create new Author agent...");
-		Person team= new Person();
+		Person team= Person.NewInstance();
 		team.setTitleCache("AuthorAgent1");
 		nvn.setCombinationAuthorTeam(team);
 		

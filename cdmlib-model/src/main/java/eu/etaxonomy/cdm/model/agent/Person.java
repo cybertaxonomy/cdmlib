@@ -12,10 +12,11 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.engine.loading.LoadContexts;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:42
  */
 @Entity
-public class Person extends Agent implements INomenclaturalAgent {
+public class Person extends TeamOrPersonBase {
 	static Logger logger = Logger.getLogger(Person.class);
 
 	private String prefix;
@@ -47,29 +48,38 @@ public class Person extends Agent implements INomenclaturalAgent {
 	private TimePeriod lifespan;
 	protected Set<InstitutionalMembership> institutionalMemberships;
 	private Contact contact;
-	private Set<Keyword> keywords = new HashSet();
+	private Set<Keyword> keywords = new HashSet<Keyword>();
 
+	public static Person NewInstance(){
+		return new Person();
+	}
+	
+	
+	
 	/** 
 	 * Class constructor.
 	 * 
 	 * @see #Person(String, String, String)
 	 */
-	public Person() {
+	private Person() {
+		super();
+		this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
+
 	}
 	
 	/** 
 	 * Class constructor using a "forenames" string (including initials),
 	 * a surname (family name) and an abbreviated name.
 	 *
-	 * @param  firstname     the given name of this person
-	 * @param  lastname      the hereditary name of this person
-	 * @param  abbreviation  a standardised or abbreviated name of this person
+	 * @param  firstname     		the given name of this person
+	 * @param  lastname      		the hereditary name of this person
+	 * @param  nomenclaturalTitel 	(abbreviated) Name as used in nomenclature
 	 * @see                  #Person()
 	 */
-	public Person(String firstname, String lastname, String abbreviation) {
+	public Person(String firstname, String lastname, String nomenclaturalTitel) {
 		this.setFirstname(firstname);
 		this.setLastname(lastname);
-		this.setTitleCache(abbreviation);
+		this.setNomenclaturalTitle(nomenclaturalTitel);
 	}
 	
 	
@@ -242,13 +252,7 @@ public class Person extends Agent implements INomenclaturalAgent {
 	 * @return  the string with the full name of this person
 	 */
 	public String generateTitle(){
-		return "";
-	}
-	
-	
-	public String getNomenclaturalTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return cacheStrategy.getTitleCache(this);
 	}
 
 }

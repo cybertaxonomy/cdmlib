@@ -1,14 +1,19 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+
 
 public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntityDaoBase<T> implements IIdentifiableDao<T>{
 	static Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
@@ -24,5 +29,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 		List<T> results = crit.list();
 		return results;
 	}
+	
 
 }

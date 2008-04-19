@@ -42,6 +42,7 @@ public class CdmTermInitializer {
 		try {
 			logger.info("CdmTermInitializer initializeTerms start ...");
 			termLoader.setVocabularyStore(saver);
+			DefinedTermBase.setVocabularyStore(saver);
 			if (! termLoader.basicTermsExist(saver)){
 				try {
 					termLoader.loadAllDefaultTerms();

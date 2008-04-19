@@ -26,8 +26,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.strategy.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
 
 import java.util.*;
 
@@ -300,16 +300,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 	@Transient
 	public StrictReferenceBase getCitation(){
+		logger.warn("getCitation not yet implemented");
 		return null;
 	}
 
 	@Transient
 	public String getCitationString(){
+		logger.warn("getCitationString not yet implemented");
 		return null;
 	}
 
 	@Transient
 	public String[] getProblems(){
+		logger.warn("getProblems not yet implemented");
 		return null;
 	}
 
@@ -326,7 +329,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		}
 	}
 
-	@OneToMany
+	@OneToMany(mappedBy="name")
 	public Set<TaxonBase> getTaxonBases() {
 		return this.taxonBases;
 	}

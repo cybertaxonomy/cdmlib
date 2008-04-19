@@ -36,13 +36,16 @@ import javax.persistence.*;
 public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
+	public final boolean PROTECTED = true;
+	public final boolean NOT_PROTECTED = true;
+	
 	private String lsid;
 	private String titleCache;
 	//if true titleCache will not be automatically generated/updated
 	private boolean protectedTitleCache;
-	private Set<Rights> rights = new HashSet();
-	private Set<Extension> extensions = new HashSet();
-	private Set<OriginalSource> sources = new HashSet();
+	private Set<Rights> rights = new HashSet<Rights>();
+	private Set<Extension> extensions = new HashSet<Extension>();
+	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
 
 	
 	public String getLsid(){

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,10 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -39,11 +35,13 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBaseTest.class);
 	
+
+	
 	private static UUID taxonUUID;
 	private static boolean isInitialized;
 	
 	@Autowired
-	private TaxonDaoHibernateImpl cdmEntityDaoBase;
+	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
 
 	/**
 	 * @throws java.lang.Exception
@@ -114,10 +112,10 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testSaveOrUpdate() {
 		logger.debug("testSaveOrUpdate");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		cdmBase.setUuid(UUID.randomUUID());
 		UUID newUuid = cdmEntityDaoBase.saveOrUpdate(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
+		CdmBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
 		assertEquals(cdmBase.getId(), cdmBase2.getId());
 	}
 
@@ -127,11 +125,11 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testSave() {
 		logger.debug("testSave");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		UUID newUuid = UUID.randomUUID();
 		cdmBase.setUuid(newUuid);
 		cdmEntityDaoBase.save(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
+		CdmBase cdmBase2 = cdmEntityDaoBase.findByUuid(newUuid);
 		logger.warn("semantic unclear");
 		//assertFalse(cdmBase.getId() == cdmBase2.getId());
 	}
@@ -152,8 +150,8 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testFindById() {
 		logger.debug("testFindById");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
-		TaxonBase cdmBase2 = cdmEntityDaoBase.findById(cdmBase.getId());
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase2 = cdmEntityDaoBase.findById(cdmBase.getId());
 		assertSame(cdmBase, cdmBase2);
 	}
 
@@ -163,7 +161,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testFindByUuid() {
 		logger.debug("testFindByUuid");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNotNull(cdmBase);
 	}
 
@@ -173,7 +171,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testExists() {
 		logger.debug("testExists");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		boolean exists = cdmEntityDaoBase.exists(cdmBase.getUuid());
 		assertTrue(exists);
 		boolean existsRandom = cdmEntityDaoBase.exists(UUID.randomUUID());
@@ -197,10 +195,10 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	@Test
 	public void testDelete() {
 		logger.debug("testDelete");
-		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
-		TaxonBase cdmBase2 = cdmEntityDaoBase.findByUuid(taxonUUID);
+		CdmBase cdmBase2 = cdmEntityDaoBase.findByUuid(taxonUUID);
 		assertNull(cdmBase2);
 	}
 

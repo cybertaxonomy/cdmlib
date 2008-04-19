@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 //import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 //import eu.etaxonomy.cdm.api.service.IDatabaseService;
 //import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -67,6 +69,12 @@ public class TestDatabase {
 //		logger.info("ID:" + bn.getId());
 //		
 //		appCtr.close();
+	}
+	
+	
+	private void createDatabase(){
+		DbSchemaValidation dbschemaval = DbSchemaValidation.CREATE;
+		
 	}
 	
 	private void test(){

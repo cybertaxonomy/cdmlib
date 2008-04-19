@@ -17,9 +17,9 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.strategy.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.TaxonNameParserBotanicalNameImpl;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
+import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
 import eu.etaxonomy.cdm.test.function.TestModel;
 
 /**

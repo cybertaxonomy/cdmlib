@@ -66,7 +66,7 @@ public class Datasource {
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
-			Person agent = new Person();
+			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
 			appCtr.getNameService().saveTaxonName(tn);
@@ -85,7 +85,7 @@ public class Datasource {
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
-			Person agent = new Person();
+			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
 			appCtr.getNameService().saveTaxonName(tn);
@@ -104,7 +104,7 @@ public class Datasource {
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
-			Person agent = new Person();
+			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
 			TaxonNameBase tn = new BotanicalName(null);
 			appCtr.getNameService().saveTaxonName(tn);
