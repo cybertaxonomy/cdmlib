@@ -39,11 +39,13 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/INomenclaturalAgent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/INomenclaturalAuthor.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Institution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/InstitutionType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembership.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Person.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/TeamOrPersonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
