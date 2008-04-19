@@ -206,7 +206,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/BotanicNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/INameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/IStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ITaxonNameParser.java -text
@@ -215,8 +214,19 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/NonViralNameDefaultCacheStr
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/StrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/ZooNameDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/BotanicNameDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/IIdentifiableEntityCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/INameCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/INomenclaturalAuthorCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/NameCacheStrategyBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/NonViralNameDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/PersonDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/TeamDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/ZooNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ITaxonNameParser.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
