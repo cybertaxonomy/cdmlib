@@ -112,8 +112,11 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	}
 	
 	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid){
-		initialize();
-		return vocabularyDao.findByUuid(uuid);
+		if (! initialize()){
+			return null;
+		}else{
+			return vocabularyDao.findByUuid(uuid);
+		}
 	}
 	
 	public boolean initialize(){
@@ -130,6 +133,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 				if (defaultLanguage == null){
 					logger.info("bbb ...");
 					logger.info("DL ..."  + DEFAULT_LANGUAGE.hashCode());
+					//DEFAULT_LANGUAGE.setId(0);
 					termDao.saveOrUpdate(DEFAULT_LANGUAGE);
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 					definedTermsMap.put(DEFAULT_LANGUAGE.getUuid(), DEFAULT_LANGUAGE);

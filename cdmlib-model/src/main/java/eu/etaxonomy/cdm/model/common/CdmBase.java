@@ -193,22 +193,44 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/**
 	 * Is true if UUID and created timestamp are the same for the passed Object and this one.
 	 * @see java.lang.Object#equals(java.lang.Object)
+	 * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities} 
+	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
+	 * for more information about equals and hashcode. 
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == this){
+			return true;
+		}
 		if (obj == null){
 			return false;
-		}else if (CdmBase.class.isAssignableFrom(obj.getClass())){
-			ICdmBase cdmObj = (ICdmBase)obj;
-			boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
-			boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
-			if (uuidEqual && createdEqual){
-				return true;
-			}
 		}
-		return false;
+		if (!CdmBase.class.isAssignableFrom(obj.getClass())){
+			return false;
+		}
+		ICdmBase cdmObj = (ICdmBase)obj;
+		boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
+		boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
+		if (! uuidEqual || !createdEqual){
+				return false;
+		}
+		return true;
 	}
+
 	
+	/** Overrides {@link java.lang.Object#hashCode()}
+	 *  See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities} 
+	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
+	 * for more information about equals and hashcode. 
+	 */
+	 @Override
+	public int hashCode() {
+		   int hashCode = 7;
+		   hashCode = 29 * hashCode + this.getUuid().hashCode();
+		   //hashCode = 29 * hashCode + this.getCreated().hashCode();
+		   return hashCode;
+	}
+
 	/**
 	 * Returns the class, id and uuid as a string for any CDM object. 
 	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
