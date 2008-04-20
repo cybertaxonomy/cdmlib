@@ -11,9 +11,14 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
+/**
+ * @author AM
+ *
+ */
 /**
  * @author AM
  *
@@ -28,16 +33,16 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	}
 	
 	
-	static protected Map<UUID, DefinedTermBase> definedTermsMap = null;
+	static protected Map<UUID, ILoadableTerm> definedTermsMap = null;
 	static protected Map<UUID, TermVocabulary<DefinedTermBase>> termVocabularyMap = null;
 
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getTermByUuid(java.util.UUID)
 	 */
-	public DefinedTermBase getTermByUuid(UUID uuid) {
+	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid) {
 		if (!isInitialized  &&  ! loadBasicTerms()){ return null;}
-		return definedTermsMap.get(uuid);
+		return (DefinedTermBase<DefinedTermBase>)definedTermsMap.get(uuid);
 	}
 
 	/* (non-Javadoc)
@@ -53,9 +58,9 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
+		logger.info("dddd");
 		loadBasicTerms();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
-
 		while (termIterator.hasNext()){
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
 			if (definedTermsMap.get(term.getUuid()) != null){
@@ -66,11 +71,23 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 		termVocabularyMap.put(vocabulary.getUuid(), vocabulary);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	public void saveOrUpdate(ILoadableTerm term) {
+		loadBasicTerms();
+		if (definedTermsMap.get(term.getUuid()) != null){
+			term.setId(definedTermsMap.get(term.getUuid()).getId()); // to avoid duplicates in the default Language
+		}
+		definedTermsMap.put(term.getUuid(), term);
+		termVocabularyMap.put(term.getVocabulary().getUuid(), term.getVocabulary());
+	}
+	
 	
 	public boolean loadBasicTerms() {
 		if (definedTermsMap == null){
 			logger.info("initTermsMap start ...");
-			definedTermsMap = new HashMap<UUID, DefinedTermBase>();
+			definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 			try {
 				definedTermsMap.put(DEFAULT_LANGUAGE().getUuid(), DEFAULT_LANGUAGE());
 				TermLoader termLoader = new TermLoader(this);

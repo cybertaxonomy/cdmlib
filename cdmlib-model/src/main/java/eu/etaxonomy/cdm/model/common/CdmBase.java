@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
  *
  */
 @MappedSuperclass
-public abstract class CdmBase implements Serializable{
+public abstract class CdmBase implements Serializable, ICdmBase{
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private int id;
 	private UUID uuid;
@@ -107,20 +107,16 @@ public abstract class CdmBase implements Serializable{
 		propertyChangeSupport.firePropertyChange(evt);
 	}
 
-	/**
-	 * Returns local unique identifier for the concrete subclass
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
 	 */
 	@Id
 	@GeneratedValue(generator = "system-increment")
 	public int getId() {
 		return this.id;
 	}
-	/**
-	 * Assigns a unique local ID to this object. 
-	 * Because of the EJB3 @Id and @GeneratedValue annotation this id will be
-	 * set automatically by the persistence framework when object is saved.
-	 * @param id
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setId(int)
 	 */
 	public void setId(int id) {
 		this.id = id;
@@ -144,27 +140,31 @@ public abstract class CdmBase implements Serializable{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
+	 */
 	@Transient
 	public UUID getUuid() {
 		return this.uuid;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
+	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
+	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Basic(fetch = FetchType.LAZY)
 	public Calendar getCreated() {
 		return created;
 	}
-	/**
-	 * Sets the timestamp this object was created. 
-	 * Most databases cannot store milliseconds, so they are removed by this method.
-	 * Caution: We are planning to replace the Calendar class with a different datetime representation which is more suitable for hibernate
-	 * see {@link http://dev.e-taxonomy.eu/trac/ticket/247 TRAC ticket} 
-	 * 
-	 * @param created
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreated(java.util.Calendar)
 	 */
 	public void setCreated(Calendar created) {
 		if (created != null){
@@ -174,11 +174,17 @@ public abstract class CdmBase implements Serializable{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
+	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Person getCreatedBy() {
 		return this.createdBy;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreatedBy(eu.etaxonomy.cdm.model.agent.Person)
+	 */
 	public void setCreatedBy(Person createdBy) {
 		this.createdBy = createdBy;
 	}
@@ -193,7 +199,7 @@ public abstract class CdmBase implements Serializable{
 		if (obj == null){
 			return false;
 		}else if (CdmBase.class.isAssignableFrom(obj.getClass())){
-			CdmBase cdmObj = (CdmBase)obj;
+			ICdmBase cdmObj = (ICdmBase)obj;
 			boolean uuidEqual = cdmObj.getUuid().equals(this.getUuid());
 			boolean createdEqual = cdmObj.getCreated().equals(this.getCreated());
 			if (uuidEqual && createdEqual){

@@ -129,14 +129,16 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		return this.getInverseRepresentation(lang).getDescription();
 	}
 	
-	public void readCsvLine(List csvLine) {
+	public ILoadableTerm readCsvLine(List csvLine) {
+		RelationshipTermBase result;
 		// read UUID, URI, english label+description
 		List<String> csvLineString = (List<String>)csvLine;
-		super.readCsvLine(csvLineString);
+		result = (RelationshipTermBase)super.readCsvLine(csvLineString);
 		// inverse label + 2 booleans
-		this.addInverseRepresentation(new Representation(csvLineString.get(4).trim(), csvLineString.get(5).trim(), Language.ENGLISH()) );
-		this.setSymmetric(Boolean.parseBoolean(csvLineString.get(6)));
-		this.setTransitive(Boolean.parseBoolean(csvLineString.get(7)));
+		result.addInverseRepresentation(new Representation(csvLineString.get(4).trim(), csvLineString.get(5).trim(), Language.ENGLISH()) );
+		result.setSymmetric(Boolean.parseBoolean(csvLineString.get(6)));
+		result.setTransitive(Boolean.parseBoolean(csvLineString.get(7)));
+		return result;
 	}
 	
 	public void writeCsvLine(CSVWriter writer) {

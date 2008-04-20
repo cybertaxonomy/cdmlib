@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.common.init;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -23,13 +24,22 @@ public interface IVocabularyStore {
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary);
 	
+	
+	
+	/**
+	 * TODO
+	 * @param term
+	 */
+	public void saveOrUpdate(ILoadableTerm term);
+
+	
 	 /** ATTENTION: Be aware that TermLoader indirectly calls getTermByUuid(uuid)
 	 * for the default language. So make sure that before loading the Terms by the
 	 * TermLoader getTermByUuid() returns a valid Object without going to endless recursion.
 	 * @param uuid the definedTermBases UUID
 	 * @return the DefinedTermBase to return
 	 */
-	public DefinedTermBase getTermByUuid(UUID uuid);
+	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid);
 	
 	/**
 	 * @param uuid

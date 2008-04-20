@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.view;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -90,7 +91,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	public void addMember(CdmBase member) {
 		this.members.add(member);
 	}
-	public void removeMember(CdmBase member) {
+	public void removeMember(ICdmBase member) {
 		this.members.remove(member);
 	}
 
@@ -105,7 +106,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	public void addNonMember(CdmBase member) {
 		this.nonMembers.add(member);
 	}
-	public void removeNonMember(CdmBase member) {
+	public void removeNonMember(ICdmBase member) {
 		this.nonMembers.remove(member);
 	}
 

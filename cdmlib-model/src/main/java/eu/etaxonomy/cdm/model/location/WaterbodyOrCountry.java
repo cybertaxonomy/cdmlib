@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.location;
 
 
 
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -599,11 +600,13 @@ uuidPersianGulf
 	}
 
 	
-	public void readCsvLine(List<String> csvLine) {
+	public ILoadableTerm readCsvLine(List<String> csvLine) {
+		ILoadableTerm result;
 		// read UUID, URI, english label+description
-		super.readCsvLine(csvLine);
+		result = super.readCsvLine(csvLine);
 		// iso codes extra
 		this.iso2code=csvLine.get(4).trim();
+		return result;
 	}
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];

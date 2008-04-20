@@ -37,7 +37,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements IDefTerm{
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm{
 	static Logger logger = Logger.getLogger(DefinedTermBase.class);
 	
 	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
@@ -66,20 +66,22 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#readCsvLine(java.util.List)
+	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */
-	public void readCsvLine(List<String> csvLine) {
-		readCsvLine(csvLine, Language.ENGLISH());
+	public ILoadableTerm readCsvLine(List<String> csvLine) {
+		return readCsvLine(csvLine, Language.ENGLISH());
 	}
-	public void readCsvLine(List<String> csvLine, Language lang) {
+	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
-		this.addRepresentation(new Representation(csvLine.get(3), csvLine.get(2).trim(), lang) );
+		this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
+		return this;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter)
+	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter)
 	 */
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[4];

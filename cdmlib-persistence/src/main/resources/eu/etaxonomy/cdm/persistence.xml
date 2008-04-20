@@ -48,7 +48,7 @@
             <value>eu.etaxonomy.cdm.model.common.Extension</value>
             <value>eu.etaxonomy.cdm.model.common.ExtensionType</value>
             <value>eu.etaxonomy.cdm.model.common.Figure</value>
-            <value>eu.etaxonomy.cdm.model.common.IDefTerm</value>
+            <value>eu.etaxonomy.cdm.model.common.ILoadableTerm</value>
             <value>eu.etaxonomy.cdm.model.common.IdentifiableEntity</value>
             <value>eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity</value>
             <value>eu.etaxonomy.cdm.model.common.IEvent</value>

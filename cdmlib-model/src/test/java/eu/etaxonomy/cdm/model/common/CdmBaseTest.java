@@ -507,7 +507,7 @@ public class CdmBaseTest extends EntityTestBase{
 	 */
 	@Test
 	public void testEqualsObject() {
-		CdmBase cdmBase2 = getTestCdmBase();
+		ICdmBase cdmBase2 = getTestCdmBase();
 		cdmBase2.setUuid(cdmBase.getUuid());
 		cdmBase2.setCreated(cdmBase.getCreated());
 		cdmBase2.setCreatedBy(Person.NewInstance());

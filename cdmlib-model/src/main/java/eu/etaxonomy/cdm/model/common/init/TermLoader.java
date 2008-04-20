@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefTerm;
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -63,7 +62,7 @@ public class TermLoader {
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
 	@Transactional(readOnly = false)
-	public TermVocabulary<DefinedTermBase> loadTerms(Class<IDefTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+	public TermVocabulary<DefinedTermBase> loadTerms(Class<ILoadableTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
 		TermVocabulary voc;
 		DefinedTermBase.setVocabularyStore(vocabularyStore); //otherwise DefinedTermBase is not able to find DefaultLanguage
 		if (isOrdered){
@@ -71,6 +70,9 @@ public class TermLoader {
 		}else{
 			voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
 		}
+		logger.info("save vocabulary ...");
+		saveVocabulary(voc, termClass);
+		logger.info("save vocabulary end.");
 		try {
 			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 			logger.debug("strResourceFileName is " + strResourceFileName);
@@ -81,28 +83,34 @@ public class TermLoader {
 			String [] nextLine;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-				IDefTerm term = termClass.newInstance();
-				ArrayList<String> aList = new ArrayList<String>(10);
+				ArrayList<String> csvTermAttributeList = new ArrayList<String>(10);
 				for (String col : nextLine){
-					aList.add(col);
+					csvTermAttributeList.add(col);
 				}
-				while (aList.size()<10){
-					aList.add("");
+				while (csvTermAttributeList.size()<10){
+					csvTermAttributeList.add("");
 				}
-				term.readCsvLine(aList);
+				
+				ILoadableTerm term = termClass.newInstance();
+				term = term.readCsvLine(csvTermAttributeList);
 				term.setVocabulary(voc);
+				vocabularyStore.saveOrUpdate(term);
 				// save enumeration and all terms to DB
-				if (vocabularyStore != null){
-					vocabularyStore.saveOrUpdate(voc);
-				}else{
-					//e.g. in tests when no database connection exists
-					if (logger.isDebugEnabled()) {logger.debug("No vocabularyStore exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
-				}
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		return voc;
+	}
+	
+	private void saveVocabulary(TermVocabulary voc, Class<ILoadableTerm> termClass){
+		if (vocabularyStore != null){
+			vocabularyStore.saveOrUpdate(voc);
+		}else{
+			//e.g. in tests when no database connection exists
+			if (logger.isDebugEnabled()) {logger.debug("No vocabularyStore exists. Vocabulary for class '" + termClass +  "' could not be saved to database");}
+		}
+
 	}
 
 	public TermVocabulary<DefinedTermBase> loadDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
@@ -158,7 +166,7 @@ public class TermLoader {
 		if (saver == null){
 			return false;
 		}
-		DefinedTermBase basicTerm = saver.getTermByUuid(uuid);
+		ILoadableTerm basicTerm = saver.getTermByUuid(uuid);
 		if ( basicTerm == null || ! basicTerm.getUuid().equals(uuid)){
 			return false;
 		}else{

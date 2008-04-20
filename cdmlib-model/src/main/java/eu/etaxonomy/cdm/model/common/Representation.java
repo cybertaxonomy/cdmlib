@@ -28,6 +28,10 @@ public class Representation extends LanguageString {
 	private String label;
 	private String abbreviatedLabel;
 
+	public static Representation NewInstance(String text, String label, Language lang){
+		return new Representation(text, label, lang);
+	}
+	
 	public Representation() {
 		super();
 	}	

@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -39,9 +41,24 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
-		Session session = getSession();
-		session.saveOrUpdate(transientObject);
-		return transientObject.getUuid();
+		try {
+			logger.info("dao saveOrUpdate start...");
+			logger.info("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;
+			Session session = getSession();
+			session.saveOrUpdate(transientObject);
+			logger.info("dao saveOrUpdate edc");
+			return transientObject.getUuid();
+		} catch (NonUniqueObjectException e) {
+			logger.error(e.getIdentifier());
+			logger.error(e.getEntityName());
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (HibernateException e) {
+			
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	public UUID save(T newInstance) throws DataAccessException {

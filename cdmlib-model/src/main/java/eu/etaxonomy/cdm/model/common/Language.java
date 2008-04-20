@@ -45,7 +45,9 @@ public class Language extends DefinedTermBase {
 	private static final UUID uuidDutch = UUID.fromString("9965d79a-acf9-4921-a2c0-863b8c16c056");
 	private static final UUID uuidPolish = UUID.fromString("3fdca387-f1b0-4ec1-808f-1bc3dc482194");
 	
-	
+	public static Language NewInstance(){
+		return new Language();
+	}
 	
 	private char[] iso639_1 = new char[2];
 	private char[] iso639_2 = new char[3];
@@ -135,14 +137,24 @@ public class Language extends DefinedTermBase {
 		return getUUID(uuidPolish);
 	}
  
-	public void readCsvLine(List csvLine) {
-		// read UUID, URI, english label+description
-		List<String> csvLineString = csvLine;
-		super.readCsvLine(csvLine);
-		// iso codes extra
-		this.iso639_1=csvLineString.get(4).trim().toCharArray();
-		this.iso639_2=csvLineString.get(5).trim().toCharArray();
+	@Override 
+	public ILoadableTerm readCsvLine(List csvLine) {
+		ILoadableTerm result;
+		if ( UUID.fromString(csvLine.get(0).toString()).equals(DEFAULT().getUuid()) && this != DEFAULT() ){
+			result = DEFAULT();
+			result.readCsvLine(csvLine);
+		}else{
+			// read UUID, URI, english label+description
+			List<String> csvLineString = csvLine;
+			result = this;
+			super.readCsvLine(csvLine);
+			// iso codes extra
+			this.iso639_1=csvLineString.get(4).trim().toCharArray();
+			this.iso639_2=csvLineString.get(5).trim().toCharArray();
+		}
+		return result;
 	}
+	
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];
 		line[0] = getUuid().toString();
