@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

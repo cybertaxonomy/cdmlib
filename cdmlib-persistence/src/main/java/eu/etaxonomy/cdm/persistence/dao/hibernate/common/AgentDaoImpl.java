@@ -1,9 +1,10 @@
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
 
 
 @Repository

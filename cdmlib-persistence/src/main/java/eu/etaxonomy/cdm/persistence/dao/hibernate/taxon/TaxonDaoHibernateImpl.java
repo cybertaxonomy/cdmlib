@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao.taxon;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -11,7 +11,8 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
  * @author a.mueller

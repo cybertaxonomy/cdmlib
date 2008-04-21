@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +11,7 @@ import org.hibernate.Query;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 @Repository
 public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implements IDefinedTermDao{
