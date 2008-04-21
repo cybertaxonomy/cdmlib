@@ -35,15 +35,15 @@ public class TaxonTest extends EntityTestBase {
 		sec=new Book();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu");
-		name1=new ZoologicalName(Rank.SPECIES(),"Panthera","onca",null,linne,null,"p.1467");
-		name2=new BotanicalName(Rank.SPECIES(),"Abies","alba",null,linne,null,"p.317");
-		name3=new BotanicalName(Rank.SUBSPECIES(),"Polygala","vulgaris","alpina",linne,null,"p.191");
-		name4=new BotanicalName(Rank.SPECIES(),"Cichoria","carminata",null,linne,null,"p.14");
-		rootT=Taxon.NewInstance(name1,sec);
-		freeT=Taxon.NewInstance(name4,sec);
+		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera","onca",null,linne,null,"p.1467", null);
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies","alba",null,linne,null,"p.317", null);
+		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala","vulgaris","alpina",linne,null,"p.191", null);
+		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria","carminata",null,linne,null,"p.14", null);
+		rootT = Taxon.NewInstance(name1,sec);
+		freeT = Taxon.NewInstance(name4,sec);
 		// taxonomic children
-		child1=Taxon.NewInstance(name2,sec);
-		child2=Taxon.NewInstance(name3,sec);
+		child1 = Taxon.NewInstance(name2,sec);
+		child2 = Taxon.NewInstance(name3,sec);
 		rootT.addTaxonomicChild(child1, sec, "p.998");
 		rootT.addTaxonomicChild(child2, sec, "p.987");
 		// synonymy

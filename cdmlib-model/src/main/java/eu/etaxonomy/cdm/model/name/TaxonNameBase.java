@@ -82,11 +82,21 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	
 // ************* CONSTRUCTORS *************/	
 	public TaxonNameBase() {
-		super();
+		this(null, null);
 	}
 	public TaxonNameBase(Rank rank) {
+		this(rank, null);
+	}
+	public TaxonNameBase(HomotypicalGroup homotypicalGroup) {
+		this(null, homotypicalGroup);
+	}
+	public TaxonNameBase(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super();
 		this.setRank(rank);
+		if (homotypicalGroup == null){
+			homotypicalGroup = new HomotypicalGroup();
+		}
+		homotypicalGroup.addTypifiedName(this);
 	}
 	
 //********* METHODS **************************************/

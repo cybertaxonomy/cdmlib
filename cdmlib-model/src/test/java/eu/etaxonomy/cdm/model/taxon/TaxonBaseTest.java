@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -56,11 +57,12 @@ public class TaxonBaseTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		sec=new Book();
 		sec.setTitleCache("Schoenes saftiges Allg�u");
-		name1=new ZoologicalName(Rank.SPECIES(),"Panthera","onca",null,null,null,"p.1467");
-		name2=new BotanicalName(Rank.SPECIES(),"Abies","alba",null,null,null,"p.317");
+		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera","onca",null,null,null,"p.1467", null);
+		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies","alba",null,null,null,"p.317", homotypicalGroup);
 		// taxa
-		taxon1=Taxon.NewInstance(name1,sec);
-		synonym1=Synonym.NewInstance(name2,sec);
+		taxon1 = Taxon.NewInstance(name1,sec);
+		synonym1 = Synonym.NewInstance(name2,sec);
 		freeT = Taxon.NewInstance(null, null);
 	}
 

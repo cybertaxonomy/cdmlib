@@ -23,7 +23,7 @@ public class TaxonGenerator {
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.");
 		
-        BotanicalName botName = new BotanicalName(Rank.GENUS()); 
+        BotanicalName botName = BotanicalName.NewInstance(Rank.GENUS()); 
         botName.setTitleCache("Hieracium L."); 
         botName.setGenusOrUninomial("Hieracium"); 
         botName.setCombinationAuthorTeam(Person.NewInstance()); 
@@ -32,13 +32,13 @@ public class TaxonGenerator {
         genusTaxon.setName(botName); 
         genusTaxon.setSec(null); 
                         
-        BotanicalName basionym = new BotanicalName(Rank.GENUS()); 
+        BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS()); 
         basionym.setTitleCache("Hieracilla DC."); 
         basionym.setGenusOrUninomial("Hieracilla"); 
         basionym.setCombinationAuthorTeam(deCandolle); 
         botName.setBasionym(basionym, "¤216");
         
-        BotanicalName botSpecies = new BotanicalName(Rank.SPECIES()); 
+        BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES()); 
         botSpecies.setTitleCache("Hieracium asturianum Pau"); 
         botSpecies.setGenusOrUninomial("Hieracium"); 
         botSpecies.setSpecificEpithet("asturianum"); 
@@ -49,7 +49,7 @@ public class TaxonGenerator {
         childTaxon.setSec(null); 
         childTaxon.setTaxonomicParent(genusTaxon, null, null); 
 
-        BotanicalName botSpecies2= new BotanicalName(Rank.SPECIES()); 
+        BotanicalName botSpecies2= BotanicalName.NewInstance(Rank.SPECIES()); 
         botSpecies2.setTitleCache("Hieracium wolffii Zahn"); 
         botSpecies2.setGenusOrUninomial("Hieracium"); 
         botSpecies2.setSpecificEpithet("wolffii"); 
@@ -60,7 +60,7 @@ public class TaxonGenerator {
         childTaxon2.setSec(null); 
         childTaxon2.setTaxonomicParent(genusTaxon, null, null); 
         
-        BotanicalName botSpecies3= new BotanicalName(Rank.SPECIES()); 
+        BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES()); 
         botSpecies3.setTitleCache("Hieracium lupium DC."); 
         botSpecies3.setGenusOrUninomial("Hieracium"); 
         botSpecies3.setSpecificEpithet("lupium"); 

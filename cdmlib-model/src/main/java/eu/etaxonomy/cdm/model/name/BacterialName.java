@@ -29,10 +29,17 @@ public class BacterialName extends NonViralName {
 	//Approbation of name according to approved list, validation list,or validly published, paper in IJSB after 1980
 	private String nameApprobation;
 
-	public BacterialName(Rank rank) {
-		super(rank);
+	public static BacterialName NewInstance(Rank rank){
+		return new BacterialName(rank, null);
 	}
 
+	public static BacterialName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new BacterialName(rank, homotypicalGroup);
+	}
+
+	protected BacterialName(Rank rank, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
+	}
 	
 	public String getSubGenusAuthorship(){
 		return this.subGenusAuthorship;

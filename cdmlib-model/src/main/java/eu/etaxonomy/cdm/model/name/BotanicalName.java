@@ -50,7 +50,21 @@ public class BotanicalName extends NonViralName {
 	 * @return
 	 */
 	public static BotanicalName NewInstance(Rank rank){
-		return new BotanicalName(rank);
+		return new BotanicalName(rank, null);
+	}
+
+
+	/**
+	 * @param rank
+	 * @param homotypicalGroup
+	 * @return
+	 */
+	public static BotanicalName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new BotanicalName(rank, homotypicalGroup);
+	}
+	
+	public static  BotanicalName NewInstance(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		return new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 	}
 	
 	/**
@@ -79,12 +93,12 @@ public class BotanicalName extends NonViralName {
 		super();
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
-	public BotanicalName(Rank rank) {
-		super(rank);
+	protected BotanicalName(Rank rank, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
-	public BotanicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
-		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+	protected BotanicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 	}
 

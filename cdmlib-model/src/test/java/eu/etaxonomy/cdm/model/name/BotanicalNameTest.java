@@ -13,13 +13,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -65,11 +62,11 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Test
 	public final void testBotanicalNameRank() {
-		BotanicalName rankName = new BotanicalName(Rank.GENUS());
+		BotanicalName rankName = BotanicalName.NewInstance(Rank.GENUS());
 		assertNotNull(rankName);
 		assertSame(Rank.GENUS(), rankName.getRank());
 		assertTrue(rankName.getRank().isGenus());
-		BotanicalName nullRankName = new BotanicalName(null);
+		BotanicalName nullRankName = BotanicalName.NewInstance(null);
 		assertNotNull(nullRankName);
 		assertNull(nullRankName.getRank());
 	}
@@ -83,14 +80,16 @@ public class BotanicalNameTest extends EntityTestBase{
 		TeamOrPersonBase combinationAuthorTeam = Team.NewInstance();
 		INomenclaturalReference nomenclaturalReference = new Article();
 		String nomenclMicroRef = "microRef";
-		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
+		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		assertEquals(Rank.SPECIALFORM(), fullName.getRank());
 		assertEquals("Genus", fullName.getGenusOrUninomial());
 		assertEquals("specEpi", fullName.getSpecificEpithet());
 		assertEquals("infraSpecificEpi", fullName.getInfraSpecificEpithet());
 		assertEquals(combinationAuthorTeam, fullName.getCombinationAuthorTeam());
 		assertEquals(nomenclaturalReference, fullName.getNomenclaturalReference());
-		assertEquals("microRef", fullName.getNomenclaturalMicroReference());	
+		assertEquals("microRef", fullName.getNomenclaturalMicroReference());
+		assertSame(homotypicalGroup, fullName.getHomotypicalGroup());
 	}
 
 	@Test

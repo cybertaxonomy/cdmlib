@@ -32,7 +32,7 @@ public class DatabaseInitialiser {
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
 		ReferenceBase sec = new Journal();
-		TaxonNameBase nm = new BotanicalName(Rank.SPECIES());
+		TaxonNameBase nm = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon tax = Taxon.NewInstance(nm, sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nm.setNameCache(speciesname);

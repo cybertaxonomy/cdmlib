@@ -94,7 +94,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testNonViralNameRank() {
-		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS());
+		NonViralName nonViralName = NonViralName.NewInstance(Rank.GENUS());
 		assertNotNull(nonViralName);
 	}
 
@@ -105,7 +105,8 @@ public class NonViralNameTest extends EntityTestBase {
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
 		Article article = new Article();
-		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS(), "Genus", "species", "infraSpec", agent, article, "mikro");
+		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
+		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS(), "Genus", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("species", nonViralName.getSpecificEpithet() );
 		assertEquals("infraSpec", nonViralName.getInfraSpecificEpithet());

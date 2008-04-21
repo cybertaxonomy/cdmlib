@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -26,8 +27,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+
 
 /**
  * A homotypical group represents all names that share the same type specimens.
@@ -44,12 +44,17 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	protected Set<TaxonNameBase> typifiedNames = new HashSet();
 	protected Set<SpecimenTypeDesignation> typeDesignations = new HashSet();
 
+	public static HomotypicalGroup NewInstance(){
+		return new HomotypicalGroup();
+	}
+	
+	
 	public HomotypicalGroup() {
 		super();
 	}
 	
 	
-	@OneToMany
+	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.EAGER)
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
 	}

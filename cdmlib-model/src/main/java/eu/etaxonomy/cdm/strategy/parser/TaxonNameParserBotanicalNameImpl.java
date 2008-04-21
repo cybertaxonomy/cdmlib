@@ -65,7 +65,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		if (fullReference == null){
 			return null;
 		}else{
-			BotanicalName result = new BotanicalName(null);
+			BotanicalName result = BotanicalName.NewInstance(null);
 			parseFullReference(result, fullReference, rank, false);
 			return result;
 		}
@@ -242,7 +242,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		if (fullName == null){
 			return null;
 		}else{
-			BotanicalName result = new BotanicalName(null);
+			BotanicalName result = BotanicalName.NewInstance(null);
 			parseFullName(result, fullName, rank, false);
 			return result;
 		}
@@ -524,7 +524,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	//Parsing of the given full name that has been identified as hybrid already somewhere else.
 	private BotanicalName parseHybrid(String fullName){
 	    logger.warn("parseHybrid --> function not yet implemented");
-	    BotanicalName result = new BotanicalName(null);
+	    BotanicalName result = BotanicalName.NewInstance(null);
 	    result.setTitleCache(fullName);
 	    return result;
     }

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 		@Test
 		public void testPropertyChange() {
-			NonViralName b = new NonViralName(Rank.SPECIES());
+			NonViralName b = NonViralName.NewInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 		@Test
 		public void testPropertyChangeBoolean() {
-			BotanicalName b = new BotanicalName(Rank.SPECIES());
+			BotanicalName b = BotanicalName.NewInstance(Rank.SPECIES());
 			b.addPropertyChangeListener(this);
 			b.setAnamorphic(true);
 			assertEquals(b.isAnamorphic(), lastPropValue);

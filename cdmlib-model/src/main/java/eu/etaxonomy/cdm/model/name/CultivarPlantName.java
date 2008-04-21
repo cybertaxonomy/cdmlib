@@ -24,14 +24,24 @@ import javax.persistence.*;
  */
 @Entity
 public class CultivarPlantName extends BotanicalName {
-	public CultivarPlantName(Rank rank) {
-		super(rank);
-	}
-
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
+	
 	//the caracteristical name of the cultivar
 	private String cultivarName;
 
+
+	public static CultivarPlantName NewInstance(Rank rank){
+		return new CultivarPlantName(rank, null);
+	}
+
+	public static CultivarPlantName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new CultivarPlantName(rank, homotypicalGroup);
+	}
+	
+	protected CultivarPlantName(Rank rank, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
+	}
+	
 	public String getCultivarName(){
 		return this.cultivarName;
 	}

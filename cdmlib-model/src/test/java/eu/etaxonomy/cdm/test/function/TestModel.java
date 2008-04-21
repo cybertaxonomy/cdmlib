@@ -27,9 +27,9 @@ public class TestModel {
 	public void testAppController(){
 		
 		logger.info("Create name objects...");
-		NonViralName tn = new NonViralName(Rank.SPECIES());
-		BotanicalName tn3 = new BotanicalName(Rank.SUBSPECIES());
-		ZoologicalName parentName = new ZoologicalName(Rank.FAMILY());
+		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
+		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
 		ReferenceBase sec = new Journal();
@@ -61,7 +61,7 @@ public class TestModel {
 	}
 	
 	public void testParentRelation(){
-		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
 		ReferenceBase ref = new Journal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);

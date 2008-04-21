@@ -32,6 +32,7 @@ import javax.persistence.*;
 @Entity
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName> {
 	static Logger logger = Logger.getLogger(NonViralName.class);
+	
 	//The suprageneric or the genus name
 	private String genusOrUninomial;
 	//Genus subdivision epithet
@@ -51,25 +52,28 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
 	
+	
+	public static NonViralName NewInstance(Rank rank){
+		return new NonViralName(rank, null);
+	}
+
+	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new NonViralName(rank, homotypicalGroup);
+	}
+	
+	
 	//needed by hibernate
 	protected NonViralName(){
 		super();
 		setNameCacheStrategy();
 	}
 	
-	private void setNameCacheStrategy(){
-		if (getClass() == NonViralName.class){
-			this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
-		}
-		
-	}
-	
-	public NonViralName(Rank rank) {
-		super(rank);
+	protected NonViralName(Rank rank, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
 		setNameCacheStrategy();
 	}
-	public NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
-		super(rank);
+	protected NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
 		setNameCacheStrategy();
 		setGenusOrUninomial(genusOrUninomial);
 		setSpecificEpithet(specificEpithet);
@@ -77,6 +81,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		setCombinationAuthorTeam(combinationAuthorTeam);
 		setNomenclaturalReference(nomenclaturalReference);
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
+	}
+	
+	private void setNameCacheStrategy(){
+		if (getClass() == NonViralName.class){
+			this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+		}
+		
 	}
 
 	@ManyToOne

@@ -72,7 +72,7 @@ public class BotanicNameCacheStrategyTest {
 		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
 		
 		//TODO
-		subGenusName = new BotanicalName(Rank.SUBGENUS());
+		subGenusName = BotanicalName.NewInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 		

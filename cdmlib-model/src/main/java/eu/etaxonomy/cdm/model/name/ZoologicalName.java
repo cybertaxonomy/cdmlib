@@ -37,16 +37,29 @@ public class ZoologicalName extends NonViralName {
 	private Integer publicationYear;
 	private Integer originalPublicationYear;
 
-	private ZoologicalName() {
+
+	public static ZoologicalName NewInstance(Rank rank){
+		return new ZoologicalName(rank, null);
+	}
+
+	public static ZoologicalName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new ZoologicalName(rank, homotypicalGroup);
+	}
+	public static ZoologicalName NewInstance(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		return new ZoologicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+	}	
+	
+	protected ZoologicalName() {
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 	
-	public ZoologicalName(Rank rank) {
-		super(rank);
+	protected ZoologicalName(Rank rank, HomotypicalGroup homotypicalGroup) {
+		super(rank, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
-	public ZoologicalName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef) {
-		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef);
+
+	protected ZoologicalName (Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 	
