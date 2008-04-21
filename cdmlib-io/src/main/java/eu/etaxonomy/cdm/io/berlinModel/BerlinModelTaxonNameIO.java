@@ -84,7 +84,7 @@ public class BerlinModelTaxonNameIO {
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
 					//FIXME
 					//BotanicalName name = BotanicalName.NewInstance(BerlinModelTransformer.rankId2Rank(rankId));
-					BotanicalName botanicalName = new BotanicalName(rank);
+					BotanicalName botanicalName = BotanicalName.NewInstance(rank);
 					
 					if (rankId < 40){
 						dbAttrName = "supraGenericName";

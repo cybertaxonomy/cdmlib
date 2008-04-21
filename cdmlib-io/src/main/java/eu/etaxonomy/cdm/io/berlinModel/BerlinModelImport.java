@@ -7,6 +7,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -45,6 +46,9 @@ public class BerlinModelImport {
 			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getDbSchemaValidation());
 		} catch (DataSourceNotFoundException e) {
 			logger.warn("could not connect to destination database");
+			return false;
+		}catch (TermNotFoundException e) {
+			logger.warn("could not find needed term in destination datasource");
 			return false;
 		}
 		Source source = bmiConfig.getSource();
