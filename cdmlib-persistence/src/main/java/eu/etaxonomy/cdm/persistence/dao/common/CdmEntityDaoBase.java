@@ -42,11 +42,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
 		try {
-			logger.info("dao saveOrUpdate start...");
-			logger.info("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;
+			if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
+			if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
 			Session session = getSession();
 			session.saveOrUpdate(transientObject);
-			logger.info("dao saveOrUpdate end");
+			if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate end");}
 			return transientObject.getUuid();
 		} catch (NonUniqueObjectException e) {
 			logger.error("Error when in CdmEntityDaoBase saveOrUpdate(obj");

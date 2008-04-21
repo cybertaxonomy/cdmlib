@@ -33,8 +33,6 @@ public class CdmTermInitializer {
 	@Autowired
 	TermLoader termLoader;
 	
-	
-	//TODO make it interface
 	@Autowired
 	VocabularyStoreImpl vocabularyStore;
 	
@@ -48,7 +46,7 @@ public class CdmTermInitializer {
 			//vocabularyStore.initialize();
 			//if (! termLoader.basicTermsExist(vocabularyStore)){
 				try {
-					termLoader.makeDefaultTermsLoaded(vocabularyStore);
+					termLoader.makeDefaultTermsInserted(vocabularyStore);
 				} catch (FileNotFoundException e) {
 					logger.error(e.getMessage());
 				} catch (NoDefinedTermClassException e) {
@@ -62,5 +60,4 @@ public class CdmTermInitializer {
 			throw e;
 		}
 	}
-
 }

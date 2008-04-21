@@ -31,24 +31,70 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 public interface ICdmEntityDao<T extends CdmBase> {
 	
+	/**
+	 * @param transientObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException;
 
 	//public UUID saveOrUpdateAll(Collection<T> transientObjects) throws DataAccessException;
 	
+	/**
+	 * @param newOrManagedObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
+	/**
+	 * @param transientObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID update(T transientObject) throws DataAccessException;
 	
+	/**
+	 * @param persistentObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID delete(T persistentObject) throws DataAccessException;
 	
+	/**
+	 * Returns a sublist of CdmBase instances stored in the database.
+	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
+	 * @param limit
+	 * @param start
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public List<T> list(int limit, int start) throws DataAccessException;
 
+	/**
+	 * @param id
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public T findById(int id) throws DataAccessException;
 
+	/**
+	 * @param Uuid
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public T findByUuid(UUID Uuid) throws DataAccessException;
 	
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public Boolean exists(UUID uuid) throws DataAccessException;
 	
+	/**
+	 * 
+	 */
 	public void flush();
 	
 }

@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.database;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 
 	private static Language DEFAULT_LANGUAGE = null;
 	private static void makeDefaultLanguage() {
-		logger.info("make Default language ...");
+		logger.debug("make Default language ...");
 		DEFAULT_LANGUAGE = Language.NewInstance(uuidEnglish);
 	}
 	
@@ -71,16 +72,16 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
-			logger.info("iterate ...");
+			logger.debug("iterate ...");
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
 			if (definedTermsMap.get(term.getUuid()) != null){
 				term.setId(definedTermsMap.get(term.getUuid()).getId()); // to avoid duplicates in the default Language
 			}
 			definedTermsMap.put(term.getUuid(), term);
 		}
-		logger.info("vocabulary save or update before dao save ...");
+		logger.debug("vocabulary save or update before dao save ...");
 		vocabularyDao.saveOrUpdate(vocabulary);
-		logger.info("vocabulary save or update end.");
+		logger.debug("vocabulary save or update end.");
 	}
 	
 	/* (non-Javadoc)
@@ -147,13 +148,14 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	
 
 	public boolean initialize(){
+		boolean result = true;
 		if (! initialized){
 			logger.info("inititialize VocabularyStoreImpl ...");
 			try {
-				logger.info("000 ...");
+				logger.debug("setVocabularyStore ...");
 				DefinedTermBase.setVocabularyStore(this);
 				makeDefaultLanguage();
-				logger.info("111 ...");
+				logger.debug("defaultLanguage ...");
 				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE.getUuid());
 				logger.info("222 ...");
 				if (defaultLanguage == null){
@@ -164,18 +166,31 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 					initialized = true;
 					TermLoader termLoader = new TermLoader(this);
 					//termLoader.setVocabularyStore(this);
-					termLoader.makeDefaultTermsLoaded(this);
+					result = result && termLoader.makeDefaultTermsInserted(this);
 				}else if (definedTermsMap == null){
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
-						definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
+					definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
 				}
+				initialized = true;
+				result = result &&  loadProgrammaticallyNeededTerms();
+				initialized = result;
+				logger.info("inititialize VocabularyStoreImpl end ...");				
 			} catch (Exception e) {
 				logger.error("loadBasicTerms: Error ocurred when initializing and loading terms");
 				initialized = false;
 				return false;
 			}
-			initialized = true;
-			logger.info("inititialize VocabularyStoreImpl end ...");
+
+		}
+		return result;
+	}
+	
+	
+	private boolean loadProgrammaticallyNeededTerms(){
+		List<DefinedTermBase> list = termDao.list(1000, 0);
+		logger.info("Size:" + list.size());
+		for (DefinedTermBase defTerm : list){
+			saveOrUpdate(defTerm);
 		}
 		return true;
 	}
