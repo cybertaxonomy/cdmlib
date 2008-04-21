@@ -66,7 +66,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	public void setUp() throws Exception {
 		logger.debug("setUp");
 		Rank genus = Rank.GENUS();
-		BotanicalName botanicalName = new BotanicalName(genus);
+		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 		botanicalName.setGenusOrUninomial("GenusName");
 		Journal journal = new Journal();
 		journal.setTitle("JournalTitel");
