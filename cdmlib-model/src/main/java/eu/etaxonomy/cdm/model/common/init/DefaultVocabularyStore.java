@@ -1,6 +1,11 @@
 /**
- * 
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model.common.init;
 
 import java.util.HashMap;
@@ -16,11 +21,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
- * @author AM
- *
- */
-/**
- * @author AM
+ * @author a.mueller
  *
  */
 public class DefaultVocabularyStore implements IVocabularyStore {
@@ -41,7 +42,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getTermByUuid(java.util.UUID)
 	 */
 	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid) {
-		if (!isInitialized  &&  ! loadBasicTerms()){ return null;}
+		if (!isInitialized  &&  ! initialize()){ return null;}
 		return (DefinedTermBase<DefinedTermBase>)definedTermsMap.get(uuid);
 	}
 
@@ -49,7 +50,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getVocabularyByUuid(java.util.UUID)
 	 */
 	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid) {
-		if (!isInitialized  &&  ! loadBasicTerms()){ return null;}
+		if (!isInitialized  &&  ! initialize()){ return null;}
 		return termVocabularyMap.get(uuid);
 	}
 	
@@ -59,7 +60,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
 		logger.info("dddd");
-		loadBasicTerms();
+		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
 			DefinedTermBase<DefinedTermBase> term = termIterator.next();
@@ -75,7 +76,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void saveOrUpdate(ILoadableTerm term) {
-		loadBasicTerms();
+		initialize();
 		if (definedTermsMap.get(term.getUuid()) != null){
 			term.setId(definedTermsMap.get(term.getUuid()).getId()); // to avoid duplicates in the default Language
 		}
@@ -84,14 +85,14 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	}
 	
 	
-	public boolean loadBasicTerms() {
+	public boolean initialize() {
 		if (definedTermsMap == null){
 			logger.info("initTermsMap start ...");
 			definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 			try {
 				definedTermsMap.put(DEFAULT_LANGUAGE().getUuid(), DEFAULT_LANGUAGE());
 				TermLoader termLoader = new TermLoader(this);
-				termLoader.loadAllDefaultTerms();
+				termLoader.makeDefaultTermsLoaded();
 			} catch (Exception e) {
 				logger.error("Error ocurred when loading terms");
 				return false;
@@ -106,30 +107,5 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 		isInitialized =true;
 		return true;
 	}
-
-//public void initTermList(ITermLister termLister){
-//	logger.warn("initTermList");
-//	if (definedTermsMap == null){
-//		definedTermsMap = new HashMap<UUID, DefinedTermBase>();
-//		try {
-//			Language defaultLanguage = new Language();//DEFAULT_LANGUAGE();
-//			UUID uuid = defaultLanguage.getUuid();
-//			definedTermsMap.put(uuid, defaultLanguage);
-//			TermLoader termLoader = new TermLoader(this);
-//			termLoader.loadAllDefaultTerms();
-//		} catch (Exception e) {
-//			logger.error("Error ocurred when loading terms");
-//		}				
-//			
-////		}else{
-////			List<DefinedTermBase> list = termLister.listTerms();
-////			definedTermsMap = new HashMap<UUID, DefinedTermBase>();
-////			for (DefinedTermBase dtb: list){
-////				definedTermsMap.put(dtb.getUuid(), dtb);
-////			}
-//		}
-//	}
-//	logger.debug("initTermList - end");
-//}
 
 }

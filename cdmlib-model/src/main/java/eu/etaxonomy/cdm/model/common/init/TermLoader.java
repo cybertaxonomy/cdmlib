@@ -118,10 +118,7 @@ public class TermLoader {
 		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
 	}
 	
-	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
-		// first insert default language english, its used everywhere even for Language!
-		//Language langEN = new Language("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		//dao.save(langEN);
+	public boolean loadDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
 		final boolean ORDERED = true;
 		final boolean NOT_ORDERED = false;
 		
@@ -137,6 +134,32 @@ public class TermLoader {
 		loadDefaultTerms(NameRelationshipType.class, ORDERED);
 		loadDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		logger.debug("terms loaded");
+		return true;
+	}
+	
+	
+	public boolean makeDefaultTermsLoaded() throws FileNotFoundException, NoDefinedTermClassException{
+		return makeDefaultTermsLoaded(vocabularyStore);
+	}
+	
+	public boolean makeDefaultTermsLoaded(IVocabularyStore vocabularyStore) throws FileNotFoundException, NoDefinedTermClassException{
+		if (vocabularyStore == null){
+			vocabularyStore = this.vocabularyStore;
+		}
+		if (! checkBasicTermsExist(vocabularyStore)){
+			return loadDefaultTerms();
+		}else{
+			return loadProgrammaticallyNeededTerms();
+		}
+	}
+	
+	private boolean loadProgrammaticallyNeededTerms(){
+		Rank.SPECIES();
+		Rank.GENUS();
+		Rank.INFRASPECIES();
+		Rank.FAMILY();
+		Language.ENGLISH();
+		return true;
 	}
 	
 	/**
@@ -144,29 +167,29 @@ public class TermLoader {
 	 * @param saver
 	 * @return
 	 */
-	public boolean basicTermsExist(IVocabularyStore saver){
-		if (saver == null){
-			saver = vocabularyStore;
+	private boolean checkBasicTermsExist(IVocabularyStore vocabularyStore){
+		if (vocabularyStore == null){
+			vocabularyStore = this.vocabularyStore;
 		}
-		if (saver == null){
+		if (vocabularyStore == null){
 			return false;
 		}	
 		Map<String, UUID> allImportantUuid = new HashMap<String,UUID>();
 		allImportantUuid.put("English", UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 		allImportantUuid.put("Rank", UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a"));
 		for (UUID uuid: allImportantUuid.values()){
-			if (! basicTermExists(uuid, saver)){
+			if (! checkTermExists(uuid, vocabularyStore)){
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	private boolean basicTermExists(UUID uuid, IVocabularyStore saver){
-		if (saver == null){
+	private boolean checkTermExists(UUID uuid, IVocabularyStore vocabularyStore){
+		if (vocabularyStore == null){
 			return false;
 		}
-		ILoadableTerm basicTerm = saver.getTermByUuid(uuid);
+		ILoadableTerm basicTerm = vocabularyStore.getTermByUuid(uuid);
 		if ( basicTerm == null || ! basicTerm.getUuid().equals(uuid)){
 			return false;
 		}else{
@@ -174,24 +197,5 @@ public class TermLoader {
 		}
 		
 	}
-	
 
-/******************* not in version 4.5 (cdmlib-model)*/
-
-//
-//	public static void main(String[] args) {
-//		CdmApplicationController appCtr = new CdmApplicationController();
-//		TermLoader tl = (TermLoader) appCtr.applicationContext.getBean("termLoader");
-//		try {
-//			tl.loadAllDefaultTerms();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public void loadAllDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
-//		IVocabularySaver vocabularySaver = dao;
-//		loadAllDefaultTerms(vocabularySaver);
-//	}
 }

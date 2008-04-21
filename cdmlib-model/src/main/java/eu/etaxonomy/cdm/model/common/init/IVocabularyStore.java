@@ -54,6 +54,6 @@ public interface IVocabularyStore {
 	 * TermLoader getTermByUuid() returns a valid Object without going to endless recursion.
 	 * @return true if terms where successfully loaded
 	 */
-	public boolean loadBasicTerms();
+	public boolean initialize();
 
 }
