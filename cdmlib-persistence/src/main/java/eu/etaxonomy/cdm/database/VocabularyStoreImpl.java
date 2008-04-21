@@ -3,10 +3,13 @@
  */
 package eu.etaxonomy.cdm.database;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -34,15 +38,12 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	private static Logger logger = Logger.getLogger(VocabularyStoreImpl.class);
 
 	private boolean initialized = false;
-	
 	private static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
-	public static final Language DEFAULT_LANGUAGE= makeDefaultLanguage();
-	private static Language makeDefaultLanguage() {
+	private static Language DEFAULT_LANGUAGE = null;
+	private static void makeDefaultLanguage() {
 		logger.info("make Default language ...");
-		Language defaultLanguage = new Language(uuidEnglish);
-		logger.info("make Default language end");
-		return defaultLanguage;
+		DEFAULT_LANGUAGE = Language.NewInstance(uuidEnglish);
 	}
 	
 	static protected Map<UUID, ILoadableTerm> definedTermsMap = null;
@@ -102,7 +103,9 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 				return (DefinedTermBase<DefinedTermBase>)definedTermsMap.get(uuid);
 			}else{
 				DefinedTermBase term = termDao.findByUuid(uuid);
-				definedTermsMap.put(term.getUuid(), term);
+				if (term != null){
+					definedTermsMap.put(term.getUuid(), term);
+				}
 				return term;
 			}
 		}else{
@@ -118,31 +121,51 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 			return vocabularyDao.findByUuid(uuid);
 		}
 	}
+
+//	private TermLoader termLoader;  //doesn't work yet in service layer for some unclear resason
+//	@PostConstruct
+//	private void init(){
+//		try {
+//			logger.info("init ...");
+//			DefinedTermBase.setVocabularyStore(this);
+//			termLoader = new TermLoader(this);
+//			if (! termLoader.basicTermsExist(this)){
+//				try {
+//					termLoader.loadAllDefaultTerms();
+//				} catch (FileNotFoundException e) {
+//					logger.error(e.getMessage());
+//				} catch (NoDefinedTermClassException e) {
+//					logger.error(e.getMessage());
+//				}
+//			}
+//		} catch (RuntimeException e) {
+//			logger.error("RuntimeException when initializing Terms");
+//			e.printStackTrace();
+//			throw e;
+//		}
+//	}
 	
+
 	public boolean initialize(){
-		return loadBasicTerms();
-	}	
-	
-	public boolean loadBasicTerms(){
 		if (! initialized){
 			logger.info("inititialize VocabularyStoreImpl ...");
 			try {
 				logger.info("000 ...");
+				DefinedTermBase.setVocabularyStore(this);
+				makeDefaultLanguage();
+				logger.info("111 ...");
 				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE.getUuid());
-				logger.info("aaa ...");
+				logger.info("222 ...");
 				if (defaultLanguage == null){
-					logger.info("bbb ...");
-					logger.info("DL ..."  + DEFAULT_LANGUAGE.hashCode());
-					//DEFAULT_LANGUAGE.setId(0);
 					termDao.saveOrUpdate(DEFAULT_LANGUAGE);
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 					definedTermsMap.put(DEFAULT_LANGUAGE.getUuid(), DEFAULT_LANGUAGE);
 					logger.info("ccc ...");
 					initialized = true;
 					TermLoader termLoader = new TermLoader(this);
-					termLoader.loadAllDefaultTerms();
+					//termLoader.setVocabularyStore(this);
+					termLoader.makeDefaultTermsLoaded(this);
 				}else if (definedTermsMap == null){
-					logger.info("ddd ...");
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 						definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
 				}

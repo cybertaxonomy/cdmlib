@@ -1,13 +1,14 @@
 /**
- * 
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.database;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.UUID;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
@@ -16,45 +17,46 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 /**
- * @author AM
- *
+ * Spring bean class to initialize the {@link IVocabularyStore IVocabularyStore}.
+ * To initialize the store the {@link TermLoader TermLoader} and th e {@link IVocabularyStore IVocabularyStore}
+ * are injected via spring and the initializeTerms method is called as an init-method (@PostConstruct). 
+ * @author a.mueller
  */
 @Component
 public class CdmTermInitializer {
 	private static final Logger logger = Logger.getLogger(CdmTermInitializer.class);
 	
-	@Autowired()
+	@Autowired
 	TermLoader termLoader;
 	
 	
 	//TODO make it interface
 	@Autowired
-	VocabularyStoreImpl saver;
+	VocabularyStoreImpl vocabularyStore;
 	
 	
 	@PostConstruct
 	public void initializeTerms(){
 		try {
 			logger.info("CdmTermInitializer initializeTerms start ...");
-			termLoader.setVocabularyStore(saver);
-			DefinedTermBase.setVocabularyStore(saver);
-			if (! termLoader.basicTermsExist(saver)){
+			termLoader.setVocabularyStore(vocabularyStore);
+			//DefinedTermBase.setVocabularyStore(vocabularyStore);
+			//vocabularyStore.initialize();
+			//if (! termLoader.basicTermsExist(vocabularyStore)){
 				try {
-					termLoader.loadAllDefaultTerms();
+					termLoader.makeDefaultTermsLoaded(vocabularyStore);
 				} catch (FileNotFoundException e) {
 					logger.error(e.getMessage());
 				} catch (NoDefinedTermClassException e) {
 					logger.error(e.getMessage());
 				}
-			}
+			//}
 			logger.info("CdmTermInitializer initializeTerms end ...");
 		} catch (RuntimeException e) {
-			// TODO Auto-generated catch block
 			logger.error("RuntimeException when initializing Terms");
 			e.printStackTrace();
 			throw e;
