@@ -45,7 +45,7 @@ public class TestTaxonFunction {
 			
 		INameService nameService = cdmApp.getNameService();
 		
-		BotanicalName botanicalName = new BotanicalName(Rank.GENUS());
+		BotanicalName botanicalName = BotanicalName.NewInstance(Rank.GENUS());
 		botanicalName.setTitleCache("Hieracium L.");
 		botanicalName.setGenusOrUninomial("Hieracium");
 //		botanicalName.setUninomial("Hieracium");
@@ -57,7 +57,7 @@ public class TestTaxonFunction {
 		sec.setUuid(getRefUuid());
 		genusTaxon.setSec(sec);
 				
-		BotanicalName botSpecies = new BotanicalName(Rank.SPECIES());
+		BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES());
 		botSpecies.setTitleCache("Hieracium asturianum Pau");
 		botSpecies.setGenusOrUninomial("Hieracium");
 //		botSpecies.setUninomial("Hieracium");
@@ -69,7 +69,7 @@ public class TestTaxonFunction {
 		childTaxon.setSec(null);
 		childTaxon.setTaxonomicParent(genusTaxon, null, null);
 
-		BotanicalName botSpecies2= new BotanicalName(Rank.SPECIES());
+		BotanicalName botSpecies2= BotanicalName.NewInstance(Rank.SPECIES());
 		botSpecies2.setTitleCache("Hieracium wolffii Zahn");
 		botSpecies2.setGenusOrUninomial("Hieracium");
 //		botSpecies2.setUninomial("Hieracium");

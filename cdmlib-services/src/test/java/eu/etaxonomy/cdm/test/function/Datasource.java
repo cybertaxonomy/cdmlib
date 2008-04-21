@@ -74,7 +74,7 @@ public class Datasource {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
-			TaxonNameBase tn = new BotanicalName(null);
+			TaxonNameBase tn = BotanicalName.NewInstance(null);
 			appCtr.getNameService().saveTaxonName(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
@@ -95,7 +95,7 @@ public class Datasource {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
-			TaxonNameBase tn = new BotanicalName(null);
+			TaxonNameBase tn = BotanicalName.NewInstance(null);
 			appCtr.getNameService().saveTaxonName(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
@@ -116,7 +116,7 @@ public class Datasource {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
 			appCtr.getAgentService().saveAgent(agent);
-			TaxonNameBase tn = new BotanicalName(null);
+			TaxonNameBase tn = BotanicalName.NewInstance(null);
 			appCtr.getNameService().saveTaxonName(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {

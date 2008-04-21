@@ -34,10 +34,10 @@ public class TestService {
 	
 	public void testAppController() {
 		logger.info("Create name objects...");
-		NonViralName nvn = new NonViralName(Rank.SPECIES());
+		NonViralName nvn = NonViralName.NewInstance(Rank.SPECIES());
  		
-		BotanicalName bn = new BotanicalName(Rank.SUBSPECIES());
-		ZoologicalName zn = new ZoologicalName(Rank.FAMILY());
+		BotanicalName bn = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		ZoologicalName zn = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
 		ReferenceBase sec = new Journal();
@@ -114,7 +114,7 @@ public class TestService {
 	
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
-		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
 		ReferenceBase ref = new Journal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
@@ -130,7 +130,7 @@ public class TestService {
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
-		TaxonNameBase taxonName = new BotanicalName(Rank.SPECIES());
+		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
 		ReferenceBase ref = new Journal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);

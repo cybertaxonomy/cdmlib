@@ -16,8 +16,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 public class TestDatabase {
@@ -42,12 +45,41 @@ public class TestDatabase {
 			String server = "192.168.2.10";
 			String database = "cdm_1_1";
 			String username = "edit";
-			String password = "wp5";
+			String password = CdmUtils.readInputLine("Password: ");
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, DbSchemaValidation.CREATE);
+			
+			Rank genus = Rank.GENUS();
+			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
+			botanicalName.setGenusOrUninomial("GenusName");
+		
+			Journal journal = new Journal();
+			journal.setTitle("JournalTitel");
+			
+			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
+//			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
+	//		botanicalName.getTitleCache();
+			Rank.SPECIES();
+			Taxon taxon1 = Taxon.NewInstance(botanicalName,journal);
+			appCtr.getTaxonService().saveTaxon(taxon1);
+			BotanicalName homotypName = BotanicalName.NewInstance(Rank.SUBGENUS(), botanicalName.getHomotypicalGroup());
+			homotypName.setGenusOrUninomial("Subgenus");
+			homotypName.setInfraGenericEpithet("homotyp");
+			
+			Synonym synonym = Synonym.NewInstance(homotypName, journal);
+			
+			System.out.println("Taxa of " + botanicalName + ": " + botanicalName.getTaxonBases());
+			
+			HomotypicalGroup homotypicalGroup = taxon1.getHomotypicGroup();
+			System.out.println("HomotypicNames of " + botanicalName + ":" + homotypicalGroup.getTypifiedNames());
+			
+//			appCtr.getTaxonService().saveTaxon(taxon2);
+//			appCtr.getTaxonService().saveTaxon(taxon);
+			
 			IDatabaseService dbService = appCtr.getDatabaseService();
 			INameService nameService = appCtr.getNameService();
 			appCtr.close();
+
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
 		} catch (TermNotFoundException e) {
@@ -70,7 +102,7 @@ public class TestDatabase {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, validation);
 			
 			Rank genus = Rank.GENUS();
-			BotanicalName botanicalName = new BotanicalName(genus);
+			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 			botanicalName.setGenusOrUninomial("GenusName");
 		
 			Journal journal = new Journal();
@@ -81,7 +113,7 @@ public class TestDatabase {
 	//		botanicalName.getTitleCache();
 			Rank.SPECIES();
 			appCtr.getNameService().saveTaxonName(botanicalName);
-			
+
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);
 			
@@ -99,8 +131,8 @@ public class TestDatabase {
 	private void test(){
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
-	//	testNewDatasourceClass();
-		testPaddie();
+		testNewDatasourceClass();
+	//	testPaddie();
 		System.out.println("\nEnd TestDatabase");
 	}
 	
