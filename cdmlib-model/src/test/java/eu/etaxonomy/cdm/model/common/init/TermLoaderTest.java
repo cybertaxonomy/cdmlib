@@ -109,9 +109,9 @@ public class TermLoaderTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.TermLoader#loadAllDefaultTerms()}.
 	 */
 	@Test
-	public void testLoadAllDefaultTerms() {
+	public void testMakeDefaultTermsLoaded() {
 		try {
-			termLoader.loadAllDefaultTerms();
+			termLoader.makeDefaultTermsLoaded();
 		} catch (FileNotFoundException e) {
 			fail();
 		} catch (NoDefinedTermClassException e) {

@@ -116,8 +116,8 @@ public class DefaultVocabularyStoreTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore#loadBasicTerms()}.
 	 */
 	@Test
-	public void testLoadBasicTerms() {
-		assertTrue(defaultVocabularyStore.loadBasicTerms());
+	public void testInitialize() {
+		assertTrue(defaultVocabularyStore.initialize());
 	}
 
 }
