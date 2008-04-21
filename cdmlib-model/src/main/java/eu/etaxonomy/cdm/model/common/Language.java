@@ -49,6 +49,11 @@ public class Language extends DefinedTermBase {
 		return new Language();
 	}
 	
+	public static Language NewInstance(UUID uuid){
+		return new Language(uuid);
+	}
+	
+	
 	private char[] iso639_1 = new char[2];
 	private char[] iso639_2 = new char[3];
 	
