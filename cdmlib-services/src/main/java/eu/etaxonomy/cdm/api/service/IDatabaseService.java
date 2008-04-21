@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.api.service;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * @author a.mueller
@@ -45,7 +46,7 @@ public interface IDatabaseService extends IService {
 	 * otherwise the hsql-server might still be running, if startet by cdmLibrary.
 	 * @return true if a connection could be established
 	 */
-	public boolean useLocalDefaultHsqldb();
+	public boolean useLocalDefaultHsqldb()  throws TermNotFoundException;
 	
 	/**
 	 * Set the database connection to the local Hsqldb-database using
@@ -61,7 +62,7 @@ public interface IDatabaseService extends IService {
 	 * @return true if a connection could be established
 	 * TODO exceptions
 	 */
-	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer);
+	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) throws TermNotFoundException;
 
 	/**
 	 * Connect to the database with the given parameters
@@ -72,7 +73,7 @@ public interface IDatabaseService extends IService {
 	 * @param port
 	 * @return returns true if successful
 	 */
-	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password, int port);
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password, int port)  throws TermNotFoundException ;
 
 	/**
 	 * Connect to the database with the given parameters. Uses default port.
@@ -82,7 +83,7 @@ public interface IDatabaseService extends IService {
 	 * @param password
 	 * @return returns true if successful
 	 */
-	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
+	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password)  throws TermNotFoundException;
 	
 
 	/**
@@ -90,7 +91,7 @@ public interface IDatabaseService extends IService {
 	 * @param dataSource
 	 * @return returns true if successful
 	 */
-	public boolean connectToDatasource(CdmPersistentDataSource dataSource);
+	public boolean connectToDatasource(CdmPersistentDataSource dataSource) throws TermNotFoundException;
 
 	/**
 	 * Saves a new CdmDatasource into the datasource config file.
@@ -102,7 +103,7 @@ public interface IDatabaseService extends IService {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
-	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password);
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password) throws TermNotFoundException;
 	
 	/**
 	 * Saves a new hsqldb datasource into the datasource config file.

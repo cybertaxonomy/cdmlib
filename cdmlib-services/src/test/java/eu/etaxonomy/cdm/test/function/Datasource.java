@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -28,7 +29,10 @@ public class Datasource {
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
+
 	}
 	
 	private void testDatabaseChange(){
@@ -54,6 +58,8 @@ public class Datasource {
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 	}
 
@@ -73,6 +79,8 @@ public class Datasource {
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 	}
 
@@ -92,6 +100,8 @@ public class Datasource {
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 	}
 	
@@ -111,6 +121,8 @@ public class Datasource {
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 	}
 	
@@ -132,6 +144,8 @@ public class Datasource {
 			}
 		} catch (DataSourceNotFoundException e) {
 			logger.error("LOCAL HSQL");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 	}
 		

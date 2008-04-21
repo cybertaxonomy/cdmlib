@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 
 
@@ -48,7 +49,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatasource(eu.etaxonomy.cdm.database.CdmDataSource)
 	 */
-	public boolean connectToDatasource(CdmPersistentDataSource dataSource) {
+	public boolean connectToDatasource(CdmPersistentDataSource dataSource) throws TermNotFoundException{
 		this.application.changeDataSource(dataSource);
 		logger.debug("DataSource changed to " + dataSource.getName());
 		return true;
@@ -58,7 +59,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
-			String database, String username, String password, int port) {
+			String database, String username, String password, int port) throws TermNotFoundException  {
 		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, databaseTypeEnum, server, database, username, password);
 		boolean result = connectToDatasource(tmpDataSource);
 		CdmPersistentDataSource.delete(tmpDataSource);
@@ -70,7 +71,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
-			String database, String username, String password) {
+			String database, String username, String password)  throws TermNotFoundException {
 		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort()) ;
 	}
 
@@ -79,7 +80,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
-			String server, String database, String username, String password) {
+			String server, String database, String username, String password) throws TermNotFoundException  {
 		return CdmPersistentDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
 	}
 
@@ -93,7 +94,7 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
 	 */
-	public boolean useLocalDefaultHsqldb() {
+	public boolean useLocalDefaultHsqldb()  throws TermNotFoundException{
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewLocalHsqlInstance();
 			return connectToDatasource(dataSource);
 	}
@@ -102,7 +103,8 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
-	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
+	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) 
+				throws TermNotFoundException{
 		CdmPersistentDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
 		return connectToDatasource(dataSource);
 	}

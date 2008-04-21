@@ -3,12 +3,15 @@ package eu.etaxonomy.cdm.test.function;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -16,6 +19,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class TestTaxonFunction {
+	private static final Logger logger = Logger.getLogger(TestTaxonFunction.class);
 
 	private CdmApplicationController getCdmApplicationController(String strDataSource, DbSchemaValidation hbm2dll){
 		CdmApplicationController cdmApp= null;
@@ -24,6 +28,8 @@ public class TestTaxonFunction {
 			cdmApp = CdmApplicationController.NewInstance(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
 		}
 		return cdmApp;
 		
