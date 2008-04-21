@@ -46,15 +46,16 @@ public class TestDatabase {
 			String database = "cdm_1_1";
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, DbSchemaValidation.CREATE);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
 			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 			botanicalName.setGenusOrUninomial("GenusName");
 		
 			Journal journal = new Journal();
-			journal.setTitle("JournalTitel");
+			journal.setTitleCache("Afro+Doc");
 			
 			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
@@ -69,9 +70,11 @@ public class TestDatabase {
 			Synonym synonym = Synonym.NewInstance(homotypName, journal);
 			
 			System.out.println("Taxa of " + botanicalName + ": " + botanicalName.getTaxonBases());
+			System.out.println("Synonyms of " + homotypName + ": " + homotypName.getSynonyms());
 			
 			HomotypicalGroup homotypicalGroup = taxon1.getHomotypicGroup();
 			System.out.println("HomotypicNames of " + botanicalName + ":" + homotypicalGroup.getTypifiedNames());
+			System.out.println("HomotypicSynonyms of " + taxon1 + ":" + taxon1.getHomotypicSynonyms());
 			
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);
