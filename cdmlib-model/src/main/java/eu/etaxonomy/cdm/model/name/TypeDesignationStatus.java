@@ -49,8 +49,6 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
 
 	
-	
-	
 	public TypeDesignationStatus() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -62,72 +60,72 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	}
 
 	
-	public static final TypeDesignationStatus getUUID(UUID uuid){
+	public static final TypeDesignationStatus getByUuid(UUID uuid){
 		return (TypeDesignationStatus) findByUuid(uuid);
 	}
 	
 	public static final TypeDesignationStatus HOLOTYPE(){
-		return getUUID(uuidHolotype);
+		return getByUuid(uuidHolotype);
 	}
 
 	public static final TypeDesignationStatus LECTOTYPE(){
-		return getUUID(uuidLectotype);
+		return getByUuid(uuidLectotype);
 	}
 
 	public static final TypeDesignationStatus NEOTYPE(){
-		return getUUID(uuidNeotype);
+		return getByUuid(uuidNeotype);
 	}
 
 	public static final TypeDesignationStatus EPITYPE(){
-		return getUUID(uuidEpitype);
+		return getByUuid(uuidEpitype);
 	}
 
 	public static final TypeDesignationStatus ISOLECTOTYPE(){
-		return getUUID(uuidIsolectotype);
+		return getByUuid(uuidIsolectotype);
 	}
 
 	public static final TypeDesignationStatus ISONEOTYPE(){
-		return getUUID(uuidIsoneotype);
+		return getByUuid(uuidIsoneotype);
 	}
 
 	public static final TypeDesignationStatus ISOTYPE(){
-		return getUUID(uuidIsotype);
+		return getByUuid(uuidIsotype);
 	}
 
 	public static final TypeDesignationStatus PARANEOTYPE(){
-		return getUUID(uuidParaneotype);
+		return getByUuid(uuidParaneotype);
 	}
 
 	public static final TypeDesignationStatus PARATYPE(){
-		return getUUID(uuidParatype);
+		return getByUuid(uuidParatype);
 	}
 
 	public static final TypeDesignationStatus SECOND_STEP_LECTOTYPE(){
-		return getUUID(uuidSecondStepLectotype);
+		return getByUuid(uuidSecondStepLectotype);
 	}
 
 	public static final TypeDesignationStatus SECOND_STEP_NEOTYPE(){
-		return getUUID(uuidSecondStepNeotype);
+		return getByUuid(uuidSecondStepNeotype);
 	}
 
 	public static final TypeDesignationStatus SYNTYPE(){
-		return getUUID(uuidSyntype);
+		return getByUuid(uuidSyntype);
 	}
 
 	public static final TypeDesignationStatus PARALECTOTYPE(){
-		return getUUID(uuidParalectotype);
+		return getByUuid(uuidParalectotype);
 	}
 
 	public static final TypeDesignationStatus ISOEPITYPE(){
-		return getUUID(uuidIsoepitype);
+		return getByUuid(uuidIsoepitype);
 	}
 
 	public static final TypeDesignationStatus ICONOTYPE(){
-		return getUUID(uuidIconotype);
+		return getByUuid(uuidIconotype);
 	}
 
 	public static final TypeDesignationStatus PHOTOTYPE(){
-		return getUUID(uuidPhototype);
+		return getByUuid(uuidPhototype);
 	}
 
 }

@@ -63,7 +63,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		// TODO Auto-generated constructor stub
 	}
 
-	public static final NomenclaturalStatusType getUUID(UUID uuid){
+	public static final NomenclaturalStatusType getByUuid(UUID uuid){
 		return (NomenclaturalStatusType) findByUuid(uuid);
 	}
 	
@@ -113,87 +113,87 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 	
 	public static final NomenclaturalStatusType AMBIGUOUS(){
-		return getUUID(uuidAmbiguous);
+		return getByUuid(uuidAmbiguous);
 	}
 
 	public static final NomenclaturalStatusType DOUBTFUL(){
-		return getUUID(uuidDoubtful);
+		return getByUuid(uuidDoubtful);
 	}
 
 	public static final NomenclaturalStatusType CONFUSUM(){
-		return getUUID(uuidConfusum);
+		return getByUuid(uuidConfusum);
 	}
 
 	public static final NomenclaturalStatusType ILLEGITIMATE(){
-		return getUUID(uuidIllegitimate);
+		return getByUuid(uuidIllegitimate);
 	}
 
 	public static final NomenclaturalStatusType SUPERFLUOUS(){
-		return getUUID(uuidSuperfluous);
+		return getByUuid(uuidSuperfluous);
 	}
 
 	public static final NomenclaturalStatusType REJECTED(){
-		return getUUID(uuidRejected);
+		return getByUuid(uuidRejected);
 	}
 
 	public static final NomenclaturalStatusType UTIQUE_REJECTED(){
-		return getUUID(uuidUtiqueRejected);
+		return getByUuid(uuidUtiqueRejected);
 	}
 
 	public static final NomenclaturalStatusType CONSERVED_PROP(){
-		return getUUID(uuidConservedProp);
+		return getByUuid(uuidConservedProp);
 	}
 
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED_PROP(){
-		return getUUID(uuidOrthographyConservedProp);
+		return getByUuid(uuidOrthographyConservedProp);
 	}
 
 	public static final NomenclaturalStatusType LEGITIMATE(){
-		return getUUID(uuidLegitimate);
+		return getByUuid(uuidLegitimate);
 	}
 
 	public static final NomenclaturalStatusType ALTERNATIVE(){
-		return getUUID(uuidAlternative);
+		return getByUuid(uuidAlternative);
 	}
 
 	public static final NomenclaturalStatusType NOVUM(){
-		return getUUID(uuidNovum);
+		return getByUuid(uuidNovum);
 	}
 
 	public static final NomenclaturalStatusType UTIQUE_REJECTED_PROP(){
-		return getUUID(uuidUtiqueRejectedProp);
+		return getByUuid(uuidUtiqueRejectedProp);
 	}
 
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED(){
-		return getUUID(uuidOrthographyConserved);
+		return getByUuid(uuidOrthographyConserved);
 	}
 	
 	public static final NomenclaturalStatusType REJECTED_PROP(){
-		return getUUID(uuidRejectedProp);
+		return getByUuid(uuidRejectedProp);
 	}
 
 	public static final NomenclaturalStatusType CONSERVED(){
-		return getUUID(uuidConserved);
+		return getByUuid(uuidConserved);
 	}
 
 	public static final NomenclaturalStatusType SANCTIONED(){
-		return getUUID(uuidSanctioned);
+		return getByUuid(uuidSanctioned);
 	}
 
 	public static final NomenclaturalStatusType INVALID(){
-		return getUUID(uuidInvalid);
+		return getByUuid(uuidInvalid);
 	}
 
 	public static final NomenclaturalStatusType NUDUM(){
-		return getUUID(uuidNudum);
+		return getByUuid(uuidNudum);
 	}
 
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
-		return getUUID(uuidCombinationInvalid);
+		return getByUuid(uuidCombinationInvalid);
 	}
 
 	public static final NomenclaturalStatusType PROVISIONAL(){
-		return getUUID(uuidProvisional);
+		return getByUuid(uuidProvisional);
 	}
 	
 	

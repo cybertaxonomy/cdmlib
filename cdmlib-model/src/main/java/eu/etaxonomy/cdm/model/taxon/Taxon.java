@@ -90,7 +90,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 	
 
-	@OneToMany(mappedBy="fromTaxon")
+	@OneToMany(mappedBy="fromTaxon", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;

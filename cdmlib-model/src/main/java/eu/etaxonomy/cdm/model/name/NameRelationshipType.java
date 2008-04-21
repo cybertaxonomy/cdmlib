@@ -48,7 +48,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 
-	public static final NameRelationshipType getUUID(UUID uuid){
+	public static final NameRelationshipType getByUuid(UUID uuid){
 		return (NameRelationshipType)findByUuid(uuid);
 	}
 
@@ -91,34 +91,34 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 	
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
-		  return getUUID(uuidOrthographicVariant);
+		  return getByUuid(uuidOrthographicVariant);
 	}
 	public static final NameRelationshipType LATER_HOMONYM(){
-	  return getUUID(uuidLaterHomonym);
+	  return getByUuid(uuidLaterHomonym);
 	}
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
-	  return getUUID(uuidTreatedAsLaterHomonym);
+	  return getByUuid(uuidTreatedAsLaterHomonym);
 	}
 	public static final NameRelationshipType ALTERNATIVE_NAME(){
-	  return getUUID(uuidAlternativeName);
+	  return getByUuid(uuidAlternativeName);
 	}
 	public static final NameRelationshipType BASIONYM(){
-	  return getUUID(uuidBasionym);
+	  return getByUuid(uuidBasionym);
 	}
 	public static final NameRelationshipType REPLACED_SYNONYM(){
-	  return getUUID(uuidReplacedSynonym);
+	  return getByUuid(uuidReplacedSynonym);
 	}
 	public static final NameRelationshipType CONSERVED_AGAINST(){
-	  return getUUID(uuidConservedAgainst);
+	  return getByUuid(uuidConservedAgainst);
 	}
 	public static final NameRelationshipType VALIDATED_BY_NAME(){
-	  return getUUID(uuidValidatedByName);
+	  return getByUuid(uuidValidatedByName);
 	}
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
-	  return getUUID(uuidLaterValidatedByName);
+	  return getByUuid(uuidLaterValidatedByName);
 	}
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
-	  return getUUID(uuidBlockingNameFor);
+	  return getByUuid(uuidBlockingNameFor);
 	}
 
 }

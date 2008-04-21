@@ -44,36 +44,36 @@ public class Continent extends DefinedTermBase {
 		super(term, label);
 	}
 
-	public static final Continent getUUID(UUID uuid){
+	public static final Continent getByUuid(UUID uuid){
 		return (Continent)findByUuid(uuid);
 	}
 
 	public static final Continent EUROPE(){
-		return getUUID(uuidEurope);
+		return getByUuid(uuidEurope);
 	}
 
 	public static final Continent AFRICA(){
-		return getUUID(uuidAfrica);
+		return getByUuid(uuidAfrica);
 	}
 
 	public static final Continent ASIA(){
-		return getUUID(uuidAsia);
+		return getByUuid(uuidAsia);
 	}
 
 	public static final Continent NORTH_AMERICA(){
-		return getUUID(uuidNAmerica);
+		return getByUuid(uuidNAmerica);
 	}
 
 	public static final Continent ANTARCTICA(){
-		return getUUID(uuidAntarctica);
+		return getByUuid(uuidAntarctica);
 	}
 
 	public static final Continent SOUTH_AMERICA(){
-		return getUUID(uuidSAmerica);
+		return getByUuid(uuidSAmerica);
 	}
 
 	public static final Continent OCEANIA(){
-		return getUUID(uuidOceania);
+		return getByUuid(uuidOceania);
 	}
 
 }

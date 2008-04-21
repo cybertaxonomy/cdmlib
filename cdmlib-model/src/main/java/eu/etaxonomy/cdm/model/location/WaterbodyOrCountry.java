@@ -546,7 +546,7 @@ uuidPersianGulf
 
 	 */
 
-	public static final WaterbodyOrCountry getUUID(UUID uuid){
+	public static final WaterbodyOrCountry getByUuid(UUID uuid){
 		return (WaterbodyOrCountry) findByUuid(uuid);
 	}
 	

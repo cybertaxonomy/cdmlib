@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -62,17 +63,8 @@ public class TermLoader {
 	// load a list of defined terms from a simple text file
 	// if isEnumeration is true an Enumeration for the ordered term list will be returned
 	@Transactional(readOnly = false)
-	public TermVocabulary<DefinedTermBase> loadTerms(Class<ILoadableTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
-		TermVocabulary voc;
+	public TermVocabulary<DefinedTermBase> insertTerms(Class<ILoadableTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
 		DefinedTermBase.setVocabularyStore(vocabularyStore); //otherwise DefinedTermBase is not able to find DefaultLanguage
-		if (isOrdered){
-			voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
-		}else{
-			voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
-		}
-		logger.info("save vocabulary ...");
-		saveVocabulary(voc, termClass);
-		logger.info("save vocabulary end.");
 		try {
 			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 			logger.debug("strResourceFileName is " + strResourceFileName);
@@ -80,28 +72,43 @@ public class TermLoader {
 			if (inputStream == null) {logger.debug("inputStream is null");}
 			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 			
-			String [] nextLine;
+			TermVocabulary voc = null;
+			if (isOrdered){
+				voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+			}else{
+				voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+			}
+			String [] nextLine = reader.readNext();
+			if (nextLine != null){
+				voc.readCsvLine(arrayedLine(nextLine));
+			}
+			saveVocabulary(voc, termClass);
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-				ArrayList<String> csvTermAttributeList = new ArrayList<String>(10);
-				for (String col : nextLine){
-					csvTermAttributeList.add(col);
-				}
-				while (csvTermAttributeList.size()<10){
-					csvTermAttributeList.add("");
-				}
-				
 				ILoadableTerm term = termClass.newInstance();
-				term = term.readCsvLine(csvTermAttributeList);
+				term = term.readCsvLine(arrayedLine(nextLine));
 				term.setVocabulary(voc);
 				vocabularyStore.saveOrUpdate(term);
 				// save enumeration and all terms to DB
 			}
+			return voc;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			return null;
 		}
-		return voc;
 	}
+
+	private List<String> arrayedLine(String [] nextLine){
+		ArrayList<String> csvTermAttributeList = new ArrayList<String>(10);
+		for (String col : nextLine){
+			csvTermAttributeList.add(col);
+		}
+		while (csvTermAttributeList.size()<10){
+			csvTermAttributeList.add("");
+		}
+		return csvTermAttributeList;
+	}
+	
 	
 	private void saveVocabulary(TermVocabulary voc, Class<ILoadableTerm> termClass){
 		if (vocabularyStore != null){
@@ -113,52 +120,42 @@ public class TermLoader {
 
 	}
 
-	public TermVocabulary<DefinedTermBase> loadDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+	public TermVocabulary<DefinedTermBase> insertDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
 		if (termClass != null){logger.info("load class " + termClass.getName());}
-		return this.loadTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
+		return this.insertTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
 	}
 	
-	public boolean loadDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
+	public boolean insertDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
 		final boolean ORDERED = true;
 		final boolean NOT_ORDERED = false;
 		
 		logger.info("load terms");
-		loadDefaultTerms(Language.class, NOT_ORDERED);
-		loadDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
-		loadDefaultTerms(Continent.class, NOT_ORDERED);
-		loadDefaultTerms(Rank.class, ORDERED);
-		loadDefaultTerms(TypeDesignationStatus.class, ORDERED);
-		loadDefaultTerms(NomenclaturalStatusType.class, ORDERED);
-		loadDefaultTerms(SynonymRelationshipType.class, ORDERED);
-		loadDefaultTerms(HybridRelationshipType.class, ORDERED);
-		loadDefaultTerms(NameRelationshipType.class, ORDERED);
-		loadDefaultTerms(TaxonRelationshipType.class, ORDERED);
+		insertDefaultTerms(Language.class, NOT_ORDERED);
+		insertDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
+		insertDefaultTerms(Continent.class, NOT_ORDERED);
+		insertDefaultTerms(Rank.class, ORDERED);
+		insertDefaultTerms(TypeDesignationStatus.class, ORDERED);
+		insertDefaultTerms(NomenclaturalStatusType.class, ORDERED);
+		insertDefaultTerms(SynonymRelationshipType.class, ORDERED);
+		insertDefaultTerms(HybridRelationshipType.class, ORDERED);
+		insertDefaultTerms(NameRelationshipType.class, ORDERED);
+		insertDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}
 	
 	
-	public boolean makeDefaultTermsLoaded() throws FileNotFoundException, NoDefinedTermClassException{
-		return makeDefaultTermsLoaded(vocabularyStore);
+	public boolean makeDefaultTermsInserted() throws FileNotFoundException, NoDefinedTermClassException{
+		return makeDefaultTermsInserted(vocabularyStore);
 	}
 	
-	public boolean makeDefaultTermsLoaded(IVocabularyStore vocabularyStore) throws FileNotFoundException, NoDefinedTermClassException{
+	public boolean makeDefaultTermsInserted(IVocabularyStore vocabularyStore) throws FileNotFoundException, NoDefinedTermClassException{
 		if (vocabularyStore == null){
 			vocabularyStore = this.vocabularyStore;
 		}
 		if (! checkBasicTermsExist(vocabularyStore)){
-			return loadDefaultTerms();
-		}else{
-			return loadProgrammaticallyNeededTerms();
+			return insertDefaultTerms();
 		}
-	}
-	
-	private boolean loadProgrammaticallyNeededTerms(){
-		Rank.SPECIES();
-		Rank.GENUS();
-		Rank.INFRASPECIES();
-		Rank.FAMILY();
-		Language.ENGLISH();
 		return true;
 	}
 	

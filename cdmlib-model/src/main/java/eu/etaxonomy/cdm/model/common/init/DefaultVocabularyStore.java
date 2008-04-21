@@ -92,11 +92,11 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 			try {
 				definedTermsMap.put(DEFAULT_LANGUAGE().getUuid(), DEFAULT_LANGUAGE());
 				TermLoader termLoader = new TermLoader(this);
-				termLoader.makeDefaultTermsLoaded();
+				termLoader.makeDefaultTermsInserted();
 			} catch (Exception e) {
 				logger.error("Error ocurred when loading terms");
 				return false;
-			}				
+			}
 			logger.debug("initTermsMap end ...");
 		}
 		if (termVocabularyMap == null){

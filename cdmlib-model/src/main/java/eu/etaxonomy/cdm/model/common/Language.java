@@ -80,7 +80,7 @@ public class Language extends DefinedTermBase {
 		this(label,text, DEFAULT());
 	}
 
-	public static final Language getUUID(UUID uuid){
+	public static final Language getByUuid(UUID uuid){
 		return (Language)findByUuid(uuid);
 	}
 
@@ -91,55 +91,55 @@ public class Language extends DefinedTermBase {
 	
 
 	public static final Language CHINESE(){
-		return getUUID(uuidChinese);
+		return getByUuid(uuidChinese);
 	}
 
 	public static final Language ENGLISH(){
-		return getUUID(uuidEnglish);
+		return getByUuid(uuidEnglish);
 	}
 
 	public static final Language SPANISH(){
-		return getUUID(uuidSpanish);
+		return getByUuid(uuidSpanish);
 	}
 
 	public static final Language HINDI(){
-		return getUUID(uuidHindi);
+		return getByUuid(uuidHindi);
 	}
 
 	public static final Language ARABIC(){
-		return getUUID(uuidArabic);
+		return getByUuid(uuidArabic);
 	}
 
 	public static final Language RUSSIAN(){
-		return getUUID(uuidRussian);
+		return getByUuid(uuidRussian);
 	}
 
 	public static final Language PORTUGUESE(){
-		return getUUID(uuidPortuguese);
+		return getByUuid(uuidPortuguese);
 	}
 
 	public static final Language JAPANESE(){
-		return getUUID(uuidJapanese);
+		return getByUuid(uuidJapanese);
 	}
 
 	public static final Language GERMAN(){
-		return getUUID(uuidGerman);
+		return getByUuid(uuidGerman);
 	}
 	
 	public static final Language FRENCH(){
-		return getUUID(uuidFrench);
+		return getByUuid(uuidFrench);
 	}
 
 	public static final Language ITALIAN(){
-		return getUUID(uuidItalian);
+		return getByUuid(uuidItalian);
 	}
 
 	public static final Language DUTCH(){
-		return getUUID(uuidDutch);
+		return getByUuid(uuidDutch);
 	}
 
 	public static final Language POLISH(){
-		return getUUID(uuidPolish);
+		return getByUuid(uuidPolish);
 	}
  
 	@Override 

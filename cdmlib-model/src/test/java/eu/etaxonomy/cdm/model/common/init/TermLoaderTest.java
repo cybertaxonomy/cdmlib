@@ -81,7 +81,7 @@ public class TermLoaderTest {
 			String filename = "Rank.csv";
 			boolean isEnumeration = true;
 			Class termClass = Rank.class;
-			termLoader.loadTerms(termClass, filename, isEnumeration, true);
+			termLoader.insertTerms(termClass, filename, isEnumeration, true);
 		} catch (FileNotFoundException e) {
 			fail();
 		} catch (NoDefinedTermClassException e) {
@@ -96,7 +96,7 @@ public class TermLoaderTest {
 	@Test
 	public void testLoadDefaultTerms() {
 		try {
-			termLoader.loadDefaultTerms(Rank.class, true);
+			termLoader.insertDefaultTerms(Rank.class, true);
 		} catch (FileNotFoundException e) {
 			fail();
 		} catch (NoDefinedTermClassException e) {
@@ -111,7 +111,7 @@ public class TermLoaderTest {
 	@Test
 	public void testMakeDefaultTermsLoaded() {
 		try {
-			termLoader.makeDefaultTermsLoaded();
+			termLoader.makeDefaultTermsInserted();
 		} catch (FileNotFoundException e) {
 			fail();
 		} catch (NoDefinedTermClassException e) {

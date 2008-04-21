@@ -46,13 +46,13 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		super(term, label, symmetric, transitive);
 	}
 
-	public static final TaxonRelationshipType getUUID(UUID uuid){
+	public static final TaxonRelationshipType getByUuid(UUID uuid){
 		return (TaxonRelationshipType) findByUuid(uuid);
 	}
 
 
 	public static final TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN(){
-		return getUUID(uuidTaxonomicallyIncludedIn);
+		return getByUuid(uuidTaxonomicallyIncludedIn);
 	}
 	public static final TaxonRelationshipType MISAPPLIEDNAMEFOR(){
 		return (TaxonRelationshipType)findByUuid(uuidMisappliedNameFor);

@@ -61,12 +61,12 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public BotanicalName parseFullReference(String fullReference, Rank rank) {
-		if (fullReference == null){
+	public BotanicalName parseFullReference(String fullReferenceString, Rank rank) {
+		if (fullReferenceString == null){
 			return null;
 		}else{
 			BotanicalName result = BotanicalName.NewInstance(null);
-			parseFullReference(result, fullReference, rank, false);
+			parseFullReference(result, fullReferenceString, rank, false);
 			return result;
 		}
 	}
@@ -74,26 +74,26 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
 	 */
-	public void parseFullReference(BotanicalName nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty) {
-		if (fullReference == null){
+	public void parseFullReference(BotanicalName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+		if (fullReferenceString == null){
 			//return null;
 			return;
 		}
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
 		}
-		fullReference.replaceAll(oWs , " ");
-		fullReference = fullReference.trim();
+		fullReferenceString.replaceAll(oWs , " ");
+		fullReferenceString = fullReferenceString.trim();
 		
 		//seperate name and reference part
 		String nameAndRefSeperator = "(^" + anyFullName + ")("+ referenceSeperator + ")";
 		Pattern nameAndRefSeperatorPattern = Pattern.compile(nameAndRefSeperator);
-		Matcher nameAndRefSeperatorMatcher = nameAndRefSeperatorPattern.matcher(fullReference);
+		Matcher nameAndRefSeperatorMatcher = nameAndRefSeperatorPattern.matcher(fullReferenceString);
 				
 		if (nameAndRefSeperatorMatcher.find() ){
 			String nameAndSeperator = nameAndRefSeperatorMatcher.group(0); 
 		    String name = nameAndRefSeperatorMatcher.group(1); 
-		    String reference = fullReference.substring(nameAndRefSeperatorMatcher.end());
+		    String reference = fullReferenceString.substring(nameAndRefSeperatorMatcher.end());
 		    
 		    // inRef?
 		    String seperator = nameAndSeperator.substring(name.length());
@@ -112,8 +112,8 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		}else{
 			//don't parse if name can't be seperated
 			nameToBeFilled.setHasProblem(true);
-			nameToBeFilled.setTitleCache(fullReference);
-			logger.info("no applicable parsing rule could be found for \"" + fullReference + "\"");    
+			nameToBeFilled.setTitleCache(fullReferenceString);
+			logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
 		}
 	}
 	
@@ -230,42 +230,42 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericFullName(java.lang.String)
 	 */
-	public BotanicalName parseFullName(String fullName){
-		return parseFullName(fullName, null);
+	public BotanicalName parseFullName(String fullNameString){
+		return parseFullName(fullNameString, null);
 	}
 	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public BotanicalName parseFullName(String fullName, Rank rank) {
-		if (fullName == null){
+	public BotanicalName parseFullName(String fullNameString, Rank rank) {
+		if (fullNameString == null){
 			return null;
 		}else{
 			BotanicalName result = BotanicalName.NewInstance(null);
-			parseFullName(result, fullName, rank, false);
+			parseFullName(result, fullNameString, rank, false);
 			return result;
 		}
 	}
 		
 	
-	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank, boolean makeEmpty) {
+	public void parseFullName(BotanicalName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
 		
 		String authorString = null;
 		
-		if (fullName == null){
+		if (fullNameString == null){
 			return;
 		}
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
 		}
-		fullName.replaceAll(oWs , " ");
+		fullNameString.replaceAll(oWs , " ");
 		//TODO 
 		// OLD: fullName = oWsRE.subst(fullName, " "); //substitute multiple whitespaces		   
-		fullName = fullName.trim();
+		fullNameString = fullNameString.trim();
 		
-		String[] epi = pattern.split(fullName);
+		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
 //		    if ( cultivarMarkerRE.match(fullName) ){ funktioniert noch nicht, da es z.B. auch Namen gibt, wie 't Hart
@@ -273,10 +273,10 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 //		    }
 		    //hybrids //TODO 2 implement hybrids
 		    //else 
-		    if (hybridPattern.matcher(fullName).matches() ){
-		    	nameToBeFilled = parseHybrid(fullName);
+		    if (hybridPattern.matcher(fullNameString).matches() ){
+		    	nameToBeFilled = parseHybrid(fullNameString);
 		    }
-		    else if (genusOrSupraGenusPattern.matcher(fullName).matches()){
+		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
 				if (rank.isSupraGeneric()){
 					nameToBeFilled.setRank(rank);
@@ -287,40 +287,40 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 					nameToBeFilled.setRank(Rank.GENUS());
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 				}
-				authorString = fullName.substring(epi[0].length());
+				authorString = fullNameString.substring(epi[0].length());
 			}
 			//infra genus
-			else if (infraGenusPattern.matcher(fullName).matches()){
+			else if (infraGenusPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[1]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setInfraGenericEpithet(epi[2]);
-				authorString = fullName.substring(epi[0].length() + 1 + epi[1].length()+ 1 + epi[2].length());
+				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length()+ 1 + epi[2].length());
 			}
 			//aggr. or group
-			else if (aggrOrGroupPattern.matcher(fullName).matches()){
+			else if (aggrOrGroupPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
 			//species
-			else if (speciesPattern.matcher(fullName).matches()){
+			else if (speciesPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.SPECIES());
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
-				authorString = fullName.substring(epi[0].length() + 1 + epi[1].length());
+				authorString = fullNameString.substring(epi[0].length() + 1 + epi[1].length());
 			}
 			//autonym
-			else if (autonymPattern.matcher(fullName).matches()){
+			else if (autonymPattern.matcher(fullNameString).matches()){
 				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[epi.length - 2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(epi[epi.length - 1]);
 				int lenSpecies = 2 + epi[0].length()+epi[1].length();
 				int lenInfraSpecies =  2 + epi[epi.length - 2].length() + epi[epi.length - 1].length();
-				authorString = fullName.substring(lenSpecies, fullName.length() - lenInfraSpecies);
+				authorString = fullNameString.substring(lenSpecies, fullNameString.length() - lenInfraSpecies);
 			}
 			//infraSpecies
-			else if (infraSpeciesPattern.matcher(fullName).matches()){
+			else if (infraSpeciesPattern.matcher(fullNameString).matches()){
 				String infraSpecRankEpi = epi[2];
 				String infraSpecEpi = epi[3];
 				if ("tax.".equals(infraSpecRankEpi)){
@@ -331,27 +331,27 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(infraSpecEpi);
-				authorString = fullName.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankEpi.length() + 1 + infraSpecEpi.length());
+				authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + infraSpecRankEpi.length() + 1 + infraSpecEpi.length());
 			}//old infraSpecies
-			else if (oldInfraSpeciesPattern.matcher(fullName).matches()){
+			else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
 				boolean implemented = false;
 				if (implemented){
 					nameToBeFilled.setRank(Rank.getRankByNameOrAbbreviation(epi[2]));
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 					nameToBeFilled.setSpecificEpithet(epi[1]);
 					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);
-					authorString = fullName.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
+					authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
 				}else{
 					nameToBeFilled.setHasProblem(true);
-					nameToBeFilled.setTitleCache(fullName);
-					logger.info("Name string " + fullName + " could not be parsed because UnnnamedNamePhrase is not yet implemented!");
+					nameToBeFilled.setTitleCache(fullNameString);
+					logger.info("Name string " + fullNameString + " could not be parsed because UnnnamedNamePhrase is not yet implemented!");
 				}
 			}
 			//none
 			else{ 
 				nameToBeFilled.setHasProblem(true);
-				nameToBeFilled.setTitleCache(fullName);
-				logger.info("no applicable parsing rule could be found for \"" + fullName + "\"");
+				nameToBeFilled.setTitleCache(fullNameString);
+				logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");
 		    }
 			//authors
 		    if (nameToBeFilled != null && authorString != null && authorString.trim().length() > 0 ){ 
@@ -360,8 +360,8 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 					authors = fullAuthors(authorString);
 				} catch (StringNotParsableException e) {
 					nameToBeFilled.setHasProblem(true);
-					nameToBeFilled.setTitleCache(fullName);
-					logger.info("no applicable parsing rule could be found for \"" + fullName + "\"");;
+					nameToBeFilled.setTitleCache(fullNameString);
+					logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
 				}
 				nameToBeFilled.setCombinationAuthorTeam(authors[0]);
 				nameToBeFilled.setExCombinationAuthorTeam(authors[1]);
@@ -374,49 +374,53 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 				return;
 			}else{
 				nameToBeFilled.setHasProblem(true);
-				nameToBeFilled.setTitleCache(fullName);
-				logger.info("Name string " + fullName + " could not be parsed!");
+				nameToBeFilled.setTitleCache(fullNameString);
+				logger.info("Name string " + fullNameString + " could not be parsed!");
 				//return result;
 				return;
 			}
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.setHasProblem(true);
-			nameToBeFilled.setTitleCache(fullName);
-			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullName);
+			nameToBeFilled.setTitleCache(fullNameString);
+			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
 			//return result;
 			return;
 		}
 	}
 	
 	private void makeEmpty(BotanicalName nameToBeFilled){
+		nameToBeFilled.setRank(null);
+		nameToBeFilled.setTitleCache(null, false);
+		nameToBeFilled.setNameCache(null);
+				
 		nameToBeFilled.setAnamorphic(false);
 		nameToBeFilled.setAppendedPhrase(null);
-		nameToBeFilled.setAuthorshipCache(null);
 		//TODO ??
 		//nameToBeFilled.setBasionym(basionym);
 		nameToBeFilled.setBasionymAuthorTeam(null);
-		nameToBeFilled.setBinomHybrid(false);
 		nameToBeFilled.setCombinationAuthorTeam(null);
 		nameToBeFilled.setExBasionymAuthorTeam(null);
-		
-		
 		nameToBeFilled.setExCombinationAuthorTeam(null);
-		nameToBeFilled.setGenusOrUninomial(null);
+		nameToBeFilled.setAuthorshipCache(null);
+		
+		
 		nameToBeFilled.setHasProblem(false);
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
+		
 		nameToBeFilled.setHybridFormula(false);
-		nameToBeFilled.setInfraGenericEpithet(null);
-		nameToBeFilled.setInfraSpecificEpithet(null);
 		nameToBeFilled.setMonomHybrid(false);
-		nameToBeFilled.setNameCache(null);
+		nameToBeFilled.setBinomHybrid(false);
+		nameToBeFilled.setTrinomHybrid(false);
+		
+		nameToBeFilled.setGenusOrUninomial(null);
+		nameToBeFilled.setInfraGenericEpithet(null);
+		nameToBeFilled.setSpecificEpithet(null);
+		nameToBeFilled.setInfraSpecificEpithet(null);
+		
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
-		nameToBeFilled.setProtectedTitleCache(false);
-		nameToBeFilled.setRank(null);
-		nameToBeFilled.setSpecificEpithet(null);
-		nameToBeFilled.setTitleCache(null, false);
-		nameToBeFilled.setTrinomHybrid(false);
+		
 		nameToBeFilled.setUpdated(Calendar.getInstance());
 		// TODO nameToBeFilled.setUpdatedBy(updatedBy);
 			

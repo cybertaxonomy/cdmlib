@@ -41,24 +41,24 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 
 
-	public static final HybridRelationshipType getUUID(UUID uuid){
+	public static final HybridRelationshipType getbyUuid(UUID uuid){
 		return (HybridRelationshipType) findByUuid(uuid);
 	}
 
 	public static final HybridRelationshipType FIRST_PARENT(){
-		return getUUID(uuidFirstParent);
+		return getbyUuid(uuidFirstParent);
 	}
 
 	public static final HybridRelationshipType SECOND_PARENT(){
-		return getUUID(uuidSecondParent);
+		return getbyUuid(uuidSecondParent);
 	}
 
 	public static final HybridRelationshipType FEMALE_PARENT(){
-		return getUUID(uuidFemaleParent);
+		return getbyUuid(uuidFemaleParent);
 	}
 
 	public static final HybridRelationshipType MALE_PARENT(){
-		return getUUID(uuidMaleParent);
+		return getbyUuid(uuidMaleParent);
 	}
 
 }

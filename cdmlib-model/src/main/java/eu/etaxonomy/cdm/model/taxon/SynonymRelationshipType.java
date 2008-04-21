@@ -39,32 +39,31 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 
 	public SynonymRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
 		super(term, label, symmetric, transitive);
-		// TODO Auto-generated constructor stub
 	}
 
 
-	public static final SynonymRelationshipType getUUID(UUID uuid){
+	public static final SynonymRelationshipType getByUuid(UUID uuid){
 		return (SynonymRelationshipType) findByUuid(uuid);
 	}
 	
 	public static final SynonymRelationshipType SYNONYM_OF(){
-		return getUUID(uuidSynonymOf);
+		return getByUuid(uuidSynonymOf);
 	}
 
 	public static final SynonymRelationshipType PRO_PARTE_SYNONYM_OF(){
-		return getUUID(uuidProParteSynonymOf);
+		return getByUuid(uuidProParteSynonymOf);
 	}
 
 	public static final SynonymRelationshipType PARTIAL_SYNONYM_OF(){
-		return getUUID(uuidPartialSynonymOf);
+		return getByUuid(uuidPartialSynonymOf);
 	}
 
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
-		return getUUID(uuidHomotypicSynonymOf);
+		return getByUuid(uuidHomotypicSynonymOf);
 	}
 
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
-		return getUUID(uuidHeterotypicSynonymOf);
+		return getByUuid(uuidHeterotypicSynonymOf);
 	}
 
 }

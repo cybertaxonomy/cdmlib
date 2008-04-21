@@ -72,8 +72,8 @@ public class BotanicalName extends NonViralName {
 	 * @param fullName
 	 * @return
 	 */
-	public static BotanicalName PARSED_NAME(String fullName){
-		return PARSED_NAME(fullName, Rank.GENUS());
+	public static BotanicalName PARSED_NAME(String fullNameString){
+		return PARSED_NAME(fullNameString, Rank.GENUS());
 	}
 	
 	/**
@@ -81,11 +81,32 @@ public class BotanicalName extends NonViralName {
 	 * @param fullName
 	 * @return
 	 */
-	public static BotanicalName PARSED_NAME(String fullName, Rank rank){
+	public static BotanicalName PARSED_NAME(String fullNameString, Rank rank){
 		if (nameParser == null){
 			nameParser = new TaxonNameParserBotanicalNameImpl();
 		}
-		return (BotanicalName)nameParser.parseFullName(fullName, rank);
+		return (BotanicalName)nameParser.parseFullName(fullNameString, rank);
+	}
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
+	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString){
+		return PARSED_REFERENCE(fullNameAndReferenceString, Rank.GENUS());
+	}
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
+	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString, Rank rank){
+		if (nameParser == null){
+			nameParser = new TaxonNameParserBotanicalNameImpl();
+		}
+		return (BotanicalName)nameParser.parseFullReference(fullNameAndReferenceString, rank);
 	}
 	
 	//needed by hibernate

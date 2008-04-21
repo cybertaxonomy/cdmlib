@@ -13,12 +13,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.collection.AbstractPersistentCollection;
-import org.hibernate.collection.PersistentSet;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
-import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 
 import java.lang.reflect.Field;
@@ -66,7 +63,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */
