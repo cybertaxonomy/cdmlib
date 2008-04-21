@@ -1,8 +1,9 @@
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 
 @Repository
 public class  CdmEntityDaoBaseTestClass extends CdmEntityDaoBase {

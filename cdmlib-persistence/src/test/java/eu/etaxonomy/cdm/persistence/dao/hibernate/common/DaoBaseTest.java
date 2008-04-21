@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
@@ -58,7 +58,7 @@ public class DaoBaseTest  extends CdmUnitTestBase{
 /************ TESTS ********************************/
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.DaoBase#getSession()}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase#getSession()}.
 	 */
 	@Test
 	public void testGetSession() {

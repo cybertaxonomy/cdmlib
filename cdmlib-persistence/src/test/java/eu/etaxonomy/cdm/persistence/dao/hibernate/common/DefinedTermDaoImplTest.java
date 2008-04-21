@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 
 import static org.junit.Assert.*;
@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 public class DefinedTermDaoImplTest extends CdmUnitTestBase{

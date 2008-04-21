@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao.taxon;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.IdentifiableDaoBaseTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
@@ -64,7 +65,7 @@ public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
 	@Test
 	public void testTaxonDaoHibernateImpl() {
@@ -72,7 +73,7 @@ public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
 	 */
 	@Test
 	public void testGetRootTaxa() {
@@ -80,7 +81,7 @@ public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
 	 */
 	@Test
 	public void testGetTaxaByName() {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.persistence.dao.common;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
 /**
@@ -88,7 +88,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
 	 */
 	//@Test
 	public void testCdmEntityDaoBase() {
@@ -97,7 +97,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#saveCdmObj(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveCdmObj(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public void testSaveCdmObj() {
@@ -107,7 +107,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public void testSaveOrUpdate() {
@@ -120,7 +120,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public void testSave() {
@@ -135,7 +135,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#update(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#update(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public void testUpdate() {
@@ -145,7 +145,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#findById(int)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#findById(int)}.
 	 */
 	@Test
 	public void testFindById() {
@@ -156,7 +156,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#findByUuid(java.util.UUID)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#findByUuid(java.util.UUID)}.
 	 */
 	@Test
 	public void testFindByUuid() {
@@ -166,7 +166,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#exists(java.util.UUID)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#exists(java.util.UUID)}.
 	 */
 	@Test
 	public void testExists() {
@@ -179,7 +179,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#list(int, int)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(int, int)}.
 	 */
 	@Test
 	public void testList() {
@@ -190,7 +190,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public void testDelete() {
