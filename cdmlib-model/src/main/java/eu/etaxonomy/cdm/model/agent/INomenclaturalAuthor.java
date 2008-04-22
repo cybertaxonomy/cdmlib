@@ -9,12 +9,14 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import javax.persistence.Entity;
-
-/**
- * @author a.mueller
- *
- */
+/** 
+* 
+* 
+* 
+* @author a.mueller
+* @version 1.0
+* @created 17-APR-2008
+*/
 public interface INomenclaturalAuthor {
 
 	/**

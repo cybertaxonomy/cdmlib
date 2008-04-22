@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -32,7 +31,7 @@ import javax.persistence.*;
 @Entity
 public class InstitutionalMembership extends VersionableEntity {
 	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
-	//Time period a person belonged to the institution
+	/*Time period a person belonged to the institution*/
 	private TimePeriod period;
 	//Department of the institution this person was working in
 	private String department;

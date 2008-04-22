@@ -9,19 +9,12 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
- * Represents an element of a controlled vocabulary
- * for different kinds of institutions.
+ * Represents an element of a controlled vocabulary for different kinds of institutions.
  * Each element belongs to one {@link common.TermVocabulary vocabulary}.
  * <p>
  * See also the <a href="http://rs.tdwg.org/ontology/voc/InstitutionType">TDWG Ontology</a>
