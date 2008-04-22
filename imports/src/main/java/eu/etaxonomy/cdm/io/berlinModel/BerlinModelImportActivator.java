@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
@@ -18,22 +18,23 @@ public class BerlinModelImportActivator {
 	private static Logger logger = Logger.getLogger(BerlinModelImportActivator.class);
 
 	//database validation status (create, update, validate ...)
-	static HBM2DDL hbm2dll = HBM2DDL.CREATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.editWP6();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_1_1();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test();
 	
-	static final  boolean doAuthors = false;
+	//authors
+	static final  boolean doAuthors = true;
 	//references
-	static final  boolean doReferences = false;
+	static final  boolean doReferences = true;
 	//names
-	static final  boolean doTaxonNames = false;
-	static final  boolean doRelNames = false;
+	static final  boolean doTaxonNames = true;
+	static final  boolean doRelNames = true;
 	static final  boolean doNameStatus = false;
 	static final  boolean doTypes = false;
 	
 	//taxa
-	static final  boolean doTaxa = false;
-	static final  boolean doRelTaxa = false;
+	static final  boolean doTaxa = true;
+	static final  boolean doRelTaxa = true;
 	static final  boolean doFacts = false;
 
 	
@@ -58,8 +59,8 @@ public class BerlinModelImportActivator {
 		
 		bmImportConfigurator.setDoTaxa(doTaxa);
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
-		bmImportConfigurator.setDoFacts(false);
-		bmImportConfigurator.setHbm2dll(HBM2DDL.CREATE);
+		bmImportConfigurator.setDoFacts(doFacts);
+		bmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
 		
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();

@@ -22,7 +22,7 @@ public class CdmDestinations {
 	public static ICdmDataSource cdm_build(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_1_1"; // values: "cdm_1_1"  "cdm_build"
+		String cdmDB = "cdm_build"; // values: "cdm_1_1"  "cdm_build"
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
@@ -31,7 +31,7 @@ public class CdmDestinations {
 	public static ICdmDataSource cdm_test(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_1_1"; // values: "cdm_1_1"  "cdm_build"
+		String cdmDB = "cdm_test"; // values: "cdm_1_1"  "cdm_build"
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
