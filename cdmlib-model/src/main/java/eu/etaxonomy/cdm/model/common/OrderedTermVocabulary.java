@@ -49,7 +49,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
-		result.addAll( ((SortedSet<T>)terms).tailSet(otb));
+		SortedSet<T> sortedSet = new TreeSet<T>();
+		sortedSet.addAll(terms);
+		result.addAll( sortedSet.tailSet(otb));
 		return result;
 	}
 	@Transient
@@ -66,7 +68,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
-		result.addAll( ((SortedSet<T>)terms).headSet(otb));
+		SortedSet<T> sortedSet = new TreeSet<T>();
+		sortedSet.addAll(terms);
+		result.addAll( sortedSet.headSet(otb));
 		return result;
 	}
 	
@@ -113,7 +117,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public T getLowestTerm() {
 		try {
-			SortedSet<T> sortedSet = new TreeSet();
+			SortedSet<T> sortedSet = new TreeSet<T>();
 			sortedSet.addAll(terms);
 			return sortedSet.first();
 			//return ((SortedSet<T>)terms).first();
@@ -125,7 +129,9 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public T getHighestTerm() {
 		try {
-			return ((SortedSet<T>)terms).last();
+			SortedSet<T> sortedSet = new TreeSet<T>();
+			sortedSet.addAll(terms);
+			return sortedSet.last();
 		} catch (NoSuchElementException e) {
 			return null;
 		}
