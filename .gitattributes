@@ -438,6 +438,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/site/site.xml -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text

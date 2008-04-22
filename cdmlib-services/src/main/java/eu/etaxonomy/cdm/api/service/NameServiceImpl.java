@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 import java.util.Collection;
@@ -20,9 +22,16 @@ import java.util.UUID;
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
 	static Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
+	protected ITermVocabularyDao vocabularyDao;
+	
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
 		this.dao = dao;
+	}
+	
+	@Autowired
+	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
+		this.vocabularyDao = vocabularyDao;
 	}
 
 	public NameServiceImpl(){
@@ -56,9 +65,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return dao.list(limit, start);
 	}
 
-	public TermVocabulary getRankEnumeration() {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderedTermVocabulary<Rank> getRankVocabulary() {
+		String uuidRank = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
+		UUID rankUuid = UUID.fromString(uuidRank);
+		OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		return rankVocabulary;
 	}
 
 	public void generateTitleCache() {
