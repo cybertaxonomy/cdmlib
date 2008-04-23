@@ -8,6 +8,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelSources;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
 
 
 /**
@@ -20,22 +21,22 @@ public class BerlinModelImportActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.editWP6();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 	
 	//authors
-	static final  boolean doAuthors = true;
+	static final  boolean doAuthors = false;
 	//references
-	static final  boolean doReferences = true;
+	static final  DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final  boolean doTaxonNames = true;
-	static final  boolean doRelNames = true;
+	static final  boolean doRelNames = false;
 	static final  boolean doNameStatus = false;
 	static final  boolean doTypes = false;
 	
 	//taxa
 	static final  boolean doTaxa = true;
-	static final  boolean doRelTaxa = true;
-	static final  boolean doFacts = false;
+	static final  boolean doRelTaxa = false;
+	static final  boolean doFacts = true;
 
 	
 	/**
