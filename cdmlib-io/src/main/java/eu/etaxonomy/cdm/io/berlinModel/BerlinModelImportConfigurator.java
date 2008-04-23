@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -32,6 +33,7 @@ public class BerlinModelImportConfigurator {
 	private Source source;
 	private ReferenceBase sourceReference;
 	private ICdmDataSource destination;
+	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
 	
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
@@ -171,9 +173,14 @@ public class BerlinModelImportConfigurator {
 	public void setSourceReferenceTitle(String sourceReferenceTitle) {
 		getSourceReference().setTitleCache(sourceReferenceTitle);
 	}
-	
-	
-	
-	
+
+
+	public Person getCommentator() {
+		return commentator;
+	}
+
+	public void setCommentator(Person commentator) {
+		this.commentator = commentator;
+	}
 	
 }

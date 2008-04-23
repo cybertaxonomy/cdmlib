@@ -86,6 +86,12 @@ public class BerlinModelTaxonNameIO {
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				Object nomRefFk = rs.getObject("NomRefFk");
 				
+				Object createdWhen = rs.getObject("Created_When");
+				Object createdWho = rs.getObject("Created_Who");
+//				Object updatedWhen = rs.getObject("Updated_When");
+//				Object updatedWho = rs.getObject("Updated_who");
+				Object updatedWhen = rs.getObject("Created_When");
+				Object updatedWho = rs.getObject("Created_Who");
 				try {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
@@ -189,17 +195,16 @@ public class BerlinModelTaxonNameIO {
 					}
 					
 					//refId
-					//TODO
-					Annotation annotation = Annotation.NewInstance("Berlin Model nameId: " + String.valueOf(nameId), Language.ENGLISH());
-					Person commentator = Person.NewInstance();
-					commentator.setTitleCache("automatic importer");
-					annotation.setCommentator(commentator);
-					try {
-						URL linkbackUrl = new URL("http:\\www.abc.de");
-						annotation.setLinkbackUrl(linkbackUrl);
-					} catch (MalformedURLException e) {
-						logger.warn("MalformedURLException");
-					}
+					String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + "(" + String.valueOf(createdWhen) + ")" +
+					 						String.valueOf(updatedWho) + "(" + String.valueOf(updatedWhen) + ")";
+					Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
+					annotation.setCommentator(bmiConfig.getCommentator());
+//					try {
+//						URL linkbackUrl = new URL("http:\\www.abc.de");
+//						annotation.setLinkbackUrl(linkbackUrl);
+//					} catch (MalformedURLException e) {
+//						logger.warn("MalformedURLException");
+//					}
 					botanicalName.addAnnotation(annotation);
 					
 					boolean flag = true;
