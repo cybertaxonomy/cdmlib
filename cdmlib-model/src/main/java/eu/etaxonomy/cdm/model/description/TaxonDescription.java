@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -29,10 +28,19 @@ import javax.persistence.*;
 @Entity
 public class TaxonDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(TaxonDescription.class);
-	private Set<Scope> scopes = new HashSet();
-	private Set<NamedArea> geoScopes = new HashSet();
+	private Set<Scope> scopes = new HashSet<Scope>();
+	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 	private Taxon taxon;
 
+	public static TaxonDescription NewInstance(){
+		return new TaxonDescription();
+	}
+	
+	public TaxonDescription(){
+		super();
+	}
+	
+	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NamedArea> getGeoScopes(){

@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -30,7 +29,13 @@ public class TextData extends FeatureBase {
 	private MultilanguageSet texts;
 	private TextFormat format;
 
-
+	public static TextData NewInstance(){
+		return new TextData();
+	}
+	
+	public TextData(){
+		super();
+	}
 
 
 	public MultilanguageSet getTexts() {
