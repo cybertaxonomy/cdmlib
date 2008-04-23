@@ -28,32 +28,42 @@ public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
 	private MultilanguageSet texts;
 	private TextFormat format;
-
+	
 	public static TextData NewInstance(){
 		return new TextData();
 	}
 	
 	public TextData(){
 		super();
+		initTextSet();
 	}
 
 
 	public MultilanguageSet getTexts() {
+		initTextSet();
 		return texts;
 	}
 	private void setTexts(MultilanguageSet texts) {
 		this.texts = texts;
 	}
 	public void addText(String text, Language lang) {
+		initTextSet();
 		this.texts.add(text, lang);
 	}
 	public void addText(LanguageString text) {
+		initTextSet();
 		this.texts.add(text);
 	}
 	public void removeText(Language lang) {
+		initTextSet();
 		this.texts.remove(lang);
 	}
 	
+	private void initTextSet(){
+		if (texts == null){
+			texts = new MultilanguageSet();
+		}
+	}
 	
 
 	@ManyToOne

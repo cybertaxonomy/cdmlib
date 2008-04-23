@@ -271,6 +271,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabularyTe
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/TermVocabularyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/DefaultVocabularyStoreTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/init/TermLoaderTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text

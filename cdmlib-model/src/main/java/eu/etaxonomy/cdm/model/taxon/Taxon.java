@@ -65,10 +65,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	protected void setDescriptions(Set<TaxonDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
-	public void addDescriptions(TaxonDescription description) {
+	public void addDescription(TaxonDescription description) {
 		this.descriptions.add(description);
 	}
-	public void removeDescriptions(DescriptionBase description) {
+	public void removeDescription(DescriptionBase description) {
 		this.descriptions.remove(description);
 	}
 

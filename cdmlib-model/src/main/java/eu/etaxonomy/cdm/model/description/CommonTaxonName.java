@@ -28,6 +28,17 @@ public class CommonTaxonName extends FeatureBase {
 	private String name;
 	private Language language;
 
+	public static CommonTaxonName NewInstance(String name, Language language){
+		CommonTaxonName result = new CommonTaxonName();
+		result.setName(name);
+		result.setLanguage(language);
+		return result;
+	}
+	
+	protected CommonTaxonName(){
+	}
+	
+	
 	@ManyToOne
 	public Language getLanguage(){
 		return this.language;
@@ -36,6 +47,9 @@ public class CommonTaxonName extends FeatureBase {
 		this.language = language;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getName(){
 		return this.name;
 	}
