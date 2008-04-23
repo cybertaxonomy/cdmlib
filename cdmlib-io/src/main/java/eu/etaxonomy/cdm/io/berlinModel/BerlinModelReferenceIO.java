@@ -11,6 +11,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -81,7 +82,6 @@ public class BerlinModelReferenceIO {
 			//strQueryBase += " AND Reference.refId = 7000000 " ;
 			String strQueryNoInRef = strQueryBase + 
 				" AND (Reference.InRefFk is NULL) ";
-
 			
 			String strQuery1InRef = strQueryBase + 
 				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) ";
@@ -97,11 +97,18 @@ public class BerlinModelReferenceIO {
 				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
 				return false;
 			}
+
+			if (bmiConfig.getDoReferences() == CONCEPT_REFERENCES){
+				strQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) ";
+			}
 			
 			List<ResultSet> resultSetList = new ArrayList<ResultSet>();
 			resultSetList.add(source.getResultSet(strQueryNoInRef));
-			resultSetList.add(source.getResultSet(strQuery1InRef));
-			resultSetList.add(source.getResultSet(strQuery2InRef));
+			if (bmiConfig.getDoReferences() == ALL || bmiConfig.getDoReferences() == NOMENCLATURAL){
+				resultSetList.add(source.getResultSet(strQuery1InRef));
+				resultSetList.add(source.getResultSet(strQuery2InRef));
+			}
+			
 			
 			int i = 0;
 			//for each reference
@@ -201,7 +208,7 @@ public class BerlinModelReferenceIO {
 						
 						dbAttrName = "nomRefCache";
 						cdmAttrName = "titleCache";
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
+						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.NO_OVERWRITE);
 						
 						//refId
 						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);

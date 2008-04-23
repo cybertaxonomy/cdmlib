@@ -6,18 +6,26 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class BerlinModelImportConfigurator {
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
+	public static enum DO_REFERENCES{
+		NONE,
+		NOMENCLATURAL,
+		CONCEPT_REFERENCES,
+		ALL
+	}
+	
 	//TODO
 	private boolean deleteAll = false;
 	
 	private boolean doAuthors = true;
 	//references
-	private boolean doReferences = true;
+	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 	//names
 	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
@@ -26,8 +34,8 @@ public class BerlinModelImportConfigurator {
 	
 	//taxa
 	private boolean doTaxa = true;
-	private boolean doRelTaxa = true;
-	private boolean doFacts = false;
+	private boolean doRelTaxa = false;
+	private boolean doFacts = true;
 
 	
 	private Source source;
@@ -35,6 +43,7 @@ public class BerlinModelImportConfigurator {
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
 	
+	private Language factLanguage = Language.ENGLISH();
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
 /* *****************CONSTRUCTOR *****************************/
@@ -87,12 +96,20 @@ public class BerlinModelImportConfigurator {
 	public void setDoAuthors(boolean doAuthors) {
 		this.doAuthors = doAuthors;
 	}
-	public boolean isDoReferences() {
+	
+	/**
+	 * @return the doReferences
+	 */
+	public DO_REFERENCES getDoReferences() {
 		return doReferences;
 	}
-	public void setDoReferences(boolean doReferences) {
+	/**
+	 * @param doReferences the doReferences to set
+	 */
+	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
+	
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -182,5 +199,18 @@ public class BerlinModelImportConfigurator {
 	public void setCommentator(Person commentator) {
 		this.commentator = commentator;
 	}
+
+
+	public Language getFactLanguage() {
+		return factLanguage;
+	}
+
+
+	public void setFactLanguage(Language factLanguage) {
+		this.factLanguage = factLanguage;
+	}
+
+
+
 	
 }

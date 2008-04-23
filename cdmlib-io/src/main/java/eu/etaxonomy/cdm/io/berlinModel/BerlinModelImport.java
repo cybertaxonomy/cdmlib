@@ -11,6 +11,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES.*;
 
 @Service
 public class BerlinModelImport {
@@ -67,7 +68,7 @@ public class BerlinModelImport {
 		}
 		
 		//References
-		if (bmiConfig.isDoReferences()){
+		if (bmiConfig.getDoReferences() == NONE){
 			if (! BerlinModelReferenceIO.invoke(bmiConfig, cdmApp, referenceStore, authorStore)){
 				return false;
 			}

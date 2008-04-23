@@ -22,6 +22,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class ImportHelper {
 	private static final Logger logger = Logger.getLogger(ImportHelper.class);
 	
+	public static final boolean OVERWRITE = true;
+	public static final boolean  NO_OVERWRITE = false;
+	
+	
 	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase berlinModelRef, int berlinModelId){
 		OriginalSource originalSource = new OriginalSource();
 		originalSource.setIdInSource(String.valueOf(berlinModelId));
@@ -32,18 +36,25 @@ public class ImportHelper {
 	
 	
 	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class);
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, OVERWRITE);
 	}
 	
-	
+	public static boolean addStringValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, boolean overwriteNull){
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, String.class, overwriteNull);
+	}
+		
 	public static boolean addBooleanValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName){
-		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class);
+		return addValue(rs, cdmBase, dbAttrName, cdmAttrName, boolean.class, OVERWRITE);
 	}
 
-	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz){
+	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull){
 		try {
 			String methodName;
 			Object strValue = rs.getObject(dbAttrName);
+			if (overwriteNull == NO_OVERWRITE && strValue == null ){
+				if (logger.isDebugEnabled()) { logger.debug("no overwrite for NULL-value");}
+				return true;
+			}
 			if (logger.isDebugEnabled()) { logger.debug("addValue: " + strValue);}
 			if (clazz == boolean.class || clazz == Boolean.class){
 				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
