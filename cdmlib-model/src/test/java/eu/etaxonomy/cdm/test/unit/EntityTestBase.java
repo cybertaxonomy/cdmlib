@@ -18,10 +18,11 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 
 /**
+ * Superclass for all (hibernate)entities to test if certain (hibernate) needs are fulfilled.
+ * E.g. testing if all persistent getter have an according setter.
  * @author a.mueller
  *
  */
@@ -29,7 +30,7 @@ public abstract class EntityTestBase {
 	private static Logger logger = Logger.getLogger(EntityTestBase.class);
 
 	/**
-	 * 
+	 * Constructor
 	 */
 	public EntityTestBase() {
 		super();
@@ -52,6 +53,9 @@ public abstract class EntityTestBase {
 		}
 	}
 	
+	/**
+	 * Tests if all persistent (not transient) getter have an according setter.
+	 */
 	@Test 
 	public final void testPersistentGetterSetterPair() {
 		//
