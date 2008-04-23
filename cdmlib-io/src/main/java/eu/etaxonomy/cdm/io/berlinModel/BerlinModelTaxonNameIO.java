@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -14,7 +16,12 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -183,8 +190,22 @@ public class BerlinModelTaxonNameIO {
 					
 					//refId
 					//TODO
-					// Annotation annotation = new Annotation("Berlin Model nameId: " + String.valueOf(refId), Language.DEFAULT());
-					// botanicalName.addAnnotations(annotation);
+					Annotation annotation = Annotation.NewInstance("Berlin Model nameId: " + String.valueOf(nameId), Language.ENGLISH());
+					Person commentator = Person.NewInstance();
+					commentator.setTitleCache("automatic importer");
+					annotation.setCommentator(commentator);
+					try {
+						URL linkbackUrl = new URL("http:\\www.abc.de");
+						annotation.setLinkbackUrl(linkbackUrl);
+					} catch (MalformedURLException e) {
+						logger.warn("MalformedURLException");
+					}
+					botanicalName.addAnnotation(annotation);
+					
+					boolean flag = true;
+					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
+					botanicalName.addMarker(marker);
+					
 					
 					//nameId
 					ImportHelper.setOriginalSource(botanicalName, bmiConfig.getSourceReference(), nameId);
