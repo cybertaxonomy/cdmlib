@@ -191,7 +191,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 
 	
 	/**
-	 * Is true if UUID and created timestamp are the same for the passed Object and this one.
+	 * Is true if UUID is the same for the passed Object and this one.
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 * See {@link http://www.hibernate.org/109.html hibernate109}, {@link http://www.geocities.com/technofundo/tech/java/equalhash.html geocities} 
 	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
@@ -227,7 +227,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	public int hashCode() {
 		   int hashCode = 7;
 		   hashCode = 29 * hashCode + this.getUuid().hashCode();
-		   //hashCode = 29 * hashCode + this.getCreated().hashCode();
 		   return hashCode;
 	}
 
