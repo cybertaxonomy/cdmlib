@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  *
  */
-public class NameServiceImplTest {
-	private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
+public class NameServiceImplTest2 {
+	private static final Logger logger = Logger.getLogger(NameServiceImplTest2.class);
 
 	//@Autowired
 	static INameService service;
