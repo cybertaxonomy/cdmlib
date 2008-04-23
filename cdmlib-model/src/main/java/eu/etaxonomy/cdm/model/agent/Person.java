@@ -50,6 +50,11 @@ public class Person extends TeamOrPersonBase {
 		return new Person();
 	}
 	
+	public static Person NewTitledInstance(String titleCache){
+		Person result = new Person();
+		result.setTitleCache(titleCache);
+		return result;
+	}
 	
 	
 	/** 
