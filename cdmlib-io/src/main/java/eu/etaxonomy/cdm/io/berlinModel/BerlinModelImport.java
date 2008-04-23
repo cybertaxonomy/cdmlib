@@ -68,7 +68,7 @@ public class BerlinModelImport {
 		}
 		
 		//References
-		if (bmiConfig.getDoReferences() == NONE){
+		if (bmiConfig.getDoReferences() != NONE){
 			if (! BerlinModelReferenceIO.invoke(bmiConfig, cdmApp, referenceStore, authorStore)){
 				return false;
 			}

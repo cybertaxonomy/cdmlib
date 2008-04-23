@@ -73,7 +73,7 @@ public class BerlinModelFactsIO {
 					if (! (taxonBase instanceof Taxon )) {
 						taxon = (Taxon) taxonBase;
 					}else{
-						logger.warn("TaxonBase for Fact " + factId + " was not of type Taxon");
+						logger.warn("TaxonBase for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
 						continue;
 					}
 					
