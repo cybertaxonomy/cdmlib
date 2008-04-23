@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -85,6 +86,9 @@ public class TermLoader {
 			saveVocabulary(voc, termClass);
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
+				if (nextLine.length == 0){
+					continue;
+				}
 				ILoadableTerm term = termClass.newInstance();
 				term = term.readCsvLine(arrayedLine(nextLine));
 				term.setVocabulary(voc);
@@ -94,6 +98,7 @@ public class TermLoader {
 			return voc;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -140,6 +145,7 @@ public class TermLoader {
 		insertDefaultTerms(HybridRelationshipType.class, ORDERED);
 		insertDefaultTerms(NameRelationshipType.class, ORDERED);
 		insertDefaultTerms(TaxonRelationshipType.class, ORDERED);
+		insertDefaultTerms(MarkerType.class, NOT_ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

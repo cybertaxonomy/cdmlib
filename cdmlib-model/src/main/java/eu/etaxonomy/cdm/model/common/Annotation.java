@@ -9,13 +9,13 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -25,11 +25,28 @@ import javax.persistence.*;
  */
 @Entity
 public class Annotation extends LanguageString {
-	public Annotation(String text, Language lang) {
+	private static final Logger logger = Logger.getLogger(Annotation.class);
+	
+	
+	/**
+	 * Factory method.
+	 * @param text
+	 * @param lang
+	 * @return
+	 */
+	public static Annotation NewInstance(String text, Language lang){
+		return new Annotation(text, lang);
+	}
+	
+	/**
+	 * Constructor
+	 * @param text
+	 * @param lang
+	 */
+	protected Annotation(String text, Language lang) {
 		super(text, lang);
 	}
 
-	static Logger logger = Logger.getLogger(Annotation.class);
 	//Human annotation
 	private Person commentator;
 	private AnnotatableEntity annotatedObj;
@@ -56,6 +73,7 @@ public class Annotation extends LanguageString {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getCommentator(){
 		return this.commentator;
 	}
@@ -76,9 +94,21 @@ public class Annotation extends LanguageString {
 	 * @return
 	 */
 	private String getLinkbackUrlStr() {
+		if (linkbackUrl == null){
+			return null;
+		}
 		return linkbackUrl.toString();
 	}
-	private void setLinkbackUrlStr(String linkbackUrl) throws MalformedURLException {
-		this.linkbackUrl = new URL(linkbackUrl);
+	private void setLinkbackUrlStr(String linkbackUrlString) {
+		if (linkbackUrlString == null){
+			this.linkbackUrl = null;
+		}else{
+			try {
+				this.linkbackUrl = new URL(linkbackUrlString);
+			} catch (MalformedURLException e) { //can't be thrown as otherwise Hibernate throws PropertyAccessExceptioin
+				logger.warn("Runtime error occurred in setLinkbackUrlStr");
+				e.printStackTrace();
+			}
+		}
 	}
 }

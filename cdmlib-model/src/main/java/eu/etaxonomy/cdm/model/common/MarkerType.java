@@ -12,7 +12,10 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -26,26 +29,53 @@ import javax.persistence.*;
 public class MarkerType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MarkerType.class);
 
-	public MarkerType(String term, String label) {
-		super(term, label);
-		// TODO Auto-generated constructor stub
+	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
+	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");
+	private static final UUID uuidIsDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
+	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
+
+	public static MarkerType NewInstance(String term, String label){
+		return new MarkerType(term, label);
 	}
+	
+	/**
+	 * Constructor
+	 * @param term
+	 * @param label
+	 */
+	public MarkerType() {
+		super();
+	}
+	
+	/**
+	 * Constructor
+	 * @param term
+	 * @param label
+	 */
+	protected MarkerType(String term, String label) {
+		super(term, label);
+	}
+	
+
+	public static final MarkerType getByUuid(UUID uuid){
+		return (MarkerType) findByUuid(uuid);
+	}	
 
 
 	public static final MarkerType IMPORTED(){
-		return null;
+		return getByUuid(uuidImported);
 	}
 
 	public static final MarkerType TO_BE_CHECKED(){
-		return null;
+		return getByUuid(uuidToBeChecked);
 	}
 
 	public static final MarkerType IS_DOUBTFUL(){
-		return null;
+		return getByUuid(uuidIsDoubtful);
 	}
 
 	public static final MarkerType COMPLETE(){
-		return null;
+		return getByUuid(uuidComplete);
 	}
 
 }

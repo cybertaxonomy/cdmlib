@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
-import java.util.*;
 import javax.persistence.*;
 
 /**

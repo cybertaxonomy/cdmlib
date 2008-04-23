@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -26,11 +25,35 @@ import javax.persistence.*;
  */
 @Entity
 public class Marker extends VersionableEntity {
-	static Logger logger = Logger.getLogger(Marker.class);
+	private static final Logger logger = Logger.getLogger(Marker.class);
+	
 	private boolean flag;
-	private MarkerType type;
+	private MarkerType markerType;
 	private AnnotatableEntity markedObj;
 	
+	/**
+	 * Factory method
+	 * @param text
+	 * @param lang
+	 * @return
+	 */
+	public static Marker NewInstance(MarkerType markerType, boolean flag){
+		return new Marker(markerType, flag);
+	}
+	
+	/**
+	 * Constructor
+	 * @param flage
+	 */
+	protected Marker(MarkerType markerType, boolean flag){
+		this.markerType = markerType;
+		this.flag = flag;
+		
+	}
+	
+	/**
+	 * @return
+	 */
 	@Transient
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
@@ -48,15 +71,22 @@ public class Marker extends VersionableEntity {
 		this.markedObj = newMarkedObject;
 	}
 
+	/**
+	 * @return
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public MarkerType getType(){
-		return this.type;
+	public MarkerType getMarkerType(){
+		return this.markerType;
 	}
-	public void setType(MarkerType type){
-		this.type = type;
+	public void setMarkerType(MarkerType type){
+		this.markerType = type;
 	}
 
+	/**
+	 * The flag value.
+	 * @return
+	 */
 	public boolean getFlag(){
 		return this.flag;
 	}

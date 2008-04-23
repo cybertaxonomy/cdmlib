@@ -15,11 +15,8 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
@@ -339,7 +336,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		}
 	}
 
-	@OneToMany(mappedBy="name")
+	@OneToMany(mappedBy="name", fetch= FetchType.EAGER)
 	public Set<TaxonBase> getTaxonBases() {
 		return this.taxonBases;
 	}

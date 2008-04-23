@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 
@@ -36,6 +38,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 	}
 
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Marker> getMarkers(){
 		return this.markers;
 	}
@@ -49,15 +52,15 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		this.markers = markers;
 	}
 
-	
-	@OneToMany
+	@OneToMany //(mappedBy="AnnotatedObj")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}
-	public void addAnnotations(Annotation annotation){
+	public void addAnnotation(Annotation annotation){
 		annotation.setAnnotatedObj(this);
 	}
-	public void removeAnnotations(Annotation annotation){
+	public void removeAnnotation(Annotation annotation){
 		annotation.setAnnotatedObj(null);
 	}
 	protected void setAnnotations(Set<Annotation> annotations) {

@@ -116,21 +116,17 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		this.protectedTitleCache = protectedTitleCache;
 	}
 
-
 	@OneToMany //(mappedBy="sourcedObj")		
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
 	}
-
 	protected void setSources(Set<OriginalSource> sources) {
 		this.sources = sources;		
 	}
-
 	public void addSource(OriginalSource source) {
 		this.sources.add(source);		
 	}
-
 	public void removeSource(OriginalSource source) {
 		this.sources.remove(source);		
 	}

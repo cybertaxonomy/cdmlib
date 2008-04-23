@@ -38,7 +38,7 @@ public class LanguageString  extends VersionableEntity{
 
 
 	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){
 		return this.language;
 	}

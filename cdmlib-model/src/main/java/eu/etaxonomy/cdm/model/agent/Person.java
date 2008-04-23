@@ -9,17 +9,13 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.engine.loading.LoadContexts;
-
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
