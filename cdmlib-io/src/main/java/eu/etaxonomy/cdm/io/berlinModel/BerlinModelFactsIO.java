@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -43,6 +46,8 @@ public class BerlinModelFactsIO {
                       	" dbo.PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk "+
                     " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
+
+			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 			
 			int i = 0;
 			//for each reference
@@ -58,9 +63,12 @@ public class BerlinModelFactsIO {
 				
 				TaxonBase taxon = taxonMap.get(taxonId);
 				
+				
+				
 				if (taxon != null){
+					TextData textData = TextData.NewInstance();
+//					textData.setT
 					if (categoryFk == FACT_DESCRIPTION){
-						//;
 					}else if (categoryFk == FACT_OBSERVATION){
 						//;
 					}else if (categoryFk == FACT_DISTIRBUTION_EM){

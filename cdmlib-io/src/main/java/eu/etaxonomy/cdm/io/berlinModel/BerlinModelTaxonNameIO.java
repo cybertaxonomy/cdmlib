@@ -90,8 +90,10 @@ public class BerlinModelTaxonNameIO {
 				Object createdWho = rs.getObject("Created_Who");
 //				Object updatedWhen = rs.getObject("Updated_When");
 //				Object updatedWho = rs.getObject("Updated_who");
-				Object updatedWhen = rs.getObject("Created_When");
-				Object updatedWho = rs.getObject("Created_Who");
+				Object updatedWhen = "";
+				Object updatedWho = "";
+				Object notes = rs.getObject("notes");
+				
 				try {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
@@ -195,8 +197,8 @@ public class BerlinModelTaxonNameIO {
 					}
 					
 					//refId
-					String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + "(" + String.valueOf(createdWhen) + ")" +
-					 						String.valueOf(updatedWho) + "(" + String.valueOf(updatedWhen) + ")";
+					String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + " (" + String.valueOf(createdWhen) + ") " +
+					 						" and updated By: " + String.valueOf(updatedWho) + " (" + String.valueOf(updatedWhen) + ")";
 					Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
 					annotation.setCommentator(bmiConfig.getCommentator());
 //					try {
@@ -206,6 +208,17 @@ public class BerlinModelTaxonNameIO {
 //						logger.warn("MalformedURLException");
 //					}
 					botanicalName.addAnnotation(annotation);
+					
+					if (notes != null){
+						String notesString = String.valueOf(notes);
+						if (notesString.length() > 254 ){
+							notesString = notesString.substring(0, 250) + "...";
+						}
+						Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
+						//notes.setCommentator(bmiConfig.getCommentator());
+						botanicalName.addAnnotation(notesAnnotation);
+					}
+					
 					
 					boolean flag = true;
 					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
