@@ -1,6 +1,14 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.api.application;
 
-import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,11 +32,8 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
-import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-
 
 
 /**

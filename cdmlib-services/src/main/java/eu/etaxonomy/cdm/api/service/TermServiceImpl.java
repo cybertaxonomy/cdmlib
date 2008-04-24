@@ -1,6 +1,14 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
 @Service
 @Transactional(readOnly = true)

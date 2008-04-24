@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -8,18 +17,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 
 public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
