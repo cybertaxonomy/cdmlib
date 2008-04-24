@@ -14,7 +14,11 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -43,7 +47,7 @@ public class TestDatabase {
 	public void testNewDatasourceClass(){
 		try {
 			String server = "192.168.2.10";
-			String database = "cdm_1_1";
+			String database = "cdm_test_andreasM";
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
@@ -81,6 +85,58 @@ public class TestDatabase {
 			
 			IDatabaseService dbService = appCtr.getDatabaseService();
 			INameService nameService = appCtr.getNameService();
+			appCtr.close();
+
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
+	
+	
+	public void testFacts(){
+		try {
+			String server = "192.168.2.10";
+			String database = "cdm_test_andreasM";
+			String username = "edit";
+			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			
+			Rank genus = Rank.GENUS();
+			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
+			botanicalName.setGenusOrUninomial("GenusName");
+		
+			Journal journal = new Journal();
+			journal.setTitleCache("Afro+Doc");
+			
+			Taxon taxon = Taxon.NewInstance(botanicalName,journal);
+			appCtr.getTaxonService().saveTaxon(taxon);
+			
+			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+			taxon.addDescription(taxonDescription);
+			
+//			//textData
+//			TextData textData = TextData.NewInstance();
+//			textData.addText("XXX", Language.DEFAULT());
+//			taxonDescription.addFeature(textData);
+//			
+			//commonNames
+			String commonNameString;
+			if (taxon.getName() != null){
+				commonNameString = "Common " + taxon.getName().getNameCache(); 
+			}else{
+				commonNameString = "Common (null)";
+			}
+			CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, Language.DEFAULT());
+			taxonDescription.addFeature(commonName);
+			
+			//save
+			appCtr.getTaxonService().saveTaxon(taxon);
+
+			
 			appCtr.close();
 
 		} catch (DataSourceNotFoundException e) {
@@ -134,7 +190,8 @@ public class TestDatabase {
 	private void test(){
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
-		testNewDatasourceClass();
+		testFacts();
+		//testNewDatasourceClass();
 	//	testPaddie();
 		System.out.println("\nEnd TestDatabase");
 	}
