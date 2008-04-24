@@ -32,7 +32,7 @@ public class TreeNode extends BaseSTO {
 	 * The uuid of this taxons concept reference
 	 */
 	private String secUuid;
-
+	
 	/**
 	 * A flag indicating if alternative taxa  for this name exist.
 	 */

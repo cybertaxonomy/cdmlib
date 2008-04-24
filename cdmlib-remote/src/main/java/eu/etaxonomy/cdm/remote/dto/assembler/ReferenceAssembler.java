@@ -34,6 +34,7 @@ public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO,
 		if (rb !=null){
 			r = new ReferenceTO();
 			fillReferenceSTO(r,rb);
+			r.setCitation(rb.getCitation());
 			//TODO: add TO specific mappings here
 		}
 		return r;
@@ -51,6 +52,9 @@ public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO,
 			}
 			r.addMedia(msto);
 		}
-		return null;
+		String fullCitation = rb.getTitleCache();
+		//TODO compile fullCitation using a formatter
+		r.setFullCitation(fullCitation);
+		return r;
 	}
 }

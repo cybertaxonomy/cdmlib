@@ -127,11 +127,13 @@ public class RestController extends AbstractController
 				}
 				else if(op.equalsIgnoreCase("root")){
 					UUID u = null;
+					if(sec != null && sec.length() == 37 ){
 						try {
 							u = getUuid(sec);
 						} catch (CdmObjectNonExisting e) {
 							log.warn("Concept sec reference UUID is not valid. Ignore");
 						}
+					}
 					results = service.getRootTaxa(u);
 				}
 				mv.addObject( (List)results );
@@ -172,6 +174,11 @@ public class RestController extends AbstractController
 		}
 		return u;
 	}
+	/**
+	 * Turns a string of uuids concatenated with comma characters '<code>,</code>' into a Set of UUID instances
+	 * @param uuid
+	 * @return
+	 */
 	private Set<UUID> getUuids(String uuid) {
 		String [] temp = uuid.trim().split(",");
 		Set<UUID> uuids = new HashSet<UUID>();
