@@ -41,8 +41,8 @@ public class Representation extends LanguageString {
 	public Representation() {
 		super();
 	}	
-	public Representation(String text, String label, Language lang) {
-		super(text, lang);
+	public Representation(String text, String label, Language language) {
+		super(text, language);
 		this.label = label;
 	}
 

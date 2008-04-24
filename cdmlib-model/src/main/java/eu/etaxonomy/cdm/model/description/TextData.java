@@ -26,43 +26,67 @@ import javax.persistence.*;
 @Entity
 public class TextData extends FeatureBase {
 	static Logger logger = Logger.getLogger(TextData.class);
-	private MultilanguageSet texts;
+	
+	private MultilanguageSet multilanguageText;
 	private TextFormat format;
 	
 	public static TextData NewInstance(){
 		return new TextData();
 	}
+
+	public static TextData NewInstance(String text, Language language, TextFormat format){
+		TextData result =  new TextData();
+		result.putText(text, language);
+		result.setFormat(format);
+		return result;
+	}
 	
+	/**
+	 * Constructor
+	 */
 	public TextData(){
 		super();
 		initTextSet();
 	}
 
-
-	public MultilanguageSet getTexts() {
+	/**
+	 * @return
+	 */
+	public MultilanguageSet getMultilanguageText() {
 		initTextSet();
-		return texts;
+		return multilanguageText;
 	}
-	private void setTexts(MultilanguageSet texts) {
-		this.texts = texts;
-	}
-	public void addText(String text, Language lang) {
+	@Transient 
+	public String getText(Language language) {
 		initTextSet();
-		this.texts.add(text, lang);
+		return multilanguageText.getText(language);
 	}
-	public void addText(LanguageString text) {
-		initTextSet();
-		this.texts.add(text);
+	protected void setMultilanguageText(MultilanguageSet texts) {
+		this.multilanguageText = texts;
 	}
-	public void removeText(Language lang) {
+	public String putText(String text, Language language) {
 		initTextSet();
-		this.texts.remove(lang);
+		LanguageString result = this.multilanguageText.put(text, language);
+		return (result == null ? null : result.getText());
+	}
+	public LanguageString putText(LanguageString languageString) {
+		initTextSet();
+		return this.multilanguageText.put(languageString);
+	}
+	public LanguageString removeText(Language language) {
+		initTextSet();
+		return this.multilanguageText.remove(language);
 	}
 	
 	private void initTextSet(){
-		if (texts == null){
-			texts = new MultilanguageSet();
+		if (multilanguageText == null){
+			multilanguageText = new MultilanguageSet();
 		}
+	}
+	
+	public int countLanguages(){
+		initTextSet();
+		return multilanguageText.size();
 	}
 	
 

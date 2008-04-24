@@ -14,8 +14,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -29,13 +27,18 @@ import javax.persistence.*;
 public class TextFormat extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(TextFormat.class);
 
-	public TextFormat() {
+	public static TextFormat NewInstance(){
+		return new TextFormat();
+	}
+	public static TextFormat NewInstance(String term, String label){
+		return new TextFormat(term, label);
+	}
+	
+	protected TextFormat() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public TextFormat(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 }

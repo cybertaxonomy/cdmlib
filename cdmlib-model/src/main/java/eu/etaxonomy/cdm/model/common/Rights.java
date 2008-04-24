@@ -38,8 +38,8 @@ public class Rights extends LanguageString {
 	// owner etc as defined by the rightstype
 	private Agent agent;
 
-	public Rights(String text, Language lang) {
-		super(text, lang);
+	public Rights(String text, Language language) {
+		super(text, language);
 	}
 
 	

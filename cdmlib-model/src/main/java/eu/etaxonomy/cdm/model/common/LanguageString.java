@@ -28,15 +28,21 @@ public class LanguageString  extends VersionableEntity{
 	protected String text;
 	private Language language;
 
-	public LanguageString() {
+	public static LanguageString NewInstance(String text, Language language){
+		return new LanguageString(text, language);
+	}
+	
+	protected LanguageString() {
 		super();
 	}
-	public LanguageString(String text, Language lang) {
-		this.setLanguage(lang);
+
+	protected LanguageString(String text, Language language) {
+		super();
+		this.setLanguage(language);
 		this.setText(text);
+		
 	}
-
-
+	
 	@ManyToOne
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){

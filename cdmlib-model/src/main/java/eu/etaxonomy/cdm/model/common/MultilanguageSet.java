@@ -9,36 +9,73 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.ArrayList;
-import java.util.AbstractSet;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
-//@Entity
-public class MultilanguageSet extends HashSet<LanguageString>{
+@Entity
+public class MultilanguageSet extends CdmBase{
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 
-	public void add(String text, Language lang){
-		LanguageString ls = new LanguageString(text, lang);
-		super.add(ls);
+	protected Map<Language, LanguageString> languageStrings = new HashMap<Language, LanguageString>();
+	
+	
+	public static MultilanguageSet NewInstance(){
+		return new MultilanguageSet();
 	}
-	public void remove(Language lang){
-		super.remove(get(lang));
+	
+	
+	
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Map<Language, LanguageString> getLanguageStrings(){
+		return this.languageStrings;
 	}
-	public LanguageString get(Language lang){
-		// FIXME: ...
-		for (LanguageString ls : this){
-			if (ls.getLanguage()==lang){
-				return ls;
-			}
+	public LanguageString put(LanguageString languageString){
+		if (languageString == null){
+			return null;
+		}else {
+			return languageStrings.put(languageString.getLanguage(), languageString);
 		}
-		return null;
+	}
+	public LanguageString put(String text, Language language){
+		LanguageString languageString = LanguageString.NewInstance(text, language);
+		return this.put(languageString);
+	}
+	public LanguageString remove(Language language){
+		return languageStrings.remove(language);
+	}
+	protected void setLanguageStrings(Map<Language, LanguageString> languageStrings) {
+		this.languageStrings = languageStrings;
+	}
+	
+
+	@Transient
+	public String getText(Language language){
+		LanguageString languageString = getLanguageString(language);
+		return (languageString == null ? null : languageString.getText());
+	}
+	
+	
+	@Transient
+	public LanguageString getLanguageString(Language language){
+		return this.languageStrings.get(language);
+	}
+	
+	public int size(){
+		return languageStrings.size();
 	}
 }

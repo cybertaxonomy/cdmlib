@@ -43,8 +43,8 @@ public class Annotation extends LanguageString {
 	 * @param text
 	 * @param lang
 	 */
-	protected Annotation(String text, Language lang) {
-		super(text, lang);
+	protected Annotation(String text, Language language) {
+		super(text, language);
 	}
 
 	//Human annotation

@@ -28,8 +28,8 @@ import javax.persistence.*;
 public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends VersionableEntity<T> {
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
 
-	protected Set<Marker> markers = new HashSet();
-	protected Set<Annotation> annotations = new HashSet();
+	protected Set<Marker> markers = new HashSet<Marker>();
+	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	
 	public AnnotatableEntity() {
