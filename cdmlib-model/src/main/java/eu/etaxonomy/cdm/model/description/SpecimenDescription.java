@@ -13,8 +13,24 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 public class SpecimenDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(SpecimenDescription.class);
+	
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet();
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static SpecimenDescription NewInstance(){
+		return new SpecimenDescription();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	public SpecimenDescription() {
+		super();
+	}
+	
 	@ManyToMany
 	public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
 		return describedSpecimenOrObservations;

@@ -27,7 +27,21 @@ public class QuantitativeData extends FeatureBase {
 	private MeasurementUnit unit;
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet();
 	
-
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static QuantitativeData NewInstance(){
+		return new QuantitativeData();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected QuantitativeData(){
+		super();
+	}
+	
 	@OneToMany
 	public Set<StatisticalMeasurementValue> getStatisticalValues() {
 		return statisticalValues;

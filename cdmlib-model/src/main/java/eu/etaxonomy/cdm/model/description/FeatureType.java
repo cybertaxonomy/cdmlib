@@ -35,17 +35,18 @@ public class FeatureType extends DefinedTermBase {
 	private boolean supportsIndividualAssociation;
 	private boolean supportsTaxonInteraction;
 	private boolean supportsCommonTaxonName;
-	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet();
-	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet();
-	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet();
+	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet<TermVocabulary>();
+	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
+	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
 
-	public FeatureType(String term, String label) {
+	public static FeatureType NewInstance(String term, String label){
+		return new FeatureType(term, label);
+	}
+	
+	protected FeatureType(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
-	
-	
 	public boolean isSupportsQuantitativeData() {
 		return supportsQuantitativeData;
 	}

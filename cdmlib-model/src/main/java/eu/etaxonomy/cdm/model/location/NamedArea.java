@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.MediaInstance;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -34,17 +33,34 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	//Binary shape definition for user's defined area as polygon
 	private Media shape;
 	private Point pointApproximation;
-	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet();
+	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
 	private NamedAreaType type;
 	private NamedAreaLevel level;
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedArea NewInstance(){
+		return new NamedArea();
+	}
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedArea NewInstance(String term, String label){
+		return new NamedArea(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public NamedArea() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public NamedArea(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 	
 	

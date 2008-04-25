@@ -25,9 +25,16 @@ import javax.persistence.*;
 @Entity
 public class CommonTaxonName extends FeatureBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
+	
 	private String name;
 	private Language language;
 
+	/**
+	 * Factory method
+	 * @param name
+	 * @param language
+	 * @return
+	 */
 	public static CommonTaxonName NewInstance(String name, Language language){
 		CommonTaxonName result = new CommonTaxonName();
 		result.setName(name);

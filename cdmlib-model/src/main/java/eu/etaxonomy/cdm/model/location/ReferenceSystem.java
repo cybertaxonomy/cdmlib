@@ -11,11 +11,7 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -30,13 +26,24 @@ import javax.persistence.*;
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static ReferenceSystem NewInstance(String term, String label){
+		return new ReferenceSystem(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public ReferenceSystem(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 
 	public static final ReferenceSystem WGS84(){
+		logger.warn("not yet implemented");
 		return null;
 	}
 

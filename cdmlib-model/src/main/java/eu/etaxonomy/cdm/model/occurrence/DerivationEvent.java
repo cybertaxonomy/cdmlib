@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -32,6 +31,20 @@ public class DerivationEvent extends EventBase{
 	private Set<DerivedUnit> derivatives = new HashSet();
 	private DerivationEventType type;
 	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEvent NewInstance(){
+		return new DerivationEvent();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected DerivationEvent() {
+		super();
+	}
 	
 	@ManyToMany(mappedBy="derivationEvents")
 	@Cascade({CascadeType.SAVE_UPDATE})

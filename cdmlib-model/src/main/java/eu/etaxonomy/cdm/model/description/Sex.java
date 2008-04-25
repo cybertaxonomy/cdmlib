@@ -11,10 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -26,14 +22,24 @@ import javax.persistence.*;
 public class Sex extends Scope {
 	static Logger logger = Logger.getLogger(Sex.class);
 
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Sex NewInstance(){
+		return new Sex();
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public Sex() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Sex(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 }

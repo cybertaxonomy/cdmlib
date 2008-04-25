@@ -1,10 +1,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import javax.persistence.Entity;
-
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
 
 /**
@@ -15,16 +12,38 @@ import eu.etaxonomy.cdm.model.description.Modifier;
  */
 @Entity
 public class DeterminationModifier extends Modifier {
-	static Logger logger = Logger.getLogger(DeterminationModifier.class);
+	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 
-	public DeterminationModifier() {
-		super();
-		// TODO Auto-generated constructor stub
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DeterminationModifier NewInstance() {
+		return new DeterminationModifier();
 	}
 
-	public DeterminationModifier(String term, String label) {
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DeterminationModifier NewInstance(String term, String label) {
+		return new DeterminationModifier(term, label);
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected DeterminationModifier() {
+		super();
+	}
+
+	
+	/**
+	 * Constructor
+	 */
+	protected DeterminationModifier(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 }

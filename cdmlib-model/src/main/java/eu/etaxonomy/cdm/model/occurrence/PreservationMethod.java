@@ -9,13 +9,8 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -27,9 +22,19 @@ import javax.persistence.*;
 @Entity
 public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
-
-	public PreservationMethod(String term, String label) {
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static PreservationMethod NewInstance(String term, String label) {
+		return new PreservationMethod(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected PreservationMethod(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 }

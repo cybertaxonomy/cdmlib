@@ -10,11 +10,11 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -27,21 +27,30 @@ import org.hibernate.annotations.CascadeType;
  * Special array that takes care that all LanguageString elements have a unique language
  */
 @Entity
-public class MultilanguageSet extends CdmBase{
+public class MultilanguageSet extends CdmBase {
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 
 	protected Map<Language, LanguageString> languageStrings = new HashMap<Language, LanguageString>();
 	
 	
+	/**
+	 * Factory method
+	 * @return
+	 */
 	public static MultilanguageSet NewInstance(){
 		return new MultilanguageSet();
 	}
 	
+	/**
+	 * Constructor
+	 */
+	protected MultilanguageSet (){
+		super();
+	}
 	
-	
-	@OneToMany
+	@ManyToOne(fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Map<Language, LanguageString> getLanguageStrings(){
+	public Map<Language, LanguageString> getLanguageString(){
 		return this.languageStrings;
 	}
 	public LanguageString put(LanguageString languageString){

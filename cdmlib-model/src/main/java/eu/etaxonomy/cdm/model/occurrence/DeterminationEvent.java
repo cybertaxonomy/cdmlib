@@ -11,13 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -37,6 +32,22 @@ public class DeterminationEvent extends EventBase {
 	private Taxon taxon;
 	private DeterminationModifier modifier;
 
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DeterminationEvent NewInstance(){
+		return new DeterminationEvent();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected DeterminationEvent() {
+		super();
+	}
+	
 	@ManyToOne
 	public DeterminationModifier getModifier() {
 		return modifier;

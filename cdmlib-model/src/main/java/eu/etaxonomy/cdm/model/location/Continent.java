@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Scope;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,25 @@ public class Continent extends DefinedTermBase {
 	private static final UUID uuidOceania = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Continent NewInstance(){
+		return new Continent();
+	}
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Continent NewInstance(String term, String label){
+		return new Continent(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public Continent() {
 		super();
 	}

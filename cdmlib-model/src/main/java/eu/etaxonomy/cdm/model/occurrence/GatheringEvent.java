@@ -13,17 +13,11 @@ import java.util.Calendar;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
@@ -49,7 +43,21 @@ public class GatheringEvent extends EventBase {
 	// distance in meters to lake or sea surface. Simmilar to distanceToGround use negative integers for distance *below* the surface, ie under water 
 	private Integer distanceToWaterSurface;
 
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static GatheringEvent NewInstance(){
+		return new GatheringEvent();
+	}
 	
+	/**
+	 * Constructor
+	 */
+	protected GatheringEvent() {
+		super();
+	}
 
 	public Point getExactLocation(){
 		return this.exactLocation;

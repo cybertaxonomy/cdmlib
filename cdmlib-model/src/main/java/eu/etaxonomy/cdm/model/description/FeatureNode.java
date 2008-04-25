@@ -25,9 +25,19 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 public class FeatureNode extends VersionableEntity {
 	static Logger logger = Logger.getLogger(FeatureNode.class);
+	
 	private FeatureType type;
 	private FeatureNode parent;
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
+	
+	public static FeatureNode NewInstance(){
+		return new FeatureNode();
+	}
+	
+	protected FeatureNode() {
+		super();
+	}
+
 	
 	@ManyToOne
 	public FeatureType getType() {

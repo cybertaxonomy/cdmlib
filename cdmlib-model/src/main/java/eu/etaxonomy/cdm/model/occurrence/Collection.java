@@ -11,17 +11,12 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.IMediaDocumented;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
-import eu.etaxonomy.cdm.model.common.Media;
+import eu.etaxonomy.cdm.model.description.Scope;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -31,7 +26,8 @@ import javax.persistence.*;
  */
 @Entity
 public class Collection extends IdentifyableMediaEntity{
-	static Logger logger = Logger.getLogger(Collection.class);
+	private static final Logger logger = Logger.getLogger(Collection.class);
+	
 	private String code;
 	private String codeStandard;
 	private String name;
@@ -39,6 +35,22 @@ public class Collection extends IdentifyableMediaEntity{
 	private Institution institute;
 	private Collection superCollection;
 	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Collection NewInstance(){
+		return new Collection();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Collection() {
+		super();
+	}
+
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})

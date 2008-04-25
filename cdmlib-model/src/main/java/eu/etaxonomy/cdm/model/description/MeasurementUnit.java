@@ -11,12 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -29,11 +24,22 @@ import javax.persistence.*;
 @Entity
 public class MeasurementUnit extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MeasurementUnit.class);
-
-	public MeasurementUnit() {
-		super();
-		// TODO Auto-generated constructor stub
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static MeasurementUnit NewInstance(){
+		return new MeasurementUnit();
 	}
+	
+	/**
+	 * Constructor
+	 */
+	protected MeasurementUnit(){
+		super();
+	}
+	
 
 	public MeasurementUnit(String term, String label) {
 		super(term, label);

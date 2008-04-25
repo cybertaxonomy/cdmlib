@@ -25,10 +25,21 @@ import javax.persistence.*;
 public class Modifier extends OrderedTermBase<Modifier> {
 	static Logger logger = Logger.getLogger(Modifier.class);
 
-	public Modifier() {
-		super();
-		// TODO Auto-generated constructor stub
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Modifier NewInstance(){
+		return new Modifier();
 	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Modifier(){
+		super();
+	}
+	
 
 	public Modifier(String term, String label) {
 		super(term, label);

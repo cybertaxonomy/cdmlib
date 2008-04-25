@@ -9,13 +9,7 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -25,6 +19,20 @@ import javax.persistence.*;
  */
 @Entity
 public class LivingBeing extends DerivedUnit {
-	static Logger logger = Logger.getLogger(LivingBeing.class);
+	private static final Logger logger = Logger.getLogger(LivingBeing.class);
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static LivingBeing NewInstance(){
+		return new LivingBeing();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected LivingBeing() {
+		super();
+	}
 }

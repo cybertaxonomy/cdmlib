@@ -36,7 +36,7 @@ import javax.persistence.*;
  */
 @Entity
 public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
-	static Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
+	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	private String iso2code;
 	private TimePeriod validPeriod;
 	private Set<Continent> continents = new HashSet();
@@ -546,16 +546,33 @@ uuidPersianGulf
 
 	 */
 
+	
 	public static final WaterbodyOrCountry getByUuid(UUID uuid){
 		return (WaterbodyOrCountry) findByUuid(uuid);
 	}
 	
-	
-	public WaterbodyOrCountry() {
-		super();
-		// TODO Auto-generated constructor stub
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static WaterbodyOrCountry NewInstance(){
+		return new WaterbodyOrCountry();
 	}
-	public WaterbodyOrCountry(String term, String label) {
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static WaterbodyOrCountry NewInstance(String term, String label){
+		return new WaterbodyOrCountry(term, label);
+	}
+	
+
+	protected WaterbodyOrCountry() {
+		super();
+	}
+	protected WaterbodyOrCountry(String term, String label) {
 		super(term, label);
 	}
 

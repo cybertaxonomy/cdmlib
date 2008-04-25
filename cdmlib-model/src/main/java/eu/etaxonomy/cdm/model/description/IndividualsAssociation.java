@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
@@ -42,6 +41,9 @@ public class IndividualsAssociation extends FeatureBase {
 		return new IndividualsAssociation();
 	}
 	
+	/**
+	 * Constructor
+	 */
 	protected IndividualsAssociation(){
 		super();
 	}

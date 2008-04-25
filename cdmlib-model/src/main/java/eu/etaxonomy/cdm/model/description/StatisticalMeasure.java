@@ -9,13 +9,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -27,9 +22,26 @@ import javax.persistence.*;
 public class StatisticalMeasure extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static StatisticalMeasure NewInstance(String term, String label){
+		return new StatisticalMeasure(term, label);
+	}
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static StatisticalMeasure NewInstance(){
+		return new StatisticalMeasure();
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public StatisticalMeasure() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public StatisticalMeasure(String term, String label) {
 		super(term, label);

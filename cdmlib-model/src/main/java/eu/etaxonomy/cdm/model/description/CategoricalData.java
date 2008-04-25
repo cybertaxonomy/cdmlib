@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -25,11 +24,22 @@ import javax.persistence.*;
 @Entity
 public class CategoricalData extends FeatureBase {
 	static Logger logger = Logger.getLogger(CategoricalData.class);
+
+	
 	//whether the sequence of ordered states is important
 	private boolean orderRelevant;
 	private List<State> states = new ArrayList();
 
-	public CategoricalData() {
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static CategoricalData NewInstance(){
+		return new CategoricalData();
+	}
+	
+	protected CategoricalData() {
 		super();
 	}
 	

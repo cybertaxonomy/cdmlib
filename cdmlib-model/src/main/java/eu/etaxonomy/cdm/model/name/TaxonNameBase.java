@@ -413,8 +413,5 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public boolean isInfraSpecific() {
 		return getRank().isInfraSpecific();
 	}
-	@Transient
-	public boolean isSupraGeneric(Rank rank) {
-		return getRank().isHigher(rank);
-	}
+
 }

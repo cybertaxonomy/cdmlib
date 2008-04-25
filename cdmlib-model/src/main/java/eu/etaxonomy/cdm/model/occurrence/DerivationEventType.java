@@ -1,11 +1,8 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.UUID;
-
 import javax.persistence.Entity;
-
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.Rank;
 
 @Entity
 public class DerivationEventType extends DefinedTermBase {
@@ -18,13 +15,35 @@ public class DerivationEventType extends DefinedTermBase {
 	private static final UUID uuidDnaExtraction = UUID.fromString(strUnknownUuid);
 	
 	
-	public DerivationEventType() {
-		// TODO Auto-generated constructor stub
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEventType NewInstance(){
+		return new DerivationEventType();
+	}
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEventType NewInstance(String term, String label){
+		return new DerivationEventType(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected DerivationEventType() {
+		super();
 	}
 
-	public DerivationEventType(String term, String label) {
+	/**
+	 * Constructor
+	 */
+	protected DerivationEventType(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public static final DerivationEventType DUPLICATE(){

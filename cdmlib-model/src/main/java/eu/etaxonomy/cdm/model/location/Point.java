@@ -8,9 +8,9 @@
 */
 
 package eu.etaxonomy.cdm.model.location;
-
-
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.Scope;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -25,12 +25,27 @@ import javax.persistence.*;
  */
 @Embeddable
 public class Point {
-	static Logger logger = Logger.getLogger(Point.class);
+	private static final Logger logger = Logger.getLogger(Point.class);
+	
 	private Float longitude;
 	private Float latitude;
 	//in Meters
 	private Integer errorRadius = 0;
 	private ReferenceSystem referenceSystem;
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Point NewInstance(){
+		return new Point();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	public Point() {
+	}
 	
 	@ManyToOne
 	public ReferenceSystem getReferenceSystem(){

@@ -80,7 +80,7 @@ public class TextData extends FeatureBase {
 	
 	private void initTextSet(){
 		if (multilanguageText == null){
-			multilanguageText = new MultilanguageSet();
+			multilanguageText = MultilanguageSet.NewInstance();
 		}
 	}
 	

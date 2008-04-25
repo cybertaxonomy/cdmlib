@@ -9,13 +9,10 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -29,9 +26,13 @@ import javax.persistence.*;
 @Entity
 public class Distribution extends FeatureBase {
 	static Logger logger = Logger.getLogger(Distribution.class);
+	
 	private NamedArea area;
 	private PresenceAbsenceTermBase status;
 
+	
+	
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedArea getArea(){

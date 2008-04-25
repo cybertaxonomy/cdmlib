@@ -9,30 +9,17 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.IMediaDocumented;
 import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.Media;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
-import eu.etaxonomy.cdm.model.description.TaxonInteraction;
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -46,8 +33,8 @@ import javax.persistence.*;
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
-	private Set<SpecimenDescription> descriptions = new HashSet();
-	private Set<DeterminationEvent> determinations = new HashSet();
+	private Set<SpecimenDescription> descriptions = new HashSet<SpecimenDescription>();
+	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
 	private Sex sex;
 	private Stage lifeStage;
 	private Integer individualCount;
@@ -57,6 +44,12 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	// events that created derivedUnits from this unit
 	private Set<DerivationEvent> derivationEvents = new HashSet();
 
+	/**
+	 * Constructor
+	 */
+	protected SpecimenOrObservationBase(){
+		super();
+	}
 	
 	@ManyToMany
 	@Cascade( { CascadeType.SAVE_UPDATE })

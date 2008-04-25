@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.location;
 
-
-
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
@@ -26,14 +24,31 @@ import javax.persistence.*;
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	static Logger logger = Logger.getLogger(NamedAreaLevel.class);
 
-	public NamedAreaLevel() {
-		super();
-		// TODO Auto-generated constructor stub
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedAreaLevel NewInstance(){
+		return new NamedAreaLevel();
 	}
 
-	public NamedAreaLevel(String term, String label) {
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedAreaLevel NewInstance(String term, String label){
+		return new NamedAreaLevel(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected NamedAreaLevel() {
+		super();
+	}
+
+	protected NamedAreaLevel(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 	

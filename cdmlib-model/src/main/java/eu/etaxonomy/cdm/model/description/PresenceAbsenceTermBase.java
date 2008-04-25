@@ -9,13 +9,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -27,14 +22,15 @@ import javax.persistence.*;
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase> extends OrderedTermBase<PresenceAbsenceTermBase> {
 	static Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
-	public PresenceAbsenceTermBase() {
+	/**
+	 * Constructor
+	 */
+	protected PresenceAbsenceTermBase() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public PresenceAbsenceTermBase(String term, String label) {
+	protected PresenceAbsenceTermBase(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 }

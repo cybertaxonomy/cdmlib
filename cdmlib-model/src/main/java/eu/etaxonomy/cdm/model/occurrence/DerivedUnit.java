@@ -36,8 +36,11 @@ public abstract class DerivedUnit extends SpecimenOrObservationBase {
 	private TaxonNameBase storedUnder;
 	private DerivationEvent derivedFrom;
 
-
-	public DerivedUnit() {
+	
+	/**
+	 * Constructor
+	 */
+	protected DerivedUnit() {
 		super();
 	}
 	/**

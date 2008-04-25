@@ -17,15 +17,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @MappedSuperclass
 public abstract class DescriptionBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DescriptionBase.class);
+	
 	private Set<FeatureBase> features = new HashSet();
 	private ReferenceBase source;
-	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 
 	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
@@ -33,13 +27,9 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 		return this.source;
 	}
 
-
-
 	public void setSource(ReferenceBase source) {
 		this.source= source;
 	}
-
-
 
 	@OneToMany
 	@Cascade( { CascadeType.SAVE_UPDATE })
@@ -47,22 +37,21 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 		return this.features;
 	}
 
-
-
 	protected void setFeatures(Set<FeatureBase> features) {
 		this.features = features;
 	}
-
-
 
 	public void addFeature(FeatureBase feature) {
 		this.features.add(feature);
 	}
 
-
-
 	public void removeFeature(FeatureBase feature) {
 		this.features.remove(feature);
 	}
-
+	
+	@Override
+	public String generateTitle() {
+		logger.warn("generate Title not yet implemented");
+		return "generate Title not yet implemented";
+	}
 }

@@ -27,14 +27,28 @@ import javax.persistence.*;
 public class State extends OrderedTermBase<State> {
 	static Logger logger = Logger.getLogger(State.class);
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static State NewInstance(){
+		return new State();
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static State NewInstance(String term, String label){
+		return new State(term, label);
+	}
+	
 	public State() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public State(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 	
 

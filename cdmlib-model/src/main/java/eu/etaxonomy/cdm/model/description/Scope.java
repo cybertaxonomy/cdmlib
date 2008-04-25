@@ -11,10 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -26,13 +22,30 @@ import javax.persistence.*;
 public class Scope extends Modifier {
 	static Logger logger = Logger.getLogger(Scope.class);
 
-	public Scope() {
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Scope NewInstance(){
+		return new Scope();
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Scope NewInstance(String term, String label){
+		return new Scope(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Scope() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public Scope(String term, String label) {
+	protected Scope(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 }

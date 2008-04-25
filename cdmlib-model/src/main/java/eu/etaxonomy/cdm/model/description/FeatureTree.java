@@ -34,6 +34,14 @@ public class FeatureTree extends TermBase {
 	private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	private FeatureNode root;
 	
+	public static FeatureTree NewInstance(){
+		return new FeatureTree();
+	}
+	
+	protected FeatureTree() {
+		super();
+	}
+	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<FeatureNode> getNodes() {

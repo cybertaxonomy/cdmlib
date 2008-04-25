@@ -11,11 +11,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -26,5 +21,19 @@ import javax.persistence.*;
 @Entity
 public class Observation extends DerivedUnit {
 	static Logger logger = Logger.getLogger(Observation.class);
-
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Observation NewInstance(){
+		return new Observation();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Observation() {
+		super();
+	}
 }

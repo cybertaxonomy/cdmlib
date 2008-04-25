@@ -28,9 +28,19 @@ import javax.persistence.*;
 public class NamedAreaType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(NamedAreaType.class);
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static NamedAreaType NewInstance(String term, String label){
+		return new NamedAreaType(term, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public NamedAreaType(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 

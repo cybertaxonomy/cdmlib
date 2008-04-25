@@ -29,6 +29,21 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	private Set<Modifier> modifiers = new HashSet();
 	private StatisticalMeasure type;
 
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static StatisticalMeasurementValue NewInstance(){
+		return new StatisticalMeasurementValue();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected StatisticalMeasurementValue(){
+		super();
+	}
 	
 	@ManyToOne
 	public StatisticalMeasure getType(){

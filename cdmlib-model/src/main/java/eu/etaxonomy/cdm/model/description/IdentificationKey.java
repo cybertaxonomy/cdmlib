@@ -9,14 +9,10 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Media;
 import org.apache.log4j.Logger;
-
 import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -25,10 +21,21 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
+
 @Entity
 public class IdentificationKey extends Media {
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
+	
 	private Set<Taxon> coveredTaxa = new HashSet();
+	
+	public static IdentificationKey NewInstance(){
+		return new IdentificationKey();
+	}
+	
+	protected IdentificationKey() {
+		super();
+	}
+
 	
 	@OneToMany
 	public Set<Taxon> getCoveredTaxa() {

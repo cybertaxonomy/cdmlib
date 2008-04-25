@@ -9,10 +9,7 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -23,5 +20,19 @@ import javax.persistence.*;
 @Entity
 public class Fossil extends Specimen {
 	static Logger logger = Logger.getLogger(Fossil.class);
-
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Fossil NewInstance(){
+		return new Fossil();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Fossil() {
+		super();
+	}
 }

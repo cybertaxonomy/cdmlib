@@ -9,12 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -24,16 +19,23 @@ import javax.persistence.*;
  */
 @Entity
 public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
-	static Logger logger = Logger.getLogger(PresenceTerm.class);
+	private static final Logger logger = Logger.getLogger(PresenceTerm.class);
 
-	public PresenceTerm() {
+	public static PresenceTerm NewInstance(){
+		return new PresenceTerm();
+	}
+	
+
+	public static PresenceTerm NewInstance(String term, String label){
+		return new PresenceTerm(term, label);
+	}
+	
+	protected PresenceTerm() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public PresenceTerm(String term, String label) {
+	protected PresenceTerm(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 }
