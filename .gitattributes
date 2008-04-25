@@ -278,7 +278,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/TaxonNameParserBotanicalNameImplTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/BotanicNameCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserBotanicalNameImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
