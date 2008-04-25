@@ -29,10 +29,23 @@ import javax.persistence.*;
  */
 @Entity
 public class TaxonInteraction extends FeatureBase {
-	static Logger logger = Logger.getLogger(TaxonInteraction.class);
+	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
 	private MultilanguageSet description;
 	private Taxon taxon2;
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static TaxonInteraction NewInstance(){
+		return new TaxonInteraction();
+	}
+	
+	public TaxonInteraction() {
+		super();
+	}
+	
+	
 	@ManyToOne
 	public Taxon getTaxon2(){
 		return this.taxon2;
@@ -48,10 +61,10 @@ public class TaxonInteraction extends FeatureBase {
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
-		this.description.add(description);
+		this.description.put(description);
 	}
 	public void addDescription(String text, Language lang){
-		this.description.add(text, lang);
+		this.description.put(text, lang);
 	}
 	public void removeDescription(Language lang){
 		this.description.remove(lang);

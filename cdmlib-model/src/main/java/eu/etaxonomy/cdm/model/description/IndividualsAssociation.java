@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
@@ -33,6 +34,19 @@ public class IndividualsAssociation extends FeatureBase {
 	private SpecimenOrObservationBase associatedSpecimenOrObservation;
 
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static IndividualsAssociation NewInstance(){
+		return new IndividualsAssociation();
+	}
+	
+	protected IndividualsAssociation(){
+		super();
+	}
+	
+
 	@ManyToOne
 	public SpecimenOrObservationBase getAssociatedSpecimenOrObservation() {
 		return associatedSpecimenOrObservation;
@@ -50,10 +64,10 @@ public class IndividualsAssociation extends FeatureBase {
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
-		this.description.add(description);
+		this.description.put(description);
 	}
 	public void addDescription(String text, Language lang){
-		this.description.add(text, lang);
+		this.description.put(text, lang);
 	}
 	public void removeDescription(Language lang){
 		this.description.remove(lang);

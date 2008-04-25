@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -43,7 +44,8 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
-	static Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
+	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
+	
 	private Set<SpecimenDescription> descriptions = new HashSet();
 	private Set<DeterminationEvent> determinations = new HashSet();
 	private Sex sex;
@@ -130,10 +132,10 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 		this.description = description;
 	}
 	public void addDefinition(LanguageString description){
-		this.description.add(description);
+		this.description.put(description);
 	}
 	public void addDefinition(String text, Language lang){
-		this.description.add(text, lang);
+		this.description.put(text, lang);
 	}
 	public void removeDefinition(Language lang){
 		this.description.remove(lang);

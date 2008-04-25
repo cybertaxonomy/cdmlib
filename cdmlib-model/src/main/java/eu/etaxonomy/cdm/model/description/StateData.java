@@ -27,14 +27,23 @@ import javax.persistence.*;
  */
 @Entity
 public class StateData extends VersionableEntity {
+	private static final Logger logger = Logger.getLogger(StateData.class);
+	
+	private State state;
+	private Set<Modifier> modifiers = new HashSet<Modifier>();
+	private MultilanguageSet modifyingText;
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static StateData NewInstance(){
+		return new StateData();
+	}
+	
 	public StateData() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	static Logger logger = Logger.getLogger(StateData.class);
-	private State state;
-	private Set<Modifier> modifiers = new HashSet();
-	private MultilanguageSet modifyingText;
 
 	@ManyToOne
 	public State getState(){
@@ -67,10 +76,10 @@ public class StateData extends VersionableEntity {
 		this.modifyingText = modifyingText;
 	}
 	public void addModifyingText(String text, Language lang){
-		this.modifyingText.add(text, lang);
+		this.modifyingText.put(text, lang);
 	}
 	public void addModifyingText(LanguageString text){
-		this.modifyingText.add(text);
+		this.modifyingText.put(text);
 	}
 	public void removeModifyingText(Language lang){
 		this.modifyingText.remove(lang);

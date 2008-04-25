@@ -27,20 +27,32 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends AnnotatableEntity {
-	public Media() {
+	private static final Logger logger = Logger.getLogger(Media.class);
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Media NewInstance(){
+		return new Media();
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected Media() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	static Logger logger = Logger.getLogger(Media.class);
 	private MultilanguageSet title = new MultilanguageSet();
 	//creation date of the media (not of the record)
 	private Calendar mediaCreated;
 	private MultilanguageSet description = new MultilanguageSet();
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
-	private Set<MediaInstance> instances = new HashSet();
-	private Set<Rights> rights = new HashSet();
+	private Set<MediaInstance> instances = new HashSet<MediaInstance>();
+	private Set<Rights> rights = new HashSet<Rights>();
 	private Agent artist;
 
 	@OneToMany(mappedBy="media")
@@ -108,13 +120,13 @@ public class Media extends AnnotatableEntity {
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
-		this.description.add(description);
+		this.description.put(description);
 	}
-	public void addDescription(String text, Language lang){
-		this.description.add(text, lang);
+	public void addDescription(String text, Language language){
+		this.description.put(text, language);
 	}
-	public void removeDescription(Language lang){
-		this.description.remove(lang);
+	public void removeDescription(Language language){
+		this.description.remove(language);
 	}
 
 }

@@ -35,14 +35,15 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class FeatureBase extends ReferencedEntityBase {
-	static Logger logger = Logger.getLogger(FeatureBase.class);
+	private static final Logger logger = Logger.getLogger(FeatureBase.class);
+	
 	//type, category of information. In structured descriptions characters
 	private FeatureType type;
-	private Set<Modifier> modifiers = new HashSet();
+	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	private MultilanguageSet modifyingText;
-	private Set<Media> media = new HashSet();
+	private Set<Media> media = new HashSet<Media>();
 
-	
+
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
@@ -90,10 +91,10 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 		this.modifyingText = modifyingText;
 	}
 	public void addModifyingText(LanguageString description){
-		this.modifyingText.add(description);
+		this.modifyingText.put(description);
 	}
 	public void addModifyingText(String text, Language lang){
-		this.modifyingText.add(text, lang);
+		this.modifyingText.put(text, lang);
 	}
 	public void removeModifyingText(Language lang){
 		this.modifyingText.remove(lang);
