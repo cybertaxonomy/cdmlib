@@ -9,10 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -24,9 +21,20 @@ import javax.persistence.*;
 public class RightsTerm extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(RightsTerm.class);
 
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static RightsTerm NewInstance(String text, String label){
+		return new RightsTerm(text, label);
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public RightsTerm(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 

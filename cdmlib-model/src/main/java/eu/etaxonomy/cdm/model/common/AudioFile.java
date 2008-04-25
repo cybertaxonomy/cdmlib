@@ -9,10 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+
 import javax.persistence.*;
 
 /**
@@ -22,10 +22,26 @@ import javax.persistence.*;
  */
 @Entity
 public class AudioFile extends MediaInstance {
-	static Logger logger = Logger.getLogger(AudioFile.class);
+	private static final Logger logger = Logger.getLogger(AudioFile.class);
+	
 	//length of recording in seconds
 	private int duration;
-
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static AudioFile NewInstance(){
+		return new AudioFile();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected AudioFile() {
+		super();
+	}
+	
 	public int getDuration(){
 		return this.duration;
 	}

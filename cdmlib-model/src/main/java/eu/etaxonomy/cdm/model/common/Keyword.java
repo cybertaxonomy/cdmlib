@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -37,12 +35,10 @@ public class Keyword extends OrderedTermBase<Keyword> {
 	
 	public Keyword() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Keyword(String term, String label) {
 		super(term, label);
-		// TODO Auto-generated constructor stub
 	}
 
 }

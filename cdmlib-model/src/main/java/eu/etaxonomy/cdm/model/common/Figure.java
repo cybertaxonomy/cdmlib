@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -22,6 +20,21 @@ import javax.persistence.*;
  */
 @Entity
 public class Figure extends ReferencedMedia {
-	static Logger logger = Logger.getLogger(Figure.class);
-
+	private static final Logger logger = Logger.getLogger(Figure.class);
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Figure NewInstance(){
+		return new Figure();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Figure() {
+		super();
+	}
+	
 }

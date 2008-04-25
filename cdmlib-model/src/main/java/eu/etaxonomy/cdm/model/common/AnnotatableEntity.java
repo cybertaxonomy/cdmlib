@@ -31,10 +31,8 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 	protected Set<Marker> markers = new HashSet<Marker>();
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
-	
-	public AnnotatableEntity() {
+	protected AnnotatableEntity() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@OneToMany

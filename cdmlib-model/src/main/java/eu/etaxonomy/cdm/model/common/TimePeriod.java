@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
-
 import java.util.Calendar;
 
 import javax.persistence.Embeddable;
@@ -19,7 +17,6 @@ import javax.persistence.TemporalType;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * @author m.doering
  * @version 1.0
@@ -27,11 +24,44 @@ import org.apache.log4j.Logger;
  */
 @Embeddable
 public class TimePeriod {
+	private static final Logger logger = Logger.getLogger(TimePeriod.class);
+	
+	
 	private Calendar start;
 	private Calendar end;
 
-	public TimePeriod() {
-		// TODO Auto-generated constructor stub
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static TimePeriod NewInstance(){
+		return new TimePeriod();
+	}
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static TimePeriod NewInstance(Calendar startDate){
+		return new TimePeriod(startDate);
+	}
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static TimePeriod NewInstance(Calendar startDate, Calendar endDate){
+		return new TimePeriod(startDate, endDate);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected TimePeriod() {
+		super();
 	}
 	public TimePeriod(Calendar startDate) {
 		start=startDate;

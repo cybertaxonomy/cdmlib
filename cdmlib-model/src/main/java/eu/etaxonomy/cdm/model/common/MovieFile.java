@@ -9,10 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -23,9 +20,27 @@ import javax.persistence.*;
 @Entity
 public class MovieFile extends ImageFile {
 	static Logger logger = Logger.getLogger(MovieFile.class);
+	
 	//Length of movie in seconds
 	private int duration;
 
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static MovieFile NewInstance(){
+		return new MovieFile();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected MovieFile() {
+		super();
+	}
+	
+	
 	public int getDuration(){
 		return this.duration;
 	}

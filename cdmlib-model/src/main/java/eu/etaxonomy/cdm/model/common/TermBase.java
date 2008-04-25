@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -15,7 +14,7 @@ import org.hibernate.annotations.CascadeType;
 
 @MappedSuperclass
 public abstract class TermBase extends VersionableEntity {
-	static Logger logger = Logger.getLogger(TermBase.class);
+	private static final Logger logger = Logger.getLogger(TermBase.class);
 	
 	private String uri;
 	private Set<Representation> representations = new HashSet<Representation>();

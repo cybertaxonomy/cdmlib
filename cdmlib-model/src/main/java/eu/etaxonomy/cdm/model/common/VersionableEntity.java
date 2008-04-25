@@ -9,9 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.view.View;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -36,7 +34,8 @@ import javax.persistence.*;
  */
 @MappedSuperclass
 public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
-	static Logger logger = Logger.getLogger(VersionableEntity.class);
+	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
+	
 	//time of last update for this object
 	private Calendar updated;
 	private Person updatedBy;

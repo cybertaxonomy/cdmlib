@@ -9,14 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
 import eu.etaxonomy.cdm.model.agent.Agent;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -30,7 +26,8 @@ import javax.persistence.*;
  */
 @Entity
 public class Rights extends LanguageString {
-	static Logger logger = Logger.getLogger(Rights.class);
+	private static final Logger logger = Logger.getLogger(Rights.class);
+	
 	//external location of copyright text
 	private String uri;
 	private String abbreviatedText;
@@ -38,7 +35,19 @@ public class Rights extends LanguageString {
 	// owner etc as defined by the rightstype
 	private Agent agent;
 
-	public Rights(String text, Language language) {
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Rights NewInstance(String text, Language language){
+		return new Rights(text, language);
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected Rights(String text, Language language) {
 		super(text, language);
 	}
 
