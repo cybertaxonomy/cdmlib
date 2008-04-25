@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -8,6 +8,7 @@
 */
 
 package eu.etaxonomy.cdm.model.common;
+
 import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
