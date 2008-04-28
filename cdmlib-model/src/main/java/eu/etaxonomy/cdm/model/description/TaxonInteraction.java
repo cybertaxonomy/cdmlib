@@ -28,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:57
  */
 @Entity
-public class TaxonInteraction extends FeatureBase {
+public class TaxonInteraction extends DescriptionElementBase {
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
 	private MultilanguageSet description;
 	private Taxon taxon2;

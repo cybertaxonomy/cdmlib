@@ -242,7 +242,6 @@ public class Person extends TeamOrPersonBase {
 		this.lifespan = lifespan;
 	}
 
-	@Override
 	/**
 	 * Generates the "full" name string of this person. The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
@@ -252,6 +251,7 @@ public class Person extends TeamOrPersonBase {
 	 * 
 	 * @return  the string with the full name of this person
 	 */
+	@Override
 	public String generateTitle(){
 		return cacheStrategy.getTitleCache(this);
 	}

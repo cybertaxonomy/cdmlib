@@ -27,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:28
  */
 @Entity
-public class IndividualsAssociation extends FeatureBase {
+public class IndividualsAssociation extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	private MultilanguageSet description;
 	private SpecimenOrObservationBase associatedSpecimenOrObservation;

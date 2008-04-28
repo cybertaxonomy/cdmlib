@@ -19,15 +19,19 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * Individual property of observed phenomena able to be described or measured.
+ * Experts do not use the word feature for the actual description but only for
+ * the property itself. Naming this class FeatureType would create confusion.  
  * NEEDS TO BE COMPLEMENTED SPM / TDWG http://rs.tdwg.
  * org/ontology/voc/SpeciesProfileModel
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @Entity
-public class FeatureType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(FeatureType.class);
+public class Feature extends DefinedTermBase {
+	static Logger logger = Logger.getLogger(Feature.class);
 
 	private boolean supportsQuantitativeData;
 	private boolean supportsTextData;
@@ -39,11 +43,11 @@ public class FeatureType extends DefinedTermBase {
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
 
-	public static FeatureType NewInstance(String term, String label){
-		return new FeatureType(term, label);
+	public static Feature NewInstance(String term, String label){
+		return new Feature(term, label);
 	}
 	
-	protected FeatureType(String term, String label) {
+	protected Feature(String term, String label) {
 		super(term, label);
 	}
 
@@ -152,18 +156,18 @@ public class FeatureType extends DefinedTermBase {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
-	public static final FeatureType DISTRIBUTION(){
+	public static final Feature DISTRIBUTION(){
 		return null;
 	}
 
 	/**
 	 * special kind of OrganismInteraction
 	 */
-	public static final FeatureType HYBRID_PARENT(){
+	public static final Feature HYBRID_PARENT(){
 		return null;
 	}
 
-	public static final FeatureType COMMON_NAME(){
+	public static final Feature COMMON_NAME(){
 		return null;
 	}
 

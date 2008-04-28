@@ -101,11 +101,11 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/AbsenceTerm.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionElementBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Feature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.java -text

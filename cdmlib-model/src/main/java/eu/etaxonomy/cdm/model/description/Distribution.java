@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:21
  */
 @Entity
-public class Distribution extends FeatureBase {
+public class Distribution extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(Distribution.class);
 	
 	private NamedArea area;

@@ -14,7 +14,7 @@ public interface IIdentifiableEntityCacheStrategy<T extends IdentifiableEntity> 
 
 
 	/**
-	 * returns the composed name string with author and/or year
+	 * 
 	 * @param object
 	 * @return
 	 */

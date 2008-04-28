@@ -39,14 +39,29 @@ public class Address extends VersionableEntity {
 	private Contact contact;
 	
 	
+	/** 
+	 * Returns the {@link Contact contact} (of a {@link Person person} or of an {@link Institution institution})
+	 * to which this address belongs.
+	 * Both kinds of agents cannot have more than one contact, but a contact may include
+	 * several postal addresses. 
+	 *
+	 * @return	the contact this postal address belongs to
+	 * @see     Contact
+	 */
 	@ManyToOne
 	public Contact getContact() {
 		return contact;
 	}
+
+
 	/** 
-	 * Assigns this postal address to a new contact.
-	 * This method also updates the sets of postal addresses
-	 * which belong to the two contacts (the new one and the substituted one). 
+	 * Adds this postal address to the set of addresses of a {@link Contact contact}.
+	 * The same address instance cannot be assigned to different persons
+	 * or institutions (if they do have the same postal address several
+	 * address instances must be created). If this address already belongs to a
+	 * contact this method shifts it from this contact to a new one.
+	 * Therefore this address will be removed from the set of addresses of the old
+	 * contact and added to the set of the new one. 
 	 *
 	 * @param  newContact  the new contact to which this postal address should belong
 	 * @see                Contact#addAddress(Address)
@@ -66,94 +81,121 @@ public class Address extends VersionableEntity {
 	}
 
 	
+	/**
+	 * Returns the {@link WaterbodyOrCountry country} involved in this postal address.
+	 * 
+	 * @return	the country 
+	 */
 	@ManyToOne
 	public WaterbodyOrCountry getCountry(){
 		return this.country;
 	}
 
 	/**
-	 * Assigns a country to this postal address.
-	 * 
-	 * @param country  the (waterbody or) country 
+	 * @see			   #getCountry()
 	 */
 	public void setCountry(WaterbodyOrCountry country){
 		this.country = country;
 	}
 
+	/**
+	 * Returns the geophysical location (coordinates) of this postal address.
+	 * 
+	 * @return  the point corresponding to this address
+	 * @see		eu.etaxonomy.cdm.model.location.Point
+	 */
 	public Point getLocation(){
+		//TODO do coordinates make sense for an address?
+		logger.warn("do coordinates (point) make sense for an address?");
 		return this.location;
 	}
 
 	/**
-	 * Assigns a geophysical location to this postal address.
-	 * 
-	 * @param location  the point corresponding to this address
-	 * @see				location.Point
+	 * @see			#getLocation()
 	 */
 	public void setLocation(Point location){
+		//TODO do coordinates make sense for an address?
+		logger.warn("do coordinates (point) make sense for an address?");
 		this.location = location;
 	}
 
+	/**
+	 * Returns a string corresponding to the post office box
+	 * involved in this postal address.
+	 * 
+	 * @return	the post office box string 
+	 */
 	public String getPobox(){
 		return this.pobox;
 	}
 
 	/**
-	 * Assigns a post office box to this postal address.
-	 * 
-	 * @param pobox  string describing a post office box
+	 * @see			#getPobox()
 	 */
 	public void setPobox(String pobox){
 		this.pobox = pobox;
 	}
 
+	/**
+	 * Returns the street name and number involved in this postal address.
+	 * Street numbers are part of the street string.
+	 * 
+	 * @return	the string composed of street name and number  
+	 */
 	public String getStreet(){
 		return this.street;
 	}
 
 	/**
-	 * Assigns a street name and number to this postal address.
-	 * 
-	 * @param street  string containing a street name and a street number
+	 * @see			#getStreet()
 	 */
 	public void setStreet(String street){
 		this.street = street;
 	}
 
+	/**
+	 * Returns the post code number involved in this postal address.
+	 * 
+	 * @return	the post code number string
+	 */
 	public String getPostcode(){
 		return this.postcode;
 	}
 
 	/**
-	 * Assigns a post code number to this postal address.
-	 * 
-	 * @param postcode  string representing a post code
+	 * @see			#getPostcode()
 	 */
 	public void setPostcode(String postcode){
 		this.postcode = postcode;
 	}
 
+	/**
+	 * Returns the town (possibly with locality or suburb) involved in this postal address.
+	 * 
+	 * @return  the string representing a town
+	 */
 	public String getLocality(){
 		return this.locality;
 	}
 
 	/**
-	 * Assigns a town (possibly with locality or suburb) to this postal address.
-	 * 
-	 * @param locality  string representing a town (may include locality or suburb)
+	 * @see			#getLocality()
 	 */
 	public void setLocality(String locality){
 		this.locality = locality;
 	}
 
+	/**
+	 * Returns the region or state involved in this postal address.
+	 * 
+	 * @return  the string representing a region or a state
+	 */
 	public String getRegion(){
 		return this.region;
 	}
 
 	/**
-	 * Assigns a region or state to this postal address.
-	 * 
-	 * @param region  string representing a region or a state
+	 * @see			#getRegion()
 	 */
 	public void setRegion(String region){
 		this.region = region;

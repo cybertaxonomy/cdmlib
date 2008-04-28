@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -33,7 +34,7 @@ import javax.persistence.*;
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
-	private Set<SpecimenDescription> descriptions = new HashSet<SpecimenDescription>();
+	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
 	private Sex sex;
 	private Stage lifeStage;
@@ -53,8 +54,23 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	
 	@ManyToMany
 	@Cascade( { CascadeType.SAVE_UPDATE })
+	public Set<DescriptionBase> getDescriptions() {
+		return this.descriptions;
+	}
+	protected void setDescriptions(Set<DescriptionBase> descriptions) {
+		this.descriptions = descriptions;
+	}
+	public void addDescription(DescriptionBase description) {
+		this.descriptions.add(description);
+	}
+	public void removeDescription(DescriptionBase description) {
+		this.descriptions.remove(description);
+	}
+	
+	@ManyToMany
+	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DerivationEvent> getDerivationEvents() {
-		return derivationEvents;
+		return this.derivationEvents;
 	}
 	protected void setDerivationEvents(Set<DerivationEvent> derivationEvents) {
 		this.derivationEvents = derivationEvents;
@@ -67,10 +83,11 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	}
 	
 
+
 	@OneToMany(mappedBy="identifiedUnit")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DeterminationEvent> getDeterminations() {
-		return determinations;
+		return this.determinations;
 	}
 	protected void setDeterminations(Set<DeterminationEvent> determinations) {
 		this.determinations = determinations;

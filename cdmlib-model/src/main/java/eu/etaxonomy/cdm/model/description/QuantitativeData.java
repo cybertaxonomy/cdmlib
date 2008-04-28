@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:46
  */
 @Entity
-public class QuantitativeData extends FeatureBase {
+public class QuantitativeData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
 	private MeasurementUnit unit;
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet();

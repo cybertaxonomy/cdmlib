@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:15
  */
 @Entity
-public class CategoricalData extends FeatureBase {
+public class CategoricalData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(CategoricalData.class);
 
 	

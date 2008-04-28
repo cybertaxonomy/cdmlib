@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:17
  */
 @Entity
-public class CommonTaxonName extends FeatureBase {
+public class CommonTaxonName extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
 	private String name;

@@ -28,17 +28,23 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * The upmost (abstract) class for a description element of a specimen
+ * or of a taxon. A concrete description element assigns descriptive data to
+ * the feature. As experts use the word feature for the property itself but not
+ * for the actual description naming this class FeatureBase would make no sense.  
+ * 
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class FeatureBase extends ReferencedEntityBase {
-	private static final Logger logger = Logger.getLogger(FeatureBase.class);
+public abstract class DescriptionElementBase extends ReferencedEntityBase {
+	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
 	
 	//type, category of information. In structured descriptions characters
-	private FeatureType type;
+	private Feature type;
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	private MultilanguageSet modifyingText;
 	private Set<Media> media = new HashSet<Media>();
@@ -61,10 +67,10 @@ public abstract class FeatureBase extends ReferencedEntityBase {
 
 
 	@ManyToOne
-	public FeatureType getType(){
+	public Feature getType(){
 		return this.type;
 	}
-	public void setType(FeatureType type){
+	public void setType(Feature type){
 		this.type = type;
 	}
 

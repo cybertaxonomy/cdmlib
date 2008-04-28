@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:59
  */
 @Entity
-public class TextData extends FeatureBase {
+public class TextData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(TextData.class);
 	
 	private MultilanguageSet multilanguageText;
