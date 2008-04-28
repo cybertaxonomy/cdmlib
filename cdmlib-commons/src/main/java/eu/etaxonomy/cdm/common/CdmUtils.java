@@ -6,6 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
+
 package eu.etaxonomy.cdm.common;
 
 import java.io.BufferedReader;
@@ -109,6 +110,44 @@ public class CdmUtils {
 	
 	static public String Nz(String value){
 		return (value == null ? "" : value);
+	}
+
+	
+	static public Integer Nz(Integer value){
+		return (value == null ? 0 : value);
+	}
+	
+	/**
+	 * Concatenates the an Array of Strings, using the defined seperator.
+	 * Null values are interpreted as empty Strings
+	 * If all Strings are null a null is returned 
+	 * @param strings
+	 * @param seperator
+	 * @return String 
+	 */
+	static public String concat(CharSequence seperator, String[] strings){
+		String result = "";
+		boolean allNull = true;
+		for (String string : strings){
+			if (string != null){
+				if (result.length() > 0 && string.length() > 0){
+					result += seperator;
+				}
+				result += string;
+				allNull = false;
+			}
+		}
+		//if all strings are null result should be null, not ""
+		if (allNull){
+			return null;
+		}else {
+			return result;
+		}
+	}
+
+	static public String concat(CharSequence seperator, String string1, String string2){
+		String[] strings = {string1, string2};
+		return concat(seperator, strings);
 	}
 	
 }
