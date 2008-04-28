@@ -42,11 +42,11 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	 * @param rank
 	 * @param nameToBeFilled The TaxonNameBaseToBeFilled
 	 */
-	public void parseFullName(BotanicalName nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
+	public void parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
-	public BotanicalName parseFullReference(String fullReference, Rank rank);
+	public T parseFullReference(String fullReference, Rank rank);
 
-	public void parseFullReference(BotanicalName nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
+	public void parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 	
 	
 	/**

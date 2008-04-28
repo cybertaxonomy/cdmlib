@@ -76,7 +76,7 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setSpecificEpithet("spec");
 		nonViralName1.setRank(Rank.SPECIES());
 		assertEquals("Genus spec", nonViralName1.generateTitle());
-		assertEquals("", nonViralName2.generateTitle());
+		assertEquals("-", nonViralName2.generateTitle());
 	}
 
 	/**

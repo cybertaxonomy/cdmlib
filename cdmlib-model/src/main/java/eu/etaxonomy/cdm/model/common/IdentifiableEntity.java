@@ -131,17 +131,23 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		this.sources.remove(source);		
 	}
 	
-	private boolean executesToString = false;
-	@Override
+	/**
+	 * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
+	 * This returns an String that identifies the object well without beeing necessarily unique.
+	 * Specification: This method should never call other object' methods so it can be well used for debugging 
+	 * without problems like lazy loading, unreal states etc.
+	 * Note: If overriding this method's javadoc always copy or link the above requirement. 
+	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object. 
+	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
+	 * @see java.lang.Object#toString()
+	 */
+	 @Override
 	public String toString() {
 		String result;
-		if (executesToString){
+		if (titleCache == null){
 			result = super.toString();
 		}else{
-			//avoid recursiv toString call
-			executesToString = true;
-			result = this.getTitleCache();
-			executesToString = false;
+			result = this.titleCache;
 		}
 		return result;	
 	}

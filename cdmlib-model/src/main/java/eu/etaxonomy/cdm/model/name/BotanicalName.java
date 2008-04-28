@@ -19,7 +19,9 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
 import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserZoologicalNameImpl;
 
 import java.util.*;
 
@@ -34,7 +36,7 @@ import javax.persistence.*;
  */
 @Entity
 public class BotanicalName extends NonViralName {
-	static Logger logger = Logger.getLogger(BotanicalName.class);
+	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
 	//hybrid name  may not have either an authorteam nor other name components.
 	private boolean isHybridFormula = false;
@@ -45,6 +47,9 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
+	static private ITaxonNameParser nameParser = new TaxonNameParserBotanicalNameImpl();
+	
+	
 	/**
 	 * @param rank
 	 * @return

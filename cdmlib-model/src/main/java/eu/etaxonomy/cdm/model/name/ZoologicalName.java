@@ -12,14 +12,13 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserZoologicalNameImpl;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -37,7 +36,9 @@ public class ZoologicalName extends NonViralName {
 	private Integer publicationYear;
 	private Integer originalPublicationYear;
 
+	static private ITaxonNameParser nameParser = new TaxonNameParserZoologicalNameImpl();
 
+	
 	public static ZoologicalName NewInstance(Rank rank){
 		return new ZoologicalName(rank, null);
 	}
@@ -48,6 +49,28 @@ public class ZoologicalName extends NonViralName {
 	public static ZoologicalName NewInstance(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		return new ZoologicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 	}	
+	
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
+	public static ZoologicalName PARSED_NAME(String fullNameString){
+		return PARSED_NAME(fullNameString, Rank.GENUS());
+	}
+	
+	/**
+	 * Returns a parsed Name
+	 * @param fullName
+	 * @return
+	 */
+	public static ZoologicalName PARSED_NAME(String fullNameString, Rank rank){
+		if (nameParser == null){
+			nameParser  = new TaxonNameParserZoologicalNameImpl();
+		}
+		return (ZoologicalName)nameParser.parseFullName(fullNameString, rank);
+	}
 	
 	protected ZoologicalName() {
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
@@ -62,6 +85,8 @@ public class ZoologicalName extends NonViralName {
 		super(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
+	
+/* ***************** GETTER / SETTER ***************************/
 	
 	public String getBreed(){
 		return this.breed;

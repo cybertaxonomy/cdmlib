@@ -23,26 +23,23 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * @author a.mueller
  *
  */
-public class BotanicNameCacheStrategyTest {
-	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
+public class ZoologicalNameCacheStrategyTest {
+	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 	
-	private BotanicNameDefaultCacheStrategy strategy;
-	private BotanicalName familyName;
-	private BotanicalName genusName;
-	private BotanicalName subGenusName;
-	private BotanicalName speciesName;
-	private BotanicalName subSpeciesName;
+	private ZooNameDefaultCacheStrategy strategy;
+	private ZoologicalName familyName;
+	private ZoologicalName genusName;
+	private ZoologicalName subGenusName;
+	private ZoologicalName speciesName;
+	private ZoologicalName subSpeciesName;
 	private INomenclaturalAuthor author;
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
@@ -57,6 +54,10 @@ public class BotanicNameCacheStrategyTest {
 	private final String exAuthorString = "Exaut.";
 	private final String basAuthorString = "Basio, A.";
 	private final String exBasAuthorString = "ExBas. N.";
+	
+	private final Integer publicationYear = 1928;
+	private final Integer originalPublicationYear = 1860;
+	
 	
 
 	/**
@@ -78,16 +79,16 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
-		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
-		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
+		strategy = ZooNameDefaultCacheStrategy.NewInstance();
+		familyName = ZoologicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
+		genusName = ZoologicalName.PARSED_NAME(genusNameString, Rank.GENUS());
 		
-		subGenusName = BotanicalName.NewInstance(Rank.SUBGENUS());
+		subGenusName = ZoologicalName.NewInstance(Rank.SUBGENUS());
 		subGenusName.setGenusOrUninomial("Genus");
 		subGenusName.setInfraGenericEpithet("InfraGenericPart");
 		
-		speciesName = BotanicalName.PARSED_NAME(speciesNameString);
-		subSpeciesName = BotanicalName.PARSED_NAME(subSpeciesNameString);
+		speciesName = ZoologicalName.PARSED_NAME(speciesNameString);
+		subSpeciesName = ZoologicalName.PARSED_NAME(subSpeciesNameString);
 
 		author = Person.NewInstance();
 		author.setNomenclaturalTitle(authorString);
@@ -114,8 +115,7 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testNewInstance() {
-		BotanicNameDefaultCacheStrategy cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
-		assertNotNull(cacheStrategy);
+		assertNotNull(strategy);
 	}
 
 	/**
@@ -137,10 +137,13 @@ public class BotanicNameCacheStrategyTest {
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
-		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex. " + exBasAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getTitleCache(subSpeciesName));
+		subSpeciesName.setPublicationYear(publicationYear);
+		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
 		
-		//Autonym
+		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
+		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex. " + exBasAuthorString + ", " + originalPublicationYear +")" +  " " + authorString + " ex. " + exAuthorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
+		
+		//Autonym TODO are there autonyms in zoology?
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
 		subSpeciesName.setBasionymAuthorTeam(null);
@@ -157,15 +160,19 @@ public class BotanicNameCacheStrategyTest {
 	public final void testGetAuthorCache() {
 		subSpeciesName.setCombinationAuthorTeam(author);
 		assertEquals(authorString, strategy.getAuthorCache(subSpeciesName));
+		subSpeciesName.setPublicationYear(publicationYear);
+		assertEquals(authorString + ", " + publicationYear, strategy.getAuthorCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString + " ex. " + exAuthorString + ", " + publicationYear , strategy.getAuthorCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorCache(subSpeciesName));
+		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
+		assertEquals("(" + basAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear   , strategy.getAuthorCache(subSpeciesName));
 		
 		assertNull(subSpeciesNameString, strategy.getAuthorCache(null));
 	}

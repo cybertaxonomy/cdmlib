@@ -15,12 +15,14 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CollectionOfElements;
 
 /**
  * @author m.doering
@@ -48,9 +50,11 @@ public class MultilanguageSet extends CdmBase {
 		super();
 	}
 	
-	@ManyToOne(fetch= FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Map<Language, LanguageString> getLanguageString(){
+	@CollectionOfElements(targetElement = LanguageString.class)
+	//@OneToMany(fetch= FetchType.EAGER)
+	@MapKey(name="language")
+    @Cascade({CascadeType.SAVE_UPDATE})
+	public Map<Language, LanguageString> getLanguageStrings(){
 		return this.languageStrings;
 	}
 	public LanguageString put(LanguageString languageString){

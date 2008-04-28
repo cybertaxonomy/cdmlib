@@ -103,8 +103,10 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
 			return false;
 		}else{
+			this.toString();
 			return true;
 		}
 	}
+	
 
 }

@@ -231,7 +231,12 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	}
 
 	/**
-	 * Returns the class, id and uuid as a string for any CDM object. 
+	 * Overrides {@link java.lang.Object#toString()}.
+	 * This returns an String that identifies the object well without beeing necessarily unique.
+	 * Specification: This method should never call other object' methods so it can be well used for debugging 
+	 * without problems like lazy loading, unreal states etc.
+	 * Note: If overriding this method's javadoc always copy or link the above requirement. 
+	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object. 
 	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
 	 * @see java.lang.Object#toString()
 	 */

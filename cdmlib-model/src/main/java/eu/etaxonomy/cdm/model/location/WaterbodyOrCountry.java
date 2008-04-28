@@ -13,10 +13,8 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 
 import org.apache.log4j.Logger;
 
@@ -569,10 +567,10 @@ uuidPersianGulf
 	}
 	
 
-	protected WaterbodyOrCountry() {
+	public WaterbodyOrCountry() {
 		super();
 	}
-	protected WaterbodyOrCountry(String term, String label) {
+	public WaterbodyOrCountry(String term, String label) {
 		super(term, label);
 	}
 

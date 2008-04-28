@@ -68,8 +68,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	protected boolean protectedNameCache;
 
 	protected INameCacheStrategy cacheStrategy;
-
-	static protected ITaxonNameParser nameParser;
 	
 //	/**
 //	 * Returns a TaxonNameBase instance 
@@ -122,11 +120,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		this.nameCache = nameCache;
 		// TODO this.setProtectedNameCache(true);
 	}
-//TODO 
-//	public void setTitleCache(String titleCache, boolean protectCache){
-//		this.titleCache = titleCache;
-//		this.setProtectedTitleCache(protectCache);
-//	}
+
 	
 
 	@Transient

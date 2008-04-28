@@ -199,7 +199,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@Override
 	@Transient
 	public boolean isCodeCompliant() {
-		// TODO Auto-generated method stub
+		//FIXME
+		logger.warn("is CodeCompliant not yet implemented");
 		return false;
 	}
 

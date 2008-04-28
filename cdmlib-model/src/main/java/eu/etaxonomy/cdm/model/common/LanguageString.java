@@ -17,11 +17,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:32
  */
-@MappedSuperclass
-public class LanguageString  extends VersionableEntity{
+@Entity
+public class LanguageString  extends EmbeddableLanguageString{
 	static Logger logger = Logger.getLogger(LanguageString.class);
-	protected String text;
-	private Language language;
 
 	public static LanguageString NewInstance(String text, Language language){
 		return new LanguageString(text, language);
@@ -30,44 +28,9 @@ public class LanguageString  extends VersionableEntity{
 	protected LanguageString() {
 		super();
 	}
-
+	
 	protected LanguageString(String text, Language language) {
-		super();
-		this.setLanguage(language);
-		this.setText(text);
-		
+		super(text, language);
 	}
 	
-	@ManyToOne
-	//@Cascade({CascadeType.SAVE_UPDATE})
-	public Language getLanguage(){
-		return this.language;
-	}
-	public void setLanguage(Language language){
-		this.language = language;
-	}
-
-	public String getText(){
-		return this.text;
-	}
-	protected void setText(String text) {
-		this.text = text;
-	}
-	
-	@Transient
-	public String getLanguageLabel(){
-		return this.language.getRepresentation(Language.DEFAULT()).getLabel();
-	}
-	@Transient
-	public String getLanguageLabel(Language lang){
-		return this.language.getRepresentation(lang).getLabel();
-	}
-	@Transient
-	public String getLanguageText(){
-		return this.language.getRepresentation(Language.DEFAULT()).getLabel();
-	}
-	@Transient
-	public String getLanguageText(Language lang){
-		return this.language.getRepresentation(lang).getLabel();
-	}
 }

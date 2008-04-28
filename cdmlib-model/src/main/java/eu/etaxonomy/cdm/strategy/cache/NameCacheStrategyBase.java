@@ -9,13 +9,11 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
@@ -38,51 +36,16 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
 	 */
 	// Test implementation
-	public String getNameCache(T object) {
-		String result;
-		NonViralName name = (NonViralName)object;
-		Rank rank = name.getRank();
-		
-		if (rank == null){
-			return "";
-		}else if (rank.isInfraSpecific()){
-			result = getInfraSpeciesNameCache(name);
-		}else if (rank.isSpecies()){
-			result = getSpeciesNameCache(name);
-		}else if (rank.isInfraGeneric()){
-			result = getInfraGenusNameCache(name);
-		}else if (rank.isGenus()){
-			result = getGenusOrUninomialNameCache(name);
-		}else if (rank.isSupraGeneric()){
-			result = getGenusOrUninomialNameCache(name);
-		}else{ 
-			logger.warn("Name Strategy for Name (UUID: " + name.getUuid() +  ") not yet implemented");
-			result = "XXX";
-		}
-		return result;
-	}
+	abstract public String getNameCache(T taxonNameBase);
+	
+	
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	public String getTitleCache(T name){
-		String result;
-		//TODO use authorCache + TODO exAuthors
-		INomenclaturalAuthor agent= name.getCombinationAuthorTeam();
-		if (isAutonym(name)){
-			result = getSpeciesNameCache(name);
-			if (agent != null){
-				result += " " + agent.getNomenclaturalTitle();
-			}
-			result += " " + (nz(name.getInfraSpecificEpithet())).trim().replace("null", "");
-		}else{
-			result = getNameCache(name);
-			if (agent != null){
-				result += " " + agent.getNomenclaturalTitle();
-			}
-		}
-		return result;
-	}
+	public abstract String getTitleCache(T name);
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -106,58 +69,5 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 	}
 
 
-	/************** PRIVATES ****************/
-		
-		protected String getGenusOrUninomialNameCache(NonViralName name){
-			String result;
-			result = name.getGenusOrUninomial();
-			return result;
-		}
-		
-		protected String getInfraGenusNameCache(NonViralName name){
-			//FIXME
-			String result;
-			result = name.getGenusOrUninomial();
-			result += " (" + (nz(name.getInfraGenericEpithet()) + ")").trim().replace("null", "");
-			return result;
-		}
-
-		
-		protected String getSpeciesNameCache(NonViralName name){
-			String result;
-			result = name.getGenusOrUninomial();
-			result += " " + nz(name.getSpecificEpithet()).trim().replace("null", "");
-			return result;
-		}
-		
-		
-		protected String getInfraSpeciesNameCache(NonViralName name){
-			String result;
-			result = name.getGenusOrUninomial();
-			result += " " + (nz(name.getSpecificEpithet()).trim()).replace("null", "");
-			if (! isAutonym(name)){
-				result += " " + (name.getRank().getAbbreviation()).trim().replace("null", "");
-			}
-			result += " " + (nz(name.getInfraSpecificEpithet())).trim().replace("null", "");
-			return result;
-		}
-		
-		
-		/**
-		 * @param name
-		 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet
-		 */
-		private boolean isAutonym(NonViralName name){
-			if (name.getRank() != null && name.getRank().isInfraSpecific() && name.getSpecificEpithet() != null && name.getSpecificEpithet().equals(name.getInfraSpecificEpithet())){
-				return true;
-			}else{
-				return false;
-			}
-		}
-		
-		/* Returns "" if nzString is null, identity function otherwise*/ 
-		private String nz(String nzString){
-			return (nzString == null)? "" : nzString;
-		}
 
 }
