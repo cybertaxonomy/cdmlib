@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public abstract class DescriptionBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DescriptionBase.class);
 	
-	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet();
-	private Set<ReferenceBase> descriptionSources = new HashSet();
-	private Set<DescriptionElementBase> features = new HashSet();
+	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
+	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
+	private Set<DescriptionElementBase> features = new HashSet<DescriptionElementBase>();
 
 	/**
 	 * Returns the set of specimens or observations involved in this description

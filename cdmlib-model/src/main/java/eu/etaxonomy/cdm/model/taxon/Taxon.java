@@ -34,13 +34,13 @@ import javax.persistence.*;
 @Entity
 public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	static Logger logger = Logger.getLogger(Taxon.class);
-	private Set<TaxonDescription> descriptions = new HashSet();
+	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 	// all related synonyms
-	private Set<SynonymRelationship> synonymRelations = new HashSet();
+	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 	// all taxa relations with rel.fromTaxon==this
-	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet();
+	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 	// all taxa relations with rel.toTaxon==this
-	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet();
+	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;
 

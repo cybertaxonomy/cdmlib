@@ -55,8 +55,8 @@ public class TextData extends DescriptionElementBase {
 	/**
 	 * @return
 	 */
-	@CollectionOfElements(targetElement = LanguageString.class)
-	//@OneToMany(fetch= FetchType.EAGER)
+//	@CollectionOfElements(targetElement = LanguageString.class)
+//	@OneToMany(fetch= FetchType.EAGER)
 	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
 	public MultilanguageSet getMultilanguageText() {
