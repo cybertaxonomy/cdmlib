@@ -37,7 +37,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
 	public final boolean PROTECTED = true;
-	public final boolean NOT_PROTECTED = true;
+	public final boolean NOT_PROTECTED = false;
 	
 	private String lsid;
 	private String titleCache;
@@ -69,7 +69,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	}
 	public void setTitleCache(String titleCache){
 		this.titleCache = titleCache;
-		this.setProtectedTitleCache(true);
+		this.setProtectedTitleCache(PROTECTED);
 	}
 	public void setTitleCache(String titleCache, boolean protectCache){
 		this.titleCache = titleCache;

@@ -99,14 +99,13 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the geophysical location (coordinates) of this postal address.
+	 * Returns the geophysical {@link Point location} (coordinates) of this postal address.
+	 * The location can be useful for instance to visualize the address on a map.
 	 * 
 	 * @return  the point corresponding to this address
 	 * @see		eu.etaxonomy.cdm.model.location.Point
 	 */
 	public Point getLocation(){
-		//TODO do coordinates make sense for an address?
-		logger.warn("do coordinates (point) make sense for an address?");
 		return this.location;
 	}
 
@@ -114,8 +113,6 @@ public class Address extends VersionableEntity {
 	 * @see			#getLocation()
 	 */
 	public void setLocation(Point location){
-		//TODO do coordinates make sense for an address?
-		logger.warn("do coordinates (point) make sense for an address?");
 		this.location = location;
 	}
 

@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
- * Represents an element of a controlled vocabulary for different kinds of institutions.
- * Each element belongs to one {@link common.TermVocabulary vocabulary}.
+ * Represents an element of a controlled {@link common.TermVocabulary vocabulary} for different kinds of institutions.
+ * Each {@link common.DefinedTermBase element} belongs to one vocabulary.
  * <p>
  * See also the <a href="http://rs.tdwg.org/ontology/voc/InstitutionType">TDWG Ontology</a>
  * 

@@ -18,7 +18,7 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * Information on how to contact a {@link Person person} or an {@link Institution institution}.
+ * Information on how to approach a {@link Person person} or an {@link Institution institution}.
  * It includes telecommunication data
  * and electronic as well as multiple postal addresses.
  * <p>
@@ -46,19 +46,30 @@ public class Contact extends VersionableEntity {
 	protected Set<Address> addresses;
 	
 	
+	/** 
+	 * Returns the set of postal {@link Address addresses} belonging to this contact. 
+	 * A {@link Person person} or an {@link Institution institution} cannot have more than one contact,
+	 * but a contact may include several postal addresses. 
+	 *
+	 * @return	the set of postal addresses
+	 * @see     Address
+	 */
 	@OneToMany(mappedBy="contact")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Address> getAddresses(){
 		return this.addresses;
 	}
+	/** 
+	 * @see     #getAddresses()
+	 */
 	protected void setAddresses(Set<Address> addresses){
 		this.addresses = addresses;
 	}
 	/** 
-	 * Adds a new postal address to the set of postal addresses of this contact.
+	 * Adds a new postal {@link Address address} to the set of postal addresses of this contact.
 	 *
-	 * @param  address  the address to be added to the the set of addresses
-	 * 					of postal addresses of this contact
+	 * @param  address  the address to be added
+	 * @see     		#getAddresses()
 	 * @see 			Address
 	 */
 	public void addAddress(Address address){
@@ -68,60 +79,68 @@ public class Contact extends VersionableEntity {
 	 * Removes one element from the set of postal addresses of this contact.
 	 *
 	 * @param  address  the postal address of this contact which should be deleted
-	 * @see         	#addAddress(Address)
+	 * @see     		#getAddresses()
 	 */
 	public void removeAddress(Address address){
 		address.setContact(null);
 	}
 
 	
+	/**
+	 * Returns the string representing the electronic mail address
+	 * included in this contact.
+	 */
 	public String getEmail(){
 		return this.email;
 	}
 
 	/**
-	 * Assigns an email address to this contact.
-	 * 
-	 * @param email  string representing an electronic mail address
+	 * @see  #getEmail()
 	 */
 	public void setEmail(String email){
 		this.email = email;
 	}
 
+	/**
+	 * Returns the string representing the "Uniform Resource Locator" (url)
+	 * included in this contact.
+	 */
 	public String getUrl(){
 		return this.url;
 	}
 
 	/**
-	 * Assigns an url address to this contact.
-	 * 
-	 * @param url  string representing an "Uniform Resource Locator"
+	 * @see  #getUrl()
 	 */
 	public void setUrl(String url){
 		this.url = url;
 	}
 
+	/**
+	 * Returns the string representing the phone number
+	 * included in this contact.
+	 */
 	public String getPhone(){
 		return this.phone;
 	}
 
 	/**
-	 * Assigns a phone number to this contact.
-	 * 
-	 * @param phone  string representing a phone number
+	 * @see  #getPhone()
 	 */
 	public void setPhone(String phone){
 		this.phone = phone;
 	}
 
+	/**
+	 * Returns the string representing the telefax number
+	 * included in this contact.
+	 */
 	public String getFax(){
 		return this.fax;
 	}
 
 	/**
-	 * Assigns a fax number to this contact.
-	 * 
-	 * @param fax  string representing a fax number
+	 * @see  #getFax()
 	 */
 	public void setFax(String fax){
 		this.fax = fax;

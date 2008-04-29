@@ -44,30 +44,42 @@ public class Institution extends Agent {
 		// TODO Auto-generated constructor stub
 	}
 
+	/** 
+	 * Returns the {@link Contact contact} corresponding to this institution.
+	 * It includes telecommunication data
+	 * and electronic as well as multiple postal addresses.
+ 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){
 		return this.contact;
 	}
 	/** 
-	 * Assigns a {@link Contact contact} to this institution.
-	 *
-	 * @param  contact  the contact which should be assigned to this institution
+	 * @see  #getContact()
 	 */
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}
 
+	/** 
+	 * Returns the set of institution {@link InstitutionType types} (categories)
+	 * used to describe or circumscribe this institution's activities.
+	 * Institution types are items of a controlled {@link common.TermVocabulary vocabulary}.
+	 *
+	 * @return	the set of institution types
+	 * @see     InstitutionType
+	 */
 	@ManyToMany
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}
 	
 	/** 
-	 * Adds a new institutional type from the corresponding vocabulary
-	 * to describe better this institution or circumscribe its activities.
+	 * Adds a new institutional type (from the corresponding {@link common.TermVocabulary vocabulary})
+	 * to the set of institution types of this institution.
 	 *
-	 * @param  t  any type of institution relevant for describing this institution
+	 * @param  t  any type of institution
+	 * @see 	  #getTypes()
 	 * @see 	  InstitutionType
 	 */
 	public void addType(InstitutionType t){
@@ -77,58 +89,64 @@ public class Institution extends Agent {
 	/** 
 	 * Removes one element from the set of institution types for this institution.
 	 *
-	 * @param  t  the institution type describing this institution or its activities
-	 * 			  which should be deleted
-	 * @see       #addType(InstitutionType)
+	 * @param  t  the institution type which should be deleted
+	 * @see       #getTypes()
 	 */
 	public void removeType(InstitutionType t){
 		this.types.remove(t);
 	}
+	/** 
+	 * @see     #getTypes()
+	 */
 	protected void setTypes(Set<InstitutionType> types){
 		this.types = types;
 	}
 
 
+	/** 
+	 * Returns the parent institution of this institution.
+	 * This is for instance the case when this institution is a herbarium
+	 * belonging to a parent institution such as a museum.
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getIsPartOf(){
 		return this.isPartOf;
 	}
 	/** 
-	 * Assigns a parent institution to this institution.
-	 * This is for instance the case when a herbarium
-	 * belongs to a museum (parent institution).
+	 * Assigns a parent institution to which this institution belongs.
 	 *
-	 * @param  isPartOf  the institution to which this institution belongs
+	 * @param  isPartOf  the parent institution
+	 * @see	   #getIsPartOf()
 	 */
 	public void setIsPartOf(Institution isPartOf){
 		this.isPartOf = isPartOf;
 	}
 
+	/**
+	 * Returns the string representing the code (can also be an acronym or initials)
+	 * by which this institution is known among experts.
+	 */
 	public String getCode(){
 		return this.code;
 	}
 	/** 
-	 * Assigns a code (can also be an acronym or initials)
-	 * by which this institution is known among experts.
-	 *
-	 * @param  code  the string which should be assigned as an identification code
-	 * 				 to this institution
+	 * @see	   #getCode()
 	 */
 	public void setCode(String code){
 		this.code = code;
 	}
 
 	
+	/** 
+	 * Returns the full name, as distinct from a code, an acronym or initials,
+	 * by which this institution is generally known.
+	 */
 	public String getName(){
 		return this.name;
 	}
 	/** 
-	 * Assigns a full name, as distinct from a code, an acronym or initials,
-	 * by which this institution is generally known.
-	 *
-	 * @param  name  the string which should be assigned as a full name
-	 * 				 to this institution
+	 * @see	   #getName()
 	 */
 	public void setName(String name){
 		this.name = name;
@@ -136,13 +154,14 @@ public class Institution extends Agent {
 
 	@Override
 	/**
-	 * Generates the complete identification string of this institution
-	 * on the basis of all its attributes.
+	 * Generates the identification string for this institution.
+	 * The string is based on its name and code as well as on the name and code of
+	 * its parent institution, if existing.
 	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
-	 * @return  the string which contains the complete identification of this institution
+	 * @return  the identification string
 	 */
 	public String generateTitle(){
 		return "";

@@ -20,12 +20,13 @@ import javax.persistence.*;
 
 /**
  * A representation of a human being, living or dead.
- * It includes name parts, contact details, institutional membership,
- * and other possible information such as life period,
- * taxonomic and/or geographical specialization. For a short name
- * the inherited attribute {@link common.IdentifiableEntity#setTitleCache(String) titleCache} is to be used.
- * For other alternative (string-)names {@link common.OriginalSource OriginalSource} instances must be created.
- * and the inherited attribute {@link common.ReferencedEntityBase#setOriginalNameString(String) originalNameString} must be used.
+ * It includes name parts, {@link Contact contact} details, {@link InstitutionalMembership institutional membership},
+ * and other possible information such as life {@link common.TimePeriod time period},
+ * taxonomic and/or geographical {@link common.Keyword specialization}.
+ * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
+ * is to be used.
+ * For other alternative (string-)names {@link common.OriginalSource OriginalSource} instances must be created
+ * and the inherited attribute {@link common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
  * <p>
  * See also the <a href="http://rs.tdwg.org/ontology/voc/Person.rdf">TDWG Ontology</a>
  * 
@@ -46,10 +47,23 @@ public class Person extends TeamOrPersonBase {
 	private Contact contact;
 	private Set<Keyword> keywords = new HashSet<Keyword>();
 
+	/** 
+	 * Creates a new empty instance for a person whose existence is all what is known.
+	 * This can be a provisional solution until more information about this person
+	 * can be gathered, for instance in case a member of a nomenclatural author team
+	 * is not explicitly mentioned. 
+	 */
 	public static Person NewInstance(){
 		return new Person();
 	}
 	
+	/** 
+	 * Creates a new instance for a person for whom an "identification" string
+	 * is all what is known. This string is generally a short or a complete name.
+	 * As this string is kept in the {@link common.IdentifiableEntity#getTitleCache() titleCache}
+	 * attribute and should not be overwritten by the {@link #generateTitle() generateTitle} method
+	 * the {@link common.IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
+	 */
 	public static Person NewTitledInstance(String titleCache){
 		Person result = new Person();
 		result.setTitleCache(titleCache);
@@ -70,12 +84,14 @@ public class Person extends TeamOrPersonBase {
 	
 	/** 
 	 * Class constructor using a "forenames" string (including initials),
-	 * a surname (family name) and an abbreviated name.
+	 * a surname (family name) and an abbreviated name as used in nomenclature.
+	 * For the abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
+	 * is used.
 	 *
-	 * @param  firstname     		the given name of this person
-	 * @param  lastname      		the hereditary name of this person
-	 * @param  nomenclaturalTitel 	(abbreviated) Name as used in nomenclature
-	 * @see                  #Person()
+	 * @param  firstname     		the given name
+	 * @param  lastname      		the hereditary name
+	 * @param  nomenclaturalTitel 	the abbreviated name
+	 * @see                  		#NewInstance()
 	 */
 	public Person(String firstname, String lastname, String nomenclaturalTitel) {
 		this.setFirstname(firstname);
@@ -84,17 +100,27 @@ public class Person extends TeamOrPersonBase {
 	}
 	
 	
+	/** 
+	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to this person. 
+	 *
+	 * @return	the set of institution memberships
+	 * @see     InstitutionalMembership
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
+	/** 
+	 * @see     #getInstitutionalMemberships()
+	 */
 	protected void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
 		this.institutionalMemberships = institutionalMemberships;
 	}
 	
 	/** 
-	 * Adds a new membership of this person in an institution.
+	 * Adds a new {@link InstitutionalMembership membership} of this person in an {@link Institution institution}
+	 * to the set of his institution memberships.
 	 * This method also creates a new institutional membership instance.
 	 *
 	 * @param  institution  the institution this person belongs to
@@ -102,9 +128,12 @@ public class Person extends TeamOrPersonBase {
 	 * @param  department   the string label for the department this person belongs to,
 	 * 					    within the institution
 	 * @param  role         the string label for the persons's role within the department or institution
+	 * @see 			    #getInstitutionalMemberships()
 	 * @see 			    InstitutionalMembership#InstitutionalMembership(Institution, Person, TimePeriod, String, String)
 	 */
 	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
+		//TODO to be implemented?
+		logger.warn("not yet fully implemented?");
 		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role); 
 	}
 	
@@ -112,7 +141,7 @@ public class Person extends TeamOrPersonBase {
 	 * Removes one element from the set of institutional memberships of this person.
 	 *
 	 * @param  ims  the institutional membership of this person which should be deleted
-	 * @see         #addInstitutionalMembership(Institution, TimePeriod, String, String)
+	 * @see     	#getInstitutionalMemberships()
 	 */
 	public void removeInstitutionalMembership(InstitutionalMembership ims){
 		//TODO to be implemented?
@@ -123,19 +152,31 @@ public class Person extends TeamOrPersonBase {
 	}
 
 
+	/** 
+	 * Returns the set of {@link common.Keyword keywords} mostly representing a taxonomic or
+	 * a geographical specialization of this person.
+	 * Keywords are items of a controlled {@link common.TermVocabulary vocabulary}.
+	 *
+	 * @return	the set of keywords
+	 * @see 	common.Keyword
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Keyword> getKeywords(){
 		return this.keywords;
 	}
+	/** 
+	 * @see     #getKeywords()
+	 */
 	public void setKeywords(Set<Keyword> keywords){
 		this.keywords = keywords;
 	}
 	/** 
-	 * Adds a new keyword from the keyword vocabulary to describe better this person
-	 * or circumscribe his activities.
+	 * Adds a new keyword from the keyword vocabulary to the set of keywords
+	 * describing or circumscribing this person's activities.
 	 *
-	 * @param  keyword  any keyword relevant for this person or for his activities
+	 * @param  keyword  any keyword 
+	 * @see 			#getKeywords()
 	 * @see 			common.Keyword
 	 */
 	public void addKeyword(Keyword keyword){
@@ -144,8 +185,8 @@ public class Person extends TeamOrPersonBase {
 	/** 
 	 * Removes one element from the set of keywords for this person.
 	 *
-	 * @param  keyword  the keyword describing this person or his activities which should be deleted
-	 * @see             #addKeyword(Keyword)
+	 * @param  keyword  the keyword which should be deleted
+	 * @see             #getKeywords()
 	 */
 	public void removeKeyword(Keyword keyword){
 		this.keywords.remove(keyword);
@@ -231,7 +272,7 @@ public class Person extends TeamOrPersonBase {
 	}
 	/**
 	 * Assigns to this person a period of time in which he was alive.
-	 * The form birthdate - deathdate (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
+	 * The form birth date - death date (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
 	 * preferred, but a simple flourished date (fl. XXXX) may be given
 	 * if that is all what is known.
 	 *

@@ -20,9 +20,10 @@ import javax.persistence.*;
 
 /**
  * Allows to hold one {@link Institution institution} to which a {@link Person person} is affiliated.
- * It includes time period of membership and role of the person
+ * It includes {@link common.TimePeriod time period} of membership and role of the person
  * in this institution. In case one person belongs to several institutions
- * the corresponding number of instances have to be created.  
+ * the corresponding number of instances of InstitutionalMembership
+ * have to be created.  
  * 
  * @author m.doering
  * @version 1.0
@@ -43,7 +44,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	
 	
 	/** 
-	 * Class constructor using an institution, a person, a time period,
+	 * Class constructor using an {@link Institution institution}, a {@link Person person}, a {@link common.TimePeriod time period},
 	 * a department name string and a role string.
 	 *
 	 * @param  institute   the institution in which the person is a member
@@ -51,7 +52,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	 * @param  period  	   the time period during which the person belonged
 	 * 					   to the institution
 	 * @param  department  the name string of the department (within the institution)
-	 * 					   this person was working in
+	 * 					   this person is working in
 	 * @param  role  	   the string which identifies the role played by the person
 	 * 					   in the institution (or in the department)
 	 * @see                Person
@@ -67,16 +68,22 @@ public class InstitutionalMembership extends VersionableEntity {
 		this.person = person;
 	}
 	
+	/** 
+	 * Returns the {@link Person person} involved in this institutional membership.
+	 *
+	 * @see  Person#institutionalMemberships
+	 * @see  Person#addInstitutionalMembership(Institution, TimePeriod, String, String)
+	 */
 	public Person getPerson() {
 		return person;
 	}
 	/** 
-	 * Assigns a new person to this institutional membership.
-	 * This method also updates the set of institutions
+	 * Assigns a new {@link Person person} (replacing the actual one) to this institutional membership.
+	 * This method also updates both sets of institutions
 	 * the two persons (the new one and the substituted one) belong to. 
 	 *
-	 * @param  newPerson  the new person involved in this institutional membership
-	 * @see               Person#institutionalMemberships
+	 * @param  newPerson  the new person to be included in this institutional membership
+	 * @see               #getPerson()
 	 * @see               Person#removeInstitutionalMembership(InstitutionalMembership)
 	 */
 	public void setPerson(Person newPerson) {
@@ -93,56 +100,67 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	
+	/** 
+	 * Returns the {@link Institution institution} corresponding to this institutional membership.
+	 */
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
 		return this.institute;
 	}
 	/** 
-	 * Assigns an institution to this institutional membership.
+	 * Assigns an new institution (replacing the actual one)
+	 * to this institutional membership.
 	 *
-	 * @param  newInstitute  the institution involved in this institutional membership
+	 * @param  newInstitute  the new institution
+	 * @see	   				 #getInstitute()
 	 */
 	public void setInstitute(Institution newInstitute){
 		this.institute = newInstitute;
 	}
 
+	/** 
+	 * Returns the {@link common.TimePeriod time period} during which
+	 * the {@link Person person} involved in this institutional membership belonged
+	 * to the {@link Institution institution} also involved in it.
+	 */
 	public TimePeriod getPeriod(){
 		return this.period;
 	}
 
 	/**
-	 * Assigns a time period applying for this institutional membership.
-	 * 
-	 * @param period  the time period during which the person belonged
-	 * 				  to the institution
+	 * @see	#getPeriod()
 	 */
 	public void setPeriod(TimePeriod period){
 		this.period = period;
 	}
 
+	/**
+	 * Returns the string representing the name of the department (within
+	 * the {@link Institution institution} involved in this institutional membership) to which
+	 * the {@link Person person} belongs.
+	 */
 	public String getDepartment(){
 		return this.department;
 	}
 
 	/**
-	 * Assigns a department within the institution involved
-	 * in this institutional membership.
-	 * 
-	 * @param department  the string for the department name within the institution
+	 * @see	#getDepartment()
 	 */
 	public void setDepartment(String department){
 		this.department = department;
 	}
 
+	/**
+	 * Returns the string representing the role played by the {@link Person person} within
+	 * the {@link Institution institution} (or within the department) involved
+	 * in this institutional membership.
+	 */
 	public String getRole(){
 		return this.role;
 	}
 
 	/**
-	 * Assigns a role to the person within the institution (or department).
-	 * 
-	 * @param role  the string which identifies the role played by the person
-	 * 				within the institution (or within the department)
+	 * @see	#getRole()
 	 */
 	public void setRole(String role){
 		this.role = role;
