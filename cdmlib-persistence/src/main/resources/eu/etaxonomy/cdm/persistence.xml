@@ -86,10 +86,10 @@
             <value>eu.etaxonomy.cdm.model.description.CommonTaxonName</value>
             <value>eu.etaxonomy.cdm.model.description.DescriptionBase</value>
             <value>eu.etaxonomy.cdm.model.description.Distribution</value>
-            <value>eu.etaxonomy.cdm.model.description.FeatureBase</value>
+            <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureNode</value>
             <value>eu.etaxonomy.cdm.model.description.FeatureTree</value>
-            <value>eu.etaxonomy.cdm.model.description.FeatureType</value>
+            <value>eu.etaxonomy.cdm.model.description.Feature</value>
             <value>eu.etaxonomy.cdm.model.description.IdentificationKey</value>
             <value>eu.etaxonomy.cdm.model.description.IndividualsAssociation</value>
             <value>eu.etaxonomy.cdm.model.description.MeasurementUnit</value>
@@ -192,5 +192,4 @@
     <property name="hibernateProperties" ref="hibernateProperties"/>
 </bean>
 
-        
 </beans>
