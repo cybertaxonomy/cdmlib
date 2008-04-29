@@ -1,4 +1,8 @@
 /.metadata
+app-import/.classpath
+app-import/.project
+app-import/.settings
+app-import/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
@@ -37,10 +41,6 @@ eclipse-plugin/.settings
 eclipse-plugin/dist
 eclipse-plugin/target
 eclipse-updateSite/.classpath
-imports/.classpath
-imports/.project
-imports/.settings
-imports/target
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
