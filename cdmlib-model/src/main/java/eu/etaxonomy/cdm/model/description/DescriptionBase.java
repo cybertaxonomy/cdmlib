@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -49,7 +50,8 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * 
 	 * @return	the set of of specimens or observations 
 	 */
-	@ManyToMany
+	//@ManyToMany  //FIXME
+	@Transient 
 	public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
 		return describedSpecimenOrObservations;
 	}
@@ -71,8 +73,9 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * 
 	 * @return	the set of references 
 	 */
-	@ManyToMany
-	@Cascade( { CascadeType.SAVE_UPDATE })
+//	@ManyToMany  //FIXME
+//	@Cascade( { CascadeType.SAVE_UPDATE })
+	@Transient
 	public Set<ReferenceBase> getDescriptionSources() {
 		return this.descriptionSources;
 	}

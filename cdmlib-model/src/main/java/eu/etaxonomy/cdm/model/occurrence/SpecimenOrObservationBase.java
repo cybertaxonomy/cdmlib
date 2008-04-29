@@ -52,8 +52,9 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 		super();
 	}
 	
-	@ManyToMany
-	@Cascade( { CascadeType.SAVE_UPDATE })
+//	@ManyToMany   //FIXME
+//	@Cascade( { CascadeType.SAVE_UPDATE })
+	@Transient
 	public Set<DescriptionBase> getDescriptions() {
 		return this.descriptions;
 	}
