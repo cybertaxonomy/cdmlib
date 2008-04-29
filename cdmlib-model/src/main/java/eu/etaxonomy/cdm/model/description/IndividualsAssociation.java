@@ -66,13 +66,13 @@ public class IndividualsAssociation extends DescriptionElementBase {
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
-		this.description.put(description);
+		this.description.add(description);
 	}
-	public void addDescription(String text, Language lang){
-		this.description.put(text, lang);
+	public void addDescription(String text, Language language){
+		this.description.put(language, text);
 	}
-	public void removeDescription(Language lang){
-		this.description.remove(lang);
+	public void removeDescription(Language language){
+		this.description.remove(language);
 	}
 
 }

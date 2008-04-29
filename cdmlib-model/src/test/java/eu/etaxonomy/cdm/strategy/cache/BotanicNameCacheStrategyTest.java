@@ -23,12 +23,10 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase;
 
 /**
  * @author a.mueller
@@ -185,7 +183,6 @@ public class BotanicNameCacheStrategyTest {
 	public final void testGetInfraGenusNameCache() {
 		String methodName = "getInfraGenusNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
-		
 		this.getValue(method, strategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));
 	}

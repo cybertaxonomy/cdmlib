@@ -107,6 +107,7 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Override
 	public String toString() {
+		//FIXME make toString save as explained in CdmBase.toString
 		return super.toString()+" "+this.getLabel();
 	}
 

@@ -120,10 +120,10 @@ public class Media extends AnnotatableEntity {
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){
-		this.description.put(description);
+		this.description.add(description);
 	}
 	public void addDescription(String text, Language language){
-		this.description.put(text, language);
+		this.description.put(language, text);
 	}
 	public void removeDescription(Language language){
 		this.description.remove(language);

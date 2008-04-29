@@ -96,13 +96,13 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	protected void setModifyingText(MultilanguageSet modifyingText){
 		this.modifyingText = modifyingText;
 	}
-	public void addModifyingText(LanguageString description){
-		this.modifyingText.put(description);
+	public String addModifyingText(LanguageString description){
+		return this.modifyingText.add(description);
 	}
-	public void addModifyingText(String text, Language lang){
-		this.modifyingText.put(text, lang);
+	public String addModifyingText(String text, Language language){
+		return this.modifyingText.put(language, text);
 	}
-	public void removeModifyingText(Language lang){
-		this.modifyingText.remove(lang);
+	public String removeModifyingText(Language language){
+		return this.modifyingText.remove(language);
 	}
 }

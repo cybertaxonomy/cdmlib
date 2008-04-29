@@ -32,5 +32,27 @@ public class LanguageString  extends EmbeddableLanguageString{
 	protected LanguageString(String text, Language language) {
 		super(text, language);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
+	 */
+	@Override
+	public String toString() {
+		if (text == null){
+			return super.toString() + "null";
+		}else{
+			String languagePart = "";
+			if (this.language != null){
+				languagePart = "(" + this.language.toString() + ")";
+			}
+			if (text.length() > 20){
+				return text.substring(0, 20) + "..." + languagePart;
+			}else{
+				return text + languagePart;
+			}
+		}
+	}
+	
+	
 	
 }

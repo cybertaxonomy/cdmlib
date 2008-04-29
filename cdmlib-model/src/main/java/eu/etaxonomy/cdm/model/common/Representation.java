@@ -22,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class Representation extends LanguageString {
+public class Representation extends EmbeddableLanguageString {
 	static Logger logger = Logger.getLogger(Representation.class);
 
 	private String label;

@@ -170,5 +170,19 @@ public class Language extends DefinedTermBase {
 		line[5] = String.valueOf(this.iso639_2);
 		writer.writeNext(line);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
+	 */
+	@Override
+	public String toString() {
+		if (this.getLabel() != null){
+			return this.getLabel();
+		}else{
+			return super.toString();
+		}
+	}
+	
+	
 	
 }

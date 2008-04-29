@@ -178,7 +178,7 @@ public class TextDataTest {
 		textDataLeer.putText(LanguageString.NewInstance(null, Language.CHINESE()));
 		assertNotNull(textDataLeer.getMultilanguageText());
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
-		assertSame(deutsch, textDataLeer.putText(LanguageString.NewInstance("deutsch", Language.GERMAN())));
+		assertEquals("xx", textDataLeer.putText(LanguageString.NewInstance("deutsch", Language.GERMAN())));
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
 
 		assertEquals("deutsch", textDataLeer.getText(Language.GERMAN()));
@@ -199,7 +199,7 @@ public class TextDataTest {
 		textData1.putText(deutsch);
 		textData1.putText(LanguageString.NewInstance("nothing", null));
 		assertEquals(3, textData1.countLanguages());
-		assertSame(deutsch, textData1.removeText(Language.GERMAN()));
+		assertEquals("xx", textData1.removeText(Language.GERMAN()));
 		assertEquals(2, textData1.countLanguages());
 		textData1.removeText(null);
 		assertEquals(1, textData1.countLanguages());

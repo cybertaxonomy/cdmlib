@@ -75,11 +75,11 @@ public class StateData extends VersionableEntity {
 	private void setModifyingText(MultilanguageSet modifyingText) {
 		this.modifyingText = modifyingText;
 	}
-	public void addModifyingText(String text, Language lang){
-		this.modifyingText.put(text, lang);
+	public void addModifyingText(String text, Language language){
+		this.modifyingText.put(language, text);
 	}
 	public void addModifyingText(LanguageString text){
-		this.modifyingText.put(text);
+		this.modifyingText.add(text);
 	}
 	public void removeModifyingText(Language lang){
 		this.modifyingText.remove(lang);

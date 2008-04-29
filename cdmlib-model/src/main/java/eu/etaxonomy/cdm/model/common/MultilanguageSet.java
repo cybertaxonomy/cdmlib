@@ -10,85 +10,63 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CollectionOfElements;
+
 
 /**
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
-@Entity
-public class MultilanguageSet extends CdmBase {
+public class MultilanguageSet extends HashMap<Language, String> {
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
-
-	protected Map<Language, LanguageString> languageStrings = new HashMap<Language, LanguageString>();
-	
 	
 	/**
 	 * Factory method
 	 * @return
 	 */
 	public static MultilanguageSet NewInstance(){
-		return new MultilanguageSet();
+		MultilanguageSet result =  new MultilanguageSet();
+		return result;
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static MultilanguageSet NewInstance(LanguageString languageString){
+		MultilanguageSet result =  new MultilanguageSet(languageString);
+		return result;
+	}
+	
+	protected MultilanguageSet(){
+		super();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	protected MultilanguageSet (){
+	protected MultilanguageSet (LanguageString languageString){
 		super();
+		this.add(languageString);
 	}
 	
-	@CollectionOfElements(targetElement = LanguageString.class)
-	//@OneToMany(fetch= FetchType.EAGER)
-	@MapKey(name="language")
-    @Cascade({CascadeType.SAVE_UPDATE})
-	public Map<Language, LanguageString> getLanguageStrings(){
-		return this.languageStrings;
+	public String getText(Language language){
+		return super.get(language);
 	}
-	public LanguageString put(LanguageString languageString){
+	
+	/**
+	 * @param languageString
+	 * @return String the previous text in the MultilanguageSet that was associated with the language
+	 * defined in languageString, or null if there was no such text before. (A null return can also indicate that the text was previously null.)
+	 */
+	public String add(LanguageString languageString){
 		if (languageString == null){
 			return null;
-		}else {
-			return languageStrings.put(languageString.getLanguage(), languageString);
+		}else{
+			String result =this.put(languageString.getLanguage(), languageString.getText());
+			return result;
 		}
-	}
-	public LanguageString put(String text, Language language){
-		LanguageString languageString = LanguageString.NewInstance(text, language);
-		return this.put(languageString);
-	}
-	public LanguageString remove(Language language){
-		return languageStrings.remove(language);
-	}
-	protected void setLanguageStrings(Map<Language, LanguageString> languageStrings) {
-		this.languageStrings = languageStrings;
 	}
 	
 
-	@Transient
-	public String getText(Language language){
-		LanguageString languageString = getLanguageString(language);
-		return (languageString == null ? null : languageString.getText());
-	}
-	
-	
-	@Transient
-	public LanguageString getLanguageString(Language language){
-		return this.languageStrings.get(language);
-	}
-	
-	public int size(){
-		return languageStrings.size();
-	}
 }

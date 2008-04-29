@@ -15,6 +15,9 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CollectionOfElements;
 
 import javax.persistence.*;
 
@@ -27,7 +30,7 @@ import javax.persistence.*;
 public class TextData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(TextData.class);
 	
-	private MultilanguageSet multilanguageText;
+	private MultilanguageSet multilanguageStringMap;
 	private TextFormat format;
 	
 	public static TextData NewInstance(){
@@ -52,41 +55,45 @@ public class TextData extends DescriptionElementBase {
 	/**
 	 * @return
 	 */
+	@CollectionOfElements(targetElement = LanguageString.class)
+	//@OneToMany(fetch= FetchType.EAGER)
+	@MapKey(name="language")
+    @Cascade({CascadeType.SAVE_UPDATE})
 	public MultilanguageSet getMultilanguageText() {
 		initTextSet();
-		return multilanguageText;
+		return multilanguageStringMap;
 	}
 	@Transient 
 	public String getText(Language language) {
 		initTextSet();
-		return multilanguageText.getText(language);
+		return multilanguageStringMap.getText(language);
 	}
 	protected void setMultilanguageText(MultilanguageSet texts) {
-		this.multilanguageText = texts;
+		this.multilanguageStringMap = texts;
 	}
 	public String putText(String text, Language language) {
 		initTextSet();
-		LanguageString result = this.multilanguageText.put(text, language);
-		return (result == null ? null : result.getText());
+		String result = this.multilanguageStringMap.put(language , text);
+		return (result == null ? null : result);
 	}
-	public LanguageString putText(LanguageString languageString) {
+	public String putText(LanguageString languageString) {
 		initTextSet();
-		return this.multilanguageText.put(languageString);
+		return this.multilanguageStringMap.add(languageString);
 	}
-	public LanguageString removeText(Language language) {
+	public String removeText(Language language) {
 		initTextSet();
-		return this.multilanguageText.remove(language);
+		return this.multilanguageStringMap.remove(language);
 	}
 	
 	private void initTextSet(){
-		if (multilanguageText == null){
-			multilanguageText = MultilanguageSet.NewInstance();
+		if (multilanguageStringMap == null){
+			multilanguageStringMap = MultilanguageSet.NewInstance();
 		}
 	}
 	
 	public int countLanguages(){
 		initTextSet();
-		return multilanguageText.size();
+		return multilanguageStringMap.size();
 	}
 	
 
