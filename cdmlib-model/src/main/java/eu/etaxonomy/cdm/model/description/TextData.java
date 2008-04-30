@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
@@ -30,7 +33,7 @@ import javax.persistence.*;
 public class TextData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(TextData.class);
 	
-	private MultilanguageSet multilanguageStringMap;
+	private Map<Language, LanguageString> multilanguageStringMap;
 	private TextFormat format;
 	
 	public static TextData NewInstance(){
@@ -55,32 +58,50 @@ public class TextData extends DescriptionElementBase {
 	/**
 	 * @return
 	 */
-//	@CollectionOfElements(targetElement = LanguageString.class)
-//	@OneToMany(fetch= FetchType.EAGER)
+	@OneToMany (fetch= FetchType.EAGER)
 	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
-	public MultilanguageSet getMultilanguageText() {
+	public Map<Language, LanguageString> getMultilanguageText() {
 		initTextSet();
 		return multilanguageStringMap;
+	}
+	protected void setMultilanguageText(Map<Language, LanguageString> texts) {
+		this.multilanguageStringMap = texts;
 	}
 	@Transient 
 	public String getText(Language language) {
 		initTextSet();
-		return multilanguageStringMap.getText(language);
+		LanguageString languageString = multilanguageStringMap.get(language);
+		if (languageString == null){
+			return null;
+		}else{
+			return languageString.getText();
+		}
 	}
-	protected void setMultilanguageText(MultilanguageSet texts) {
-		this.multilanguageStringMap = texts;
+	
+	@Transient
+	public MultilanguageSet getMultilanguageSet() {
+		return null;  //TODO
 	}
-	public String putText(String text, Language language) {
+
+	@Transient
+	public LanguageString putText(String text, Language language) {
 		initTextSet();
-		String result = this.multilanguageStringMap.put(language , text);
+		LanguageString result = this.multilanguageStringMap.put(language , LanguageString.NewInstance(text, language));
 		return (result == null ? null : result);
 	}
-	public String putText(LanguageString languageString) {
+	@Transient
+	public LanguageString putText(LanguageString languageString) {
 		initTextSet();
-		return this.multilanguageStringMap.add(languageString);
+		
+		if (languageString == null){
+			return null;
+		}else{
+			Language language = languageString.getLanguage();
+			return this.multilanguageStringMap.put(language, languageString);
+		}
 	}
-	public String removeText(Language language) {
+	public LanguageString removeText(Language language) {
 		initTextSet();
 		return this.multilanguageStringMap.remove(language);
 	}

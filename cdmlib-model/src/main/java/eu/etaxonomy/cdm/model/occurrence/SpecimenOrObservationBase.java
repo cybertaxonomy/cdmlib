@@ -146,7 +146,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 		this.description.add(description);
 	}
 	public void addDefinition(String text, Language language){
-		this.description.put(language, text);
+		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
 	public void removeDefinition(Language lang){
 		this.description.remove(lang);

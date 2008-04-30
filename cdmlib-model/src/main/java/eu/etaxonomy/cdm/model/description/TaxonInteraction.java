@@ -64,7 +64,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 		this.description.add(description);
 	}
 	public void addDescription(String text, Language language){
-		this.description.put(language, text);
+		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
 	public void removeDescription(Language lang){
 		this.description.remove(lang);

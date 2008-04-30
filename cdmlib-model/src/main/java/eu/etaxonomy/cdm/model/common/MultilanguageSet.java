@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
-public class MultilanguageSet extends HashMap<Language, String> {
+public class MultilanguageSet extends HashMap<Language, LanguageString> {
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 	
 	/**
@@ -51,7 +51,12 @@ public class MultilanguageSet extends HashMap<Language, String> {
 	}
 	
 	public String getText(Language language){
-		return super.get(language);
+		LanguageString languageString = super.get(language);
+		if (languageString != null){
+			return languageString.getText();
+		}else {
+			return null;
+		}
 	}
 	
 	/**
@@ -59,12 +64,16 @@ public class MultilanguageSet extends HashMap<Language, String> {
 	 * @return String the previous text in the MultilanguageSet that was associated with the language
 	 * defined in languageString, or null if there was no such text before. (A null return can also indicate that the text was previously null.)
 	 */
-	public String add(LanguageString languageString){
+	public LanguageString add(LanguageString languageString){
 		if (languageString == null){
 			return null;
 		}else{
-			String result =this.put(languageString.getLanguage(), languageString.getText());
-			return result;
+//			Language language = languageString.getLanguage();
+//			String text = languageString.getText();
+//			String result =this.put(languageString.getLanguage(), languageString.getText());
+//			return result;
+//		}
+			return this.put(languageString.getLanguage(), languageString);
 		}
 	}
 	
