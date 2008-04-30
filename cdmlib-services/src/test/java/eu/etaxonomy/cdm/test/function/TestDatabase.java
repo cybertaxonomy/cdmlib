@@ -118,11 +118,11 @@ public class TestDatabase {
 			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 			taxon.addDescription(taxonDescription);
 			
-//			//textData
-//			TextData textData = TextData.NewInstance();
-//			textData.addText("XXX", Language.DEFAULT());
-//			taxonDescription.addFeature(textData);
-//			
+			//textData
+			TextData textData = TextData.NewInstance();
+			textData.putText("XXX", Language.DEFAULT());
+			taxonDescription.addElement(textData);
+			
 			//commonNames
 			String commonNameString;
 			if (taxon.getName() != null){
@@ -131,7 +131,7 @@ public class TestDatabase {
 				commonNameString = "Common (null)";
 			}
 			CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, Language.DEFAULT());
-			taxonDescription.addFeature(commonName);
+			taxonDescription.addElement(commonName);
 			
 			//save
 			appCtr.getTaxonService().saveTaxon(taxon);
