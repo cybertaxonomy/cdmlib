@@ -57,7 +57,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AudioFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTermBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/EmbeddableLanguageString.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/EventBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Extension.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -text
@@ -75,6 +74,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ImageFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Keyword.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Language.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageString.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageStringBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Marker.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Media.java -text

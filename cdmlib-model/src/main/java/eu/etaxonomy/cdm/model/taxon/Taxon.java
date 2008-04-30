@@ -57,7 +57,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 
-	@OneToMany(mappedBy="taxon")
+	@OneToMany(mappedBy="taxon", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
@@ -122,7 +122,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 
 	@Transient
 	public Set<TaxonRelationship> getTaxonRelations() {
-		Set<TaxonRelationship> rels = new HashSet();
+		Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
 		rels.addAll(getRelationsToThisTaxon());
 		rels.addAll(getRelationsFromThisTaxon());
 		return rels;
@@ -226,6 +226,23 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 	
+	/*
+	 * MISAPPLIED NAMES
+	 */
+	@Transient
+	public Set<Taxon> getMisappliedNames(){
+		Set<Taxon> taxa = new HashSet<Taxon>();
+		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
+		for (TaxonRelationship rel: rels){
+			TaxonRelationshipType tt = rel.getType();
+			TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIEDNAMEFOR(); 
+			if (tt.equals(incl)){
+				taxa.add(rel.getFromTaxon());
+			}
+		}
+		return taxa;
+	}
+		
 	
 	/*
 	 * DEALING WITH SYNONYMS
@@ -288,17 +305,25 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	
 	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
-		return this.getName().getHomotypicalGroup();
+		if (this.getName() == null){
+			return null;
+		}else{
+			return this.getName().getHomotypicalGroup();
+		}
 	}
 	
 	@Transient
 	public List<Synonym> getHomotypicSynonyms(){
-		return this.getHomotypicGroup().getSynonymsInGroup(this.getSec());
+		if (this.getHomotypicGroup() == null){
+			return null;
+		}else{
+			return this.getHomotypicGroup().getSynonymsInGroup(this.getSec());
+		}
 	}
 	
 	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
-		List<HomotypicalGroup> result = new ArrayList();
+		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
 		for (TaxonNameBase n:this.getSynonymNames()){
 			if (!result.contains(n.getHomotypicalGroup())){
 				result.add(n.getHomotypicalGroup());

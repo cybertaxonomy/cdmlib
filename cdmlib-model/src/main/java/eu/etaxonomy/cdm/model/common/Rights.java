@@ -25,7 +25,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class Rights extends EmbeddableLanguageString {
+public class Rights extends LanguageStringBase {
 	private static final Logger logger = Logger.getLogger(Rights.class);
 	
 	//external location of copyright text

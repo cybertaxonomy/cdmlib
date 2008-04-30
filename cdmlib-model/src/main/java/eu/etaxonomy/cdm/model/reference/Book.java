@@ -22,10 +22,16 @@ import javax.persistence.*;
  */
 @Entity
 public class Book extends PrintedUnitBase implements INomenclaturalReference {
-	static Logger logger = Logger.getLogger(Book.class);
+	private static final Logger logger = Logger.getLogger(Book.class);
 	private String edition;
 	private String isbn;
 
+
+	public static Book NewInstance(){
+		return new Book();
+	}
+	
+	
 	public String getEdition(){
 		return this.edition;
 	}

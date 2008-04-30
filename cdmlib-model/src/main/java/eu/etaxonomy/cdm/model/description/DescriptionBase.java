@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -35,7 +38,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 08-Nov-2007 13:06:24
  */
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(DescriptionBase.class);
 	
@@ -92,19 +96,19 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	@OneToMany
 	@Cascade( { CascadeType.SAVE_UPDATE })
-	public Set<DescriptionElementBase> getFeatures() {
+	public Set<DescriptionElementBase> getElements() {
 		return this.features;
 	}
 
-	protected void setFeatures(Set<DescriptionElementBase> features) {
+	protected void setElements(Set<DescriptionElementBase> features) {
 		this.features = features;
 	}
 
-	public void addFeature(DescriptionElementBase feature) {
+	public void addElement(DescriptionElementBase feature) {
 		this.features.add(feature);
 	}
 
-	public void removeFeature(DescriptionElementBase feature) {
+	public void removeElement(DescriptionElementBase feature) {
 		this.features.remove(feature);
 	}
 	

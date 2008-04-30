@@ -18,16 +18,16 @@ import javax.persistence.*;
  * @created 25.04.2008
  */
 @MappedSuperclass
-public abstract class EmbeddableLanguageString  extends VersionableEntity{
-	static Logger logger = Logger.getLogger(EmbeddableLanguageString.class);
+public abstract class LanguageStringBase  extends VersionableEntity{
+	static Logger logger = Logger.getLogger(LanguageStringBase.class);
 	protected String text;
 	protected Language language;
 
-	protected EmbeddableLanguageString() {
+	protected LanguageStringBase() {
 		super();
 	}
 
-	protected EmbeddableLanguageString(String text, Language language) {
+	protected LanguageStringBase(String text, Language language) {
 		super();
 		this.setLanguage(language);
 		this.setText(text);

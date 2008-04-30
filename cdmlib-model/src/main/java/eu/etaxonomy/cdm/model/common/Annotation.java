@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Annotation extends EmbeddableLanguageString {
+public class Annotation extends LanguageStringBase {
 	private static final Logger logger = Logger.getLogger(Annotation.class);
 	
 	

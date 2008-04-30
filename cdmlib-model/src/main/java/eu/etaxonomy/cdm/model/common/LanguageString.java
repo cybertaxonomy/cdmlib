@@ -18,7 +18,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:32
  */
 @Entity
-public class LanguageString  extends EmbeddableLanguageString{
+public class LanguageString  extends LanguageStringBase{
 	static Logger logger = Logger.getLogger(LanguageString.class);
 
 	public static LanguageString NewInstance(String text, Language language){

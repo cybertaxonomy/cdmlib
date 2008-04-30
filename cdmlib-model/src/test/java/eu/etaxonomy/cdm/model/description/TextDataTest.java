@@ -158,7 +158,7 @@ public class TextDataTest {
 		textDataLeer.putText(null, Language.CHINESE());
 		assertNotNull(textDataLeer.getMultilanguageText());
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
-		assertEquals("xx", textDataLeer.putText("deutsch", Language.GERMAN()));
+		assertEquals("xx", textDataLeer.putText("deutsch", Language.GERMAN()).getText() );
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
 		assertEquals("deutsch", textDataLeer.getText(Language.GERMAN()));
 		assertEquals("francais", textDataLeer.getText(Language.FRENCH()));
@@ -178,7 +178,7 @@ public class TextDataTest {
 		textDataLeer.putText(LanguageString.NewInstance(null, Language.CHINESE()));
 		assertNotNull(textDataLeer.getMultilanguageText());
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
-		assertEquals("xx", textDataLeer.putText(LanguageString.NewInstance("deutsch", Language.GERMAN())));
+		assertEquals(deutsch, textDataLeer.putText(LanguageString.NewInstance("deutsch", Language.GERMAN())));
 		assertEquals(4 , textDataLeer.getMultilanguageText().size());
 
 		assertEquals("deutsch", textDataLeer.getText(Language.GERMAN()));
@@ -199,7 +199,7 @@ public class TextDataTest {
 		textData1.putText(deutsch);
 		textData1.putText(LanguageString.NewInstance("nothing", null));
 		assertEquals(3, textData1.countLanguages());
-		assertEquals("xx", textData1.removeText(Language.GERMAN()));
+		assertEquals(deutsch, textData1.removeText(Language.GERMAN()));
 		assertEquals(2, textData1.countLanguages());
 		textData1.removeText(null);
 		assertEquals(1, textData1.countLanguages());

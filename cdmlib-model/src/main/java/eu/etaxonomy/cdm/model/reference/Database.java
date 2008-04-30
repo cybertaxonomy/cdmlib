@@ -22,8 +22,12 @@ import javax.persistence.*;
  */
 @Entity
 public class Database extends PublicationBase {
-	static Logger logger = Logger.getLogger(Database.class);
+	private static final Logger logger = Logger.getLogger(Database.class);
 
+	public static Database NewInstance(){
+		return new Database();
+	}
+	
 	@Override
 	public String generateTitle(){
 		return "";
