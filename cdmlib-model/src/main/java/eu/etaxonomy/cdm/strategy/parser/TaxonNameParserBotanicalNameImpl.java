@@ -421,7 +421,8 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
 		
-		nameToBeFilled.setUpdated(Calendar.getInstance());
+		//TODO adapt to @Version of versionable entity, throws still optimistic locking error
+		//nameToBeFilled.setUpdated(Calendar.getInstance());
 		// TODO nameToBeFilled.setUpdatedBy(updatedBy);
 			
 	}

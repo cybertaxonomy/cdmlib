@@ -45,7 +45,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
-	private Set<DescriptionElementBase> features = new HashSet<DescriptionElementBase>();
+	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
 	/**
 	 * Returns the set of specimens or observations involved in this description
@@ -97,19 +97,19 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	@OneToMany
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DescriptionElementBase> getElements() {
-		return this.features;
+		return this.descriptionElements;
 	}
 
-	protected void setElements(Set<DescriptionElementBase> features) {
-		this.features = features;
+	protected void setElements(Set<DescriptionElementBase> element) {
+		this.descriptionElements = element;
 	}
 
-	public void addElement(DescriptionElementBase feature) {
-		this.features.add(feature);
+	public void addElement(DescriptionElementBase element) {
+		this.descriptionElements.add(element);
 	}
 
-	public void removeElement(DescriptionElementBase feature) {
-		this.features.remove(feature);
+	public void removeElement(DescriptionElementBase element) {
+		this.descriptionElements.remove(element);
 	}
 	
 	@Override
