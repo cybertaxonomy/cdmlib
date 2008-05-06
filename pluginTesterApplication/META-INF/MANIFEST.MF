@@ -8,6 +8,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  eu.etaxonomy.cdmLibrary
 Eclipse-LazyStart: true
-Bundle-ClassPath: src/test/,
- .,
- bin/test/cdmLibrary-0.4.1.jar
+Bundle-ClassPath: .,
+ src/target/
