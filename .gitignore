@@ -39,6 +39,7 @@ eclipse-plugin-sources/.settings
 eclipse-plugin-sources/target
 eclipse-plugin/.settings
 eclipse-plugin/dist
+eclipse-plugin/log4j-1.2.14src.zip
 eclipse-plugin/target
 eclipse-updateSite/.classpath
 musiclib-hibernatetest/.classpath
