@@ -36,18 +36,18 @@
 	<classpathentry kind="lib" path="lib/msutil-2000.3.jar"/>
 	<classpathentry kind="lib" path="lib/jtds-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-8.2-504.jdbc4.jar"/>
-	<classpathentry kind="lib" path="lib/spring-beans-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/spring-context-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/spring-core-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/spring-beans-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-beans/2.5/spring-beans-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-context/2.5/spring-context-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-core-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-core/2.5/spring-core-2.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-jdbc-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-orm-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-test-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-tx-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/spring-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/cdmlib-commons-0.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/cdmlib-model-0.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/cdmlib-persistence-0.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/cdmlib-services-0.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-commons-1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-model-1.2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-persistence-1.2-SNAPSHOT.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/eu/etaxonomy/cdmlib-persistence/1.2-SNAPSHOT/cdmlib-persistence-1.2-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="lib" path="lib/cdmlib-services-1.2-SNAPSHOT.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/eu/etaxonomy/cdmlib-services/1.2-SNAPSHOT/cdmlib-services-1.2-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

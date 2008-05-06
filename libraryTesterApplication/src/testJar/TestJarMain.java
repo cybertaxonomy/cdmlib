@@ -7,14 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
 import eu.etaxonomy.cdm.model.name.*;
 
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.jmx.HierarchyDynamicMBean;
 import org.jdom.Element;
 
 
@@ -42,13 +45,14 @@ public class TestJarMain {
 			String strFile = "terms/Language.csv";
 			logger.info(CdmUtils.getReadableResourceStream(strFile));
 			//test directory
-			is2 = CdmUtils.getReadableResourceStream(CdmDataSource.DATASOURCE_FILE_NAME);
+			is2 = CdmUtils.getReadableResourceStream("eu/etaxonomy/cdm/" + CdmDataSource.DATASOURCE_FILE_NAME);
 			Element el = XmlHelp.getRoot(is2);
 			System.out.println(el);
 			
 			//CdmDataSource dataSource = CdmDataSource.NewInstance("testPostgre");
-			CdmApplicationController app = new CdmApplicationController();
-			logger.info(app.getNameService());
+			CdmApplicationController app = new CdmApplicationController(HBM2DDL.CREATE);
+			INameService nameService = app.getNameService();
+			logger.info(nameService);
 			app.close();
 		} catch (Exception e) {
 			logger.error("Exception: " + e.getMessage());

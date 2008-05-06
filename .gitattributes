@@ -566,10 +566,6 @@ libraryTesterApplication/lib/aopalliance-1.0.jar -text
 libraryTesterApplication/lib/asm-attrs.jar -text
 libraryTesterApplication/lib/asm.jar -text
 libraryTesterApplication/lib/aspectjrt-1.5.2a.jar -text
-libraryTesterApplication/lib/cdmlib-commons-0.4.7.jar -text
-libraryTesterApplication/lib/cdmlib-model-0.4.7.jar -text
-libraryTesterApplication/lib/cdmlib-persistence-0.4.7.jar -text
-libraryTesterApplication/lib/cdmlib-services-0.4.7.jar -text
 libraryTesterApplication/lib/cglib-2.1.3.jar -text
 libraryTesterApplication/lib/commons-collections-2.1.1.jar -text
 libraryTesterApplication/lib/commons-logging-1.0.4.jar -text
