@@ -522,6 +522,7 @@ eclipse-plugin/jta.jar -text
 eclipse-plugin/jtds-1.2.2.jar -text
 eclipse-plugin/junit-4.4.jar -text
 eclipse-plugin/log4j-1.2.14.jar -text
+eclipse-plugin/log4j-1.2.14src.zip -text
 eclipse-plugin/msbase-2000.3.jar -text
 eclipse-plugin/mssqlserver-2000.3.jar -text
 eclipse-plugin/msutil-2000.3.jar -text
