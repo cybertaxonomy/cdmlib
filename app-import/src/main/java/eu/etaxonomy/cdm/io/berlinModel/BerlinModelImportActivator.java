@@ -20,22 +20,22 @@ public class BerlinModelImportActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.editWP6();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
 	
 	//authors
-	static final  boolean doAuthors = false;
+	static final  boolean doAuthors = true;
 	//references
 	static final  DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final  boolean doTaxonNames = true;
-	static final  boolean doRelNames = false;
-	static final  boolean doNameStatus = false;
+	static final  boolean doRelNames = true;
+	static final  boolean doNameStatus = true;
 	static final  boolean doTypes = false;
 	
 	//taxa
 	static final  boolean doTaxa = true;
-	static final  boolean doRelTaxa = false;
+	static final  boolean doRelTaxa = true;
 	static final  boolean doFacts = true;
 
 	

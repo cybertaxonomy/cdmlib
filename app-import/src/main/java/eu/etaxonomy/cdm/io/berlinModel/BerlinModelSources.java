@@ -31,6 +31,25 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 
+	public static Source EDIT_Diptera(){
+		//	BerlinModel - EditWp6
+		String dbms = "SQLServer";
+		String strServer = "BGBM111";
+		String strDB = "EDIT_Diptera";
+		int port = 1247;
+		String userName = "webUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
+	public static Source EDIT_Palmae(){
+		//	BerlinModel - EditWp6
+		String dbms = "SQLServer";
+		String strServer = "BGBM111";
+		String strDB = "EDIT_Palmae";
+		int port = 1247;
+		String userName = "webUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
 
 	
 	/**
