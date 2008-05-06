@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 
 		@Test
 		public void testPropertyChange() {
-			BotanicalName b = new BotanicalName(null);
+			BotanicalName b = BotanicalName.NewInstance(null);
 			logger.debug("startTest");
 			b.addPropertyChangeListener(this);
 			b.setGenusOrUninomial("Abies");
