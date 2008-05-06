@@ -33,8 +33,8 @@ public class Marker extends VersionableEntity {
 	
 	/**
 	 * Factory method
-	 * @param text
-	 * @param lang
+	 * @param markerType The type of the marker
+	 * @param flag The value of the marker
 	 * @return
 	 */
 	public static Marker NewInstance(MarkerType markerType, boolean flag){

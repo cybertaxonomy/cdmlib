@@ -68,6 +68,11 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		return titleCache;
 	}
 	public void setTitleCache(String titleCache){
+		//TODO truncation of title cach
+		if (titleCache != null && titleCache.length() > 254){
+			logger.warn("Truncation of title cache: " + this.toString());
+			titleCache = titleCache.substring(0, 252) + "...";
+		}
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(PROTECTED);
 	}

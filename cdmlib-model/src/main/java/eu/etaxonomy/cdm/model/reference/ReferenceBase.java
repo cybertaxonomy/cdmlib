@@ -11,18 +11,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.IMediaDocumented;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
-import eu.etaxonomy.cdm.model.common.Media;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
 import javax.persistence.*;
 
 /**
