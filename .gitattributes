@@ -510,6 +510,7 @@ eclipse-plugin/hibernate-annotations.jar -text
 eclipse-plugin/hibernate-commons-annotations.jar -text
 eclipse-plugin/hibernate-validator.jar -text
 eclipse-plugin/hibernate3.jar -text
+eclipse-plugin/hibernate3src.zip -text
 eclipse-plugin/hsqldb.jar -text
 eclipse-plugin/javassist.jar -text
 eclipse-plugin/jaxb-api.jar -text
