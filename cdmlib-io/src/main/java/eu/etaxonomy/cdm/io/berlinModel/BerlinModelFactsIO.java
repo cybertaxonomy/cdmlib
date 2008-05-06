@@ -13,6 +13,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -92,8 +93,10 @@ public class BerlinModelFactsIO {
 					}else{
 						commonNameString = "Common (null)";
 					}
-					CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, bmiConfig.getFactLanguage());
-					taxonDescription.addFeature(commonName);
+					Language language = bmiConfig.getFactLanguage();
+					language = null;
+					CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
+					taxonDescription.addElement(commonName);
 					
 					if (categoryFk == FACT_DESCRIPTION){
 						//;

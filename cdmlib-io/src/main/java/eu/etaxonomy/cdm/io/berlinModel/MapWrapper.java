@@ -12,9 +12,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
