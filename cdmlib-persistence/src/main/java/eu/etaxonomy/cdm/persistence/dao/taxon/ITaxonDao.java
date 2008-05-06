@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 /**
  * @author a.mueller
@@ -24,7 +25,21 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec);
 	
+	/**
+	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
+	 * @return The List<Taxon> of root taxa.
+	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec);
+
+	
+	
+	/**
+	 * Computes all Taxon instances that do not have a taxonomic parent.
+	 * @param sec The concept reference that the taxon belongs to
+	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @return The List<Taxon> of root taxa.
+	 */
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch,  Boolean onlyWithChildren);
 
 	/**
 	 * @param pagesize max maximum number of returned taxa

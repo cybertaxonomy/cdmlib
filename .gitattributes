@@ -339,7 +339,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IReferenceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/Fetch.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
