@@ -63,11 +63,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
 
-	
-	//TODO 
+	//this flag shows if the getNameCache should return generated value(false) or the given String(true)  
 	protected boolean protectedNameCache;
 
-	protected INameCacheStrategy cacheStrategy;
+	protected INameCacheStrategy<T> cacheStrategy;
 	
 //	/**
 //	 * Returns a TaxonNameBase instance 
@@ -96,12 +95,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	
 //********* METHODS **************************************/
 	
+
+	
 	protected String generateNameCache(){
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for taxonName: " + this.toString());
 			return null;
 		}else{
-			return cacheStrategy.getNameCache(this);
+			return cacheStrategy.getNameCache((T)this);
 		}
 	}
 	
@@ -211,7 +212,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 	//TODO for PROTOTYPE
 	@Transient
-	public INameCacheStrategy getCacheStrategy() {
+	public INameCacheStrategy<T> getCacheStrategy() {
 		return cacheStrategy;
 	}
 	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {

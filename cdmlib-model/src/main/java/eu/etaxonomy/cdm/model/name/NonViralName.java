@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy;
 
 import org.apache.log4j.Logger;
@@ -31,7 +32,7 @@ import javax.persistence.*;
  */
 @Entity
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName> {
-	static Logger logger = Logger.getLogger(NonViralName.class);
+	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
 	//The suprageneric or the genus name
 	private String genusOrUninomial;
@@ -51,6 +52,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	//concatenated und formated authorteams including basionym and combination authors
 	private String authorshipCache;
+	//this flag shows if the getAuthorshipCache should return generated value(false) or the given String(true)  
+	protected boolean protectedAuthorshipCache;
 	
 	
 	public static NonViralName NewInstance(Rank rank){
@@ -183,12 +186,31 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 			return cacheStrategy.getTitleCache(this);
 		}
 	}
+	
+	public String generateAuthorship(){
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
+			return null;
+		}else{
+			return ((INonViralNameCacheStrategy<T>)cacheStrategy).getAuthorshipCache((T)this);
+		}
+	}
 
 	/**
 	 * returns concatenated und formated authorteams including basionym and
 	 * combination authors
 	 */
 	public String getAuthorshipCache() {
+		if (protectedAuthorshipCache){
+			return this.authorshipCache;			
+		}
+		// is title dirty, i.e. equal NULL?
+		if (authorshipCache == null){
+			this.authorshipCache = generateAuthorship();
+		}else{
+			//TODO get is Dirty of authors
+			this.authorshipCache = generateAuthorship();
+		}
 		return authorshipCache;
 	}
 

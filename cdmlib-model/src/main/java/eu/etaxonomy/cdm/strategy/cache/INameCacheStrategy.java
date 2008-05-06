@@ -21,7 +21,7 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 * @param object
 	 * @return
 	 */
-	public String getNameCache(T object);
+	public String getNameCache(T taxonNameBase);
 
 	/**
 	 * returns an array of name tokens that together make up the full name
@@ -31,5 +31,5 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	 * @param object
 	 * @return
 	 */
-	public List<Object> getTaggedName(T object);
+	public List<Object> getTaggedName(T taxonNameBase);
 }

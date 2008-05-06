@@ -152,20 +152,20 @@ public class BotanicNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
-	public final void testGetAuthorCache() {
+	public final void testGetAuthorshipCache() {
 		subSpeciesName.setCombinationAuthorTeam(author);
-		assertEquals(authorString, strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString, strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString + " ex. " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  , strategy.getAuthorshipCache(subSpeciesName));
 		
-		assertNull(subSpeciesNameString, strategy.getAuthorCache(null));
+		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}
 	
 	/**

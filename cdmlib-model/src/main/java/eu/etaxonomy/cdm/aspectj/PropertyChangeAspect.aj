@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.aspectj;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.Signature;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -16,6 +15,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public aspect PropertyChangeAspect {
 	static Logger logger = Logger.getLogger(PropertyChangeAspect.class);
+	
+//	pointcut execAdder(CdmBase cb): target(cb) && execution(void CdmBase+.add*(..) );
 	
 	pointcut execSetter(CdmBase cb): target(cb) && execution(void CdmBase+.set*(..) );
 //	/** *********** OLD ***********************/

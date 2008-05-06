@@ -22,10 +22,17 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	}
 	
 	
+	/**
+	 * Factory method
+	 * @return
+	 */
 	public static ZooNameDefaultCacheStrategy NewInstance(){
 		return new ZooNameDefaultCacheStrategy();
 	}
 	
+	/**
+	 * Constructor
+	 */
 	private ZooNameDefaultCacheStrategy(){
 		super();
 	}
@@ -34,7 +41,8 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.name.NonViralName)
 	 */
-	public String getAuthorCache(T nonViralName) {
+	@Override
+	public String getAuthorshipCache(T nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}

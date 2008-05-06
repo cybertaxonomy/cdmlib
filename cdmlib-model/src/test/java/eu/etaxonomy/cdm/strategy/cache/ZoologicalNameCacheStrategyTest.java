@@ -157,24 +157,24 @@ public class ZoologicalNameCacheStrategyTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
-	public final void testGetAuthorCache() {
+	public final void testGetAuthorshipCache() {
 		subSpeciesName.setCombinationAuthorTeam(author);
-		assertEquals(authorString, strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString, strategy.getAuthorshipCache(subSpeciesName));
 		subSpeciesName.setPublicationYear(publicationYear);
-		assertEquals(authorString + ", " + publicationYear, strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString + ", " + publicationYear, strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(authorString + " ex. " + exAuthorString + ", " + publicationYear , strategy.getAuthorCache(subSpeciesName));
+		assertEquals(authorString + " ex. " + exAuthorString + ", " + publicationYear , strategy.getAuthorshipCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
-		assertEquals("(" + basAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear   , strategy.getAuthorCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear   , strategy.getAuthorshipCache(subSpeciesName));
 		
-		assertNull(subSpeciesNameString, strategy.getAuthorCache(null));
+		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}
 	
 	/**

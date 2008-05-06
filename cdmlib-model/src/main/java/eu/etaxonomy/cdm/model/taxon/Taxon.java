@@ -82,10 +82,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
 		this.synonymRelations = synonymRelations;
 	}
-	public void addSynonymRelation(SynonymRelationship synonymRelation) {
+	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	protected void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.remove(synonymRelation);
 	}
 	
@@ -266,6 +266,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	@Transient
 	public Set<Synonym> getSynonymsSortedByType(){
 		// FIXME: need to sort synonyms according to type!!!
+		logger.warn("getSynonymsSortedByType() not yet implemented");
 		return getSynonyms();
 	}
 	@Transient
@@ -277,16 +278,59 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		return names;
 	}
 	/**
-	 * ass a synonym to this taxon (a taxon can have multiple synonyms that should be proparte synonyms then!)
-	 * The {@link SynonymRelationship} constructor immediately adds a relationship instance to both 
-	 * the synonym and taxon instance!
-	 * @param synonym
-	 * @param synonymType
+	 * Adds a synonym as a Synonym to this Taxon using the defined synonym relationship type.
+	 * If you want to add furthier information to this
+	 * @param synonym the Synoynm to add as a synonym
+	 * @param synonymType the SynonymRelationshipType between <i>this</i> taxon and the synonym (e.g. homotypic, heterotypic, proparte ...)
+	 * @return The newly created synonym relationship
 	 */
-	public void addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
+	public SynonymRelationship addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
 		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType);
+		return synonymRelationship;
 	}
 
+	/**
+	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym.
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.
+	 * @param synonymName the TaxonNameBase to add as a synonym name of the defined type. 
+	 * @param synonymType the SynonymRelationshipType between <i>this</i> taxon and the synonym (e.g. homotypic, heterotypic, proparte ...)
+	 * @return The newly created synonym relationship
+	 */
+	public SynonymRelationship addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType){
+		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+		return addSynonym(synonym, synonymType);
+	}
+	
+
+	/**
+	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym. 
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.
+	 * @param synonymName the TaxonNameBase to add as a heterotypic synonym name
+	 * @return The newly created synonym relationship
+	 */
+	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName){
+		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+		return addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+	}
+	
+	/**
+	 * Adds a taxon name to <i>this</i> taxon as a homotypic synonym. 
+	 * The added name gets the same homotypic group as <i>this</i> taxon.
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.
+	 * @param synonymName the TaxonNameBase to add as a homotypic synonym name
+	 * @return The newly created synonym relationship
+	 */
+	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName){
+		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+		if (this.getName() != null){
+			synonymName.setHomotypicalGroup(this.getName().getHomotypicalGroup());
+		}
+		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		return synRel;
+	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Iterable#iterator()
 	 */

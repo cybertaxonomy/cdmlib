@@ -155,7 +155,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result = result.trim().replace("null", "");
 		}else{
 			String nameCache = CdmUtils.Nz(getNameCache(nonViralName));
-			String authorCache = CdmUtils.Nz(getAuthorCache(nonViralName));
+			String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
 			result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
 		}
 		return result;
@@ -195,7 +195,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.name.NonViralName)
 	 */
-	public String getAuthorCache(T nonViralName) {
+	public String getAuthorshipCache(T nonViralName) {
 		if (nonViralName == null){
 			return null;
 		}

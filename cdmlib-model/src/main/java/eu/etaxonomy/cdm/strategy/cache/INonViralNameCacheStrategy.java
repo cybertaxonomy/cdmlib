@@ -3,10 +3,7 @@
  */
 package eu.etaxonomy.cdm.strategy.cache;
 
-import java.util.List;
-
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * A name cache rendering strategy for all TaxonNameBase subclasses.
@@ -22,6 +19,6 @@ public interface INonViralNameCacheStrategy<T extends NonViralName> extends INam
 	 * @param object
 	 * @return
 	 */
-	public String getAuthorCache(T object);
+	public String getAuthorshipCache(T nonViralName);
 
 }

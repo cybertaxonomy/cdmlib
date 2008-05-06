@@ -34,6 +34,13 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	private SynonymRelationship(){
 	}
 	
+	/**
+	 * Constructor that adds immediately a relationship instance to both 
+	 * the synonym and taxon instance!
+	 * @param synoynm
+	 * @param taxon
+	 * @param type
+	 */
 	protected SynonymRelationship(Synonym synoynm, Taxon taxon, SynonymRelationshipType type) {
 		super();
 		this.synonym = synoynm;
