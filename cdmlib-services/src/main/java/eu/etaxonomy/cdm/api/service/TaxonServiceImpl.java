@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,8 +65,23 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return taxonDao.getTaxaByName(name, sec);
 	}
 
-	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		return taxonDao.getRootTaxa(sec);
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
+	public List<Taxon> getRootTaxa(ReferenceBase sec){
+		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
+	 */
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
+		if (cdmFetch == null){
+			cdmFetch = CdmFetch.NO_FETCH();
+		}
+		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren);
 	}
 
 

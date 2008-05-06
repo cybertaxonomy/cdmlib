@@ -2,6 +2,7 @@
 package eu.etaxonomy.cdm.test.integration;
 
 
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import static org.junit.Assert.*;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,6 +33,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class CreateDataTest {
 	private static Logger logger = Logger.getLogger(CreateDataTest.class);
@@ -40,6 +44,7 @@ public class CreateDataTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		logger.info("setUpBeforeClass");
 		isCreated = false;
 	}
 
@@ -60,6 +65,7 @@ public class CreateDataTest {
 	@After
 	public void tearDown() throws Exception {
 		isCreated = true;
+		app.close();
 	}
 	
 	
@@ -94,6 +100,7 @@ public class CreateDataTest {
 	
 /* ********************* TESTS *********************************/
 	
+	@Ignore
 	@Test
 	public void testCreateTaxon(){
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
@@ -102,15 +109,21 @@ public class CreateDataTest {
 		app.getTaxonService().saveTaxon(genusTaxon);
 	}
 	
+	@Ignore
 	@Test
 	public void testLoadTaxon(){
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		
+		//taxon
 		Taxon genusTaxon = (Taxon)app.getTaxonService().getTaxonByUuid(UUID.fromString(genusUuid));
+		assertNotNull(genusTaxon);
+		//name
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
+		assertNotNull(genusName);
 		
-		genusName.getTaxonBases();
-		
+		//taxonBases of Name
+		Set<TaxonBase> taxonBases = genusName.getTaxonBases();
+		logger.warn(taxonBases.size());
 		Set<Taxon> children = genusTaxon.getTaxonomicChildren();
 		for (Taxon child : children){
 			child.getSynonyms();
@@ -120,7 +133,9 @@ public class CreateDataTest {
 		}
 		
 		Set<TaxonDescription> descriptions = genusTaxon.getDescriptions();
+		assertEquals(2, descriptions.size());
 		TaxonDescription description = descriptions.iterator().next();
+		
 		
 		Set<DescriptionElementBase> descriptionElements = description.getElements();
 		
@@ -141,17 +156,20 @@ public class CreateDataTest {
 	}
 	
 	
+	@Ignore
 	@Test
-	public void testSaven(){
+	public void testSave(){
+		logger.warn("testSave");
 		ITaxonService taxonService = app.getTaxonService();
 		Taxon genusTaxon = (Taxon)taxonService.getTaxonByUuid(UUID.fromString(genusUuid));
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
-		
+		genusName.setGenusOrUninomial("newGenusUninomial");
+		genusName.setUpdated(Calendar.getInstance());
 		BotanicalName newName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon newTaxon = Taxon.NewInstance(newName, genusTaxon.getSec());
 		genusTaxon.addTaxonomicChild(newTaxon, null, "5677");
-		taxonService.saveTaxon(newTaxon);
-		app.close();
+		UUID uuid = taxonService.saveTaxon(newTaxon);
+		assertNotNull(uuid);
 	}
 
 	

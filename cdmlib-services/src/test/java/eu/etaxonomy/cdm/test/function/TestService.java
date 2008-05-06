@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 
@@ -85,7 +86,7 @@ public class TestService {
 		
 		// load Root taxa 
 		logger.info("Load taxon from db...");
-		List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(null);
+		List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
 		for (Taxon rt: taxa){
 			logger.info("Root taxon: "+ rt.toString());
 			for (Taxon child: rt){

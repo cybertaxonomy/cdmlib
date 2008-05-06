@@ -17,6 +17,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
@@ -34,8 +35,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** delete a taxon and return its UUID**/
 	public abstract UUID removeTaxon(TaxonBase taxon);
 	
-	/** */
+	/**
+	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
+	 * @param sec The concept reference that the taxon belongs to
+	 * @return The List<Taxon> of root taxa.
+	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec);
+
+	/**
+	 * Computes all Taxon instances that do not have a taxonomic parent.
+	 * @param sec The concept reference that the taxon belongs to
+	 * 
+	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @return The List<Taxon> of root taxa.
+	 */
+	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 	
 	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
