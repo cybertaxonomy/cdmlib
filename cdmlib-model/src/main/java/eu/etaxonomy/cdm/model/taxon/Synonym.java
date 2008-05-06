@@ -30,7 +30,7 @@ import javax.persistence.*;
 public class Synonym extends TaxonBase {
 	static Logger logger = Logger.getLogger(Synonym.class);
 	
-	private Set<SynonymRelationship> synonymRelations = new HashSet();
+	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 
 	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
@@ -53,17 +53,23 @@ public class Synonym extends TaxonBase {
 	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
 		this.synonymRelations = synonymRelations;
 	}
-	public void addSynonymRelation(SynonymRelationship synonymRelation) {
+	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	protected void removeSynonymRelation(SynonymRelationship synonymRelation) {
+		synonymRelation.setSynonym(null);
+		Taxon taxon = synonymRelation.getAcceptedTaxon();
+		if (taxon != null){
+			synonymRelation.setAcceptedTaxon(null);
+			taxon.removeSynonymRelation(synonymRelation);
+		}
 		this.synonymRelations.remove(synonymRelation);
 	}
 
 
 	@Transient
 	public Set<Taxon> getAcceptedTaxa() {
-		Set<Taxon>taxa=new HashSet();
+		Set<Taxon>taxa=new HashSet<Taxon>();
 		for (SynonymRelationship rel:getSynonymRelations()){
 			taxa.add(rel.getAcceptedTaxon());
 		}
@@ -72,18 +78,21 @@ public class Synonym extends TaxonBase {
 
 	/**
 	 * Return the synonymy relationship type for the relation to a given accepted taxon.
-	 * If no relation exists to that taxon return null.
-	 * @param t
-	 * @return
+	 * If taxon is null or no relation exists to that taxon null is returned.
+	 * @param taxon
+	 * @return 
 	 */
 	@Transient
-	public SynonymRelationshipType getRelationType(Taxon t){
+	public SynonymRelationshipType getRelationType(Taxon taxon){
+		if (taxon == null ){
+			return null;
+		}
 		for (SynonymRelationship rel:getSynonymRelations()){
-			if (rel.getAcceptedTaxon().equals(t)){
+			Taxon acceptedTaxon = rel.getAcceptedTaxon();
+			if (taxon.equals(acceptedTaxon)){
 				return rel.getType();
 			}
 		}
-		// TODO: should we raise an error in case no relationship to the taxon exists? 
 		return null;
 	}
 }

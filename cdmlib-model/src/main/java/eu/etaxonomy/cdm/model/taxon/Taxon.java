@@ -45,9 +45,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	private Taxon taxonomicParentCache;
 
 
-	public static Taxon NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
+	/**
+	 * Factory method
+	 * @param taxonNameBase The TaxonNameBase that belongs to the new taxon
+	 * @param sec The taxon concept reference that 
+	 * @return
+	 */
+	public static Taxon NewInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		Taxon result = new Taxon();
-		result.setName(taxonName);
+		result.setName(taxonNameBase);
 		result.setSec(sec);
 		return result;
 	}
@@ -86,6 +92,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		this.synonymRelations.add(synonymRelation);
 	}
 	protected void removeSynonymRelation(SynonymRelationship synonymRelation) {
+		synonymRelation.setAcceptedTaxon(null);
+		Synonym synonym = synonymRelation.getSynonym();
+		if (synonym != null){
+			synonymRelation.setSynonym(null);
+			synonym.removeSynonymRelation(synonymRelation);
+		}
 		this.synonymRelations.remove(synonymRelation);
 	}
 	
@@ -278,8 +290,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		return names;
 	}
 	/**
-	 * Adds a synonym as a Synonym to this Taxon using the defined synonym relationship type.
-	 * If you want to add furthier information to this
+	 * Adds a synonym as a Synonym to this Taxon using the defined synonym relationship type.<BR>
+	 * If you want to add further information to this relationship use the returned SynonymRelationship.
 	 * @param synonym the Synoynm to add as a synonym
 	 * @param synonymType the SynonymRelationshipType between <i>this</i> taxon and the synonym (e.g. homotypic, heterotypic, proparte ...)
 	 * @return The newly created synonym relationship
@@ -290,7 +302,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 
 	/**
-	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym.
+	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym.<BR>
 	 * The new synonym gets the same concept reference as <i>this</i> taxon.
 	 * @param synonymName the TaxonNameBase to add as a synonym name of the defined type. 
 	 * @param synonymType the SynonymRelationshipType between <i>this</i> taxon and the synonym (e.g. homotypic, heterotypic, proparte ...)
@@ -303,20 +315,35 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	
 
 	/**
-	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym. 
-	 * The new synonym gets the same concept reference as <i>this</i> taxon.
+	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym. <BR>
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.<BR>
 	 * @param synonymName the TaxonNameBase to add as a heterotypic synonym name
 	 * @return The newly created synonym relationship
 	 */
 	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName){
+		return addHeterotypicSynonymName(synonymName, null);
+	}
+	
+	/**
+	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym. <BR>
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.<BR>
+	 * The name gets the homotypic group given as parameter <i>homotypicalGroup</i><BR>
+	 * @param synonymName the TaxonNameBase to add as a heterotypic synonym name
+	 * @param homotypicSynonym an existing heterotypic (to <i>this</i> taxon) synonym that has the same type (is homotypic) as the new synonym 
+	 * @return The newly created synonym relationship
+	 */
+	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+		if (homotypicalGroup != null){
+			synonymName.setHomotypicalGroup(homotypicalGroup);
+		}
 		return addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 	}
 	
 	/**
-	 * Adds a taxon name to <i>this</i> taxon as a homotypic synonym. 
-	 * The added name gets the same homotypic group as <i>this</i> taxon.
-	 * The new synonym gets the same concept reference as <i>this</i> taxon.
+	 * Adds a taxon name to <i>this</i> taxon as a homotypic synonym. <BR>
+	 * The added name gets the same homotypic group as <i>this</i> taxon.<BR>
+	 * The new synonym gets the same concept reference as <i>this</i> taxon.<BR>
 	 * @param synonymName the TaxonNameBase to add as a homotypic synonym name
 	 * @return The newly created synonym relationship
 	 */
@@ -327,6 +354,20 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 		return synRel;
+	}
+	
+	/**
+	 * Deletes all synonym relationships between <this>taxon and the given synonym
+	 * @param synonym
+	 */
+	public void removeSynonym(Synonym synonym){
+		Set<SynonymRelationship> synonymRelationships = new HashSet<SynonymRelationship>();
+		synonymRelationships.addAll(this.getSynonymRelations());
+		for(SynonymRelationship synonymRelationship : synonymRelationships){
+			if (synonymRelationship.getAcceptedTaxon().equals(this) && synonymRelationship.getSynonym().equals(synonym)){
+				this.removeSynonymRelation(synonymRelationship);
+			}
+		}
 	}
 	
 	
@@ -356,15 +397,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 	
 	@Transient
-	public HomotypicalGroup getHomotypicGroup(){
-		if (this.getName() == null){
-			return null;
-		}else{
-			return this.getName().getHomotypicalGroup();
-		}
-	}
-	
-	@Transient
 	public List<Synonym> getHomotypicSynonyms(){
 		if (this.getHomotypicGroup() == null){
 			return null;
@@ -373,15 +405,34 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 	}
 	
+	/**
+	 * Returns the List of all homotypic groups synonyms of this taxon belongs too.
+	 * This includes the homotypic group of <i>this</i> taxon.
+	 * @return
+	 */
 	@Transient
-	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
+	public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
 		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
-		for (TaxonNameBase n:this.getSynonymNames()){
-			if (!result.contains(n.getHomotypicalGroup())){
-				result.add(n.getHomotypicalGroup());
+		result.add(this.getHomotypicGroup());
+		for (TaxonNameBase taxonNameBase :this.getSynonymNames()){
+			if (!result.contains(taxonNameBase.getHomotypicalGroup())){
+				result.add(taxonNameBase.getHomotypicalGroup());
 			}
 		}
 		// TODO: sort list according to date of first published name within each group
 		return result;
+	}
+	
+	/**
+	 * Returns the List of all homotypic groups heterotypic synonyms of this taxon belongs too.
+	 * This does not include the homotypic group of <i>this</i> taxon.
+	 * @return
+	 */
+	@Transient
+	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
+		List<HomotypicalGroup> result = getHomotypicSynonymyGroups();
+		result.remove(this.getHomotypicGroup());
+		return result;
 	}	
+
 }

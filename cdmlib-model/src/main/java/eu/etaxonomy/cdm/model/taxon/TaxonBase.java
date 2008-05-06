@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.collection.PersistentSet;
 
 
 import java.lang.reflect.Field;
@@ -72,13 +74,27 @@ public abstract class TaxonBase extends IdentifiableEntity {
 			}
 			if (newName != null) { 
 				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(newName);
-				taxonBases.add(this);
+				//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
+				if (taxonBases instanceof PersistentSet){
+					//
+				}else{
+					taxonBases.add(this);
+				}
 			}
 			this.name = newName;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.getStackTrace();
 		} 	
+	}
+	
+	@Transient
+	public HomotypicalGroup getHomotypicGroup(){
+		if (this.getName() == null){
+			return null;
+		}else{
+			return this.getName().getHomotypicalGroup();
+		}
 	}
 
 	public boolean isDoubtful(){

@@ -100,7 +100,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		List<Synonym> result = new ArrayList();
 		for (TaxonNameBase<TaxonNameBase> n:this.getTypifiedNames()){
 			for (Synonym s:n.getSynonyms()){
-				if (s.getSec().equals(sec)){
+				if ( (s.getSec() == null && sec == null) ||
+						s.getSec().equals(sec)){
 					result.add(s);
 				}
 			}

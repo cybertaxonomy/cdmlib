@@ -22,9 +22,10 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.collection.PersistentSet;
 
 import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+
 
 import java.util.*;
 
@@ -119,7 +120,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 	public void setNameCache(String nameCache){
 		this.nameCache = nameCache;
-		// TODO this.setProtectedNameCache(true);
+		this.setProtectedTitleCache(false);
+		this.setProtectedNameCache(true);
+	}
+	
+	public boolean isProtectedNameCache() {
+		return protectedNameCache;
+	}
+
+	public void setProtectedNameCache(boolean protectedNameCache) {
+		this.protectedNameCache = protectedNameCache;
 	}
 
 	
@@ -295,7 +305,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 			homotypicalGroup.typifiedNames.remove(this);
 		}
 		if (newHomotypicalGroup!= null) { 
-			newHomotypicalGroup.typifiedNames.add(this);
+			//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
+			if (newHomotypicalGroup.typifiedNames instanceof PersistentSet){
+				//
+			}else{
+				newHomotypicalGroup.typifiedNames.add(this);
+			}
 		}
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}

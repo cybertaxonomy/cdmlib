@@ -56,7 +56,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 		return this.acceptedTaxon;
 	}
 
-	private void setAcceptedTaxon(Taxon acceptedTaxon){
+	protected void setAcceptedTaxon(Taxon acceptedTaxon){
 		this.acceptedTaxon = acceptedTaxon;
 	}
 
@@ -65,7 +65,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	public SynonymRelationshipType getType(){
 		return this.type;
 	}
-	private void setType(SynonymRelationshipType type){
+	protected void setType(SynonymRelationshipType type){
 		this.type = type;
 	}
 
@@ -75,7 +75,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	public Synonym getSynonym(){
 		return this.synonym;
 	}
-	private void setSynonym(Synonym synoynm){
+	protected void setSynonym(Synonym synoynm){
 		this.synonym = synoynm;
 	}
 
