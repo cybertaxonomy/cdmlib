@@ -224,6 +224,14 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 		}
 		return false;
 	}
+	
+	/**
+	 * @return
+	 */
+	@Transient
+	public boolean hasSynonyms(){
+		return this.getSynonymRelations().size() > 0;
+	}
 
 	
 	/*

@@ -14,8 +14,6 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -45,7 +43,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 		this.type = type;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Taxon getAcceptedTaxon(){
 		return this.acceptedTaxon;
@@ -65,7 +63,7 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Synonym getSynonym(){
 		return this.synonym;
