@@ -244,6 +244,7 @@ cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/NameRelationshipType.csv -text
+cdmlib-model/src/main/resources/terms/NamedAreaType.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
