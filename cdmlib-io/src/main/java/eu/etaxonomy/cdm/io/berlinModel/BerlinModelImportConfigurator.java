@@ -20,12 +20,26 @@ public class BerlinModelImportConfigurator {
 		ALL
 	}
 	
+	
+	public static enum CHECK{
+		CHECK_ONLY,
+		IMPORT_WITHOUT_CHECK,
+		CHECK_AND_IMPORT,
+	}
+	
+	private boolean withoutCheck;
+	
 	//TODO
 	private boolean deleteAll = false;
 	
 	private boolean doAuthors = true;
 	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+	
+	//check
+	private CHECK check = CHECK.CHECK_AND_IMPORT;
+	
+	
 	//names
 	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
@@ -109,6 +123,20 @@ public class BerlinModelImportConfigurator {
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
+	
+	/**
+	 * @return the doReferences
+	 */
+	public CHECK getCheck() {
+		return this.check;
+	}
+	/**
+	 * @param doReferences the doReferences to set
+	 */
+	public void setCheck(CHECK check) {
+		this.check = check;
+	}
+	
 	
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
@@ -209,8 +237,5 @@ public class BerlinModelImportConfigurator {
 	public void setFactLanguage(Language factLanguage) {
 		this.factLanguage = factLanguage;
 	}
-
-
-
 	
 }

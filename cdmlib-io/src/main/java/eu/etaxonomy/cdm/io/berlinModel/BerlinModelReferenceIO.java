@@ -25,6 +25,9 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -43,6 +46,95 @@ public class BerlinModelReferenceIO {
 
 	private static int modCount = 1000;
 
+	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		result &= checkArticlesWithoutJournal(bmiConfig);
+		result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+		
+	private static boolean checkArticlesWithoutJournal(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryArticlesWithoutJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
+						" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+						" WHERE (Reference.RefCategoryFk = 1) AND (InRef.RefCategoryFk <> 9) ";
+			ResultSet resulSetarticlesWithoutJournal = source.getResultSet(strQueryArticlesWithoutJournal);
+			boolean firstRow = true;
+			while (resulSetarticlesWithoutJournal.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are Articles with wrong inRef type!");
+					System.out.println("========================================================");
+				}
+				int refId = resulSetarticlesWithoutJournal.getInt("RefId");
+				int categoryFk = resulSetarticlesWithoutJournal.getInt("RefCategoryFk");
+				String cat = resulSetarticlesWithoutJournal.getString("RefCategoryAbbrev");
+				int inRefFk = resulSetarticlesWithoutJournal.getInt("InRefId");
+				int inRefCategoryFk = resulSetarticlesWithoutJournal.getInt("InRefCatFk");
+				String inRefCat = resulSetarticlesWithoutJournal.getString("InRefCat");
+				String refCache = resulSetarticlesWithoutJournal.getString("RefCache");
+				String nomRefCache = resulSetarticlesWithoutJournal.getString("nomRefCache");
+				String title = resulSetarticlesWithoutJournal.getString("title");
+				String inRefTitle = resulSetarticlesWithoutJournal.getString("InRefTitle");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
+						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
+						"\n  inRefTitle: " + inRefTitle );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private static boolean checkPartOfJournal(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
+			" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 9) ";
+			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are part-of-references that have a Journal as in-reference!");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("RefId");
+				int categoryFk = rs.getInt("RefCategoryFk");
+				String cat = rs.getString("RefCategoryAbbrev");
+				int inRefFk = rs.getInt("InRefId");
+				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				String inRefCat = rs.getString("InRefCat");
+				String refCache = rs.getString("RefCache");
+				String nomRefCache = rs.getString("nomRefCache");
+				String title = rs.getString("title");
+				String inRefTitle = rs.getString("InRefTitle");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
+						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
+						"\n  inRefTitle: " + inRefTitle );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
 		Source source = bmiConfig.getSource();
@@ -152,8 +244,8 @@ public class BerlinModelReferenceIO {
 										return false;
 									}
 								}else{
-									logger.warn("Wrong inrefCategory for Article (refID = " + refId +"). Type must be 'Journal' but was not)." +
-									" InReference was not added to Article! ");
+									logger.warn("Wrong inrefCategory for Article (refID = " + refId +"). Type must be 'Journal' but was not (RefCategoryFk=" + inRefCategoryFk + "))." +
+										" InReference was not added to Article! ");
 								}
 							}
 						}else if(categoryFk == REF_DATABASE){
@@ -181,6 +273,12 @@ public class BerlinModelReferenceIO {
 								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
 										" This type is not implemented yet. Generic reference created instead") ;
 								referenceBase = new Generic();
+							}else if (inRefCategoryFk == REF_JOURNAL){
+								//TODO 
+								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' has inReference of type 'journal'." +
+										" This is not allowed! Generic reference created instead") ;
+								referenceBase = new Generic();
+								referenceBase.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
 							}else{
 								logger.warn("InReference type (catFk = " + inRefCategoryFk + ") of part-of-reference not recognized for refId " + refId + "." +
 									" Create 'Generic' reference instead");

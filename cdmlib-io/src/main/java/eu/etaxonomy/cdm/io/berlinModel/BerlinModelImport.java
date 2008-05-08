@@ -31,6 +31,15 @@ public class BerlinModelImport {
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(null);
 
 
+	public boolean doCheck(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		if (bmiConfig.getDoReferences() != NONE){
+			result &= BerlinModelReferenceIO.check(bmiConfig);
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * Executes the whole 
 	 */

@@ -48,9 +48,10 @@ public class ImportHelper {
 	}
 
 	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull){
+		String methodName;
+		Object strValue;
 		try {
-			String methodName;
-			Object strValue = rs.getObject(dbAttrName);
+			strValue = rs.getObject(dbAttrName);
 			if (overwriteNull == NO_OVERWRITE && strValue == null ){
 				if (logger.isDebugEnabled()) { logger.debug("no overwrite for NULL-value");}
 				return true;
