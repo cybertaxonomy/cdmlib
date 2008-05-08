@@ -55,11 +55,16 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 
 	@Transactional(readOnly = false)
 	protected Map<UUID, T> saveCdmObjectAll(Collection<T> cdmObjCollection){
+		int types = cdmObjCollection.getClass().getTypeParameters().length;
+		if (types > 0){
+			logger.info("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
+		}
+		
 		Map<UUID, T> resultMap = new HashMap<UUID, T>();
 		Iterator<T> iterator = cdmObjCollection.iterator();
 		int i = 0;
 		while(iterator.hasNext()){
-			if ( ( (i % 5000) == 0)   && ( logger.isInfoEnabled()) ){logger.info("Saved " + i + " objects");}
+			if ( ( (i % 5000) == 0) && (i > 0)  && ( logger.isInfoEnabled()) ){logger.info("Saved " + i + " objects" );}
 			T cdmObj = iterator.next();
 			UUID uuid = saveCdmObject(cdmObj);
 			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
@@ -70,6 +75,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 				dao.flush();
 			}
 		}
+		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
 		return resultMap;
 	}
 	
