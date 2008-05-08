@@ -38,6 +38,11 @@ public class NameRelationship extends ReferencedEntityBase {
 	private NameRelationshipType type;
 	private TaxonNameBase toName;
 
+	private NameRelationship(){
+		super();
+	}
+	
+	
 	/**
 	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
 	 * @param toName

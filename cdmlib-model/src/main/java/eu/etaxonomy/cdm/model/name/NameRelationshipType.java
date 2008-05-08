@@ -42,6 +42,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public NameRelationshipType() {
 		super();
 	}
+	
 	public NameRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
 		super(term, label, symmetric, transitive);
 		// TODO Auto-generated constructor stub

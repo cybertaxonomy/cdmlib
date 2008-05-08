@@ -38,6 +38,10 @@ public class Annotation extends LanguageStringBase {
 		return new Annotation(text, lang);
 	}
 	
+	private Annotation(){
+		super();
+	}
+	
 	/**
 	 * Constructor
 	 * @param text
@@ -46,6 +50,8 @@ public class Annotation extends LanguageStringBase {
 	protected Annotation(String text, Language language) {
 		super(text, language);
 	}
+	
+	
 
 	//Human annotation
 	private Person commentator;
