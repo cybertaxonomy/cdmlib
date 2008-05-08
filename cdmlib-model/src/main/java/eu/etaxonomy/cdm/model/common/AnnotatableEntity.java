@@ -35,7 +35,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		super();
 	}
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Marker> getMarkers(){
 		return this.markers;
@@ -50,7 +50,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		this.markers = markers;
 	}
 
-	@OneToMany //(mappedBy="AnnotatedObj")
+	@OneToMany(fetch=FetchType.EAGER) //(mappedBy="AnnotatedObj")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;

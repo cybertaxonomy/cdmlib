@@ -170,7 +170,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 	
-	@OneToMany(mappedBy="fromName")
+	@OneToMany(mappedBy="fromName", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
@@ -179,7 +179,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		this.relationsFromThisName = relationsFromThisName;
 	}
 	
-	@OneToMany(mappedBy="toName")
+	@OneToMany(mappedBy="toName", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
@@ -190,7 +190,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 	
 
-	@OneToMany
+	@OneToMany(fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;

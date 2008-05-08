@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
