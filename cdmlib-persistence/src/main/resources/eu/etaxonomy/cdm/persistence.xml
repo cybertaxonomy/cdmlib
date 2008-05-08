@@ -41,7 +41,6 @@
             <value>eu.etaxonomy.cdm.model.agent.TeamOrPersonBase</value>
             <value>eu.etaxonomy.cdm.model.common.AnnotatableEntity</value>
             <value>eu.etaxonomy.cdm.model.common.Annotation</value>
-            <value>eu.etaxonomy.cdm.model.common.AudioFile</value>
             <value>eu.etaxonomy.cdm.model.common.CdmBase</value>
             <value>eu.etaxonomy.cdm.model.common.DefinedTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.EventBase</value>
@@ -50,10 +49,7 @@
             <value>eu.etaxonomy.cdm.model.common.Figure</value>
             <value>eu.etaxonomy.cdm.model.common.ILoadableTerm</value>
             <value>eu.etaxonomy.cdm.model.common.IdentifiableEntity</value>
-            <value>eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity</value>
             <value>eu.etaxonomy.cdm.model.common.IEvent</value>
-            <value>eu.etaxonomy.cdm.model.common.ImageFile</value>
-            <value>eu.etaxonomy.cdm.model.common.IMediaDocumented</value>
             <value>eu.etaxonomy.cdm.model.common.IOriginalSource</value>
             <value>eu.etaxonomy.cdm.model.common.IReferencedEntity</value>
             <value>eu.etaxonomy.cdm.model.common.Keyword</value>
@@ -61,19 +57,13 @@
             <value>eu.etaxonomy.cdm.model.common.LanguageString</value>
             <value>eu.etaxonomy.cdm.model.common.Marker</value>
             <value>eu.etaxonomy.cdm.model.common.MarkerType</value>
-            <value>eu.etaxonomy.cdm.model.common.Media</value>
-            <value>eu.etaxonomy.cdm.model.common.MediaInstance</value>
-            <value>eu.etaxonomy.cdm.model.common.MovieFile</value>
             <value>eu.etaxonomy.cdm.model.common.MultilanguageSet</value>
             <value>eu.etaxonomy.cdm.model.common.NoDefinedTermClassException</value>
             <value>eu.etaxonomy.cdm.model.common.OrderedTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.OriginalSource</value>
             <value>eu.etaxonomy.cdm.model.common.ReferencedEntityBase</value>
-            <value>eu.etaxonomy.cdm.model.common.ReferencedMedia</value>
             <value>eu.etaxonomy.cdm.model.common.RelationshipTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.Representation</value>
-            <value>eu.etaxonomy.cdm.model.common.Rights</value>
-            <value>eu.etaxonomy.cdm.model.common.RightsTerm</value>
             <value>eu.etaxonomy.cdm.model.common.TermBase</value>
             <value>eu.etaxonomy.cdm.model.common.TermVocabulary</value>
             <value>eu.etaxonomy.cdm.model.common.OrderedTermVocabulary</value>
@@ -115,6 +105,16 @@
             <value>eu.etaxonomy.cdm.model.location.Point</value>
             <value>eu.etaxonomy.cdm.model.location.ReferenceSystem</value>
             <value>eu.etaxonomy.cdm.model.location.WaterbodyOrCountry</value>
+            <value>eu.etaxonomy.cdm.model.media.AudioFile</value>
+            <value>eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity</value>
+            <value>eu.etaxonomy.cdm.model.media.ImageFile</value>
+            <value>eu.etaxonomy.cdm.model.media.IMediaDocumented</value>
+            <value>eu.etaxonomy.cdm.model.media.Media</value>
+            <value>eu.etaxonomy.cdm.model.media.MediaInstance</value>
+            <value>eu.etaxonomy.cdm.model.media.MovieFile</value>
+            <value>eu.etaxonomy.cdm.model.media.ReferencedMedia</value>
+            <value>eu.etaxonomy.cdm.model.media.Rights</value>
+            <value>eu.etaxonomy.cdm.model.media.RightsTerm</value>
             <value>eu.etaxonomy.cdm.model.molecular.DnaSample</value>
             <value>eu.etaxonomy.cdm.model.molecular.GenBankAccession</value>
             <value>eu.etaxonomy.cdm.model.molecular.Locus</value>
