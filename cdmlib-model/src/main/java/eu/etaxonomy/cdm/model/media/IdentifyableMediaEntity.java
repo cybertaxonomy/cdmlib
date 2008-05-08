@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,8 @@ import javax.persistence.OneToMany;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 @MappedSuperclass
 public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented{

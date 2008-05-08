@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.common.ReferencedMedia;
+import eu.etaxonomy.cdm.model.media.ReferencedMedia;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;

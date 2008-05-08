@@ -7,10 +7,12 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.media;
 
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 import java.util.*;
 import javax.persistence.*;

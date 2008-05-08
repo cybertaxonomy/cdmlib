@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 
 import javax.persistence.Entity;
-import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
+
+import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
 /**
  * The upmost (abstract) class for agents such as persons, teams or institutions.

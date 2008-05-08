@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;

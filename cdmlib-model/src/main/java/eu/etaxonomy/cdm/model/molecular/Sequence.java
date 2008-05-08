@@ -10,10 +10,10 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import eu.etaxonomy.cdm.model.media.IMediaDocumented;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.common.IMediaDocumented;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Media;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
 

@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.IdentifyableMediaEntity;
 import eu.etaxonomy.cdm.model.description.Scope;
+import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;

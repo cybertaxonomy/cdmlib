@@ -38,7 +38,7 @@ public class MultilanguageSet extends HashMap<Language, LanguageString> {
 		return result;
 	}
 	
-	protected MultilanguageSet(){
+	public MultilanguageSet(){
 		super();
 	}
 	

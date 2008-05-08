@@ -9,8 +9,8 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.common.Media;
 import org.apache.log4j.Logger;
 import java.util.*;
 import javax.persistence.*;

@@ -17,6 +17,7 @@ import org.hibernate.collection.AbstractPersistentCollection;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
+import eu.etaxonomy.cdm.model.media.Media;
 
 import java.lang.reflect.Field;
 import java.util.*;

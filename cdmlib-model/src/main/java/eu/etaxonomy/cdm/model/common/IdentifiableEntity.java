@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.media.Rights;
+
 
 import java.util.HashSet;
 import java.util.Set;
