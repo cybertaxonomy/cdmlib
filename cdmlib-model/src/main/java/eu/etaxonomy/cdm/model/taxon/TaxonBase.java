@@ -35,6 +35,15 @@ import javax.persistence.*;
 @Entity
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
+	
+	//TODO make static for performance reasons
+	private static Field taxonBaseField;
+	
+	protected TaxonBase(){
+		super();
+	}
+	
+	
 	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
 	private TaxonNameBase name;
@@ -64,12 +73,10 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	public void setName(TaxonNameBase newName){
 		try {
-			//TODO make static for performance reasons
-			Field taxonBaseField = TaxonNameBase.class.getDeclaredField("taxonBases");
-			taxonBaseField.setAccessible(true);
-			if(this.name == newName) return;
-			if (name != null) { 
-				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(name);
+			initTaxonBaseField();
+			if (this.name == newName) return;
+			if (this.name != null) { 
+				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(this.name);
 				taxonBases.remove(this);
 			}
 			if (newName != null) { 
@@ -84,8 +91,16 @@ public abstract class TaxonBase extends IdentifiableEntity {
 			this.name = newName;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			e.getStackTrace();
+			System.out.println( e.getStackTrace());
 		} 	
+	}
+	
+	
+	private void initTaxonBaseField()throws NoSuchFieldException  {
+		if (taxonBaseField == null) {
+			taxonBaseField = TaxonNameBase.class.getDeclaredField("taxonBases");
+			taxonBaseField.setAccessible(true);
+		}
 	}
 	
 	@Transient

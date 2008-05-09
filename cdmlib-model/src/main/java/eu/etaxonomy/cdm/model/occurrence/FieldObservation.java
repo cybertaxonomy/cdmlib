@@ -14,14 +14,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.IEvent;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.Point;
-
-import java.util.*;
-
 import javax.persistence.*;
 
 /**
@@ -33,13 +25,28 @@ import javax.persistence.*;
  */
 @Entity
 public class FieldObservation extends SpecimenOrObservationBase{
-	static Logger logger = Logger.getLogger(FieldObservation.class);
+	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	private String fieldNumber;
 	private String fieldNotes;
 	private GatheringEvent gatheringEvent;
 
-
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static FieldObservation NewInstance(){
+		return new FieldObservation();
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected FieldObservation(){
+		super();
+	}
+	
 	@Override
 	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
@@ -47,7 +54,7 @@ public class FieldObservation extends SpecimenOrObservationBase{
 		return this.gatheringEvent;
 	}
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
-		this.setGatheringEvent(gatheringEvent);
+		this.gatheringEvent = gatheringEvent;
 	}	
 	
 

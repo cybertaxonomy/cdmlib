@@ -38,6 +38,15 @@ public class Annotation extends LanguageStringBase {
 		return new Annotation(text, lang);
 	}
 	
+	/**
+	 * Factory method. Using default language.
+	 * @param text
+	 * @return
+	 */
+	public static Annotation NewDefaultLanguageInstance(String text){
+		return new Annotation(text, Language.DEFAULT());
+	}
+	
 	private Annotation(){
 		super();
 	}

@@ -77,11 +77,14 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	protected void setDerivationEvents(Set<DerivationEvent> derivationEvents) {
 		this.derivationEvents = derivationEvents;
 	}
-	public void addDerivationEvent(DerivationEvent event) {
-		this.derivationEvents.add(event);
+	public void addDerivationEvent(DerivationEvent derivationEvent) {
+		if (! this.derivationEvents.contains(derivationEvent)){
+			this.derivationEvents.add(derivationEvent);
+			derivationEvent.addOriginal(this);
+		}
 	}
-	public void removeDerivationEvent(DerivationEvent event) {
-		this.derivationEvents.remove(event);
+	public void removeDerivationEvent(DerivationEvent derivationEvent) {
+		this.derivationEvents.remove(derivationEvent);
 	}
 	
 

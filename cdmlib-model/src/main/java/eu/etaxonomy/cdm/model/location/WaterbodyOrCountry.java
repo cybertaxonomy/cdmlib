@@ -544,6 +544,11 @@ uuidPersianGulf
 
 	 */
 
+	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
+		return getByUuid(uuidArgentinaArgentineRepublic);
+	}
+	
+	
 	
 	public static final WaterbodyOrCountry getByUuid(UUID uuid){
 		return (WaterbodyOrCountry) findByUuid(uuid);

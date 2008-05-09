@@ -18,7 +18,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:32
  */
 @Entity
-public class LivingBeing extends DerivedUnit {
+public class LivingBeing extends DerivedUnitBase {
 	private static final Logger logger = Logger.getLogger(LivingBeing.class);
 
 	/**

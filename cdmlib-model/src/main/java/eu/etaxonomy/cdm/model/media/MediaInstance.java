@@ -12,9 +12,13 @@ package eu.etaxonomy.cdm.model.media;
 
 import org.apache.log4j.Logger;
 
+import com.sun.activation.registries.MimeTypeFile;
+
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 import java.util.*;
+
+import javax.activation.MimeType;
 import javax.persistence.*;
 
 /**
@@ -27,14 +31,44 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class MediaInstance extends VersionableEntity {
-	static Logger logger = Logger.getLogger(MediaInstance.class);
+	private static final Logger logger = Logger.getLogger(MediaInstance.class);
 	//http://www.iana.org/assignments/media-types
 	private String mimeType;
 	//where the media file is stored
 	private String uri;
 	//in bytes
-	private int size;
+	private Integer size;
 	private Media media;
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static MediaInstance NewInstance(String uri, String mimeType, Integer size){
+		MediaInstance result  = new MediaInstance();
+		result.setUri(uri);
+		result.setMimeType(mimeType);
+		result.setSize(size);
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static MediaInstance NewInstance(){
+		return new MediaInstance();
+	}
+	
+	
+	
+	protected MediaInstance(){
+		super();
+	}
+	
 	
 	public String getMimeType(){
 		return this.mimeType;
@@ -60,15 +94,17 @@ public class MediaInstance extends VersionableEntity {
 		this.uri = uri;
 	}
 
-	public int getSize(){
+	
+	/**
+	 * @return
+	 */
+	public Integer getSize(){
 		return this.size;
 	}
-
-	/**
-	 * 
+	/** 
 	 * @param size    size
 	 */
-	public void setSize(int size){
+	public void setSize(Integer size){
 		this.size = size;
 	}
 

@@ -173,7 +173,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/Collection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivationEventType.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivedUnit.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivedUnitBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationModifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/FieldObservation.java -text
@@ -238,6 +238,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeEx
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ITaxonNameParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserZoologicalNameImpl.java -text
+cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
@@ -296,6 +297,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/BotanicNameCacheStrat
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/ZoologicalNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserBotanicalNameImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestNameCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

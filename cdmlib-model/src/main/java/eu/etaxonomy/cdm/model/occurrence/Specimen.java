@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:52
  */
 @Entity
-public class Specimen extends DerivedUnit {
+public class Specimen extends DerivedUnitBase {
 	static Logger logger = Logger.getLogger(Specimen.class);
 	
 	private PreservationMethod preservation;
@@ -31,7 +31,7 @@ public class Specimen extends DerivedUnit {
 	 * @return
 	 */
 	public static Specimen NewInstance(){
-		return new Fossil();
+		return new Specimen();
 	}
 	
 	/**

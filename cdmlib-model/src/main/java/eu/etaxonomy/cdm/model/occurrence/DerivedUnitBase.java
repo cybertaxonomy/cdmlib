@@ -19,8 +19,10 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.collection.PersistentSet;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
@@ -29,25 +31,24 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  *
  */
 @Entity
-public abstract class DerivedUnit extends SpecimenOrObservationBase {
+public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 
 	private Collection collection;
 	private String catalogNumber;
 	private TaxonNameBase storedUnder;
 	private DerivationEvent derivedFrom;
 
-	
 	/**
 	 * Constructor
 	 */
-	protected DerivedUnit() {
+	protected DerivedUnitBase() {
 		super();
 	}
 	/**
 	 * create new unit derived from an existing field observation
 	 * @param fieldObservation existing field observation from where this unit is derived
 	 */
-	public DerivedUnit(FieldObservation fieldObservation) {
+	protected DerivedUnitBase(FieldObservation fieldObservation) {
 		super();
 		DerivationEvent derivedFrom = new DerivationEvent();
 		// TODO: should be done in a more controlled way. Probably by making derivation event implement a general relationship interface (for bidirectional add/remove etc)
@@ -61,7 +62,7 @@ public abstract class DerivedUnit extends SpecimenOrObservationBase {
 	 * thereby creating a new empty field observation
 	 * @param gatheringEvent the gathering event this unit was collected at 
 	 */
-	public DerivedUnit(GatheringEvent gatheringEvent) {
+	protected DerivedUnitBase(GatheringEvent gatheringEvent) {
 		this(new FieldObservation());
 		FieldObservation field = (FieldObservation) this.getOriginalUnit();
 		field.setGatheringEvent(gatheringEvent);
@@ -74,8 +75,25 @@ public abstract class DerivedUnit extends SpecimenOrObservationBase {
 		return derivedFrom;
 	}
 	public void setDerivedFrom(DerivationEvent derivedFrom) {
+		if(this.derivedFrom == derivedFrom) {
+			return;
+		}
+		//delete old
+		if (this.derivedFrom != null) { 
+			derivedFrom.derivatives.remove(this);
+		}
+		//add new
+		if (derivedFrom != null) { 
+			//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
+			if (derivedFrom.derivatives instanceof PersistentSet){
+				//
+			}else{
+				derivedFrom.derivatives.add(this);
+			}
+		}
 		this.derivedFrom = derivedFrom;
 	}
+	
 	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
 		return this.getDerivedFrom().getOriginals();

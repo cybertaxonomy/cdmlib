@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.model.location;
 
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -26,8 +26,13 @@ import javax.persistence.*;
  */
 @Entity
 public class NamedAreaType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(NamedAreaType.class);
+	public static final Logger logger = Logger.getLogger(NamedAreaType.class);
 
+	private static final UUID uuidNaturalArea = UUID.fromString("cc33167c-d366-4030-b984-6b14e4f5fd22");
+	private static final UUID uuidAdministrationArea = UUID.fromString("1799f581-f425-40d6-a4db-ec2c638c0e92");
+
+	
+	
 	/**
 	 * Factory method
 	 * @return
@@ -42,20 +47,28 @@ public class NamedAreaType extends DefinedTermBase {
 	public NamedAreaType(String term, String label) {
 		super(term, label);
 	}
+	
+	public NamedAreaType(){
+		super();
+	}
 
 
+	public static final NamedAreaType getByUuid(UUID uuid){
+		return (NamedAreaType) findByUuid(uuid);
+	}	
+	
 	/**
 	 * The boundaries are given by natural factors (mountains, valleys, climate, etc.)
 	 */
 	public static final NamedAreaType NATURAL_AREA(){
-		return null;
+		return getByUuid(uuidNaturalArea);
 	}
 
 	/**
 	 * The boundaries depend on administration (county, state, reserve, etc.)
 	 */
 	public static final NamedAreaType ADMINISTRATION_AREA(){
-		return null;
+		return getByUuid(uuidAdministrationArea);
 	}
 
 }

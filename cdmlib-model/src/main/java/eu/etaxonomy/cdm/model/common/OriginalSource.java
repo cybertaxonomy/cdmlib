@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -30,6 +28,21 @@ public class OriginalSource extends ReferencedEntityBase {
 	private String idInSource;
 	private IdentifiableEntity sourcedObj;
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static OriginalSource NewInstance(){
+		return new OriginalSource();
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	public OriginalSource(){
+		super();
+	}
 
 	public String getIdInSource(){
 		return this.idInSource;

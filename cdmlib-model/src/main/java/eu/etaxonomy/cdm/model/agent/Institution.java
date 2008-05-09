@@ -32,16 +32,24 @@ public class Institution extends Agent {
 	static Logger logger = Logger.getLogger(Institution.class);
 	private String code;
 	private String name;
-	private Set<InstitutionType> types = new HashSet();
+	private Set<InstitutionType> types = new HashSet<InstitutionType>();
 	private Institution isPartOf;
 	private Contact contact;
 
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Institution NewInstance(){
+		return new Institution();
+	}
+	
+	
 	/** 
 	 * Class constructor
 	 */
 	public Institution() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/** 

@@ -27,8 +27,8 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 public class DerivationEvent extends EventBase{
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
-	private Set<SpecimenOrObservationBase> originals = new HashSet();
-	private Set<DerivedUnit> derivatives = new HashSet();
+	private Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
+	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
 	private DerivationEventType type;
 	
 	/**
@@ -55,7 +55,10 @@ public class DerivationEvent extends EventBase{
 		this.originals = originals;
 	}
 	public void addOriginal(SpecimenOrObservationBase original) {
-		this.originals.add(original);
+		if (! this.originals.contains(original)){
+			this.originals.add(original);
+			original.addDerivationEvent(this);
+		}
 	}
 	public void removeOriginal(SpecimenOrObservationBase original) {
 		this.originals.remove(original);
@@ -64,16 +67,16 @@ public class DerivationEvent extends EventBase{
 	
 	@OneToMany(mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<DerivedUnit> getDerivatives() {
+	public Set<DerivedUnitBase> getDerivatives() {
 		return derivatives;
 	}
-	protected void setDerivatives(Set<DerivedUnit> derivatives) {
+	protected void setDerivatives(Set<DerivedUnitBase> derivatives) {
 		this.derivatives = derivatives;
 	}
-	public void addDerivative(DerivedUnit derivative) {
-		this.derivatives.add(derivative);
+	public void addDerivative(DerivedUnitBase derivative) {
+		derivative.setDerivedFrom(this);
 	}
-	public void removeDerivative(DerivedUnit derivative) {
+	public void removeDerivative(DerivedUnitBase derivative) {
 		this.derivatives.remove(derivative);
 	}
 

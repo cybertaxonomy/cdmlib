@@ -19,7 +19,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:32
  */
 @Entity
-public class Observation extends DerivedUnit {
+public class Observation extends DerivedUnitBase {
 	static Logger logger = Logger.getLogger(Observation.class);
 	
 	/**

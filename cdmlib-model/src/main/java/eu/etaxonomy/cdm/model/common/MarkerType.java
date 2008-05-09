@@ -27,7 +27,7 @@ import javax.persistence.*;
  */
 @Entity
 public class MarkerType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(MarkerType.class);
+	public static final Logger logger = Logger.getLogger(MarkerType.class);
 
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
 	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");

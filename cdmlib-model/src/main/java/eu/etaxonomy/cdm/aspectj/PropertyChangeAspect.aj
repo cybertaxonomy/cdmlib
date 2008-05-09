@@ -98,7 +98,7 @@ public aspect PropertyChangeAspect {
 					propertyName = "is"+propertyName.substring(0, 1).toUpperCase()+ propertyName.substring(1);
 					field = signature.getDeclaringType().getDeclaredField( propertyName );
 				}catch( NoSuchFieldException nsfe ){
-					// cant find any matching attribute. catch error and return null
+					// can't find any matching attribute. catch error and return null
 					return null;
 				}
 			}
