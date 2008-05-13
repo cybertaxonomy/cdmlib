@@ -33,10 +33,60 @@ public class BerlinModelImport {
 
 	public boolean doCheck(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
+		System.out.println("Start check BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") ...");
+		
+		//check
+		if (bmiConfig == null){
+			logger.warn("BerlinModelImportConfiguration is null");
+			return false;
+		}else if (! bmiConfig.isValid()){
+			logger.warn("BerlinModelImportConfiguration is not valid");
+			return false;
+		}
+		
+		
+		//Authors
+		if (bmiConfig.isDoAuthors()){
+			result &= BerlinModelAuthorIO.check(bmiConfig);
+		}
+
+		//References
 		if (bmiConfig.getDoReferences() != NONE){
 			result &= BerlinModelReferenceIO.check(bmiConfig);
 		}
+		
+		//TaxonNames
+		if (bmiConfig.isDoTaxonNames()){
+			result &=  BerlinModelTaxonNameIO.check(bmiConfig);
+		}
+		
+		//make and save RelNames
+		if(bmiConfig.isDoRelNames()){
+			result &= BerlinModelTaxonNameIO.checkRelations(bmiConfig);
+		}
+		
+		//TODO NomStatus
+		//TODO Types
+		
+		//check Taxa
+		if(bmiConfig.isDoTaxa()){
+			result &= BerlinModelTaxonIO.check(bmiConfig);
+		}
+		
+		//make and save RelPTaxa
+		if(bmiConfig.isDoRelTaxa()){
+			result &= BerlinModelTaxonIO.checkRelations(bmiConfig);
+		}
+		
+		//check Facts
+		if(bmiConfig.isDoFacts()){
+			result &= BerlinModelFactsIO.check(bmiConfig);
+		}
+		
+		//return
+		System.out.println("End checking BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") for import to CDM");
 		return result;
+
 	}
 	
 	

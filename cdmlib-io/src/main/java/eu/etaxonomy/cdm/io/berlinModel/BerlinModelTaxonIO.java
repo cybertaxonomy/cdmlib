@@ -37,6 +37,24 @@ public class BerlinModelTaxonIO {
 
 	private static int modCount = 30000;
 
+	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for Taxa not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
+	public static boolean checkRelations(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for TaxonRelations not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
 		Source source = bmiConfig.getSource();

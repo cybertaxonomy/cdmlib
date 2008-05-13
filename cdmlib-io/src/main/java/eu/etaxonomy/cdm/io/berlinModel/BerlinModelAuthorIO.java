@@ -24,6 +24,15 @@ public class BerlinModelAuthorIO {
 
 	private static int modCount = 1000;
 
+	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for Authors not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<Team> teamMap){
 		

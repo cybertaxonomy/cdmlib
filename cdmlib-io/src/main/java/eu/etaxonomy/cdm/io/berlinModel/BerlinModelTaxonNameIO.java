@@ -36,6 +36,24 @@ public class BerlinModelTaxonNameIO {
 
 	private static int modCount = 5000;
 
+	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for TaxonNames not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
+	public static boolean checkRelations(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for TaxonNameRelations not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
 	//TODO
 	static boolean invokeStatus(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
 			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,

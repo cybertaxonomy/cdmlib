@@ -31,6 +31,14 @@ public class BerlinModelFactsIO {
 
 	private static int modCount = 10000;
 
+	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for Facts not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
 
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
