@@ -141,7 +141,7 @@
             <value>eu.etaxonomy.cdm.model.occurrence.Collection</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DerivationEvent</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DerivationEventType</value>
-            <value>eu.etaxonomy.cdm.model.occurrence.DerivedUnit</value>
+            <value>eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DeterminationEvent</value>
             <value>eu.etaxonomy.cdm.model.occurrence.DeterminationModifier</value>
             <value>eu.etaxonomy.cdm.model.occurrence.FieldObservation</value>
