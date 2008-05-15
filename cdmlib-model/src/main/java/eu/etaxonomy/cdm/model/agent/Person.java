@@ -51,7 +51,8 @@ public class Person extends TeamOrPersonBase {
 	 * Creates a new empty instance for a person whose existence is all what is known.
 	 * This can be a provisional solution until more information about this person
 	 * can be gathered, for instance in case a member of a nomenclatural author team
-	 * is not explicitly mentioned. 
+	 * is not explicitly mentioned. It also includes the cache strategy defined in
+	 * {@link eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 */
 	public static Person NewInstance(){
 		return new Person();
@@ -91,6 +92,7 @@ public class Person extends TeamOrPersonBase {
 	 * @param  firstname     		the given name
 	 * @param  lastname      		the hereditary name
 	 * @param  nomenclaturalTitel 	the abbreviated name
+	 * @see                  		#Person()
 	 * @see                  		#NewInstance()
 	 */
 	public Person(String firstname, String lastname, String nomenclaturalTitel) {
@@ -284,7 +286,7 @@ public class Person extends TeamOrPersonBase {
 	 * but a simple flourished date (fl. XXXX) is also possible
 	 * if that is all what is known.
 	 *
-	 * @see 	common.TimePeriod
+	 * @see  common.TimePeriod
 	 */
 	public TimePeriod getLifespan(){
 		return this.lifespan;
@@ -297,7 +299,9 @@ public class Person extends TeamOrPersonBase {
 	}
 
 	/**
-	 * Generates the "full" name string of this person. The used attributes are:
+	 * Generates the "full" name string of this person according to the strategy
+	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
+	 * The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
 	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
