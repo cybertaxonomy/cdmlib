@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -205,6 +204,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		this.status.remove(nomStatus);
 	}
 
+	
+	/**
+	 * Indicates if this taxon name has a basionym or replaced synonym relationship to any other name.
+	 * @return true, if a {@link NameRelationshipType.BASIONYM()} or a {@link NameRelationshipType.REPLACED_SYNONYM()} 
+	 * relationship from this name to another name exists.
+	 */
+	@Transient
+	public boolean isOriginalCombination(){
+		Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
+		for (NameRelationship relation : relationsFromThisName) {
+			if (relation.getType().equals(NameRelationshipType.BASIONYM()) ||
+					relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 	@Transient
 	public T getBasionym(){
@@ -423,5 +440,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public boolean isInfraSpecific() {
 		return getRank().isInfraSpecific();
 	}
+	
+	@Transient
+	public String getNomeclaturalCodeAbbrev(){
+		return null;
+	}
+	
 
 }

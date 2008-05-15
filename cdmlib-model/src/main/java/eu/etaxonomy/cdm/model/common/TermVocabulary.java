@@ -153,6 +153,23 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	}
 	
 	
+	/**
+	 * Returns all terms of this vocabulary sorted by their representation defined by the given language.
+	 * If such an representation does not exist, the representation of the default language is testing instead for ordering.
+	 * @param language
+	 * @return
+	 */
+	@Transient
+	public SortedSet<T> getSortedTerms(Language language){
+		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
+		comp.setCompareLanguage(language);
+		
+		SortedSet<T> result = new TreeSet<T>(comp);
+		result.addAll(getTerms());
+		return result;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */

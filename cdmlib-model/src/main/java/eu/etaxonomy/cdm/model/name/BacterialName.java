@@ -64,5 +64,12 @@ public class BacterialName extends NonViralName {
 	public void setNameApprobation(String nameApprobation){
 		this.nameApprobation = nameApprobation;
 	}
+	
+	
+	@Override
+	public String getNomeclaturalCodeAbbrev(){
+		logger.warn("Not yet implemented");
+		return null;
+	}
 
 }

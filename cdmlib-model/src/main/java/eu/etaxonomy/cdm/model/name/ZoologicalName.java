@@ -86,6 +86,12 @@ public class ZoologicalName extends NonViralName {
 		this.cacheStrategy = ZooNameDefaultCacheStrategy.NewInstance();
 	}
 	
+	
+	@Override
+	public String getNomeclaturalCodeAbbrev(){
+		return "ICZN";
+	}
+	
 /* ***************** GETTER / SETTER ***************************/
 	
 	public String getBreed(){

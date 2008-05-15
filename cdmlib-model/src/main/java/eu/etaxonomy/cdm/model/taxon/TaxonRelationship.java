@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -26,7 +28,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	private TaxonRelationshipType type;
 	private Taxon fromTaxon;
 	private Taxon toTaxon;
-
+	
 	/**
 	 * @return
 	 */
@@ -60,5 +62,7 @@ public class TaxonRelationship extends ReferencedEntityBase {
 	public void setToTaxon(Taxon toTaxon){
 		this.toTaxon = toTaxon;
 	}
+	
+	
 
 }

@@ -45,7 +45,7 @@ public class Synonym extends TaxonBase {
 	}
 	
 
-	@OneToMany(mappedBy="synonym")
+	@OneToMany(mappedBy="synonym", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;

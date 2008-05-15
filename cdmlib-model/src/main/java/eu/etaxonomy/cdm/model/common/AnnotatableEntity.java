@@ -35,7 +35,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		super();
 	}
 
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Marker> getMarkers(){
 		return this.markers;

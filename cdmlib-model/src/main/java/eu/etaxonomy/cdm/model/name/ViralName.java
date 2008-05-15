@@ -53,4 +53,11 @@ public class ViralName extends TaxonNameBase {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
+	@Override
+	public String getNomeclaturalCodeAbbrev(){
+		logger.warn("Not yet implemented");
+		return null;
+	}
 }

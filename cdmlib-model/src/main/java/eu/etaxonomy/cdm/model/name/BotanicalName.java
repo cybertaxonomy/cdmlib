@@ -14,18 +14,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
 import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserZoologicalNameImpl;
 
 import java.util.*;
-
-import javax.naming.NameParser;
 import javax.persistence.*;
 
 /**
@@ -215,6 +210,12 @@ public class BotanicalName extends NonViralName {
 	 */
 	public void setAnamorphic(boolean isAnamorphic){
 		this.isAnamorphic = isAnamorphic;
+	}
+	
+	
+	@Override
+	public String getNomeclaturalCodeAbbrev(){
+		return "ICBN";
 	}
 
 }

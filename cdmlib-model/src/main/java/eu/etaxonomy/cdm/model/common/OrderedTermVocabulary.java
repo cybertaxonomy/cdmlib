@@ -3,9 +3,7 @@
  */
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
