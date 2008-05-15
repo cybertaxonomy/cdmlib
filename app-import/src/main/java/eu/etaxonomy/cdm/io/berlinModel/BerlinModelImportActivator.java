@@ -33,19 +33,20 @@ public class BerlinModelImportActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
 	
 	//authors
-	static final  boolean doAuthors = true;
+	static final boolean doAuthors = true;
 	//references
-	static final  DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final CHECK check = CHECK.CHECK_ONLY;
 	//names
-	static final  boolean doTaxonNames = true;
-	static final  boolean doRelNames = true;
-	static final  boolean doNameStatus = true;
-	static final  boolean doTypes = false;
+	static final boolean doTaxonNames = true;
+	static final boolean doRelNames = true;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = false;
 	
 	//taxa
-	static final  boolean doTaxa = true;
-	static final  boolean doRelTaxa = true;
-	static final  boolean doFacts = true;
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = false;
 
 	
 	/**
@@ -74,7 +75,8 @@ public class BerlinModelImportActivator {
 		
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
-		bmImport.doImport(bmImportConfigurator);
+		bmImport.doCheck(bmImportConfigurator);
+		//bmImport.doImport(bmImportConfigurator);
 
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
