@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 /** 
-* 
+* Interface for nomenclatural authorship 
 * 
 * 
 * @author a.mueller
@@ -20,14 +20,13 @@ package eu.etaxonomy.cdm.model.agent;
 public interface INomenclaturalAuthor {
 
 	/**
-	 * @return
+	 * @see TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	public String getNomenclaturalTitle();
 
 	
 	/**
-	 * @param nomenclaturalTitle
-	 * @return
+	 * @see TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle);
 

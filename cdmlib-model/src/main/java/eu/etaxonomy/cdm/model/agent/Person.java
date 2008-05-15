@@ -103,7 +103,6 @@ public class Person extends TeamOrPersonBase {
 	/** 
 	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to this person. 
 	 *
-	 * @return	the set of institution memberships
 	 * @see     InstitutionalMembership
 	 */
 	@OneToMany
@@ -157,7 +156,6 @@ public class Person extends TeamOrPersonBase {
 	 * a geographical specialization of this person.
 	 * Keywords are items of a controlled {@link common.TermVocabulary vocabulary}.
 	 *
-	 * @return	the set of keywords
 	 * @see 	common.Keyword
 	 */
 	@OneToMany
@@ -194,90 +192,105 @@ public class Person extends TeamOrPersonBase {
 
 
 
+	/** 
+	 * Returns the {@link Contact contact} of this person.
+	 * The contact contains several ways to approach this person.
+	 *
+	 * @see 	Contact
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){
 		return this.contact;
 	}
-	/** 
-	 * Assigns a {@link Contact contact} to this person.
-	 *
-	 * @param  contact  the contact which should be assigned to this person
+	/**
+	 * @see  #getContact()
 	 */
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}
 
 	
+	/**
+	 * Returns the string representing the prefix (for instance "Prof.&nbsp;Dr.<!-- -->")
+	 * to this person's name.
+	 */
 	public String getPrefix(){
 		return this.prefix;
 	}
-	/** 
-	 * Assigns a prefix (for instance "Prof.&nbsp;Dr.<!-- -->") to this person's name.
-	 *
-	 * @param  prefix  the string which should be assigned as a prefix to this person's name
+	/**
+	 * @see  #getPrefix()
 	 */
 	public void setPrefix(String prefix){
 		this.prefix = prefix;
 	}
 
 
-	public String getFirstname(){
-		return this.firstname;
-	}
-	/** 
-	 * Assigns a given name or forename (for instance "John") to this person. 
+	/**
+	 * Returns the string representing the given name or forename
+	 * (for instance "John") of this person. 
 	 * This is the part of his name which is not shared with other
 	 * family members. Actually it may be just initials (for instance "G. Jr."),
 	 * all forenames in full or a combination of expanded names and initials. 
-	 *
-	 * @param  firstname  the string which should be assigned as a given name to this person
+	 */
+	public String getFirstname(){
+		return this.firstname;
+	}
+	/**
+	 * @see  #getFirstname()
 	 */
 	public void setFirstname(String firstname){
 		this.firstname = firstname;
 	}
 
 	
+	/**
+	 * Returns the string representing the hereditary name (surname or family name)
+	 * (for instance "Smith") of this person. 
+	 * This is the part of his name which is common to (all) other
+	 * members of his family, as distinct from the given name or forename. 
+	 */
 	public String getLastname(){
 		return this.lastname;
 	}
-	/** 
-	 * Assigns a hereditary name (surname or family name)
-	 * to this person (for instance "Smith").
-	 * This is the part of his name which is common to (all) other
-	 * members of his family, as distinct from the given name or forename. 
-	 *
-	 * @param  lastname  the string which should be assigned as a hereditary name to this person
+	/**
+	 * @see  #getLastname()
 	 */
 	public void setLastname(String lastname){
 		this.lastname = lastname;
 	}
 
 
+	/**
+	 * Returns the string representing the suffix (for instance "Junior")
+	 * of this person's name.
+	 */
 	public String getSuffix(){
 		return this.suffix;
 	}
-	/** 
-	 * Assigns a suffix (for instance "Junior") to this person's name.
-	 *
-	 * @param  suffix  the string which should be assigned as a suffix to this person's name
+	/**
+	 * @see  #getSuffix()
 	 */
 	public void setSuffix(String suffix){
 		this.suffix = suffix;
 	}
 
 
+	/** 
+	 * Returns the {@link common.TimePeriod period of time}
+	 * in which this person was alive (life span).
+	 * The general form is birth date - death date
+	 * (XXXX - YYYY; XXXX - or - YYYY as appropriate),
+	 * but a simple flourished date (fl. XXXX) is also possible
+	 * if that is all what is known.
+	 *
+	 * @see 	common.TimePeriod
+	 */
 	public TimePeriod getLifespan(){
 		return this.lifespan;
 	}
 	/**
-	 * Assigns to this person a period of time in which he was alive.
-	 * The form birth date - death date (XXXX - YYYY; XXXX - or - YYYY as appropriate) is
-	 * preferred, but a simple flourished date (fl. XXXX) may be given
-	 * if that is all what is known.
-	 *
-	 * @param lifespan  the time period to be assigned as life time to this person
-	 * @see             common.TimePeriod
+	 * @see  #getLifespan()
 	 */
 	public void setLifespan(TimePeriod lifespan){
 		this.lifespan = lifespan;

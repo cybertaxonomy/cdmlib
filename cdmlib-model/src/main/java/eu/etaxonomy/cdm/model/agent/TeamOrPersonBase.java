@@ -13,15 +13,15 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.strategy.cache.INomenclaturalAuthorCacheStrategy;
 
-/** 
-* 
-* 
-* 
-* @author a.mueller
-* @version 1.0
-* @created 17-APR-2008
-*/
 
+/**
+ * The abstract class for such {@link Agent agents} ({@link Person persons} or {@link Team teams}) who might also be used
+ * for nomenclatural authorship.
+ * 
+ * @author a.mueller
+ * @version 1.0
+ * @created 17-APR-2008
+ */
 @Entity
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase> extends Agent implements INomenclaturalAuthor {
 	static Logger logger = Logger.getLogger(TeamOrPersonBase.class);
@@ -29,15 +29,18 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase> extends Agent
 	protected String nomenclaturalTitle;
 	protected INomenclaturalAuthorCacheStrategy<T> cacheStrategy;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.agent.INomenclaturalAgent#getNomenclaturalTitle()
+	/**
+	 * Returns the identification string (nomenclatural abbreviation) used in
+	 * nomenclature for this {@link Person person} or this {@link Team team}.
+	 * 
+	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
 	 */
 	public String getNomenclaturalTitle() {
 		return nomenclaturalTitle;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.agent.INomenclaturalAgent#setNomenclaturalTitle(java.lang.String)
+	/** 
+	 * @see     #getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
 		this.nomenclaturalTitle = nomenclaturalTitle;
