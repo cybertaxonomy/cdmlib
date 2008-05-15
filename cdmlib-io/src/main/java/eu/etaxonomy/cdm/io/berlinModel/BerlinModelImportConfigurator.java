@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.berlinModel;
+ package eu.etaxonomy.cdm.io.berlinModel;
 
 import org.apache.log4j.Logger;
 
