@@ -65,7 +65,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
-	public UUID removeTaxon(TaxonNameBase taxonName) {
+	public UUID removeTaxonName(TaxonNameBase taxonName) {
 		return super.removeCdmObject(taxonName);
 	}
 
@@ -80,9 +80,30 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return rankVocabulary;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
+	 */
+	public OrderedTermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
+		String uuidRank = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
+		UUID rankUuid = UUID.fromString(uuidRank);
+		OrderedTermVocabulary<NameRelationshipType> nameRelTypeVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		return nameRelTypeVocabulary;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
+	 */
+	public OrderedTermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
+		String uuidRank = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
+		UUID rankUuid = UUID.fromString(uuidRank);
+		OrderedTermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		return nomStatusTypeVocabulary;
+	}
+
 	public void generateTitleCache() {
+		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub
-		
 	}
 
 }

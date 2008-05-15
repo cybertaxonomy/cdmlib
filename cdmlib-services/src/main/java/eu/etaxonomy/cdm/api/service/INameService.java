@@ -55,4 +55,17 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 */
 	public abstract OrderedTermVocabulary<Rank> getRankVocabulary();
+	
+	/**
+	 * Returns all NomenclaturalStatusTypes.
+	 * @return
+	 */
+	public abstract OrderedTermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
+	
+	
+	/**
+	 * Returns all NameRelationshipTypes.
+	 * @return
+	 */
+	public abstract OrderedTermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 }

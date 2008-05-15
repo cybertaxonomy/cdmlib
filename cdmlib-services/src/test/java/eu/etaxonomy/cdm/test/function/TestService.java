@@ -4,6 +4,8 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -11,9 +13,16 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -24,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
 
 
 
@@ -128,6 +138,28 @@ public class TestService {
 		UUID uuid = taxonService.removeTaxon(taxon1);
 		logger.info("  UUID: " + uuid);
 	}
+	
+	
+	public void testVocabularyLists(){
+		OrderedTermVocabulary<NomenclaturalStatusType> voc = appCtr.getNameService().getStatusTypeVocabulary();
+		Set<NomenclaturalStatusType> set = voc.getSortedTerms(Language.DEFAULT());
+		for (Object obj : set.toArray()){
+			NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)obj;
+			System.out.println(nomStatusType.getLabel());
+		}
+		OrderedTermVocabulary<NameRelationshipType> nameRelVoc = appCtr.getNameService().getNameRelationshipTypeVocabulary();
+		Set<NameRelationshipType> nameRelSet = nameRelVoc.getSortedTerms(Language.DEFAULT());
+		for (Object obj : nameRelSet.toArray()){
+			NameRelationshipType naemRelType = (NameRelationshipType)obj;
+			System.out.println(naemRelType.getLabel());
+		}
+		System.out.println("=========== NAME LIST =================");
+		List<TaxonNameBase> nameList = appCtr.getNameService().getNamesByName("Abies%");
+		System.out.println("Size" + nameList.size());
+		for (TaxonNameBase name : nameList){
+			System.out.println("ABEIS: " + name.getTitleCache());
+		}	
+	}
 
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
@@ -165,14 +197,26 @@ public class TestService {
 		//testTermApi();
 		//testDeleteTaxa();
 		//testDeleteRelationship();
-		regenerateTaxonTitleCache();
-    	System.out.println("\nEnd ...");
+		//regenerateTaxonTitleCache();
+		testVocabularyLists();
+		System.out.println("\nEnd ...");
 	}
 	
 	private void init(){
 		try {
-			//appCtr = new CdmApplicationController(CdmDataSource.NewInstance("defaultMySql"), HBM2DDL.CREATE);
-			appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("rel1_1"));
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+			appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("defaultMySql") , dbSchemaValidation);
+			
+			TaxonNameBase name = NonViralName.NewInstance(null);
+			name.setTitleCache("Abies alba");
+
+			TaxonNameBase name2 = NonViralName.NewInstance(null);
+			name2.setTitleCache("Abies beta");
+			
+			appCtr.getNameService().saveTaxonName(name);
+			appCtr.getNameService().saveTaxonName(name2);
+			
+			//appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("rel1_1"));
 			//appCtr = new CdmApplicationController(HBM2DDL.CREATE);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
