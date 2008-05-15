@@ -19,7 +19,7 @@ import javax.persistence.*;
 /**
  * A team exists for itself or is built with the list of (distinct) persons
  * who belong to it.
- * In the first case the inherited attribute {@link common.IdentifiableEntity#titleCache titleCache} is to be used.
+ * In the first case the inherited attribute {@link common.IdentifiableEntity#getTitleCache() titleCache} is to be used.
  * In the second case at least all abbreviated names
  * (the inherited attributes {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle})
  * or all full names (the strings returned by Person.generateTitle)
