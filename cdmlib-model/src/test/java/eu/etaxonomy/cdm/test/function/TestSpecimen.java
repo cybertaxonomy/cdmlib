@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author AM
@@ -55,7 +55,7 @@ public class TestSpecimen {
 		logger.info("Create test taxon ...");
 		ReferenceBase sec = Database.NewInstance();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
-		BotanicalName botanicalName = TaxonNameParserBotanicalNameImpl.NewInstance().parseFullName(fullNameString);
+		BotanicalName botanicalName = NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
 		
 		Collection collection = Collection.NewInstance();

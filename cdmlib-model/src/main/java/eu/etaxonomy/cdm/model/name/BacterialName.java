@@ -67,9 +67,9 @@ public class BacterialName extends NonViralName {
 	
 	
 	@Override
-	public String getNomeclaturalCodeAbbrev(){
-		logger.warn("Not yet implemented");
-		return null;
+	public NomenclaturalCode getNomeclaturalCode(){
+		return NomenclaturalCode.BACTERIOLOGICAL();
+
 	}
 
 }

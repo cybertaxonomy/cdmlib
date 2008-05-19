@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -27,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:55
  */
 @Entity
-public class Synonym extends TaxonBase {
+public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	static Logger logger = Logger.getLogger(Synonym.class);
 	
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
@@ -64,6 +65,14 @@ public class Synonym extends TaxonBase {
 			taxon.removeSynonymRelation(synonymRelation);
 		}
 		this.synonymRelations.remove(synonymRelation);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
+	 */
+	public void addRelationship(SynonymRelationship rel){
+		addSynonymRelation(rel);
 	}
 
 

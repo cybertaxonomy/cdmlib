@@ -10,29 +10,31 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
  * @author m.doering
  */
 @MappedSuperclass
-public abstract class RelationshipBase<TO extends IRelated, FROM extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
+public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
 	private FROM relationFrom;
 	private TO relationTo;
 	private TYPE type;
 
+	protected RelationshipBase(){
+		super();
+	}
+	
 	/**
 	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
 	 * @param toName
@@ -53,28 +55,46 @@ public abstract class RelationshipBase<TO extends IRelated, FROM extends IRelate
 	public TYPE getType(){
 		return this.type;
 	}
-	private void setType(TYPE type){
+	protected void setType(TYPE type){
 		this.type = type;
 	}
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public FROM getRelationFrom() {
+	protected FROM getRelationFrom() {
 		return relationFrom;
 	}
-	private void setRelationFrom(FROM relationFrom) {
+	protected void setRelationFrom(FROM relationFrom) {
 		this.relationFrom = relationFrom;
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public TO getRelationTo() {
+	protected TO getRelationTo() {
 		return relationTo;
 	}
-	private void setRelationTo(TO relationTo) {
+	protected void setRelationTo(TO relationTo) {
 		this.relationTo = relationTo;
 	}
-
+	
+// TODO
+//	UUID toUuid; 
+//	UUID fromUuid;
+//	
+//	@Transient
+//	public UUID getToUuidCache(){
+//		return relationTo.getUuid();
+//	}
+//	protected void setToUuid(UUID uuid){
+//		toUuid = uuid;
+//	}
+//	
+//	public UUID getFromUuid(){
+//		return relationTo.getUuid();
+//	}
+//	protected void setFromUuid(UUID uuid){
+//		fromUuid = uuid;
+//	}
 }

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 import java.util.*;
 import javax.persistence.*;
@@ -42,7 +42,7 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
-	static private ITaxonNameParser nameParser = new TaxonNameParserBotanicalNameImpl();
+	static private ITaxonNameParser nameParser = new NonViralNameParserImpl();
 	
 	
 	/**
@@ -83,7 +83,7 @@ public class BotanicalName extends NonViralName {
 	 */
 	public static BotanicalName PARSED_NAME(String fullNameString, Rank rank){
 		if (nameParser == null){
-			nameParser = new TaxonNameParserBotanicalNameImpl();
+			nameParser = new NonViralNameParserImpl();
 		}
 		return (BotanicalName)nameParser.parseFullName(fullNameString, rank);
 	}
@@ -104,7 +104,7 @@ public class BotanicalName extends NonViralName {
 	 */
 	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString, Rank rank){
 		if (nameParser == null){
-			nameParser = new TaxonNameParserBotanicalNameImpl();
+			nameParser = new NonViralNameParserImpl();
 		}
 		return (BotanicalName)nameParser.parseFullReference(fullNameAndReferenceString, rank);
 	}
@@ -214,8 +214,9 @@ public class BotanicalName extends NonViralName {
 	
 	
 	@Override
-	public String getNomeclaturalCodeAbbrev(){
-		return "ICBN";
+	public NomenclaturalCode getNomeclaturalCode(){
+		return NomenclaturalCode.ICBN();
+
 	}
 
 }

@@ -43,6 +43,13 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	protected Set<T> getNewTermSet(){
 		return new TreeSet<T>();
 	}
+
+	@Transient
+	public SortedSet<T> getOrderedTerms(T otb) {
+		SortedSet<T> result = new TreeSet<T>();
+		result.addAll(terms);
+		return result;
+	}
 	
 	@Transient
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {

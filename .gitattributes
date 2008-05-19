@@ -161,6 +161,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameTypeDesignation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalCode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatusType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NonViralName.java -text
@@ -237,8 +238,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/ZooNameDefaultCacheSt
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ITaxonNameParser.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserBotanicalNameImpl.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserZoologicalNameImpl.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
@@ -247,6 +247,7 @@ cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/NameRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/NamedAreaType.csv -text
+cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text

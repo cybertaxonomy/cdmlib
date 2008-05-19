@@ -442,9 +442,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 	@Transient
-	public String getNomeclaturalCodeAbbrev(){
-		return null;
-	}
+	abstract public NomenclaturalCode getNomeclaturalCode();
 	
 
 }

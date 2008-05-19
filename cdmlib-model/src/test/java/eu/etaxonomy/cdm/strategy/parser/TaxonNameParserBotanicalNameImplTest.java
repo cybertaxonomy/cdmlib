@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -69,7 +69,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		parser = TaxonNameParserBotanicalNameImpl.NewInstance();
+		parser = NonViralNameParserImpl.NewInstance();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 /*************** TEST *********************************************/
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#NEW_INSTANCE()}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#NEW_INSTANCE()}.
 	 */
 	@Test
 	public final void testNEW_INSTANCE() {
@@ -90,7 +90,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#TaxonNameParserBotanicalNameImpl()}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#TaxonNameParserBotanicalNameImpl()}.
 	 */
 	@Test
 	public final void testTaxonNameParserBotanicalNameImpl() {
@@ -98,7 +98,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
 	@Test
 	public final void testParseSimpleName() {
@@ -106,7 +106,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseSubGenericFullName(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSubGenericFullName(java.lang.String)}.
 	 */
 	@Test
 	public final void testParseSubGenericFullName() {
@@ -114,7 +114,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseSubGenericSimpleName(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSubGenericSimpleName(java.lang.String)}.
 	 */
 	@Test
 	public final void testParseSubGenericSimpleName() {
@@ -122,7 +122,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
 	@Test
 	@Ignore //TODO Character encoding in svn
@@ -152,7 +152,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
 	@Test
 	public final void testParseFullName() {
@@ -214,7 +214,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#fullTeams(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#fullTeams(java.lang.String)}.
 	 */
 	@Test
 	public final void testFullTeams() {
@@ -222,7 +222,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#authorTeamAndEx(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#authorTeamAndEx(java.lang.String)}.
 	 */
 	@Test
 	public final void testAuthorTeamAndEx() {
@@ -230,7 +230,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#authorTeam(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#authorTeam(java.lang.String)}.
 	 */
 	@Test
 	public final void testAuthorTeam() {
@@ -238,7 +238,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl#parseCultivar(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseCultivar(java.lang.String)}.
 	 */
 	@Test
 	public final void testParseCultivar() {

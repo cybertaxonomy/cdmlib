@@ -58,7 +58,7 @@ public class CreateDataTest {
 		if (isCreated == false){
 			 dbSchemaValidation = DbSchemaValidation.CREATE;
 		}
-		ICdmDataSource dataSource = cdm_test();
+		ICdmDataSource dataSource = paddie();
 		app  = CdmApplicationController.NewInstance(dataSource, dbSchemaValidation);
 	}
 
@@ -68,13 +68,22 @@ public class CreateDataTest {
 		app.close();
 	}
 	
-	
 	//just temporarly
 	public static ICdmDataSource cdm_test(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM"; 
 		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	
+	//just temporarly
+	public static ICdmDataSource paddie(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+		String cdmServer = "PADDIE";
+		String cdmDB = "edit_test"; 
+		String cdmUserName = "andreas";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
@@ -89,7 +98,8 @@ public class CreateDataTest {
 				pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(cdmUserName) + ": ");
 			}
 			//TODO not MySQL
-			ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+			//ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+			ICdmDataSource destination = CdmDataSource.NewSqlServer2005Instance(cdmServer, cdmDB, cdmUserName, pwd);
 			return destination;
 		} catch (Exception e) {
 			logger.error(e);
@@ -100,7 +110,6 @@ public class CreateDataTest {
 	
 /* ********************* TESTS *********************************/
 	
-	@Ignore
 	@Test
 	public void testCreateTaxon(){
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
@@ -109,7 +118,6 @@ public class CreateDataTest {
 		app.getTaxonService().saveTaxon(genusTaxon);
 	}
 	
-	@Ignore
 	@Test
 	public void testLoadTaxon(){
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
@@ -156,7 +164,6 @@ public class CreateDataTest {
 	}
 	
 	
-	@Ignore
 	@Test
 	public void testSave(){
 		logger.warn("testSave");

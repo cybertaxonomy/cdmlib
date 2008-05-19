@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -32,7 +33,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:56
  */
 @Entity
-public class Taxon extends TaxonBase implements Iterable<Taxon>{
+public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonRelationship>{
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 	// all related synonyms
@@ -164,16 +165,18 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 			}else if (rel.getToTaxon().equals(this)){
 				relationsToThisTaxon.add(rel);
 			}
-		}
+		}	
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
+	 */
+	public void addRelationship(TaxonRelationship rel){
+		addTaxonRelation(rel);
+	}
+	
+	
 	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
-		TaxonRelationship rel = new TaxonRelationship();
-		rel.setToTaxon(toTaxon);
-		rel.setFromTaxon(this);
-		rel.setType(type);
-		rel.setCitation(citation);
-		rel.setCitationMicroReference(microcitation);
-		this.addTaxonRelation(rel);
+		TaxonRelationship rel = new TaxonRelationship(toTaxon, this, type, citation, microcitation);
 	}
 	public void addMisappliedName(Taxon toTaxon, ReferenceBase citation, String microcitation) {
 		addTaxonRelation(toTaxon, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);
@@ -269,7 +272,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	 */
 	@Transient
 	public Set<Synonym> getSynonyms(){
-		Set<Synonym> syns = new HashSet();
+		Set<Synonym> syns = new HashSet<Synonym>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
 			syns.add(rel.getSynonym());
 		}
@@ -283,7 +286,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	}
 	@Transient
 	public Set<TaxonNameBase> getSynonymNames(){
-		Set<TaxonNameBase> names = new HashSet();
+		Set<TaxonNameBase> names = new HashSet<TaxonNameBase>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
 			names.add(rel.getSynonym().getName());
 		}
@@ -297,10 +300,13 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	 * @return The newly created synonym relationship
 	 */
 	public SynonymRelationship addSynonym(Synonym synonym, SynonymRelationshipType synonymType){
-		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType);
+		return addSynonym(synonym, synonymType, null, null);
+	}
+	public SynonymRelationship addSynonym(Synonym synonym, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference){
+		SynonymRelationship synonymRelationship = new SynonymRelationship(synonym, this, synonymType, citation, citationMicroReference);
 		return synonymRelationship;
 	}
-
+	
 	/**
 	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym.<BR>
 	 * The new synonym gets the same concept reference as <i>this</i> taxon.
@@ -309,8 +315,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	 * @return The newly created synonym relationship
 	 */
 	public SynonymRelationship addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType){
+		return addSynonymName(synonymName, synonymType, null, null);
+	}
+	public SynonymRelationship addSynonymName(TaxonNameBase synonymName, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
-		return addSynonym(synonym, synonymType);
+		return addSynonym(synonym, synonymType, citation, citationMicroReference);
 	}
 	
 
@@ -323,6 +332,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>{
 	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName){
 		return addHeterotypicSynonymName(synonymName, null);
 	}
+
 	
 	/**
 	 * Adds a taxon name to <i>this</i> taxon as a heterotypic synonym. <BR>

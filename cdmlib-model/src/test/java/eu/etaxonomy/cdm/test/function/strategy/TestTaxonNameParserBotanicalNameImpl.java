@@ -20,7 +20,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -83,7 +83,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	
 	private void testRefParser(){
 		BotanicalName botanicalName = BotanicalName.NewInstance(null);
-		TaxonNameParserBotanicalNameImpl parser = new TaxonNameParserBotanicalNameImpl();
+		NonViralNameParserImpl parser = new NonViralNameParserImpl();
 		
 		String reference1 = "Sp. P.: 755. 1753., nom. inval.";
 		//String reference1 = "Sp. P.";

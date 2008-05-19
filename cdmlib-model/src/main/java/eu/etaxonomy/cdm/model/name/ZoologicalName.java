@@ -16,8 +16,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserZoologicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+
 
 import javax.persistence.*;
 
@@ -36,7 +36,7 @@ public class ZoologicalName extends NonViralName {
 	private Integer publicationYear;
 	private Integer originalPublicationYear;
 
-	static private ITaxonNameParser nameParser = new TaxonNameParserZoologicalNameImpl();
+	static private ITaxonNameParser nameParser = new NonViralNameParserImpl();
 
 	
 	public static ZoologicalName NewInstance(Rank rank){
@@ -67,7 +67,7 @@ public class ZoologicalName extends NonViralName {
 	 */
 	public static ZoologicalName PARSED_NAME(String fullNameString, Rank rank){
 		if (nameParser == null){
-			nameParser  = new TaxonNameParserZoologicalNameImpl();
+			nameParser  = new NonViralNameParserImpl();
 		}
 		return (ZoologicalName)nameParser.parseFullName(fullNameString, rank);
 	}
@@ -88,8 +88,8 @@ public class ZoologicalName extends NonViralName {
 	
 	
 	@Override
-	public String getNomeclaturalCodeAbbrev(){
-		return "ICZN";
+	public NomenclaturalCode getNomeclaturalCode(){
+		return NomenclaturalCode.ICZN();
 	}
 	
 /* ***************** GETTER / SETTER ***************************/
@@ -114,5 +114,4 @@ public class ZoologicalName extends NonViralName {
 	public void setOriginalPublicationYear(Integer originalPublicationYear) {
 		this.originalPublicationYear = originalPublicationYear;
 	}
-
 }

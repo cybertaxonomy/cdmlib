@@ -53,5 +53,12 @@ public class CultivarPlantName extends BotanicalName {
 	public void setCultivarName(String cultivarName){
 		this.cultivarName = cultivarName;
 	}
+	
+	
+	@Override
+	public NomenclaturalCode getNomeclaturalCode(){
+		return NomenclaturalCode.ICNCP();
+
+	}
 
 }

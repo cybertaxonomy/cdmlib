@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -21,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImpl;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public class TestTaxonFunction {
 	private static final Logger logger = Logger.getLogger(TestTaxonFunction.class);
@@ -49,7 +50,7 @@ public class TestTaxonFunction {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
-		ITaxonNameParser<BotanicalName> parser = TaxonNameParserBotanicalNameImpl.NewInstance();
+		ITaxonNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
 		ReferenceBase sec = new Book();
 		sec.setTitleCache("ConceptRef");
 		

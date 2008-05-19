@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -22,11 +25,11 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:55
  */
 @Entity
-public class SynonymRelationship extends ReferencedEntityBase {
+public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	static Logger logger = Logger.getLogger(SynonymRelationship.class);
-	private Synonym synonym;
-	private Taxon acceptedTaxon;
-	private SynonymRelationshipType type;
+//	private Synonym synonym;
+//	private Taxon acceptedTaxon;
+//	private SynonymRelationshipType type;
 
 	
 	//for hibernate, don't use
@@ -41,42 +44,29 @@ public class SynonymRelationship extends ReferencedEntityBase {
 	 * @param taxon
 	 * @param type
 	 */
-	protected SynonymRelationship(Synonym synoynm, Taxon taxon, SynonymRelationshipType type) {
-		super();
-		this.synonym = synoynm;
-		taxon.addSynonymRelation(this);
-		synoynm.addSynonymRelation(this);
-		this.acceptedTaxon = taxon;
-		this.type = type;
+	protected SynonymRelationship(Synonym synonym, Taxon taxon, SynonymRelationshipType type, ReferenceBase citation, String citationMicroReference) {
+		super(synonym, taxon, type, citation, citationMicroReference);
 	}
-
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	
+//	@ManyToOne(fetch=FetchType.EAGER)
+//	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public Taxon getAcceptedTaxon(){
-		return this.acceptedTaxon;
+		return getRelationTo();
 	}
 
 	protected void setAcceptedTaxon(Taxon acceptedTaxon){
-		this.acceptedTaxon = acceptedTaxon;
+		setRelationTo(acceptedTaxon);
 	}
 
-	
-	@ManyToOne
-	public SynonymRelationshipType getType(){
-		return this.type;
-	}
-	protected void setType(SynonymRelationshipType type){
-		this.type = type;
-	}
-
-	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
+//	@ManyToOne(fetch=FetchType.EAGER)
+//	@Cascade({CascadeType.SAVE_UPDATE})
+	@Transient
 	public Synonym getSynonym(){
-		return this.synonym;
+		return getRelationFrom();
 	}
 	protected void setSynonym(Synonym synoynm){
-		this.synonym = synoynm;
+		setRelationFrom(synoynm);
 	}
 
 }

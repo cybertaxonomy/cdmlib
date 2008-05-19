@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,10 +14,13 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -31,20 +33,20 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<BotanicalName> {
-	private static final Logger logger = Logger.getLogger(TaxonNameParserBotanicalNameImpl.class);
+public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
+	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 	
-	public static TaxonNameParserBotanicalNameImpl NewInstance(){
-		return new TaxonNameParserBotanicalNameImpl();
+	public static NonViralNameParserImpl NewInstance(){
+		return new NonViralNameParserImpl();
 	}
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public BotanicalName parseSimpleName(String simpleName, Rank rank){
+	public NonViralName parseSimpleName(String simpleName, Rank rank){
 		//TODO
 		logger.warn("parseSimpleName() not yet implemented. Uses parseFullName() instead");
 		return parseFullName(simpleName, rank);
@@ -54,27 +56,51 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericSimpleName(java.lang.String)
 	 */
-	public BotanicalName parseSimpleName(String simpleName){
+	public NonViralName parseSimpleName(String simpleName){
 		return parseSimpleName(simpleName, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public BotanicalName parseFullReference(String fullReferenceString, Rank rank) {
+	public NonViralName parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullReferenceString == null){
 			return null;
 		}else{
-			BotanicalName result = BotanicalName.NewInstance(null);
+			NonViralName result = null;
+			if (nomCode == null){
+				nomCode = getNomeclaturalCode(reference);
+			}
+			if (nomCode == null){
+				result = NonViralName.NewInstance(rank);
+			}else if (nomCode.equals(NomenclaturalCode.ICBN())){
+				result = BotanicalName.NewInstance(rank);
+			}else if (nomCode.equals(NomenclaturalCode.ICZN())){
+				result = ZoologicalName.NewInstance(rank);
+			}else if (nomCode.equals(NomenclaturalCode.ICNCP())){
+				logger.warn("ICNCP parsing not yet implemented");
+			}else if (nomCode.equals(NomenclaturalCode.BACTERIOLOGICAL())){
+				logger.warn("ICNCP not yet implemented");	
+			}else if (nomCode.equals(NomenclaturalCode.VIRAL())){
+				logger.error("Viral name is not an NonViralName !!");
+			}else{
+				logger.error("Unknown Nomenclatural Code !!");
+			}
 			parseFullReference(result, fullReferenceString, rank, false);
 			return result;
 		}
 	}
 	
+	public NomenclaturalCode getNomeclaturalCode(String reference){
+		logger.warn("not yet implemented");
+		return null;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
 	 */
-	public void parseFullReference(BotanicalName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+	public void parseFullReference(NonViralName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
 		if (fullReferenceString == null){
 			//return null;
 			return;
@@ -123,7 +149,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	String parseNomStatus(String reference, BotanicalName nameToBeFilled) {
+	String parseNomStatus(String reference, NonViralName nameToBeFilled) {
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
 		Matcher hasStatusMatcher = hasStatusPattern.matcher(reference);
@@ -149,7 +175,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	}
 	
 	
-	private void parseReference(BotanicalName nameToBeFilled, String reference, boolean isInReference){
+	private void parseReference(NonViralName nameToBeFilled, String reference, boolean isInReference){
 			
 		if (referencePattern.matcher(reference).matches() ){
 			//End (just delete, may be ambigous for yearPhrase, but no real information gets lost
@@ -249,7 +275,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	}
 		
 	
-	public void parseFullName(BotanicalName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
+	public void parseFullName(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
 		
 		String authorString = null;
@@ -356,8 +382,9 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			//authors
 		    if (nameToBeFilled != null && authorString != null && authorString.trim().length() > 0 ){ 
 				TeamOrPersonBase[] authors = null;
+				Integer[] years = null;
 				try {
-					authors = fullAuthors(authorString);
+					fullAuthors(authorString, authors, years);
 				} catch (StringNotParsableException e) {
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setTitleCache(fullNameString);
@@ -367,6 +394,11 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 				nameToBeFilled.setExCombinationAuthorTeam(authors[1]);
 				nameToBeFilled.setBasionymAuthorTeam(authors[2]);
 				nameToBeFilled.setExBasionymAuthorTeam(authors[3]);
+				if (nameToBeFilled instanceof ZoologicalName){
+					ZoologicalName zooName = (ZoologicalName)nameToBeFilled;
+					zooName.setPublicationYear(years[0]);
+					zooName.setOriginalPublicationYear(years[2]);
+				}
 			}	
 			//return
 			if (nameToBeFilled != null){
@@ -388,12 +420,11 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		}
 	}
 	
-	private void makeEmpty(BotanicalName nameToBeFilled){
+	private void makeEmpty(NonViralName nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setNameCache(null);
 				
-		nameToBeFilled.setAnamorphic(false);
 		nameToBeFilled.setAppendedPhrase(null);
 		//TODO ??
 		//nameToBeFilled.setBasionym(basionym);
@@ -407,11 +438,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		nameToBeFilled.setHasProblem(false);
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
-		
-		nameToBeFilled.setHybridFormula(false);
-		nameToBeFilled.setMonomHybrid(false);
-		nameToBeFilled.setBinomHybrid(false);
-		nameToBeFilled.setTrinomHybrid(false);
+
 		
 		nameToBeFilled.setGenusOrUninomial(null);
 		nameToBeFilled.setInfraGenericEpithet(null);
@@ -420,6 +447,21 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 		
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
+		
+		if (nameToBeFilled instanceof BotanicalName){
+			BotanicalName botanicalName = (BotanicalName)nameToBeFilled;
+			botanicalName.setAnamorphic(false);
+			botanicalName.setHybridFormula(false);
+			botanicalName.setMonomHybrid(false);
+			botanicalName.setBinomHybrid(false);
+			botanicalName.setTrinomHybrid(false);
+		}
+		
+		if (nameToBeFilled instanceof ZoologicalName){
+			ZoologicalName zoologicalName = (ZoologicalName)nameToBeFilled;
+			zoologicalName.setBreed(null);
+			zoologicalName.setOriginalPublicationYear(null);
+		}
 		
 		//TODO adapt to @Version of versionable entity, throws still optimistic locking error
 		//nameToBeFilled.setUpdated(Calendar.getInstance());
@@ -434,19 +476,19 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	 * @return array of Teams containing the Team[0], 
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	public TeamOrPersonBase[] fullAuthors (String fullAuthorString)
+	public void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years)
 			throws StringNotParsableException{
 		fullAuthorString = fullAuthorString.trim();
 		if (! fullAuthorStringPattern.matcher(fullAuthorString).matches())
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
-		return fullAuthorsChecked(fullAuthorString);
+		fullAuthorsChecked(fullAuthorString, authors, years);
 	}
 	
 	
 	/*
 	 * like fullTeams but without trim and match check
 	 */
-	private TeamOrPersonBase[] fullAuthorsChecked (String fullAuthorString){
+	private void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years){
 		TeamOrPersonBase[] result = new TeamOrPersonBase[4]; 
 		int authorTeamStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
@@ -457,14 +499,21 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			basString = basString.replaceAll(basEnd, "").trim();
 			authorTeamStart = basionymMatcher.end(1) + 1;
 			
-			TeamOrPersonBase[] basAuthors = authorsAndEx(basString);
-			result[2]= basAuthors[0];
-			result[3]= basAuthors[1];
+			TeamOrPersonBase[] basAuthors;
+			Integer[] basYears;
+			authorsAndEx(basString, basAuthors, basYears);
+			authors[2]= basAuthors[0];
+			years[2] = basYears[0];
+			authors[3]= basAuthors[1];
+			years[3] = basYears[1];
 		}
-		TeamOrPersonBase[] authors = authorsAndEx(fullAuthorString.substring(authorTeamStart));
-		result[0]= authors[0];
-		result[1]= authors[1];
-		return result;
+		TeamOrPersonBase[] combinationAuthors;
+		Integer[] combinationYears;
+		authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
+		authors[0]= combinationAuthors[0];
+		years[0] = combinationYears[0];
+		authors[1]= combinationAuthors[1];
+		years[1] = combinationYears[1];
 	}
 	
 	
@@ -473,7 +522,7 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 	 * @param authorTeamString String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	public TeamOrPersonBase[] authorsAndEx (String authorTeamString){
+	public void authorsAndEx (String authorTeamString, TeamOrPersonBase[] authors, Integer[] years){
 		TeamOrPersonBase[] result = new TeamOrPersonBase[2]; 
 		//TODO noch allgemeiner am anfang durch Replace etc. 
 		authorTeamString = authorTeamString.trim();
@@ -485,10 +534,9 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
 			int exAuthorBegin = exAuthorMatcher.end(0);
 			String exString = authorTeamString.substring(exAuthorBegin).trim();
 			authorEnd = exAuthorMatcher.start(0);
-			result [1] = author(exString);
+			authors [1] = author(exString);
 		}
-		result [0] = author(authorTeamString.substring(0, authorEnd));
-		return result;
+		authors [0] = author(authorTeamString.substring(0, authorEnd));
 	}
 	
 	
@@ -656,10 +704,19 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
     static String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
     static String basStart = "\\(";
     static String basEnd = "\\)";
-    static String basionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
-    static String fullAuthorString = fWs + "(" + basionymAuthor +")?" + fWs + authorAndExTeam + fWs;
-    static String facultFullAuthorString = "(" +  fullAuthorString + ")?" ; 
-
+    static String botanicBasionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
+    static String fullBotanicAuthorString = fWs + "(" + botanicBasionymAuthor +")?" + fWs + authorAndExTeam + fWs;
+    static String facultFullBotanicAuthorString = "(" +  fullBotanicAuthorString + ")?" ; 
+        
+    //Zoo. Author
+    //TODO does zoo author have ex-Author?
+    static String zooAuthorTeam = authorTeam + fWs + "," + fWs + singleYear;
+    static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;
+    static String fullZooAuthorString = fWs + "(" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + fWs;
+    static String facultFullZooAuthorString = "(" +  fullZooAuthorString + ")?" ; 
+ 
+    static String facultFullAuthorString2 = "(" + facultFullBotanicAuthorString + "|" + facultFullZooAuthorString + ")";
+    
     
     //details
     //TODO still very simple
@@ -708,10 +765,16 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
     static String species = capitalEpiWord + oWs +  nonCapitalEpiWord;
     static String infraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + infraSpeciesMarker + oWs + nonCapitalEpiWord;
     static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
-    static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same 
-    static String anyName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
-    					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
-    static String anyFullName = anyName + oWs + fullAuthorString;
+    static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same 
+
+    static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
+					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
+    static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
+					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + ")+";
+    static String anyBotanicFullName = anyBotanicName + oWs + fullBotanicAuthorString;
+    static String anyZooFullName = anyZooName + oWs + fullZooAuthorString;
+    static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
+    
     
     //Pattern
     static Pattern oWsPattern = Pattern.compile(oWs);
@@ -720,19 +783,19 @@ public class TaxonNameParserBotanicalNameImpl implements ITaxonNameParser<Botani
     static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
     static Pattern hybridPattern = Pattern.compile(hybrid); 
     
-    static Pattern genusOrSupraGenusPattern = Pattern.compile(start + genusOrSupraGenus + facultFullAuthorString + end);
-    static Pattern infraGenusPattern = Pattern.compile(start + infraGenus + facultFullAuthorString + end);
+    static Pattern genusOrSupraGenusPattern = Pattern.compile(start + genusOrSupraGenus + facultFullAuthorString2 + end);
+    static Pattern infraGenusPattern = Pattern.compile(start + infraGenus + facultFullAuthorString2 + end);
     static Pattern aggrOrGroupPattern = Pattern.compile(start + aggrOrGroup + fWs + end); //aggr. or group has no author string
-    static Pattern speciesPattern = Pattern.compile(start + species + facultFullAuthorString + end);
-    static Pattern infraSpeciesPattern = Pattern.compile(start + infraSpecies + facultFullAuthorString + end);
-    static Pattern oldInfraSpeciesPattern = Pattern.compile(start + oldInfraSpecies + facultFullAuthorString + end);
+    static Pattern speciesPattern = Pattern.compile(start + species + facultFullAuthorString2 + end);
+    static Pattern infraSpeciesPattern = Pattern.compile(start + infraSpecies + facultFullAuthorString2 + end);
+    static Pattern oldInfraSpeciesPattern = Pattern.compile(start + oldInfraSpecies + facultFullAuthorString2 + end);
     static Pattern autonymPattern = Pattern.compile(start + autonym + fWs + end);
 	
-    static Pattern basionymPattern = Pattern.compile(basionymAuthor);
+    static Pattern botanicBotanicPattern = Pattern.compile(botanicBasionymAuthor);
     //static Pattern startsWithBasionymRE = Pattern.compile(basionymAuthor + anyEnd);
-        static Pattern exAuthorPattern = Pattern.compile(oWs + exString);
+    static Pattern exAuthorPattern = Pattern.compile(oWs + exString);
     
-    static Pattern fullAuthorStringPattern = Pattern.compile(fullAuthorString);
-
+    static Pattern fullBotanicAuthorStringPattern = Pattern.compile(fullBotanicAuthorString);
+    static Pattern fullZooAuthorStringPattern = Pattern.compile(fullZooAuthorString);
 
 }
