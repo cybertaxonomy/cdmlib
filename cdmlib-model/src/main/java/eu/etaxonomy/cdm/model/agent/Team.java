@@ -109,7 +109,7 @@ public class Team extends TeamOrPersonBase {
 	 * Removes one person from the list of members of this team.
 	 *
 	 * @param  person  the person who should be deleted from this team
-	 * @see            #getTeamMembers(Person)
+	 * @see            #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
 		this.teamMembers.remove(person);

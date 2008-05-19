@@ -21,6 +21,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:49
  */
+
 @Entity
 public class Representation extends LanguageStringBase {
 	static Logger logger = Logger.getLogger(Representation.class);
@@ -63,11 +64,23 @@ public class Representation extends LanguageStringBase {
 	
 	@Transient
 	public String getDescription(){
-		return super.getText();
+		return getText();
 	}
 	protected void setDescription(String text) {
 		super.setText(text);
 	}
+	
+	
+	/* 
+	 * Overrides super.getText() only to document that here the Text attribute
+	 * should be used for a larger description of the label.
+	 */
+	@Override
+	@Transient
+	public String getText(){
+		return super.getText();
+	}
+	
 	
 	public String toString(){
 		// we dont need the language returned too, do we? 
