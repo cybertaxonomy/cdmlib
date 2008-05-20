@@ -85,7 +85,7 @@ public class BotanicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseFullName(fullNameString, rank);
+		return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICBN(),  rank);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class BotanicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseFullReference(fullNameAndReferenceString, rank);
+		return (BotanicalName)nameParser.parseFullReference(fullNameAndReferenceString, NomenclaturalCode.ICBN(), rank);
 	}
 	
 	//needed by hibernate

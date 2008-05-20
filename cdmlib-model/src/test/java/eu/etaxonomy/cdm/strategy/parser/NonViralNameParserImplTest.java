@@ -21,7 +21,10 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -29,8 +32,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @author a.mueller
  *
  */
-public class TaxonNameParserBotanicalNameImplTest {
-	private static final Logger logger = Logger.getLogger(TaxonNameParserBotanicalNameImplTest.class);
+public class NonViralNameParserImplTest {
+	private static final Logger logger = Logger.getLogger(NonViralNameParserImplTest.class);
 	
 	final private String strNameFamily = "Asteraceae";
 	final private String strNameGenus = "Abies Mueller";
@@ -43,12 +46,15 @@ public class TaxonNameParserBotanicalNameImplTest {
 	final private String strNameAbiesBasionymAuthor1Unicode = "Abies alba (Ciardelli) D'Müller";
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Doering) D'Mueller ex. de Greuther"; 
 	final private String strNameAbiesBasionymExAuthor1Unicode ="Abies alba (Ciardelli ex Döring) D'Müller ex. de Greuther"; 
-	final private String strNameTeam1 ="Abies alba Mueller & L."; 
+	final private String strNameTeam1 = "Abies alba Mueller & L."; 
+	final private String strNameZoo1 = "Abies alba Mueller & L., 1822";
+	final private String strNameZoo2 = "Abies alba (Mueller, 1822) Ciardelli, 2002";
 	
 	final private String strNameEmpty = "";
 	final private String strNameNull = null;
 	
-	private ITaxonNameParser<BotanicalName> parser ;
+	private ITaxonNameParser<NonViralName> parser ;
+	private NomenclaturalCode botanicCode; 
 	
 	/**
 	 * @throws java.lang.Exception
@@ -70,6 +76,7 @@ public class TaxonNameParserBotanicalNameImplTest {
 	@Before
 	public void setUp() throws Exception {
 		parser = NonViralNameParserImpl.NewInstance();
+		botanicCode = NomenclaturalCode.ICBN();
 	}
 
 	/**
@@ -128,19 +135,19 @@ public class TaxonNameParserBotanicalNameImplTest {
 	@Ignore //TODO Character encoding in svn
 	public final void testParseFullNameUnicode() {
 
-		BotanicalName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, Rank.SPECIES());
+		NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameAuthor.getSpecificEpithet());
 		assertEquals("Müller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
-		BotanicalName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, Rank.SPECIES());
+		NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
 		assertEquals("D'Müller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		BotanicalName basionym = (BotanicalName)nameBasionymAuthor.getBasionym();
 		assertEquals("Ciardelli", basionym.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
-		BotanicalName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, Rank.SPECIES());
+		NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
 		assertEquals("D'Müller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
@@ -157,22 +164,22 @@ public class TaxonNameParserBotanicalNameImplTest {
 	@Test
 	public final void testParseFullName() {
 		
-			BotanicalName name1 = parser.parseFullName(strNameAbies1, Rank.SPECIES());
+			NonViralName name1 = parser.parseFullName(strNameAbies1, null, Rank.SPECIES());
 			assertEquals(name1.getGenusOrUninomial(), "Abies");
 			assertEquals(name1.getSpecificEpithet(), "alba");
 			
-			BotanicalName nameAuthor = parser.parseFullName(strNameAbiesAuthor1, Rank.SPECIES());
+			NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1, null, Rank.SPECIES());
 			assertEquals("Abies", nameAuthor.getGenusOrUninomial());
 			assertEquals("alba", nameAuthor.getSpecificEpithet());
 			assertEquals("Mueller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 			
-			BotanicalName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1, Rank.SPECIES());
+			NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
 			assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 			assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
 			assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 			assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
 			
-			BotanicalName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1, Rank.SPECIES());
+			NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
 			assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 			assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
 			assertEquals("D'Mueller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
@@ -180,14 +187,14 @@ public class TaxonNameParserBotanicalNameImplTest {
 			assertEquals("Ciardelli", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
 			assertEquals("Doering", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
 			
-			BotanicalName name2 = parser.parseFullName(strNameAbiesSub1, Rank.SPECIES());
+			NonViralName name2 = parser.parseFullName(strNameAbiesSub1, null, Rank.SPECIES());
 			assertEquals(name2.getGenusOrUninomial(), "Abies");
 			assertEquals(name2.getSpecificEpithet(), "alba");
 			assertEquals(name2.getInfraSpecificEpithet(), "beta");
 			assertEquals(Rank.SUBSPECIES(), name2.getRank());
 			
 			//Team
-			BotanicalName nameTeam1 = parser.parseFullName(strNameTeam1);
+			NonViralName nameTeam1 = parser.parseFullName(strNameTeam1);
 			assertEquals( "Abies", nameTeam1.getGenusOrUninomial());
 			assertEquals( "alba", nameTeam1.getSpecificEpithet());
 			assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorTeam().getNomenclaturalTitle());
@@ -196,20 +203,38 @@ public class TaxonNameParserBotanicalNameImplTest {
 			assertEquals("Mueller", team.getTeamMembers().get(0).getNomenclaturalTitle());
 			assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitle());
 
+			//ZooName
+			ZoologicalName nameZoo1 = (ZoologicalName)parser.parseFullName(strNameZoo1);
+			assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
+			assertEquals( "alba", nameZoo1.getSpecificEpithet());
+			assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorTeam().getNomenclaturalTitle());
+			assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomeclaturalCode() );
+			assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
+			assertTrue(nameZoo1.getCombinationAuthorTeam() instanceof Team);
+			Team teamZoo = (Team)nameZoo1.getCombinationAuthorTeam();
+			assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitle());
+			assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitle());
+
+			ZoologicalName nameZoo2 = (ZoologicalName)parser.parseFullName(strNameZoo2);
+			assertEquals(Integer.valueOf(2002), nameZoo2.getPublicationYear());
+			assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
+			assertEquals("Mueller",  nameZoo2.getBasionymAuthorTeam().getNomenclaturalTitle());
+			assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorTeam().getNomenclaturalTitle());
+			
 			
 			// unparseable *********
 			String problemString = "sdfjlös wer eer wer";
-			BotanicalName nameProblem = parser.parseFullName(problemString, Rank.SPECIES());
+			NonViralName nameProblem = parser.parseFullName(problemString, null, Rank.SPECIES());
 			assertTrue(nameProblem.getHasProblem());
 			assertEquals(problemString, nameProblem.getTitleCache());
 			
 			//empty
-			BotanicalName nameEmpty = parser.parseFullName(strNameEmpty);
+			NonViralName nameEmpty = parser.parseFullName(strNameEmpty);
 			assertNotNull(nameEmpty);
 			assertEquals("", nameEmpty.getTitleCache());
 			
 			//null
-			BotanicalName nameNull = parser.parseFullName(strNameNull);
+			NonViralName nameNull = parser.parseFullName(strNameNull);
 			assertNull(nameNull);
 	}
 

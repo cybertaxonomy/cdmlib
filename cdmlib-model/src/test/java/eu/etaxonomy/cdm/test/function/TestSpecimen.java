@@ -55,7 +55,7 @@ public class TestSpecimen {
 		logger.info("Create test taxon ...");
 		ReferenceBase sec = Database.NewInstance();
 		String fullNameString = "Acanthostyles saucechicoensis (Hieron.) R.M. King & H. Rob.";
-		BotanicalName botanicalName = NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
+		BotanicalName botanicalName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(fullNameString);
 		Taxon taxon = Taxon.NewInstance(botanicalName, sec);
 		
 		Collection collection = Collection.NewInstance();

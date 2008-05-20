@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.taxon.*;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameCacheStrategyTest;
-import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImplTest;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 
 
 @RunWith(Suite.class)
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.parser.TaxonNameParserBotanicalNameImplTest;
 			TaxonTest.class,
 			//strategy
 			BotanicNameCacheStrategyTest.class,
-			TaxonNameParserBotanicalNameImplTest.class
+			NonViralNameParserImplTest.class
 		}
 	)
 public class CdmTestSuite {
@@ -68,7 +68,7 @@ public class CdmTestSuite {
 				TaxonTest.class,
 				//strategy
 				BotanicNameCacheStrategyTest.class,
-				TaxonNameParserBotanicalNameImplTest.class
+				NonViralNameParserImplTest.class
 			);
 	}
 }

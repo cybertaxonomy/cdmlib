@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.strategy.parser;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.IStrategy;
@@ -30,7 +31,7 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	 * @param rank
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
 	 */
-	public T parseFullName(String fullName, Rank rank);
+	public T parseFullName(String fullName, NomenclaturalCode nomCode, Rank rank);
 
 	/**
  	 * Parses the taxonname String and fills the result into the existing TaxonNameBase nameToBeFilled. 
@@ -44,7 +45,8 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	 */
 	public void parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
-	public T parseFullReference(String fullReference, Rank rank);
+	public T parseFullReference(String fullReference, NomenclaturalCode nomCode, Rank rank);
+	
 
 	public void parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 	

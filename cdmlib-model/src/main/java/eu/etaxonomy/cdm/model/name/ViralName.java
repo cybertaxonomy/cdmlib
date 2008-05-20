@@ -56,8 +56,7 @@ public class ViralName extends TaxonNameBase {
 	
 	
 	@Override
-	public String getNomeclaturalCodeAbbrev(){
-		logger.warn("Not yet implemented");
-		return null;
+	public NomenclaturalCode getNomeclaturalCode(){
+		return NomenclaturalCode.VIRAL();
 	}
 }

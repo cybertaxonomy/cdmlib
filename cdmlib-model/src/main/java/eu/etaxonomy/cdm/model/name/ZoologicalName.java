@@ -69,7 +69,7 @@ public class ZoologicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser  = new NonViralNameParserImpl();
 		}
-		return (ZoologicalName)nameParser.parseFullName(fullNameString, rank);
+		return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN(), rank);
 	}
 	
 	protected ZoologicalName() {

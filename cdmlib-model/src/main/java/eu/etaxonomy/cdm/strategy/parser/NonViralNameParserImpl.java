@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -38,18 +39,21 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 	
+	final static boolean MAKE_EMPTY = true;
+	final static boolean MAKE_NOT_EMPTY = false;
+	
+	
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
 	}
 	
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
 	public NonViralName parseSimpleName(String simpleName, Rank rank){
 		//TODO
 		logger.warn("parseSimpleName() not yet implemented. Uses parseFullName() instead");
-		return parseFullName(simpleName, rank);
+		return parseFullName(simpleName, null, rank);
 	}
 
 
@@ -67,33 +71,53 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		if (fullReferenceString == null){
 			return null;
 		}else{
-			NonViralName result = null;
-			if (nomCode == null){
-				nomCode = getNomeclaturalCode(reference);
-			}
-			if (nomCode == null){
-				result = NonViralName.NewInstance(rank);
-			}else if (nomCode.equals(NomenclaturalCode.ICBN())){
-				result = BotanicalName.NewInstance(rank);
-			}else if (nomCode.equals(NomenclaturalCode.ICZN())){
-				result = ZoologicalName.NewInstance(rank);
-			}else if (nomCode.equals(NomenclaturalCode.ICNCP())){
-				logger.warn("ICNCP parsing not yet implemented");
-			}else if (nomCode.equals(NomenclaturalCode.BACTERIOLOGICAL())){
-				logger.warn("ICNCP not yet implemented");	
-			}else if (nomCode.equals(NomenclaturalCode.VIRAL())){
-				logger.error("Viral name is not an NonViralName !!");
-			}else{
-				logger.error("Unknown Nomenclatural Code !!");
-			}
-			parseFullReference(result, fullReferenceString, rank, false);
+			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+			parseFullReference(result, fullReferenceString, rank, MAKE_EMPTY);
 			return result;
 		}
 	}
 	
-	public NomenclaturalCode getNomeclaturalCode(String reference){
-		logger.warn("not yet implemented");
-		return null;
+	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
+		return getNonViralNameInstance(fullString, code, null);
+	}
+	
+	
+	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
+		NonViralName result = null;
+		if (code == null){
+			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).matches();
+			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).matches();;
+			boolean isBacteriologicalName = false;
+			boolean isCultivatedPlantName = false;
+			if ( (isBotanicalName || isCultivatedPlantName) && ! isZoologicalName && !isBacteriologicalName){
+				if (isBotanicalName){
+					result = BotanicalName.NewInstance(rank);
+				}else{
+					result = CultivarPlantName.NewInstance(rank);
+				}
+			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
+				result = ZoologicalName.NewInstance(rank);
+			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
+				result = BacterialName.NewInstance(rank);
+			}else {
+				result =  NonViralName.NewInstance(rank);
+			}
+		}else if (code.equals(NomenclaturalCode.ICBN())){
+			result = BotanicalName.NewInstance(rank);
+		}else if (code.equals(NomenclaturalCode.ICZN())){
+			result = ZoologicalName.NewInstance(rank);
+		}else if (code.equals(NomenclaturalCode.ICNCP())){
+			logger.warn("ICNCP parsing not yet implemented");
+			result = CultivarPlantName.NewInstance(rank);
+		}else if (code.equals(NomenclaturalCode.BACTERIOLOGICAL())){
+			logger.warn("ICNCP not yet implemented");
+			result = BacterialName.NewInstance(rank);
+		}else if (code.equals(NomenclaturalCode.VIRAL())){
+			logger.error("Viral name is not a NonViralName !!");
+		}else{
+			logger.error("Unknown Nomenclatural Code !!");
+		}
+		return result;
 	}
 	
 	
@@ -149,7 +173,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	String parseNomStatus(String reference, NonViralName nameToBeFilled) {
+	private String parseNomStatus(String reference, NonViralName nameToBeFilled) {
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
 		Matcher hasStatusMatcher = hasStatusPattern.matcher(reference);
@@ -256,19 +280,19 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericFullName(java.lang.String)
 	 */
-	public BotanicalName parseFullName(String fullNameString){
-		return parseFullName(fullNameString, null);
+	public NonViralName parseFullName(String fullNameString){
+		return parseFullName(fullNameString, null, null);
 	}
 	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public BotanicalName parseFullName(String fullNameString, Rank rank) {
+	public NonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullNameString == null){
 			return null;
 		}else{
-			BotanicalName result = BotanicalName.NewInstance(null);
+			NonViralName result = getNonViralNameInstance(fullNameString, nomCode, rank);
 			parseFullName(result, fullNameString, rank, false);
 			return result;
 		}
@@ -381,10 +405,10 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		    }
 			//authors
 		    if (nameToBeFilled != null && authorString != null && authorString.trim().length() > 0 ){ 
-				TeamOrPersonBase[] authors = null;
-				Integer[] years = null;
+				TeamOrPersonBase[] authors = new TeamOrPersonBase[4];
+				Integer[] years = new Integer[4];
 				try {
-					fullAuthors(authorString, authors, years);
+					fullAuthors(authorString, authors, years, nameToBeFilled.getClass());
 				} catch (StringNotParsableException e) {
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setTitleCache(fullNameString);
@@ -419,55 +443,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 			return;
 		}
 	}
-	
-	private void makeEmpty(NonViralName nameToBeFilled){
-		nameToBeFilled.setRank(null);
-		nameToBeFilled.setTitleCache(null, false);
-		nameToBeFilled.setNameCache(null);
-				
-		nameToBeFilled.setAppendedPhrase(null);
-		//TODO ??
-		//nameToBeFilled.setBasionym(basionym);
-		nameToBeFilled.setBasionymAuthorTeam(null);
-		nameToBeFilled.setCombinationAuthorTeam(null);
-		nameToBeFilled.setExBasionymAuthorTeam(null);
-		nameToBeFilled.setExCombinationAuthorTeam(null);
-		nameToBeFilled.setAuthorshipCache(null);
-		
-		
-		nameToBeFilled.setHasProblem(false);
-		// TODO ?
-		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
 
-		
-		nameToBeFilled.setGenusOrUninomial(null);
-		nameToBeFilled.setInfraGenericEpithet(null);
-		nameToBeFilled.setSpecificEpithet(null);
-		nameToBeFilled.setInfraSpecificEpithet(null);
-		
-		nameToBeFilled.setNomenclaturalMicroReference(null);
-		nameToBeFilled.setNomenclaturalReference(null);
-		
-		if (nameToBeFilled instanceof BotanicalName){
-			BotanicalName botanicalName = (BotanicalName)nameToBeFilled;
-			botanicalName.setAnamorphic(false);
-			botanicalName.setHybridFormula(false);
-			botanicalName.setMonomHybrid(false);
-			botanicalName.setBinomHybrid(false);
-			botanicalName.setTrinomHybrid(false);
-		}
-		
-		if (nameToBeFilled instanceof ZoologicalName){
-			ZoologicalName zoologicalName = (ZoologicalName)nameToBeFilled;
-			zoologicalName.setBreed(null);
-			zoologicalName.setOriginalPublicationYear(null);
-		}
-		
-		//TODO adapt to @Version of versionable entity, throws still optimistic locking error
-		//nameToBeFilled.setUpdated(Calendar.getInstance());
-		// TODO nameToBeFilled.setUpdatedBy(updatedBy);
-			
-	}
 	
 	
 	/**
@@ -476,22 +452,38 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * @return array of Teams containing the Team[0], 
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	public void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years)
+	public void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years, Class clazz)
 			throws StringNotParsableException{
 		fullAuthorString = fullAuthorString.trim();
-		if (! fullAuthorStringPattern.matcher(fullAuthorString).matches())
+		if (fullAuthorString == null || clazz == null){
+			return;
+		}
+		//Botanic
+		if ( BotanicalName.class.isAssignableFrom(clazz) ){
+			if (! fullBotanicAuthorStringPattern.matcher(fullAuthorString).matches() ){
+				throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+			}
+		}
+		//Zoo
+		else if ( ZoologicalName.class.isAssignableFrom(clazz) ){
+			if (! fullZooAuthorStringPattern.matcher(fullAuthorString).matches() ){
+				throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+			}
+		}else {
+			//TODO
+			logger.warn ("not yet implemented");
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
+		}
 		fullAuthorsChecked(fullAuthorString, authors, years);
 	}
-	
 	
 	/*
 	 * like fullTeams but without trim and match check
 	 */
 	private void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years){
-		TeamOrPersonBase[] result = new TeamOrPersonBase[4]; 
 		int authorTeamStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
+		
 		if (basionymMatcher.find(0)){
 			
 			String basString = basionymMatcher.group();
@@ -499,18 +491,18 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 			basString = basString.replaceAll(basEnd, "").trim();
 			authorTeamStart = basionymMatcher.end(1) + 1;
 			
-			TeamOrPersonBase[] basAuthors;
-			Integer[] basYears;
+			TeamOrPersonBase[] basAuthors = new TeamOrPersonBase[2];
+			Integer[] basYears = new Integer[2];
 			authorsAndEx(basString, basAuthors, basYears);
 			authors[2]= basAuthors[0];
 			years[2] = basYears[0];
 			authors[3]= basAuthors[1];
 			years[3] = basYears[1];
 		}
-		TeamOrPersonBase[] combinationAuthors;
-		Integer[] combinationYears;
+		TeamOrPersonBase[] combinationAuthors = new TeamOrPersonBase[2];;
+		Integer[] combinationYears = new Integer[2];
 		authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
-		authors[0]= combinationAuthors[0];
+		authors[0]= combinationAuthors[0] ;
 		years[0] = combinationYears[0];
 		authors[1]= combinationAuthors[1];
 		years[1] = combinationYears[1];
@@ -523,7 +515,6 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
 	public void authorsAndEx (String authorTeamString, TeamOrPersonBase[] authors, Integer[] years){
-		TeamOrPersonBase[] result = new TeamOrPersonBase[2]; 
 		//TODO noch allgemeiner am anfang durch Replace etc. 
 		authorTeamString = authorTeamString.trim();
 		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " ); 
@@ -536,7 +527,24 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 			authorEnd = exAuthorMatcher.start(0);
 			authors [1] = author(exString);
 		}
-		authors [0] = author(authorTeamString.substring(0, authorEnd));
+		zooOrBotanicAuthor(authorTeamString.substring(0, authorEnd), authors, years );
+	}
+	
+	public void zooOrBotanicAuthor(String authorString, TeamOrPersonBase[] team, Integer[] year){
+		if (authorString == null){ 
+			return;
+		}else if ((authorString = authorString.trim()).length() == 0){
+			return;
+		}
+		Matcher zooAuthorAddidtionMatcher = zooAuthorAddidtionPattern.matcher(authorString);
+		if (zooAuthorAddidtionMatcher.find()){
+			int index = zooAuthorAddidtionMatcher.start(0); 
+			String strYear = authorString.substring(index);
+			strYear = strYear.replaceAll(zooAuthorYearSeperator, "").trim();
+			year[0] = Integer.valueOf(strYear);
+			authorString = authorString.substring(0, index).trim();
+		}
+		team[0] = author(authorString);
 	}
 	
 	
@@ -645,6 +653,55 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	}
 
 	
+	private void makeEmpty(NonViralName nameToBeFilled){
+		nameToBeFilled.setRank(null);
+		nameToBeFilled.setTitleCache(null, false);
+		nameToBeFilled.setNameCache(null);
+				
+		nameToBeFilled.setAppendedPhrase(null);
+		//TODO ??
+		//nameToBeFilled.setBasionym(basionym);
+		nameToBeFilled.setBasionymAuthorTeam(null);
+		nameToBeFilled.setCombinationAuthorTeam(null);
+		nameToBeFilled.setExBasionymAuthorTeam(null);
+		nameToBeFilled.setExCombinationAuthorTeam(null);
+		nameToBeFilled.setAuthorshipCache(null);
+		
+		
+		nameToBeFilled.setHasProblem(false);
+		// TODO ?
+		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
+
+		
+		nameToBeFilled.setGenusOrUninomial(null);
+		nameToBeFilled.setInfraGenericEpithet(null);
+		nameToBeFilled.setSpecificEpithet(null);
+		nameToBeFilled.setInfraSpecificEpithet(null);
+		
+		nameToBeFilled.setNomenclaturalMicroReference(null);
+		nameToBeFilled.setNomenclaturalReference(null);
+		
+		if (nameToBeFilled instanceof BotanicalName){
+			BotanicalName botanicalName = (BotanicalName)nameToBeFilled;
+			botanicalName.setAnamorphic(false);
+			botanicalName.setHybridFormula(false);
+			botanicalName.setMonomHybrid(false);
+			botanicalName.setBinomHybrid(false);
+			botanicalName.setTrinomHybrid(false);
+		}
+		
+		if (nameToBeFilled instanceof ZoologicalName){
+			ZoologicalName zoologicalName = (ZoologicalName)nameToBeFilled;
+			zoologicalName.setBreed(null);
+			zoologicalName.setOriginalPublicationYear(null);
+		}
+		
+		//TODO adapt to @Version of versionable entity, throws still optimistic locking error
+		//nameToBeFilled.setUpdated(Calendar.getInstance());
+		// TODO nameToBeFilled.setUpdatedBy(updatedBy);		
+	}
+	
+	
     
     //splitter
     static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
@@ -710,13 +767,17 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
         
     //Zoo. Author
     //TODO does zoo author have ex-Author?
-    static String zooAuthorTeam = authorTeam + fWs + "," + fWs + singleYear;
+    static String zooAuthorYearSeperator = ",";
+    static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
+    static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
     static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;
     static String fullZooAuthorString = fWs + "(" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + fWs;
     static String facultFullZooAuthorString = "(" +  fullZooAuthorString + ")?" ; 
  
     static String facultFullAuthorString2 = "(" + facultFullBotanicAuthorString + "|" + facultFullZooAuthorString + ")";
     
+    static String basionymAuthor = "(" + botanicBasionymAuthor + "|" + zooBasionymAuthor+ ")";
+    static String fullAuthorString = "(" + fullBotanicAuthorString + "|" + fullZooAuthorString+ ")";
     
     //details
     //TODO still very simple
@@ -775,7 +836,6 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
     static String anyZooFullName = anyZooName + oWs + fullZooAuthorString;
     static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
     
-    
     //Pattern
     static Pattern oWsPattern = Pattern.compile(oWs);
     static Pattern teamSplitterPattern = Pattern.compile(teamSplitter);
@@ -791,11 +851,24 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
     static Pattern oldInfraSpeciesPattern = Pattern.compile(start + oldInfraSpecies + facultFullAuthorString2 + end);
     static Pattern autonymPattern = Pattern.compile(start + autonym + fWs + end);
 	
-    static Pattern botanicBotanicPattern = Pattern.compile(botanicBasionymAuthor);
-    //static Pattern startsWithBasionymRE = Pattern.compile(basionymAuthor + anyEnd);
+    static Pattern botanicBasionymPattern = Pattern.compile(botanicBasionymAuthor);
+    static Pattern zooBasionymPattern = Pattern.compile(zooBasionymAuthor);
+    static Pattern basionymPattern = Pattern.compile(basionymAuthor);
+    
+    static Pattern zooAuthorPattern = Pattern.compile(zooAuthorTeam);
+    static Pattern zooAuthorAddidtionPattern = Pattern.compile(zooAuthorAddidtion);
+    
     static Pattern exAuthorPattern = Pattern.compile(oWs + exString);
     
     static Pattern fullBotanicAuthorStringPattern = Pattern.compile(fullBotanicAuthorString);
     static Pattern fullZooAuthorStringPattern = Pattern.compile(fullZooAuthorString);
+    static Pattern fullAuthorStringPattern = Pattern.compile(fullAuthorString);
+    
+    static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
+    static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
 
+
+
+    
+    
 }

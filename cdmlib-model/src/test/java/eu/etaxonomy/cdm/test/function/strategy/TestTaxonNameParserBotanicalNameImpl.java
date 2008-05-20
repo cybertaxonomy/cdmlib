@@ -89,7 +89,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 		//String reference1 = "Sp. P.";
 		String fullRef1 = strNameAbiesBasionymAuthorUe + ", " + reference1;
 		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);
-		parser.parseFullReference(fullRef1, null);
+		parser.parseFullReference(fullRef1, null, null);
 		
 		System.out.println("Name: " + botanicalName.getTitleCache());
 		System.out.println("Reference: " + botanicalName.getTitleCache());
