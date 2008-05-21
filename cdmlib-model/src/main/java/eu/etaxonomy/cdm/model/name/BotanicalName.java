@@ -213,6 +213,7 @@ public class BotanicalName extends NonViralName {
 	}
 	
 	
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.ICBN();

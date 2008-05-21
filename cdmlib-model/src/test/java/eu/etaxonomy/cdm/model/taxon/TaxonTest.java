@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +70,7 @@ public class TaxonTest extends EntityTestBase {
 	@Test
 	public void testAddTaxonomicChild() {
 		rootT.addTaxonomicChild(freeT, null, null);
-		assertTrue(rootT.getTaxonomicChildren().size()==3);
+		Assert.assertEquals(Integer.valueOf(3), Integer.valueOf(rootT.getTaxonomicChildren().size()));
 	}
 
 	@Test

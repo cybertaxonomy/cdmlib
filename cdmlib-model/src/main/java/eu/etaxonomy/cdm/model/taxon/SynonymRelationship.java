@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -52,21 +50,21 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getAcceptedTaxon(){
-		return getRelationTo();
+		return super.getRelatedTo();
 	}
 
 	protected void setAcceptedTaxon(Taxon acceptedTaxon){
-		setRelationTo(acceptedTaxon);
+		super.setRelatedTo(acceptedTaxon);
 	}
 
 //	@ManyToOne(fetch=FetchType.EAGER)
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Synonym getSynonym(){
-		return getRelationFrom();
+		return super.getRelatedFrom();
 	}
 	protected void setSynonym(Synonym synoynm){
-		setRelationFrom(synoynm);
+		super.setRelatedFrom(synoynm);
 	}
 
 }

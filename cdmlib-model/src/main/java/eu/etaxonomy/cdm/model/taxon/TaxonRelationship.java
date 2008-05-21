@@ -67,21 +67,21 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getFromTaxon(){
-		return getRelationFrom();
+		return getRelatedFrom();
 	}
 	public void setFromTaxon(Taxon fromTaxon){
-		setRelationFrom(fromTaxon);
+		setRelatedFrom(fromTaxon);
 	}
 
 //	@ManyToOne(fetch=FetchType.EAGER)
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getToTaxon(){
-		return getRelationTo();
+		return getRelatedTo();
 	}
 
 	public void setToTaxon(Taxon toTaxon){
-		setRelationTo(toTaxon);
+		setRelatedTo(toTaxon);
 	}
 
 }

@@ -87,6 +87,7 @@ public class ZoologicalName extends NonViralName {
 	}
 	
 	
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.ICZN();

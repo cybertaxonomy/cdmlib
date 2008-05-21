@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.UUID;
+
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
@@ -19,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @created 19.05.2008
  * @version 1.0
  */
+@Entity
 public class NomenclaturalCode extends DefinedTermBase {
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 

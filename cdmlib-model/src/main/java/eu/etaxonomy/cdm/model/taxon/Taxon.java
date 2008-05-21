@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -33,7 +35,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:56
  */
 @Entity
-public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonRelationship>{
+public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 	// all related synonyms
@@ -81,7 +83,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonR
 
 
 	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
-	@OneToMany(mappedBy="acceptedTaxon", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
@@ -103,7 +105,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonR
 	}
 	
 
-	@OneToMany(mappedBy="fromTaxon", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;
@@ -115,7 +117,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonR
 
 
 	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
-	@OneToMany(mappedBy="toTaxon", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
 		return relationsToThisTaxon;
@@ -170,13 +172,19 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<TaxonR
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
 	 */
-	public void addRelationship(TaxonRelationship rel){
-		addTaxonRelation(rel);
+	public void addRelationship(RelationshipBase rel){
+		if (rel instanceof TaxonRelationship){
+			addTaxonRelation((TaxonRelationship)rel);
+		}else if (rel instanceof SynonymRelationship){
+			addSynonymRelation((SynonymRelationship)rel);
+		}else{
+			throw new ClassCastException("Wrong Relationsship type for Taxon.addRelationship");
+		}
 	}
 	
 	
 	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
-		TaxonRelationship rel = new TaxonRelationship(toTaxon, this, type, citation, microcitation);
+		TaxonRelationship rel = new TaxonRelationship(this, toTaxon, type, citation, microcitation);
 	}
 	public void addMisappliedName(Taxon toTaxon, ReferenceBase citation, String microcitation) {
 		addTaxonRelation(toTaxon, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);

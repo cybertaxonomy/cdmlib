@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -55,6 +54,7 @@ public class CultivarPlantName extends BotanicalName {
 	}
 	
 	
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.ICNCP();

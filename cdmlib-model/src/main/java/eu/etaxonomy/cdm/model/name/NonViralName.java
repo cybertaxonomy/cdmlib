@@ -229,6 +229,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()
 	 */
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode() {
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");

@@ -55,6 +55,7 @@ public class ViralName extends TaxonNameBase {
 	}
 	
 	
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.VIRAL();

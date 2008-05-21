@@ -27,8 +27,8 @@ import javax.persistence.*;
 @MappedSuperclass
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
-	private FROM relationFrom;
-	private TO relationTo;
+	private FROM relatedFrom;
+	private TO relatedTo;
 	private TYPE type;
 
 	protected RelationshipBase(){
@@ -44,8 +44,8 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	 */
 	protected RelationshipBase(FROM from, TO to, TYPE type, ReferenceBase citation, String citationMicroReference) {
 		super(citation, citationMicroReference, null);
-		setRelationFrom(from);
-		setRelationTo(to);
+		setRelatedFrom(from);
+		setRelatedTo(to);
 		setType(type);
 		from.addRelationship(this);
 		to.addRelationship(this);
@@ -62,21 +62,21 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	protected FROM getRelationFrom() {
-		return relationFrom;
+	protected FROM getRelatedFrom() {
+		return relatedFrom;
 	}
-	protected void setRelationFrom(FROM relationFrom) {
-		this.relationFrom = relationFrom;
+	protected void setRelatedFrom(FROM relatedFrom) {
+		this.relatedFrom = relatedFrom;
 	}
 
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	protected TO getRelationTo() {
-		return relationTo;
+	protected TO getRelatedTo() {
+		return relatedTo;
 	}
-	protected void setRelationTo(TO relationTo) {
-		this.relationTo = relationTo;
+	protected void setRelatedTo(TO relatedTo) {
+		this.relatedTo = relatedTo;
 	}
 	
 // TODO

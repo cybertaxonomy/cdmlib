@@ -66,6 +66,7 @@ public class BacterialName extends NonViralName {
 	}
 	
 	
+	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.BACTERIOLOGICAL();
