@@ -127,7 +127,7 @@ public class RestController extends AbstractController
 				}
 				else if(op.equalsIgnoreCase("root")){
 					UUID u = null;
-					if(sec != null && sec.length() == 37 ){
+					if(sec != null && sec.length() == 36 ){
 						try {
 							u = getUuid(sec);
 						} catch (CdmObjectNonExisting e) {
