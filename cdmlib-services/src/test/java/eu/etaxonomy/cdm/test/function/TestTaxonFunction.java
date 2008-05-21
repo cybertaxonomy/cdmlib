@@ -56,25 +56,25 @@ public class TestTaxonFunction {
 		
 		//root
 		String rootName = "Hieracium L.";
-		BotanicalName botanicalName= parser.parseFullName(rootName);
+		NonViralName botanicalName= parser.parseFullName(rootName);
 		sec.setUuid(getRefUuid());
 		Taxon genusTaxon = Taxon.NewInstance(botanicalName, sec);
 				
 		//child1
 		String child1Name = "Hieracium asturianum Pau";
-		BotanicalName botSpecies= parser.parseFullName(child1Name);
+		NonViralName botSpecies= parser.parseFullName(child1Name);
 		Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
 		childTaxon.setTaxonomicParent(genusTaxon, null, null);
 
 		//child2
 		String child2Name = "Hieracium wolffii Zahn";
-		BotanicalName botSpecies2= parser.parseFullName(child2Name);
+		NonViralName botSpecies2= parser.parseFullName(child2Name);
 		Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
 		childTaxon2.setTaxonomicParent(childTaxon, null, null);
 
 		//synonym
 		String synonymName = "Acacium wolffii Syn.";
-		BotanicalName botSynName= parser.parseFullName(synonymName);
+		NonViralName botSynName= parser.parseFullName(synonymName);
 		
 		Synonym synTaxon = Synonym.NewInstance(botSynName, sec);
 		childTaxon2.addSynonym(synTaxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
