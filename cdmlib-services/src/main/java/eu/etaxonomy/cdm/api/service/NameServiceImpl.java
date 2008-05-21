@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -84,20 +85,20 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
 	 */
-	public OrderedTermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
+	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
 		String uuidRank = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
 		UUID rankUuid = UUID.fromString(uuidRank);
-		OrderedTermVocabulary<NameRelationshipType> nameRelTypeVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		TermVocabulary<NameRelationshipType> nameRelTypeVocabulary = (TermVocabulary)vocabularyDao.findByUuid(rankUuid);
 		return nameRelTypeVocabulary;
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
 	 */
-	public OrderedTermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
+	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
 		String uuidRank = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
 		UUID rankUuid = UUID.fromString(uuidRank);
-		OrderedTermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = (TermVocabulary)vocabularyDao.findByUuid(rankUuid);
 		return nomStatusTypeVocabulary;
 	}
 

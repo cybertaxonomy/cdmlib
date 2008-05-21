@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
@@ -60,12 +61,12 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * Returns all NomenclaturalStatusTypes.
 	 * @return
 	 */
-	public abstract OrderedTermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
+	public abstract TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
 	
 	
 	/**
 	 * Returns all NameRelationshipTypes.
 	 * @return
 	 */
-	public abstract OrderedTermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
+	public abstract TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 }

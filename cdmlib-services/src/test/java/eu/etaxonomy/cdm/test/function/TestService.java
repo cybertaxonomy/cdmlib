@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -138,14 +139,14 @@ public class TestService {
 	
 	
 	public void testVocabularyLists(){
-		OrderedTermVocabulary<NomenclaturalStatusType> voc = appCtr.getNameService().getStatusTypeVocabulary();
-		Set<NomenclaturalStatusType> set = voc.getOrderedLabels(Language.DEFAULT());
+		TermVocabulary<NomenclaturalStatusType> voc = appCtr.getNameService().getStatusTypeVocabulary();
+		Set<NomenclaturalStatusType> set = voc.getTermsOrderedByLabels(Language.DEFAULT());
 		for (Object obj : set.toArray()){
 			NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)obj;
 			System.out.println(nomStatusType.getLabel());
 		}
-		OrderedTermVocabulary<NameRelationshipType> nameRelVoc = appCtr.getNameService().getNameRelationshipTypeVocabulary();
-		Set<NameRelationshipType> nameRelSet = nameRelVoc.getOrderedLabels(Language.DEFAULT());
+		TermVocabulary<NameRelationshipType> nameRelVoc = appCtr.getNameService().getNameRelationshipTypeVocabulary();
+		Set<NameRelationshipType> nameRelSet = nameRelVoc.getTermsOrderedByLabels(Language.DEFAULT());
 		for (Object obj : nameRelSet.toArray()){
 			NameRelationshipType naemRelType = (NameRelationshipType)obj;
 			System.out.println(naemRelType.getLabel());

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
-import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public class TestTaxonFunction {
@@ -50,7 +50,7 @@ public class TestTaxonFunction {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
-		ITaxonNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
+		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
 		ReferenceBase sec = new Book();
 		sec.setTitleCache("ConceptRef");
 		
