@@ -129,6 +129,7 @@
             <value>eu.etaxonomy.cdm.model.name.NameRelationship</value>
             <value>eu.etaxonomy.cdm.model.name.NameRelationshipType</value>
             <value>eu.etaxonomy.cdm.model.name.NameTypeDesignation</value>
+            <value>eu.etaxonomy.cdm.model.name.NomenclaturalCode</value>
             <value>eu.etaxonomy.cdm.model.name.NomenclaturalStatus</value>
             <value>eu.etaxonomy.cdm.model.name.NomenclaturalStatusType</value>
             <value>eu.etaxonomy.cdm.model.name.NonViralName</value>
