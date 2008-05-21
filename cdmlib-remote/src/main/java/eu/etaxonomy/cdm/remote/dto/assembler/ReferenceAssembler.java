@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.common.Media;
-import eu.etaxonomy.cdm.model.common.MediaInstance;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaInstance;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.remote.dto.IReferenceSTO;

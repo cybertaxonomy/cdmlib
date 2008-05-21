@@ -1,7 +1,7 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
-import eu.etaxonomy.cdm.model.common.Media;
-import eu.etaxonomy.cdm.model.common.MediaInstance;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaInstance;
 import eu.etaxonomy.cdm.remote.dto.MediaTO;
 import eu.etaxonomy.cdm.remote.dto.MediaSTO;
 
