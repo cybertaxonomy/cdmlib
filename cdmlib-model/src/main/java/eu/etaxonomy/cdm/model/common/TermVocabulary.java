@@ -160,7 +160,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	 * @return
 	 */
 	@Transient
-	public SortedSet<T> getOrderedLabels(Language language){
+	public SortedSet<T> getTermsOrderedByLabels(Language language){
 		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
 		comp.setCompareLanguage(language);
 		

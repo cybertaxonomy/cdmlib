@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -33,6 +31,15 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	private String volume;
 	private String pages;
 
+	public static Generic NewInstance(){
+		return new Generic();
+	}
+	
+	public Generic(){
+		super();
+	}
+	
+	
 	public String getPublisher(){
 		return this.publisher;
 	}

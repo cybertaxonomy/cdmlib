@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 
-import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
@@ -38,7 +38,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Döhring) D'Müller ex. de Greuther"; 
 	final private String strNameAbiesBasionymAuthorUe = "Abies alba (Ciardelli) D'Mueller";
 	
-	private ITaxonNameParser<BotanicalName> parser ;
+	private INonViralNameParser<BotanicalName> parser ;
 
 /*************** TEST *********************************************/
 

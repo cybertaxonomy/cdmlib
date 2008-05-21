@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import org.apache.log4j.Logger;
 
@@ -24,12 +23,13 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class StrictReferenceBase extends ReferenceBase {
+public abstract class StrictReferenceBase extends ReferenceBase{
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	//Title of the reference
 	private String title;
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
 	private TimePeriod datePublished;
+	
 
 	public String getTitle(){
 		return this.title;
@@ -61,5 +61,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	public String getYear(){
 		return getDatePublished().toString();
 	}
+	
+
 
 }

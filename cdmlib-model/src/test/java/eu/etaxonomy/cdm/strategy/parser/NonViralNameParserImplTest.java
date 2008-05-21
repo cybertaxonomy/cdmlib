@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
@@ -53,7 +53,7 @@ public class NonViralNameParserImplTest {
 	final private String strNameEmpty = "";
 	final private String strNameNull = null;
 	
-	private ITaxonNameParser<NonViralName> parser ;
+	private INonViralNameParser<NonViralName> parser ;
 	private NomenclaturalCode botanicCode; 
 	
 	/**
@@ -163,79 +163,84 @@ public class NonViralNameParserImplTest {
 	 */
 	@Test
 	public final void testParseFullName() {
+		NonViralName name1 = parser.parseFullName(strNameAbies1, null, Rank.SPECIES());
+		assertEquals(name1.getGenusOrUninomial(), "Abies");
+		assertEquals(name1.getSpecificEpithet(), "alba");
 		
-			NonViralName name1 = parser.parseFullName(strNameAbies1, null, Rank.SPECIES());
-			assertEquals(name1.getGenusOrUninomial(), "Abies");
-			assertEquals(name1.getSpecificEpithet(), "alba");
-			
-			NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1, null, Rank.SPECIES());
-			assertEquals("Abies", nameAuthor.getGenusOrUninomial());
-			assertEquals("alba", nameAuthor.getSpecificEpithet());
-			assertEquals("Mueller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-			
-			NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
-			assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
-			assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-			assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-			assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
-			
-			NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
-			assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
-			assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-			assertEquals("D'Mueller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-			assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
-			assertEquals("Ciardelli", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
-			assertEquals("Doering", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
-			
-			NonViralName name2 = parser.parseFullName(strNameAbiesSub1, null, Rank.SPECIES());
-			assertEquals(name2.getGenusOrUninomial(), "Abies");
-			assertEquals(name2.getSpecificEpithet(), "alba");
-			assertEquals(name2.getInfraSpecificEpithet(), "beta");
-			assertEquals(Rank.SUBSPECIES(), name2.getRank());
-			
-			//Team
-			NonViralName nameTeam1 = parser.parseFullName(strNameTeam1);
-			assertEquals( "Abies", nameTeam1.getGenusOrUninomial());
-			assertEquals( "alba", nameTeam1.getSpecificEpithet());
-			assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorTeam().getNomenclaturalTitle());
-			assertTrue(nameTeam1.getCombinationAuthorTeam() instanceof Team);
-			Team team = (Team)nameTeam1.getCombinationAuthorTeam();
-			assertEquals("Mueller", team.getTeamMembers().get(0).getNomenclaturalTitle());
-			assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitle());
+		NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1, null, Rank.SPECIES());
+		assertEquals("Abies", nameAuthor.getGenusOrUninomial());
+		assertEquals("alba", nameAuthor.getSpecificEpithet());
+		assertEquals("Mueller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		
+		NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
+		assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
+		assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
+		assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
+		
+		NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
+		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
+		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
+		assertEquals("D'Mueller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Ciardelli", nameBasionymExAuthor.getBasionymAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Doering", nameBasionymExAuthor.getExBasionymAuthorTeam().getNomenclaturalTitle());
+		
+		NonViralName name2 = parser.parseFullName(strNameAbiesSub1, null, Rank.SPECIES());
+		assertEquals(name2.getGenusOrUninomial(), "Abies");
+		assertEquals(name2.getSpecificEpithet(), "alba");
+		assertEquals(name2.getInfraSpecificEpithet(), "beta");
+		assertEquals(Rank.SUBSPECIES(), name2.getRank());
+		
+		//Team
+		NonViralName nameTeam1 = parser.parseFullName(strNameTeam1);
+		assertEquals( "Abies", nameTeam1.getGenusOrUninomial());
+		assertEquals( "alba", nameTeam1.getSpecificEpithet());
+		assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertTrue(nameTeam1.getCombinationAuthorTeam() instanceof Team);
+		Team team = (Team)nameTeam1.getCombinationAuthorTeam();
+		assertEquals("Mueller", team.getTeamMembers().get(0).getNomenclaturalTitle());
+		assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitle());
 
-			//ZooName
-			ZoologicalName nameZoo1 = (ZoologicalName)parser.parseFullName(strNameZoo1);
-			assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
-			assertEquals( "alba", nameZoo1.getSpecificEpithet());
-			assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorTeam().getNomenclaturalTitle());
-			assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomeclaturalCode() );
-			assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
-			assertTrue(nameZoo1.getCombinationAuthorTeam() instanceof Team);
-			Team teamZoo = (Team)nameZoo1.getCombinationAuthorTeam();
-			assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitle());
-			assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitle());
+		//ZooName
+		ZoologicalName nameZoo1 = (ZoologicalName)parser.parseFullName(strNameZoo1);
+		assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
+		assertEquals( "alba", nameZoo1.getSpecificEpithet());
+		assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomeclaturalCode() );
+		assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
+		assertTrue(nameZoo1.getCombinationAuthorTeam() instanceof Team);
+		Team teamZoo = (Team)nameZoo1.getCombinationAuthorTeam();
+		assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitle());
+		assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitle());
 
-			ZoologicalName nameZoo2 = (ZoologicalName)parser.parseFullName(strNameZoo2);
-			assertEquals(Integer.valueOf(2002), nameZoo2.getPublicationYear());
-			assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
-			assertEquals("Mueller",  nameZoo2.getBasionymAuthorTeam().getNomenclaturalTitle());
-			assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorTeam().getNomenclaturalTitle());
-			
-			
-			// unparseable *********
-			String problemString = "sdfjlös wer eer wer";
-			NonViralName nameProblem = parser.parseFullName(problemString, null, Rank.SPECIES());
-			assertTrue(nameProblem.getHasProblem());
-			assertEquals(problemString, nameProblem.getTitleCache());
-			
-			//empty
-			NonViralName nameEmpty = parser.parseFullName(strNameEmpty);
-			assertNotNull(nameEmpty);
-			assertEquals("", nameEmpty.getTitleCache());
-			
-			//null
-			NonViralName nameNull = parser.parseFullName(strNameNull);
-			assertNull(nameNull);
+		ZoologicalName nameZoo2 = (ZoologicalName)parser.parseFullName(strNameZoo2);
+		assertEquals(Integer.valueOf(2002), nameZoo2.getPublicationYear());
+		assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
+		assertEquals("Mueller",  nameZoo2.getBasionymAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorTeam().getNomenclaturalTitle());
+		
+		String strNotParsableZoo = "Abies alba M., 1923, Sp. P. xxwer4352";
+		ZoologicalName nameZooRefNotParsabel = (ZoologicalName)parser.parseFullReference(strNotParsableZoo, null, null);
+		assertTrue(nameZooRefNotParsabel.hasProblem());
+		assertEquals(NomenclaturalCode.ICZN(), nameZooRefNotParsabel.getNomeclaturalCode());
+		assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
+		
+		// unparseable *********
+		String problemString = "sdfjlös wer eer wer";
+		NonViralName nameProblem = parser.parseFullName(problemString, null, Rank.SPECIES());
+		assertTrue(nameProblem.getHasProblem());
+		assertEquals(problemString, nameProblem.getTitleCache());
+		
+		//empty
+		NonViralName nameEmpty = parser.parseFullName(strNameEmpty);
+		assertNotNull(nameEmpty);
+		assertEquals("", nameEmpty.getTitleCache());
+		
+		//null
+		NonViralName nameNull = parser.parseFullName(strNameNull);
+		assertNull(nameNull);
+
 	}
 
 	/**

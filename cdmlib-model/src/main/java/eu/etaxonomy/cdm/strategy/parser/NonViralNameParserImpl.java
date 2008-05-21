@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -25,7 +24,9 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
+public class NonViralNameParserImpl implements INonViralNameParser<NonViralName> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -63,30 +64,16 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	public NonViralName parseSimpleName(String simpleName){
 		return parseSimpleName(simpleName, null);
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
-	 */
-	public NonViralName parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
-		if (fullReferenceString == null){
-			return null;
-		}else{
-			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
-			parseFullReference(result, fullReferenceString, rank, MAKE_EMPTY);
-			return result;
-		}
-	}
 	
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
 		return getNonViralNameInstance(fullString, code, null);
 	}
 	
-	
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
 		NonViralName result = null;
 		if (code == null){
-			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).matches();
-			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).matches();;
+			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
+			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
 			boolean isBacteriologicalName = false;
 			boolean isCultivatedPlantName = false;
 			if ( (isBotanicalName || isCultivatedPlantName) && ! isZoologicalName && !isBacteriologicalName){
@@ -95,7 +82,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 				}else{
 					result = CultivarPlantName.NewInstance(rank);
 				}
-			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
+			}else if ( isZoologicalName /*&& ! isBotanicalName*/ && !isBacteriologicalName && !isCultivatedPlantName){
 				result = ZoologicalName.NewInstance(rank);
 			}else if ( isZoologicalName && ! isBotanicalName && !isBacteriologicalName && !isCultivatedPlantName){
 				result = BacterialName.NewInstance(rank);
@@ -120,6 +107,26 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		return result;
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseFullReference(java.lang.String)
+	 */
+	public NonViralName parseFullReference(String fullReferenceString) {
+		return parseFullReference(fullReferenceString, null, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
+	 */
+	public NonViralName parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
+		if (fullReferenceString == null){
+			return null;
+		}else{
+			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+			parseFullReference(result, fullReferenceString, rank, MAKE_EMPTY);
+			return result;
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
@@ -135,15 +142,21 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		fullReferenceString.replaceAll(oWs , " ");
 		fullReferenceString = fullReferenceString.trim();
 		
+		String localFullName;
+		if (nameToBeFilled instanceof ZoologicalName){
+			localFullName = anyZooFullName;
+		}else{
+			localFullName = anyBotanicFullName;
+		}
 		//seperate name and reference part
-		String nameAndRefSeperator = "(^" + anyFullName + ")("+ referenceSeperator + ")";
+		String nameAndRefSeperator = "(^" + localFullName + ")("+ referenceSeperator + ")";
 		Pattern nameAndRefSeperatorPattern = Pattern.compile(nameAndRefSeperator);
 		Matcher nameAndRefSeperatorMatcher = nameAndRefSeperatorPattern.matcher(fullReferenceString);
 				
 		if (nameAndRefSeperatorMatcher.find() ){
 			String nameAndSeperator = nameAndRefSeperatorMatcher.group(0); 
 		    String name = nameAndRefSeperatorMatcher.group(1); 
-		    String reference = fullReferenceString.substring(nameAndRefSeperatorMatcher.end());
+		    String referenceString = fullReferenceString.substring(nameAndRefSeperatorMatcher.end());
 		    
 		    // inRef?
 		    String seperator = nameAndSeperator.substring(name.length());
@@ -153,12 +166,15 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		    }
 		   	
 		    //status
-		    reference = parseNomStatus(reference, nameToBeFilled);
+		    referenceString = parseNomStatus(referenceString, nameToBeFilled);
 		    
 		    //parse subparts
 		    parseFullName(nameToBeFilled, name, rank, makeEmpty);
-		    parseReference(nameToBeFilled, reference, isInReference); 
-		
+		    parseReference(nameToBeFilled, referenceString, isInReference); 
+		    ReferenceBase ref = nameToBeFilled.getNomenclaturalReference();
+		    if (ref != null && ref.getHasProblem()){
+		    	nameToBeFilled.setHasProblem(true);
+		    }
 		}else{
 			//don't parse if name can't be seperated
 			nameToBeFilled.setHasProblem(true);
@@ -233,6 +249,11 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 			}
 			//Title (and author)
 			parseReferenceTitle(reference, yearPart);
+	    }else{
+	    	Generic ref = Generic.NewInstance();
+	    	ref.setTitleCache(reference);
+	    	ref.setHasProblem(true);
+	    	nameToBeFilled.setNomenclaturalReference(ref);
 	    }
 	    
 	}
@@ -452,7 +473,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * @return array of Teams containing the Team[0], 
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	public void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years, Class clazz)
+	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years, Class clazz)
 			throws StringNotParsableException{
 		fullAuthorString = fullAuthorString.trim();
 		if (fullAuthorString == null || clazz == null){
@@ -480,7 +501,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	/*
 	 * like fullTeams but without trim and match check
 	 */
-	private void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years){
+	protected void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years){
 		int authorTeamStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
 		
@@ -514,7 +535,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * @param authorTeamString String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	public void authorsAndEx (String authorTeamString, TeamOrPersonBase[] authors, Integer[] years){
+	protected void authorsAndEx (String authorTeamString, TeamOrPersonBase[] authors, Integer[] years){
 		//TODO noch allgemeiner am anfang durch Replace etc. 
 		authorTeamString = authorTeamString.trim();
 		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " ); 
@@ -530,7 +551,15 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		zooOrBotanicAuthor(authorTeamString.substring(0, authorEnd), authors, years );
 	}
 	
-	public void zooOrBotanicAuthor(String authorString, TeamOrPersonBase[] team, Integer[] year){
+	/**
+	 * Parses the authorString and if it matches an botanical or zoological authorTeam it fills
+	 * the computes the AuthorTeam and fills it into the first field of the team array. Same applies 
+	 * to the year in case of an zoological name. 
+	 * @param authorString
+	 * @param team
+	 * @param year
+	 */
+	protected void zooOrBotanicAuthor(String authorString, TeamOrPersonBase[] team, Integer[] year){
 		if (authorString == null){ 
 			return;
 		}else if ((authorString = authorString.trim()).length() == 0){
@@ -554,7 +583,7 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 	 * @param authorTeamString String representing the author team
 	 * @return an Team 
 	 */
-	public TeamOrPersonBase author (String authorString){
+	protected TeamOrPersonBase author (String authorString){
 		if (authorString == null){ 
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
@@ -570,7 +599,13 @@ public class NonViralNameParserImpl implements ITaxonNameParser<NonViralName> {
 		
 	}
 	
-	private Team parsedTeam(String authorString){
+	/**
+	 * Parses an authorString (reprsenting a team into the single authors and add
+	 * them to the return Team.
+	 * @param authorString
+	 * @return Team
+	 */
+	protected Team parsedTeam(String authorString){
 		Team result = Team.NewInstance();
 		String[] authors = authorString.split(teamSplitter);
 		for (String author : authors){

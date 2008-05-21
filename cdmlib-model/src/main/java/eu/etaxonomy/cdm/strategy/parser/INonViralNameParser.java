@@ -11,7 +11,27 @@ import eu.etaxonomy.cdm.strategy.IStrategy;
  * @author a.mueller
  *
  */
-public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
+public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy {
+	
+	/**
+	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * If the String is not parseable the "hasProblem" bit is set to true.
+ 	 * Returns null if fullName == null.
+	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
+	 * @param rank
+	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials  
+	 */
+	public T parseSimpleName(String simpleName, Rank rank);
+
+	/**
+	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * If the String is not parseable the "hasProblem" bit is set to true.
+ 	 * Returns null if fullName == null.
+	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
+	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
+	 */
+	public T parseSimpleName(String simpleName);
+	
 	
 
 	/**
@@ -45,32 +65,26 @@ public interface ITaxonNameParser<T extends TaxonNameBase> extends IStrategy {
 	 */
 	public void parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
-	public T parseFullReference(String fullReference, NomenclaturalCode nomCode, Rank rank);
-	
-
-	public void parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
-	
+	/**
+	 * @param fullReference
+	 * @return
+	 */
+	public T parseFullReference(String fullReference);
 	
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
-	 * If the String is not parseable the "hasProblem" bit is set to true.
- 	 * Returns null if fullName == null.
-	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
+	 * @param fullReference
+	 * @param nomCode
 	 * @param rank
-	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials  
+	 * @return
 	 */
-	public T parseSimpleName(String simpleName, Rank rank);
+	public T parseFullReference(String fullReference, NomenclaturalCode nomCode, Rank rank);
 
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
-	 * If the String is not parseable the "hasProblem" bit is set to true.
- 	 * Returns null if fullName == null.
-	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
-	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
+	 * @param nameToBeFilled
+	 * @param fullReference
+	 * @param rank
+	 * @param makeEmpty
 	 */
-	public T parseSimpleName(String simpleName);
-	
-
-	
+	public void parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 	
 }

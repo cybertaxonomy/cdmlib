@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:47
  */
 @Entity
-public abstract class ReferenceBase extends IdentifyableMediaEntity{
+public abstract class ReferenceBase extends IdentifyableMediaEntity implements IParsable{
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
 	//URIs like DOIs, LSIDs or Handles for this reference
 	private String uri;
@@ -34,6 +35,9 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity{
 	//nomenclatural reference in a name this flag should be automatically set
 	private boolean isNomenclaturallyRelevant;
 	private Agent authorTeam;
+	//this flag will be set to true if the parseName method was unable to successfully parse the name
+	private boolean hasProblem = false;
+	
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -76,4 +80,11 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity{
 	@Transient
 	public abstract String getYear();
 
+	public boolean getHasProblem(){
+		return this.hasProblem;
+	}
+	public void setHasProblem(boolean hasProblem){
+		this.hasProblem = hasProblem;
+	}
+	
 }

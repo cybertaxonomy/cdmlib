@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
@@ -48,7 +49,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity {
+public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
 	private String nameCache;
@@ -420,6 +421,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
+	}
+	/**
+	 * Same as getHasProblem()
+	 * @return
+	 */
+	public boolean hasProblem(){
+		return getHasProblem();
 	}
 
 

@@ -17,7 +17,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.parser.ITaxonNameParser;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 import java.util.*;
@@ -42,7 +42,7 @@ public class BotanicalName extends NonViralName {
 	private boolean isAnamorphic;
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
-	static private ITaxonNameParser nameParser = new NonViralNameParserImpl();
+	static private INonViralNameParser nameParser = new NonViralNameParserImpl();
 	
 	
 	/**
