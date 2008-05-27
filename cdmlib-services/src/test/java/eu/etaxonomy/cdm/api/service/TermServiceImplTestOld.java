@@ -5,11 +5,10 @@ import static org.junit.Assert.*;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 
-public class TermServiceImplTest extends CdmUnitTestBase{
-	private static final Logger logger = Logger.getLogger(TermServiceImplTest.class);
+public class TermServiceImplTestOld extends CdmUnitTestBase{
+	private static final Logger logger = Logger.getLogger(TermServiceImplTestOld.class);
 	
 	@Test
 	public void testGetTermByUuid() {
