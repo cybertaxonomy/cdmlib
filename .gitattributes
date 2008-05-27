@@ -446,6 +446,8 @@ cdmlib-services/LICENSE.TXT -text
 cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
@@ -469,7 +471,7 @@ cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/site/site.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTestOld.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text

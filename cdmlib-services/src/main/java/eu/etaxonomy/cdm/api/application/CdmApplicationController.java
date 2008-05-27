@@ -44,16 +44,9 @@ public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
 	public AbstractApplicationContext applicationContext;
-	private INameService nameService;
-	private ITaxonService taxonService;
-	private IReferenceService referenceService;
-	private IAgentService agentService;
-	private IDatabaseService databaseService;
-	private ITermService termService;
-	private Server hsqldbServer;
+	private ICdmApplicationConfiguration configuration;
 	
 	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
-	
 	
 	
 	/**
@@ -237,40 +230,35 @@ public class CdmApplicationController {
 				logger.info(bean);
 			}
 		}
-		taxonService = (ITaxonService)applicationContext.getBean("taxonServiceImpl");
-		nameService = (INameService)applicationContext.getBean("nameServiceImpl");
-		referenceService = (IReferenceService)applicationContext.getBean("referenceServiceImpl");
-		agentService = (IAgentService)applicationContext.getBean("agentServiceImpl");
-		termService = (ITermService)applicationContext.getBean("termServiceImpl");
-		databaseService = (IDatabaseService)applicationContext.getBean("databaseServiceHibernateImpl");
-		databaseService.setApplicationController(this);
+		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
+		getDatabaseService().setApplicationController(this);
 	}
 	
 
 	
 	/* ******  Services *********/
 	public final INameService getNameService(){
-		return this.nameService;
+		return configuration.getNameService();
 	}
 
 	public final ITaxonService getTaxonService(){
-		return this.taxonService;
+		return configuration.getTaxonService();
 	}
 
 	public final IReferenceService getReferenceService(){
-		return this.referenceService;
+		return configuration.getReferenceService();
 	}
 	
 	public final IAgentService getAgentService(){
-		return this.agentService;
+		return configuration.getAgentService();
 	}
 	
 	public final IDatabaseService getDatabaseService(){
-		return this.databaseService;
+		return configuration.getDatabaseService();
 	}
 	
 	public final ITermService getTermService(){
-		return this.termService;
+		return configuration.getTermService();
 	}
 	
 	/* **** flush ***********/
@@ -278,7 +266,5 @@ public class CdmApplicationController {
 		SessionFactory sf = (SessionFactory)applicationContext.getBean("sessionFactory");
 		sf.getCurrentSession().flush();
 	}
-		
-		
-	
+
 }

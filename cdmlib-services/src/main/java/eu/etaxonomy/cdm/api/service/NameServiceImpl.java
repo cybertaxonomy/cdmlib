@@ -29,7 +29,7 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
-	static Logger logger = Logger.getLogger(NameServiceImpl.class);
+	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
 	
