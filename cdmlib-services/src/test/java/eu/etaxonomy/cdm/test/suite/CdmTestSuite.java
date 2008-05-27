@@ -6,14 +6,18 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
+import eu.etaxonomy.cdm.test.integration.CreateDataTest;
+import eu.etaxonomy.cdm.test.integration.TermLoaderIntegrationTest;
 
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( 
 		{ 	
-			TaxonServiceImplTest.class,
-			TermServiceImplTest.class
+			TaxonServiceImplTest.class
+			,TermServiceImplTest.class
+			,TermLoaderIntegrationTest.class
+			//,CreateDataTest.class
 		}
 	)
 public class CdmTestSuite {
@@ -25,8 +29,10 @@ public class CdmTestSuite {
 	//console test  //TODO test
 	public static void consoleRun() {
 		org.junit.runner.JUnitCore.runClasses(
-				TaxonServiceImplTest.class,
-				TermServiceImplTest.class
+				TaxonServiceImplTest.class
+				,TermServiceImplTest.class
+				,TermLoaderIntegrationTest.class
+				//,CreateDataTest.class
 			);
 	}
 }

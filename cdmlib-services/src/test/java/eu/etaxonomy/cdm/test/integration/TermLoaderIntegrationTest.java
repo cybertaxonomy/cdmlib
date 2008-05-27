@@ -6,8 +6,18 @@ package eu.etaxonomy.cdm.test.integration;
 import static org.junit.Assert.*;
 
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
@@ -15,6 +25,39 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class TermLoaderIntegrationTest {
+	private static final Logger logger = Logger.getLogger(TermLoaderIntegrationTest.class);
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		//CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
+		//CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+
+/* ************************* TESTS *************************************************/
 
 
 	/**

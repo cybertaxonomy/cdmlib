@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -29,8 +28,6 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.TermVocabularyDaoImpl;
 
 /**
  * @author a.mueller
