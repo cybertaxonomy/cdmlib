@@ -16,11 +16,15 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -234,9 +238,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * in which this taxon name is involved. A taxon name can be both source
 	 * in some name relationships or target in some others.
 	 *  
+	 * @see    #getRelationsToThisName()
+	 * @see    #getRelationsFromThisName()
+	 * @see    #addNameRelationship(NameRelationship)
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-	 * @see    #addNameRelationship(NameRelationship)
 	 */
 	@Transient
 	public Set<NameRelationship> getNameRelations() {
@@ -253,6 +259,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * @param toName		  the taxon name of the target for this new name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
@@ -267,6 +275,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * @param fromName		  the taxon name of the source for this new name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #getRelationsFromThisName()
+	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
@@ -281,6 +291,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * no addition will be carried out.
 	 * 
 	 * @param rel  the name relationship to be added to one of this taxon name's name relationships sets
+	 * @see    	   #getNameRelations()
 	 * @see    	   #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    	   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
@@ -296,16 +307,29 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	/** 
 	 * Removes one {@link NameRelationship name relationship} from one of both sets of
 	 * {@link #getNameRelations() name relationships} in which this taxon name is involved.
+	 * The name relationship will also be removed from one of both sets belonging
+	 * to the second taxon name involved. Furthermore the fromName and toName
+	 * attributes of the name relationship object will be nullified. 
 	 *
 	 * @param  nameRelation  the name relationship which should be deleted from one of both sets
 	 * @see    #getNameRelations()
 	 */
 	public void removeNameRelationship(NameRelationship nameRelation) {
+		//TODO to be implemented?
+		logger.warn("not yet fully implemented?");
 		this.relationsToThisName.remove(nameRelation);
 		this.relationsFromThisName.remove(nameRelation);
 	}
 	
 	
+	/** 
+	 * Returns the set of all {@link NameRelationship name relationships}
+	 * in which this taxon name is involved as a source.
+	 *  
+	 * @see    #getNameRelations()
+	 * @see    #getRelationsToThisName()
+	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 */
 	@OneToMany(mappedBy="fromName", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsFromThisName() {
@@ -315,6 +339,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		this.relationsFromThisName = relationsFromThisName;
 	}
 	
+	/** 
+	 * Returns the set of all {@link NameRelationship name relationships}
+	 * in which this taxon name is involved as a target.
+	 *  
+	 * @see    #getNameRelations()
+	 * @see    #getRelationsFromThisName()
+	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+	 */
 	@OneToMany(mappedBy="toName", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsToThisName() {
@@ -325,27 +357,58 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 
 	
-
+	/** 
+	 * Returns the set of {@link NomenclaturalStatus nomenclatural status} assigned
+	 * to this taxon name according to its corresponding nomenclature code.
+	 * This includes the {@link NomenclaturalStatusType type} of the nomenclatural status
+	 * and the nomenclatural code rule considered.
+	 *
+	 * @see     NomenclaturalStatus
+	 * @see     NomenclaturalStatusType
+	 */
 	@OneToMany(fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
 	}
+	/** 
+	 * @see     #getStatus()
+	 */
 	protected void setStatus(Set<NomenclaturalStatus> nomStatus) {
 		this.status = nomStatus;
 	}
+	/** 
+	 * Adds a new {@link NomenclaturalStatus nomenclatural status}
+	 * to this taxon name's set of nomenclatural status.
+	 *
+	 * @param  nomStatus  the nomenclatural status to be added
+	 * @see 			  #getStatus()
+	 */
 	public void addStatus(NomenclaturalStatus nomStatus) {
 		this.status.add(nomStatus);
 	}
+	/** 
+	 * Removes one element from the set of nomenclatural status of this taxon name.
+	 * Type and ruleConsidered attributes of the nomenclatural status object
+	 * will be nullified.
+	 *
+	 * @param  nomStatus  the nomenclatural status of this taxon name which should be deleted
+	 * @see     		  #getStatus()
+	 */
 	public void removeStatus(NomenclaturalStatus nomStatus) {
+		//TODO to be implemented?
+		logger.warn("not yet fully implemented?");
 		this.status.remove(nomStatus);
 	}
 
 	
 	/**
-	 * Indicates if this taxon name has a basionym or replaced synonym relationship to any other name.
-	 * @return true, if a {@link NameRelationshipType.BASIONYM()} or a {@link NameRelationshipType.REPLACED_SYNONYM()} 
-	 * relationship from this name to another name exists.
+	 * Indicates if this taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
+	 * or a {@link NameRelationshipType.REPLACED_SYNONYM() replaced synonym}
+	 * of any other taxon name. Returns true, if a basionym or a replaced synonym 
+	 * relationship from this taxon name to another taxon name exists,
+	 * false otherwise (also in case this taxon name is the only one in the
+	 * homotypical group).
 	 */
 	@Transient
 	public boolean isOriginalCombination(){
@@ -359,17 +422,40 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		return false;
 	}
 	
-
+	/**
+	 * Returns the taxon name which is the {@link NameRelationshipType.BASIONYM() basionym} of this taxon name.
+	 * The basionym of a taxon name is its epithet-bringing synonym.
+	 * For instance Pinus abies L. was published by Linnaeus and the botanist
+	 * Karsten transferred later this taxon to the genus Picea. Therefore,
+	 * Pinus abies L. is the basionym of the new combination Picea abies (L.) H. Karst.
+	 */
 	@Transient
 	public T getBasionym(){
 		//TODO: pick the right name relationships...
 		return null;
 	}
+	/**
+	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name.
+	 * The basionym relationship will be added to this taxon name
+	 * and to the basionym. The basionym cannot have itself a basionym.
+	 * 
+	 * @see  #getBasionym()
+	 * @see  #setBasionym(TaxonNameBase, String)
+	 */
 	public void setBasionym(T basionym){
 		setBasionym(basionym, null);
 	}
+	/**
+	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name
+	 * and keeps the nomenclatural rule considered for it. The basionym
+	 * relationship will be added to this taxon name and to the basionym.
+	 * The basionym cannot have itself a basionym.
+	 * 
+	 * @see  #getBasionym()
+	 * @see  #setBasionym(TaxonNameBase)
+	 */
 	public void setBasionym(T basionym, String ruleConsidered){
-		basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), null);
+		basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), ruleConsidered);
 	}
 
 

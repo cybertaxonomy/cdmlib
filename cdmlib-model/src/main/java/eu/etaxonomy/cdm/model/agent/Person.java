@@ -140,6 +140,8 @@ public class Person extends TeamOrPersonBase {
 	
 	/** 
 	 * Removes one element from the set of institutional memberships of this person.
+	 * Institute and person attributes of the institutional membership object
+	 * will be nullified.
 	 *
 	 * @param  ims  the institutional membership of this person which should be deleted
 	 * @see     	#getInstitutionalMemberships()
