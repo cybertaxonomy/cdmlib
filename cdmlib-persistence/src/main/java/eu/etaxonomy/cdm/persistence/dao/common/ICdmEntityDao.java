@@ -9,19 +9,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * an data access interface that all data access classes implement
