@@ -10,7 +10,7 @@ public class DescriptionTO extends BaseTO {
 	private Set<FeatureSTO> features = new HashSet();
 	// TaxonDescription specific
 	private TaxonSTO taxon;
-	private Set<LocalisedTermTO> scopes = new HashSet();
+	private Set<LocalisedTermSTO> scopes = new HashSet();
 	/**
 	 * SpecimenDescription specific
 	 */

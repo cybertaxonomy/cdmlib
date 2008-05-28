@@ -18,18 +18,19 @@ package eu.etaxonomy.cdm.remote.dto;
  */
 public class SynonymRelationshipTO {
 	
+	private LocalisedTermSTO type;
 	private TaxonSTO synoynm;
-	private LocalisedTermTO type;
+	
 	public TaxonSTO getSynoynm() {
 		return synoynm;
 	}
 	public void setSynoynm(TaxonSTO synoynm) {
 		this.synoynm = synoynm;
 	}
-	public LocalisedTermTO getType() {
+	public LocalisedTermSTO getType() {
 		return type;
 	}
-	public void setType(LocalisedTermTO type) {
+	public void setType(LocalisedTermSTO type) {
 		this.type = type;
 	}
 

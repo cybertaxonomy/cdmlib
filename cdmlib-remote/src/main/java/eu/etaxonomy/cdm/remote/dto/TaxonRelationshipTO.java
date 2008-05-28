@@ -17,14 +17,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @created 05.02.2008 15:00:00
  *
  */
-public class TaxonRelationshipTO {
+public class TaxonRelationshipTO{
 	
-	private LocalisedTermTO type;
+	private LocalisedTermSTO type;
 	private TaxonSTO taxon;
-	public LocalisedTermTO getType() {
+	
+	public LocalisedTermSTO getType() {
 		return type;
 	}
-	public void setType(LocalisedTermTO type) {
+	public void setType(LocalisedTermSTO type) {
 		this.type = type;
 	}
 	public TaxonSTO getTaxon() {

@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class NameRelationshipTO extends ReferencedEntityBaseSTO {
 	
-	private LocalisedTermTO type;
+	private LocalisedTermSTO type;
 	
 	private String ruleConsidered;
 
