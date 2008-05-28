@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -18,11 +17,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.collection.PersistentSet;
 
-
-import java.lang.reflect.Field;
-import java.util.*;
+import java.lang.reflect.Method;
 
 import javax.persistence.*;
 
@@ -36,13 +32,32 @@ import javax.persistence.*;
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	
-	//TODO make static for performance reasons
-	private static Field taxonBaseField;
+	private static Method methodTaxonNameAddTaxonBase;
+	
+	private static void initMethods()  { 
+		if (methodTaxonNameAddTaxonBase == null){
+			try {
+				methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
+				methodTaxonNameAddTaxonBase.setAccessible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO handle exception
+			}
+		}
+	}
 	
 	protected TaxonBase(){
 		super();
 	}
 	
+	protected TaxonBase(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		super();
+		if (taxonNameBase != null){
+			initMethods(); 
+			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
+		}
+		this.setSec(sec);
+	}
 	
 	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
@@ -75,19 +90,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	@Deprecated //for hibernate use only, use taxon.addDescription() instead
 	private void setName(TaxonNameBase newName){
 		this.name = newName;
-	}
-	
-	@Transient
-	public TaxonNameBase getTaxonName(){
-		return this.name;
-	}
-	public void setTaxonName(TaxonNameBase newName){
-		if (newName != null){
-			newName.addTaxonBase(this);
-		}else{
-			//FIXME implement
-			//this.name.removeTaxonBase(this);
-		}
 	}
 	
 	@Transient

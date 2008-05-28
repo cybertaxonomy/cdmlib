@@ -34,9 +34,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 
 
 	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
-		Synonym result = new Synonym();
-		result.setTaxonName(taxonName);
-		result.setSec(sec);
+		Synonym result = new Synonym(taxonName, sec);
 		return result;
 	}
 	
@@ -44,7 +42,10 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	public Synonym(){
 	}
 	
-
+	public Synonym(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		super(taxonNameBase, sec);
+	}
+	
 	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<SynonymRelationship> getSynonymRelations() {

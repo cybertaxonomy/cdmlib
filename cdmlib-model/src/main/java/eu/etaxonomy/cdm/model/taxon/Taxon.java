@@ -46,7 +46,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;
 
-	static Method methodDescriptionSetTaxon;
+	private static Method methodDescriptionSetTaxon;
 	
 	
 
@@ -57,14 +57,17 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @return
 	 */
 	public static Taxon NewInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
-		Taxon result = new Taxon();
-		result.setTaxonName(taxonNameBase);
-		result.setSec(sec);
+		Taxon result = new Taxon(taxonNameBase, sec);
 		return result;
 	}
 	
 	//TODO should be private, but still produces Spring init errors
+	@Deprecated
 	public Taxon(){
+	}
+	
+	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		super(taxonNameBase, sec);
 	}
 	
 

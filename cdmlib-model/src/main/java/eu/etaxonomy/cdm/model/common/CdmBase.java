@@ -22,7 +22,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+
 
 
 
@@ -247,7 +247,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
 	}
 	
-	protected void useSetMethod(Method method, Object object){
+	protected void invokeSetMethod(Method method, Object object){
 		try {
 			method.invoke(object, this);
 		} catch (Exception e) {

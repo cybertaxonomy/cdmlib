@@ -606,7 +606,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public void addTaxonBase(TaxonBase taxonBase){
 		taxonBases.add(taxonBase);
 		initMethods();
-		useSetMethod(methodTaxonBaseSetName, taxonBase);
+		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
 
 	private void initMethods(){
