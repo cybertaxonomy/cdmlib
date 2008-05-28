@@ -29,8 +29,10 @@ public class BerlinModelImportActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
+	//static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
+	static final Source berlinModelSource = BerlinModelSources.editWP6();	
+	//static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
+    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test();
 	
 	//authors
 	static final boolean doAuthors = true;
