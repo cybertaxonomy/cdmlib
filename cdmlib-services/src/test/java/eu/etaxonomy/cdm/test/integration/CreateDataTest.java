@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -38,9 +40,10 @@ public class CreateDataTest {
 
 	private static boolean isCreated;
 	private CdmApplicationController app;
-	private static final String genusUuid = "c399e245-3def-427d-8502-afa0ae87e875";
+	public static final String genusUuid = "c399e245-3def-427d-8502-afa0ae87e875";
+	public static final String genusNameUuid = "d399e245-3def-427d-8502-afa0ae87e875";
 	
-	private static boolean ignore = true;
+	private static boolean ignore = false;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -116,13 +119,19 @@ public class CreateDataTest {
 	
 /* ********************* TESTS *********************************/
 	
+	//@Ignore
 	@Test
 	public void testCreateTaxon(){
 		if (ignore){return;}
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		Taxon genusTaxon = eu.etaxonomy.cdm.datagenerator.TaxonGenerator.getTestTaxon();
 		genusTaxon.setUuid(UUID.fromString(genusUuid));
+		genusTaxon.getName().setUuid(UUID.fromString(genusNameUuid));
+		
+		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
+		
 		app.getTaxonService().saveTaxon(genusTaxon);
+		//app.getTaxonService().saveTaxon(syn2);
 	}
 	
 	@Test
@@ -130,12 +139,24 @@ public class CreateDataTest {
 		if (ignore){return;}
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		
+		
+		TaxonNameBase genusName2 = (TaxonNameBase)app.getNameService().getTaxonNameByUuid(UUID.fromString(genusNameUuid));
+		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
+		System.out.println("Size:" + set.size());
+		for (TaxonBase tb : set){
+			System.out.println(tb.getName());
+		}
+		
 		//taxon
 		Taxon genusTaxon = (Taxon)app.getTaxonService().getTaxonByUuid(UUID.fromString(genusUuid));
 		assertNotNull(genusTaxon);
 		//name
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
 		assertNotNull(genusName);
+		Set<TaxonBase> taxaSet = genusName.getTaxonBases();
+		for (TaxonBase tb : taxaSet){
+			System.out.println(tb.getName());
+		}
 		
 		//taxonBases of Name
 		Set<TaxonBase> taxonBases = genusName.getTaxonBases();
@@ -149,21 +170,24 @@ public class CreateDataTest {
 		}
 		
 		Set<TaxonDescription> descriptions = genusTaxon.getDescriptions();
-		assertEquals(2, descriptions.size());
-		TaxonDescription description = descriptions.iterator().next();
+		assertEquals(1, descriptions.size());
+		TaxonDescription firstDescription = descriptions.iterator().next();
 		
 		
-		Set<DescriptionElementBase> descriptionElements = description.getElements();
+		Set<DescriptionElementBase> descriptionElements = firstDescription.getElements();
+		//assertEquals(2, descriptions.size());
 		
 		Language language = Language.DEFAULT(); 
 		for (DescriptionElementBase descriptionElement : descriptionElements){
 			if (descriptionElement instanceof TextData){
 				TextData textData = (TextData)descriptionElement;
 				textData.getText(language);
+				System.out.println(textData);
 			}else if(descriptionElement instanceof CommonTaxonName){
 				CommonTaxonName commonTaxonName = (CommonTaxonName)descriptionElement;
 				commonTaxonName.getName();
 				commonTaxonName.getLanguage();
+				System.out.println(commonTaxonName);
 			}else{
 				fail();
 			}

@@ -23,16 +23,34 @@ import eu.etaxonomy.cdm.api.service.ITermService;
  */
 public interface ICdmApplicationConfiguration {
 
+	/**
+	 * @return
+	 */
 	public INameService getNameService();
 
+	/**
+	 * @return
+	 */
 	public ITaxonService getTaxonService();
 
+	/**
+	 * @return
+	 */
 	public IReferenceService getReferenceService();
 	
+	/**
+	 * @return
+	 */
 	public IAgentService getAgentService();
 	
+	/**
+	 * @return
+	 */
 	public IDatabaseService getDatabaseService();
 	
+	/**
+	 * @return
+	 */
 	public ITermService getTermService();
 
 }
