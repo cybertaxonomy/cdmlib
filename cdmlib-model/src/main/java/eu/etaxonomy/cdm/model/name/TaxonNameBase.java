@@ -16,14 +16,10 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -33,6 +29,7 @@ import org.hibernate.collection.PersistentSet;
 import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.persistence.*;
@@ -70,15 +67,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
-
 	private Rank rank;
 	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
 
 	//this flag shows if the getNameCache should return generated value(false) or the given String(true)  
 	protected boolean protectedNameCache;
-
+	
 	protected INameCacheStrategy<T> cacheStrategy;
+	static Method methodTaxonBaseSetName;
+	
 	
 //	/**
 //	 * Returns a TaxonNameBase instance 
@@ -604,16 +602,29 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 			this.taxonBases = taxonBases;
 		}
 	}
-//	public void addSynonym(Synonym synonym) {
-//		synonym.setName(this);
-//	}
-//	public void removeSynonym(Synonym synonym) {
-//		synonym.setName(null);
-//	}	
+	//TODO protected
+	public void addTaxonBase(TaxonBase taxonBase){
+		taxonBases.add(taxonBase);
+		initMethods();
+		useSetMethod(methodTaxonBaseSetName, taxonBase);
+	}
+
+	private void initMethods(){
+		if (methodTaxonBaseSetName == null){
+			try {
+				methodTaxonBaseSetName = TaxonBase.class.getDeclaredMethod("setName", TaxonNameBase.class);
+				methodTaxonBaseSetName.setAccessible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO handle exception
+			}
+		}
+	}
+	
 	
 	/**
-	 * Return a set of taxa that use this name
-	 * @return
+	 * Return a set of taxa that use this name.
+	 * @return Set<Taxon> The set of taxa this TaxonName belongs to
 	 */
 	@Transient
 	public Set<Taxon> getTaxa(){
@@ -628,11 +639,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	
 	/**
 	 * Return a set of synonyms that use this name
-	 * @return
+	 * @return The set of synonyms this TaxonName belongs to
 	 */
-	// TODO: implement this method via bidirectional TaxonBase-NameBase relation or use a DAO instead
-	//@OneToMany
-	
 	@Transient
 	public Set<Synonym> getSynonyms() {
 		Set<Synonym> result = new HashSet<Synonym>();

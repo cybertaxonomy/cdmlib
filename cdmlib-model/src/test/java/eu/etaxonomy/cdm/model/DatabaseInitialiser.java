@@ -42,7 +42,6 @@ public class DatabaseInitialiser {
 		//BotanicalName ve = nm.getNextVersion();
 		nm.setNameCache(speciesname);
 		nm.setTitleCache(speciesname);
-		tax.setName(nm);
 		save(tax);
 		return tax.getId();
 	}

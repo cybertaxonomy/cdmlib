@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -23,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.persistence.*;
@@ -47,6 +46,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;
 
+	static Method methodDescriptionSetTaxon;
+	
+	
 
 	/**
 	 * Factory method
@@ -56,7 +58,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 */
 	public static Taxon NewInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		Taxon result = new Taxon();
-		result.setName(taxonNameBase);
+		result.setTaxonName(taxonNameBase);
 		result.setSec(sec);
 		return result;
 	}
@@ -64,7 +66,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	//TODO should be private, but still produces Spring init errors
 	public Taxon(){
 	}
-
+	
 
 	@OneToMany(mappedBy="taxon", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -74,11 +76,37 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	protected void setDescriptions(Set<TaxonDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
+	/**
+	 * Adds a description to this taxon. Set the taxon property of description to this taxon.
+	 * @param description
+	 */
 	public void addDescription(TaxonDescription description) {
-		this.descriptions.add(description);
+		descriptionSetTaxon(description);
+		descriptions.add(description);
 	}
-	public void removeDescription(DescriptionBase description) {
-		this.descriptions.remove(description);
+	public void removeDescription(TaxonDescription description) {
+		descriptionSetTaxon(null);
+		descriptions.remove(description);
+	}
+	private void descriptionSetTaxon(TaxonDescription description){
+		initMethods();
+		try {
+			methodDescriptionSetTaxon.invoke(description, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//TODO handle exceptioin;
+		}
+	}
+	private void initMethods(){
+		if (methodDescriptionSetTaxon == null){
+			try {
+				methodDescriptionSetTaxon = TaxonDescription.class.getDeclaredMethod("setTaxon", Taxon.class);
+				methodDescriptionSetTaxon.setAccessible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO handle exception
+			}
+		}
 	}
 
 

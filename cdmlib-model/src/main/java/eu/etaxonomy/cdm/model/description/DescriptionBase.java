@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionBase extends IdentifiableEntity {
-	static Logger logger = Logger.getLogger(DescriptionBase.class);
+	private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 	
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
@@ -94,7 +95,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	}
 
 
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DescriptionElementBase> getElements() {
 		return this.descriptionElements;

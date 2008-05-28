@@ -53,7 +53,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	@Override
 	public String generateTitle() {
 		String title;
-		if (name != null){
+		if (name != null && name.getTitleCache() != null){
 			title = name.getTitleCache() + " sec. ";
 			if (sec != null){
 				title += sec.getTitleCache();
@@ -67,39 +67,26 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	@ManyToOne
+	@JoinColumn(name="taxonName_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public TaxonNameBase getName(){
 		return this.name;
 	}
-	public void setName(TaxonNameBase newName){
-		try {
-			initTaxonBaseField();
-			if (this.name == newName) return;
-			if (this.name != null) { 
-				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(this.name);
-				taxonBases.remove(this);
-			}
-			if (newName != null) { 
-				Set<TaxonBase> taxonBases = (Set<TaxonBase>) taxonBaseField.get(newName);
-				//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
-				if (taxonBases instanceof PersistentSet){
-					//
-				}else{
-					taxonBases.add(this);
-				}
-			}
-			this.name = newName;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			System.out.println( e.getStackTrace());
-		} 	
+	@Deprecated //for hibernate use only, use taxon.addDescription() instead
+	private void setName(TaxonNameBase newName){
+		this.name = newName;
 	}
 	
-	
-	private void initTaxonBaseField()throws NoSuchFieldException  {
-		if (taxonBaseField == null) {
-			taxonBaseField = TaxonNameBase.class.getDeclaredField("taxonBases");
-			taxonBaseField.setAccessible(true);
+	@Transient
+	public TaxonNameBase getTaxonName(){
+		return this.name;
+	}
+	public void setTaxonName(TaxonNameBase newName){
+		if (newName != null){
+			newName.addTaxonBase(this);
+		}else{
+			//FIXME implement
+			//this.name.removeTaxonBase(this);
 		}
 	}
 	

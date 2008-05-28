@@ -95,7 +95,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	@Test
 	public final void testSetName() {
 		assertNull(freeT.getName());
-		freeT.setName(name2);
+		freeT.setTaxonName(name2);
 		assertNotNull(freeT.getName());
 		assertSame(freeT.getName(), name2);
 		assertTrue(name1.getTaxa().contains(taxon1));
@@ -150,11 +150,11 @@ public class TaxonBaseTest extends EntityTestBase {
 	public final void testIsSaveable() {
 		assertFalse(freeT.isSaveable());
 		assertTrue(taxon1.isSaveable());
-		freeT.setName(name1);
+		freeT.setTaxonName(name1);
 		assertFalse(freeT.isSaveable());
 		freeT.setSec(sec);
 		assertTrue(freeT.isSaveable());
-		freeT.setName(null);
+		freeT.setTaxonName(null);
 		assertFalse(freeT.isSaveable());
 	}
 

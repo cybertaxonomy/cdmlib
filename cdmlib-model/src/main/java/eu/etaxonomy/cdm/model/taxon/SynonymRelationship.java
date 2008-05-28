@@ -13,8 +13,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 
 /**
@@ -24,10 +22,7 @@ import javax.persistence.*;
  */
 @Entity
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
-	static Logger logger = Logger.getLogger(SynonymRelationship.class);
-//	private Synonym synonym;
-//	private Taxon acceptedTaxon;
-//	private SynonymRelationshipType type;
+	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
 	
 	//for hibernate, don't use
@@ -46,8 +41,6 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 		super(synonym, taxon, type, citation, citationMicroReference);
 	}
 	
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getAcceptedTaxon(){
 		return super.getRelatedTo();
@@ -57,8 +50,6 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 		super.setRelatedTo(acceptedTaxon);
 	}
 
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Synonym getSynonym(){
 		return super.getRelatedFrom();

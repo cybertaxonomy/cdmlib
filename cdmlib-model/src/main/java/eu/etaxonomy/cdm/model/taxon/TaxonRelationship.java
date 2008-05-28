@@ -13,8 +13,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 
 /**
@@ -24,10 +22,8 @@ import javax.persistence.*;
  */
 @Entity
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
-	static Logger logger = Logger.getLogger(TaxonRelationship.class);
+	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
 	private TaxonRelationshipType type;
-//	private Taxon fromTaxon;
-//	private Taxon toTaxon;
 	
 	//for hibernate, don't use
 	@Deprecated
@@ -47,24 +43,6 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	}
 	
 	
-	/**
-	 * @return
-	 */
-	//@ManyToOne
-//	@Transient
-//	public TaxonRelationshipType getType(){
-//		return super.getType();
-//	}
-//
-//	/**
-//	 * @param type
-//	 */
-//	public void setType(TaxonRelationshipType type){
-//		this.type = type;
-//	}
-
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getFromTaxon(){
 		return getRelatedFrom();
@@ -73,8 +51,6 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		setRelatedFrom(fromTaxon);
 	}
 
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	@Transient
 	public Taxon getToTaxon(){
 		return getRelatedTo();

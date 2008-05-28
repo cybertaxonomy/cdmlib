@@ -36,6 +36,12 @@ public class TaxonDescription extends DescriptionBase {
 		return new TaxonDescription();
 	}
 	
+	public static TaxonDescription NewInstance(Taxon taxon){
+		TaxonDescription description = new TaxonDescription();
+		taxon.addDescription(description);
+		return description;
+	}
+	
 	public TaxonDescription(){
 		super();
 	}
@@ -73,10 +79,13 @@ public class TaxonDescription extends DescriptionBase {
 
 
 	@ManyToOne
+	@JoinColumn(name="taxon_fk")
+	@Cascade(CascadeType.SAVE_UPDATE)
 	public Taxon getTaxon() {
 		return taxon;
 	}
-	public void setTaxon(Taxon taxon) {
+	@Deprecated //for hibernate use only, use taxon.addDescription() instead
+	protected void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 	}
 

@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
 
@@ -243,6 +245,15 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
+	}
+	
+	protected void useSetMethod(Method method, Object object){
+		try {
+			method.invoke(object, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//TODO handle exceptioin;
+		}
 	}
 	
 }

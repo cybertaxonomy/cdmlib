@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -36,7 +35,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 
 	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
 		Synonym result = new Synonym();
-		result.setName(taxonName);
+		result.setTaxonName(taxonName);
 		result.setSec(sec);
 		return result;
 	}
