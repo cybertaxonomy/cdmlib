@@ -384,7 +384,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		if (homotypicalGroup != null){
-			synonymName.setHomotypicalGroup(homotypicalGroup);
+			homotypicalGroup.addTypifiedName(synonymName);
 		}
 		return addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 	}
@@ -399,7 +399,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		if (this.getName() != null){
-			synonymName.setHomotypicalGroup(this.getName().getHomotypicalGroup());
+			this.getName().getHomotypicalGroup().addTypifiedName(synonymName);
 		}
 		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 		return synRel;

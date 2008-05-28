@@ -9,13 +9,9 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -25,39 +21,57 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:26
  */
 @Entity
-public class HybridRelationship extends ReferencedEntityBase {
-	static Logger logger = Logger.getLogger(HybridRelationship.class);
+public class HybridRelationship extends RelationshipBase<BotanicalName, BotanicalName, HybridRelationshipType> {
+	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
 	private String ruleConsidered;
-	private BotanicalName parentName;
-	private HybridRelationshipType type;
-	private BotanicalName hybridName;
 
-	@ManyToOne
-	public HybridRelationshipType getType(){
-		return this.type;
-	}
-	public void setType(HybridRelationshipType type){
-		this.type = type;
+	//for hibernate, don't use
+	@Deprecated
+	private HybridRelationship(){
+		super();
 	}
 
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	
+	/**
+	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
+	 * @param toName
+	 * @param fromName
+	 * @param type
+	 * @param ruleConsidered
+	 */
+	protected HybridRelationship(BotanicalName hybridName, BotanicalName parentName, HybridRelationshipType type, String ruleConsidered) {
+		this(parentName, hybridName, type, null, null, ruleConsidered);
+	}
+	
+	/**
+	 * Constructor that adds immediately a relationship instance to both 
+	 * Creates a relationship between 2 names and adds this relationship object to the respective name relation sets
+	 * @param toName
+	 * @param fromName
+	 * @param type
+	 * @param citation
+	 * @param citationMicroReference
+	 * @param ruleConsidered
+	 */
+	protected HybridRelationship(BotanicalName  hybridName, BotanicalName parentName, HybridRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
+		super(parentName, hybridName, type, citation, citationMicroReference);
+		this.setRuleConsidered(ruleConsidered);
+	}	
+	
 	public BotanicalName getParentName(){
-		return this.parentName;
+		return super.getRelatedFrom();
 	}
 	public void setParentName(BotanicalName parentName){
-		this.parentName = parentName;
+		super.setRelatedFrom(parentName);
 	}
 
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public BotanicalName getHybridName(){
-		return this.hybridName;
+		return super.getRelatedTo();
 	}
 	public void setHybridName(BotanicalName hybridName){
-		this.hybridName = hybridName;
+		super.setRelatedTo(hybridName);
 	}
 
 	public String getRuleConsidered(){

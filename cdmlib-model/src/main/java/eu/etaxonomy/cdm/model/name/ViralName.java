@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -23,7 +22,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:02
  */
 @Entity
-public class ViralName extends TaxonNameBase {
+public class ViralName extends TaxonNameBase<ViralName>  {
 	static Logger logger = Logger.getLogger(ViralName.class);
 
 	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
@@ -60,4 +59,5 @@ public class ViralName extends TaxonNameBase {
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.VIRAL();
 	}
+
 }

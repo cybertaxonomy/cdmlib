@@ -16,9 +16,12 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.common.IParsable;
+import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 
 
 import org.apache.log4j.Logger;
@@ -50,7 +53,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable {
+public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated<NameRelationship> {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
 	private String nameCache;
@@ -76,13 +79,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	
 	protected INameCacheStrategy<T> cacheStrategy;
 	static Method methodTaxonBaseSetName;
-	
-	
-//	/**
-//	 * Returns a TaxonNameBase instance 
-//	 * @param fullName
-//	 */
-//	abstract public static TaxonNameBase PARSED_NAME(String fullName);
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -320,6 +316,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 	
+	public void addRelationship(NameRelationship relation) {
+		addNameRelationship(relation);
+	}
+
+	
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
 	 * in which this taxon name is involved as a source.
@@ -544,19 +545,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
 	}
-	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
-		if(this.homotypicalGroup == newHomotypicalGroup) return;
-		if (homotypicalGroup != null) { 
-			homotypicalGroup.typifiedNames.remove(this);
-		}
-		if (newHomotypicalGroup!= null) { 
-			//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
-			if (newHomotypicalGroup.typifiedNames instanceof PersistentSet){
-				//
-			}else{
-				newHomotypicalGroup.typifiedNames.add(this);
-			}
-		}
+	@Deprecated //only for bidirectional and persistence use
+	protected void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}
 
@@ -679,8 +669,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 		return getRank().isInfraSpecific();
 	}
 	
+	
 	@Transient
 	abstract public NomenclaturalCode getNomeclaturalCode();
+
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

@@ -62,10 +62,14 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		this.typifiedNames = typifiedNames;
 	}
 	public void addTypifiedName(TaxonNameBase typifiedName) {
-		typifiedName.setHomotypicalGroup(this);
+		if (typifiedName != null){
+			typifiedName.setHomotypicalGroup(this);
+			typifiedNames.add(typifiedName);
+		}
 	}
 	public void removeTypifiedName(TaxonNameBase typifiedName) {
 		typifiedName.setHomotypicalGroup(null);
+		typifiedNames.remove(typifiedName);	
 	}
 
 	
