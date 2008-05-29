@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -216,7 +217,7 @@ public class BerlinModelTaxonIO {
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
 					}else if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF){
 						//TODO castexceptioin
-						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						((Taxon)taxon2).addHomotypicSynonym((Synonym)taxon1, citation, microcitation);
 					}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
 						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
 							((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
