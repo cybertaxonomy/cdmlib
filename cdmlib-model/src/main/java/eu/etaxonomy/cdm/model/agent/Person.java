@@ -135,7 +135,8 @@ public class Person extends TeamOrPersonBase {
 	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
 		//TODO to be implemented?
 		logger.warn("not yet fully implemented?");
-		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role); 
+		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role);
+		institutionalMemberships.add(ims);
 	}
 	
 	/** 

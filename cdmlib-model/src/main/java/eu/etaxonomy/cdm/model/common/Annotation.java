@@ -75,15 +75,6 @@ public class Annotation extends LanguageStringBase {
 		return annotatedObj;
 	}
 	protected void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
-		// Hibernate bidirectional cascade hack: 
-		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
-		if(this.annotatedObj == newAnnotatedObj) return;
-		if (annotatedObj != null) { 
-			annotatedObj.annotations.remove(this);
-		}
-		if (newAnnotatedObj!= null) { 
-			newAnnotatedObj.annotations.add(this);
-		}
 		this.annotatedObj = newAnnotatedObj;		
 	}
 

@@ -73,7 +73,10 @@ public class Contact extends VersionableEntity {
 	 * @see 			Address
 	 */
 	public void addAddress(Address address){
-		address.setContact(this);
+		if (address != null){
+			address.setContact(this);
+			addresses.add(address);
+		}
 	}
 	/** 
 	 * Removes one element from the set of postal addresses of this contact.

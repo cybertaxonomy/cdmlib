@@ -333,7 +333,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * @see    #getRelationsToThisName()
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="fromName", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
@@ -350,7 +350,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	 * @see    #getRelationsFromThisName()
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="toName", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch= FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
