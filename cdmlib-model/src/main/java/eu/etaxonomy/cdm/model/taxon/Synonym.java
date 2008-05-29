@@ -32,7 +32,6 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
-
 	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){
 		Synonym result = new Synonym(taxonName, sec);
 		return result;
