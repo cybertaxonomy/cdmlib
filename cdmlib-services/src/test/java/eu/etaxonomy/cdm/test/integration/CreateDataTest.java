@@ -43,7 +43,7 @@ public class CreateDataTest {
 	public static final String genusUuid = "c399e245-3def-427d-8502-afa0ae87e875";
 	public static final String genusNameUuid = "d399e245-3def-427d-8502-afa0ae87e875";
 	
-	private static boolean ignore = false;
+	private static boolean ignore = true;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -119,7 +119,7 @@ public class CreateDataTest {
 	
 /* ********************* TESTS *********************************/
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void testCreateTaxon(){
 		if (ignore){return;}
