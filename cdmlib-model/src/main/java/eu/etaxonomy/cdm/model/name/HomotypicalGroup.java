@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 
 
 /**
@@ -102,7 +103,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
-		for (TaxonNameBase<TaxonNameBase> n:this.getTypifiedNames()){
+		for (TaxonNameBase<TaxonNameBase, INameCacheStrategy> n:this.getTypifiedNames()){
 			for (Synonym s:n.getSynonyms()){
 				if ( (s.getSec() == null && sec == null) ||
 						s.getSec().equals(sec)){
