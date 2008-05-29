@@ -97,7 +97,7 @@ public class BerlinModelFactsIO {
 					//commonNames
 					String commonNameString;
 					if (taxon.getName() != null){
-						commonNameString = "Common " + taxon.getName().getNameCache(); 
+						commonNameString = "Common " + taxon.getName().getTitleCache(); 
 					}else{
 						commonNameString = "Common (null)";
 					}
