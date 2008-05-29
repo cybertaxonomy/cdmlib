@@ -32,6 +32,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.collection.PersistentSet;
 
 import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase;
 
 
 import java.lang.reflect.Method;
@@ -55,9 +57,9 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
+public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
-	private String nameCache;
+	//Non-atomised addition to a name not ruled by a nomenclatural code
 	private String appendedPhrase;
 	private String nomenclaturalMicroReference;
 	private boolean hasProblem = false;
@@ -72,7 +74,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 	protected boolean protectedNameCache;
 	
-	protected INameCacheStrategy<T> cacheStrategy;
 	static Method methodTaxonBaseSetName;
 	
 // ************* CONSTRUCTORS *************/	
@@ -134,81 +135,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 //********* METHODS **************************************/
-	
 
 	
-	/**
-	 * Generates the composed name string of this taxon name without authors
-	 * or year according to the strategy defined in
-	 * {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy INameCacheStrategy}.
-	 * The result might be stored in {@link #getNameCache() nameCache} if the
-	 * flag {@link #isProtectedNameCache() protectedNameCache} is not set.
-	 * 
-	 * @return  the string with the composed name of this taxon name without authors or year
-	 */
-	protected String generateNameCache(){
-		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for taxonName: " + this.toString());
-			return null;
-		}else{
-			return cacheStrategy.getNameCache((T)this);
-		}
-	}
-	
-	/**
-	 * Returns or generates the name cache (scientific name
-	 * without author strings and year) string for this taxon name. If the
-	 * {@link #isProtectedNameCache() protectedNameCache} flag is not set (False)
-	 * the string will be generated according to a defined strategy,
-	 * otherwise the value of the present nameCache string will be returned.
-	 * 
-	 * @return  the string which identifies this taxon name (without authors or year)
-	 * @see 	#generateNameCache()
-	 */
-	public String getNameCache() {
-		if (protectedNameCache){
-			return this.nameCache;			
-		}
-		// is title dirty, i.e. equal NULL?
-		if (nameCache == null){
-			this.nameCache = generateNameCache();
-		}
-		return nameCache;
-	}
-
-	/**
-	 * Assigns a name cache string to this taxon name and protects it from being overwritten.
-	 *  
-	 * @param  nameCache  the string which identifies this taxon name (without authors or year)
-	 * @see	   #getNameCache()
-	 */
-	public void setNameCache(String nameCache){
-		this.nameCache = nameCache;
-		this.setProtectedTitleCache(false);
-		this.setProtectedNameCache(true);
-	}
-	
-	/**
-	 * Returns the boolean value of the flag intended to protect (true)
-	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
-	 * string of this taxon name. This flag shows whether the getNameCache
-	 * method should return a generated value (false) or the present name cache
-	 * string (true).  
-	 *  
-	 * @return  the boolean value of the protectedNameCache flag
-	 * @see     #getNameCache()
-	 */
-	public boolean isProtectedNameCache() {
-		return protectedNameCache;
-	}
-
-	/** 
-	 * @see     #isProtectedNameCache()
-	 */
-	public void setProtectedNameCache(boolean protectedNameCache) {
-		this.protectedNameCache = protectedNameCache;
-	}
-
 	/**
 	 * Returns the boolean value "true" if the components of this taxon name
 	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
@@ -460,28 +388,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 
 
-	//TODO for PROTOTYPE
-	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy cache strategy} used to generate a name string
-	 * corresponding to this taxon name. The cache strategy includes
-	 * two methods: {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(TaxonNameBase) one} for the scientific name
-	 * string without author teams and year and another {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getTaggedName(TaxonNameBase) another one} for the array of scientific name components
-	 * with author teams and eventually year.
-	 * 
-	 * @return  the name cache strategy used for this taxon name
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase
-	 */
 	@Transient
-	public INameCacheStrategy<T> getCacheStrategy() {
-		return cacheStrategy;
-	}
-	/**
-	 * @see  #getCacheStrategy()
-	 */
-	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
+	public abstract S getCacheStrategy();
+	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
 	 * Returns the taxonomic {@link Rank rank} of this taxon name.
