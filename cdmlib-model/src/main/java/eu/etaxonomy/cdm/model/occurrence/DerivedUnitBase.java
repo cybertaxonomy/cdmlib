@@ -9,20 +9,16 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.collection.PersistentSet;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
