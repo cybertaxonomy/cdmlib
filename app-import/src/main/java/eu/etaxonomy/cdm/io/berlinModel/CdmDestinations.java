@@ -79,6 +79,14 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+	public static ICdmDataSource cdm_portal_test_localhost(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_portal_test";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	public static ICdmDataSource cdm_edit_cichorieae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";

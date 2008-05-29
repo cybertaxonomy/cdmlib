@@ -32,13 +32,13 @@ public class BerlinModelImportActivator {
 	//static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
 	static final Source berlinModelSource = BerlinModelSources.editWP6();	
 	//static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
-    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test();
+    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	//authors
 	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	static final CHECK check = CHECK.CHECK_ONLY;
+	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
@@ -78,7 +78,7 @@ public class BerlinModelImportActivator {
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
 		bmImport.doCheck(bmImportConfigurator);
-		//bmImport.doImport(bmImportConfigurator);
+		bmImport.doImport(bmImportConfigurator);
 
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
