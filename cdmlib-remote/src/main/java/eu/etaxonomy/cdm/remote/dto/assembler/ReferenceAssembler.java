@@ -1,4 +1,15 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.assembler;
+
+import java.util.Enumeration;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,7 +30,7 @@ import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO, ReferenceBase> {
 	static Logger logger = Logger.getLogger(ReferenceAssembler.class);
 
-	public ReferenceSTO getSTO(ReferenceBase rb){
+	public ReferenceSTO getSTO(ReferenceBase rb, Enumeration<Locale> locales){
 		ReferenceSTO r = null;
 		if (rb !=null){
 			r = new ReferenceSTO();
@@ -29,7 +40,7 @@ public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO,
 		return r;
 	}	
 	
-	public ReferenceTO getTO(ReferenceBase rb){		
+	public ReferenceTO getTO(ReferenceBase rb, Enumeration<Locale> locales){		
 		ReferenceTO r = null;
 		if (rb !=null){
 			r = new ReferenceTO();

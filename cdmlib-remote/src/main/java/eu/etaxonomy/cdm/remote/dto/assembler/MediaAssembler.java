@@ -1,4 +1,15 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.assembler;
+
+import java.util.Enumeration;
+import java.util.Locale;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaInstance;
@@ -8,7 +19,7 @@ import eu.etaxonomy.cdm.remote.dto.MediaSTO;
 public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 
 	@Override
-	MediaSTO getSTO(Media cdmObj) {
+	MediaSTO getSTO(Media cdmObj, Enumeration<Locale> locales) {
 		MediaSTO m = null;
 		if (cdmObj !=null){
 			m = new MediaSTO();
@@ -25,7 +36,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 	}
 
 	@Override
-	MediaTO getTO(Media cdmObj) {
+	MediaTO getTO(Media cdmObj, Enumeration<Locale> locales) {
 		MediaTO m = null;
 		if (cdmObj !=null){
 			m = new MediaTO();

@@ -1,9 +1,19 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -97,28 +107,28 @@ public class CdmServiceImpl implements ICdmService {
 	
 	public NameTO getName(UUID uuid) throws CdmObjectNonExisting{
 		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
-		NameTO n = nameAssembler.getTO(tnb);
+		NameTO n = nameAssembler.getTO(tnb, null);
 		return n;
 	}
 	
 	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting{
 		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
-		NameSTO n = nameAssembler.getSTO(tnb);
+		NameSTO n = nameAssembler.getSTO(tnb, null);
 		return n;
 	}
 	
-	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting{
+	public TaxonTO getTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		TaxonBase tb = taxonDAO.findByUuid(uuid);
 		if (tb==null){
 			throw new CdmObjectNonExisting(uuid.toString(), TaxonBase.class);
 		}
-		TaxonTO t = taxonAssembler.getTO(tb);
+		TaxonTO t = taxonAssembler.getTO(tb, null);
 		return t;
 	}
 	
 	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting{
 		TaxonBase tb = getCdmTaxonBase(uuid);
-		TaxonSTO t = taxonAssembler.getSTO(tb);
+		TaxonSTO t = taxonAssembler.getSTO(tb, null);
 		return t;
 	}
 	
@@ -135,7 +145,7 @@ public class CdmServiceImpl implements ICdmService {
 		rs.setPageNumber(1);
 		rs.setTotalResultsCount(results.size());
 		for (TaxonBase tb : results){
-			TaxonSTO tx = taxonAssembler.getSTO(tb);
+			TaxonSTO tx = taxonAssembler.getSTO(tb, null);
 			rs.getResults().add(tx);
 		}
 		return rs;
@@ -147,13 +157,13 @@ public class CdmServiceImpl implements ICdmService {
 		rs.setPageNumber(1);
 		rs.setPageSize(25);
 		if (tb.getClass().equals(Taxon.class)){
-			TaxonSTO t = taxonAssembler.getSTO(tb);
+			TaxonSTO t = taxonAssembler.getSTO(tb, null);
 			rs.addResultToFirstPage(t);
 		}else{
 			Synonym s = (Synonym)tb;
 			Set<Taxon> taxa = s.getAcceptedTaxa();
 			for (Taxon tx: taxa){
-				TaxonSTO t = taxonAssembler.getSTO(tx);
+				TaxonSTO t = taxonAssembler.getSTO(tx, null);
 				rs.addResultToFirstPage(t);
 			}
 		}
@@ -179,12 +189,12 @@ public class CdmServiceImpl implements ICdmService {
 
 	public ReferenceTO getReference(UUID uuid) throws CdmObjectNonExisting{
 		ReferenceBase ref = getCdmReferenceBase(uuid);
-		ReferenceTO r =  refAssembler.getTO(ref);
+		ReferenceTO r =  refAssembler.getTO(ref, null);
 		return r;
 	}
 	public ReferenceSTO getSimpleReference(UUID uuid) throws CdmObjectNonExisting{
 		ReferenceBase ref = getCdmReferenceBase(uuid);
-		ReferenceSTO r =  refAssembler.getSTO(ref);
+		ReferenceSTO r =  refAssembler.getSTO(ref, null);
 		return r;
 	}
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting {

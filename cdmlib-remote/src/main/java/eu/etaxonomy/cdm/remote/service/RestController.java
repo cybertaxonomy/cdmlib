@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.service;
 
 import java.io.IOException;
@@ -64,7 +72,7 @@ public class RestController extends AbstractController
 					NameTO n = service.getName( getUuid(uuid));
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					TaxonTO t = service.getTaxon(getUuid(uuid));
+					TaxonTO t = service.getTaxon(getUuid(uuid), req.getLocales());
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
 					ReferenceTO r = service.getReference(getUuid(uuid));

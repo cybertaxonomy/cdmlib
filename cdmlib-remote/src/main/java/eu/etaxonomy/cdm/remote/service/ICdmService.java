@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.remote.service;
 
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,10 +74,11 @@ public interface ICdmService {
 
 	/**
 	 * @param uuid
+	 * @param enumeration 
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public TaxonTO getTaxon(UUID uuid) throws CdmObjectNonExisting;
+	public TaxonTO getTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	/**
 	 * @param uuid
