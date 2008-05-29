@@ -101,9 +101,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	//TODO for PROTOTYPE
 	@Transient
+	@Override
 	public INonViralNameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;
 	}
+	@Override
 	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
 	}
