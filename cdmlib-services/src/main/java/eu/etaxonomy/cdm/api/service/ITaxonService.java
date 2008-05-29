@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -54,5 +56,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
+	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 }

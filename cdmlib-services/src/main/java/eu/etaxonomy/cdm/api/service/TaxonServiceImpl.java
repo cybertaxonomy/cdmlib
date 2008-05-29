@@ -14,7 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -23,6 +28,7 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -82,6 +88,46 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
 		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
+	 */
+	@Transactional(readOnly = false)
+	public Synonym makeTaxonSynonym(Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference) {
+		if (oldTaxon == null || newAcceptedTaxon == null || oldTaxon.getName() == null){
+			return null;
+		}
+		
+		// Move oldTaxon to newTaxon
+		TaxonNameBase synonymName = oldTaxon.getName();
+		if (synonymType == null){
+			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
+				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+			}else{
+				//TODO synonymType 
+				synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			}
+		}
+		SynonymRelationship synRel = newAcceptedTaxon.addSynonymName(synonymName, synonymType, citation, citationMicroReference);
+		
+		//Move Synonym Relations to new Taxon
+		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
+			//TODO citation and microcitation
+			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), null, null);
+		}
+		
+		//Move Descriptions to new Taxon
+		for(TaxonDescription taxDescription : oldTaxon.getDescriptions()){
+			newAcceptedTaxon.addDescription(taxDescription);
+		}
+		//delete old Taxon
+		this.dao.saveOrUpdate(newAcceptedTaxon);
+		this.dao.delete(oldTaxon);
+		
+		//return
+		this.dao.flush();
+		return synRel.getSynonym();
 	}
 
 
