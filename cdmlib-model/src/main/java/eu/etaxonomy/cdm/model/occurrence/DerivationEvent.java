@@ -74,10 +74,14 @@ public class DerivationEvent extends EventBase{
 		this.derivatives = derivatives;
 	}
 	public void addDerivative(DerivedUnitBase derivative) {
-		derivative.setDerivedFrom(this);
+		if (derivative != null){
+			derivative.setDerivedFrom(this);
+		}
 	}
 	public void removeDerivative(DerivedUnitBase derivative) {
-		this.derivatives.remove(derivative);
+		if (derivative != null){
+			derivative.setDerivedFrom(null);
+		}
 	}
 
 	

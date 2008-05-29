@@ -71,27 +71,26 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 	
 	
 	@ManyToOne
+	@Deprecated //only for bidirectional and persistence use
+	private DerivationEvent getDerivationEvent() {
+		return getDerivedFrom();
+	}
+	@Deprecated //only for bidirectional and persistence use
+	private void setDerivationEvent(DerivationEvent derivationEvent) {
+		this.derivedFrom = derivationEvent;
+	}
+	@Transient
 	public DerivationEvent getDerivedFrom() {
 		return derivedFrom;
 	}
-	public void setDerivedFrom(DerivationEvent derivedFrom) {
-		if(this.derivedFrom == derivedFrom) {
-			return;
-		}
-		//delete old
-		if (this.derivedFrom != null) { 
-			derivedFrom.derivatives.remove(this);
-		}
-		//add new
-		if (derivedFrom != null) { 
-			//hack for avoiding org.hibernate.LazyInitializationException: illegal access to loading collection
-			if (derivedFrom.derivatives instanceof PersistentSet){
-				//
-			}else{
-				derivedFrom.derivatives.add(this);
-			}
+	public void setDerivedFrom(DerivationEvent derivedFrom){
+		if (getDerivedFrom() != null){
+			getDerivedFrom().getDerivatives().remove(derivedFrom);
 		}
 		this.derivedFrom = derivedFrom;
+		if (derivedFrom != null){
+			derivedFrom.getDerivatives().add(this);
+		}
 	}
 	
 	@Transient
