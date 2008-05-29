@@ -14,6 +14,14 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  */
 public interface INonViralNameCacheStrategy<T extends NonViralName> extends INameCacheStrategy<T> {
 	
+	
+	/**
+	 * returns the composed name string without author or year
+	 * @param object
+	 * @return
+	 */
+	public String getNameCache(T taxonNameBase);
+	
 	/**
 	 * returns the composed author string 
 	 * @param object

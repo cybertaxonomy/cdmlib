@@ -3,12 +3,15 @@
  */
 package eu.etaxonomy.cdm.strategy.cache;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -132,6 +135,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 
 	
+//** *****************************************************************************************/
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
@@ -162,8 +168,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
+	/**
+	 * Generates and returns the "name cache" (only scientific name without author teams and year).
+	 * @see eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
 	public String getNameCache(T nonViralName) {
 		if (nonViralName == null){
@@ -240,6 +247,29 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		result = authorString + exAuthorString;
 		return result;
  
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
+	@Override
+	public List<Object> getTaggedName(T nvn) {
+		List<Object> tags = new ArrayList<Object>();
+		tags.add(nvn.getGenusOrUninomial());
+		if (nvn.isSpecies() || nvn.isInfraSpecific()){
+			tags.add(nvn.getSpecificEpithet());			
+		}
+		if (nvn.isInfraSpecific()){
+			tags.add(nvn.getRank());			
+			tags.add(nvn.getInfraSpecificEpithet());			
+		}
+		Team at = Team.NewInstance();
+		at.setProtectedTitleCache(true);
+		at.setTitleCache(nvn.getAuthorshipCache());
+		tags.add(at);			
+		tags.add(nvn.getNomenclaturalReference());			
+		return tags;
 	}
 	
 

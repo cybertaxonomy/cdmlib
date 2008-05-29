@@ -15,13 +15,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @param <T> The concrete TaxonName class this strategy applies for
  */
 public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiableEntityCacheStrategy<T> {
-	
-	/**
-	 * returns the composed name string without author or year
-	 * @param object
-	 * @return
-	 */
-	public String getNameCache(T taxonNameBase);
+
 
 	/**
 	 * returns an array of name tokens that together make up the full name
