@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Transient;
 
-import org.apache.log4j.Logger;
-
 
 /**
  * @author m.doering
@@ -32,4 +30,6 @@ public interface INomenclaturalReference {
 	@Transient
 	public String getYear();
 
+	public boolean getHasProblem();
+	
 }
