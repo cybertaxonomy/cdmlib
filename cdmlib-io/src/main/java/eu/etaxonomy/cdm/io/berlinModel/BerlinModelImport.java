@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -25,10 +26,11 @@ public class BerlinModelImport {
 	
 	//Hashmaps for Joins
 	//OLD: private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
-	private MapWrapper<Team> authorStore= new MapWrapper<Team>(null);
-	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
-	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(null);
-	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(null);
+	IService service = null;
+	private MapWrapper<Team> authorStore= new MapWrapper<Team>(service);
+	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(service);
+	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(service);
+	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(service);
 
 
 	public boolean doCheck(BerlinModelImportConfigurator bmiConfig){
