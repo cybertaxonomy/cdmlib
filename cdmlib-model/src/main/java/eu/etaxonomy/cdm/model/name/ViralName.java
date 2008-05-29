@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
+
 import javax.persistence.*;
 
 /**
@@ -22,9 +25,13 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:02
  */
 @Entity
-public class ViralName extends TaxonNameBase<ViralName>  {
+public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	static Logger logger = Logger.getLogger(ViralName.class);
 
+	
+	protected INameCacheStrategy cacheStrategy;
+
+	
 	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
 	private String acronym;
 
@@ -58,6 +65,19 @@ public class ViralName extends TaxonNameBase<ViralName>  {
 	@Override
 	public NomenclaturalCode getNomeclaturalCode(){
 		return NomenclaturalCode.VIRAL();
+	}
+
+
+	@Transient
+	@Override
+	public INameCacheStrategy getCacheStrategy() {
+		return cacheStrategy;
+	}
+
+
+	@Override
+	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
+		this.cacheStrategy = cacheStrategy;
 	}
 
 }
