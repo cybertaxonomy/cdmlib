@@ -440,12 +440,24 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	@Transient
-	public List<Synonym> getHomotypicSynonyms(){
+	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
 		if (this.getHomotypicGroup() == null){
 			return null;
 		}else{
 			return this.getHomotypicGroup().getSynonymsInGroup(this.getSec());
 		}
+	}
+	
+	@Transient
+	public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
+		Set<SynonymRelationship> synonymRelations = this.getSynonymRelations(); 
+		List<Synonym> result = new ArrayList<Synonym>();
+		for(SynonymRelationship synonymRelation : synonymRelations) {
+    		if(synonymRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+				result.add(synonymRelation.getSynonym());
+    		}
+		}
+		return result;
 	}
 	
 	/**
