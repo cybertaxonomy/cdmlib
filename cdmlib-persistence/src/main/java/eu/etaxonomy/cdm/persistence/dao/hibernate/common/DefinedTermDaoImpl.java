@@ -19,9 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Query;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
+/**
+ * @author a.kohlbecker
+ * @created 29.05.2008
+ * @version 1.0
+ */
 @Repository
 public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implements IDefinedTermDao{
 	private static final Logger logger = Logger.getLogger(DefinedTermDaoImpl.class);
@@ -36,6 +42,17 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return (List<DefinedTermBase>) query.list();
 	}
 	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
+	 */
+	public Language getLangaugeByIso(String iso639) {
+		String isoStandart = "iso639_" + (iso639.length() - 1);
+		Query query = getSession().createQuery("select lang from Language where lang." + isoStandart
+						+ " = :isoCode");
+		query.setParameter("isoCode", iso639);
+		return (Language) query.uniqueResult();
+	}
 
 //	@Override
 //	public List<DefinedTermBase> list(int limit, int start) {
