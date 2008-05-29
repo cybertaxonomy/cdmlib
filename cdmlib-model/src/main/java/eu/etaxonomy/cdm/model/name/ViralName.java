@@ -30,7 +30,6 @@ public class ViralName extends TaxonNameBase<ViralName>  {
 
 	public ViralName(Rank rank) {
 		super(rank);
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -43,13 +42,14 @@ public class ViralName extends TaxonNameBase<ViralName>  {
 
 	@Override
 	public String generateTitle(){
-		return "";
+		logger.warn("not yet implemented");
+		return this.toString();
 	}
 
 	@Override
 	@Transient
 	public boolean isCodeCompliant() {
-		// TODO Auto-generated method stub
+		logger.warn("not yet implemented");
 		return false;
 	}
 	

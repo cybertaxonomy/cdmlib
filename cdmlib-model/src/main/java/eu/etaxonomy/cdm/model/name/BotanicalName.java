@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -150,7 +151,13 @@ public class BotanicalName extends NonViralName {
 		return hybridRelationships;
 	}
 
-
+	public void addRelationship(RelationshipBase relation) {
+		if (relation instanceof HybridRelationship){
+			addHybridRelationship((HybridRelationship)relation);
+		}else {
+			super.addRelationship(relation);
+		}
+	}
 
 	public boolean isHybridFormula(){
 		return this.isHybridFormula;

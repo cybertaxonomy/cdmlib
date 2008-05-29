@@ -53,7 +53,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated<NameRelationship> {
+public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	//The scientific name without author strings and year
 	private String nameCache;
@@ -316,8 +316,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 	
-	public void addRelationship(NameRelationship relation) {
-		addNameRelationship(relation);
+	public void addRelationship(RelationshipBase relation) {
+		if (relation instanceof NameRelationship){
+			addNameRelationship((NameRelationship)relation);
+		}else{
+			//TODO exception handling
+		}
 	}
 
 	

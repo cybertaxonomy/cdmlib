@@ -105,7 +105,8 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testGetHybridRelationships() {
 		assertEquals(0, botanicalName1.getHybridRelationships().size());
-		HybridRelationship hybridRelationship = new HybridRelationship();
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		HybridRelationship hybridRelationship = new HybridRelationship(femaleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
 		botanicalName1.addHybridRelationship(hybridRelationship);
 		assertEquals(1, botanicalName1.getHybridRelationships().size());
 		assertEquals(hybridRelationship, botanicalName1.getHybridRelationships().iterator().next());
@@ -117,9 +118,11 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Ignore
 	public final void testSetHybridRelationships() {
 		assertEquals(0, botanicalName1.getHybridRelationships().size());
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		BotanicalName maleParent = BotanicalName.NewInstance(null);
 		
-		HybridRelationship hybridRelationship1 = new HybridRelationship();
-		HybridRelationship hybridRelationship2 = new HybridRelationship();
+		HybridRelationship hybridRelationship1 = new HybridRelationship(femaleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
+		HybridRelationship hybridRelationship2 = new HybridRelationship(maleParent, botanicalName1, HybridRelationshipType.MALE_PARENT(), null );
 		Set set = new HashSet<HybridRelationship>();
 		set.add(hybridRelationship1);
 		set.add(hybridRelationship2);
@@ -138,7 +141,8 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testAddHybridRelationship() {
 		assertEquals(0, botanicalName1.getHybridRelationships().size());
-		HybridRelationship hybridRelationship = new HybridRelationship();
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		HybridRelationship hybridRelationship = new HybridRelationship(femaleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
 		botanicalName1.addHybridRelationship(hybridRelationship);
 		assertEquals(1, botanicalName1.getHybridRelationships().size());
 		botanicalName1.addHybridRelationship(hybridRelationship);
@@ -152,8 +156,10 @@ public class BotanicalNameTest extends EntityTestBase{
 	@Test
 	public final void testRemoveHybridRelationship() {
 		assertEquals(0, botanicalName1.getHybridRelationships().size());
-		HybridRelationship hybridRelationship1 = new HybridRelationship();
-		HybridRelationship hybridRelationship2 = new HybridRelationship();
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		BotanicalName maleParent = BotanicalName.NewInstance(null);
+		HybridRelationship hybridRelationship1 = new HybridRelationship(femaleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
+		HybridRelationship hybridRelationship2 = new HybridRelationship(maleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
 		botanicalName1.addHybridRelationship(hybridRelationship1);
 		botanicalName1.addHybridRelationship(hybridRelationship2);
 		assertEquals(2, botanicalName1.getHybridRelationships().size());
