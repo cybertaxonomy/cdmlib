@@ -363,7 +363,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @return The newly created synonym relationship
 	 */
 	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName){
-		return addHeterotypicSynonymName(synonymName, null);
+		return addHeterotypicSynonymName(synonymName, null, null, null);
 	}
 
 	
@@ -375,12 +375,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param homotypicSynonym an existing heterotypic (to <i>this</i> taxon) synonym that has the same type (is homotypic) as the new synonym 
 	 * @return The newly created synonym relationship
 	 */
-	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup){
+	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName, HomotypicalGroup homotypicalGroup, ReferenceBase citation, String microCitation){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		if (homotypicalGroup != null){
 			homotypicalGroup.addTypifiedName(synonymName);
 		}
-		return addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		return addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), citation, microCitation);
 	}
 	
 	/**
@@ -390,12 +390,22 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param synonymName the TaxonNameBase to add as a homotypic synonym name
 	 * @return The newly created synonym relationship
 	 */
-	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName){
+	public SynonymRelationship addHomotypicSynonymName(TaxonNameBase synonymName, ReferenceBase citation, String microCitation){
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+		return addHomotypicSynonym(synonym, citation, microCitation);
+	}
+	
+	/**
+	 * Adds a taxon to <i>this</i> taxon as a homotypic synonym. <BR>
+	 * The added synonym gets the same homotypic group as <i>this</i> taxon.<BR>
+	 * @param synonymName the TaxonNameBase to add as a homotypic synonym name
+	 * @return The newly created synonym relationship
+	 */
+	public SynonymRelationship addHomotypicSynonym(Synonym synonym, ReferenceBase citation, String microCitation){
 		if (this.getName() != null){
-			this.getName().getHomotypicalGroup().addTypifiedName(synonymName);
+			this.getName().getHomotypicalGroup().addTypifiedName(synonym.getName());
 		}
-		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
 		return synRel;
 	}
 	
