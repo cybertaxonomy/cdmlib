@@ -32,16 +32,17 @@ public abstract class NameCacheStrategyBase<T extends NonViralName> extends Stra
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getFullNameCache()
+	/**
+	 * Generates and returns the "name cache" (only scientific name without author teams and year).
+	 * @see eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
-	// Test implementation
 	abstract public String getNameCache(T taxonNameBase);
 	
 	
 	
 
-	/* (non-Javadoc)
+	/**
+	 * Generates and returns the "full name cache" (including scientific name, author teams and eventually year).
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public abstract String getTitleCache(T name);

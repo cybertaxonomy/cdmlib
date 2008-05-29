@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
@@ -171,7 +172,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		    //parse subparts
 		    parseFullName(nameToBeFilled, name, rank, makeEmpty);
 		    parseReference(nameToBeFilled, referenceString, isInReference); 
-		    ReferenceBase ref = nameToBeFilled.getNomenclaturalReference();
+		    INomenclaturalReference ref = nameToBeFilled.getNomenclaturalReference();
 		    if (ref != null && ref.getHasProblem()){
 		    	nameToBeFilled.setHasProblem(true);
 		    }

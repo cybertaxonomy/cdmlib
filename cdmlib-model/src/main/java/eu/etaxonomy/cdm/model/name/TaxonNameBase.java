@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.agent.Contact;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -44,7 +46,7 @@ import javax.persistence.*;
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * The scientific taxon name does not depend on the use made of it
  * in a publication or a treatment ({@link taxon.TaxonBase taxon concept respectively potential taxon})
- * as an "accepted" respectively "correct" name ({@link taxon.Taxon taxon})
+ * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
  * or as a {@link taxon.Synonym synonym}.
  * 
  * @author m.doering
@@ -55,14 +57,9 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TaxonNameBase<T extends TaxonNameBase> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
-	//The scientific name without author strings and year
 	private String nameCache;
-	//Non-atomised addition to a name not ruled by a nomenclatural code
 	private String appendedPhrase;
-	//Details of the nomenclatural reference (protologue). These are mostly (implicitly) pages but can also be figures or
-	//tables or any other element of a publication. {only if a nomenclatural reference exists}
 	private String nomenclaturalMicroReference;
-	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
 	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet<NameTypeDesignation>();
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
@@ -71,10 +68,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
 	private Rank rank;
-	//if set, the Reference.isNomenclaturallyRelevant flag should be set to true!
 	private INomenclaturalReference nomenclaturalReference;
 
-	//this flag shows if the getNameCache should return generated value(false) or the given String(true)  
 	protected boolean protectedNameCache;
 	
 	protected INameCacheStrategy<T> cacheStrategy;
@@ -161,11 +156,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 	
 	/**
-	 * Returns or generates the nameCache (scientific name
+	 * Returns or generates the name cache (scientific name
 	 * without author strings and year) string for this taxon name. If the
 	 * {@link #isProtectedNameCache() protectedNameCache} flag is not set (False)
 	 * the string will be generated according to a defined strategy,
-	 * otherwise the value of the actual nameCache string will be returned.
+	 * otherwise the value of the present nameCache string will be returned.
 	 * 
 	 * @return  the string which identifies this taxon name (without authors or year)
 	 * @see 	#generateNameCache()
@@ -182,7 +177,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	}
 
 	/**
-	 * Assigns a nameCache string to this taxon name and protects it from being overwritten.
+	 * Assigns a name cache string to this taxon name and protects it from being overwritten.
 	 *  
 	 * @param  nameCache  the string which identifies this taxon name (without authors or year)
 	 * @see	   #getNameCache()
@@ -196,7 +191,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 	/**
 	 * Returns the boolean value of the flag intended to protect (true)
 	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
-	 * string of this taxon name.
+	 * string of this taxon name. This flag shows whether the getNameCache
+	 * method should return a generated value (false) or the present name cache
+	 * string (true).  
 	 *  
 	 * @return  the boolean value of the protectedNameCache flag
 	 * @see     #getNameCache()
@@ -464,56 +461,126 @@ public abstract class TaxonNameBase<T extends TaxonNameBase> extends Identifiabl
 
 
 	//TODO for PROTOTYPE
+	/**
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy cache strategy} used to generate a name string
+	 * corresponding to this taxon name. The cache strategy includes
+	 * two methods: {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(TaxonNameBase) one} for the scientific name
+	 * string without author teams and year and another {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getTaggedName(TaxonNameBase) another one} for the array of scientific name components
+	 * with author teams and eventually year.
+	 * 
+	 * @return  the name cache strategy used for this taxon name
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase
+	 */
 	@Transient
 	public INameCacheStrategy<T> getCacheStrategy() {
 		return cacheStrategy;
 	}
+	/**
+	 * @see  #getCacheStrategy()
+	 */
 	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
 	}
 	
+	/** 
+	 * Returns the taxonomic {@link Rank rank} of this taxon name.
+	 *
+	 * @see 	Rank
+	 */
 	@ManyToOne
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Rank getRank(){
 		return this.rank;
 	}
+	/**
+	 * @see  #getRank()
+	 */
 	public void setRank(Rank rank){
 		this.rank = rank;
 	}
 
+	/** 
+	 * Returns the {@link reference.INomenclaturalReference nomenclatural reference} of this taxon name.
+	 * The nomenclatural reference is here meant to be the one publication
+	 * this taxon name was originally published in while fulfilling the formal
+	 * requirements as specified by the corresponding nomenclatural code.
+	 *
+	 * @see 	reference.INomenclaturalReference
+	 * @see 	reference.ReferenceBase
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public ReferenceBase getNomenclaturalReference(){
-		return (ReferenceBase) this.nomenclaturalReference;
+	public INomenclaturalReference getNomenclaturalReference(){
+		return (INomenclaturalReference) this.nomenclaturalReference;
 	}
+	/**
+	 * Assigns a nomenclatural {@link reference.INomenclaturalReference nomenclatural reference} to this taxon name.
+	 * The corresponding {@link reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
+	 * as it is obviously used for nomenclatural purposes.
+	 *
+	 * @see  #getNomenclaturalReference()
+	 */
 	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
 		this.nomenclaturalReference = nomenclaturalReference;
 	}
 
-
+	/** 
+	 * Returns the appended phrase string assigned to this taxon name.
+	 * The appended phrase is a non-atomised addition to a name. It is
+	 * not ruled by a nomenclatural code.
+	 */
 	public String getAppendedPhrase(){
 		return this.appendedPhrase;
 	}
+	/**
+	 * @see  #getAppendedPhrase()
+	 */
 	public void setAppendedPhrase(String appendedPhrase){
 		this.appendedPhrase = appendedPhrase;
 	}
 
+	/** 
+	 * Returns the details string of the nomenclatural reference assigned
+	 * to this taxon name. The details describe the exact localisation within
+	 * the publication used as nomenclature reference. These are mostly
+	 * (implicitly) pages but can also be figures or tables or any other
+	 * element of a publication. A nomenclatural micro reference (details)
+	 * requires the existence of a nomenclatural reference.
+	 */
+	//Details of the nomenclatural reference (protologue). 
 	public String getNomenclaturalMicroReference(){
 		return this.nomenclaturalMicroReference;
 	}
+	/**
+	 * @see  #getNomenclaturalMicroReference()
+	 */
 	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
 		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether the 
+	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
+	 * string of this taxon name. This flag shows whether the getNameCache
+	 * method should return a generated value (false) or the present name cache
+	 * string (true).  
+	 *  
+	 * @return  the boolean value of the protectedNameCache flag
+	 * @see     #getNameCache()
+	 */
+	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
+	/**
+	 * @see  #getHasProblem()
+	 */
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
 	}
 	/**
-	 * Same as getHasProblem()
-	 * @return
+	 * @see  #getHasProblem()
 	 */
 	public boolean hasProblem(){
 		return getHasProblem();

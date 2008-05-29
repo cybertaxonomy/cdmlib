@@ -20,6 +20,11 @@ import javax.persistence.*;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm
+ * The relationship are to be understood as 'is .... of'. For instance 
+ * Linum radiola L. is a replaced synonym of Radiola linoides Roth
+ * or Astragalus rhizanthus Boiss. is a later homonym of
+ * Astragalus rhizanthus Royle.  
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
