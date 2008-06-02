@@ -78,7 +78,8 @@ public class TestDatabase {
 			
 			HomotypicalGroup homotypicalGroup = taxon1.getHomotypicGroup();
 			System.out.println("HomotypicNames of " + botanicalName + ":" + homotypicalGroup.getTypifiedNames());
-			System.out.println("HomotypicSynonyms of " + taxon1 + ":" + taxon1.getHomotypicSynonyms());
+			System.out.println("HomotypicSynonymsByGroup of " + taxon1 + ":" + taxon1.getHomotypicSynonymsByHomotypicGroup());
+			System.out.println("HomotypicSynonymsBySynonymy of " + taxon1 + ":" + taxon1.getHomotypicSynonymsByHomotypicRelationship());
 			
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);
@@ -126,7 +127,7 @@ public class TestDatabase {
 			//commonNames
 			String commonNameString;
 			if (taxon.getName() != null){
-				commonNameString = "Common " + taxon.getName().getNameCache(); 
+				commonNameString = "Common " + taxon.getName().getTitleCache(); 
 			}else{
 				commonNameString = "Common (null)";
 			}

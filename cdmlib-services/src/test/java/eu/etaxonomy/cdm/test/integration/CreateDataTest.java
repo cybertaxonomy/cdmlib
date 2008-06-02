@@ -166,7 +166,8 @@ public class CreateDataTest {
 			child.getSynonyms();
 			child.getMisappliedNames();
 			child.getHomotypicGroup();
-			child.getHomotypicSynonyms();
+			child.getHomotypicSynonymsByHomotypicGroup();
+			child.getHomotypicSynonymsByHomotypicRelationship();
 		}
 		
 		Set<TaxonDescription> descriptions = genusTaxon.getDescriptions();
