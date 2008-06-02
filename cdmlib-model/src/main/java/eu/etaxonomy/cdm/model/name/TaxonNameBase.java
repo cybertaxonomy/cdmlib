@@ -16,8 +16,6 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -29,11 +27,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.collection.PersistentSet;
+import org.hibernate.annotations.Target;
 
 import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase;
+
 
 
 import java.lang.reflect.Method;
@@ -420,6 +417,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@Target(ReferenceBase.class)
 	public INomenclaturalReference getNomenclaturalReference(){
 		return (INomenclaturalReference) this.nomenclaturalReference;
 	}

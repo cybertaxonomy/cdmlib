@@ -65,7 +65,7 @@ public class DerivationEvent extends EventBase{
 	}
 	
 	
-	@OneToMany(mappedBy="derivedFrom")
+	@OneToMany(mappedBy="derivationEvent")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DerivedUnitBase> getDerivatives() {
 		return derivatives;
