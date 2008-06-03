@@ -211,8 +211,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
 		TaxonRelationship rel = new TaxonRelationship(this, toTaxon, type, citation, microcitation);
 	}
-	public void addMisappliedName(Taxon toTaxon, ReferenceBase citation, String microcitation) {
-		addTaxonRelation(toTaxon, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);
+	public void addMisappliedName(Taxon misappliedNameTaxon, ReferenceBase citation, String microcitation) {
+		misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);
 	}
 
 	
