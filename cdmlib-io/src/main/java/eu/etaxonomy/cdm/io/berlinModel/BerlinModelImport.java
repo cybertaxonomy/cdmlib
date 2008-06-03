@@ -32,8 +32,22 @@ public class BerlinModelImport {
 	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(service);
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(service);
 
-
-	public boolean doCheck(BerlinModelImportConfigurator bmiConfig){
+	public boolean invoke(BerlinModelImportConfigurator bmiConfig){
+		if (bmiConfig.getCheck().equals(BerlinModelImportConfigurator.CHECK.CHECK_ONLY)){
+			return doCheck(bmiConfig);
+		}else if (bmiConfig.getCheck().equals(BerlinModelImportConfigurator.CHECK.CHECK_AND_IMPORT)){
+			doCheck(bmiConfig);
+			return doImport(bmiConfig);
+		}else if (bmiConfig.getCheck().equals(BerlinModelImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
+			return doImport(bmiConfig);
+		}else{
+			logger.error("Unknown CHECK type");
+			return false;
+		}
+	}
+	
+	
+	protected boolean doCheck(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
 		System.out.println("Start check BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") ...");
 		
@@ -95,7 +109,7 @@ public class BerlinModelImport {
 	/**
 	 * Executes the whole 
 	 */
-	public boolean doImport(BerlinModelImportConfigurator bmiConfig){
+	protected boolean doImport(BerlinModelImportConfigurator bmiConfig){
 		CdmApplicationController cdmApp;
 		if (bmiConfig == null){
 			logger.warn("BerlinModelImportConfiguration is null");
