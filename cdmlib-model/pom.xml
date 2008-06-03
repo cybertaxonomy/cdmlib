@@ -22,6 +22,7 @@
   
   <build>
     <plugins>
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>aspectj-maven-plugin</artifactId>
@@ -42,6 +43,7 @@
           </includes>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
   
