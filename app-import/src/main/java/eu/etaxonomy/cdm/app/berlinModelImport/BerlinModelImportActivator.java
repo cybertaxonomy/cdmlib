@@ -7,15 +7,16 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelSources;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
 
@@ -29,16 +30,14 @@ public class BerlinModelImportActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	//static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final Source berlinModelSource = BerlinModelSources.editWP6();	
-	//static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
-    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
+	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae();
 	
 	//authors
 	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	static final CHECK check = CHECK.CHECK_ONLY;
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
@@ -48,7 +47,7 @@ public class BerlinModelImportActivator {
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doFacts = false;
+	static final boolean doFacts = true;
 
 	
 	/**
@@ -77,9 +76,8 @@ public class BerlinModelImportActivator {
 		
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
-		bmImport.doCheck(bmImportConfigurator);
-		bmImport.doImport(bmImportConfigurator);
-
+		bmImport.invoke(bmImportConfigurator);
+		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 

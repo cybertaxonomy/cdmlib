@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
@@ -59,30 +59,6 @@ public class CdmDestinations {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_editor_test2"; 
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-		public static ICdmDataSource cdm_portal(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_portal";
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-	public static ICdmDataSource cdm_portal_test(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_portal_test";
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-	public static ICdmDataSource cdm_portal_test_localhost(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "127.0.0.1";
-		String cdmDB = "cdm_portal_test";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}

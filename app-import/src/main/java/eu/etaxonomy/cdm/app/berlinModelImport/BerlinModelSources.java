@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
@@ -27,7 +27,7 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
-	public static Source editWP6(){
+	public static Source EDIT_CICHORIEAE(){
 		//	BerlinModel - EditWp6
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
