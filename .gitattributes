@@ -617,6 +617,8 @@ libraryTesterApplication/lib/spring-test-2.5.jar -text
 libraryTesterApplication/lib/spring-tx-2.5.jar -text
 libraryTesterApplication/lib/xercesImpl.jar -text
 libraryTesterApplication/lib/xml-apis.jar -text
+libraryTesterApplication/src/CdmDestinations.java -text
+libraryTesterApplication/src/Profiling.java -text
 libraryTesterApplication/src/testJar/TestJarMain.java -text
 musiclib-hibernatetest/listAnnotatedClasses.py -text
 musiclib-hibernatetest/pom.xml -text

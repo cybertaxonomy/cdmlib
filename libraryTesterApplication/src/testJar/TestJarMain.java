@@ -3,7 +3,6 @@ package testJar;
 //import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 //import eu.etaxonomy.cdm.api.service.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -11,13 +10,13 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.CdmDataSource.HBM2DDL;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.name.*;
 
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.jmx.HierarchyDynamicMBean;
 import org.jdom.Element;
 
 
@@ -45,12 +44,12 @@ public class TestJarMain {
 			String strFile = "terms/Language.csv";
 			logger.info(CdmUtils.getReadableResourceStream(strFile));
 			//test directory
-			is2 = CdmUtils.getReadableResourceStream("eu/etaxonomy/cdm/" + CdmDataSource.DATASOURCE_FILE_NAME);
+			is2 = CdmUtils.getReadableResourceStream("eu/etaxonomy/cdm/" + CdmPersistentDataSource.DATASOURCE_FILE_NAME);
 			Element el = XmlHelp.getRoot(is2);
 			System.out.println(el);
 			
 			//CdmDataSource dataSource = CdmDataSource.NewInstance("testPostgre");
-			CdmApplicationController app = new CdmApplicationController(HBM2DDL.CREATE);
+			CdmApplicationController app = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
 			INameService nameService = app.getNameService();
 			logger.info(nameService);
 			app.close();
@@ -66,7 +65,7 @@ public class TestJarMain {
 		Logger.getRootLogger().setLevel(Level.WARN);
 		//INameService ns = new CdmApplicationController().getNameService();
 		//tn = (TaxonName)ns.getAllNames().get(0);
-		tn = new NonViralName(null);
+		tn = NonViralName.NewInstance(null);
 		logger.setLevel(Level.DEBUG);
 		System.out.println("****************");
 		tn.setGenusOrUninomial("TestUninomialName");
