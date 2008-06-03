@@ -51,7 +51,7 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 		LocalisedTermSTO lt = new LocalisedTermSTO();
 		Representation r = null;
 		// look for terms in preferred languages
-		while(r == null && locales.hasMoreElements()) {
+		while(locales != null && r == null && locales.hasMoreElements()) {
 			Locale locale = locales.nextElement();
 			Language language  = languageDao.getLangaugeByIso(locale.getLanguage());
 			r = term.getRepresentation(language);

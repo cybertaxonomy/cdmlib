@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -29,11 +30,13 @@ import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
+import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 
 
 
 @Component
 public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>{
+	
 	@Autowired
 	private ReferenceAssembler refAssembler;
 	
@@ -44,7 +47,8 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			setVersionableEntity(tnb, n);
 			n.setFullname(tnb.getTitleCache());
 			n.setTaggedName(getTaggedName(tnb));
-			n.setNomenclaturalReference(refAssembler.getSTO(tnb.getNomenclaturalReference(), null));
+			//TODO RUDE HACK
+			n.setNomenclaturalReference(refAssembler.getSTO((ReferenceBase)tnb.getNomenclaturalReference(), locales));
 		}
 		return n;
 	}	
@@ -55,12 +59,18 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			setVersionableEntity(tnb, n);
 			n.setFullname(tnb.getTitleCache());
 			n.setTaggedName(getTaggedName(tnb));
-			n.setNomenclaturalReference(refAssembler.getTO(tnb.getNomenclaturalReference(), null));
+			n.setNomenclaturalReference(refAssembler.getTO((ReferenceBase)tnb.getNomenclaturalReference(), locales));
 		}
 		return n;
 	}
-	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase> tnb){
+	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> tnb){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
+		//FIXME rude hack:
+		if(!(tnb instanceof NonViralName)){
+			return tags;
+		}
+		tnb = (NonViralName)tnb;
+		// --- end of rude hack
 		for (Object token : tnb.getCacheStrategy().getTaggedName(tnb)){
 			TaggedText tag = new TaggedText();
 			if (String.class.isInstance(token)){

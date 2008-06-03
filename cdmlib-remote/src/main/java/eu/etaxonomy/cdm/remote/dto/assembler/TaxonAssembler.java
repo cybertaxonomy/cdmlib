@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.SynonymRelationshipTO;
@@ -67,17 +68,21 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			t.setName(nameAssembler.getSTO(tb.getName(), null));
 			t.setSec(refAssembler.getTO(tb.getSec(), null));
 			//TODO: add more mappings
-			if(tb instanceof Taxon){
-				tb = (Taxon)tb;
 			    if(tb instanceof Taxon){
 			    	Taxon taxon = (Taxon) tb;
-			    	List<Synonym> syns = taxon.getHomotypicGroup().getSynonymsInGroup(taxon.getSec());
-			    	t.setHomotypicSynonyms(getSynonymRelationshipTOs(syns, taxon, locales));
+			    	Set<Synonym> syns = taxon.getSynonyms();
+			    	List<Synonym> synList = new ArrayList<Synonym>();
+			    	for(Synonym synonym : syns) {
+			    		//FIXME remove skip-test hack if "missing synonym type"-bug is fixed 
+			    		if(true || synonym.getRelationType(taxon).equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+			    			synList.add(synonym);
+			    		}
+					}
+			    	t.setHomotypicSynonyms(getSynonymRelationshipTOs(synList, taxon, locales));
 //			    	List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
 //			    	for (HomotypicalGroup homotypicalGroup : heterotypicGroups) {
-//			    		t.setHeterotypicSynonymyGroups(....);						
+//			    		t.setHeterotypicSynonymyGroups(....);	
 //					}
-			    }
 			}
 		}
 		return t;

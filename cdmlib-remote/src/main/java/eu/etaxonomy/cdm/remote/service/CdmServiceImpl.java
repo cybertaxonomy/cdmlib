@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
+import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
@@ -122,7 +123,7 @@ public class CdmServiceImpl implements ICdmService {
 		if (tb==null){
 			throw new CdmObjectNonExisting(uuid.toString(), TaxonBase.class);
 		}
-		TaxonTO t = taxonAssembler.getTO(tb, null);
+		TaxonTO t = taxonAssembler.getTO(tb, locales);
 		return t;
 	}
 	
