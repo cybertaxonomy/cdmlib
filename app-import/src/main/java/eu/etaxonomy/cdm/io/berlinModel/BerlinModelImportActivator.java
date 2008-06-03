@@ -32,7 +32,7 @@ public class BerlinModelImportActivator {
 	//static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
 	static final Source berlinModelSource = BerlinModelSources.editWP6();	
 	//static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
-    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
+    static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test();
 	
 	//authors
 	static final boolean doAuthors = true;
@@ -48,7 +48,7 @@ public class BerlinModelImportActivator {
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doFacts = false;
+	static final boolean doFacts = true;
 
 	
 	/**
