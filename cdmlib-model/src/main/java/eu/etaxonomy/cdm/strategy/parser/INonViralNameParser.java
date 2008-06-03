@@ -8,15 +8,24 @@ import eu.etaxonomy.cdm.strategy.IStrategy;
 
 
 /**
+ * Supplies several parser methods for non viral taxon name strings and for nomenclatural
+ * reference strings. If the parser method for taxon names is not successful
+ * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getHasProblem() hasProblem} flag
+ * of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase TaxonNameBase} instance will be set. 
+ * Some of the parser methods for taxon names create also a TaxonNameBase
+ * instance while other ones only fill the result into an existing
+ * TaxonNameBase instance.
+ * 
  * @author a.mueller
  *
  */
 public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy {
 	
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * Parses the taxon name String and returns a TaxonNameBase. 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
+	 * 
 	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
 	 * @param rank
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials  
@@ -24,9 +33,10 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	public T parseSimpleName(String simpleName, Rank rank);
 
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * Parses the taxon name String and returns a TaxonNameBase. 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
+	 * 
 	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
 	 */
@@ -35,18 +45,20 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	
 
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * Parses the taxon name String and returns a TaxonNameBase. 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
+	 * 
 	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials. 
 	 */
 	public T parseFullName(String fullName);
 
 	/**
-	 * Parses the taxonname String and returns a TaxonNameBase. 
+	 * Parses the taxon name String and returns a TaxonNameBase. 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
+ 	 * 
 	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
 	 * @param rank
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
@@ -54,11 +66,12 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	public T parseFullName(String fullName, NomenclaturalCode nomCode, Rank rank);
 
 	/**
- 	 * Parses the taxonname String and fills the result into the existing TaxonNameBase nameToBeFilled. 
+ 	 * Parses the taxon name String and fills the result into the existing TaxonNameBase nameToBeFilled. 
 	 * Name related fields are set to default (null for Strings and other objects like Authors and References and false for booleans).
 	 * NameRelations are not changed.
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * No change is done to nameToBeFilled if fullName == null.
+ 	 * 
 	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
 	 * @param rank
 	 * @param nameToBeFilled The TaxonNameBaseToBeFilled

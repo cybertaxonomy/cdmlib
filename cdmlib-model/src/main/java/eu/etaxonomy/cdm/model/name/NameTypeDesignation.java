@@ -21,8 +21,16 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * {only for typified names which have a rank above "species", in this case the
- * type has to be a "species" name}
+ * Only taxon names which have a rank above "species" are typified by other
+ * taxon names of lower rank. A type of a name of a genus or of any
+ * subdivision of a genus can only be the name of a species. A type of a name
+ * of a family or of any subdivision of a family is the name of a genus
+ * (or resolving it: a name of a species typifying this genus).
+ * Moreover the mentioned taxon name type may be rejected or conserved.
+ * Depending on the date of publication, the same designation could have the
+ * rejected status according to one reference and later have the conserved
+ * status according to another reference.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:38

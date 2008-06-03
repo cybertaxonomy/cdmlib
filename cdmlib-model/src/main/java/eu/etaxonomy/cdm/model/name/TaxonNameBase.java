@@ -467,16 +467,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether the 
-	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
-	 * string of this taxon name. This flag shows whether the getNameCache
-	 * method should return a generated value (false) or the present name cache
-	 * string (true).  
+	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
+	 * method was able to parse the taxon name string successfully (false)
+	 * or not (true).
 	 *  
-	 * @return  the boolean value of the protectedNameCache flag
+	 * @return  the boolean value of the hasProblem flag
 	 * @see     #getNameCache()
 	 */
-	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
@@ -487,6 +484,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.hasProblem = hasProblem;
 	}
 	/**
+	 * Returns exactly the same boolean value as the {@link #getHasProblem() getHasProblem} method.  
+	 *  
 	 * @see  #getHasProblem()
 	 */
 	public boolean hasProblem(){
@@ -494,30 +493,93 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 
+	/** 
+	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
+	 * to this taxon name the rank of which must be above "species".
+	 * The name type designations include all the taxon names used to typify
+	 * this name and eventually the rejected or conserved status
+	 * of these designations.
+	 *
+	 * @see     NameTypeDesignation
+	 * @see     SpecimenTypeDesignation
+	 */
 	@OneToMany
 	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<NameTypeDesignation> getNameTypeDesignations() {
 		return nameTypeDesignations;
 	}
+	/** 
+	 * @see     #getNameTypeDesignations()
+	 */
 	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
 		this.nameTypeDesignations = nameTypeDesignations;
 	}
 	
+	/** 
+	 * Creates and adds a new {@link NameTypeDesignation name type designation}
+	 * to this taxon name's set of name type designations.
+	 *
+	 * @param  typeSpecies				the taxon name to be used as type of this taxon name
+	 * @param  citation					the reference for this new designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @param  isRejectedType			the boolean status for rejected
+	 * @param  isConservedType			the boolean status for conserved
+	 * @see 			  				#getNameTypeDesignations()
+	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
+	 */
 	public void addTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
 		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType);
 	}
+	/** 
+	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
+	 * to the set of specimen type designations assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 *
+	 * @param  typeSpecimen				the specimen to be used as a type for this taxon name's homotypical group
+	 * @param  status					the specimen type designation status
+	 * @param  citation					the reference for this new specimen type designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @see 			  				HomotypicalGroup#getTypeDesignations()
+	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 * @see 			  				TypeDesignationStatus
+	 */
 	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		this.homotypicalGroup.addTypeDesignation(typeSpecimen, status,  citation, citationMicroReference, originalNameString);
 	}
+	/** 
+	 * Removes one element from the set of {@link NameTypeDesignation name type designations} of this taxon name.
+	 * The name type designation itself will be nullified.
+	 *
+	 * @param  typeDesignation  the name type designation of this taxon name which should be deleted
+	 * @see     		  		#getNameTypeDesignations()
+	 * @see     		  		#removeTypeDesignation(SpecimenTypeDesignation)
+	 */
 	public void removeTypeDesignation(NameTypeDesignation typeDesignation) {
 		this.nameTypeDesignations.remove(typeDesignation);
 	}
+	/** 
+	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * The specimen type designation itself will be nullified.
+	 *
+	 * @param  typeDesignation  the specimen type designation which should be deleted
+	 * @see     		  		HomotypicalGroup#getTypeDesignations()
+	 * @see     		  		#removeTypeDesignation(NameTypeDesignation)
+	 */
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
 		this.homotypicalGroup.removeTypeDesignation(typeDesignation);
 	}
 
-
+	/** 
+	 * Returns the {@link HomotypicalGroup homotypical group} to which
+	 * this taxon name belongs. A homotypical group represents all names that
+	 * share the same type specimens.
+	 *
+	 * @see 	HomotypicalGroup
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
