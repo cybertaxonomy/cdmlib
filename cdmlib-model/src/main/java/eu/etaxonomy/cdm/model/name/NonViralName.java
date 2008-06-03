@@ -100,11 +100,25 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 	
 	//TODO for PROTOTYPE
+	/**
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy cache strategy} used to generate a name string
+	 * corresponding to this taxon name. The cache strategy includes
+	 * two methods: {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(TaxonNameBase) one} for the scientific name
+	 * string without author teams and year and another {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getTaggedName(TaxonNameBase) another one} for the array of scientific name components
+	 * with author teams and eventually year.
+	 * 
+	 * @return  the name cache strategy used for this taxon name
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase
+	 */
 	@Transient
 	@Override
 	public INonViralNameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;
 	}
+	/**
+	 * @see  #getCacheStrategy()
+	 */
 	@Override
 	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
