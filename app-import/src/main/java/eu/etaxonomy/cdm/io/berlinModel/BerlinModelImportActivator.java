@@ -43,7 +43,7 @@ public class BerlinModelImportActivator {
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
-	static final boolean doTypes = false;
+	static final boolean doTypes = true;
 	
 	//taxa
 	static final boolean doTaxa = true;

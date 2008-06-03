@@ -9,6 +9,12 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import java.util.Properties;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -59,23 +65,45 @@ public class BerlinModelSources {
 
 	
 	/**
-	 * initializes source
-	 * @return true, if connection establisehd
+	 * Initialises source
+	 * @return true, if connection established
 	 */
 	private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd ){
 		//establish connection
+		File accountsFile = new File(System.getenv("USERPROFILE")+File.separator+".cdm-app-import");
+		Properties accounts = new Properties();
+		Source source = null;
+		String key = strServer+'.'+dbms+'.'+userName;
 		try {
-			Source source = new Source(dbms, strServer, strDB);
+			source = new Source(dbms, strServer, strDB);
 			source.setPort(port);
+			accountsFile.createNewFile();
+			FileReader in = new FileReader(accountsFile);
+			in.close();
+			accounts.load(in);
 			if (pwd == null){
-				pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
+				pwd = accounts.getProperty(key);
+				if(pwd == null){
+					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
+				}
 			}
 			source.setUserAndPwd(userName, pwd);
-			return source;
+			// on success store userName, pwd in property file
+			accounts.setProperty(key, pwd);
 		} catch (Exception e) {
+			accounts.remove(key);
 			logger.error(e);
-			return null;
 		}
+		FileWriter out;
+		try {
+			out = new FileWriter(accountsFile);
+			out.close();
+			accounts.store(out, "");
+			logger.info("password stored in local properties");
+		} catch (IOException e) {
+			logger.error("Unable to write properties", e);
+		}
+		return source;
 	}
 
 }
