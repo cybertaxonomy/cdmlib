@@ -35,7 +35,10 @@ import javax.persistence.*;
 @Entity
 public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
-	private String iso2code;
+	/**
+	 * 2 character ISO 3166 Country codes
+	 */
+	private char[] iso3166_A2 = new char[2];
 	private TimePeriod validPeriod;
 	private Set<Continent> continents = new HashSet();
 	
@@ -595,16 +598,22 @@ uuidPersianGulf
 		this.continents.remove(continent);
 	}
 
-	public String getIso2code(){
-		return this.iso2code;
+	/**
+	 * Get 2 character ISO 3166 Country code
+	 * @return  a String representation of the ISO 3166 code
+	 */
+	//TODO create userDefinedType ?
+	@Column(length=2)
+	public char[] getIso3166_A2(){
+		return this.iso3166_A2;
 	}
 
 	/**
-	 * 
-	 * @param iso2code    iso2code
+	 * Set 2 character ISO 3166 Country code 
+	 * @param iso3166_A2  a String representation of the ISO 3166 code
 	 */
-	public void setIso2code(String iso2code){
-		this.iso2code = iso2code;
+	public void setIso3166_A2(char[] iso3166_A2){
+		this.iso3166_A2 = iso3166_A2;
 	}
 
 	public TimePeriod getValidPeriod(){
@@ -625,7 +634,7 @@ uuidPersianGulf
 		// read UUID, URI, english label+description
 		result = super.readCsvLine(csvLine);
 		// iso codes extra
-		this.iso2code=csvLine.get(4).trim();
+		this.iso3166_A2=csvLine.get(4).trim().toCharArray();
 		return result;
 	}
 	public void writeCsvLine(CSVWriter writer) {
@@ -634,7 +643,7 @@ uuidPersianGulf
 		line[1] = getUri();
 		line[2] = getLabel(Language.ENGLISH());
 		line[3] = getDescription();
-		line[4] = this.getIso2code();
+		line[4] = this.getIso3166_A2().toString();
 		line[5] = this.getContinents().toString();
 		writer.writeNext(line);
 	}	

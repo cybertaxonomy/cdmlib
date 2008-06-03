@@ -57,7 +57,6 @@ public class Language extends DefinedTermBase {
 	private char[] iso639_1 = new char[2];
 	private char[] iso639_2 = new char[3];
 	
-
 	public Language() {
 		super();
 	}
@@ -65,8 +64,14 @@ public class Language extends DefinedTermBase {
 		super();
 		this.setUuid(uuid);
 	}
-	public Language(char[] iso639_1, char[] iso639_2, String englishLabel, String frenchLabel) {
+	public Language(char[] iso639_1, char[] iso639_2, String englishLabel, String frenchLabel) throws Exception {
 		super();
+		if(iso639_1.length > 2){
+			logger.warn("iso639_1 too long: "+iso639_1.toString());
+		}
+		if(iso639_2.length > 3){
+			logger.warn("iso639_2 too long: "+iso639_2.toString());
+		}
 		this.iso639_1=iso639_1;
 		this.iso639_2=iso639_2;
 		this.addRepresentation(new Representation(englishLabel, String.valueOf(iso639_2), Language.ENGLISH()));
@@ -141,6 +146,39 @@ public class Language extends DefinedTermBase {
 	public static final Language POLISH(){
 		return getByUuid(uuidPolish);
 	}
+	
+	/**
+	 * Get the according iso639-1 alpha-2 language code 
+	 * http://www.loc.gov/standards/iso639-2/
+	 * 
+	 * @return the iso639 alpha-2 language code or null if not available
+	 */
+	//TODO create userDefinedType ?
+	@Column(length=2)
+	public char[] getIso639_1() {
+		
+		return iso639_1;
+	}
+
+	public void setIso639_1(char[] iso639_1) {
+		this.iso639_1 = iso639_1;
+	}
+
+	/**
+	 * Get the according iso639-2 alpha-3 language code 
+	 * http://www.loc.gov/standards/iso639-2/
+	 * 
+	 * @return the iso639 alpha-3 language code or null if not available
+	 */
+	//TODO create userDefinedType ?
+	@Column(length=3)
+	public char[] getIso639_2() {
+		return iso639_2;
+	}
+
+	public void setIso639_2(char[] iso639_2) {
+		this.iso639_2 = iso639_2;
+	}
  
 	@Override 
 	public ILoadableTerm readCsvLine(List csvLine) {
@@ -154,8 +192,14 @@ public class Language extends DefinedTermBase {
 			result = this;
 			super.readCsvLine(csvLine);
 			// iso codes extra
-			this.iso639_1=csvLineString.get(4).trim().toCharArray();
-			this.iso639_2=csvLineString.get(5).trim().toCharArray();
+			this.iso639_1=csvLineString.get(5).trim().toCharArray();
+			this.iso639_2=csvLineString.get(4).trim().toCharArray();
+			if(iso639_1.length > 2){
+				logger.warn("Iso639-1: "+iso639_1.toString()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
+			}
+			if(iso639_2.length > 3 ){
+				logger.warn("Iso639-2: "+iso639_2.toString()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
+			}
 		}
 		return result;
 	}
