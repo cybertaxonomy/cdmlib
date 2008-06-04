@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.FetchType;
 
@@ -18,7 +20,11 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -103,6 +109,26 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<TaxonBase> results = crit.list();
 		// TODO add page & pagesize criteria
 		return results;
+	}
+	
+	@Override
+	public UUID delete(TaxonBase persistentObject) throws DataAccessException{
+		Set<Annotation> annotations = persistentObject.getAnnotations();
+		for (Annotation annotation: annotations){
+			persistentObject.removeAnnotation(annotation);
+		}
+		Set<Marker> markers = persistentObject.getMarkers();
+		for (Marker marker: markers){
+			persistentObject.removeMarker(marker);
+		}
+//		Set<Marker> markers = persistentObject.getMarkers();
+//		for (Marker marker: markers){
+//			persistentObject.removeSource(source)(marker);
+//		}
+		
+		
+		
+		return null;
 	}
 	
 }
