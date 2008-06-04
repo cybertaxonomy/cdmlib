@@ -59,7 +59,19 @@ public class CdmDataSource implements ICdmDataSource {
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password);
 	}
 
+	static public CdmDataSource  NewLocalH2Instance(String server, String database, int port, String username, String password){
+		return new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, password);
+	}
 	
+	
+	/** in work */
+	static public CdmDataSource  NewLocalH2Instance(String username, String password){
+		//FIXME in work
+		String server = "localhost";
+		String database = "cd";
+		int port = 9092; 
+		return new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, password);
+	}
 	
 	/**
 	 * @param server
@@ -168,11 +180,7 @@ public class CdmDataSource implements ICdmDataSource {
 		hibernateProps.addPropertyValue("properties",props);
 		bd.setPropertyValues(hibernateProps);
 		return bd;
-	}
-	
-
-	
-	
+	}	
 	
 	
 }

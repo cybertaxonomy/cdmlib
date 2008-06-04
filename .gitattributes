@@ -317,10 +317,12 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundExc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalH2.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/VocabularyStoreImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/Db2DatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/H2DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/HSqlDbDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/IDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/MySQLDatabaseType.java -text

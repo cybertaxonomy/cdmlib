@@ -19,28 +19,27 @@ public interface ICdmDataSource {
 	/**
 	 * Returns a BeanDefinition object of type  DriverManagerDataSource that contains
 	 * datsource properties (url, username, password, ...)
-	 * @return
+	 * @return BeanDefinition
 	 */
 	public BeanDefinition getDatasourceBean();
 	
 	/**
 	 * @param hbm2dll
-	 * @param showSql
-	 * @return
+	 * @return BeanDefinition
 	 */
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll);
 	
 	/**
 	 * @param hbm2dll
 	 * @param showSql
-	 * @return
+	 * @param formatSql
+	 * @param cacheProviderClass
+	 * @return BeanDefinition
 	 */
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass);
 
 	
 	/**
-	 * @param hbm2dll
-	 * @param showSql
 	 * @return
 	 */
 	public String getName();

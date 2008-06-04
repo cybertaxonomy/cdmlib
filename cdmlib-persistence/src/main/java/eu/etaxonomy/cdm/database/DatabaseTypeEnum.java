@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
@@ -33,7 +34,8 @@ public enum DatabaseTypeEnum {
 	ODBC(3),
 	PostgreSQL(4),
 	SqlServer2000(5),
-	SqlServer2005(6)
+	SqlServer2005(6),
+	H2(7)
 	;
 
 	/**
@@ -55,6 +57,8 @@ public enum DatabaseTypeEnum {
             	this.dbType = new SqlServer2000DatabaseType(); break;
             case 6:
             	this.dbType = new SqlServer2005DatabaseType(); break;
+            case 7:
+            	this.dbType = new H2DatabaseType(); break;
             default:
                 //TODO Exception
         }

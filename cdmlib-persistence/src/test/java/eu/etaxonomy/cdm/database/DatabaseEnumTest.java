@@ -96,13 +96,14 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = dbEnum.getAllTypes();
-		assertEquals(6, typeList.size());
+		assertEquals(7, typeList.size());
 		assertEquals(dbEnum.HSqlDb, typeList.get(0));
 		assertEquals(dbEnum.MySQL, typeList.get(1));
 		assertEquals(dbEnum.ODBC, typeList.get(2));
 		assertEquals(dbEnum.PostgreSQL, typeList.get(3));
 		assertEquals(dbEnum.SqlServer2000, typeList.get(4));
 		assertEquals(dbEnum.SqlServer2005, typeList.get(5));
+		assertEquals(dbEnum.H2, typeList.get(6));
 	}
 	
 
