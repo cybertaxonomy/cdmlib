@@ -9,9 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
-import java.util.UUID;
-
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
