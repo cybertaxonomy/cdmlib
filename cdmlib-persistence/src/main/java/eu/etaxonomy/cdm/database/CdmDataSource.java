@@ -20,6 +20,7 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
@@ -59,18 +60,13 @@ public class CdmDataSource implements ICdmDataSource {
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password);
 	}
 
-	static public CdmDataSource  NewLocalH2Instance(String server, String database, int port, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, password);
-	}
-	
-	
 	/** in work */
 	static public CdmDataSource  NewLocalH2Instance(String username, String password){
 		//FIXME in work
-		String server = "localhost";
-		String database = "cd";
-		int port = 9092; 
-		return new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, password);
+		String database = "cdm";
+		int port = -1; 
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, "", database, port, username, password);
+		return dataSource;
 	}
 	
 	/**
@@ -103,10 +99,10 @@ public class CdmDataSource implements ICdmDataSource {
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDriverManagerDataSourceClass());
 		//attributes
 		bd.setLazyInit(isLazy);
-		if (initMethodName != null && ! initMethodName.trim().equals("") ){
+		if (! CdmUtils.Nz(initMethodName).trim().equals("") ){
 			bd.setInitMethodName(initMethodName);
 		}
-		if (destroyMethodName != null  && ! destroyMethodName.trim().equals("") ){
+		if (! CdmUtils.Nz(destroyMethodName).trim().equals("") ){
 			bd.setInitMethodName(destroyMethodName);
 		}
 		
@@ -180,6 +176,22 @@ public class CdmDataSource implements ICdmDataSource {
 		hibernateProps.addPropertyValue("properties",props);
 		bd.setPropertyValues(hibernateProps);
 		return bd;
+	}
+
+	public String getInitMethodName() {
+		return initMethodName;
+	}
+
+	public void setInitMethodName(String initMethodName) {
+		this.initMethodName = initMethodName;
+	}
+
+	public String getDestroyMethodName() {
+		return destroyMethodName;
+	}
+
+	public void setDestroyMethodName(String destroyMethodName) {
+		this.destroyMethodName = destroyMethodName;
 	}	
 	
 	
