@@ -155,13 +155,13 @@ public class Language extends DefinedTermBase {
 	 */
 	//TODO create userDefinedType ?
 	@Column(length=2)
-	public char[] getIso639_1() {
+	public String getIso639_1() {
 		
-		return iso639_1;
+		return iso639_1.toString();
 	}
 
-	public void setIso639_1(char[] iso639_1) {
-		this.iso639_1 = iso639_1;
+	public void setIso639_1(String iso639_1) {
+		this.iso639_1 = iso639_1.toCharArray();
 	}
 
 	/**
@@ -172,12 +172,12 @@ public class Language extends DefinedTermBase {
 	 */
 	//TODO create userDefinedType ?
 	@Column(length=3)
-	public char[] getIso639_2() {
-		return iso639_2;
+	public String getIso639_2() {
+		return iso639_2.toString();
 	}
 
-	public void setIso639_2(char[] iso639_2) {
-		this.iso639_2 = iso639_2;
+	public void setIso639_2(String iso639_2) {
+		this.iso639_2 = iso639_2.toCharArray();
 	}
  
 	@Override 

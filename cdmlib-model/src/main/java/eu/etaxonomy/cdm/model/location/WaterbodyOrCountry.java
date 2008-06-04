@@ -604,16 +604,16 @@ uuidPersianGulf
 	 */
 	//TODO create userDefinedType ?
 	@Column(length=2)
-	public char[] getIso3166_A2(){
-		return this.iso3166_A2;
+	public String getIso3166_A2(){
+		return this.iso3166_A2.toString();
 	}
 
 	/**
 	 * Set 2 character ISO 3166 Country code 
 	 * @param iso3166_A2  a String representation of the ISO 3166 code
 	 */
-	public void setIso3166_A2(char[] iso3166_A2){
-		this.iso3166_A2 = iso3166_A2;
+	public void setIso3166_A2(String iso3166_A2){
+		this.iso3166_A2 = iso3166_A2.toCharArray();
 	}
 
 	public TimePeriod getValidPeriod(){
