@@ -2,6 +2,7 @@
 /INSTALL.TXT -text
 /LICENSE.TXT -text
 app-import/pom.xml -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/AccountStore.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmDestinations.java -text

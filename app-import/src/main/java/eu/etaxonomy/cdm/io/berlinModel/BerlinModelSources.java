@@ -70,39 +70,36 @@ public class BerlinModelSources {
 	 */
 	private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd ){
 		//establish connection
-		File accountsFile = new File(System.getenv("USERPROFILE")+File.separator+".cdm-app-import");
-		Properties accounts = new Properties();
 		Source source = null;
-		String key = strServer+'.'+dbms+'.'+userName;
+		AccountStore accounts = new AccountStore();
+		boolean doStore = false;
 		try {
 			source = new Source(dbms, strServer, strDB);
 			source.setPort(port);
-			accountsFile.createNewFile();
-			FileReader in = new FileReader(accountsFile);
-			in.close();
-			accounts.load(in);
+			
 			if (pwd == null){
-				pwd = accounts.getProperty(key);
+				pwd = accounts.getPassword(dbms, strServer, userName);
 				if(pwd == null){
+					doStore = true;
 					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
+				} else {
+					logger.info("using stored password for  "+CdmUtils.Nz(userName));
 				}
 			}
 			source.setUserAndPwd(userName, pwd);
 			// on success store userName, pwd in property file
-			accounts.setProperty(key, pwd);
+			if(doStore){
+				accounts.setPassword(dbms, strServer, userName, pwd);
+				logger.info("password stored in "+accounts.accountsFile);
+			}
 		} catch (Exception e) {
-			accounts.remove(key);
+			if(doStore){
+				accounts.removePassword(dbms, strServer, userName);
+				logger.info("password removed from "+accounts.accountsFile);
+			}
 			logger.error(e);
 		}
-		FileWriter out;
-		try {
-			out = new FileWriter(accountsFile);
-			out.close();
-			accounts.store(out, "");
-			logger.info("password stored in local properties");
-		} catch (IOException e) {
-			logger.error("Unable to write properties", e);
-		}
+		// write pwd to account store
 		return source;
 	}
 
