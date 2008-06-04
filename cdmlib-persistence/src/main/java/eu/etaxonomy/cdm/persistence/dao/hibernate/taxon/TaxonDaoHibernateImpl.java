@@ -113,6 +113,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	@Override
 	public UUID delete(TaxonBase persistentObject) throws DataAccessException{
+		
 		Set<Annotation> annotations = persistentObject.getAnnotations();
 		for (Annotation annotation: annotations){
 			persistentObject.removeAnnotation(annotation);
@@ -121,6 +122,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		for (Marker marker: markers){
 			persistentObject.removeMarker(marker);
 		}
+		//FIXME in work
 //		Set<Marker> markers = persistentObject.getMarkers();
 //		for (Marker marker: markers){
 //			persistentObject.removeSource(source)(marker);
