@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -148,6 +149,30 @@ public class Datasource {
 			logger.error("defined terms not found");
 		}
 	}
+	
+	private void testLocalH2(){
+		try {
+			CdmDataSource ds = 
+				CdmDataSource.NewLocalH2Instance("a", "b");
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
+			try {
+				List l = appCtr.getNameService().getAllNames(5, 1);
+				System.out.println(l);
+				//Agent agent = new Agent();
+				//appCtr.getAgentService().saveAgent(agent);
+				appCtr.close();
+			} catch (RuntimeException e) {
+				logger.error("Runtime Exception");
+				e.printStackTrace();
+				appCtr.close();
+				
+			}
+		} catch (DataSourceNotFoundException e) {
+			logger.error("LOCAL HSQL");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
 		
 	
 	private void test(){
@@ -157,7 +182,8 @@ public class Datasource {
 		//testSqlServer();
 		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
 		//testPostgreServer();
-		testLocalHsql();
+		//testLocalHsql();
+		testLocalH2();
 		System.out.println("\nEnd Datasource");
 	}
 	
