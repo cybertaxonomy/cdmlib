@@ -646,6 +646,11 @@
         	<artifactId>ojdbc14</artifactId>
         	<version>9.2.0.5</version>
         </dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.0.73</version>
+		</dependency>
 			
 		</dependencies>
 	</dependencyManagement>
