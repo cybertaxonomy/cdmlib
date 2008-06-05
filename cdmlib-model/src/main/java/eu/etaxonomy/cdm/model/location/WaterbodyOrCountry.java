@@ -605,7 +605,7 @@ uuidPersianGulf
 	//TODO create userDefinedType ?
 	@Column(length=2)
 	public String getIso3166_A2(){
-		return this.iso3166_A2.toString();
+		return String.valueOf(iso3166_A2);
 	}
 
 	/**

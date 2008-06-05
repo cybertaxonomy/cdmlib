@@ -157,10 +157,14 @@ public class Language extends DefinedTermBase {
 	@Column(length=2)
 	public String getIso639_1() {
 		
-		return iso639_1.toString();
+		return String.valueOf(iso639_1);
 	}
 
 	public void setIso639_1(String iso639_1) {
+		iso639_1 = iso639_1.trim();
+		if(iso639_1.length() > 2){
+			logger.warn("Iso639-1: "+iso639_1+" too long");
+		}
 		this.iso639_1 = iso639_1.toCharArray();
 	}
 
@@ -173,10 +177,14 @@ public class Language extends DefinedTermBase {
 	//TODO create userDefinedType ?
 	@Column(length=3)
 	public String getIso639_2() {
-		return iso639_2.toString();
+		return String.valueOf(iso639_2);
 	}
 
 	public void setIso639_2(String iso639_2) {
+		iso639_2 = iso639_2.trim();
+		if(iso639_2.length() > 3 ){
+			logger.warn("Iso639-2: "+iso639_2+" too long");
+		}
 		this.iso639_2 = iso639_2.toCharArray();
 	}
  
