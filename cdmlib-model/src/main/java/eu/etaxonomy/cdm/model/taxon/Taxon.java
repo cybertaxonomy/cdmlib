@@ -119,7 +119,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	protected void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		synonymRelation.setAcceptedTaxon(null);
 		Synonym synonym = synonymRelation.getSynonym();
 		if (synonym != null){
@@ -194,6 +194,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			}
 		}	
 	}
+		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
 	 */

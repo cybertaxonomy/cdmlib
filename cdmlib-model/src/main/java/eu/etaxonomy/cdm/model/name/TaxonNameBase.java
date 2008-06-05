@@ -637,6 +637,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		initMethods();
 		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
+	public void removeTaxonBase(TaxonBase taxonBase){
+		taxonBases.add(taxonBase);
+		initMethods();
+		invokeSetMethod(methodTaxonBaseSetName, null);
+	}
 
 	private void initMethods(){
 		if (methodTaxonBaseSetName == null){
