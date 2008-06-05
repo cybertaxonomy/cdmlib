@@ -23,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.remote.dto.HomotypicTaxonGroupSTO;
 import eu.etaxonomy.cdm.remote.dto.SynonymRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
@@ -79,15 +81,26 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			    		}
 					}
 			    	t.setHomotypicSynonyms(getSynonymRelationshipTOs(synList, taxon, locales));
-//			    	List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
-//			    	for (HomotypicalGroup homotypicalGroup : heterotypicGroups) {
-//			    		t.setHeterotypicSynonymyGroups(....);	
-//					}
+			    	List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
+			    	List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>(heterotypicGroups.size());
+			    	for (HomotypicalGroup homotypicalGroup : heterotypicGroups) {
+			    		heterotypicSynonymyGroups.add(getHomotypicTaxonGroupSTO(homotypicalGroup, taxon, locales));
+					}
+			    	t.setHeterotypicSynonymyGroups(heterotypicSynonymyGroups);	
 			}
 		}
 		return t;
 	}
 	
+	private HomotypicTaxonGroupSTO getHomotypicTaxonGroupSTO(HomotypicalGroup homotypicalGroup, Taxon t,Enumeration<Locale> locales) {
+		HomotypicTaxonGroupSTO htgSTO = new HomotypicTaxonGroupSTO();
+		htgSTO.setUuid(homotypicalGroup.getUuid().toString());
+		for(TaxonBase tb : homotypicalGroup.getSynonymsInGroup(t.getSec())){
+			htgSTO.getTaxa().add(getSTO(tb, locales));
+		}
+		return null;
+	}
+
 	public List<SynonymRelationshipTO> getSynonymRelationshipTOs(List<Synonym> syns, Taxon t, Enumeration<Locale> locales){
 		List<SynonymRelationshipTO> r = new ArrayList<SynonymRelationshipTO>(syns.size());
 		for (Synonym s : syns) {
@@ -104,6 +117,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		}
 		return sr;
 	}
+	
 	
 	public TreeNode getTreeNode(Taxon t){
 		TreeNode tn = null;

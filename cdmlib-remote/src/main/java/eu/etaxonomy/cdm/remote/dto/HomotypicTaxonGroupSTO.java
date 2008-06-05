@@ -21,4 +21,20 @@ public class HomotypicTaxonGroupSTO extends BaseSTO{
 
 	private List<TaxonSTO> taxa = new ArrayList();
 	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
+	
+	public List<TaxonSTO> getTaxa() {
+		return taxa;
+	}
+	public void setTaxa(List<TaxonSTO> taxa) {
+		this.taxa = taxa;
+	}
+	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
+		return typeDesignations;
+	}
+	public void setTypeDesignations(
+			List<SpecimenTypeDesignationSTO> typeDesignations) {
+		this.typeDesignations = typeDesignations;
+	}
+	
+	
 }
