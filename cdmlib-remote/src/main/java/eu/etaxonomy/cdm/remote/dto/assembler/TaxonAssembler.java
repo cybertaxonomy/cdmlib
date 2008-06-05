@@ -80,7 +80,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			taxonTO.setSec(refAssembler.getTO(taxonBase.getSec(), null));
 		    if(taxonBase instanceof Taxon){
 		    	Taxon taxon = (Taxon) taxonBase;
-		    	Set<Synonym> syns = taxon.getSynonyms();
+		    	List<Synonym> syns = taxon.getHomotypicSynonymsByHomotypicGroup();
 		    	List<Synonym> synList = new ArrayList<Synonym>();
 		    	for(Synonym synonym : syns) {
 		    		//FIXME remove skip-test hack if "missing synonym type"-bug is fixed 
