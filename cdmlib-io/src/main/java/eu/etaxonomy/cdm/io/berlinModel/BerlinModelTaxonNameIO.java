@@ -2,8 +2,6 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -13,10 +11,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
