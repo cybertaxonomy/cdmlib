@@ -22,13 +22,14 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -116,6 +117,46 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 			//TODO citation and microcitation
 			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), null, null);
 		}
+
+		//Move Taxon RelationShips to new Taxon
+		for(TaxonRelationship taxonRelation : oldTaxon.getTaxonRelations()){
+			//CHILDREN
+			if (taxonRelation.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+				if (taxonRelation.getFromTaxon() == oldTaxon){
+					oldTaxon.removeTaxonRelation(taxonRelation);
+				}else if(taxonRelation.getToTaxon() == oldTaxon){
+					newAcceptedTaxon.addTaxonomicChild(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
+					oldTaxon.removeTaxonRelation(taxonRelation);
+				}else{
+					logger.warn("Taxon is not part of its own Taxonrelationship");
+				}
+			}
+			//MISAPPLIED NAMES
+			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIEDNAMEFOR())){
+				if (taxonRelation.getFromTaxon() == oldTaxon){
+					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
+					oldTaxon.removeTaxonRelation(taxonRelation);
+				}else if(taxonRelation.getToTaxon() == oldTaxon){
+					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
+					oldTaxon.removeTaxonRelation(taxonRelation);
+				}else{
+					logger.warn("Taxon is not part of its own Taxonrelationship");
+				}
+			}
+			//Concept Relationships
+			//FIXME implement
+//			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIEDNAMEFOR())){
+//				if (taxonRelation.getFromTaxon() == oldTaxon){
+//					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
+//					oldTaxon.removeTaxonRelation(taxonRelation);
+//				}else if(taxonRelation.getToTaxon() == oldTaxon){
+//					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
+//					oldTaxon.removeTaxonRelation(taxonRelation);
+//				}else{
+//					logger.warn("Taxon is not part of its own Taxonrelationship");
+//				}
+//			}
+		}
 		
 		//Move Descriptions to new Taxon
 		for(TaxonDescription taxDescription : oldTaxon.getDescriptions()){
@@ -123,6 +164,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		}
 		//delete old Taxon
 		this.dao.saveOrUpdate(newAcceptedTaxon);
+//		FIXME implement
 		this.dao.delete(oldTaxon);
 		
 		//return
