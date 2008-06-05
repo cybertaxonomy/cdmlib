@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -149,5 +150,21 @@ public class CdmUtils {
 		String[] strings = {string1, string2};
 		return concat(seperator, strings);
 	}
+	
+	static public boolean urlExists(String strUrl, boolean withWarning){
+		try {
+			URL url = new URL(strUrl);
+			url.getContent();
+			return true;
+		} catch (MalformedURLException e) {
+			if (withWarning) {
+				logger.warn(e);
+			}
+		} catch (IOException e) {
+			//
+		};
+		return false;
+	}
+	
 	
 }
