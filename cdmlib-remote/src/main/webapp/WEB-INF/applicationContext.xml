@@ -16,11 +16,11 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <!-- 
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
-        -->
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal_test"/>
+        -->
+        <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
         <property name="username" value="edit"/>
-        <property name="password" value="wp5"/>
+        <property name="password" value="xxx"/>
     </bean>
     
     <!-- This configures default properties, which can overridden with the file specified by the location property -->
@@ -31,7 +31,7 @@
                 <prop key="hibernate.hbm2ddl.auto">validate</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
