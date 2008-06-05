@@ -33,6 +33,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelReferenceIO.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonNameIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTypesIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmIOMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmStringMapper.java -text

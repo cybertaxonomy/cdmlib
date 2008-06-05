@@ -61,35 +61,47 @@ public class BerlinModelImport {
 		}
 		
 		
-		//Authors
+		//check Authors
 		if (bmiConfig.isDoAuthors()){
 			result &= BerlinModelAuthorIO.check(bmiConfig);
 		}
 
-		//References
+		//check References
 		if (bmiConfig.getDoReferences() != NONE){
 			result &= BerlinModelReferenceIO.check(bmiConfig);
 		}
 		
-		//TaxonNames
+		//check TaxonNames
 		if (bmiConfig.isDoTaxonNames()){
 			result &=  BerlinModelTaxonNameIO.check(bmiConfig);
 		}
 		
-		//make and save RelNames
+		//check RelNames
 		if(bmiConfig.isDoRelNames()){
 			result &= BerlinModelTaxonNameIO.checkRelations(bmiConfig);
 		}
+
+		//check nameFacts
+		if(bmiConfig.isDoNameFacts()){
+			result &= BerlinModelNameFactsIO.check(bmiConfig);
+		}
 		
-		//TODO NomStatus
-		//TODO Types
-		
+		//check nameStatus
+		if(bmiConfig.isDoNameStatus()){
+			result &= BerlinModelTaxonNameIO.checkNomStatus(bmiConfig);
+		}
+
+		//check nomStatus
+		if(bmiConfig.isDoTypes()){
+			result &= BerlinModelTypesIO.check(bmiConfig);
+		}
+	
 		//check Taxa
 		if(bmiConfig.isDoTaxa()){
 			result &= BerlinModelTaxonIO.check(bmiConfig);
 		}
 		
-		//make and save RelPTaxa
+		//check RelPTaxa
 		if(bmiConfig.isDoRelTaxa()){
 			result &= BerlinModelTaxonIO.checkRelations(bmiConfig);
 		}
@@ -172,8 +184,23 @@ public class BerlinModelImport {
 			logger.warn("No RelPTaxa imported");
 		}
 
-		//TODO NomStatus
-		//TODO Types
+		//check nameStatus
+		if(bmiConfig.isDoNameStatus()){
+			if (! BerlinModelTaxonNameIO.invokeStatus(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
+				return false;
+			}else{
+				logger.warn("No Name Status imported");
+			}
+		}
+
+		//check types
+		if(bmiConfig.isDoTypes()){
+			if (! BerlinModelTypesIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
+				return false;
+			}
+		}else{
+			logger.warn("No Types imported");
+		}
 		
 		//make and save Taxa
 		if(bmiConfig.isDoTaxa()){

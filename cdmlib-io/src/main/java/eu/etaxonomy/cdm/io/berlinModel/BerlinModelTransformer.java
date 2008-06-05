@@ -67,6 +67,22 @@ public final class BerlinModelTransformer {
 	public static int NAME_REL_IS_LECTOTYPE_OF = 61;
 	public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
 	
+	//NameFacts
+	public static String NAME_FACT_PROTOLOGUE = "Protologue";
+	public static String NAME_FACT_ALSO_PUBLISHED_IN = "Also published in";
+	
+	//TYPES
+	public static int NAME_TYPE_1 = 1;
+	public static int NAME_TYPE_2 = 2;
+	public static int NAME_TYPE_3 = 3;
+	public static int NAME_TYPE_4 = 4;
+	public static int NAME_TYPE_5 = 5;
+	public static int NAME_TYPE_6 = 6;
+	public static int NAME_TYPE_7 = 7;
+	public static int NAME_TYPE_8 = 8;
+	public static int NAME_TYPE_9 = 9;
+	public static int NAME_TYPE_10 = 105;
+	//...
 	
 	//TaxonRelationShip
 	public static int TAX_REL_IS_INCLUDED_IN = 1;

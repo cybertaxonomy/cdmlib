@@ -45,6 +45,7 @@ public class BerlinModelImportConfigurator {
 	private boolean doRelNames = true;
 	private boolean doNameStatus = false;
 	private boolean doTypes = false;
+	private boolean doNameFacts = true;
 	
 	//taxa
 	private boolean doTaxa = true;
@@ -156,6 +157,12 @@ public class BerlinModelImportConfigurator {
 	public void setDoNameStatus(boolean doNameStatus) {
 		this.doNameStatus = doNameStatus;
 	}
+	public boolean isDoNameFacts() {
+		return doNameFacts;
+	}
+	public void setDoNameFacts(boolean doNameFacts) {
+		this.doNameFacts = doNameFacts;
+	}
 	public boolean isDoTypes() {
 		return doTypes;
 	}
@@ -237,5 +244,8 @@ public class BerlinModelImportConfigurator {
 	public void setFactLanguage(Language factLanguage) {
 		this.factLanguage = factLanguage;
 	}
+
+
+	
 	
 }

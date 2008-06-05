@@ -50,10 +50,19 @@ public class BerlinModelTaxonNameIO {
 		return result;
 	}
 	
+	public static boolean checkNomStatus(BerlinModelImportConfigurator bmiConfig){
+		boolean result = true;
+		logger.warn("Checking for NomenclaturalStatus not yet implemented");
+		//result &= checkArticlesWithoutJournal(bmiConfig);
+		//result &= checkPartOfJournal(bmiConfig);
+		
+		return result;
+	}
+	
 	//TODO
-	static boolean invokeStatus(ReferenceBase berlinModelRef, Source source, CdmApplicationController cdmApp, 
-			boolean deleteAll, MapWrapper<TaxonNameBase> taxonNameMap,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Agent> authorMap){
+	public static boolean invokeStatus(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
+			MapWrapper<TaxonNameBase> taxonNameMap,	MapWrapper<ReferenceBase> referenceMap){
+		logger.warn("NomenclaturalStatus not yet implemented");
 		return false;
 	}
 	

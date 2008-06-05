@@ -14,10 +14,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.source.Source;
-import eu.etaxonomy.cdm.model.common.Annotation;
-
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaInstance;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -27,14 +23,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author a.mueller
  *
  */
-public class BerlinModelNameFactsIO {
-	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
+public class BerlinModelTypesIO {
+	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
 
 	private static int modCount = 10000;
 
 	public static boolean check(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
-		logger.warn("Checking for NameFacts not yet implemented");
+		logger.warn("Checking for Types not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		
@@ -58,8 +54,8 @@ public class BerlinModelNameFactsIO {
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT NameFact.*, Name.NameID as nameId, NameFactCategory.xxx " + 
-					" FROM NameFact INNER JOIN " +
+					" SELECT Type.*, Name.NameID as nameId, NameFactCategory.xxx " + 
+					" FROM NameType INNER JOIN " +
                       	" Name ON NameFact.PTNameFk = Name.NameId  INNER JOIN "+
                       	" NameFactCategory ON NameFactCategory.ID = NameFact.NameFactCategoryFK " + 
                     " WHERE (1=1) ";
@@ -69,9 +65,9 @@ public class BerlinModelNameFactsIO {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("NameFacts handled: " + (i-1));}
+				if ((i++ % modCount) == 0){ logger.info("Types handled: " + (i-1));}
 				
-				int nameFactId = rs.getInt("nameFactId");
+				int typeId = rs.getInt("typeId");
 				int nameId = rs.getInt("nameId");
 				int nameFactRefFk = rs.getInt("nameFactRefFk");
 				int categoryFk = rs.getInt("nameFactCategoryFk");
@@ -82,44 +78,17 @@ public class BerlinModelNameFactsIO {
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
-					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
-						ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
-						String mimeTypeTif = "image/tiff";
-						String mimeTypeJpeg = "mage/jpeg";
-						Integer size = null;
-						
-						Media media = Media.NewInstance();
-						String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/";
-						//tiff
-						String urlTif = urlPath + "media/protolog/tif/" + nameFact;
-						if (CdmUtils.urlExists(urlTif, true)){
-							MediaInstance mediaInstance = MediaInstance.NewInstance(urlTif, mimeTypeTif, size);
-							media.addInstance(mediaInstance);
-						}
-						//jpeg
-						boolean fileExists = true;
-						i = 1;
-						while (fileExists){
-							String urlJpeg = urlPath + "media/protolog/jpeg/" + nameFact + "000" + i++;
-							if (CdmUtils.urlExists(urlJpeg, true)){
-								MediaInstance mediaInstance = MediaInstance.NewInstance(urlJpeg, mimeTypeJpeg, size);
-								media.addInstance(mediaInstance);
-							}else{
-								fileExists = true;
-							}
-						}
-						if (media.getInstances().size() > 0){
-							ref.addMedia(media);
-						}
-					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
-						if (! nameFact.equals("")){
-							String prefix = "Also published in: ";
-							Annotation annotation = Annotation.NewDefaultLanguageInstance(nameFact);
-							taxonNameBase.addAnnotation(annotation);
-						}
+					if (categoryFk == NAME_TYPE_1){
+						//;
+					}else if (categoryFk == NAME_TYPE_2){
+						//;
+					}else if (categoryFk == NAME_TYPE_3){
+						//;
+					}else if (categoryFk == NAME_TYPE_4){
+						//
 					}else {
 						//TODO
-						logger.warn("NameFactCategory '" + category + "' not yet implemented");
+						logger.warn("TypeCategory '" + category + "' not yet implemented");
 					}
 					
 					//TODO
@@ -129,7 +98,7 @@ public class BerlinModelNameFactsIO {
 					taxonNameStore.add(taxonNameBase);
 				}else{
 					//TODO
-					logger.warn("TaxonName for NameFact " + nameFactId + " does not exist in store");
+					logger.warn("TaxonName for Type " + typeId + " does not exist in store");
 				}
 				//put
 			}
