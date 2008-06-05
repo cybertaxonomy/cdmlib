@@ -25,9 +25,13 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -112,25 +116,39 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	@Override
-	public UUID delete(TaxonBase persistentObject) throws DataAccessException{
+	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		
-		Set<Annotation> annotations = persistentObject.getAnnotations();
+		Set<Annotation> annotations = taxonBase.getAnnotations();
 		for (Annotation annotation: annotations){
-			persistentObject.removeAnnotation(annotation);
+			taxonBase.removeAnnotation(annotation);
 		}
-		Set<Marker> markers = persistentObject.getMarkers();
+		Set<Marker> markers = taxonBase.getMarkers();
 		for (Marker marker: markers){
-			persistentObject.removeMarker(marker);
+			taxonBase.removeMarker(marker);
 		}
-		//FIXME in work
-//		Set<Marker> markers = persistentObject.getMarkers();
-//		for (Marker marker: markers){
-//			persistentObject.removeSource(source)(marker);
-//		}
-		
-		
-		
-		return null;
+		Set<OriginalSource> origSources = taxonBase.getSources();
+		for (OriginalSource source: origSources){
+			taxonBase.removeSource(source);
+		}
+		taxonBase.getName().removeTaxonBase(taxonBase);
+		if (taxonBase instanceof Taxon){
+			Taxon taxon = (Taxon)taxonBase;
+			Set<TaxonRelationship> taxRels = taxon.getTaxonRelations();
+			for (TaxonRelationship taxRel: taxRels){
+				taxon.removeTaxonRelation(taxRel);
+			} ;
+			Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
+			for (SynonymRelationship synRel: synRels){
+				taxon.removeSynonymRelation(synRel);
+			} ;
+		}else if (taxonBase instanceof Synonym){
+			Synonym synonym = (Synonym)taxonBase;
+			Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
+			for (SynonymRelationship synRel: synRels){
+				synonym.removeSynonymRelation(synRel);
+			} ;
+		}
+		return super.delete(taxonBase);
 	}
 	
 }
