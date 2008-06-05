@@ -23,7 +23,11 @@ import java.lang.reflect.Method;
 import javax.persistence.*;
 
 /**
- * {unique name within view/treatment}
+ * Upmost abstract class for the use of a taxon name by a reference either
+ * as a taxon ("accepted/correct" name) or as a (junior) synonym.
+ * For instance: "Juncus longirostris Kuvaev sec. Kirschner, J. et al. 2002".
+ * Within a taxonomic view/treatment a taxon name can be used only once.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:56

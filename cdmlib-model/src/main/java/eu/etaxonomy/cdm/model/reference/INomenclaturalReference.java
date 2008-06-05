@@ -21,8 +21,10 @@ import javax.persistence.Transient;
 public interface INomenclaturalReference {
 
 	/**
-	 * returns a formatted string containing the reference citation excluding authors
-	 * as used in a taxon name
+	 * Returns a formatted string containing the reference citation excluding
+	 * authors but including the details as used in a taxon name.
+	 * 
+	 * @see	TaxonNameBase
 	 */
 	@Transient
 	public String getNomenclaturalCitation();
