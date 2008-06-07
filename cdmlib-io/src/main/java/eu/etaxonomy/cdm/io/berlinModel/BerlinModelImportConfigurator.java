@@ -52,6 +52,8 @@ public class BerlinModelImportConfigurator {
 	private boolean doRelTaxa = false;
 	private boolean doFacts = true;
 
+	//occurrence
+	private boolean doOccurrence = false;
 	
 	private Source source;
 	private ReferenceBase sourceReference;

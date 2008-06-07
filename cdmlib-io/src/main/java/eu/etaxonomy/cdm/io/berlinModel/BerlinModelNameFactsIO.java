@@ -123,8 +123,15 @@ public class BerlinModelNameFactsIO {
 					}
 					
 					//TODO
-					//References
-					//etc.
+//					NameFactRefFk            int        Checked
+//					DoubtfulFlag    bit        Checked
+//					PublishFlag      bit        Checked
+//					Created_When  datetime           Checked
+//					Updated_When datetime           Checked
+//					Created_Who    nvarchar(255)    Checked
+//					Updated_Who  nvarchar(255)    Checked
+//					Notes      nvarchar(1000)           Checked
+//					NameFactRefDetail       nvarchar(80)      Checked
 					
 					taxonNameStore.add(taxonNameBase);
 				}else{
