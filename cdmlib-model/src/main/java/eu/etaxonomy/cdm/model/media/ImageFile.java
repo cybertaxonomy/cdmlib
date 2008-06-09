@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.media;
 
 import org.apache.log4j.Logger;
 
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -22,7 +20,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:28
  */
 @Entity
-public class ImageFile extends MediaInstance {
+public class ImageFile extends MediaRepresentationPart {
 	static Logger logger = Logger.getLogger(ImageFile.class);
 	//image height in pixel
 	private int height;

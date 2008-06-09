@@ -146,7 +146,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IMediaDocumented.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IdentifyableMediaEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ImageFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Media.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaInstance.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentationPart.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MovieFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ReferencedMedia.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text

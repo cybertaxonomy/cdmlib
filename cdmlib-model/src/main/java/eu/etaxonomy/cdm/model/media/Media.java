@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.media;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -56,23 +55,30 @@ public class Media extends AnnotatableEntity {
 	private MultilanguageSet description = new MultilanguageSet();
 	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
 	//formats for images for example
-	private Set<MediaInstance> instances = new HashSet<MediaInstance>();
+	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
 	private Set<Rights> rights = new HashSet<Rights>();
 	private Agent artist;
 
 	@OneToMany(mappedBy="media")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
-	public Set<MediaInstance> getInstances(){
-		return this.instances;
+	public Set<MediaRepresentation> getRepresentations(){
+		return this.representations;
 	}
-	protected void setInstances(Set<MediaInstance> instances){
-		this.instances = instances;
+	protected void setRepresentations(Set<MediaRepresentation> representations){
+		this.representations = representations;
 	}
-	public void addInstance(MediaInstance instance){
-		this.instances.add(instance);
+	public void addRepresentation(MediaRepresentation representation){
+		if (representation != null){
+			this.getRepresentations().add(representation);
+			representation.setMedia(this);
+		}
 	}
-	public void removeInstance(MediaInstance instance){
-		this.instances.remove(instance);
+	public void removeRepresentation(MediaRepresentation representation){
+		this.getRepresentations().remove(representation);
+		if (representation != null){
+			representation.setMedia(null);
+		}
+
 	}
 
 	

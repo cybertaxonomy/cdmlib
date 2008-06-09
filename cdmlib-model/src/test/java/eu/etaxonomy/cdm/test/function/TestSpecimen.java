@@ -20,13 +20,13 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaInstance;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -107,13 +106,15 @@ public class TestSpecimen {
 		specimen.addAnnotation(Annotation.NewDefaultLanguageInstance(annotation));
 		
 		
-		
 		Media media = Media.NewInstance();
 		String uri = "http://131.130.131.9/database/img/imgBrowser.php?ID=50599";
 		String mimeType = null;
 		Integer size = null;
-		MediaInstance mediaInstance = MediaInstance.NewInstance(uri, mimeType, size);
-		media.addInstance(mediaInstance);
+		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(mimeType, "jpg");
+		media.addRepresentation(mediaRepresentation);
+		
+		MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(uri, size);
+		mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
 		specimen.addMedia(media);
 
 		//Original ID

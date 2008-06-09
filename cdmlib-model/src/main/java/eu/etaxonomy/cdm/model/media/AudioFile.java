@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.media;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-
 import javax.persistence.*;
 
 /**
@@ -21,7 +19,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:11
  */
 @Entity
-public class AudioFile extends MediaInstance {
+public class AudioFile extends MediaRepresentationPart {
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
 	
 	//length of recording in seconds
