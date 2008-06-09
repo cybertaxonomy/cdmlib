@@ -48,8 +48,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	 */
 	public Language getLangaugeByIso(String iso639) {
 		String isoStandart = "iso639_" + (iso639.length() - 1);
-		Query query = getSession().createQuery("select lang from Language where lang." + isoStandart
-						+ " = :isoCode");
+		Query query = getSession().createQuery("from Language where "+isoStandart+"= :isoCode"); 
 		query.setParameter("isoCode", iso639);
 		return (Language) query.uniqueResult();
 	}
