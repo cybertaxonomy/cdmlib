@@ -63,6 +63,38 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+		public static ICdmDataSource cdm_portal(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_portal";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_portal_test(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_portal_test";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_portal_test_localhost(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_portal_test";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_portal_test_pollux(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.11";
+		String cdmDB = "cdm_portal_test";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	public static ICdmDataSource cdm_edit_cichorieae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
@@ -103,17 +135,36 @@ public class CdmDestinations {
 	 */
 	private static ICdmDataSource makeDestination(String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
 		//establish connection
+		AccountStore accounts = new AccountStore();
+		String strServer = "cdm-server";
+		boolean doStore = false;
 		try {
 			if (pwd == null){
-				pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(cdmUserName) + ": ");
+				pwd = accounts.getPassword(strServer, cdmServer, cdmUserName);
+				if(pwd == null){
+					doStore = true;
+					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(cdmUserName) + ": ");
+				} else {
+					logger.info("using stored password for "+CdmUtils.Nz(cdmUserName));
+				}
 			}
 			//TODO not MySQL
 			ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+			// on success store userName, pwd in property file
+			if(doStore){
+				accounts.setPassword(strServer, cdmServer, cdmUserName, pwd);
+				logger.info("password stored in "+accounts.accountsFile);
+			}
 			return destination;
 		} catch (Exception e) {
+			if(doStore){
+				accounts.removePassword(strServer, cdmServer, cdmUserName);
+				logger.info("password removed from "+accounts.accountsFile);
+			}
 			logger.error(e);
 			return null;
 		}
 	}
 
 }
+
