@@ -31,10 +31,15 @@ import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 
 
 /**
- * A homotypical group represents all names that share the same type specimens.
- * This also includes supergeneric names like genera or families which usually have a name type designation
- * that finally (a name type designation can also point to another supergeneric name) points to a species name,
- * which in turn has a (set of) physical type specimen(s). 
+ * A homotypical group represents all taxon names that share the same type
+ * specimens. This also includes suprageneric names like genera or families
+ * which usually have a name type designation that finally (a name type
+ * designation can also point to another suprageneric name) points to a species
+ * name, which in turn has a (set of) physical type specimen(s). This class
+ * allows to define the type designation only once for the homotypical group
+ * instead of defining a type designation for each one of the taxon names
+ * subsumed under one homotypical group.
+ * 
  * @author m.doering
  *
  */

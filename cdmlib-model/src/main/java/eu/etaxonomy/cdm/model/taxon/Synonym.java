@@ -56,7 +56,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	protected void addSynonymRelation(SynonymRelationship synonymRelation) {
 		this.synonymRelations.add(synonymRelation);
 	}
-	protected void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		synonymRelation.setSynonym(null);
 		Taxon taxon = synonymRelation.getAcceptedTaxon();
 		if (taxon != null){

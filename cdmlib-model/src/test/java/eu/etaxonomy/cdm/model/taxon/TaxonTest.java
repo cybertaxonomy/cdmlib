@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class TaxonTest extends EntityTestBase {
+	private static final Logger logger = Logger.getLogger(TaxonTest.class);
+
+	
 	private ReferenceBase sec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
@@ -116,6 +120,312 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue(freeT.getSynonyms().contains(syn1));
 		assertTrue(syn1.getAcceptedTaxa().contains(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#NewInstance(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 */
+	@Test
+	public void testNewInstance() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon()}.
+	 */
+	@Test
+	public void testTaxon() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#Taxon(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 */
+	@Test
+	public void testTaxonTaxonNameBaseReferenceBase() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getDescriptions()}.
+	 */
+	@Test
+	public void testGetDescriptions() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#setDescriptions(java.util.Set)}.
+	 */
+	@Test
+	public void testSetDescriptions() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addDescription(eu.etaxonomy.cdm.model.description.TaxonDescription)}.
+	 */
+	@Test
+	public void testAddDescription() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#removeDescription(eu.etaxonomy.cdm.model.description.TaxonDescription)}.
+	 */
+	@Test
+	public void testRemoveDescription() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getSynonymRelations()}.
+	 */
+	@Test
+	public void testGetSynonymRelations() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#setSynonymRelations(java.util.Set)}.
+	 */
+	@Test
+	public void testSetSynonymRelations() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonymRelation(eu.etaxonomy.cdm.model.taxon.SynonymRelationship)}.
+	 */
+	@Test
+	public void testAddSynonymRelation() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#removeSynonymRelation(eu.etaxonomy.cdm.model.taxon.SynonymRelationship)}.
+	 */
+	@Test
+	public void testRemoveSynonymRelation() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getRelationsFromThisTaxon()}.
+	 */
+	@Test
+	public void testGetRelationsFromThisTaxon() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#setRelationsFromThisTaxon(java.util.Set)}.
+	 */
+	@Test
+	public void testSetRelationsFromThisTaxon() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getRelationsToThisTaxon()}.
+	 */
+	@Test
+	public void testGetRelationsToThisTaxon() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#setRelationsToThisTaxon(java.util.Set)}.
+	 */
+	@Test
+	public void testSetRelationsToThisTaxon() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getTaxonRelations()}.
+	 */
+	@Test
+	public void testGetTaxonRelations() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#removeTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
+	 */
+	@Test
+	public void testRemoveTaxonRelation() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
+	 */
+	@Test
+	public void testAddTaxonRelationTaxonRelationship() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)}.
+	 */
+	@Test
+	public void testAddRelationship() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddTaxonRelationTaxonTaxonRelationshipTypeReferenceBaseString() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addMisappliedName(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddMisappliedName() {
+		logger.warn("Not yet implemented");
+	}
+
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#hasSynonyms()}.
+	 */
+	@Test
+	public void testHasSynonyms() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getMisappliedNames()}.
+	 */
+	@Test
+	public void testGetMisappliedNames() {
+		logger.warn("Not yet implemented");
+	}
+
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getSynonymsSortedByType()}.
+	 */
+	@Test
+	public void testGetSynonymsSortedByType() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)}.
+	 */
+	@Test
+	public void testAddSynonymSynonymSynonymRelationshipType() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddSynonymSynonymSynonymRelationshipTypeReferenceBaseString() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)}.
+	 */
+	@Test
+	public void testAddSynonymNameTaxonNameBaseSynonymRelationshipType() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddSynonymNameTaxonNameBaseSynonymRelationshipTypeReferenceBaseString() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHeterotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
+	 */
+	@Test
+	public void testAddHeterotypicSynonymNameTaxonNameBase() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHeterotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.name.HomotypicalGroup, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddHeterotypicSynonymNameTaxonNameBaseHomotypicalGroupReferenceBaseString() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonymName(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddHomotypicSynonymName() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addHomotypicSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)}.
+	 */
+	@Test
+	public void testAddHomotypicSynonym() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#removeSynonym(eu.etaxonomy.cdm.model.taxon.Synonym)}.
+	 */
+	@Test
+	public void testRemoveSynonym() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#iterator()}.
+	 */
+	@Test
+	public void testIterator() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getHomotypicSynonymsByHomotypicGroup()}.
+	 */
+	@Test
+	public void testGetHomotypicSynonymsByHomotypicGroup() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getHomotypicSynonymsByHomotypicRelationship()}.
+	 */
+	@Test
+	public void testGetHomotypicSynonymsByHomotypicRelationship() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getHomotypicSynonymyGroups()}.
+	 */
+	@Test
+	public void testGetHomotypicSynonymyGroups() {
+		logger.warn("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getHeterotypicSynonymyGroups()}.
+	 */
+	@Test
+	public void testGetHeterotypicSynonymyGroups() {
+		logger.warn("Not yet implemented");
 	}
 
 }

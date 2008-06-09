@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -467,16 +466,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether the 
-	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
-	 * string of this taxon name. This flag shows whether the getNameCache
-	 * method should return a generated value (false) or the present name cache
-	 * string (true).  
+	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
+	 * method was able to parse the taxon name string successfully (false)
+	 * or not (true).
 	 *  
-	 * @return  the boolean value of the protectedNameCache flag
+	 * @return  the boolean value of the hasProblem flag
 	 * @see     #getNameCache()
 	 */
-	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
@@ -487,6 +483,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.hasProblem = hasProblem;
 	}
 	/**
+	 * Returns exactly the same boolean value as the {@link #getHasProblem() getHasProblem} method.  
+	 *  
 	 * @see  #getHasProblem()
 	 */
 	public boolean hasProblem(){
@@ -494,30 +492,112 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 
+	/** 
+	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
+	 * to this taxon name the rank of which must be above "species".
+	 * The name type designations include all the taxon names used to typify
+	 * this name and eventually the rejected or conserved status
+	 * of these designations.
+	 *
+	 * @see     NameTypeDesignation
+	 * @see     SpecimenTypeDesignation
+	 */
 	@OneToMany
 	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<NameTypeDesignation> getNameTypeDesignations() {
 		return nameTypeDesignations;
 	}
+	/** 
+	 * @see     #getNameTypeDesignations()
+	 */
 	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
 		this.nameTypeDesignations = nameTypeDesignations;
 	}
 	
+	/** 
+	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
+	 * indirectly to this taxon name through its {@link HomotypicalGroup homotypical group}.
+	 * The rank of this taxon name is generally "species" or below.
+	 * The specimen type designations include all the specimens on which
+	 * the typification of this name is based (and which are common to all
+	 * taxon names belonging to the homotypical group) and eventually
+	 * the status of these designations.
+	 *
+	 * @see     SpecimenTypeDesignation
+	 * @see     NameTypeDesignation
+	 */
+	@Transient
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+		return this.getHomotypicalGroup().getTypeDesignations();
+	}
+	
+	/** 
+	 * Creates and adds a new {@link NameTypeDesignation name type designation}
+	 * to this taxon name's set of name type designations.
+	 *
+	 * @param  typeSpecies				the taxon name to be used as type of this taxon name
+	 * @param  citation					the reference for this new designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @param  isRejectedType			the boolean status for rejected
+	 * @param  isConservedType			the boolean status for conserved
+	 * @see 			  				#getNameTypeDesignations()
+	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
+	 */
 	public void addTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
 		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType);
 	}
+	/** 
+	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
+	 * to the set of specimen type designations assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 *
+	 * @param  typeSpecimen				the specimen to be used as a type for this taxon name's homotypical group
+	 * @param  status					the specimen type designation status
+	 * @param  citation					the reference for this new specimen type designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @see 			  				HomotypicalGroup#getTypeDesignations()
+	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 * @see 			  				TypeDesignationStatus
+	 */
 	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		this.homotypicalGroup.addTypeDesignation(typeSpecimen, status,  citation, citationMicroReference, originalNameString);
 	}
+	/** 
+	 * Removes one element from the set of {@link NameTypeDesignation name type designations} of this taxon name.
+	 * The name type designation itself will be nullified.
+	 *
+	 * @param  typeDesignation  the name type designation of this taxon name which should be deleted
+	 * @see     		  		#getNameTypeDesignations()
+	 * @see     		  		#removeTypeDesignation(SpecimenTypeDesignation)
+	 */
 	public void removeTypeDesignation(NameTypeDesignation typeDesignation) {
+		logger.warn("not yet fully implemented: nullify the name type designation itself?");
 		this.nameTypeDesignations.remove(typeDesignation);
 	}
+	/** 
+	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * The specimen type designation itself will be nullified.
+	 *
+	 * @param  typeDesignation  the specimen type designation which should be deleted
+	 * @see     		  		HomotypicalGroup#getTypeDesignations()
+	 * @see     		  		#removeTypeDesignation(NameTypeDesignation)
+	 */
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
+		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
 		this.homotypicalGroup.removeTypeDesignation(typeDesignation);
 	}
 
-
+	/** 
+	 * Returns the {@link HomotypicalGroup homotypical group} to which
+	 * this taxon name belongs. A homotypical group represents all taxon names
+	 * that share the same type specimens.
+	 *
+	 * @see 	HomotypicalGroup
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
@@ -530,10 +610,20 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	@Transient
 	public StrictReferenceBase getCitation(){
+		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
 		logger.warn("getCitation not yet implemented");
 		return null;
 	}
 
+	/** 
+	 * Returns the complete string containing the
+	 * {@link reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
+	 * (including {@link #getNomenclaturalMicroReference() details}) assigned to this taxon name.
+	 * 
+	 * @see	reference.INomenclaturalReference#getNomenclaturalCitation()
+	 * @see	#getNomenclaturalReference()
+	 * @see	#getNomenclaturalMicroReference()
+	 */
 	@Transient
 	public String getCitationString(){
 		logger.warn("getCitationString not yet implemented");
@@ -547,8 +637,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/**
-	 * returns year of according nomenclatural reference, null if nomenclatural
-	 * reference does not exist
+	 * Returns the string containing the publication date (generally only year)
+	 * of the nomenclatural reference, null if there is no nomenclatural
+	 * reference.
+	 * 
+	 * @see	reference.INomenclaturalReference#getYear()
 	 */
 	@Transient
 	public String getReferenceYear(){
@@ -559,10 +652,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		}
 	}
 
+	/** 
+	 * Returns the set of {@link taxon.TaxonBase taxon bases} that refer to this taxon name.
+	 * In this context a taxon base means the use of a taxon name by a reference
+	 * either as a taxon ("accepted/correct" name) or as a (junior) synonym.
+	 * A taxon name can be used by several distinct references but only once
+	 * within a taxonomic treatment (identified by one reference).
+	 *
+	 * @see  taxon.TaxonBase
+	 * @see	#getTaxa()
+	 * @see	#getSynonyms()
+	 */
 	@OneToMany(mappedBy="name", fetch= FetchType.EAGER)
 	public Set<TaxonBase> getTaxonBases() {
 		return this.taxonBases;
 	}
+	/** 
+	 * @see     #getTaxonBases()
+	 */
 	protected void setTaxonBases(Set<TaxonBase> taxonBases) {
 		if (taxonBases == null){
 			taxonBases = new HashSet<TaxonBase>();
@@ -570,11 +677,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 			this.taxonBases = taxonBases;
 		}
 	}
+	/** 
+	 * Adds a new {@link taxon.TaxonBase taxon base}
+	 * to the set of taxon bases using this taxon name.
+	 *
+	 * @param  taxonBase  the taxon base to be added
+	 * @see 			  #getTaxonBases()
+	 */
 	//TODO protected
 	public void addTaxonBase(TaxonBase taxonBase){
 		taxonBases.add(taxonBase);
 		initMethods();
 		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
+	}
+	public void removeTaxonBase(TaxonBase taxonBase){
+		taxonBases.add(taxonBase);
+		initMethods();
+		invokeSetMethod(methodTaxonBaseSetName, null);
 	}
 
 	private void initMethods(){
@@ -591,8 +710,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	
 	/**
-	 * Return a set of taxa that use this name.
-	 * @return Set<Taxon> The set of taxa this TaxonName belongs to
+	 * Returns the set of {@link taxon.Taxon taxa} ("accepted/correct" names according to any
+	 * reference) that are based on this taxon name. This set is a subset of
+	 * the set returned by getTaxonBases(). 
+	 * 
+	 * @see	taxon.Taxon
+	 * @see	#getTaxonBases()
+	 * @see	#getSynonyms()
 	 */
 	@Transient
 	public Set<Taxon> getTaxa(){
@@ -606,8 +730,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/**
-	 * Return a set of synonyms that use this name
-	 * @return The set of synonyms this TaxonName belongs to
+	 * Returns the set of {@link taxon.Synonym (junior) synonyms} (according to any
+	 * reference) that are based on this taxon name. This set is a subset of
+	 * the set returned by getTaxonBases(). 
+	 * 
+	 * @see	taxon.Synonym
+	 * @see	#getTaxonBases()
+	 * @see	#getTaxa()
 	 */
 	@Transient
 	public Set<Synonym> getSynonyms() {
@@ -620,12 +749,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return result;
 	}
 	
-	@Transient
-	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
-		return this.getHomotypicalGroup().getTypeDesignations();
-	}
-	
 // ***********
+	/**
+	 * Returns the boolean value indicating whether a given taxon name belongs
+	 * to the same {@link HomotypicalGroup homotypical group} as this taxon name (true)
+	 * or not (false). Returns "true" only if the homotypical groups of both
+	 * taxon names exist and if they are identical. 
+	 *
+	 * @param	homoTypicName  the taxon name the homotypical group of which is to be checked
+	 * @return  			   the boolean value of the check
+	 * @see     			   HomotypicalGroup
+	 */
 	public boolean isHomotypic(TaxonNameBase homoTypicName) {
 		if (homoTypicName == null) {
 			return false;

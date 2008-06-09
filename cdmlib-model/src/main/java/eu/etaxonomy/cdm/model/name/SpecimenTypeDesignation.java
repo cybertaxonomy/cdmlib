@@ -22,7 +22,11 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * {only for typified names which have the "species" rank or below}
+ * Taxon names which have the a rank "species" or below can only be typified
+ * by specimens. Above the species rank the taxon names are generally typified
+ * by taxon names with lower rank (species for genus and genus for family) but
+ * can also be typified directly by specimens.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:52

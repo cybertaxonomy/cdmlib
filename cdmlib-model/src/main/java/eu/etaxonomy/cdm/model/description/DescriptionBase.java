@@ -16,9 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -115,7 +113,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	
 	@Override
 	public String generateTitle() {
-		logger.warn("generate Title not yet implemented");
-		return "generate Title not yet implemented";
+		//TODO generate title "generate Title not yet implemented"
+		return this.toString();
 	}
 }
