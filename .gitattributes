@@ -2,10 +2,10 @@
 /INSTALL.TXT -text
 /LICENSE.TXT -text
 app-import/pom.xml -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/AccountStore.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelSources.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmDestinations.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/AccountStore.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/BerlinModelImportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/BerlinModelSources.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/vienna/Activator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 app-import/src/main/resources/log4j.properties -text
