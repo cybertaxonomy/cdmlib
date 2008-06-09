@@ -16,8 +16,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 
+import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaInstance;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -85,30 +86,59 @@ public class BerlinModelNameFactsIO {
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
 						ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 						String mimeTypeTif = "image/tiff";
-						String mimeTypeJpeg = "mage/jpeg";
+						String mimeTypeJpeg = "image/jpeg";
+						String mimeTypePng = "image/png";
+						String suffixTif = "tif";
+						String suffixJpg = "jpg";
+						String suffixPng = "png";
 						Integer size = null;
 						
 						Media media = Media.NewInstance();
 						String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/";
 						//tiff
-						String urlTif = urlPath + "media/protolog/tif/" + nameFact;
+						String urlTif = urlPath + "media/protolog/tif/" + nameFact + "." + suffixTif;
 						if (CdmUtils.urlExists(urlTif, true)){
-							MediaInstance mediaInstance = MediaInstance.NewInstance(urlTif, mimeTypeTif, size);
-							media.addInstance(mediaInstance);
+							ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
+							MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
+							media.addRepresentation(tifRepresentation);
 						}
 						//jpeg
 						boolean fileExists = true;
 						i = 1;
 						while (fileExists){
-							String urlJpeg = urlPath + "media/protolog/jpeg/" + nameFact + "000" + i++;
+							String urlJpeg = urlPath + "media/protolog/jpeg/" + nameFact + "_p" + i++ + "." + suffixJpg;
 							if (CdmUtils.urlExists(urlJpeg, true)){
-								MediaInstance mediaInstance = MediaInstance.NewInstance(urlJpeg, mimeTypeJpeg, size);
-								media.addInstance(mediaInstance);
+								ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
+								MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
+								media.addRepresentation(jpgRepresentation);
 							}else{
-								fileExists = true;
+								fileExists = false;
 							}
 						}
-						if (media.getInstances().size() > 0){
+						//png
+						String urlPng = urlPath + "media/protolog/png/" + nameFact + "." + suffixPng;
+						if (CdmUtils.urlExists(urlPng, true)){
+							ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
+							MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
+							media.addRepresentation(tifRepresentation);
+						}else{
+							fileExists = true;
+							i = 1;
+							while (fileExists){
+								String urlJpeg = urlPath + "media/protolog/png/" + nameFact + "00" + i++ + "." + suffixPng;
+								if (CdmUtils.urlExists(urlJpeg, true)){
+									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
+									MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
+									media.addRepresentation(jpgRepresentation);
+								}else if (CdmUtils.urlExists(urlJpeg, true)){
+									
+								}else{
+								}
+									fileExists = false;
+								}
+						}
+						//all
+						if (media.getRepresentations().size() > 0){
 							ref.addMedia(media);
 						}
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){

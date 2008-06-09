@@ -3,9 +3,6 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public final class BerlinModelTransformer {
