@@ -49,9 +49,6 @@ public class BerlinModelNameFactsIO {
 		Source source = bmiConfig.getSource();
 		INameService nameService = cdmApp.getNameService();
 		
-		String dbAttrName;
-		String cdmAttrName;
-		
 		logger.info("start makeNameFacts ...");
 		
 		boolean delete = bmiConfig.isDeleteAll();
