@@ -6,7 +6,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/AccountStore.java
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/BerlinModelImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/BerlinModelSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/berlinModelImport/CdmDestinations.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/vienna/Activator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/viennaImport/Activator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 app-import/src/main/resources/log4j.properties -text
 cdmlib-commons/LICENSE.TXT -text
