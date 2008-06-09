@@ -78,13 +78,13 @@ public class BerlinModelTypesIO {
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
-					if (categoryFk == NAME_TYPE_1){
+					if (categoryFk == NAME_TYPE_HOLOTYPE){
 						//;
-					}else if (categoryFk == NAME_TYPE_2){
+					}else if (categoryFk == NAME_TYPE_LECTOTYPE){
 						//;
-					}else if (categoryFk == NAME_TYPE_3){
+					}else if (categoryFk == NAME_TYPE_NEOTYPE){
 						//;
-					}else if (categoryFk == NAME_TYPE_4){
+					}else if (categoryFk == NAME_TYPE_EPITYPE){
 						//
 					}else {
 						//TODO

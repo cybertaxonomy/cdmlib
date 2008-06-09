@@ -69,17 +69,20 @@ public final class BerlinModelTransformer {
 	public static String NAME_FACT_ALSO_PUBLISHED_IN = "Also published in";
 	
 	//TYPES
-	public static int NAME_TYPE_1 = 1;
-	public static int NAME_TYPE_2 = 2;
-	public static int NAME_TYPE_3 = 3;
-	public static int NAME_TYPE_4 = 4;
-	public static int NAME_TYPE_5 = 5;
-	public static int NAME_TYPE_6 = 6;
-	public static int NAME_TYPE_7 = 7;
-	public static int NAME_TYPE_8 = 8;
-	public static int NAME_TYPE_9 = 9;
-	public static int NAME_TYPE_10 = 105;
-	//...
+	public static int NAME_TYPE_HOLOTYPE = 1;
+	public static int NAME_TYPE_LECTOTYPE = 2;
+	public static int NAME_TYPE_NEOTYPE = 3;
+	public static int NAME_TYPE_EPITYPE = 4;
+	public static int NAME_TYPE_ISO_LECTOTYPE = 5;
+	public static int NAME_TYPE_ISO_NEOTYPE = 6;
+	public static int NAME_TYPE_ISO_TYPE = 7;
+	public static int NAME_TYPE_PARA_NEOTYPE = 8;
+	public static int NAME_TYPE_PARA_TYPE = 9;
+	public static int NAME_TYPE_SECOND_LECTOTYPE = 10;
+	public static int NAME_TYPE_SECOND_NEOTYPE = 11;
+	public static int NAME_TYPE_SYNTYPE = 12;
+	public static int NAME_TYPE_ICONOTYPE = 21;
+	public static int NAME_TYPE_PHOTOTYPE = 22;
 	
 	//TaxonRelationShip
 	public static int TAX_REL_IS_INCLUDED_IN = 1;

@@ -179,16 +179,6 @@ public class BerlinModelImport {
 			taxonNameStore = null;
 		}
 
-		//NameFacts
-		if (bmiConfig.isDoNameFacts()){
-			if (! BerlinModelNameFactsIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
-				//return false;
-			}
-		}else{
-			logger.warn("No NameFacts imported");
-			taxonNameStore = null;
-		}
-
 		//make and save RelNames
 		if(bmiConfig.isDoRelNames()){
 			if (! BerlinModelTaxonNameIO.invokeRelations(bmiConfig, cdmApp, taxonNameStore, referenceStore)){

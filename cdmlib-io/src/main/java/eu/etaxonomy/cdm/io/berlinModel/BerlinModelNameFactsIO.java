@@ -19,7 +19,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -31,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
-	private static int modCount = 10000;
+	private static int modCount = 10;
 
 	public static boolean check(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
@@ -56,16 +58,16 @@ public class BerlinModelNameFactsIO {
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT NameFact.*, Name.NameID as nameId, NameFactCategory.xxx " + 
+					" SELECT NameFact.*, Name.NameID as nameId, NameFactCategory.NameFactCategory " + 
 					" FROM NameFact INNER JOIN " +
                       	" Name ON NameFact.PTNameFk = Name.NameId  INNER JOIN "+
-                      	" NameFactCategory ON NameFactCategory.ID = NameFact.NameFactCategoryFK " + 
+                      	" NameFactCategory ON NameFactCategory.NameFactCategoryID = NameFact.NameFactCategoryFK " + 
                     " WHERE (1=1) ";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
 			//for each reference
-			while (rs.next()){
+			while (rs.next() && i < 100){
 				
 				if ((i++ % modCount) == 0){ logger.info("NameFacts handled: " + (i-1));}
 				
@@ -73,71 +75,81 @@ public class BerlinModelNameFactsIO {
 				int nameId = rs.getInt("nameId");
 				int nameFactRefFk = rs.getInt("nameFactRefFk");
 				int categoryFk = rs.getInt("nameFactCategoryFk");
-				String category = CdmUtils.Nz(rs.getString("xxx"));
+				String category = CdmUtils.Nz(rs.getString("NameFactCategory"));
 				String nameFact = CdmUtils.Nz(rs.getString("nameFact"));
 				
 				TaxonNameBase taxonNameBase = taxonNameMap.get(nameId);
+				//TaxonNameBase taxonNameBase = BotanicalName.NewInstance(null);
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
 						ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
-						String mimeTypeTif = "image/tiff";
-						String mimeTypeJpeg = "image/jpeg";
-						String mimeTypePng = "image/png";
-						String suffixTif = "tif";
-						String suffixJpg = "jpg";
-						String suffixPng = "png";
-						Integer size = null;
+						//ReferenceBase ref = Book.NewInstance();
 						
-						Media media = Media.NewInstance();
-						String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/";
-						//tiff
-						String urlTif = urlPath + "media/protolog/tif/" + nameFact + "." + suffixTif;
-						if (CdmUtils.urlExists(urlTif, true)){
-							ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
-							MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
-							media.addRepresentation(tifRepresentation);
-						}
-						//jpeg
-						boolean fileExists = true;
-						i = 1;
-						while (fileExists){
-							String urlJpeg = urlPath + "media/protolog/jpeg/" + nameFact + "_p" + i++ + "." + suffixJpg;
-							if (CdmUtils.urlExists(urlJpeg, true)){
-								ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
-								MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
-								media.addRepresentation(jpgRepresentation);
-							}else{
-								fileExists = false;
+						if (ref != null){
+						
+							String mimeTypeTif = "image/tiff";
+							String mimeTypeJpeg = "image/jpeg";
+							String mimeTypePng = "image/png";
+							String suffixTif = "tif";
+							String suffixJpg = "jpg";
+							String suffixPng = "png";
+							Integer size = null;
+							
+							Media media = Media.NewInstance();
+							//String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/";
+							String urlPath = "\\\\Bgbm11\\Edit-WP6\\";
+							//tiff
+							String urlTif = urlPath + "protolog/tif/" + nameFact + "." + suffixTif;
+							if (CdmUtils.urlExists(urlTif, true)){
+								ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
+								MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
+								tifRepresentation.addRepresentationPart(tifImage);
+								media.addRepresentation(tifRepresentation);
 							}
-						}
-						//png
-						String urlPng = urlPath + "media/protolog/png/" + nameFact + "." + suffixPng;
-						if (CdmUtils.urlExists(urlPng, true)){
-							ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
-							MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
-							media.addRepresentation(tifRepresentation);
-						}else{
-							fileExists = true;
-							i = 1;
+							//jpeg
+							boolean fileExists = true;
+							int jpgCount = 1;
 							while (fileExists){
-								String urlJpeg = urlPath + "media/protolog/png/" + nameFact + "00" + i++ + "." + suffixPng;
+								String urlJpeg = urlPath + "protolog/jpeg/" + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
 								if (CdmUtils.urlExists(urlJpeg, true)){
 									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
 									MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
+									jpgRepresentation.addRepresentationPart(jpgImage);
 									media.addRepresentation(jpgRepresentation);
-								}else if (CdmUtils.urlExists(urlJpeg, true)){
-									
 								}else{
-								}
 									fileExists = false;
 								}
-						}
-						//all
-						if (media.getRepresentations().size() > 0){
-							ref.addMedia(media);
-						}
+							}
+							//png
+							String urlPng = urlPath + "protolog/png/" + nameFact + "." + suffixPng;
+							if (CdmUtils.urlExists(urlPng, true)){
+								ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
+								MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
+								pngRepresentation.addRepresentationPart(pngImage);
+								media.addRepresentation(pngRepresentation);
+							}else{
+								fileExists = true;
+								int pngCount = 1;
+								while (fileExists){
+									urlPng = urlPath + "protolog/png/" + nameFact + "00" + pngCount++ + "." + suffixPng;
+									if (CdmUtils.urlExists(urlPng, true)){
+										ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
+										MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
+										pngRepresentation.addRepresentationPart(pngImage);
+										media.addRepresentation(pngRepresentation);
+									}else{
+										fileExists = false;
+									}
+								}
+							} //end png
+							
+							//all
+							if (media.getRepresentations().size() > 0){
+								ref.addMedia(media);
+							}
+						}//end NAME_FACT_PROTOLOGUE
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
 							String prefix = "Also published in: ";
@@ -167,6 +179,7 @@ public class BerlinModelNameFactsIO {
 				}
 				//put
 			}
+			logger.warn("ONLY 100 NAMEFACTS imported !!!" );
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
