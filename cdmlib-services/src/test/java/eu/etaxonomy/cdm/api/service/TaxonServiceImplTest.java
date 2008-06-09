@@ -19,6 +19,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -101,7 +102,7 @@ public class TaxonServiceImplTest {
 	 */
 	@Test
 	public final void testRemoveTaxon() {
-		Taxon taxon = Taxon.NewInstance(null, null);
+		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		UUID uuid = service.saveTaxon(taxon);
 		service.removeTaxon(taxon);
 		TaxonBase actualTaxon = service.getTaxonByUuid(uuid);
