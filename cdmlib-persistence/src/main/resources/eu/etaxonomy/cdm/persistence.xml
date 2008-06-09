@@ -110,7 +110,8 @@
             <value>eu.etaxonomy.cdm.model.media.ImageFile</value>
             <value>eu.etaxonomy.cdm.model.media.IMediaDocumented</value>
             <value>eu.etaxonomy.cdm.model.media.Media</value>
-            <value>eu.etaxonomy.cdm.model.media.MediaInstance</value>
+            <value>eu.etaxonomy.cdm.model.media.MediaRepresentation</value>
+            <value>eu.etaxonomy.cdm.model.media.MediaRepresentationPart</value>
             <value>eu.etaxonomy.cdm.model.media.MovieFile</value>
             <value>eu.etaxonomy.cdm.model.media.ReferencedMedia</value>
             <value>eu.etaxonomy.cdm.model.media.Rights</value>
