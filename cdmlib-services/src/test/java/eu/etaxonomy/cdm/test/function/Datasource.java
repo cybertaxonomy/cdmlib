@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -153,11 +154,12 @@ public class Datasource {
 	
 	private void testLocalH2(){
 		try {
+			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
-				//CdmDataSource.NewLocalH2Instance("a", "b");
-			//ds =
-				 CdmPersistentDataSource.NewInstance("localH2");
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
+				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+//			ds =
+//				 CdmPersistentDataSource.NewInstance("localH2");
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 			try {
 				List l = appCtr.getNameService().getAllNames(5, 1);
 				System.out.println(l);

@@ -118,6 +118,7 @@ public class CdmApplicationController {
 			appContext = new EclipseRcpSaveGenericApplicationContext();
 			
 			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
+			datasourceBean.setAttribute("isLazy", false);
 			appContext.registerBeanDefinition("dataSource", datasourceBean);
 			
 			BeanDefinition hibernatePropBean= dataSource.getHibernatePropertiesBean(dbSchemaValidation);
