@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelSources;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
 
@@ -82,9 +82,8 @@ public class BerlinModelImportActivator {
 		
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
-		bmImport.doCheck(bmImportConfigurator);
-		bmImport.doImport(bmImportConfigurator);
-
+		bmImport.invoke(bmImportConfigurator);
+		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 

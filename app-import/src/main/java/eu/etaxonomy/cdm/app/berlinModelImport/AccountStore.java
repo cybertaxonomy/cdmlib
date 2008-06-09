@@ -1,5 +1,5 @@
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import java.io.File;
 import java.io.FileReader;
