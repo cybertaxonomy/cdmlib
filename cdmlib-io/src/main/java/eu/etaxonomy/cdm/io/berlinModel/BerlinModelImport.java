@@ -111,6 +111,11 @@ public class BerlinModelImport {
 			result &= BerlinModelFactsIO.check(bmiConfig);
 		}
 		
+		//check Occurence
+		if(bmiConfig.isDoOccurrence()){
+			result &= BerlinModelOccurrenceIO.check(bmiConfig);
+		}
+		
 		//return
 		System.out.println("End checking BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") for import to CDM");
 		return result;
@@ -228,6 +233,15 @@ public class BerlinModelImport {
 			}
 		}else{
 			logger.warn("No Facts imported");
+		}
+		
+		//make and save Occurrences
+		if(bmiConfig.isDoOccurrence()){
+			if (! BerlinModelOccurrenceIO.invoke(bmiConfig, cdmApp, taxonStore, referenceStore)){
+				return false;
+			}
+		}else{
+			logger.warn("No Occurrences imported");
 		}
 		
 		//return

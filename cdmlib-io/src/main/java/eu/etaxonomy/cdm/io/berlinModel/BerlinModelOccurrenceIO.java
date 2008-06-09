@@ -43,6 +43,17 @@ public class BerlinModelOccurrenceIO {
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 		
+		if (true){
+			return false;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
 		ITaxonService taxonService = cdmApp.getTaxonService();

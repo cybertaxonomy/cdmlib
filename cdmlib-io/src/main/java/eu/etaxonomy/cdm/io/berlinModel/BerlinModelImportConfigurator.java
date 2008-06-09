@@ -43,17 +43,17 @@ public class BerlinModelImportConfigurator {
 	//names
 	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
-	private boolean doNameStatus = false;
-	private boolean doTypes = false;
+	private boolean doNameStatus = true;
+	private boolean doTypes = true;
 	private boolean doNameFacts = true;
 	
 	//taxa
 	private boolean doTaxa = true;
-	private boolean doRelTaxa = false;
+	private boolean doRelTaxa = true;
 	private boolean doFacts = true;
 
 	//occurrence
-	private boolean doOccurrence = false;
+	private boolean doOccurrence = true;
 	
 	private Source source;
 	private ReferenceBase sourceReference;
@@ -189,6 +189,20 @@ public class BerlinModelImportConfigurator {
 	public void setDoFacts(boolean doFacts) {
 		this.doFacts = doFacts;
 	}
+	/**
+	 * @return the doOccurrence
+	 */
+	public boolean isDoOccurrence() {
+		return doOccurrence;
+	}
+	/**
+	 * @param doOccurrence the doOccurrence to set
+	 */
+	public void setDoOccurrence(boolean doOccurrence) {
+		this.doOccurrence = doOccurrence;
+	}
+
+
 	public Source getSource() {
 		return source;
 	}
