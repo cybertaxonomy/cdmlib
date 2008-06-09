@@ -30,8 +30,8 @@ import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
  * @author a.mueller
  *
  */
-public class BerlinModelImportActivator {
-	private static final Logger logger = Logger.getLogger(BerlinModelImportActivator.class);
+public class CichorieaeActivator {
+	private static final Logger logger = Logger.getLogger(CichorieaeActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
@@ -40,22 +40,22 @@ public class BerlinModelImportActivator {
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
-	
+
 	//authors
-	static final boolean doAuthors = true;
+	static final boolean doAuthors = false;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
-	static final boolean doNameStatus = false;
+	static final boolean doRelNames = false;
+	static final boolean doNameStatus = true;
 	static final boolean doTypes = false;
 	static final boolean doNameFacts = true;
 	
 	//taxa
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
+	static final boolean doTaxa = false;
+	static final boolean doRelTaxa = false;
+	static final boolean doFacts = false;
 	static final boolean doOccurences = false;
 	
 	/**
@@ -82,7 +82,6 @@ public class BerlinModelImportActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
-		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
