@@ -256,4 +256,13 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		}
 	}
 	
+	protected void invokeSetMethodWithNull(Method method, Object object){
+		try {
+			method.invoke(object, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//TODO handle exceptioin;
+		}
+	}
+	
 }
