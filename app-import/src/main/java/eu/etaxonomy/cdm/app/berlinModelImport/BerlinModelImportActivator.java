@@ -22,6 +22,11 @@ import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
 
 
 /**
+ * TODO add the following to a wiki page:
+ * HINT: If you are about to import into a mysql data base running under windows and if you wish to dump and restore the resulting data bas under another operation systen 
+ * you must set the mysql system variable lower_case_table_names = 0 in order to create data base with table compatible names.
+ * 
+ * 
  * @author a.mueller
  *
  */
@@ -48,7 +53,6 @@ public class BerlinModelImportActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-
 	
 	/**
 	 * @param args
@@ -73,7 +77,7 @@ public class BerlinModelImportActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
-		
+
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
 		bmImport.invoke(bmImportConfigurator);
