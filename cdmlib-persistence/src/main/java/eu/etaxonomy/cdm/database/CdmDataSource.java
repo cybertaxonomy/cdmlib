@@ -71,7 +71,7 @@ public class CdmDataSource implements ICdmDataSource {
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.EMBEDDED;
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, null);
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, mode);
 		return dataSource;
 	}
 
@@ -82,7 +82,7 @@ public class CdmDataSource implements ICdmDataSource {
 		H2Mode mode = H2Mode.IN_MEMORY;
 		String username = "sa";
 		String password = "";
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, null, port, username, password, null, null);
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, null, port, username, password, null, mode);
 		return dataSource;
 	}
 
