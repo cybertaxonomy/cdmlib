@@ -60,7 +60,7 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 		if(r == null){
 			r = term.getRepresentations().iterator().next();
 		}
-		lt.setTerm(r.getText());
+		lt.setTerm(r.getLabel());
 		lt.setLanguage(r.getLanguage().toString());
 		return lt;
 	}

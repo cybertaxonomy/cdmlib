@@ -10,7 +10,35 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.Set;
 
+/**
+ * @author a.kohlbecker
+ * @created 05.06.2008
+ * @version 1.0
+ */
 public class SpecimenSTO extends BaseSTO {
 	private String specimenLabel;
 	private Set<IdentifiedString> mediaUri;
+	public String getSpecimenLabel() {
+		return specimenLabel;
+	}
+	/**
+	 * @param specimenLabel
+	 */
+	public void setSpecimenLabel(String specimenLabel) {
+		this.specimenLabel = specimenLabel;
+	}
+	/**
+	 * @return
+	 */
+	public Set<IdentifiedString> getMediaUri() {
+		return mediaUri;
+	}
+	/**
+	 * @param mediaUri
+	 */
+	public void setMediaUri(Set<IdentifiedString> mediaUri) {
+		this.mediaUri = mediaUri;
+	}
+	
+	
 }

@@ -425,6 +425,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/LocalisedTermA
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/MediaAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/NameAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/ReferenceAssembler.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/SpecimenAssembler.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/SpecimenTypeDesignationAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/TaxonAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmObjectNonExisting.java -text
