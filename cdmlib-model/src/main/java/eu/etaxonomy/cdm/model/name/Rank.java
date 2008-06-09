@@ -459,16 +459,28 @@ public class Rank extends OrderedTermBase<Rank> {
 	//dummy implementation for BerlinModelImport
 	@Transient
 	public String getAbbreviation(){
-		if (this.equals(Rank.SPECIES()) ){return "sp.";}
+		if (this.equals(Rank.ORDER()) ){return "ordo";}
+		if (this.equals(Rank.FAMILY()) ){return "fam.";}
+		else if (this.equals(Rank.SUBFAMILY()) ){return "subfam.";}
+		else if (this.equals(Rank.TRIBE()) ){return "trib.";}
+		else if (this.equals(Rank.SUBTRIBE()) ){return "subtrib.";}
+		else if (this.equals(Rank.GENUS()) ){return "gen.";}
+		else if (this.equals(Rank.SUBGENUS()) ){return "subg.";}
+		else if (this.equals(Rank.SECTION()) ){return "sect.";}
+		else if (this.equals(Rank.SUBSECTION()) ){return "subsect.";}
+		else if (this.equals(Rank.SERIES()) ){return "ser.";}
+		//else if (this.equals(Rank.AGGREGATE()) ){return "aggr.";}
+		else if (this.equals(Rank.SPECIES()) ){return "sp.";}
 		else if (this.equals(Rank.SUBSPECIES()) ){return "subsp.";}
 		else if (this.equals(Rank.VARIETY()) ){return "var.";}
 		else if (this.equals(Rank.CONVAR()) ){return "convar.";}
 		else if (this.equals(Rank.SUBVARIETY()) ){return "subvar.";}
 		else if (this.equals(Rank.FORM()) ){return "var.";}
-		else if (this.equals(Rank.SUBFORM()) ){return "f.";}
-		else if (this.equals(Rank.INFRASPECIFICTAXON()) ){return "tax.infrasp.";}
+		else if (this.equals(Rank.SPECIALFORM()) ){return "f.spec.";}
+		else if (this.equals(Rank.INFRAGENERICTAXON()) ){return "t.infgen.";}
+		else if (this.equals(Rank.INFRASPECIFICTAXON()) ){return "t.infr.";}
 		else {
-			logger.warn("Abbreviation for this Rank not yet implemented");
+			logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
 			return "xxx.";
 		}
 	
