@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 
 /**
  * @author a.mueller
@@ -33,16 +35,16 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     //hibernate dialect
     private String hibernateDialect = "SQLServerDialect";
  
-    public String getConnectionString(String server, String database, int port){
-    	return getConnectionString(server, database, port, null);
+    public String getConnectionString(ICdmDataSource ds, int port){
+    	return getConnectionString(ds, port, null);
     }
     
-    public String getConnectionString(String server, String database, int port, String instanceName){
+    public String getConnectionString(ICdmDataSource ds, int port, String instanceName){
     	String instance = "";
     	if (instanceName != null && ! instanceName.equals("")){
 			instance = "\\" + instanceName;
 		}
-    	return urlString + server + instance + ":" + port + ";databaseName=" + database+";SelectMethod=cursor";
+    	return urlString + ds.getServer() + instance + ":" + port + ";databaseName=" + ds.getDatabase() +";SelectMethod=cursor";
     }
 	
 	//Constructor

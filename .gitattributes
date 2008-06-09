@@ -319,6 +319,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmTermInitializer.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2Mode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalH2.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text

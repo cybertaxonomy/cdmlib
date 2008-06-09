@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.database.types;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 public interface IDatabaseType {
 	/**
 	 * @return
@@ -35,26 +37,31 @@ public interface IDatabaseType {
 	public String getHibernateDialect();
 	
 	/**
-	 * Returns the connection String for the given parameters
-	 * @param server the server, e.g. IP-Address
-	 * @param database the database name on the server (e.g. "testDB")
-	 * @param port the port number
-	 * @return the connection String
-	 */
-	public String getConnectionString(String server, String database, int port);
-	
-	/**
 	 * Returns the connection String for the given parameters, using default port
 	 * @param server the server, e.g. IP-Address
 	 * @param database the database name on the server (e.g. "testDB")
 	 * @return the connection String
 	 */
-	public String getConnectionString(String server, String database);
+	public String getConnectionString(ICdmDataSource cdmDataSource);
 
 	/**
 	 * Returns the DriverManagerDataSource class that that the datasource needs to create a spring bean
 	 * @return the DriverManagerDataSource class
 	 */
 	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass();
+	
+	
+	/**
+	 * Returns the Name of the initialization method to be used when a hibernate datasource is created for this database
+	 * @return String name of the init method
+	 */
+	public String getInitMethod();
+	
+	/**
+	 * Returns the Name of the destroying method to be used when a hibernate datasource representing this database is destroyed
+	 * @return String name of the destroy method
+	 */
+	public String getDestroyMethod();
+
 	
 }

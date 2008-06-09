@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 
 /**
  * !! UNTESTED !!
@@ -35,15 +37,14 @@ public class Db2DatabaseType extends DatabaseTypeBase {
 
     
     //connection String
-	public String getConnectionString(String server, String database, int port){
-        return urlString + server + ":" + port + database;
+	public String getConnectionString(ICdmDataSource ds, int port){
+		
+		return urlString + ds.getServer() + ":" + port + ds.getDatabase();
     }  
     
     public Db2DatabaseType() {
-    	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
+    	init (typeName, classString, urlString, defaultPort, hibernateDialect );
 	}
-
-
 
 
 }

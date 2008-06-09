@@ -78,7 +78,8 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetConnectionStringStringStringInt() {
-		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test", this.dbEnum.getConnectionString("192.168.2.10", "cdm_test", 1234));
+		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", 1234, null, null);
+		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test", this.dbEnum.getConnectionString(cdmDataSource));
 	}
 
 	/**
@@ -86,8 +87,10 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetConnectionStringStringString() {
-		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", this.dbEnum.getConnectionString("192.168.2.10", "cdm_test"));
-		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", this.dbEnumSql2005.getConnectionString("192.168.2.10", "cdm_test"));
+		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
+		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", this.dbEnum.getConnectionString(cdmDataSource));
+		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", null, null);
+		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", this.dbEnumSql2005.getConnectionString(sqlServerDataSource));
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class LocalH2 extends DriverManagerDataSource {
 	private String sep = System.getProperty("file.separator");
 	
 	/** url without database name */
-	protected String pureUrl = "jdbc:h2:tcp://localhost/";
+	protected String pureUrl = "jdbc:h2:tcp://localhost:9092/";
 	/** database name */
 	protected String dbName = "cdm";
 	/** path, where database should be stored in the file system */
@@ -49,7 +49,6 @@ public class LocalH2 extends DriverManagerDataSource {
 	protected boolean isSilent = true;
 	/** default driver class name */
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.h2.Driver";
-	
 	
 	/**
 	 * 
@@ -93,6 +92,9 @@ public class LocalH2 extends DriverManagerDataSource {
 	}
 
 	public void init(){
+		if (true){   //starting sever is not necessary for H2
+			return;
+		}
 		if (isStartServer){
 			this.startH2Server();
 		}
@@ -157,7 +159,7 @@ public class LocalH2 extends DriverManagerDataSource {
 		setUrl(getPureUrl() + getDbName());
 	}
 	
-	//checks if hsqldb-server is started, if not it will be started	
+	//checks if h2-server is started, if not it will be started	(taken over from hsqldb, maybe not necessary for H2
 	private void startH2Server(){
 		try {
 			Driver driver = DriverManager.getDriver(getUrl());
@@ -189,7 +191,7 @@ public class LocalH2 extends DriverManagerDataSource {
 				h2Server.start();
 //				h2Server.checkRunning(true);
 			} catch (SQLException sqle1) {
-				logger.error("SQL Exception when starting Local H2Server.");
+				logger.error("SQL Exception when starting Local H2Server: "+ sqle1);
 			} catch (RuntimeException e1) {
 				logger.error("Local H2Server could not be started or connection to existing server could not be established.");
 			}

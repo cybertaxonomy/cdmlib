@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
 import org.springframework.beans.MutablePropertyValues;
@@ -29,13 +30,18 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  *
  */
 public class CdmDataSource implements ICdmDataSource {
-
+	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
+	
 	private DatabaseTypeEnum dbType;
 	private String server;
 	private String database; 
 	private int port = -1;
 	private String username;
 	private String password;
+	
+	private String filePath;
+	private H2Mode mode;
+
 	private boolean isLazy = true;
 	private String initMethodName = null;
 	private String destroyMethodName = null;
@@ -45,36 +51,48 @@ public class CdmDataSource implements ICdmDataSource {
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;;
 
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password);
+		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null);
 	}
 	
 	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password);
+		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null);
 	}
 
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password);
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password, null, null);
 	}
 	
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password);
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null);
 	}
 
 	/** in work */
-	static public CdmDataSource  NewLocalH2Instance(String username, String password){
+	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password){
 		//FIXME in work
-		String database = "cdm";
-		int port = -1; 
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, "", database, port, username, password);
+		int port = -1;
+		H2Mode mode = H2Mode.EMBEDDED;
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, null);
 		return dataSource;
 	}
+
+	/** in work */
+	static public CdmDataSource  NewH2InMemoryInstance(){
+		//FIXME in work
+		int port = -1;
+		H2Mode mode = H2Mode.IN_MEMORY;
+		String username = "sa";
+		String password = "";
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, null, port, username, password, null, null);
+		return dataSource;
+	}
+
 	
 	/**
 	 * @param server
 	 * @param database
 	 * @param port
 	 */
-	private CdmDataSource(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password) {
+	protected CdmDataSource(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, String filePath, H2Mode mode) {
 		super();
 		this.dbType = dbType;
 		this.server = server;
@@ -82,6 +100,10 @@ public class CdmDataSource implements ICdmDataSource {
 		this.port = port;
 		this.username = username;
 		this.password = password;
+		this.initMethodName = dbType.getInitMethod();
+		this.destroyMethodName = dbType.getDestroyMethod();
+		this.filePath = filePath;
+		this.mode = mode;
 	}
 	
 	
@@ -126,7 +148,7 @@ public class CdmDataSource implements ICdmDataSource {
 	private Properties getDatasourceProperties(){
 		Properties result = new Properties();
 		result.put("driverClassName", dbType.getDriverClassName());
-		String connectionString = ( port > 1 ? dbType.getConnectionString(server, database, port) : dbType.getConnectionString(server, database));
+		String connectionString = dbType.getConnectionString(this);
 		result.put("url", connectionString);
 		result.put("username", username);
 		result.put("password", password);
@@ -192,7 +214,27 @@ public class CdmDataSource implements ICdmDataSource {
 
 	public void setDestroyMethodName(String destroyMethodName) {
 		this.destroyMethodName = destroyMethodName;
+	}
+
+	public String getDatabase() {
+		return database;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+
+	public int getPort() {
+		return port;
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public H2Mode getMode() {
+		return mode;
 	}	
-	
-	
 }
+

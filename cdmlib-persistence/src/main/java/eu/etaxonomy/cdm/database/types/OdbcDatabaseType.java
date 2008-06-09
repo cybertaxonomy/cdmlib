@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 
 /**
  * TODO not tested yet !!
@@ -35,8 +37,8 @@ public class OdbcDatabaseType extends DatabaseTypeBase {
     private String hibernateDialect = "xxx";
     
     //connection String
-	public String getConnectionString(String server, String database, int port){
-        return urlString + server ;
+	public String getConnectionString(ICdmDataSource ds, int port){
+        return urlString + ds.getServer() ;
     }  
 	
 	//constructor

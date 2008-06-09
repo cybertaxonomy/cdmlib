@@ -64,6 +64,10 @@ public enum DatabaseTypeEnum {
         }
 	}
 	
+	public IDatabaseType getDatabaseType(){
+		return dbType;
+	}
+	
  	//Logger
 	private static final Logger logger = Logger.getLogger(DatabaseTypeEnum.class);
 	protected IDatabaseType dbType;
@@ -119,22 +123,31 @@ public enum DatabaseTypeEnum {
      * @param port the port number
      * @return the connection string
      */
-    public String getConnectionString(String server, String database, int port){
-    	String result = dbType.getConnectionString(server, database, port);
+    public String getConnectionString(ICdmDataSource cdmDataSource){
+    	String result = dbType.getConnectionString(cdmDataSource);
     	logger.debug("Connection String: " + result);	
         return result;
     }
     
 
+
 	/**
-     * returns the connection string (using the default port)
-     * @param server the server, e.g. IP-Address
-     * @param database the database name on the server (e.g. "testDB")
-      * @return the connection string
-     */
-    public String getConnectionString(String server, String database){
-    	String result = dbType.getConnectionString(server, database);
-    	logger.debug("Connection String: " + result);	
+     * Returns the Name of the initialization method to be used when a hibernate datasource is created for this database
+	 * @return String name of the init method
+	 */
+    public String getInitMethod(){
+    	String result = dbType.getInitMethod();
+    	logger.debug("InitMethod: " + result);	
+        return result;
+    }
+    
+	/**
+	 * Returns the Name of the destroying method to be used when a hibernate datasource representing this database is destroyed
+	 * @return String name of the destroy method
+	 */
+    public String getDestroyMethod(){
+    	String result = dbType.getDestroyMethod();
+    	logger.debug("DestroyMethod: " + result);	
         return result;
     }
     
@@ -164,6 +177,8 @@ public enum DatabaseTypeEnum {
     	logger.warn("Unknown driver class " + strDriverClass==null ? "null" : strDriverClass);
     	return null;
     }
+    
+    
 
  
 }

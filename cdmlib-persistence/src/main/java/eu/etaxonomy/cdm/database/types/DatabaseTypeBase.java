@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
 /**
@@ -17,6 +21,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  *
  */
 abstract class DatabaseTypeBase implements IDatabaseType {
+	private static final Logger logger = Logger.getLogger(DatabaseTypeBase.class);
+	
 	//typeName
 	private String typeName;
 	//String for DriverClass
@@ -27,10 +33,14 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	private int defaultPort;
 	//hibernate dialect
 	private String hibernateDialect;
+	//init method
+	private String initMethod = null;
+	//init method
+	private String destroyMethod = null;
+	
 	
 	//init
-	protected void init(String typeName, String classString,
-			String urlString, int defaultPort, String hibernateDialect) {
+	protected void init(String typeName, String classString, String urlString, int defaultPort, String hibernateDialect) {
 		this.typeName = typeName;
 		this.classString = classString;
 		this.urlString = urlString;
@@ -75,9 +85,15 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getConnectionString(java.lang.String, java.lang.String)
 	 */
-	public String getConnectionString(String server, String database){
-		return getConnectionString(server, database, defaultPort);
+	public String getConnectionString(ICdmDataSource cdmDataSource){
+		int port = cdmDataSource.getPort();
+		if (port< 1){
+			port = defaultPort;
+		}
+		return getConnectionString(cdmDataSource, port);
     }
+	
+	abstract protected String getConnectionString(ICdmDataSource cdmDataSource, int port);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDriverManagerDataSourceClass()
@@ -86,5 +102,17 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 		return DriverManagerDataSource.class;
 	} 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getInitMethod()
+	 */
+	public String getInitMethod() {
+		return initMethod;
+	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDestroyMethod()
+	 */
+	public String getDestroyMethod() {
+		return destroyMethod;
+	}
 }

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.database.types;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalHsqldb;
 
 
@@ -35,10 +36,15 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
     //hibernate dialect
     private String hibernateDialect = "HSQLDialect";
     
+    //init method
+    private String initMethod = "init";
+    
+    //destroy method
+    private String destroyMethod = "destroy";
     
     //connection String
-	public String getConnectionString(String server, String database, int port){
-        return urlString + server + ":" + port + "/" + database;
+	public String getConnectionString(ICdmDataSource ds, int port){
+        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase();
     }
 	
     
@@ -51,7 +57,22 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
 		return LocalHsqldb.class;
 	}
 
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getInitMethod()
+	 */
+	@Override
+	public String getInitMethod() {
+		return initMethod;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDestroyMethod()
+	 */
+	@Override
+	public String getDestroyMethod() {
+		return destroyMethod;
+	}
 
 
 }

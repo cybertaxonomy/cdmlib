@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 
 /**
  * @author a.mueller
@@ -34,8 +36,8 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
 
     
     //connection String
-	public String getConnectionString(String server, String database, int port){
-        return urlString + server + ":" + port + "/" + database;
+	public String getConnectionString(ICdmDataSource ds, int port){
+        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase();
     }  
     
     public MySQLDatabaseType() {

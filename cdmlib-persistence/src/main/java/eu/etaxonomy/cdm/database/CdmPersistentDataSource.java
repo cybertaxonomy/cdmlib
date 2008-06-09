@@ -35,6 +35,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 
 import static eu.etaxonomy.cdm.common.XmlHelp.getRoot;
@@ -148,6 +149,39 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 
 
 	
+	public String getDatabase() {
+		//TODO null
+		return getDatabaseProperty("database");
+	}
+
+
+	public String getFilePath() {
+		//TODO null
+		return getDatabaseProperty("filePath");
+	}
+
+
+	public H2Mode getMode() {
+		//TODO null
+		return H2Mode.fromString(getDatabaseProperty("mode"));
+	}
+
+	public int getPort() {
+		String port = CdmUtils.Nz(getDatabaseProperty("port"));
+		if ("".equals(port)){
+			return -1;
+		}else{
+			//TODO exception if non integer
+			return Integer.getInteger(getDatabaseProperty("port"));
+		}
+	}
+
+
+	public String getServer() {
+		//TODO null
+		return getDatabaseProperty("server");
+	}
+
 	/**
 	 * Returns the database type of the data source. 
 	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
@@ -168,6 +202,28 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Returns the database type of the data source. 
+	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
+	 */
+	protected String getDatabaseProperty(String property){
+		Element bean = getDatasourceBeanXml(this.dataSourceName);
+		if (bean == null){
+			return null;
+		}else{
+			Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
+			if (driverProp == null){
+				logger.warn("Unknown property" + property);
+		    	return null;
+			}else{
+				String strProperty = driverProp.getAttributeValue("value");
+				return strProperty;
+			}
+		}
+	}
+	
 
 
 	/**
@@ -358,7 +414,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	public static CdmPersistentDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 				int port, String username, String password){
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
-		return save(strDataSourceName, databaseTypeEnum, server, database, port, username, password, driverManagerDataSource, null, null, null, null, null);
+		return save(strDataSourceName, databaseTypeEnum, server, database, port, username, password, driverManagerDataSource, null, null, null, null, null, null);
 	}
 	
 	
@@ -367,7 +423,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalHsqldb.class;
 		String server = "localhost";
 		int port = databaseTypeEnum.getDefaultPort();
-		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, "init", "destroy", true, true, databasePath);
+		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, "init", "destroy", true, true, databasePath, null);
 	}
 	
 	//
@@ -383,8 +439,11 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 			String destroyMethod,
 			Boolean startSilent,
 			Boolean startServer, 
-			String databasePath
+			String filePath,
+			H2Mode mode
 		){
+		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, port, username, password, filePath, mode);
+				
 		//root
 		Element root = getRoot(getDataSourceInputStream());
 		if (root == null){
@@ -403,12 +462,14 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 		
 		//set properties
 		insertXmlValueProperty(bean, "driverClassName", databaseTypeEnum.getDriverClassName());
-		insertXmlValueProperty(bean, "url", databaseTypeEnum.getConnectionString(server, database, port));
+		
+		insertXmlValueProperty(bean, "url", databaseTypeEnum.getConnectionString(dataSource));
 		if (username != null) {insertXmlValueProperty(bean, "username", username );}
 		if (password != null) {insertXmlValueProperty(bean, "password", password );}
 		if (startSilent != null) {insertXmlValueProperty(bean, "startSilent", startSilent.toString() );}
 		if (startServer != null) {insertXmlValueProperty(bean, "startServer", startServer.toString() );}
-		if (startServer != null) {insertXmlValueProperty(bean, "databasePath", databasePath );}
+		if (filePath != null) {insertXmlValueProperty(bean, "filePath", filePath );}
+		if (mode != null) {insertXmlValueProperty(bean, "mode", mode.toString() );}
 		
 		//save
 		saveToXml(root.getDocument(), getResourceDirectory(), DATASOURCE_FILE_NAME, format );

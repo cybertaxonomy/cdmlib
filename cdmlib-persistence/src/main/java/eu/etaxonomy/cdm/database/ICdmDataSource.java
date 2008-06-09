@@ -40,8 +40,40 @@ public interface ICdmDataSource {
 
 	
 	/**
+	 * The name representation of thie Datasource
 	 * @return
 	 */
 	public String getName();
+	
+
+	/**
+	 * @return
+	 */
+	public String getServer();
+
+	/**
+	 * @return
+	 */
+	public String getDatabase();
+	
+	
+	/**
+	 * @return
+	 */
+	public int getPort();
+
+	/**
+	 * @return
+	 */
+	public String getFilePath();
+
+	/**
+	 * @return
+	 */
+	public H2Mode getMode();	
+//
+//	public void setFilePath(String filePath);
+//	
+//	public void setMode(H2Mode mode);
 
 }

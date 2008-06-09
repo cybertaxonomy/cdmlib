@@ -185,7 +185,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 					}
 				}
 				hsqldbServer.setDatabaseName(0, getDbName());
-				hsqldbServer.setDatabasePath(0,  getDatabasePath());
+				hsqldbServer.setDatabasePath(0,  getFilePath());
 				hsqldbServer.start();
 				hsqldbServer.checkRunning(true);
 			} catch (RuntimeException e1) {
@@ -215,18 +215,18 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	/**
 	 * @return the dbPath
 	 */
-	public String getDatabasePath() {
+	public String getFilePath() {
 		return databasePath;
 	}
 
 	/**
 	 * @param dbPath the dbPath to set
 	 */
-	public void setDatabasePath(String databasePath) {
+	public void setFilePath(String filePath) {
 		if (databasePath.endsWith(sep)){
 			databasePath = databasePath + "localCdm";
 		}
-		this.databasePath = databasePath;
+		this.databasePath = filePath;
 	}
 
 	/**
