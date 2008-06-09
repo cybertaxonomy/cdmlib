@@ -24,7 +24,12 @@ public class AudioFile extends MediaRepresentationPart {
 	
 	//length of recording in seconds
 	private int duration;
-	
+
+
+	public static AudioFile NewInstance(String uri, Integer size){
+		return new AudioFile(uri, size);
+	}
+
 	/**
 	 * Factory method
 	 * @return
@@ -38,6 +43,13 @@ public class AudioFile extends MediaRepresentationPart {
 	 */
 	protected AudioFile() {
 		super();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected AudioFile(String uri, Integer size) {
+		super(uri, size);
 	}
 	
 	public int getDuration(){

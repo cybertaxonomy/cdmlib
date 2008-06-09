@@ -26,6 +26,9 @@ public class MovieFile extends ImageFile {
 	//Length of movie in seconds
 	private int duration;
 
+	public static MovieFile NewInstance(String uri, Integer size){
+		return new MovieFile(uri, size);
+	}
 	
 	/**
 	 * Factory method
@@ -40,6 +43,13 @@ public class MovieFile extends ImageFile {
 	 */
 	protected MovieFile() {
 		super();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected MovieFile(String uri, Integer size) {
+		super(uri, size);
 	}
 	
 	

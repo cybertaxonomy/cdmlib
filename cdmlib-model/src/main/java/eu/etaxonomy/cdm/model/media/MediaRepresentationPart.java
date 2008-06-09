@@ -36,9 +36,7 @@ public class MediaRepresentationPart extends VersionableEntity{
 	 * @return
 	 */
 	public static MediaRepresentationPart NewInstance(String uri, Integer size){
-		MediaRepresentationPart result  = new MediaRepresentationPart();
-		result.setUri(uri);
-		result.setSize(size);
+		MediaRepresentationPart result  = new MediaRepresentationPart(uri, size);
 		return result;
 	}
 	
@@ -46,8 +44,17 @@ public class MediaRepresentationPart extends VersionableEntity{
 	/**
 	 * 
 	 */
-	public MediaRepresentationPart() {
+	protected MediaRepresentationPart() {
 		super();
+	}
+	
+	/**
+	 * 
+	 */
+	protected MediaRepresentationPart(String uri, Integer size) {
+		this();
+		this.setUri(uri);
+		this.setSize(size);
 	}
 	
 /***************  getter /setter *************************************/

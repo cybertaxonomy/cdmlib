@@ -27,6 +27,19 @@ public class ImageFile extends MediaRepresentationPart {
 	//image width in pixel
 	private int width;
 
+	public static ImageFile NewInstance(String uri, Integer size){
+		return new ImageFile(uri, size);
+	}
+	
+	protected ImageFile(){
+		super();
+	}
+	
+	protected ImageFile(String uri, Integer size){
+		super(uri, size);
+	}
+	
+	
 	public int getHeight(){
 		return this.height;
 	}
