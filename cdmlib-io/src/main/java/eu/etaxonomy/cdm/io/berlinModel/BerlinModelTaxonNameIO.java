@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -408,10 +409,11 @@ public class BerlinModelTaxonNameIO {
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id " + 
+					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id, RefDetail.Details " + 
 					" FROM Name as FromName INNER JOIN " +
                       	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
-                      	" Name AS ToName ON RelName.NameFk2 = ToName.NameId "+
+                      	" Name AS ToName ON RelName.NameFk2 = ToName.NameId LEFT OUTER JOIN "+
+                      	" RefDetail ON RelName.RefDetailFK = RefDetail.RefDetailId " + 
                     " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
@@ -425,14 +427,15 @@ public class BerlinModelTaxonNameIO {
 				int name1Id = rs.getInt("name1Id");
 				int name2Id = rs.getInt("name2Id");
 				int relRefFk = rs.getInt("refFk");
+				String details = rs.getString("details");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				
 				TaxonNameBase nameFrom = nameMap.get(name1Id);
 				TaxonNameBase nameTo = nameMap.get(name2Id);
 				
-				//TODO
-				ReferenceBase citation = null;
-				String microcitation = null;
+				ReferenceBase citation = referenceMap.get(relRefFk);
+				//TODO (preliminaryFlag = true testen
+				String microcitation = details;
 
 				if (nameFrom != null && nameTo != null){
 					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
@@ -446,9 +449,12 @@ public class BerlinModelTaxonNameIO {
 						String rule = null;  //TODO
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
 						//TODO reference
-					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF){
-						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-						//TODO reference
+					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF ){
+						//TODO
+						String originalNameString = null;
+						boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
+						boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
+						//TODO nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType);
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 						String rule = null;  //TODO
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;
@@ -460,7 +466,6 @@ public class BerlinModelTaxonNameIO {
 					nameStore.add(nameFrom);
 					
 					//TODO
-					//Reference
 					//ID
 					//etc.
 				}else{

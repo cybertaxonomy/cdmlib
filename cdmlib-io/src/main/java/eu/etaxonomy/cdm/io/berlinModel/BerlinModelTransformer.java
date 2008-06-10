@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public final class BerlinModelTransformer {
@@ -68,22 +69,6 @@ public final class BerlinModelTransformer {
 	public static String NAME_FACT_PROTOLOGUE = "Protologue";
 	public static String NAME_FACT_ALSO_PUBLISHED_IN = "Also published in";
 	
-	//TYPES
-	public static int NAME_TYPE_HOLOTYPE = 1;
-	public static int NAME_TYPE_LECTOTYPE = 2;
-	public static int NAME_TYPE_NEOTYPE = 3;
-	public static int NAME_TYPE_EPITYPE = 4;
-	public static int NAME_TYPE_ISO_LECTOTYPE = 5;
-	public static int NAME_TYPE_ISO_NEOTYPE = 6;
-	public static int NAME_TYPE_ISO_TYPE = 7;
-	public static int NAME_TYPE_PARA_NEOTYPE = 8;
-	public static int NAME_TYPE_PARA_TYPE = 9;
-	public static int NAME_TYPE_SECOND_LECTOTYPE = 10;
-	public static int NAME_TYPE_SECOND_NEOTYPE = 11;
-	public static int NAME_TYPE_SYNTYPE = 12;
-	public static int NAME_TYPE_ICONOTYPE = 21;
-	public static int NAME_TYPE_PHOTOTYPE = 22;
-	
 	//TaxonRelationShip
 	public static int TAX_REL_IS_INCLUDED_IN = 1;
 	public static int TAX_REL_IS_SYNONYM_OF = 2;
@@ -113,6 +98,32 @@ public final class BerlinModelTransformer {
 	public static int FACT_OBSERVATION = 9;
 	public static int FACT_DISTIRBUTION_EM = 10;
 	public static int FACT_DISTIRBUTION_WORLD = 11;
+	
+	//TypeDesignation
+	public static TypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
+		switch (typeStatusId){
+			case 1: return TypeDesignationStatus.HOLOTYPE();
+			case 2: return TypeDesignationStatus.LECTOTYPE();
+			case 3: return TypeDesignationStatus.NEOTYPE();
+			case 4: return TypeDesignationStatus.EPITYPE();
+			case 5: return TypeDesignationStatus.ISOLECTOTYPE();
+			case 6: return TypeDesignationStatus.ISONEOTYPE();
+			case 7: return TypeDesignationStatus.ISOTYPE();
+			case 8: return TypeDesignationStatus.PARANEOTYPE();
+			case 9: return TypeDesignationStatus.PARATYPE();
+			case 10: return TypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+			case 11: return TypeDesignationStatus.SECOND_STEP_NEOTYPE();
+			case 12: return TypeDesignationStatus.SYNTYPE();
+			case 21: return TypeDesignationStatus.ICONOTYPE();
+			case 22: return TypeDesignationStatus.PHOTOTYPE();
+			default: {
+				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+			}
+		}
+	}
+	
+	
+	
 	
 	/** Creates an cdm-Rank by the berlinModel rankId
 	 * @param doubt doubtfulFalg

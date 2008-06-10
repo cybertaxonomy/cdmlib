@@ -166,7 +166,7 @@ public class BerlinModelImport {
 			}
 		}else{
 			logger.warn("No References imported");
-			referenceStore = null;
+			//referenceStore = null;
 		}
 		
 		//TaxonNames
@@ -185,16 +185,16 @@ public class BerlinModelImport {
 				return false;
 			}
 		}else{
-			logger.warn("No RelPTaxa imported");
+			logger.warn("No RelNames imported");
 		}
 
 		//check nameStatus
 		if(bmiConfig.isDoNameStatus()){
 			if (! BerlinModelTaxonNameIO.invokeStatus(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
 				return false;
-			}else{
-				logger.warn("No Name Status imported");
 			}
+		}else{
+			logger.warn("No NomStatus imported");
 		}
 		
 		//NameFacts

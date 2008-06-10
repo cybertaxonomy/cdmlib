@@ -14,8 +14,12 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 
@@ -47,17 +51,16 @@ public class BerlinModelTypesIO {
 		String dbAttrName;
 		String cdmAttrName;
 		
-		logger.info("start makeNameFacts ...");
+		logger.info("start makeTypes ...");
 		
 		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT Type.*, Name.NameID as nameId, NameFactCategory.xxx " + 
-					" FROM NameType INNER JOIN " +
-                      	" Name ON NameFact.PTNameFk = Name.NameId  INNER JOIN "+
-                      	" NameFactCategory ON NameFactCategory.ID = NameFact.NameFactCategoryFK " + 
+					" SELECT TypeDesignation.*, TypeStatus.Status " + 
+					" FROM TypeDesignation INNER JOIN" +
+                      	" TypeStatus ON TypeDesignation.TypeStatusFk = TypeStatus.TypeStatusId " + 
                     " WHERE (1=1) ";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
@@ -67,45 +70,47 @@ public class BerlinModelTypesIO {
 				
 				if ((i++ % modCount) == 0){ logger.info("Types handled: " + (i-1));}
 				
-				int typeId = rs.getInt("typeId");
-				int nameId = rs.getInt("nameId");
-				int nameFactRefFk = rs.getInt("nameFactRefFk");
-				int categoryFk = rs.getInt("nameFactCategoryFk");
-				String category = CdmUtils.Nz(rs.getString("xxx"));
-				String nameFact = CdmUtils.Nz(rs.getString("nameFact"));
+				int typeDesignationId = rs.getInt("typeDesignationId");
+				int nameId = rs.getInt("nameFk");
+				int typeStatusFk = rs.getInt("typeStatusFk");
+				int refFk = rs.getInt("refFk");
+				String refDetail = rs.getString("refDetail");
+				String status = rs.getString("Status");
+				String typePhrase = rs.getString("typePhrase");
+				
+				//TODO
+				//TypeCache leer
+				//RejectedFlag false
+				//PublishFlag xxx
+				
 				
 				TaxonNameBase taxonNameBase = taxonNameMap.get(nameId);
 				
 				if (taxonNameBase != null){
-					//PROTOLOGUE
-					if (categoryFk == NAME_TYPE_HOLOTYPE){
-						//;
-					}else if (categoryFk == NAME_TYPE_LECTOTYPE){
-						//;
-					}else if (categoryFk == NAME_TYPE_NEOTYPE){
-						//;
-					}else if (categoryFk == NAME_TYPE_EPITYPE){
-						//
-					}else {
-						//TODO
-						logger.warn("TypeCategory '" + category + "' not yet implemented");
+					try{
+						TypeDesignationStatus typeDesignationStatus = BerlinModelTransformer.typeStatusId2TypeStatus(typeStatusFk);
+						ReferenceBase citation = referenceMap.get(refFk);
+						
+						Specimen specimen = Specimen.NewInstance();
+						specimen.setTitleCache(typePhrase);
+						boolean addToAllNames = true;
+						String originalNameString = null;
+						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
+						
+						taxonNameStore.add(taxonNameBase);
+					}catch (UnknownCdmTypeException e) {
+						logger.warn("TypeStatus '" + status + "' not yet implemented");
 					}
-					
-					//TODO
-					//References
-					//etc.
-					
-					taxonNameStore.add(taxonNameBase);
 				}else{
 					//TODO
-					logger.warn("TaxonName for Type " + typeId + " does not exist in store");
+					logger.warn("TaxonName for TypeDesignation " + typeDesignationId + " does not exist in store");
 				}
 				//put
 			}
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
-			logger.info("end makeFacts ...");
+			logger.info("end makeTypes ...");
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

@@ -20,8 +20,8 @@ import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -66,8 +66,9 @@ public class BerlinModelNameFactsIO {
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
+			int border = 20;
 			//for each reference
-			while (rs.next() && i < 100){
+			while (rs.next() && i < border){
 				
 				if ((i++ % modCount) == 0){ logger.info("NameFacts handled: " + (i-1));}
 				
@@ -99,7 +100,7 @@ public class BerlinModelNameFactsIO {
 							
 							Media media = Media.NewInstance();
 							//String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/";
-							String urlPath = "\\\\Bgbm11\\Edit-WP6\\";
+							String urlPath = "file:\\\\Bgbm11\\Edit-WP6\\";
 							//tiff
 							String urlTif = urlPath + "protolog/tif/" + nameFact + "." + suffixTif;
 							if (CdmUtils.urlExists(urlTif, true)){
@@ -179,11 +180,11 @@ public class BerlinModelNameFactsIO {
 				}
 				//put
 			}
-			logger.warn("ONLY 100 NAMEFACTS imported !!!" );
+			logger.warn("ONLY " + border + " NAMEFACTS imported !!!" );
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
-			logger.info("end makeFacts ...");
+			logger.info("end makeNameFacts ...");
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
