@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
@@ -19,6 +18,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -37,12 +37,20 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	private HomotypicalGroup homotypicalGroup;
 	private DerivedUnitBase typeSpecimen;
 	private TypeDesignationStatus typeStatus;
-
-	public SpecimenTypeDesignation(HomotypicalGroup homotypicalGroup,
-			DerivedUnitBase specimen, TypeDesignationStatus status,
-			ReferenceBase citation, String citationMicroReference, String originalNameString) {
+	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+	
+	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,
+			ReferenceBase citation, String citationMicroReference, String originalNameString){
+		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
+		return specTypeDesig;
+	}
+	
+	protected SpecimenTypeDesignation(){
+		
+	}
+	
+	private SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		super(citation, citationMicroReference, originalNameString);
-		this.setHomotypicalGroup(homotypicalGroup);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}
@@ -53,13 +61,6 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 		return homotypicalGroup;
 	}
 	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
-		if(this.homotypicalGroup == newHomotypicalGroup) return;
-		if (homotypicalGroup != null) { 
-			homotypicalGroup.typeDesignations.remove(this);
-		}
-		if (newHomotypicalGroup!= null) { 
-			newHomotypicalGroup.typeDesignations.add(this);
-		}
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}
 
@@ -80,5 +81,22 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	public void setTypeStatus(TypeDesignationStatus typeStatus){
 		this.typeStatus = typeStatus;
 	}
+
+	/**
+	 * @return the typifiedNames
+	 */
+	@ManyToMany
+	public Set<TaxonNameBase> getTypifiedNames() {
+		return typifiedNames;
+	}
+
+	/**
+	 * @param typifiedNames the typifiedNames to set
+	 */
+	public void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
+		this.typifiedNames = typifiedNames;
+	}
+	
+	
 
 }
