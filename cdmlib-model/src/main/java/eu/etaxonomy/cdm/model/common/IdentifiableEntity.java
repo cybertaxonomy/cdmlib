@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
@@ -59,6 +60,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 
 	public abstract String generateTitle();
 
+	//@Index(name="titleCacheIndex")
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
