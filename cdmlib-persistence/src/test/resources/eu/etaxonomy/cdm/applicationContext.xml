@@ -9,7 +9,7 @@
 
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
-    <import resource="classpath:/eu/etaxonomy/cdm/h2-datasource.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/hsql-datasource.xml" />
     
 <!--
      <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
