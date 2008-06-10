@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Index;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;

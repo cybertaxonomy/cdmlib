@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Target;
 
 import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
@@ -52,6 +53,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 	private String appendedPhrase;
@@ -895,7 +897,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	abstract public NomenclaturalCode getNomeclaturalCode();
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 */
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
-
 }

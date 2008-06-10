@@ -17,6 +17,9 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
 import javax.persistence.*;
 
 /**
@@ -25,6 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
+@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	

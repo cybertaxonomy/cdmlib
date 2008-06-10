@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
 /**
@@ -27,6 +30,7 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
  * @created 08-Nov-2007 13:06:57
  */
 @Entity
+@Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class Agent extends IdentifyableMediaEntity{
 	
 

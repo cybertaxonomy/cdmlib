@@ -21,6 +21,9 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
 import java.util.*;
 import javax.persistence.*;
 
@@ -32,6 +35,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	

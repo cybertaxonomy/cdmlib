@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 
 import java.lang.reflect.Method;
 
@@ -33,6 +35,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:56
  */
 @Entity
+@Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	

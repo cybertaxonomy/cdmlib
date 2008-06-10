@@ -16,6 +16,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 
 import java.util.*;
 
@@ -27,8 +29,10 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:51
  */
 @Entity
+@Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
-	static Logger logger = Logger.getLogger(Sequence.class);
+	private static final Logger logger = Logger.getLogger(Sequence.class);
+	
 	//the sequence as a string of base pairs. 5'->3'
 	private String sequence;
 	//should be calculated in case sequence is set
