@@ -210,13 +210,16 @@ public class BerlinModelTaxonIO {
 					}else if (relQualifierFk == TAX_REL_IS_SYNONYM_OF){
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
 					}else if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF){
-						//TODO castexceptioin
-						((Taxon)taxon2).addHomotypicSynonym((Synonym)taxon1, citation, microcitation);
+						if (taxon1 instanceof Synonym){
+							((Taxon)taxon2).addHomotypicSynonym((Synonym)taxon1, citation, microcitation);
+						}else{
+							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
+						}
 					}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
 						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
 							((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 						}else{
-							logger.warn("Taxon (RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
+							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
 						}
 					}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
 						((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);

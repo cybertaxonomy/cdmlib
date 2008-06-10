@@ -3,6 +3,9 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -33,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
-	private static int modCount = 10;
+	private static int modCount = 500000;
 
 	public static boolean check(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
@@ -66,7 +69,7 @@ public class BerlinModelNameFactsIO {
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
-			int border = 20;
+			int border = 500000;
 			//for each reference
 			while (rs.next() && i < border){
 				
@@ -80,13 +83,13 @@ public class BerlinModelNameFactsIO {
 				String nameFact = CdmUtils.Nz(rs.getString("nameFact"));
 				
 				TaxonNameBase taxonNameBase = taxonNameMap.get(nameId);
-				//TaxonNameBase taxonNameBase = BotanicalName.NewInstance(null);
+				//taxonNameBase = BotanicalName.NewInstance(null);
 				
 				if (taxonNameBase != null){
 					//PROTOLOGUE
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
 						ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
-						//ReferenceBase ref = Book.NewInstance();
+						//ref = Book.NewInstance();
 						
 						if (ref != null){
 						
@@ -96,14 +99,18 @@ public class BerlinModelNameFactsIO {
 							String suffixTif = "tif";
 							String suffixJpg = "jpg";
 							String suffixPng = "png";
+							String sep = File.separator;
 							Integer size = null;
 							
+							
 							Media media = Media.NewInstance();
-							//String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/";
-							String urlPath = "file:\\\\Bgbm11\\Edit-WP6\\";
+							String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+							String strFilePath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
 							//tiff
-							String urlTif = urlPath + "protolog/tif/" + nameFact + "." + suffixTif;
-							if (CdmUtils.urlExists(urlTif, true)){
+							String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
+							String fileTif = strFilePath + "tif" + sep + nameFact + "." + suffixTif;;
+							//if (CdmUtils.urlExists(urlTif, true)){
+							if (new File(fileTif).exists()){
 								ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
 								MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
 								tifRepresentation.addRepresentationPart(tifImage);
@@ -113,8 +120,10 @@ public class BerlinModelNameFactsIO {
 							boolean fileExists = true;
 							int jpgCount = 1;
 							while (fileExists){
-								String urlJpeg = urlPath + "protolog/jpeg/" + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
-								if (CdmUtils.urlExists(urlJpeg, true)){
+								String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
+								String fileJpeg = strFilePath + "jpeg" + sep + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
+								if (new File(fileJpeg).exists()){
+								//if (CdmUtils.urlExists(urlJpeg, true)){
 									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
 									MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
 									jpgRepresentation.addRepresentationPart(jpgImage);
@@ -124,8 +133,10 @@ public class BerlinModelNameFactsIO {
 								}
 							}
 							//png
-							String urlPng = urlPath + "protolog/png/" + nameFact + "." + suffixPng;
-							if (CdmUtils.urlExists(urlPng, true)){
+							String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
+							String filePng = strFilePath + "png" + sep + nameFact + "." + suffixPng;
+							if (new File(filePng).exists()){
+							//if (CdmUtils.urlExists(urlPng, true)){
 								ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
 								MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
 								pngRepresentation.addRepresentationPart(pngImage);
@@ -134,8 +145,10 @@ public class BerlinModelNameFactsIO {
 								fileExists = true;
 								int pngCount = 1;
 								while (fileExists){
-									urlPng = urlPath + "protolog/png/" + nameFact + "00" + pngCount++ + "." + suffixPng;
-									if (CdmUtils.urlExists(urlPng, true)){
+									urlPng = urlPath + "png/" + nameFact + "00" + pngCount++ + "." + suffixPng;
+									filePng = strFilePath + "png" + sep + nameFact + "00" + pngCount++ + "." + suffixPng;
+									if (new File(filePng).exists()){
+									//if (CdmUtils.urlExists(urlPng, true)){
 										ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
 										MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
 										pngRepresentation.addRepresentationPart(pngImage);
@@ -145,7 +158,6 @@ public class BerlinModelNameFactsIO {
 									}
 								}
 							} //end png
-							
 							//all
 							if (media.getRepresentations().size() > 0){
 								ref.addMedia(media);

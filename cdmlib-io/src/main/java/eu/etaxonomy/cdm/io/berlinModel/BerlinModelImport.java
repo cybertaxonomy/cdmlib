@@ -176,7 +176,7 @@ public class BerlinModelImport {
 			}
 		}else{
 			logger.warn("No TaxonNames imported");
-			taxonNameStore = null;
+			//taxonNameStore = null;
 		}
 
 		//make and save RelNames
@@ -204,7 +204,7 @@ public class BerlinModelImport {
 			}
 		}else{
 			logger.warn("No NameFacts imported");
-			taxonNameStore = null;
+			//taxonNameStore = null;
 		}
 
 		//check types
