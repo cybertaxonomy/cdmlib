@@ -9,11 +9,17 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
-public class MediaInstanceSTO extends BaseSTO {
+/**
+ * @author a.kohlbecker
+ * @created 10.06.2008
+ * @version 1.0
+ */
+public class MediaRepresenationPartSTO extends BaseSTO {
+	
 	/**
-	 * The files MIME type.
+	 * in bytes
 	 */
-	private String mimeType;
+	private Integer size;
 	
 	/**
 	 * The files URI.
@@ -25,16 +31,27 @@ public class MediaInstanceSTO extends BaseSTO {
 	 */
 	private Integer width;
 	/**
-	 * The heigth of the media in case it is an image or video
+	 * The height of the media in case it is an image or video
 	 */
 	private Integer heigth;
+
+	/**
+	 * duration of an audio or movie file, this value is of course not valid for images.
+	 */
+	private Integer duration;
 	
 	
-	public String getMimeType() {
-		return mimeType;
+	public Integer getSize() {
+		return size;
 	}
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+	public Integer getDuration() {
+		return duration;
+	}
+	public void setDuration(Integer duration) {
+		this.duration = duration;
 	}
 	public String getUri() {
 		return uri;

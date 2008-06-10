@@ -404,7 +404,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IReferenceSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IdentifiedString.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/InteractionFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/LocalisedTermSTO.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaInstanceSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaRepresenationPartSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaRepresentationSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/MediaTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/NameRelationshipTO.java -text

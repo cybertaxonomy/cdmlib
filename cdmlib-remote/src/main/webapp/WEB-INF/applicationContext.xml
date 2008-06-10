@@ -17,8 +17,9 @@
         <!-- 
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal"/>
         <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
-        -->
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal_test"/>
+        -->
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_cichorieae"/>
         <property name="username" value="edit"/>
         <property name="password" value="wp5"/>
     </bean>

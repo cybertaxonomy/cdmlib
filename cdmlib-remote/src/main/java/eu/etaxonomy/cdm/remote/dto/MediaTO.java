@@ -31,12 +31,12 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	 */
 	private String description;
 	/**
-	 * A single medium such as a picture can have multiple representations in files. 
+	 * A single medium such as a picture can have multiple representations. 
 	 * Common are multiple resolutions or file
 	 * formats for images for example
 	 */
 	
-	private Set<MediaInstanceSTO> instances;
+	private Set<MediaRepresentationSTO> representations;
 	/**
 	 * several rightTOs in the SAME language, not different languages for the SAME rights UUID
 	 */
@@ -56,25 +56,28 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Set<MediaInstanceSTO> getInstances() {
-		return instances;
+	public Set<MediaRepresentationSTO> getRepresentations() {
+		return representations;
 	}
-	public void setInstances(Set<MediaInstanceSTO> instances) {
-		this.instances = instances;
+	public void setRepresentations(Set<MediaRepresentationSTO> representations) {
+		this.representations = representations;
 	}
-	public void addInstance(String uri, String mimeType, Integer heigth, Integer width){
-		MediaInstanceSTO mi = new MediaInstanceSTO();
-		mi.setHeigth(heigth);
-		mi.setWidth(width);
-		mi.setUri(uri);
-		mi.setMimeType(mimeType);
-		this.instances.add(mi);
+	
+	public void addRepresenation(MediaRepresentationSTO representation){
+		representations.add(representation);
 	}
+	
 	public IdentifiedString getArtist() {
 		return artist;
 	}
 	public void setArtist(IdentifiedString artist) {
 		this.artist = artist;
+	}
+	public Set<RightsSTO> getRights() {
+		return rights;
+	}
+	public void setRights(Set<RightsSTO> rights) {
+		this.rights = rights;
 	}
 	
 }

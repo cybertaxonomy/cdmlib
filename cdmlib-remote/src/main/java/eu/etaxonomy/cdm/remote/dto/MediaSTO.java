@@ -9,8 +9,14 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
-import java.util.Calendar;
-import java.util.HashSet;
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 import java.util.Set;
 
 /**
@@ -32,8 +38,7 @@ public class MediaSTO extends BaseSTO implements IBaseSTO{
 	 * formats for images for example
 	 */
 	
-	private Set<MediaInstanceSTO> instances;
-	
+	private Set<MediaRepresentationSTO> representations;
 	
 	public String getTitle() {
 		return title;
@@ -41,19 +46,11 @@ public class MediaSTO extends BaseSTO implements IBaseSTO{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Set<MediaInstanceSTO> getInstances() {
-		return instances;
+	public Set<MediaRepresentationSTO> getRepresentations() {
+		return representations;
 	}
-	public void setInstances(Set<MediaInstanceSTO> instances) {
-		this.instances = instances;
-	}
-	public void addInstance(String uri, String mimeType, Integer heigth, Integer width){
-		MediaInstanceSTO mi = new MediaInstanceSTO();
-		mi.setHeigth(heigth);
-		mi.setWidth(width);
-		mi.setUri(uri);
-		mi.setMimeType(mimeType);
-		this.instances.add(mi);
+	public void setRepresentations(Set<MediaRepresentationSTO> representations) {
+		this.representations = representations;
 	}
 	
 }

@@ -18,14 +18,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaInstance;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.IdentifiedString;
-import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
 import eu.etaxonomy.cdm.remote.dto.SpecimenTypeDesignationSTO;
 
 /**
