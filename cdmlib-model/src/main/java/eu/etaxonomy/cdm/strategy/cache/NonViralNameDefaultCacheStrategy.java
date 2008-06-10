@@ -63,7 +63,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 /* **************** GETTER / SETTER **************************************/
 	
 	/**
-	 * String that seperates the NameCache part from the AuthorCache part
+	 * String that separates the NameCache part from the AuthorCache part
 	 * @return
 	 */
 	public String getNameAuthorSeperator() {

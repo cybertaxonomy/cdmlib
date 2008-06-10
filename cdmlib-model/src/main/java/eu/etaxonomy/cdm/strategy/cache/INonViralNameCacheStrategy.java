@@ -16,7 +16,7 @@ public interface INonViralNameCacheStrategy<T extends NonViralName> extends INam
 	
 	
 	/**
-	 * returns the composed name string without author or year
+	 * returns the composed scientific taxon name string without authors nor year
 	 * @param object
 	 * @return
 	 */
