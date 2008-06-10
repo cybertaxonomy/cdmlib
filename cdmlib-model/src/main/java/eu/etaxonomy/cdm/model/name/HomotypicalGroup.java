@@ -87,16 +87,27 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	protected void setTypeDesignations(Set<SpecimenTypeDesignation> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}	
-	public void addTypeDesignation(SpecimenTypeDesignation typeDesignation) {
-		typeDesignation.setHomotypicalGroup(this);
+	public void addTypeDesignation(SpecimenTypeDesignation typeDesignation, boolean addToAllNames) {
+		if (typeDesignation != null){
+			typeDesignation.setHomotypicalGroup(this);
+			typeDesignations.add(typeDesignation);
+		}
+		if (addToAllNames){
+			for (TaxonNameBase taxonNameBase : this.typifiedNames){
+				taxonNameBase.addSpecimenTypeDesignation(typeDesignation);
+			}
+		}
 	}	
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
-		typeDesignation.setHomotypicalGroup(null);
+		if (typeDesignation != null){
+			typeDesignation.setHomotypicalGroup(null);
+			typeDesignations.remove(typeDesignation);
+		}
+		for (TaxonNameBase taxonNameBase : this.typifiedNames){
+			taxonNameBase.removeSpecimenTypeDesignation(typeDesignation);
+		}
 	}	
-	public void addTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
-		SpecimenTypeDesignation td = new SpecimenTypeDesignation(this, typeSpecimen, status, citation, citationMicroReference, originalNameString);
-		td.setHomotypicalGroup(this);
-	}
+
 	
 	/**
 	 * Retrieves the synonyms of reference sec that are part of this homotypical group.
