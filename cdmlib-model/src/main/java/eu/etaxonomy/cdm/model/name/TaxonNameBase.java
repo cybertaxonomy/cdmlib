@@ -39,7 +39,7 @@ import javax.persistence.*;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
- * particular nomenclatural code. The scientific name including author strings and
+ * particular nomenclature code. The scientific name including author strings and
  * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * The scientific taxon name does not depend on the use made of it
@@ -55,7 +55,6 @@ import javax.persistence.*;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
-	//Non-atomised addition to a name not ruled by a nomenclatural code
 	private String appendedPhrase;
 	private String nomenclaturalMicroReference;
 	private boolean hasProblem = false;
@@ -468,7 +467,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/**
 	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
 	 * method was able to parse the taxon name string successfully (false)
-	 * or not (true).
+	 * or not (true). The parser itself may also depend on the {@link NomenclaturalCode nomenclatural code}
+	 * governing the construction of this taxon name.
 	 *  
 	 * @return  the boolean value of the hasProblem flag
 	 * @see     #getNameCache()
@@ -777,31 +777,100 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	
 //*********  Rank comparison shortcuts   ********************//
+	/**
+	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * taxon name is higher than the genus rank (true) or not (false).
+	 * Suprageneric non viral names are monomials.
+	 * 
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
+	 */
 	@Transient
 	public boolean isSupraGeneric() {
 		return getRank().isSupraGeneric();
 	}
+	/**
+	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * taxon name is the genus rank (true) or not (false). Non viral names with
+	 * genus rank are monomials.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
+	 */
 	@Transient
 	public boolean isGenus() {
 		return getRank().isGenus();
 	}
+	/**
+	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * taxon name is higher than the species rank and lower than
+	 * the genus rank (true) or not (false). Infrageneric non viral names
+	 * are binomials.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
+	 */
 	@Transient
 	public boolean isInfraGeneric() {
 		return getRank().isInfraGeneric();
 	}
+	/**
+	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * taxon name is the species rank (true) or not (false). Non viral names
+	 * with species rank are binomials.
+
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isInfraSpecific()
+	 */
 	@Transient
 	public boolean isSpecies() {
 		return getRank().isSpecies();
 	}
+	/**
+	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * taxon name is lower than the species rank (true) or not (false).
+	 * Infraspecific non viral names are trinomials.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 */
 	@Transient
 	public boolean isInfraSpecific() {
 		return getRank().isInfraSpecific();
 	}
 	
 	
+	/**
+	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
+	 * the construction of this taxon name. Each taxon name is governed by one
+	 * and only one nomenclatural code. 
+	 *
+	 * @see  #isCodeCompliant()
+	 * @see  #getHasProblem()
+	 */
 	@Transient
 	abstract public NomenclaturalCode getNomeclaturalCode();
 
+	/**
+	 * Returns the string with the scientific name of this taxon name including
+	 * author strings and maybe year. This string may be stored in the
+	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#getTitleCache() method.
+	 *
+	 * @see  common.IdentifiableEntity#getTitleCache()
+	 */
 	@Override
 	public String generateTitle() {
 		// TODO Auto-generated method stub
