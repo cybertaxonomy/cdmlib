@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 /**
  * @author a.mueller
  *
+ * IN WORK
+ *
  */
 
 public class LocalH2 extends DriverManagerDataSource {
@@ -55,7 +57,6 @@ public class LocalH2 extends DriverManagerDataSource {
 	 */
 	public LocalH2() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
-		setComposedUrl();
 	}
 
 	/**
@@ -105,60 +106,6 @@ public class LocalH2 extends DriverManagerDataSource {
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.DriverManagerDataSource#getUrl()
-	 */
-	@Override
-	public String getUrl() {
-		return super.getUrl();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.DriverManagerDataSource#setUrl(java.lang.String)
-	 */
-	@Override
-	public void setUrl(String url) {
-		super.setUrl(url);
-	}
-
-	/**
-	 * @return the pureUrl
-	 */
-	public String getPureUrl() {
-		return pureUrl;
-	}
-
-	/**
-	 * @param pureUrl the pureUrl to set
-	 */
-	public void setPureUrl(String pureUrl) {
-		this.pureUrl = pureUrl;
-		if (dbName != null){
-			setComposedUrl();
-		}
-	}
-
-	/**
-	 * @return the dbName
-	 */
-	public String getDbName() {
-		return dbName;
-	}
-
-	/**
-	 * @param dbName the dbName to set
-	 */
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-		if (pureUrl != null){
-			setComposedUrl();
-		}
-	}
-	
-	private void setComposedUrl(){
-		setUrl(getPureUrl() + getDbName());
-	}
-	
 	//checks if h2-server is started, if not it will be started	(taken over from hsqldb, maybe not necessary for H2
 	private void startH2Server(){
 		try {
@@ -209,7 +156,7 @@ public class LocalH2 extends DriverManagerDataSource {
 		}
 	}
 	
-	private static final String getDefaultPath(){
+	public static final String getDefaultPath(){
 		//String path = System.getProperty("user.dir");
 		File path = CdmApplicationUtils.getWritableResourceDir();
 		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
@@ -245,23 +192,6 @@ public class LocalH2 extends DriverManagerDataSource {
 	 */
 	public void setStartServer(boolean isStartServer) {
 		this.isStartServer = isStartServer;
-	}
-
-	/**
-	 * @return the isSilent
-	 */
-	public boolean isSilent() {
-		return isSilent;
-	}
-
-	/**
-	 * @param isSilent the isSilent to set
-	 */
-	public void setSilent(boolean isSilent) {
-		if (this.h2Server != null){
-//			this.h2Server.setSilent(isSilent);
-		}
-		this.isSilent = isSilent;
 	}
 	
 	

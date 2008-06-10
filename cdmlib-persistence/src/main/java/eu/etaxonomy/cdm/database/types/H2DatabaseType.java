@@ -9,9 +9,12 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalH2;
@@ -31,10 +34,10 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	private String classString = "org.h2.Driver";
     
 	//url
-	private String urlString = "jdbc:h2:tcp://";
+	private String urlString = "jdbc:h2:";
     
 	//path
-	private String path = "~/.h2";
+	private String path = getDefaultPath();
 	
     //port
     private int defaultPort = 9092;
@@ -51,12 +54,16 @@ public class H2DatabaseType extends DatabaseTypeBase {
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
         H2Mode mode = ds.getMode();
-		if (mode.equals(H2Mode.IN_MEMORY)){
+		String path = ds.getFilePath();
+		if (path == null){
+			path = LocalH2.getDefaultPath();
+		}
+        if (mode.equals(H2Mode.IN_MEMORY)){
         	return  "jdbc:h2:mem:";
         }else if (mode.equals(H2Mode.EMBEDDED)){
-    		return urlString +  ds.getFilePath() + "/" + ds.getDatabase();
+    		return urlString + "file:" + path + "/" + ds.getDatabase();
         }else if (mode.equals(H2Mode.TCP)){
-        	return urlString + ds.getServer() + ":" + port + "/" + path + "/" + ds.getDatabase();
+        	return urlString + "tcp://" + ds.getServer() + ":" + port + "/" + path + "/" + ds.getDatabase();
         }else{
         	logger.warn("Unrecognized mode for Database H2");
         	return null;
@@ -87,6 +94,13 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	@Override
 	public String getDestroyMethod() {
 		return destroyMethod;
+	}
+	
+	private static final String getDefaultPath(){
+		//String path = System.getProperty("user.dir");
+		File path = CdmApplicationUtils.getWritableResourceDir();
+		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
+		return  path + subPath;
 	}
 
 
