@@ -69,11 +69,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	//needed by hibernate
 	/** 
 	 * Class constructor: creates a new non viral taxon name instance
-	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}
-	 * for building its scientific taxon name string without authors nor year.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #NonViralName(Rank, HomotypicalGroup)
 	 * @see #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	protected NonViralName(){
 		super();
@@ -84,14 +86,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * Class constructor: creates a new non viral taxon name instance
 	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and
-	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}
-	 * for building its scientific taxon name string without authors nor year.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank  the rank to be assigned to this taxon name
 	 * @param	homotypicalGroup  the homotypical group to which this taxon name belongs
 	 * @see 	#NonViralName()
 	 * @see		#NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	protected NonViralName(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
@@ -103,8 +107,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * its {@link common.HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
-	 * the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy default cache strategy}
-	 * for building its scientific taxon name string without authors nor year.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank  the rank to be assigned to this taxon name
 	 * @param	genusOrUninomial the string for this taxon name
@@ -121,6 +124,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see 	#NonViralName()
 	 * @see		#NonViralName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	protected NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
@@ -136,13 +142,17 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	//********* METHODS **************************************/
 	/** 
 	 * Creates a new non viral taxon name instance
-	 * only containing its {@link common.Rank rank}.
+	 * only containing its {@link common.Rank rank} and 
+ 	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param  rank  the rank to be assigned to this non viral taxon name
 	 * @see    #NewInstance(Rank, HomotypicalGroup)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
 	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	public static NonViralName NewInstance(Rank rank){
 		return new NonViralName(rank, null);
@@ -151,7 +161,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/** 
 	 * Creates a new non viral taxon name instance
 	 * only containing its {@link common.Rank rank} and
-	 * its {@link common.HomotypicalGroup homotypical group}.
+	 * its {@link common.HomotypicalGroup homotypical group} and 
+ 	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * taxon names belonging to this homotypical group. If the homotypical 
 	 * group does not exist a new instance will be created for it.
@@ -162,6 +173,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
 	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
 		return new NonViralName(rank, homotypicalGroup);
@@ -176,15 +190,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	//TODO for PROTOTYPE
 	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy cache strategy} used to generate a name string
-	 * corresponding to this taxon name. The cache strategy includes
-	 * two methods: {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(TaxonNameBase) one} for the scientific name
-	 * string without author teams and year and another {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getTaggedName(TaxonNameBase) another one} for the array of scientific name components
-	 * with author teams and eventually year.
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy cache strategy} used to generate different strings
+	 * corresponding to this taxon name (in particular taxon name caches and
+	 * author strings).
 	 * 
-	 * @return  the name cache strategy used for this taxon name
+	 * @return  the cache strategy used for this non viral taxon name
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.NameCacheStrategyBase
+	 * @see     eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
 	@Transient
 	@Override
@@ -285,6 +298,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		this.infraSpecificEpithet = infraSpecificEpithet;
 	}
 
+	/**
+	 * Returns the string with the scientific name of this taxon name including
+	 * author strings and maybe year. This string may be stored in the
+	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#getTitleCache() method.
+	 *
+	 * @see  common.IdentifiableEntity#getTitleCache()
+	 */
 	@Override
 	public String generateTitle(){
 		if (cacheStrategy == null){
@@ -425,21 +447,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		return null;
 	}
 
-	/**
-	 * Returns the string with the scientific name of this taxon name including
-	 * author strings and maybe year. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#getTitleCache() method.
-	 *
-	 * @see  common.IdentifiableEntity#getTitleCache()
-	 */
-	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	
 
 }
