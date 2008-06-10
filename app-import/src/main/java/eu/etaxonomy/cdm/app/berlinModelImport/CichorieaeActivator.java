@@ -36,7 +36,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -44,12 +44,12 @@ public class CichorieaeActivator {
 	//authors
 	static final boolean doAuthors = false;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 	//names
 	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = false;
+	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
-	static final boolean doTypes = false;
+	static final boolean doTypes = true;
 	static final boolean doNameFacts = true;
 	
 	//taxa
