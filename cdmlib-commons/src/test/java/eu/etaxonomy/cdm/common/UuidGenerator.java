@@ -8,22 +8,42 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
 
 /**
  * 
  * @author a.mueller
  */
 public class UuidGenerator {
-
+	private static final Logger logger = Logger.getLogger(UuidGenerator.class);
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++){
+		for (int i = 0; i < 0; i++){
 			System.out.println(UUID.randomUUID());
 		}
-		
+		boolean result;
+		String str =  "file://C:/tmp";
+		try {
+			str =  "\\\\Bgbm11\\Edit-WP6";
+			File file = null;
+			file = new File(str);
+			if (file.exists()){
+				result = true;
+			}else{
+				result = false;
+			}
+			logger.warn(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
