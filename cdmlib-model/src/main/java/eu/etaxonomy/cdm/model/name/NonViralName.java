@@ -25,8 +25,11 @@ import org.hibernate.annotations.Target;
 import javax.persistence.*;
 
 /**
- * Taxon name class for all non viral taxa. Parentetical authorship is derived
- * from basionym relationship.
+ * The taxon name class for all non viral taxa. Parentetical authorship is derived
+ * from basionym relationship. The scientific name including author strings and
+ * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+ * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
@@ -49,38 +52,76 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	private INomenclaturalAuthor combinationAuthorTeam;
 	//Author team that contributed to the publication of the present combination
 	private INomenclaturalAuthor exCombinationAuthorTeam;
-	//Author team that published the original publication
+	//Author team that published the original combination
 	private INomenclaturalAuthor basionymAuthorTeam;
 	//Author team that contributed to the original publication of the name
 	private INomenclaturalAuthor exBasionymAuthorTeam;
-	//concatenated und formated authorteams including basionym and combination authors
+	//concatenated und formated author teams including basionym and combination authors
 	private String authorshipCache;
 	//this flag shows if the getAuthorshipCache should return generated value(false) or the given String(true)  
 	protected boolean protectedAuthorshipCache;
-	
+	protected boolean protectedNameCache;
+
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
-	
-	
-	public static NonViralName NewInstance(Rank rank){
-		return new NonViralName(rank, null);
-	}
-
-	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-		return new NonViralName(rank, homotypicalGroup);
-	}
-	
+	// ************* CONSTRUCTORS *************/	
 	
 	//needed by hibernate
+	/** 
+	 * Class constructor: creates a new non viral taxon name instance
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}
+	 * for building its scientific taxon name string without authors nor year.
+	 * 
+	 * @see #NonViralName(Rank, HomotypicalGroup)
+	 * @see #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 */
 	protected NonViralName(){
 		super();
 		setNameCacheStrategy();
 	}
 	
+	/** 
+	 * Class constructor: creates a new non viral taxon name instance
+	 * only containing its {@link common.Rank rank},
+	 * its {@link common.HomotypicalGroup homotypical group} and
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}
+	 * for building its scientific taxon name string without authors nor year.
+	 * 
+	 * @param	rank  the rank to be assigned to this taxon name
+	 * @param	homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @see 	#NonViralName()
+	 * @see		#NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see		#NewInstance(Rank, HomotypicalGroup)
+	 */
 	protected NonViralName(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
 		setNameCacheStrategy();
 	}
+	/** 
+	 * Class constructor: creates a new non viral taxon name instance
+	 * containing its {@link common.Rank rank},
+	 * its {@link common.HomotypicalGroup homotypical group},
+	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
+	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy default cache strategy}
+	 * for building its scientific taxon name string without authors nor year.
+	 * 
+	 * @param	rank  the rank to be assigned to this taxon name
+	 * @param	genusOrUninomial the string for this taxon name
+	 * 			if its rank is genus or above or for the genus component
+	 * 			if its rank is lower than genus
+	 * @param	specificEpithet  the string for the first epithet of
+	 * 			this taxon name if its rank is lower than genus
+	 * @param	infraSpecificEpithet  the string for the second epithet of
+	 * 			this taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published this taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where this taxon name was published
+	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
+	 * @param	homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @see 	#NonViralName()
+	 * @see		#NonViralName(Rank, HomotypicalGroup)
+	 * @see		#NewInstance(Rank, HomotypicalGroup)
+	 */
 	protected NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
 		setNameCacheStrategy();
@@ -92,6 +133,40 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
 	}
 	
+	//********* METHODS **************************************/
+	/** 
+	 * Creates a new non viral taxon name instance
+	 * only containing its {@link common.Rank rank}.
+	 * 
+	 * @param  rank  the rank to be assigned to this non viral taxon name
+	 * @see    #NewInstance(Rank, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, HomotypicalGroup)
+	 * @see    #NonViralName()
+	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 */
+	public static NonViralName NewInstance(Rank rank){
+		return new NonViralName(rank, null);
+	}
+
+	/** 
+	 * Creates a new non viral taxon name instance
+	 * only containing its {@link common.Rank rank} and
+	 * its {@link common.HomotypicalGroup homotypical group}.
+	 * The new non viral taxon name instance will be also added to the set of
+	 * taxon names belonging to this homotypical group. If the homotypical 
+	 * group does not exist a new instance will be created for it.
+	 * 
+	 * @param  rank  the rank to be assigned to this non viral taxon name
+	 * @param  homotypicalGroup  the homotypical group to which this non viral taxon name belongs
+	 * @see    #NewInstance(Rank)
+	 * @see    #NonViralName(Rank, HomotypicalGroup)
+	 * @see    #NonViralName()
+	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 */
+	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new NonViralName(rank, homotypicalGroup);
+	}
+	
 	private void setNameCacheStrategy(){
 		if (getClass() == NonViralName.class){
 			this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
@@ -101,7 +176,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	//TODO for PROTOTYPE
 	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy cache strategy} used to generate a name string
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy cache strategy} used to generate a name string
 	 * corresponding to this taxon name. The cache strategy includes
 	 * two methods: {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(TaxonNameBase) one} for the scientific name
 	 * string without author teams and year and another {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getTaggedName(TaxonNameBase) another one} for the array of scientific name components
@@ -221,9 +296,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 	
 	/**
-	 * Generates the composed name string of this taxon name without authors
-	 * or year according to the strategy defined in
-	 * {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy INameCacheStrategy}.
+	 * Generates the composed name string of this taxon name without author
+	 * strings or year according to the strategy defined in
+	 * {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy INonViralNameCacheStrategy}.
 	 * The result might be stored in {@link #getNameCache() nameCache} if the
 	 * flag {@link #isProtectedNameCache() protectedNameCache} is not set.
 	 * 
@@ -322,6 +397,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		this.authorshipCache = authorshipCache;
 	}
 
+	/**
+	 * Returns the boolean value "true" if the components of this taxon name
+	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
+	 * "false" otherwise. The nomenclature code depends on
+	 * the concrete name subclass ({@link BacterialName BacterialName},
+	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} ot
+	 * {@link ZoologicalName ZoologicalName} to which this taxon name belongs.
+	 *  
+	 * @return  the boolean value expressing the compliance of this taxon name to the nomenclatural code
+	 */
 	@Override
 	@Transient
 	public boolean isCodeCompliant() {
@@ -337,6 +422,21 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@Override
 	public NomenclaturalCode getNomeclaturalCode() {
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");
+		return null;
+	}
+
+	/**
+	 * Returns the string with the scientific name of this taxon name including
+	 * author strings and maybe year. This string may be stored in the
+	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#getTitleCache() method.
+	 *
+	 * @see  common.IdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String generateTitle() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

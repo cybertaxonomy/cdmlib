@@ -39,11 +39,9 @@ import javax.persistence.*;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
- * particular nomenclature code. The scientific name including author strings and
- * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
- * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
- * The scientific taxon name does not depend on the use made of it
- * in a publication or a treatment ({@link taxon.TaxonBase taxon concept respectively potential taxon})
+ * particular nomenclature code. The scientific taxon name does not depend
+ * on the use made of it in a publication or a treatment
+ * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
  * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
  * or as a {@link taxon.Synonym synonym}.
  * 
@@ -67,13 +65,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	private Rank rank;
 	private INomenclaturalReference nomenclaturalReference;
 
-	protected boolean protectedNameCache;
-	
 	static Method methodTaxonBaseSetName;
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
-	 * Class constructor: creates a new empty taxon name instance.
+	 * Class constructor: creates a new empty taxon name.
 	 * 
 	 * @see #TaxonNameBase(Rank)
 	 * @see #TaxonNameBase(HomotypicalGroup)
@@ -83,7 +79,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this(null, null);
 	}
 	/** 
-	 * Class constructor: creates a new taxon name instance
+	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.Rank rank}.
 	 * 
 	 * @param  rank  the rank to be assigned to this taxon name
@@ -95,9 +91,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this(rank, null);
 	}
 	/** 
-	 * Class constructor: creates a new taxon name instance
+	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.HomotypicalGroup homotypical group}.
-	 * The new taxon name instance will be also added to the set of taxon names
+	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group. If the homotypical group 
 	 * does not exist a new instance will be created for it.
 	 * 
@@ -110,7 +106,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this(null, homotypicalGroup);
 	}
 	/** 
-	 * Class constructor: creates a new instance of a taxon name
+	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.Rank rank} and
 	 * its {@link common.HomotypicalGroup homotypical group}.
 	 * 
@@ -135,7 +131,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/**
 	 * Returns the boolean value "true" if the components of this taxon name
 	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
-	 * "false" otherwise. The nomenclatural code depends on
+	 * "false" otherwise. The nomenclature code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName},
 	 * {@link ZoologicalName ZoologicalName} or {@link ViralName ViralName}) 
@@ -861,21 +857,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	abstract public NomenclaturalCode getNomeclaturalCode();
-
-	/**
-	 * Returns the string with the scientific name of this taxon name including
-	 * author strings and maybe year. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#getTitleCache() method.
-	 *
-	 * @see  common.IdentifiableEntity#getTitleCache()
-	 */
-	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 
 }
