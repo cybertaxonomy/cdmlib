@@ -56,10 +56,10 @@ public class H2DatabaseType extends DatabaseTypeBase {
         H2Mode mode = ds.getMode();
 		String path = ds.getFilePath();
 		if (path == null){
-			path = LocalH2.getDefaultPath();
+			path = getDefaultPath();
 		}
         if (mode.equals(H2Mode.IN_MEMORY)){
-        	return  "jdbc:h2:mem:";
+        	return  urlString + "mem:";
         }else if (mode.equals(H2Mode.EMBEDDED)){
     		return urlString + "file:" + path + "/" + ds.getDatabase();
         }else if (mode.equals(H2Mode.TCP)){

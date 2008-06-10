@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-//import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
@@ -38,7 +37,7 @@ public class LocalH2 extends DriverManagerDataSource {
 	private String sep = System.getProperty("file.separator");
 	
 	/** url without database name */
-	protected String pureUrl = "jdbc:h2:tcp://localhost:9092/";
+	protected String pureUrl = "jdbc:h2:";
 	/** database name */
 	protected String dbName = "cdm";
 	/** path, where database should be stored in the file system */
@@ -51,12 +50,14 @@ public class LocalH2 extends DriverManagerDataSource {
 	protected boolean isSilent = true;
 	/** default driver class name */
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.h2.Driver";
+	String mode = H2Mode.EMBEDDED.toString(); 
 	
 	/**
 	 * 
 	 */
 	public LocalH2() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
+		setLocalUrl();
 	}
 
 	/**
@@ -95,6 +96,7 @@ public class LocalH2 extends DriverManagerDataSource {
 //** ********************************************************************************/
 	
 	public void init(){
+		logger.warn("LocalH2init");
 		if (true){   //starting sever is not necessary for H2
 			return;
 		}
@@ -158,7 +160,7 @@ public class LocalH2 extends DriverManagerDataSource {
 		}
 	}
 	
-	public static final String getDefaultPath(){
+	private static final String getDefaultPath(){
 		//String path = System.getProperty("user.dir");
 		File path = CdmApplicationUtils.getWritableResourceDir();
 		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
@@ -196,6 +198,19 @@ public class LocalH2 extends DriverManagerDataSource {
 		this.isStartServer = isStartServer;
 	}
 	
+	public void setLocalUrl(){
+		logger.warn("setLocalUrl");
+		String dbName = "cdmLocal";
+		setUrl(pureUrl + "file:" + getDefaultPath() + "/" + dbName);
+	}
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
+	
+	public String getMode(){
+		return mode;
+	}
 	
 
 }
