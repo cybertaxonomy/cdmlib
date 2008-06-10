@@ -361,6 +361,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IRef
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/h2-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text

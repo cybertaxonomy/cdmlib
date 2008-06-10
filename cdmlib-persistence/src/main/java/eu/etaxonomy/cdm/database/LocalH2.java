@@ -92,6 +92,8 @@ public class LocalH2 extends DriverManagerDataSource {
 		super(driverClassName, url, username, password);
 	}
 
+//** ********************************************************************************/
+	
 	public void init(){
 		if (true){   //starting sever is not necessary for H2
 			return;

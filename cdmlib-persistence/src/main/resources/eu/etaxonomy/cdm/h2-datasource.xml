@@ -7,20 +7,14 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <bean id="dataSource" 
-        lazy-init="true"
-        class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
-        init-method="init"
-        destroy-method="destroy"
-        >
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+    <bean id="dataSource" lazy-init="true" class="eu.etaxonomy.cdm.database.LocalH2" >
+        <property name="driverClassName" value="org.h2.Driver"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
-        <property name="startServer" value="true"/>
-        <property name="silent" value="true"/>
-        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
-        <!-- property name="dbName" value="cdm"/> -->
-        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
+<!--        <property name="url" value="jdbc:h2:file:~/.cdmlib/h2/testXXX"/> -->
+        <property name="url" value="jdbc:h2:mem:cdmtest_mem"/>
+        
+        <!--property name="mode" value="inMemory"/-->
     </bean>
     
     <!-- This configures default properties, which can overridden with the file specified by the location property -->
@@ -29,12 +23,13 @@
         <property name="properties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
-    </bean>  
+    </bean> 
+    
 </beans>
 
