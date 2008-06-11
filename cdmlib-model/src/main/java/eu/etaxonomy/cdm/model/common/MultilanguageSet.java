@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.log4j.Logger;
 
 
@@ -75,6 +79,24 @@ public class MultilanguageSet extends HashMap<Language, LanguageString> {
 //		}
 			return this.put(languageString.getLanguage(), languageString);
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param languages
+	 * @return
+	 */
+	public LanguageString getPreferredLanguageString(List<Language> languages){
+		
+		LanguageString languageString = null;
+		for (Language language : languages) {
+			languageString = super.get(language);
+			if(languageString != null){
+				return languageString;
+			}
+		}
+		return super.get(Language.DEFAULT());
 	}
 	
 
