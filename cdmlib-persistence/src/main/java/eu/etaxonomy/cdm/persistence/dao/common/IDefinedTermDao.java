@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -20,6 +24,10 @@ public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitled
 	 * @return the Language or null
 	 */
 	public Language getLangaugeByIso(String iso639);
+	
+	public List<Language> getLangaugesByIso(List<String> iso639List);
+	
+	public List<Language> getLangaugesByLocale(Enumeration<Locale> locales);
 
 	
 }
