@@ -64,18 +64,20 @@ public class RestController extends AbstractController
 			String sec = getNonNullPara("sec",req);
 			String q = getNonNullPara("q",req);
 			
+			Enumeration<Locale> locales = req.getLocales();
+			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
 			if(action==""){
 				// get Object by UUID
 				if(dto.equalsIgnoreCase("name")){
-					NameTO n = service.getName( getUuid(uuid));
+					NameTO n = service.getName( getUuid(uuid), locales);
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					TaxonTO t = service.getTaxon(getUuid(uuid), req.getLocales());
+					TaxonTO t = service.getTaxon(getUuid(uuid), locales);
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
-					ReferenceTO r = service.getReference(getUuid(uuid));
+					ReferenceTO r = service.getReference(getUuid(uuid), locales);
 					mv.addObject(r);
 				}else if(dto.equalsIgnoreCase("whatis")){
 					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
@@ -85,13 +87,13 @@ public class RestController extends AbstractController
 			}else if(action.equalsIgnoreCase("simple")){
 				Set<UUID> uuids = getUuids(uuid);
 				if(dto.equalsIgnoreCase("name")){
-					List<NameSTO> n = service.getSimpleNames(uuids);
+					List<NameSTO> n = service.getSimpleNames(uuids, locales);
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					List<TaxonSTO> t = service.getSimpleTaxa(uuids);
+					List<TaxonSTO> t = service.getSimpleTaxa(uuids, locales);
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
-					List<ReferenceSTO> r = service.getSimpleReferences(uuids);
+					List<ReferenceSTO> r = service.getSimpleReferences(uuids, locales);
 					mv.addObject(r);
 				}
 			}else if(action.equalsIgnoreCase("find")){
@@ -123,7 +125,7 @@ public class RestController extends AbstractController
 				};
 				//
 				// search for taxa
-				Object obj = service.findTaxa(q, u, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize);
+				Object obj = service.findTaxa(q, u, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize, locales);
 				mv.addObject(obj);
 			}else if(action.equalsIgnoreCase("taxonomy")){
 				List results = null; 
@@ -216,7 +218,7 @@ public class RestController extends AbstractController
 		String result = null;
 		if (map!=null){
 			// first look into url parameters
-			Map<String,String> urlParas = (Map) map;
+			Map<String,String> urlParas = (Map<String, String>) map;
 			result = urlParas.get(parameterName);
 		}
 		if (result == null){

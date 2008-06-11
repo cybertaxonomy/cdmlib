@@ -48,8 +48,6 @@ public class JsonView extends BaseView implements View{
 		}else if(dto instanceof Class){
 			out.append("{\"name\":\"").append(((Class)dto).getName()).append("\", \"simpleName\": \"").append(((Class)dto).getSimpleName()).append("\"}");
 		}else{
-			
-		
 			JSONObject jObj = JSONObject.fromObject(dto);
 			out.append(jObj.toString());
 		}

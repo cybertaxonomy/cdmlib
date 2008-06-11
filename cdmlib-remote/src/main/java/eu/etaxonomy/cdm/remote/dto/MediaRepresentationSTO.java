@@ -52,6 +52,15 @@ public class MediaRepresentationSTO extends BaseSTO {
 	public void addRepresenationPart(MediaRepresenationPartSTO part){
 		this.representationParts.add(part);
 	}
+	public Set<MediaRepresenationPartSTO> getRepresentationParts() {
+		return representationParts;
+	}
+	public void setRepresentationParts(
+			Set<MediaRepresenationPartSTO> representationParts) {
+		this.representationParts = representationParts;
+	}
+	
+	
 	
 	
 }

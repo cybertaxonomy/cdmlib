@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,15 +107,15 @@ public class CdmServiceImpl implements ICdmService {
 		return ref;
 	}
 	
-	public NameTO getName(UUID uuid) throws CdmObjectNonExisting{
+	public NameTO getName(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
-		NameTO n = nameAssembler.getTO(tnb, null);
+		NameTO n = nameAssembler.getTO(tnb, locales);
 		return n;
 	}
 	
-	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting{
+	public NameSTO getSimpleName(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		TaxonNameBase tnb = getCdmTaxonNameBase(uuid);
-		NameSTO n = nameAssembler.getSTO(tnb, null);
+		NameSTO n = nameAssembler.getSTO(tnb, locales);
 		return n;
 	}
 	
@@ -127,9 +128,9 @@ public class CdmServiceImpl implements ICdmService {
 		return t;
 	}
 	
-	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting{
+	public TaxonSTO getSimpleTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		TaxonBase tb = getCdmTaxonBase(uuid);
-		TaxonSTO t = taxonAssembler.getSTO(tb, null);
+		TaxonSTO t = taxonAssembler.getSTO(tb, locales);
 		return t;
 	}
 	
@@ -138,33 +139,34 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		// TODO: add other criteria. Has to be done in DAO...
+		q = (matchAnywhere ? "%" : "") + q +"%";
 		List<TaxonBase> results = taxonDAO.findByTitle(q);
 		rs.setPageSize(100);
 		rs.setPageNumber(1);
 		rs.setTotalResultsCount(results.size());
 		for (TaxonBase tb : results){
-			TaxonSTO tx = taxonAssembler.getSTO(tb, null);
+			TaxonSTO tx = taxonAssembler.getSTO(tb, locales);
 			rs.getResults().add(tx);
 		}
 		return rs;
 	}
 
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid) throws CdmObjectNonExisting {
+	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting {
 		TaxonBase tb = getCdmTaxonBase(uuid);
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		rs.setPageNumber(1);
 		rs.setPageSize(25);
 		if (tb.getClass().equals(Taxon.class)){
-			TaxonSTO t = taxonAssembler.getSTO(tb, null);
+			TaxonSTO t = taxonAssembler.getSTO(tb, locales);
 			rs.addResultToFirstPage(t);
 		}else{
 			Synonym s = (Synonym)tb;
 			Set<Taxon> taxa = s.getAcceptedTaxa();
 			for (Taxon tx: taxa){
-				TaxonSTO t = taxonAssembler.getSTO(tx, null);
+				TaxonSTO t = taxonAssembler.getSTO(tx, locales);
 				rs.addResultToFirstPage(t);
 			}
 		}
@@ -188,14 +190,14 @@ public class CdmServiceImpl implements ICdmService {
 		return result;
 	}
 
-	public ReferenceTO getReference(UUID uuid) throws CdmObjectNonExisting{
+	public ReferenceTO getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		ReferenceBase ref = getCdmReferenceBase(uuid);
-		ReferenceTO r =  refAssembler.getTO(ref, null);
+		ReferenceTO r =  refAssembler.getTO(ref, locales);
 		return r;
 	}
-	public ReferenceSTO getSimpleReference(UUID uuid) throws CdmObjectNonExisting{
+	public ReferenceSTO getSimpleReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
 		ReferenceBase ref = getCdmReferenceBase(uuid);
-		ReferenceSTO r =  refAssembler.getSTO(ref, null);
+		ReferenceSTO r =  refAssembler.getSTO(ref, locales);
 		return r;
 	}
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting {
@@ -219,38 +221,38 @@ public class CdmServiceImpl implements ICdmService {
 		taxonDAO.save(t);
 	}
 	
-	public ResultSetPageSTO<TaxonSTO> getAternativeTaxa(UUID uuid)
+	public ResultSetPageSTO<TaxonSTO> getAternativeTaxa(UUID uuid, Enumeration<Locale> locales)
 			throws CdmObjectNonExisting {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public List<NameSTO> getSimpleNames(Set<UUID> uuids){
+	public List<NameSTO> getSimpleNames(Set<UUID> uuids, Enumeration<Locale> locales){
 		List<NameSTO> nameList = new ArrayList<NameSTO>();
 		for (UUID u: uuids){
 			try {
-				nameList.add(getSimpleName(u));
+				nameList.add(getSimpleName(u, locales));
 			} catch (CdmObjectNonExisting e) {
 				logger.warn("Name UUID "+u+" does not exist!");
 			}
 		}
 	return nameList;
 	}
-	public List<ReferenceSTO> getSimpleReferences(Set<UUID> uuids) {
+	public List<ReferenceSTO> getSimpleReferences(Set<UUID> uuids, Enumeration<Locale> locales) {
 		List<ReferenceSTO> refList = new ArrayList<ReferenceSTO>();
 		for (UUID u: uuids){
 			try {
-				refList.add(getSimpleReference(u));
+				refList.add(getSimpleReference(u,locales));
 			} catch (CdmObjectNonExisting e) {
 				logger.warn("Reference UUID "+u+" does not exist!");
 			}
 		}
 		return refList;
 	}
-	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids){
+	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids, Enumeration<Locale> locales){
 	List<TaxonSTO> taxList = new ArrayList<TaxonSTO>();
 	for (UUID u: uuids){
 		try {
-			taxList.add(getSimpleTaxon(u));
+			taxList.add(getSimpleTaxon(u,locales));
 		} catch (CdmObjectNonExisting e) {
 			logger.warn("Taxon UUID "+u+" does not exist!");
 		}

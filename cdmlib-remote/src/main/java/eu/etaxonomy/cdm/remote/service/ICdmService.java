@@ -53,24 +53,25 @@ public interface ICdmService {
 
 	/**
 	 * @param uuid
+	 * @param locales TODO
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public NameTO getName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
+	public NameTO getName(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;// throws BusinessLogicException;
 	
 	/**
 	 * @param uuid
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public NameSTO getSimpleName(UUID uuid) throws CdmObjectNonExisting;// throws BusinessLogicException;
+	public NameSTO getSimpleName(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;// throws BusinessLogicException;
 	
 	/**
 	 * @param uuid
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public List<NameSTO> getSimpleNames(Set<UUID> uuids) throws CdmObjectNonExisting;// throws BusinessLogicException;
+	public List<NameSTO> getSimpleNames(Set<UUID> uuids, Enumeration<Locale> locales) throws CdmObjectNonExisting;// throws BusinessLogicException;
 
 	/**
 	 * @param uuid
@@ -85,14 +86,14 @@ public interface ICdmService {
 	 * @return 
 	 * @throws CdmObjectNonExisting
 	 */
-	public TaxonSTO getSimpleTaxon(UUID uuid) throws CdmObjectNonExisting;
+	public TaxonSTO getSimpleTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	/**
 	 * @param uuid
 	 * @return 
 	 * @throws CdmObjectNonExisting
 	 */
-	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids) throws CdmObjectNonExisting;
+	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	
 	/**
@@ -100,23 +101,23 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public ResultSetPageSTO<TaxonSTO> getAternativeTaxa(UUID uuid) throws CdmObjectNonExisting;
+	public ResultSetPageSTO<TaxonSTO> getAternativeTaxa(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 	/**
 	 * @param uuid
 	 * @return
 	 * @throws CdmObjectNonExisting 
 	 */
-	public ReferenceTO getReference(UUID uuid) throws CdmObjectNonExisting;
+	public ReferenceTO getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	
-	public ReferenceSTO getSimpleReference(UUID uuid) throws CdmObjectNonExisting;
+	public ReferenceSTO getSimpleReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 	/**
 	 * @param uuid
 	 * @return
 	 */
-	public List<ReferenceSTO> getSimpleReferences(Set<UUID> uuids);
+	public List<ReferenceSTO> getSimpleReferences(Set<UUID> uuids, Enumeration<Locale> locales);
 
 	/**
 	 * @param uuid
@@ -143,7 +144,7 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid) throws CdmObjectNonExisting;
+	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 	/**
 	 * Find taxa matching the query defined by the given parameters.
@@ -170,7 +171,7 @@ public interface ICdmService {
 	 */
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,
 			Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted,
-			int pagesize, int page);
+			int pagesize, int page, Enumeration<Locale> locales);
 
 	/**
 	 * Searches the concept taxon tree for all parent taxa by walking the tree
