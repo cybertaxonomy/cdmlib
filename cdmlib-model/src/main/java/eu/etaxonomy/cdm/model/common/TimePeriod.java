@@ -14,6 +14,7 @@ import java.util.Calendar;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
@@ -85,6 +86,22 @@ public class TimePeriod {
 	}
 	public void setEnd(Calendar end) {
 		this.end = end;
+	}
+	
+	@Transient
+	public String getYear(){
+		String result = "";
+		if (start != null){
+			result += String.valueOf(this.start.get(Calendar.YEAR));
+			if (end != null){
+				result += "-" + String.valueOf(this.end.get(Calendar.YEAR));
+			}
+		}else{
+			if (end != null){
+				result += String.valueOf(this.end.get(Calendar.YEAR));
+			}
+		}
+		return result;
 	}
 	
 }

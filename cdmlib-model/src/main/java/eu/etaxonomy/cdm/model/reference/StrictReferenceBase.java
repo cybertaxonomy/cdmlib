@@ -59,7 +59,11 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	 */
 	@Transient
 	public String getYear(){
-		return getDatePublished().toString();
+		if (this.getDatePublished() == null){
+			return null;
+		}else{
+			return getDatePublished().getYear();
+		}
 	}
 	
 
