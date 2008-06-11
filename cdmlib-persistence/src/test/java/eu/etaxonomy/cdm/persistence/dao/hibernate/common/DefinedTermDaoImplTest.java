@@ -25,10 +25,10 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 
 	@Test
 	public void save() throws WrongTermTypeException {
-		TermVocabulary<DefinedTermBase> vocabulary	= new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain","http://myterms.org/biodomain");
+		TermVocabulary<DefinedTermBase> vocabulary	= new TermVocabulary<DefinedTermBase>("Biological subdomains","biodomain",null, "http://myterms.org/biodomain");
 		String [] repres = {"genetics","physiology","systematics","taxonomy","nomenclature"};
 		for (String r : repres){
-			Keyword term = Keyword.NewInstance(r,r);
+			Keyword term = Keyword.NewInstance(r,r, null);
 			vocabulary.addTerm(term);			
 		}
 		for (DefinedTermBase dt : vocabulary){
