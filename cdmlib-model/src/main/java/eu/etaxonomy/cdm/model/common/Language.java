@@ -74,15 +74,19 @@ public class Language extends DefinedTermBase {
 		}
 		this.iso639_1=iso639_1;
 		this.iso639_2=iso639_2;
-		this.addRepresentation(new Representation(englishLabel, String.valueOf(iso639_2), Language.ENGLISH()));
-		this.addRepresentation(new Representation(frenchLabel, String.valueOf(iso639_2), Language.FRENCH()));
+		String textEnglish = englishLabel;
+		String textFrench = englishLabel;
+		String label = String.valueOf(iso639_2);
+		String labelAbbrev = null;
+		this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
+		this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
 	}
-	public Language(String text, String label, Language lang) {
+	public Language(String text, String label, String labelAbbrev, Language lang) {
 		super();
-		this.addRepresentation(new Representation(text,label,lang));
+		this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
 	}
-	public Language(String label, String text) {
-		this(label,text, DEFAULT());
+	public Language(String label, String text, String labelAbbrev) {
+		this(label,text,labelAbbrev, DEFAULT());
 	}
 
 	public static final Language getByUuid(UUID uuid){

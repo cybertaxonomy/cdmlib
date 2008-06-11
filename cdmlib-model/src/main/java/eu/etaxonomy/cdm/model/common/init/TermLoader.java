@@ -76,10 +76,11 @@ public class TermLoader {
 			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 			
 			TermVocabulary voc = null;
+			String labelAbbrev = null;
 			if (isOrdered){
-				voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+				voc = new OrderedTermVocabulary<OrderedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
 			}else{
-				voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), termClass.getCanonicalName());
+				voc = new TermVocabulary<DefinedTermBase>(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, termClass.getCanonicalName());
 			}
 			String [] nextLine = reader.readNext();
 			if (nextLine != null){

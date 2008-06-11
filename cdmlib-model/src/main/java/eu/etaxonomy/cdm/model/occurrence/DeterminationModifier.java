@@ -26,8 +26,8 @@ public class DeterminationModifier extends Modifier {
 	 * Factory method
 	 * @return
 	 */
-	public static DeterminationModifier NewInstance(String term, String label) {
-		return new DeterminationModifier(term, label);
+	public static DeterminationModifier NewInstance(String term, String label, String labelAbbrev) {
+		return new DeterminationModifier(term, label, labelAbbrev);
 	}
 	
 	
@@ -42,8 +42,8 @@ public class DeterminationModifier extends Modifier {
 	/**
 	 * Constructor
 	 */
-	protected DeterminationModifier(String term, String label) {
-		super(term, label);
+	protected DeterminationModifier(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

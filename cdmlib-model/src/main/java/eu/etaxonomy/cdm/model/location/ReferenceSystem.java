@@ -30,15 +30,15 @@ public class ReferenceSystem extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static ReferenceSystem NewInstance(String term, String label){
-		return new ReferenceSystem(term, label);
+	public static ReferenceSystem NewInstance(String term, String label, String labelAbbrev){
+		return new ReferenceSystem(term, label, labelAbbrev);
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public ReferenceSystem(String term, String label) {
-		super(term, label);
+	public ReferenceSystem(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 

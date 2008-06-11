@@ -570,16 +570,16 @@ uuidPersianGulf
 	 * Factory method
 	 * @return
 	 */
-	public static WaterbodyOrCountry NewInstance(String term, String label){
-		return new WaterbodyOrCountry(term, label);
+	public static WaterbodyOrCountry NewInstance(String term, String label, String labelAbbrev){
+		return new WaterbodyOrCountry(term, label, labelAbbrev);
 	}
 	
 
 	public WaterbodyOrCountry() {
 		super();
 	}
-	public WaterbodyOrCountry(String term, String label) {
-		super(term, label);
+	public WaterbodyOrCountry(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	

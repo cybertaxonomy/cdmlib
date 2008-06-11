@@ -34,8 +34,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	 * @param label
 	 * @param termSourceUri
 	 */
-	public OrderedTermVocabulary(String term, String label, String termSourceUri) {
-		super(term, label, termSourceUri);
+	public OrderedTermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+		super(term, label, labelAbbrev, termSourceUri);
 	}
 	
 	@Override

@@ -31,8 +31,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	public RelationshipTermBase() {
 		super();
 	}
-	public RelationshipTermBase(String term, String label, boolean symmetric, boolean transitive) {
-		super(term, label);
+	public RelationshipTermBase(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		super(term, label, labelAbbrev);
 		setSymmetric(symmetric);
 		setTransitive(transitive);		
 	}
@@ -135,7 +135,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		List<String> csvLineString = (List<String>)csvLine;
 		result = (RelationshipTermBase)super.readCsvLine(csvLineString);
 		// inverse label + 2 booleans
-		result.addInverseRepresentation(new Representation(csvLineString.get(4).trim(), csvLineString.get(5).trim(), Language.ENGLISH()) );
+		String inverseText = csvLineString.get(5).trim();
+		String inverseLabel = csvLineString.get(4).trim();
+		String inverseLabelAbbrev = null;
+		result.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.ENGLISH()) );
 		result.setSymmetric(Boolean.parseBoolean(csvLineString.get(6)));
 		result.setTransitive(Boolean.parseBoolean(csvLineString.get(7)));
 		return result;

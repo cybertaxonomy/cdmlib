@@ -28,8 +28,8 @@ public class Keyword extends OrderedTermBase<Keyword> {
 	}
 
 
-	public static Keyword NewInstance(String term, String label){
-		return new Keyword(term, label);
+	public static Keyword NewInstance(String term, String label, String labelAbbrev){
+		return new Keyword(term, label, labelAbbrev);
 	}
 
 	
@@ -37,8 +37,8 @@ public class Keyword extends OrderedTermBase<Keyword> {
 		super();
 	}
 
-	public Keyword(String term, String label) {
-		super(term, label);
+	public Keyword(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

@@ -27,14 +27,14 @@ public class PreservationMethod extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static PreservationMethod NewInstance(String term, String label) {
-		return new PreservationMethod(term, label);
+	public static PreservationMethod NewInstance(String term, String label, String labelAbbrev) {
+		return new PreservationMethod(term, label, labelAbbrev);
 	}
 	
 	/**
 	 * Constructor
 	 */
-	protected PreservationMethod(String term, String label) {
-		super(term, label);
+	protected PreservationMethod(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 }

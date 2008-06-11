@@ -37,15 +37,15 @@ public class NamedAreaType extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static NamedAreaType NewInstance(String term, String label){
-		return new NamedAreaType(term, label);
+	public static NamedAreaType NewInstance(String term, String label, String labelAbbrev){
+		return new NamedAreaType(term, label, labelAbbrev);
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public NamedAreaType(String term, String label) {
-		super(term, label);
+	public NamedAreaType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 	
 	public NamedAreaType(){

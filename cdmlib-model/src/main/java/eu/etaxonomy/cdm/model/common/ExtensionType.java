@@ -30,8 +30,8 @@ public class ExtensionType extends DefinedTermBase {
 	public ExtensionType() {
 		super();
 	}
-	public ExtensionType(String term, String label) {
-		super(term, label);
+	public ExtensionType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 

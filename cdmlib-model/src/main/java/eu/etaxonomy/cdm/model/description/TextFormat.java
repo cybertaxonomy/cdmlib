@@ -30,15 +30,15 @@ public class TextFormat extends DefinedTermBase {
 	public static TextFormat NewInstance(){
 		return new TextFormat();
 	}
-	public static TextFormat NewInstance(String term, String label){
-		return new TextFormat(term, label);
+	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
+		return new TextFormat(term, label, labelAbbrev);
 	}
 	
 	protected TextFormat() {
 		super();
 	}
 
-	public TextFormat(String term, String label) {
-		super(term, label);
+	public TextFormat(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 }

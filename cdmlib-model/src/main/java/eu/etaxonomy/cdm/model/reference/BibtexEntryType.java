@@ -36,9 +36,8 @@ public class BibtexEntryType extends DefinedTermBase {
 		// TODO Auto-generated constructor stub
 	}
 
-	public BibtexEntryType(String term, String label) {
-		super(term, label);
-		// TODO Auto-generated constructor stub
+	public BibtexEntryType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	/**

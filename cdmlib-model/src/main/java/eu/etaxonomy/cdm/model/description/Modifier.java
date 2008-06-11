@@ -41,8 +41,7 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	}
 	
 
-	public Modifier(String term, String label) {
-		super(term, label);
-		// TODO Auto-generated constructor stub
+	public Modifier(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 }

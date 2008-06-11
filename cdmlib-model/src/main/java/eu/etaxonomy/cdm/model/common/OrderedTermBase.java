@@ -29,8 +29,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public OrderedTermBase() {
 		super();
 	}
-	public OrderedTermBase(String term, String label) {
-		super(term, label);
+	public OrderedTermBase(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	

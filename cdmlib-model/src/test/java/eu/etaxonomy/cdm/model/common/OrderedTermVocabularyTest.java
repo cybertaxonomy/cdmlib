@@ -45,9 +45,9 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		otb1 = new DerivedOrderedTermBase("otb1", "high");
-		otb2 = new DerivedOrderedTermBase("term", "middel");
-		otb3 = new DerivedOrderedTermBase("otb3", "low");
+		otb1 = new DerivedOrderedTermBase("otb1", "high", null);
+		otb2 = new DerivedOrderedTermBase("term", "middel", null);
+		otb3 = new DerivedOrderedTermBase("otb3", "low", null);
 		otbFree = new DerivedOrderedTermBase();
 		oVoc1 = new OrderedTermVocabulary<OrderedTermBase>();
 		oVoc1.addTerm(otb1);
@@ -63,8 +63,8 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		private DerivedOrderedTermBase(){
 			super();
 		}
-		private DerivedOrderedTermBase(String term, String label){
-			super(term, label);
+		private DerivedOrderedTermBase(String term, String label, String labelAbbrev){
+			super(term, label, labelAbbrev);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testOrderedTermVocabularyStringStringString() {
-		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>("term", "label", "termSourceUri");
+		oVoc2 = new OrderedTermVocabulary<OrderedTermBase>("term", "label", null, "termSourceUri");
 		assertEquals("label", oVoc2.getLabel());	
 	}
 

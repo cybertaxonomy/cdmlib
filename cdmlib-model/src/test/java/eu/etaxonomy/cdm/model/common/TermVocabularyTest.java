@@ -48,9 +48,9 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		dtb1 = new DerivedDefinedTermBase("otb1", "high");
-		dtb2 = new DerivedDefinedTermBase("term", "middel");
-		dtb3 = new DerivedDefinedTermBase("otb3", "low");
+		dtb1 = new DerivedDefinedTermBase("otb1", "high", null);
+		dtb2 = new DerivedDefinedTermBase("term", "middel", null);
+		dtb3 = new DerivedDefinedTermBase("otb3", "low", null);
 		dtbFree = new DerivedDefinedTermBase();
 		voc1 = new TermVocabulary<DefinedTermBase>();
 		voc1.addTerm(dtb1);
@@ -66,8 +66,8 @@ public class TermVocabularyTest extends EntityTestBase {
 		private DerivedDefinedTermBase(){
 			super();
 		}
-		private DerivedDefinedTermBase(String term, String label){
-			super(term, label);
+		private DerivedDefinedTermBase(String term, String label, String labelAbbrev){
+			super(term, label, labelAbbrev);
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", "termSourceUri");
+		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, "termSourceUri");
 		assertEquals("label", voc2.getLabel());	
 	}
 
@@ -160,7 +160,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", "uri");
+		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, "uri");
 		assertEquals("uri", voc2.getTermSourceUri());
 	}
 

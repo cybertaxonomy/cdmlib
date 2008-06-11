@@ -43,12 +43,12 @@ public class Feature extends DefinedTermBase {
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
 
-	public static Feature NewInstance(String term, String label){
-		return new Feature(term, label);
+	public static Feature NewInstance(String term, String label, String labelAbbrev){
+		return new Feature(term, label, labelAbbrev);
 	}
 	
-	protected Feature(String term, String label) {
-		super(term, label);
+	protected Feature(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	public boolean isSupportsQuantitativeData() {

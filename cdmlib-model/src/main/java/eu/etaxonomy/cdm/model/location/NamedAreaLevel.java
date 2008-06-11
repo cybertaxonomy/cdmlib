@@ -36,8 +36,8 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	 * Factory method
 	 * @return
 	 */
-	public static NamedAreaLevel NewInstance(String term, String label){
-		return new NamedAreaLevel(term, label);
+	public static NamedAreaLevel NewInstance(String term, String label, String labelAbbrev){
+		return new NamedAreaLevel(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -47,8 +47,8 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		super();
 	}
 
-	protected NamedAreaLevel(String term, String label) {
-		super(term, label);
+	protected NamedAreaLevel(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	

@@ -55,12 +55,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	
 	public NomenclaturalStatusType() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public NomenclaturalStatusType(String term, String label) {
-		super(term, label);
-		// TODO Auto-generated constructor stub
+	public NomenclaturalStatusType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	public static final NomenclaturalStatusType getByUuid(UUID uuid){

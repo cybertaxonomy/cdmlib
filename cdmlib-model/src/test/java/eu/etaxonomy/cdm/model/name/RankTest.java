@@ -93,7 +93,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testRankStringString() {
-		Rank rank = new Rank("term", "label");
+		Rank rank = new Rank("term", "label", null);
 		assertEquals("label", rank.getLabel());
 	}
 

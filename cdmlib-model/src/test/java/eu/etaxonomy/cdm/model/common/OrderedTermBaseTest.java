@@ -40,7 +40,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	@Before
 	public void setUp() throws Exception {
 		otb1 = new DerivedOrderedTermBase();
-		otb2 = new DerivedOrderedTermBase("term", "label");
+		otb2 = new DerivedOrderedTermBase("term", "label", null);
 		otb3 = new DerivedOrderedTermBase();
 		otb4 = new DerivedOrderedTermBase();
 		
@@ -58,8 +58,8 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		private DerivedOrderedTermBase(){
 			super();
 		}
-		private DerivedOrderedTermBase(String term, String label){
-			super(term, label);
+		private DerivedOrderedTermBase(String term, String label, String labelAbbrev){
+			super(term, label, labelAbbrev);
 		}
 		
 		

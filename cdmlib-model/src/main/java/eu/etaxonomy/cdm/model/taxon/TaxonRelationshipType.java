@@ -42,8 +42,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public TaxonRelationshipType() {
 		super();
 	}
-	public TaxonRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
-		super(term, label, symmetric, transitive);
+	public TaxonRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		super(term, label, labelAbbrev, symmetric, transitive);
 	}
 
 	public static final TaxonRelationshipType getByUuid(UUID uuid){

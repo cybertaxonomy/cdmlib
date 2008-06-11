@@ -71,8 +71,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public TermVocabulary() {
 		super();
 	}
-	public TermVocabulary(String term, String label, String termSourceUri) {
-		super(term, label);
+	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
+		super(term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
 	

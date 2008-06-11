@@ -41,9 +41,8 @@ public class MeasurementUnit extends DefinedTermBase {
 	}
 	
 
-	public MeasurementUnit(String term, String label) {
-		super(term, label);
-		// TODO Auto-generated constructor stub
+	public MeasurementUnit(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

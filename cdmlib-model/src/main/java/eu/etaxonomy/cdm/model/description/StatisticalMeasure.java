@@ -26,8 +26,8 @@ public class StatisticalMeasure extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static StatisticalMeasure NewInstance(String term, String label){
-		return new StatisticalMeasure(term, label);
+	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
+		return new StatisticalMeasure(term, label, labelAbbrev);
 	}
 	/**
 	 * Factory method
@@ -43,8 +43,8 @@ public class StatisticalMeasure extends DefinedTermBase {
 	public StatisticalMeasure() {
 		super();
 	}
-	public StatisticalMeasure(String term, String label) {
-		super(term, label);
+	public StatisticalMeasure(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 

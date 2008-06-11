@@ -34,8 +34,8 @@ public class Scope extends Modifier {
 	 * Factory method
 	 * @return
 	 */
-	public static Scope NewInstance(String term, String label){
-		return new Scope(term, label);
+	public static Scope NewInstance(String term, String label, String labelAbbrev){
+		return new Scope(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class Scope extends Modifier {
 		super();
 	}
 
-	protected Scope(String term, String label) {
-		super(term, label);
+	protected Scope(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 }

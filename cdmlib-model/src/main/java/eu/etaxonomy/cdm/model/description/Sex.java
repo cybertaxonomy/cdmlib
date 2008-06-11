@@ -38,8 +38,8 @@ public class Sex extends Scope {
 		super();
 	}
 
-	public Sex(String term, String label) {
-		super(term, label);
+	public Sex(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

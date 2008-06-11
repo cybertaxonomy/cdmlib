@@ -49,8 +49,8 @@ public class Continent extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static Continent NewInstance(String term, String label){
-		return new Continent(term, label);
+	public static Continent NewInstance(String term, String label, String labelAbbrev){
+		return new Continent(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -59,8 +59,8 @@ public class Continent extends DefinedTermBase {
 	public Continent() {
 		super();
 	}
-	public Continent(String term, String label) {
-		super(term, label);
+	public Continent(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	public static final Continent getByUuid(UUID uuid){

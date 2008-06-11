@@ -95,8 +95,8 @@ public class Rank extends OrderedTermBase<Rank> {
 			super();
 	}
 
-	public Rank(String term, String label) {
-		super(term, label);
+	public Rank(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 	public static final Rank getByUuid(UUID uuid){

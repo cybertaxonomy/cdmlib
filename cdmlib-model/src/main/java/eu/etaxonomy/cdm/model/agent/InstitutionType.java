@@ -48,8 +48,8 @@ public class InstitutionType extends DefinedTermBase {
 	 * @see           common.Representation
 	 * @see           common.TermBase#TermBase(String, String)
 	 */
-	public InstitutionType(String term, String label) {
-		super(term, label);
+	public InstitutionType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 		// TODO Auto-generated constructor stub
 	}
 

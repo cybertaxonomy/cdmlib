@@ -26,16 +26,16 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	}
 	
 
-	public static PresenceTerm NewInstance(String term, String label){
-		return new PresenceTerm(term, label);
+	public static PresenceTerm NewInstance(String term, String label, String labelAbbrev){
+		return new PresenceTerm(term, label, labelAbbrev);
 	}
 	
 	protected PresenceTerm() {
 		super();
 	}
 
-	protected PresenceTerm(String term, String label) {
-		super(term, label);
+	protected PresenceTerm(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

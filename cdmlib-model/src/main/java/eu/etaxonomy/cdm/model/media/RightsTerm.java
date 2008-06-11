@@ -29,15 +29,15 @@ public class RightsTerm extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static RightsTerm NewInstance(String text, String label){
-		return new RightsTerm(text, label);
+	public static RightsTerm NewInstance(String text, String label, String labelAbbrev){
+		return new RightsTerm(text, label, labelAbbrev);
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public RightsTerm(String term, String label) {
-		super(term, label);
+	public RightsTerm(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 

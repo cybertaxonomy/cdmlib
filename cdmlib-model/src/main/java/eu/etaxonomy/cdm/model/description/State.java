@@ -39,16 +39,16 @@ public class State extends OrderedTermBase<State> {
 	 * Factory method
 	 * @return
 	 */
-	public static State NewInstance(String term, String label){
-		return new State(term, label);
+	public static State NewInstance(String term, String label, String labelAbbrev){
+		return new State(term, label, labelAbbrev);
 	}
 	
 	public State() {
 		super();
 	}
 
-	public State(String term, String label) {
-		super(term, label);
+	public State(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 	
 

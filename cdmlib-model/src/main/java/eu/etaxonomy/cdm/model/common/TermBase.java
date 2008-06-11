@@ -19,12 +19,12 @@ public abstract class TermBase extends VersionableEntity {
 	private String uri;
 	private Set<Representation> representations = new HashSet<Representation>();
 	
-	public TermBase() {
+	public TermBase(){
 		super();
 	}
-	public TermBase(String term, String label) {
+	public TermBase(String term, String label, String labelAbbrev) {
 		super();
-		this.addRepresentation(new Representation(term, label, Language.DEFAULT()) );
+		this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
 	}
 
 	@OneToMany(fetch=FetchType.EAGER)

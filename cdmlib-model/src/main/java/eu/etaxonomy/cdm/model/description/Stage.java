@@ -34,8 +34,8 @@ public class Stage extends Scope {
 	 * Factory method
 	 * @return
 	 */
-	public static Stage NewInstance(String term, String label){
-		return new Stage(term, label);
+	public static Stage NewInstance(String term, String label, String labelAbbrev){
+		return new Stage(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -45,8 +45,8 @@ public class Stage extends Scope {
 		super();
 	}
 
-	public Stage(String term, String label) {
-		super(term, label);
+	public Stage(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

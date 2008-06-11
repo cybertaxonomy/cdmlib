@@ -29,8 +29,8 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 		super();
 	}
 
-	protected PresenceAbsenceTermBase(String term, String label) {
-		super(term, label);
+	protected PresenceAbsenceTermBase(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 }

@@ -28,8 +28,8 @@ public class DerivationEventType extends DefinedTermBase {
 	 * Factory method
 	 * @return
 	 */
-	public static DerivationEventType NewInstance(String term, String label){
-		return new DerivationEventType(term, label);
+	public static DerivationEventType NewInstance(String term, String label, String labelAbbrev){
+		return new DerivationEventType(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -42,8 +42,8 @@ public class DerivationEventType extends DefinedTermBase {
 	/**
 	 * Constructor
 	 */
-	protected DerivationEventType(String term, String label) {
-		super(term, label);
+	protected DerivationEventType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 	
 	public static final DerivationEventType DUPLICATE(){

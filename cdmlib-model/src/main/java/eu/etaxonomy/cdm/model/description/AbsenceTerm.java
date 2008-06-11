@@ -26,15 +26,15 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 		return new AbsenceTerm();
 	}
 	
-	public static AbsenceTerm NewInstance(String term, String label){
-		return new AbsenceTerm(term, label);
+	public static AbsenceTerm NewInstance(String term, String label, String labelAbbrev){
+		return new AbsenceTerm(term, label, labelAbbrev);
 	}
 	
 	public AbsenceTerm() {
 		super();
 	}
 
-	public AbsenceTerm(String term, String label) {
-		super(term, label);
+	public AbsenceTerm(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 }

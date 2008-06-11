@@ -50,8 +50,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * Factory method
 	 * @return
 	 */
-	public static NamedArea NewInstance(String term, String label){
-		return new NamedArea(term, label);
+	public static NamedArea NewInstance(String term, String label, String labelAbbrev){
+		return new NamedArea(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -60,8 +60,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	public NamedArea() {
 		super();
 	}
-	public NamedArea(String term, String label) {
-		super(term, label);
+	public NamedArea(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 	
 	

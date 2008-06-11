@@ -59,8 +59,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public DefinedTermBase() {
 		super();
 	}
-	public DefinedTermBase(String term, String label) {
-		super(term, label);
+	public DefinedTermBase(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 
@@ -73,7 +73,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
-		this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
+		String text = csvLine.get(3);
+		String label = csvLine.get(2).trim();
+		String abbreviatedLabel = null;
+		this.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
 		return this;
 	}
 

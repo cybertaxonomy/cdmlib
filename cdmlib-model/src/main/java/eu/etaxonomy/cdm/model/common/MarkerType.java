@@ -34,8 +34,8 @@ public class MarkerType extends DefinedTermBase {
 	private static final UUID uuidIsDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
 	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
 
-	public static MarkerType NewInstance(String term, String label){
-		return new MarkerType(term, label);
+	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
+		return new MarkerType(term, label, labelAbbrev);
 	}
 	
 	/**
@@ -52,8 +52,8 @@ public class MarkerType extends DefinedTermBase {
 	 * @param term
 	 * @param label
 	 */
-	protected MarkerType(String term, String label) {
-		super(term, label);
+	protected MarkerType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 	
 

@@ -37,8 +37,8 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 		super();
 	}
 
-	public SynonymRelationshipType(String term, String label, boolean symmetric, boolean transitive) {
-		super(term, label, symmetric, transitive);
+	public SynonymRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		super(term, label, labelAbbrev, symmetric, transitive);
 	}
 
 

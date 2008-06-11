@@ -82,7 +82,7 @@ public class MarkerTypeTest {
 	public void testNewInstanceStringString() {
 		String term = "term";
 		String label = "label";
-		MarkerType markerType = MarkerType.NewInstance(term, label);
+		MarkerType markerType = MarkerType.NewInstance(term, label, null);
 		assertNotNull(markerType);
 		assertEquals(label, markerType.getLabel());
 		assertEquals(term, markerType.getRepresentation(Language.DEFAULT()).getText());

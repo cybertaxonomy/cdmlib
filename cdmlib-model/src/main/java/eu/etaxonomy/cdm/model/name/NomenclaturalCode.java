@@ -44,8 +44,8 @@ public class NomenclaturalCode extends DefinedTermBase {
 	 * @param term
 	 * @param label
 	 */
-	public NomenclaturalCode(String term, String label) {
-		super(term, label);
+	public NomenclaturalCode(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
 	}
 
 

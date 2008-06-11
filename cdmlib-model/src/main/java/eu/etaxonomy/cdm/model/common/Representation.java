@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -35,14 +33,14 @@ public class Representation extends LanguageStringBase {
 	 * @param lang
 	 * @return
 	 */
-	public static Representation NewInstance(String text, String label, Language lang){
-		return new Representation(text, label, lang);
+	public static Representation NewInstance(String text, String label, String abbreviatedLabel, Language lang){
+		return new Representation(text, label, abbreviatedLabel, lang);
 	}
 	
 	public Representation() {
 		super();
 	}	
-	public Representation(String text, String label, Language language) {
+	public Representation(String text, String label, String abbreviatedLabel, Language language) {
 		super(text, language);
 		this.label = label;
 	}
