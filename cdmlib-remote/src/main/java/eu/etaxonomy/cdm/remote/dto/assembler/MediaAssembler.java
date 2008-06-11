@@ -10,17 +10,21 @@ package eu.etaxonomy.cdm.remote.dto.assembler;
 
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.MediaRepresentationSTO;
 import eu.etaxonomy.cdm.remote.dto.MediaTO;
 import eu.etaxonomy.cdm.remote.dto.MediaSTO;
@@ -28,14 +32,17 @@ import eu.etaxonomy.cdm.remote.dto.MediaSTO;
 @Component
 public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 
+	@Autowired
+	private IDefinedTermDao languageDao;
+	
 	@Override
 	MediaSTO getSTO(Media media, Enumeration<Locale> locales) {
+		List<Language> languages = languageDao.getLangaugesByLocale(locales);
 		MediaSTO mediaSTO = null;
 		if (media !=null){
 			mediaSTO = new MediaSTO();
 			setVersionableEntity(media, mediaSTO);
-			//TODO: pick right language!
-			mediaSTO.setTitle(media.getTitle().toString());
+			mediaSTO.setTitle(media.getTitle().getPreferredLanguageString(languages));
 			mediaSTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		return mediaSTO;
@@ -43,14 +50,13 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 
 	@Override
 	MediaTO getTO(Media media, Enumeration<Locale> locales) {
+		List<Language> languages = languageDao.getLangaugesByLocale(locales);
 		MediaTO mediaTO = null;
 		if (media !=null){
 			mediaTO = new MediaTO();
 			setVersionableEntity(media, mediaTO);
-			//TODO: pick right language!
-			mediaTO.setTitle(media.getTitle().toString());
-			//TODO: pick right language!
-			mediaTO.setDescription(media.getDescription().toString());
+			mediaTO.setTitle(media.getTitle().getPreferredLanguageString(languages));
+			mediaTO.setDescription(media.getDescription().getPreferredLanguageString(languages));
 			mediaTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		
@@ -79,12 +85,13 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 					height = movie.getHeight();
 					width = movie.getWidth();
 				} else if(part instanceof ImageFile){
-					ImageFile image = (MovieFile)part;
+					ImageFile image = (ImageFile)part;
 					height = image.getHeight();
 					width = image.getWidth();
 				}
 				reprSTO.addRepresenationPart(part.getUuid().toString(), part.getUri().toString(), height, width, duration);
 			}
+			representationSTOs.add(reprSTO);
 		}
 		return representationSTOs;
 	}

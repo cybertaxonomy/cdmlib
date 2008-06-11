@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
 
@@ -28,8 +30,9 @@ import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
 public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, SpecimenTypeDesignation> {
 	private static Logger logger = Logger.getLogger(SpecimenTypeDesignationAssembler.class);
 	
-//	@Autowired
-//	private MediaAssembler mediaAssembler;
+	@Autowired
+	private MediaAssembler mediaAssembler;
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
@@ -38,14 +41,9 @@ public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, Specim
 	public SpecimenSTO getSTO(SpecimenTypeDesignation specimenTypeDesignation, Enumeration<Locale> locales) {
 		SpecimenSTO specimenSTO = new SpecimenSTO();
 		specimenSTO.setUuid(specimenTypeDesignation.getUuid().toString());
-		
-		//FIXME: 
-//		for(Media media : specimenTypeDesignation.getTypeSpecimen().getMedia()){
-//			String uuid = media.getUuid().toString();
-//			for(MediaInstance instance : media.getRepresentations()){
-//				specimenSTO.getMediaUri().add(new IdentifiedString(uuid, instance.getUri().toString()));				
-//			}
-//		}
+		for(Media media : specimenTypeDesignation.getTypeSpecimen().getMedia()){
+			specimenSTO.addMedia(mediaAssembler.getSTO(media, locales));			
+		}
 		return specimenSTO;
 	}
 

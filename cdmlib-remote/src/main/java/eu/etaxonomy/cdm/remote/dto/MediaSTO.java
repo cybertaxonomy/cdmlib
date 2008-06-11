@@ -17,7 +17,10 @@ package eu.etaxonomy.cdm.remote.dto;
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
+import java.util.HashSet;
 import java.util.Set;
+
+import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.kohlbecker
@@ -37,14 +40,18 @@ public class MediaSTO extends BaseSTO implements IBaseSTO{
 	 * Common are multiple resolutions or file
 	 * formats for images for example
 	 */
-	
-	private Set<MediaRepresentationSTO> representations;
+	private Set<MediaRepresentationSTO> representations = new HashSet<MediaRepresentationSTO>();
 	
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public void setTitle(LanguageString title) {
+		if(title != null){
+			this.title = title.getText();
+		}
 	}
 	public Set<MediaRepresentationSTO> getRepresentations() {
 		return representations;

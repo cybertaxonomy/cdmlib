@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.LanguageString;
+
 /**
  * @author a.kohlbecker
  * @version 1.0
@@ -36,7 +38,7 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	 * formats for images for example
 	 */
 	
-	private Set<MediaRepresentationSTO> representations;
+	private Set<MediaRepresentationSTO> representations = new HashSet<MediaRepresentationSTO>();
 	/**
 	 * several rightTOs in the SAME language, not different languages for the SAME rights UUID
 	 */
@@ -50,12 +52,26 @@ public class MediaTO extends BaseTO implements IBaseSTO{
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	public void setTitle(LanguageString title) {
+		if(title != null){
+			this.title = title.getText();
+		}
+	}
+	
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public void setDescription(LanguageString description) {
+		if(description != null){
+			this.description = description.getText();
+		}
+	}
+	
 	public Set<MediaRepresentationSTO> getRepresentations() {
 		return representations;
 	}

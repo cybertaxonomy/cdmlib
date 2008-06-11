@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public class SpecimenSTO extends BaseSTO {
 	private String specimenLabel;
-	private Set<IdentifiedString> mediaUri;
+	private Set<MediaSTO> media;
 	public String getSpecimenLabel() {
 		return specimenLabel;
 	}
@@ -27,18 +27,17 @@ public class SpecimenSTO extends BaseSTO {
 	public void setSpecimenLabel(String specimenLabel) {
 		this.specimenLabel = specimenLabel;
 	}
-	/**
-	 * @return
-	 */
-	public Set<IdentifiedString> getMediaUri() {
-		return mediaUri;
+	public Set<MediaSTO> getMedia() {
+		return media;
 	}
-	/**
-	 * @param mediaUri
-	 */
-	public void setMediaUri(Set<IdentifiedString> mediaUri) {
-		this.mediaUri = mediaUri;
+	public void setMediaRepresentations(
+			Set<MediaSTO> media) {
+		this.media = media;
 	}
+	public void addMedia(MediaSTO mediaSTO){
+		this.media.add(mediaSTO);
+	}
+	
 	
 	
 }

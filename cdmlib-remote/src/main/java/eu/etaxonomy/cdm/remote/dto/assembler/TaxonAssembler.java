@@ -56,7 +56,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		if (tb!=null){
 			t = new TaxonSTO();
 			setVersionableEntity(tb, t);
-			t.setName(nameAssembler.getSTO(tb.getName(), null));
+			t.setName(nameAssembler.getSTO(tb.getName(), locales));
 			t.setSecUuid(tb.getSec().getUuid().toString());
 			if (Taxon.class.isInstance(tb)){
 				t.setAccepted(true);
@@ -76,8 +76,8 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		if(taxonBase!=null){
 			taxonTO = new TaxonTO();
 			setVersionableEntity(taxonBase, taxonTO);
-			taxonTO.setName(nameAssembler.getSTO(taxonBase.getName(), null));
-			taxonTO.setSec(refAssembler.getTO(taxonBase.getSec(), null));
+			taxonTO.setName(nameAssembler.getSTO(taxonBase.getName(), locales));
+			taxonTO.setSec(refAssembler.getTO(taxonBase.getSec(), locales));
 		    if(taxonBase instanceof Taxon){
 		    	Taxon taxon = (Taxon) taxonBase;
 		    	List<Synonym> syns = taxon.getHomotypicSynonymsByHomotypicGroup();

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 	 */
 	private String fullCitation;
 
-	private Set<MediaSTO> media;
+	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.dto.IReferenceSTO#getAuthorship()
