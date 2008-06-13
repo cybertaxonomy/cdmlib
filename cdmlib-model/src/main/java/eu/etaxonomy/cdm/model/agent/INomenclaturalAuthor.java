@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 /** 
-* Interface for nomenclatural authorship 
+* Interface providing methods for nomenclatural authorship. 
 * 
 * 
 * @author a.mueller

@@ -48,13 +48,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	private String specificEpithet;
 	//Species subdivision epithet
 	private String infraSpecificEpithet;
-	//Author team that published the present combination
 	private INomenclaturalAuthor combinationAuthorTeam;
-	//Author team that contributed to the publication of the present combination
 	private INomenclaturalAuthor exCombinationAuthorTeam;
-	//Author team that published the original combination
 	private INomenclaturalAuthor basionymAuthorTeam;
-	//Author team that contributed to the original publication of the name
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	//concatenated und formated author teams including basionym and combination authors
 	private String authorshipCache;
@@ -190,9 +186,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	//TODO for PROTOTYPE
 	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy cache strategy} used to generate different strings
-	 * corresponding to this taxon name (in particular taxon name caches and
-	 * author strings).
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy cache strategy} used to generate
+	 * several strings corresponding to this non viral taxon name
+	 * (in particular taxon name caches and author strings).
 	 * 
 	 * @return  the cache strategy used for this non viral taxon name
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
@@ -214,36 +210,91 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	
 
+	/**
+	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that published this non viral
+	 * taxon name.
+	 * 
+	 * @return  the nomenclatural author (team) of this non viral taxon name
+	 * @see 	agent.INomenclaturalAuthor
+	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
+	/**
+	 * @see  #getCombinationAuthorTeam()
+	 */
 	public void setCombinationAuthorTeam(INomenclaturalAuthor combinationAuthorTeam){
 		this.combinationAuthorTeam = combinationAuthorTeam;
 	}
 
+	/**
+	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that contributed to
+	 * the publication of this non viral taxon name as generally stated by
+	 * the {@link #getCombinationAuthorTeam() combination author (team)} itself.
+	 * The presence of an author (team) of this non viral taxon name is a
+	 * condition for the existence of an ex author (team) for this same name. 
+	 * 
+	 * @return  the nomenclatural ex author (team) of this non viral taxon name
+	 * @see 	#getCombinationAuthorTeam()
+	 * @see 	agent.INomenclaturalAuthor
+	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
+	/**
+	 * @see  #getExCombinationAuthorTeam()
+	 */
 	public void setExCombinationAuthorTeam(INomenclaturalAuthor exCombinationAuthorTeam){
 		this.exCombinationAuthorTeam = exCombinationAuthorTeam;
 	}
 
+	/**
+	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that published the original combination
+	 * on which this non viral taxon name is nomenclaturally based. Such an
+	 * author (team) can only exist if this non viral taxon name is a new
+	 * combination due to a taxonomical revision.
+	 * 
+	 * @return  the nomenclatural basionym author (team) of this non viral taxon name
+	 * @see 	#getCombinationAuthorTeam()
+	 * @see 	agent.INomenclaturalAuthor
+	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getBasionymAuthorTeam(){
 		return basionymAuthorTeam;
 	}
+	/**
+	 * @see  #getBasionymAuthorTeam()
+	 */
 	public void setBasionymAuthorTeam(INomenclaturalAuthor basionymAuthorTeam) {
 		this.basionymAuthorTeam = basionymAuthorTeam;
 	}
 
+	/**
+	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that contributed to
+	 * the publication of the original combination this non viral taxon name is
+	 * based on. This should have been generally stated by
+	 * the {@link #getCombinationAuthorTeam() basionym author (team)} itself.
+	 * The presence of a basionym author (team) of this non viral taxon name is a
+	 * condition for the existence of an ex basionym author (team)
+	 * for this same name. 
+	 * 
+	 * @return  the nomenclatural ex basionym author (team) of this non viral taxon name
+	 * @see 	#getBasionymAuthorTeam()
+	 * @see 	#getCombinationAuthorTeam()
+	 * @see 	agent.INomenclaturalAuthor
+	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@Target(TeamOrPersonBase.class)
