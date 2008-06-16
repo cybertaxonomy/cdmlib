@@ -13,8 +13,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
@@ -31,10 +33,23 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
 	 */
 	public List<T> findByTitle(String queryString) {
-		Criteria crit = getSession().createCriteria(type);
+		return findByTitle(queryString, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
+	 */
+	public List<T> findByTitle(String queryString, CdmBase sessionObject) {
+		Session session = getSession();
+		if ( sessionObject != null ) {
+			session.update(sessionObject);
+		}
+		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", queryString));
 		List<T> results = crit.list();
 		return results;
 	}
+	
+	
 
 }

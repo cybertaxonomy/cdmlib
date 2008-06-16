@@ -16,4 +16,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public interface ITitledDao<T extends CdmBase> {
 
 	public List<T> findByTitle(String queryString);
+	
+	public List<T> findByTitle(String queryString, CdmBase sessionObject);
 }

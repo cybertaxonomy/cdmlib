@@ -20,7 +20,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -40,9 +42,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	}
 
 	public List<DefinedTermBase> findByTitle(String queryString) {
-		Query query = getSession().createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
-		query.setParameter("label", queryString);
-		return (List<DefinedTermBase>) query.list();
+		return findByTitle(queryString, null);
 	}
 	
 	
@@ -73,6 +73,21 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return languages;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
+	public List<DefinedTermBase> findByTitle(String queryString,
+			CdmBase sessionObject) {
+		Session session = getSession();
+		if ( sessionObject != null ) {
+			session.update(sessionObject);
+		}
+		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
+		query.setParameter("label", queryString);
+		return (List<DefinedTermBase>) query.list();
+
+	}
+
 //	@Override
 //	public List<DefinedTermBase> list(int limit, int start) {
 //		Query query = getSession().createQuery("select term from DefinedTermBase term join fetch term.representations representation ");
@@ -81,4 +96,6 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 //		return (List<DefinedTermBase>) query.list();
 //	}
 
+	
+	
 }
