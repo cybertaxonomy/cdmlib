@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
@@ -51,6 +52,14 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public abstract List<TaxonNameBase> getNamesByName(String name);
 
+	/**
+	 * @param name
+	 * @param sessionObject An object that is attached to the session before executing the query
+	 * @return
+	 */
+	public abstract List getNamesByName(String name, CdmBase sessionObject);
+		
+	
 	/**
 	 * Returns all Ranks.
 	 * @return

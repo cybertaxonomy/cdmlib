@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -28,5 +29,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity> exte
 
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
+	}
+	
+	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
+		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
 	}
 }

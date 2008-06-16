@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -55,6 +56,13 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
 	}
+
+	//@Transactional(readOnly = false)
+	public UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus) {
+		
+		return super.saveCdmObject(taxon);
+	}
+	
 	
 	@Transactional(readOnly = false)
 	public Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection){

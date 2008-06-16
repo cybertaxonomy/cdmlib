@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
@@ -49,6 +50,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);
+	}
+	
+	public List getNamesByName(String name, CdmBase sessionObject){
+		return super.findCdmObjectsByTitle(name, sessionObject);
 	}
 
 	public TaxonNameBase getTaxonNameByUuid(UUID uuid) {
