@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -16,7 +17,6 @@ import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -56,8 +56,10 @@ public class TestService {
 		Taxon childTaxon = Taxon.NewInstance(nvn, sec);
 		Synonym syn = Synonym.NewInstance(bn, sec);
 		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
- 		appCtr.getTaxonService().saveTaxon(childTaxon);
-
+ 		TransactionStatus txStatus = appCtr.startTransaction();
+		appCtr.getTaxonService().saveTaxon(childTaxon);
+		appCtr.commitTransaction(txStatus);
+ 		
  		
  		Taxon parentTaxon = Taxon.NewInstance(zn, sec);
 		parentTaxon.setUuid(TEST_TAXON_UUID);
@@ -190,7 +192,7 @@ public class TestService {
 	
 	private void test(){
 		System.out.println("Start ...");
-    	//testAppController();
+    	testAppController();
 		//testRootTaxa();
 		//testTermApi();
 		//testDeleteTaxa();
@@ -202,8 +204,9 @@ public class TestService {
 	
 	private void init(){
 		try {
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-			appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("defaultMySql") , dbSchemaValidation);
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+			//appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("defaultMySql") , dbSchemaValidation);
+			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
 			
 			TaxonNameBase name = NonViralName.NewInstance(null);
 			name.setTitleCache("Abies alba");
@@ -211,8 +214,8 @@ public class TestService {
 			TaxonNameBase name2 = NonViralName.NewInstance(null);
 			name2.setTitleCache("Abies beta");
 			
-			appCtr.getNameService().saveTaxonName(name);
-			appCtr.getNameService().saveTaxonName(name2);
+			//appCtr.getNameService().saveTaxonName(name);
+			//appCtr.getNameService().saveTaxonName(name2);
 			
 			//appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("rel1_1"));
 			//appCtr = new CdmApplicationController(HBM2DDL.CREATE);

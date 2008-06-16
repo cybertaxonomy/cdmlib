@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.api.application;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -41,6 +43,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IDatabaseService databaseService;
 	@Autowired
 	private ITermService termService;
+	@Autowired
+	private HibernateTransactionManager transactionManager;
 
 	
 	/**
@@ -91,4 +95,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.termService;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTransactionManager()
+	 */
+	public PlatformTransactionManager getTransactionManager() {
+		return this.transactionManager;
+	}
+
+	
 }

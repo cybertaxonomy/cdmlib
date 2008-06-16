@@ -20,6 +20,10 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -266,6 +270,20 @@ public class CdmApplicationController {
 	public void flush() {
 		SessionFactory sf = (SessionFactory)applicationContext.getBean("sessionFactory");
 		sf.getCurrentSession().flush();
+	}
+	
+	public TransactionStatus startTransaction(){
+		PlatformTransactionManager txManager = configuration.getTransactionManager();
+		TransactionDefinition txDef = new DefaultTransactionDefinition();
+		
+		TransactionStatus txStatus = txManager.getTransaction(txDef);
+		return txStatus;
+	}
+	
+	public void commitTransaction(TransactionStatus txStatus){
+		PlatformTransactionManager txManager = configuration.getTransactionManager();
+		txManager.commit(txStatus);
+		return;
 	}
 
 }
