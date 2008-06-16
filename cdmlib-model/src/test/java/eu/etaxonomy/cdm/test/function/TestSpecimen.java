@@ -66,8 +66,6 @@ public class TestSpecimen {
 		collection.setInstitute(institution);
 		
 		
-		
-		
 		logger.info("Create determination event");
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
 		determinationEvent.setTaxon(taxon);

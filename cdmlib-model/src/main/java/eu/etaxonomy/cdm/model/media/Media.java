@@ -33,6 +33,16 @@ import javax.persistence.*;
 public class Media extends AnnotatableEntity {
 	private static final Logger logger = Logger.getLogger(Media.class);
 
+	private MultilanguageSet title = new MultilanguageSet();
+	//creation date of the media (not of the record)
+	private Calendar mediaCreated;
+	private MultilanguageSet description = new MultilanguageSet();
+	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
+	//formats for images for example
+	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
+	private Set<Rights> rights = new HashSet<Rights>();
+	private Agent artist;
+
 	/**
 	 * Factory method
 	 * @return
@@ -48,16 +58,6 @@ public class Media extends AnnotatableEntity {
 	protected Media() {
 		super();
 	}
-
-	private MultilanguageSet title = new MultilanguageSet();
-	//creation date of the media (not of the record)
-	private Calendar mediaCreated;
-	private MultilanguageSet description = new MultilanguageSet();
-	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
-	//formats for images for example
-	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
-	private Set<Rights> rights = new HashSet<Rights>();
-	private Agent artist;
 
 	@OneToMany(mappedBy="media")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})

@@ -36,6 +36,12 @@ public class OriginalSource extends ReferencedEntityBase {
 		return new OriginalSource();
 	}
 	
+	public static OriginalSource NewInstance(String id){
+		OriginalSource result = new OriginalSource();
+		result.setIdInSource(id);
+		return result;
+	}
+	
 	
 	/**
 	 * Constructor
@@ -44,6 +50,8 @@ public class OriginalSource extends ReferencedEntityBase {
 		super();
 	}
 
+/*************** GETTER /SETTER ************************************/
+	
 	public String getIdInSource(){
 		return this.idInSource;
 	}
