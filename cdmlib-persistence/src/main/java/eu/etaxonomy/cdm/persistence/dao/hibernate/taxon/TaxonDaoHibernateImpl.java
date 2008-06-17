@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
@@ -117,31 +118,50 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
-		
-		Set<Annotation> annotations = taxonBase.getAnnotations();
-		for (Annotation annotation: annotations){
-			taxonBase.removeAnnotation(annotation);
+		//getSession().update(taxonBase); doesn't work with lazy collections
+		//annotations
+		try {
+			Set<Annotation> annotations = taxonBase.getAnnotations();
+			for (Annotation annotation: annotations){
+				taxonBase.removeAnnotation(annotation);
+			}
+		} catch (LazyInitializationException e) {
+			logger.warn("LazyInitializationException: " + e);
 		}
-		Set<Marker> markers = taxonBase.getMarkers();
-		for (Marker marker: markers){
-			taxonBase.removeMarker(marker);
+		//markers
+		try {
+			Set<Marker> markers = taxonBase.getMarkers();
+			for (Marker marker: markers){
+				taxonBase.removeMarker(marker);
+			}
+		} catch (LazyInitializationException e) {
+			logger.warn("LazyInitializationException: " + e);
 		}
-		Set<OriginalSource> origSources = taxonBase.getSources();
-		for (OriginalSource source: origSources){
-			taxonBase.removeSource(source);
+		//originalSource
+		try {
+			Set<OriginalSource> origSources = taxonBase.getSources();
+			for (OriginalSource source: origSources){
+				taxonBase.removeSource(source);
+			}
+		} catch (LazyInitializationException e) {
+			logger.warn("LazyInitializationException: " + e);
 		}
+		//is Taxon
 		taxonBase.getName().removeTaxonBase(taxonBase);
 		if (taxonBase instanceof Taxon){
+			//taxonRelationships
 			Taxon taxon = (Taxon)taxonBase;
 			Set<TaxonRelationship> taxRels = taxon.getTaxonRelations();
 			for (TaxonRelationship taxRel: taxRels){
 				taxon.removeTaxonRelation(taxRel);
 			} ;
+			//SynonymRelationships
 			Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
 			for (SynonymRelationship synRel: synRels){
 				taxon.removeSynonymRelation(synRel);
 			} ;
-		}else if (taxonBase instanceof Synonym){
+		}//is Synonym
+		else if (taxonBase instanceof Synonym){
 			Synonym synonym = (Synonym)taxonBase;
 			Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
 			for (SynonymRelationship synRel: synRels){
