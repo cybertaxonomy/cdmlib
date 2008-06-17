@@ -131,7 +131,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 
 	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;
 	}
@@ -143,7 +143,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
 	@OneToMany(mappedBy="relatedTo", fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
 		return relationsToThisTaxon;
 	}
@@ -168,10 +168,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return rels;
 	}
 	public void removeTaxonRelation(TaxonRelationship rel) {
+		logger.warn("remove TaxonRelation");  //for testing only 
 		this.relationsToThisTaxon.remove(rel);
 		this.relationsFromThisTaxon.remove(rel);
 		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
-		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
+		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon() != null && rel.getFromTaxon().equals(this)){
 			this.setTaxonomicParentCache(null);
 		}
 		//delete Relationship from other realted Taxon
