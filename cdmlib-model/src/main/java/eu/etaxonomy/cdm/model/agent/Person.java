@@ -313,8 +313,12 @@ public class Person extends TeamOrPersonBase {
 	 * @return  the string with the full name of this person
 	 */
 	@Override
-	public String generateTitle(){
-		return cacheStrategy.getTitleCache(this);
+	public String generateTitle() {
+		String title = null;
+		if (cacheStrategy != null) {
+		title = cacheStrategy.getTitleCache(this);
+		} 
+        return title;
 	}
 
 }
