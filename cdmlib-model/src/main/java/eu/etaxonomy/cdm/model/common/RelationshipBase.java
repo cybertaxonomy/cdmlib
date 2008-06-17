@@ -75,6 +75,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	protected void setRelatedTo(TO relatedTo) {
 		this.relatedTo = relatedTo;
 	}
+
 	
 // TODO
 //	UUID toUuid; 

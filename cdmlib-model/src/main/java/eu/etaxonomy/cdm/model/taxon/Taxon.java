@@ -174,8 +174,19 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon().equals(this)){
 			this.setTaxonomicParentCache(null);
 		}
-		// TODO: remove in related taxon too?
+		//delete Relationship from other realted Taxon
+		Taxon fromTaxon = rel.getFromTaxon();
+		if (fromTaxon != null && fromTaxon != this){
+			rel.setToTaxon(null);  //remove this Taxon from relationship
+			fromTaxon.removeTaxonRelation(rel);
+		}
+		Taxon toTaxon = rel.getToTaxon();
+		if (toTaxon != null && toTaxon != this){
+			rel.setFromTaxon(null); //remove this Taxon from relationship
+			toTaxon.removeTaxonRelation(rel);
+		}
 	}
+
 	public void addTaxonRelation(TaxonRelationship rel) {
 		if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel)){
 			if (rel.getFromTaxon().equals(this)){
@@ -198,6 +209,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
 	 */
+	@Deprecated //for inner use by RelationshipBase only
 	public void addRelationship(RelationshipBase rel){
 		if (rel instanceof TaxonRelationship){
 			addTaxonRelation((TaxonRelationship)rel);
@@ -207,7 +219,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			throw new ClassCastException("Wrong Relationsship type for Taxon.addRelationship");
 		}
 	}
-	
 	
 	public void addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, ReferenceBase citation, String microcitation) {
 		TaxonRelationship rel = new TaxonRelationship(this, toTaxon, type, citation, microcitation);
@@ -238,12 +249,23 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param citation
 	 * @param microcitation 
 	 */
-	public void setTaxonomicParent(Taxon parent, ReferenceBase citation, String microcitation){
-		// TODO: remove previously existing parent relationship!!!
-		if (parent != null){
-			addTaxonRelation(parent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
+	public void setTaxonomicParent(Taxon newParent, ReferenceBase citation, String microcitation){
+		//remove previously existing parent relationship!!!
+		Taxon oldParent = this.getTaxonomicParent();
+		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
+		for (TaxonRelationship taxRel : taxRels ){
+			if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxRel.getToTaxon().equals(oldParent)){
+				this.removeTaxonRelation(taxRel);
+			}
+		}
+		//add new parent
+		if (newParent != null){
+			addTaxonRelation(newParent, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),citation,microcitation);
 		}
 	}
+	
+	
+	
 
 	/**
 	 * @return
