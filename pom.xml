@@ -134,6 +134,23 @@
 			</roles>
 			<url></url>
 		</developer>
+		<developer>
+			<!-- your SVN account id please! -->
+			<id>a.babadshanjan</id>
+			<name>
+				Anahit Babadshanjan
+			</name>
+			<email>A.Babadshanjan [at] bgbm.org</email>
+			<organization>
+				Botanic Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<url></url>
+		</developer>
 	</developers>
 	<contributors>
 		<contributor>
@@ -200,11 +217,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<!-- 
+				Falling back to maven-site-plugin 2.0-beta-5 since
+                maven-site-plugin 2.0-beta-6 has this problem:
+				Embedded error: Unrecognised tag: 'site' (position: START_TAG seen <?xml
+                version="1.0" encoding="ISO-8859-1"?>\r\n<site>... @2:7) -->
+				<version>2.0-beta-5</version>
 				<configuration>
 					<locales>en</locales>
 				</configuration>
 			</plugin>
-			<plugin>
+		    <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
@@ -355,7 +378,7 @@
 				scp://wp5.e-taxonomy.eu/var/www/wp5.e-taxonomy.eu/cdmlib/site
 			</url>
        	</site>
-		<repository>
+        <repository>
 			<id>edit-wp5</id>
 			<name>Edit Maven Repository</name>
 			<url>
@@ -485,6 +508,29 @@
 		      <artifactId>json-lib</artifactId>
 		      <version>2.2.1</version>
 		    </dependency>
+		    <!-- joda-time perhaps needed in future for JAXB binding -->
+		    <!--
+            <dependency>
+              <groupId>joda-time</groupId>
+              <artifactId>joda-time</artifactId>
+              <version>1.5</version>      
+            </dependency>
+            <dependency>
+              <groupId>joda-time</groupId>
+              <artifactId>joda-time-hibernate</artifactId>
+              <version>1.0</version>
+              <exclusions>
+                <exclusion>
+                  <artifactId>ehcache</artifactId>
+                  <groupId>ehcache</groupId>
+                </exclusion>
+                <exclusion>
+                  <groupId>cglib</groupId>
+                  <artifactId>cglib-full</artifactId>
+                </exclusion>
+             </exclusions>
+           </dependency>
+         -->
 						
 		  	<!-- ******* XML ******* -->
 			<dependency>
@@ -517,6 +563,41 @@
 				<artifactId>xpp3</artifactId>
 				<version>1.1.3.3</version>
 			</dependency>
+            <dependency>
+              <groupId>xml-resolver</groupId>
+              <artifactId>xml-resolver</artifactId>
+              <version>1.2</version>
+            </dependency>
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>2.1</version>
+            </dependency>
+            <dependency>
+              <groupId>javax.activation</groupId>
+              <artifactId>activation</artifactId>
+              <version>1.1</version>
+            </dependency>
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jsr173_api</artifactId>
+              <version>1.0</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>2.1</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb1-impl</artifactId>
+              <version>2.1</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>2.1</version>
+            </dependency>
 
 		  	<!-- ******* HIBERNATE / EJB3 ******* -->
 		  	<dependency>
