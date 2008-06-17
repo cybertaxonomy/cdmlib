@@ -90,9 +90,9 @@ public class BerlinModelFactsIO {
 					
 					taxon.addDescription(taxonDescription);
 					//textData
-//					TextData textData = TextData.NewInstance();
-//					textData.addText("XXX", bmiConfig.getFactLanguage());
-//					taxonDescription.addFeature(textData);
+					TextData textData = TextData.NewInstance();
+					textData.addText("XXX", bmiConfig.getFactLanguage());
+					taxonDescription.addFeature(textData);
 					
 					//commonNames
 					String commonNameString;
