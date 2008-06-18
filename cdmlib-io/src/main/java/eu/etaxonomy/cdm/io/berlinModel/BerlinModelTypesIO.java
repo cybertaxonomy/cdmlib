@@ -145,12 +145,12 @@ public class BerlinModelTypesIO {
 				
 				Integer typeFigureId = rs.getInt("typeFigureId");
 				Integer typeDesignationFk = rs.getInt("typeDesignationFk");
-				int collectionFk = rs.getInt("collectionFk");
+				Integer collectionFk = rs.getInt("collectionFk");
 				String filename = rs.getString("filename");
 				String figurePhrase = rs.getString("figurePhrase");
 				
-				String mimeType = "image/jpg";
-				String suffix = "jpg";
+				String mimeType = null; //"image/jpg";
+				String suffix = null; //"jpg";
 				Media media = ImageFile.NewMediaInstance(null, null, filename, mimeType, suffix, null, null, null);
 				if (figurePhrase != null) {
 					media.addAnnotation(Annotation.NewDefaultLanguageInstance(figurePhrase));
@@ -160,7 +160,7 @@ public class BerlinModelTypesIO {
 					typeSpecimen.addMedia(media);
 				}
 				
-				
+				//mimeType + suffix
 				//TODO
 				//RefFk
 				//RefDetail

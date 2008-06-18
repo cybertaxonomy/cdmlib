@@ -91,7 +91,9 @@ public class BerlinModelFactsIO {
 					taxon.addDescription(taxonDescription);
 					//textData
 					TextData textData = TextData.NewInstance();
-					textData.putText("XXX", bmiConfig.getFactLanguage());
+					//TODO textData.putText("XXX", bmiConfig.getFactLanguage());  
+					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
+					textData.putText("XXX", Language.DEFAULT());
 					taxonDescription.addElement(textData);
 					
 					//commonNames
