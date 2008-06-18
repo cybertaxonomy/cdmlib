@@ -5,7 +5,9 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -14,7 +16,12 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -44,10 +51,12 @@ public class BerlinModelTypesIO {
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
 		
+		boolean result = true;
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		Source source = bmiConfig.getSource();
 		INameService nameService = cdmApp.getNameService();
 		
+		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
 		String dbAttrName;
 		String cdmAttrName;
 		
@@ -96,7 +105,7 @@ public class BerlinModelTypesIO {
 						boolean addToAllNames = true;
 						String originalNameString = null;
 						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
-						
+						typeMap.put(typeDesignationId, specimen);
 						taxonNameStore.add(taxonNameBase);
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");
@@ -107,16 +116,70 @@ public class BerlinModelTypesIO {
 				}
 				//put
 			}
+			
+			result &= makeFigures(typeMap, source);
+			
+			
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
 			logger.info("end makeTypes ...");
-			return true;
+			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
 
+	}
+	
+	private static boolean makeFigures(Map<Integer, Specimen> typeMap, Source source){
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT * " +
+					" FROM TypeFigure " + 
+                    " WHERE (1=1) ";
+			ResultSet rs = source.getResultSet(strQuery) ;
+
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("TypesFigures handled: " + (i-1));}
+				
+				Integer typeFigureId = rs.getInt("typeFigureId");
+				Integer typeDesignationFk = rs.getInt("typeDesignationFk");
+				int collectionFk = rs.getInt("collectionFk");
+				String filename = rs.getString("filename");
+				String figurePhrase = rs.getString("figurePhrase");
+				
+				String mimeType = "image/jpg";
+				String suffix = "jpg";
+				Media media = ImageFile.NewMediaInstance(null, null, filename, mimeType, suffix, null, null, null);
+				if (figurePhrase != null) {
+					media.addAnnotation(Annotation.NewDefaultLanguageInstance(figurePhrase));
+				}
+				Specimen typeSpecimen = typeMap.get(typeDesignationFk);
+				if (typeSpecimen != null) {
+					typeSpecimen.addMedia(media);
+				}
+				
+				
+				//TODO
+				//RefFk
+				//RefDetail
+				//VerifiedBy
+				//VerifiedWhen
+				//PrefFigureFlag
+				//PublishedFlag
+				//etc.
+			}
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+			
+		return true;
 	}
 
 	
