@@ -11,17 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.source.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
