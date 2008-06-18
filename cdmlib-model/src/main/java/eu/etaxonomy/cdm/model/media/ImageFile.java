@@ -74,8 +74,12 @@ public class ImageFile extends MediaRepresentationPart {
 	
 	protected ImageFile(String uri, Integer size, Integer height, Integer width){
 		super(uri, size);
-		this.setHeight(height);
-		this.setWidth(width);
+		if (height != null){
+			this.setHeight(height);
+		}
+		if (width != null){
+			this.setWidth(width);
+		}
 	}
 	
 	public int getHeight(){

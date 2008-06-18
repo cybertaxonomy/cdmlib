@@ -46,7 +46,7 @@ public class DataSet {
     
 	@XmlElementWrapper(name = "Terms")
     @XmlElements({
-        @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class),
+    @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class)
     })
     protected List<TermBase> terms;
 
