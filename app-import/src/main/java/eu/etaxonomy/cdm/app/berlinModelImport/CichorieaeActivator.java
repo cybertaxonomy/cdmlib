@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.source.Source;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.*;
 
 
 /**
@@ -36,7 +35,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -63,7 +62,6 @@ public class CichorieaeActivator {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
-		CdmApplicationController cdmApp;
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
