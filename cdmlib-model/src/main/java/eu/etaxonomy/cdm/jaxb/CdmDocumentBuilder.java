@@ -56,9 +56,9 @@ public class CdmDocumentBuilder {
 		marshaller.marshal(dataSet, writer);
 	}
 
-	public void writeFile(DataSet dataSet, File file) throws JAXBException {
-		marshaller.marshal(dataSet, file);
-	}
+//	public void writeFile(DataSet dataSet, File file) throws JAXBException {
+//		marshaller.marshal(dataSet, file);
+//	}
 
 }
 
