@@ -45,6 +45,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;
+	//'Cache' that is set to true when the first taxonomic child is added and set to false when the last child is deleted
+	private boolean hasTaxonomicChildren;
 
 	private static Method methodDescriptionSetTaxon;
 	
@@ -171,17 +173,21 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		logger.warn("remove TaxonRelation");  //for testing only 
 		this.relationsToThisTaxon.remove(rel);
 		this.relationsFromThisTaxon.remove(rel);
-		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
-		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && rel.getFromTaxon() != null && rel.getFromTaxon().equals(this)){
-			this.setTaxonomicParentCache(null);
-		}
-		//delete Relationship from other realted Taxon
 		Taxon fromTaxon = rel.getFromTaxon();
+		Taxon toTaxon = rel.getToTaxon();
+		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
+		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) ){
+			if (fromTaxon != null && fromTaxon.equals(this)){
+				this.setTaxonomicParentCache(null);
+			}else if (toTaxon != null && toTaxon.equals(this)){
+				this.setHasTaxonomicChildren(computeHasTaxonomicChildren());	
+			}
+		}
+		//delete Relationship from other related Taxon
 		if (fromTaxon != null && fromTaxon != this){
 			rel.setToTaxon(null);  //remove this Taxon from relationship
 			fromTaxon.removeTaxonRelation(rel);
 		}
-		Taxon toTaxon = rel.getToTaxon();
 		if (toTaxon != null && toTaxon != this){
 			rel.setFromTaxon(null); //remove this Taxon from relationship
 			toTaxon.removeTaxonRelation(rel);
@@ -189,20 +195,31 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 	public void addTaxonRelation(TaxonRelationship rel) {
-		if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel)){
-			if (rel.getFromTaxon().equals(this)){
-				relationsFromThisTaxon.add(rel);
-				// also add relation to other taxon object
-				Taxon toTaxon=rel.getToTaxon();
-				if (toTaxon!=null){
-					toTaxon.addTaxonRelation(rel);
+		if (rel!=null && rel.getType()!=null && !getTaxonRelations().contains(rel) ){
+			Taxon toTaxon=rel.getToTaxon();
+			Taxon fromTaxon=rel.getFromTaxon();
+			if ( this.equals(toTaxon) || this.equals(fromTaxon) ){
+				if (this.equals(fromTaxon)){
+					relationsFromThisTaxon.add(rel);
+					// also add relation to other taxon object
+					if (toTaxon!=null){
+						toTaxon.addTaxonRelation(rel);
+					}
+					// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
+					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
+						this.setTaxonomicParentCache(toTaxon);
+					}
+				}else if (this.equals(toTaxon)){
+					relationsToThisTaxon.add(rel);
+					// also add relation to other taxon object
+					if (fromTaxon!=null){
+						fromTaxon.addTaxonRelation(rel);
+					}
+					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && fromTaxon!=null ){
+						this.setHasTaxonomicChildren(true);
+					}
+					
 				}
-				// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
-				if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
-					this.setTaxonomicParentCache(rel.getToTaxon());
-				}
-			}else if (rel.getToTaxon().equals(this)){
-				relationsToThisTaxon.add(rel);
 			}
 		}	
 	}
@@ -235,6 +252,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			throw new NullPointerException("Child Taxon is 'null'");
 		}else{
 			child.setTaxonomicParent(this, citation, microcitation);
+		}
+	}
+	@Transient
+	public void removeTaxonomicChild(Taxon child){
+		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
+		for (TaxonRelationship taxRel : taxRels ){
+			if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxRel.getFromTaxon().equals(child)){
+				this.removeTaxonRelation(taxRel);
+			}
 		}
 	}
 	
@@ -284,11 +310,32 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		}
 		return taxa;
 	}
+	
 	/**
-	 * @return
+	 * 'Cache' that is set to true when the first taxonomic child is added and set to false when the last child is deleted
+	 *	@return
 	 */
-	@Transient
+	public boolean getHasTaxonomicChildren(){
+		return hasTaxonomicChildren;
+	}
+	
+	
+	/**
+	 * @param hasTaxonomicChildren the hasTaxonomicChildren to set
+	 */
+	private void setHasTaxonomicChildren(boolean hasTaxonomicChildren) {
+		this.hasTaxonomicChildren = hasTaxonomicChildren;
+	}
+
+	/**
+	 * @see getHasTaxonomicChildren() 
+	 *	@return
+	 */
 	public boolean hasTaxonomicChildren(){
+		return getHasTaxonomicChildren();
+	}
+
+	private boolean computeHasTaxonomicChildren(){
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
 			if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				return true;

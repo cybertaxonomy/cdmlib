@@ -96,8 +96,13 @@ public class TaxonTest extends EntityTestBase {
 
 	@Test
 	public void testHasTaxonomicChildren() {
-		assertTrue(rootT.hasTaxonomicChildren());
 		assertFalse(child2.hasTaxonomicChildren());
+		assertTrue(rootT.hasTaxonomicChildren());
+		rootT.removeTaxonomicChild(child1);
+		assertTrue(rootT.hasTaxonomicChildren());
+		rootT.removeTaxonomicChild(child2);
+		assertFalse(rootT.hasTaxonomicChildren());
+
 	}
 
 	@Test
