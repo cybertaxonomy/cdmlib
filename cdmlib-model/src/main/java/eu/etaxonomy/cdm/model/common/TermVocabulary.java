@@ -87,7 +87,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.terms = terms;
 	}
 	
-	@OneToMany(mappedBy="persistentVocabulary", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="persistentVocabulary", fetch=FetchType.LAZY)
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getPersistentTerms() {

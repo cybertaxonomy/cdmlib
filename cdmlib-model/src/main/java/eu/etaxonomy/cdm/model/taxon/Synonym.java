@@ -45,7 +45,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 		super(taxonNameBase, sec);
 	}
 	
-	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;

@@ -257,7 +257,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    #getRelationsToThisName()
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
@@ -274,7 +274,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    #getRelationsFromThisName()
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="relatedTo", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
@@ -293,7 +293,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see     NomenclaturalStatus
 	 * @see     NomenclaturalStatusType
 	 */
-	@OneToMany(fetch= FetchType.EAGER)
+	@OneToMany(fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
@@ -699,7 +699,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see	#getTaxa()
 	 * @see	#getSynonyms()
 	 */
-	@OneToMany(mappedBy="name", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="name", fetch= FetchType.LAZY)
 	public Set<TaxonBase> getTaxonBases() {
 		return this.taxonBases;
 	}

@@ -63,7 +63,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	
 	
-	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
 	}

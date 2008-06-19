@@ -73,7 +73,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 
-	@OneToMany(mappedBy="taxon", fetch= FetchType.EAGER)
+	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
@@ -109,8 +109,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 
-	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
-	@OneToMany(mappedBy="relatedTo", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
@@ -132,7 +131,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 
-	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;
@@ -143,8 +142,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 
-	//TODO FetchType (set to Eager because lazyLoading problem in TaxEditor, try to solve problem - 14.4.08)
-	@OneToMany(mappedBy="relatedTo", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
 		return relationsToThisTaxon;

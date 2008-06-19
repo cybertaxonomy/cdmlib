@@ -58,7 +58,7 @@ public class TextData extends DescriptionElementBase {
 	/**
 	 * @return
 	 */
-	@OneToMany (fetch= FetchType.EAGER)
+	@OneToMany (fetch= FetchType.LAZY)
 	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
 	public Map<Language, LanguageString> getMultilanguageText() {

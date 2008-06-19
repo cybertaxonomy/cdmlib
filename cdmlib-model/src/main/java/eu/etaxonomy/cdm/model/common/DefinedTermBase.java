@@ -182,7 +182,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
 	 */
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	protected TermVocabulary getPersistentVocabulary() {
 		return this.vocabulary;

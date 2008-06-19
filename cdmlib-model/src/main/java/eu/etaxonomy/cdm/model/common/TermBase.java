@@ -27,7 +27,7 @@ public abstract class TermBase extends VersionableEntity {
 		this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
 	}
 
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	public Set<Representation> getRepresentations() {
 		return this.representations;

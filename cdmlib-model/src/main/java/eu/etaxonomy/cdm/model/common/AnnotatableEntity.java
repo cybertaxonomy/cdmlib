@@ -57,7 +57,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 
 //*************** ANNOTATIONS **********************************************
 	
-	@OneToMany(fetch=FetchType.EAGER) //(mappedBy="AnnotatedObj")
+	@OneToMany(fetch=FetchType.LAZY) //(mappedBy="AnnotatedObj")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;
