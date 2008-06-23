@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 
-import static eu.etaxonomy.cdm.common.XmlHelp.getRoot;
+import static eu.etaxonomy.cdm.common.XmlHelp.getBeansRoot;
 import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
 import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
 import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
@@ -445,7 +445,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, port, username, password, filePath, mode);
 				
 		//root
-		Element root = getRoot(getDataSourceInputStream());
+		Element root = getBeansRoot(getDataSourceInputStream());
 		if (root == null){
 			return null;
 		}
@@ -503,7 +503,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	static public List<CdmPersistentDataSource> getAllDataSources(){
 		List<CdmPersistentDataSource> dataSources = new ArrayList<CdmPersistentDataSource>();
 		
-		Element root = getRoot(getDataSourceInputStream());
+		Element root = getBeansRoot(getDataSourceInputStream());
 		if (root == null){
 			return null;
 		}else{
@@ -561,7 +561,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 */
 	private static Element getDatasourceBeanXml(String strDataSourceName){
 		FileInputStream inStream = getDataSourceInputStream();
-		Element root = getRoot(inStream);
+		Element root = getBeansRoot(inStream);
 		if (root == null){
 			return null;
 		}else{

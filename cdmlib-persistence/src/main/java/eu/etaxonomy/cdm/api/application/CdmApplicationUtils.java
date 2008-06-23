@@ -20,6 +20,8 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.jdom.output.Format;
 
+import sun.security.action.GetBooleanAction;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -78,7 +80,7 @@ public class CdmApplicationUtils {
 			File fileToCopy = new File(directory + File.separator + resourceFileName);
 			if (fileToCopy.createNewFile()){
 				InputStream isDataSource = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
-				XmlHelp.saveToXml(getRoot(isDataSource).getDocument(), new FileOutputStream(fileToCopy), Format.getPrettyFormat());
+				XmlHelp.saveToXml(XmlHelp.getBeansRoot(isDataSource).getDocument(), new FileOutputStream(fileToCopy), Format.getPrettyFormat());
 			}
 		} catch (IOException e) {
 			logger.error("File "  + resourceFileName + " + could not be created");
