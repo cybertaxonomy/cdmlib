@@ -102,7 +102,6 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue(rootT.hasTaxonomicChildren());
 		rootT.removeTaxonomicChild(child2);
 		assertFalse(rootT.hasTaxonomicChildren());
-
 	}
 
 	@Test
