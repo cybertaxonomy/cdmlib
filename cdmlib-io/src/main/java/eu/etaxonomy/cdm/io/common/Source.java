@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.source;
+package eu.etaxonomy.cdm.io.common;
 
 /*
  * Created on 14.05.2005

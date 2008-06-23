@@ -10,7 +10,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 

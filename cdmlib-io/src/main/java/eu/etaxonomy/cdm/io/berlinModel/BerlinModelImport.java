@@ -6,13 +6,14 @@ import org.springframework.stereotype.Service;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES.*;
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.*;
 
 @Service
 public class BerlinModelImport {
@@ -93,7 +94,7 @@ public class BerlinModelImport {
 
 		//check nomStatus
 		if(bmiConfig.isDoTypes()){
-			result &= BerlinModelTypesIO.check(bmiConfig);
+			result &= new BerlinModelTypesIO().check(bmiConfig);
 		}
 	
 		//check Taxa

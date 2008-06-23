@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,11 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.jdom.Element;
+import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
@@ -26,10 +27,10 @@ public class ImportHelper {
 	public static final boolean  NO_OVERWRITE = false;
 	
 	
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase berlinModelRef, int berlinModelId){
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, int sourceId){
 		OriginalSource originalSource = new OriginalSource();
-		originalSource.setIdInSource(String.valueOf(berlinModelId));
-		originalSource.setCitation(berlinModelRef);
+		originalSource.setIdInSource(String.valueOf(sourceId));
+		originalSource.setCitation(sourceReference);
 		idEntity.addSource(originalSource);
 		return true;
 	}
@@ -48,15 +49,46 @@ public class ImportHelper {
 	}
 
 	public static boolean addValue(ResultSet rs, CdmBase cdmBase, String dbAttrName, String cdmAttrName, Class clazz, boolean overwriteNull){
-		String methodName;
 		Object strValue;
 		try {
 			strValue = rs.getObject(dbAttrName);
-			if (overwriteNull == NO_OVERWRITE && strValue == null ){
+			return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull);
+		}catch (SQLException e) {
+			logger.error("SQLException: " +  e);
+			return false;
+		}
+
+	}
+	
+	
+	public static boolean addXmlStringValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName){
+		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, String.class, OVERWRITE);
+	}
+	
+	public static boolean addXmlStringValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName, boolean overwriteNull){
+		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, String.class, overwriteNull);
+	}
+		
+	public static boolean addXmlBooleanValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName){
+		return addXmlValue(root, cdmBase, xmlElementName, namespace, cdmAttrName, boolean.class, OVERWRITE);
+	}
+
+
+	public static boolean addXmlValue(Element root, CdmBase cdmBase, String xmlElementName, Namespace namespace, String cdmAttrName, Class clazz, boolean overwriteNull){
+		Object strValue;
+		strValue = getXmlInputValue(root, xmlElementName, namespace);
+		return addValue(strValue, cdmBase, cdmAttrName, clazz, overwriteNull);
+	}
+	
+	public static boolean addValue(Object sourceValue, CdmBase cdmBase, String cdmAttrName, Class clazz, boolean overwriteNull){
+		String methodName;
+//		Object strValue;
+		try {
+			if (overwriteNull == NO_OVERWRITE && sourceValue == null ){
 				if (logger.isDebugEnabled()) { logger.debug("no overwrite for NULL-value");}
 				return true;
 			}
-			if (logger.isDebugEnabled()) { logger.debug("addValue: " + strValue);}
+			if (logger.isDebugEnabled()) { logger.debug("addValue: " + sourceValue);}
 			if (clazz == boolean.class || clazz == Boolean.class){
 				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
 					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters");
@@ -72,7 +104,7 @@ public class ImportHelper {
 				return false;
 			}
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName, clazz);
-			cdmMethod.invoke(cdmBase, strValue);
+			cdmMethod.invoke(cdmBase, sourceValue);
 			return true;
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException: " + e.getMessage());
@@ -89,11 +121,18 @@ public class ImportHelper {
 		} catch (NoSuchMethodException e) {
 			logger.error("NoSuchMethod: " + e.getMessage());
 			return false;
-		}catch (SQLException e) {
-			logger.error("SQLException: " +  e);
-			return false;
 		}
 
-	}	
+	}
+	
+	public static Object getXmlInputValue(Element root, String xmlElementName, Namespace namespace){
+		Object result = null; 
+		Element child = root.getChild(xmlElementName, namespace);
+		if (child != null){
+			result = child.getText().trim();
+		}
+		return result;
+	}
+
 
 }

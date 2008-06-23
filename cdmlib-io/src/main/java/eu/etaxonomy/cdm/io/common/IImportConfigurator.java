@@ -1,0 +1,128 @@
+package eu.etaxonomy.cdm.io.common;
+
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
+import org.apache.log4j.Logger;
+
+public interface IImportConfigurator {
+
+	public static enum CHECK{
+		CHECK_ONLY,
+		IMPORT_WITHOUT_CHECK,
+		CHECK_AND_IMPORT,
+	}
+	
+	public static enum DO_REFERENCES{
+		NONE,
+		NOMENCLATURAL,
+		CONCEPT_REFERENCES,
+		ALL
+	}
+	
+	public abstract boolean isValid();
+
+	/* ****************** GETTER/SETTER **************************/
+	public abstract boolean isDeleteAll();
+
+	public abstract void setDeleteAll(boolean deleteAll);
+
+	public abstract boolean isDoAuthors();
+
+	public abstract void setDoAuthors(boolean doAuthors);
+
+	/**
+	 * @return the doReferences
+	 */
+	public abstract DO_REFERENCES getDoReferences();
+
+	/**
+	 * @param doReferences the doReferences to set
+	 */
+	public abstract void setDoReferences(DO_REFERENCES doReferences);
+
+	/**
+	 * @return the doReferences
+	 */
+	public abstract CHECK getCheck();
+
+	/**
+	 * @param doReferences the doReferences to set
+	 */
+	public abstract void setCheck(CHECK check);
+
+	public abstract boolean isDoTaxonNames();
+
+	public abstract void setDoTaxonNames(boolean doTaxonNames);
+
+	public abstract boolean isDoRelNames();
+
+	public abstract void setDoRelNames(boolean doRelNames);
+
+	public abstract boolean isDoNameStatus();
+
+	public abstract void setDoNameStatus(boolean doNameStatus);
+
+	public abstract boolean isDoNameFacts();
+
+	public abstract void setDoNameFacts(boolean doNameFacts);
+
+	public abstract boolean isDoTypes();
+
+	public abstract void setDoTypes(boolean doTypes);
+
+	public abstract boolean isDoTaxa();
+
+	public abstract void setDoTaxa(boolean doTaxa);
+
+	public abstract boolean isDoRelTaxa();
+
+	public abstract void setDoRelTaxa(boolean doRelTaxa);
+
+	public abstract boolean isDoFacts();
+
+	public abstract void setDoFacts(boolean doFacts);
+
+	/**
+	 * @return the doOccurrence
+	 */
+	public abstract boolean isDoOccurrence();
+
+	/**
+	 * @param doOccurrence the doOccurrence to set
+	 */
+	public abstract void setDoOccurrence(boolean doOccurrence);
+
+	//public abstract String getSource();
+
+	//public abstract void setSource(String url);
+
+	public abstract ICdmDataSource getDestination();
+
+	public abstract void setDestination(ICdmDataSource destination);
+
+	public abstract DbSchemaValidation getDbSchemaValidation();
+
+	public abstract void setDbSchemaValidation(
+			DbSchemaValidation dbSchemaValidation);
+
+	public abstract ReferenceBase getSourceReference();
+
+	public abstract void setSourceReference(ReferenceBase sourceReference);
+
+	public abstract String getSourceReferenceTitle();
+
+	public abstract void setSourceReferenceTitle(String sourceReferenceTitle);
+
+	public abstract Person getCommentator();
+
+	public abstract void setCommentator(Person commentator);
+
+	public abstract Language getFactLanguage();
+
+	public abstract void setFactLanguage(Language factLanguage);
+
+}

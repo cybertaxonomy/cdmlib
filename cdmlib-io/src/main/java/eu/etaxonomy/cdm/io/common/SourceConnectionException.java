@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.source;
+package eu.etaxonomy.cdm.io.common;
 
 public class SourceConnectionException extends Exception {
 

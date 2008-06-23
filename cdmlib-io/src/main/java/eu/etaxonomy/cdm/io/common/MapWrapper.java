@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;

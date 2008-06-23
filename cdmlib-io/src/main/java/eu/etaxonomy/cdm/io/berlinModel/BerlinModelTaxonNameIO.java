@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -222,7 +224,7 @@ public class BerlinModelTaxonNameIO {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
 					//FIXME
-					//BotanicalName name = BotanicalName.NewInstance(BerlinModelTransformer.rankId2Rank(rankId));
+					//BotanicalName name = BotanicalName.NewInstance(TcsTransformer.rankId2Rank(rankId));
 					BotanicalName botanicalName = BotanicalName.NewInstance(rank);
 					
 					if (rankId < 40){

@@ -11,7 +11,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES.*;
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +23,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;

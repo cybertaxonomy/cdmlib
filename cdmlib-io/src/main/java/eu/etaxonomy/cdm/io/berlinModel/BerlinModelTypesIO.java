@@ -14,7 +14,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.IIO;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -30,12 +32,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class BerlinModelTypesIO {
+public class BerlinModelTypesIO implements IIO<BerlinModelImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
 
 	private static int modCount = 10000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	public boolean check(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
 		logger.warn("Checking for Types not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
