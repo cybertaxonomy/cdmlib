@@ -5,31 +5,39 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -179,214 +187,151 @@ public class TcsTaxonNameIO {
 		
 		logger.info("start makeTaxonNames ...");
 		Element root = tcsConfig.getSourceRoot();
-		
-		String dbAttrName;
-		String cdmAttrName;
-		
-		boolean success = true ;
-		
+		boolean success =true;
 		INameService nameService = cdmApp.getNameService();
 		
-		String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
+		Namespace rdfNamespace = root.getNamespace();
 		String prefix = "tn";
-		Namespace taxonNameNamespace = Namespace.getNamespace(prefix, strTnNamespace);
+		Namespace taxonNameNamespace = root.getNamespace(prefix);
+		prefix = "tc";
+		Namespace taxonConceptNamespace = root.getNamespace(prefix);
+		prefix = "tcom";
+		Namespace commonNamespace = root.getNamespace(prefix);
+		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
+		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
+		
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
+
+		
+		int i = 0;
+		//for each taxonName
 		for (Element elTaxonName : elTaxonNames){
-			System.out.println(elTaxonName.toString());
+			
+			if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+			
+			Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
+//			System.out.println(elTaxonName.toString());
+//			System.out.println(about.getValue());
+			
+
+			//create TaxonName element
+			String nameId = elTaxonName.getAttributeValue("about", rdfNamespace);
+			String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
+			//FIXME namespace
+			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonConceptNamespace, "resource", rdfNamespace);
+			System.out.println(strRank);
+			
+			String tcsElementName;
+			String cdmAttrName;
+			String value;
+			try {
+				Rank rank = TcsTransformer.rankString2Rank(strRank);
+				NomenclaturalCode nomCode = TcsTransformer.nomCodeString2NomCode(strNomenclaturalCode);
+				TaxonNameBase nameBase = nomCode.getNewTaxonNameInstance(rank);
+				
+				//Epethita
+				tcsElementName = "genusPart";
+				cdmAttrName = "genusOrUninomial";
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+
+				tcsElementName = "specificEpithet";
+				cdmAttrName = "specificEpithet";
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+
+				tcsElementName = "specificEpithet";
+				cdmAttrName = "infraSpecificEpithet";
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				
+				tcsElementName = "specificEpithet";
+				cdmAttrName = "infraGenericEpithet";
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				
+				//Reference
+				//TODO
+				tcsElementName = "publishedIn";
+				cdmAttrName = "nomenclaturalReference";
+				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, commonNamespace);
+				if (value != null){
+					Generic nomRef = Generic.NewInstance(); //TODO
+					nomRef.setTitleCache(value);
+					nameBase.setNomenclaturalReference(nomRef);
+					
+					//TODO
+					tcsElementName = "year";
+					Integer year = null;
+					try {
+						value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+						year = Integer.valueOf(value);
+						Calendar cal = Calendar.getInstance();
+						//FIXME
+						cal.set(year, 1, 1);
+						nomRef.setDatePublished(TimePeriod.NewInstance(cal));
+					} catch (RuntimeException e) {
+						logger.warn("year could not be parsed");
+					}
+				}
+				
+				
+				
+				//microReference
+				tcsElementName = "microReference";
+				cdmAttrName = "nomenclaturalMicroReference";
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				
+				//Status
+				Element elAnnotation = elTaxonName.getChild("hasAnnotation", taxonNameNamespace);
+				if (elAnnotation != null){
+					Element elNomenclaturalNote = elAnnotation.getChild("NomenclaturalNote", taxonNameNamespace);
+					if (elNomenclaturalNote != null){
+						String statusValue = (String)ImportHelper.getXmlInputValue(elNomenclaturalNote, "note", taxonNameNamespace);
+						String type = XmlHelp.getChildAttributeValue(elNomenclaturalNote, "type", taxonConceptNamespace, "resource", rdfNamespace);
+						String tdwgType = "http://rs.tdwg.org/ontology/voc/TaxonName#PublicationStatus";
+						if (tdwgType.equalsIgnoreCase(type)){
+							try {
+								NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								if (statusType != null){
+									nameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
+								}
+							} catch (UnknownCdmTypeException e) {
+								logger.warn("Unknown NomenclaturalStatusType: " +  statusValue);
+							}
+						}
+					}
+				}
+				
+				if (nameBase instanceof NonViralName){
+					NonViralName nonViralName = (NonViralName)nameBase;
+					
+					//AuthorTeams
+					//TODO
+					tcsElementName = "basionymAuthorship";
+					value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+					if (value != null){
+						INomenclaturalAuthor basionymAuthor = Team.NewInstance();
+						basionymAuthor.setNomenclaturalTitle(value);
+						nonViralName.setBasionymAuthorTeam(basionymAuthor);
+					}
+						
+					//TODO
+					tcsElementName = "combinationAuthorship";
+					value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+					if (value != null){
+						INomenclaturalAuthor combinationAuthor = Team.NewInstance();
+						combinationAuthor.setNomenclaturalTitle(value);
+						nonViralName.setCombinationAuthorTeam(combinationAuthor);
+					}
+						
+				}
+				System.out.println(nameBase);
+				
+			} catch (UnknownCdmTypeException e) {
+				//FIXME
+				logger.warn("Name with id " + nameId + " has unknown rank " + strRank + " and could not be saved.");
+				success = false; 
+			}
+			
+			
 		}
-		//		try {
-//			
-//			
-//			//get data from database
-//			String strQuery = 
-//					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
-//                      		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
-//                      		" RefDetail.SecondarySources, RefDetail.IdInSource " +
-//                    " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
-//                    	" Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk" +
-//                    " WHERE (1=1) ";
-//					//strQuery += " AND Name.Created_When > '03.03.2004' ";
-//			
-//			
-//			ResultSet rs = source.getResultSet(strQuery) ;
-//			
-//			int i = 0;
-//			//for each reference
-//			while (rs.next()){
-//				
-//				if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-//				
-//				//create TaxonName element
-//				int nameId = rs.getInt("nameId");
-//				int rankId = rs.getInt("rankFk");
-//				Object authorFk = rs.getObject("AuthorTeamFk");
-//				Object exAuthorFk = rs.getObject("ExAuthorTeamFk");
-//				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
-//				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
-//				Object nomRefFk = rs.getObject("NomRefFk");
-//				
-//				Object createdWhen = rs.getObject("Created_When");
-//				Object createdWho = rs.getObject("Created_Who");
-////				Object updatedWhen = rs.getObject("Updated_When");
-////				Object updatedWho = rs.getObject("Updated_who");
-//				Object updatedWhen = "";
-//				Object updatedWho = "";
-//				Object notes = rs.getObject("notes");
-//				
-//				try {
-//					if (logger.isDebugEnabled()){logger.debug(rankId);}
-//					Rank rank = TcsTransformer.rankId2Rank(rankId);
-//					//FIXME
-//					//BotanicalName name = BotanicalName.NewInstance(TcsTransformer.rankId2Rank(rankId));
-//					BotanicalName botanicalName = BotanicalName.NewInstance(rank);
-//					
-//					if (rankId < 40){
-//						dbAttrName = "supraGenericName";
-//					}else{
-//						dbAttrName = "genus";
-//					}
-//					cdmAttrName = "genusOrUninomial";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//					dbAttrName = "genusSubdivisionEpi";
-//					cdmAttrName = "infraGenericEpithet";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//					dbAttrName = "speciesEpi";
-//					cdmAttrName = "specificEpithet";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//
-//					dbAttrName = "infraSpeciesEpi";
-//					cdmAttrName = "infraSpecificEpithet";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//					dbAttrName = "unnamedNamePhrase";
-//					cdmAttrName = "appendedPhrase";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//					dbAttrName = "preliminaryFlag";
-//					cdmAttrName = "XX" + "protectedTitleCache";
-//					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					dbAttrName = "HybridFormulaFlag";
-//					cdmAttrName = "isHybridFormula";
-//					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					dbAttrName = "MonomHybFlag";
-//					cdmAttrName = "isMonomHybrid";
-//					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					dbAttrName = "BinomHybFlag";
-//					cdmAttrName = "isBinomHybrid";
-//					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					dbAttrName = "TrinomHybFlag";
-//					cdmAttrName = "isTrinomHybrid";
-//					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					//botanicalName.s
-//
-////					dbAttrName = "notes";
-////					cdmAttrName = "isTrinomHybrid";
-////					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//					
-//					//TODO
-//					//Created
-//					//Note
-//					//makeAuthorTeams
-//					//CultivarGroupName
-//					//CultivarName
-//					//Source_Acc
-//					//OrthoProjection
-//					
-//					//Details
-//					
-//					dbAttrName = "details";
-//					cdmAttrName = "nomenclaturalMicroReference";
-//					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-//
-//					//TODO
-//					//preliminaryFlag
-//					
-//					//authorTeams
-//					if (authorMap != null){
-//						botanicalName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId));
-//						botanicalName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId));
-//						botanicalName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId));
-//						botanicalName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId));
-//					}
-//					
-//					//nomenclatural Reference
-//					if (referenceMap != null){
-//						if (nomRefFk != null){
-//							int nomRefFkInt = (Integer)nomRefFk;
-//							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
-//							if (nomenclaturalReference == null){
-//								//TODO
-//								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-//								" was not found in reference store. Relation was not set!!");
-//							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
-//								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-//								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
-//							}else{
-//								botanicalName.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
-//							}
-//						}
-//					}
-//					
-//					//refId
-//					String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + " (" + String.valueOf(createdWhen) + ") " +
-//					 						" and updated By: " + String.valueOf(updatedWho) + " (" + String.valueOf(updatedWhen) + ")";
-//					Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
-//					annotation.setCommentator(tcsConfig.getCommentator());
-////					try {
-////						URL linkbackUrl = new URL("http:\\www.abc.de");
-////						annotation.setLinkbackUrl(linkbackUrl);
-////					} catch (MalformedURLException e) {
-////						logger.warn("MalformedURLException");
-////					}
-//					botanicalName.addAnnotation(annotation);
-//					
-//					if (notes != null){
-//						String notesString = String.valueOf(notes);
-//						if (notesString.length() > 254 ){
-//							notesString = notesString.substring(0, 250) + "...";
-//						}
-//						Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
-//						//notes.setCommentator(tcsConfig.getCommentator());
-//						botanicalName.addAnnotation(notesAnnotation);
-//					}
-//					
-//					
-//					boolean flag = true;
-//					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
-//					botanicalName.addMarker(marker);
-//					
-//					
-//					//nameId
-//					ImportHelper.setOriginalSource(botanicalName, tcsConfig.getSourceReference(), nameId);
-//					
-//					taxonNameMap.put(nameId, botanicalName);
-//					
-//				}
-//				catch (UnknownCdmTypeException e) {
-//					logger.warn("Name with id " + nameId + " has unknown rankId " + rankId + " and could not be saved.");
-//					success = false; 
-//				}
-//				
-//			} //while rs.hasNext()
-//			logger.info(i + " names handled");
-//			nameService.saveTaxonNameAll(taxonNameMap.objects());
-//			
-////			makeNameSpecificData(nameMap);
-//
-//			logger.info("end makeTaxonNames ...");
-//			return success;
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			return false;
-//		}
 		return false;
 
 	}
