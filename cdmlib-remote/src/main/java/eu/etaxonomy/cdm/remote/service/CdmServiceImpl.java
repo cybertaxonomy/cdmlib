@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -67,6 +68,8 @@ public class CdmServiceImpl implements ICdmService {
 	private ITaxonNameDao nameDAO;
 	@Autowired
 	private IReferenceDao refDAO;
+	
+//	private CdmEntityDaoBase entityDAO = new CdmEntityDaoBase<CdmBase>();
 		
 	
 	/**
@@ -139,14 +142,10 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
 		// TODO: add other criteria. Has to be done in DAO...
-		q = (matchAnywhere ? "%" : "") + q +"%";
-		List<TaxonBase> results = taxonDAO.findByTitle(q);
-		rs.setPageSize(100);
-		rs.setPageNumber(1);
-		rs.setTotalResultsCount(results.size());
+		List<TaxonBase> results = taxonDAO.findByTitle(q, matchAnywhere, page, pagesize);
 		for (TaxonBase tb : results){
 			TaxonSTO tx = taxonAssembler.getSTO(tb, locales);
 			rs.getResults().add(tx);
@@ -202,12 +201,7 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting {
 		ReferenceBase sec = null;
-		try{
-			sec = getCdmReferenceBase(uuid);
-		}catch (Exception e){
-			// TODO: should this really be caught?
-			sec = null;
-		}
+		sec = getCdmReferenceBase(uuid);
 		return taxonAssembler.getTreeNodeListSortedByName(taxonDAO.getRootTaxa(sec));
 	}
 
