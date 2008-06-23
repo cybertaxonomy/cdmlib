@@ -50,6 +50,7 @@ public class TcsTaxonNameIO {
 
 	public static boolean check(TcsImportConfigurator tcsConfig){
 		boolean result = true;
+		logger.warn("BasionymRelations not yet implemented");
 		logger.warn("Checking for TaxonNames not yet implemented");
 		//result &= checkArticlesWithoutJournal(tcsConfig);
 		//result &= checkPartOfJournal(tcsConfig);
@@ -66,124 +67,14 @@ public class TcsTaxonNameIO {
 		return result;
 	}
 	
-	public static boolean checkNomStatus(TcsImportConfigurator tcsConfig){
-		boolean result = true;
-		logger.warn("Checking for NomenclaturalStatus not yet implemented");
-		//result &= checkArticlesWithoutJournal(tcsConfig);
-		//result &= checkPartOfJournal(tcsConfig);
-		
-		return result;
-	}
-	
-	//TODO
-	public static boolean invokeStatus(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap,	MapWrapper<ReferenceBase> referenceMap){
-		
-		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		Element source = tcsConfig.getSourceRoot();
-		String dbAttrName;
-		String cdmAttrName;
-		
-//		logger.info("start makeNameStatus ...");
-//		
-//		INameService nameService = cdmApp.getNameService();
-//		
-//		try {
-//			//get data from database
-//			String strQuery = 
-//					" SELECT NomStatusRel.*, NomStatus.NomStatus " + 
-//					" FROM NomStatusRel INNER JOIN " +
-//                      	" NomStatus ON NomStatusRel.NomStatusFk = NomStatus.NomStatusId " +
-//                    " WHERE (1=1)";
-//			ResultSet rs = source.getResultSet(strQuery) ;
-//			
-//			int i = 0;
-//			//for each reference
-//			while (rs.next()){
-//				
-//				if ((i++ % modCount) == 0){ logger.info("NomStatus handled: " + (i-1));}
-//				
-//				int nomStatusRelId = rs.getInt("RIdentifier");
-//				int nomStatusFk = rs.getInt("NomStatusFk");
-//				int nameId = rs.getInt("nameFk");
-//				int refFk = rs.getInt("nomStatusRefFk");
-//				int detailFk = rs.getInt("nomStatusRefDetailFk");
-//				
-//				TaxonNameBase taxonName = taxonNameMap.get(nameId);
-//				
-//				//TODO
-//				ReferenceBase citation = null;
-//				String microcitation = null;
-//				//TODO doubtful
-//				
-//				if (taxonName != null ){
-//					if (nomStatusFk == NAME_ST_NOM_INVAL){
-//						//TODO references, mikroref, etc überall
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
-//					}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
-//					}else if (nomStatusFk == NAME_ST_NOM_NUD){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NUDUM()));
-//					}else if (nomStatusFk == NAME_ST_NOM_REJ){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED()));
-//					}else if (nomStatusFk == NAME_ST_NOM_REJ_PROP){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED_PROP()));
-//					}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED()));
-//					}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ_PROP){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED_PROP()));
-//					}else if (nomStatusFk == NAME_ST_NOM_CONS){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED()));
-//					}else if (nomStatusFk == NAME_ST_NOM_CONS_PROP){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED_PROP()));
-//					}else if (nomStatusFk == NAME_ST_ORTH_CONS){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED()));
-//					}else if (nomStatusFk == NAME_ST_ORTH_CONS_PROP){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP()));
-//					}else if (nomStatusFk == NAME_ST_NOM_SUPERFL){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.SUPERFLUOUS()));
-//					}else if (nomStatusFk == NAME_ST_NOM_AMBIG){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS()));
-//					}else if (nomStatusFk == NAME_ST_NOM_PROVIS){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.PROVISIONAL()));
-//					}else if (nomStatusFk == NAME_ST_NOM_DUB){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.DOUBTFUL()));
-//					}else if (nomStatusFk == NAME_ST_NOM_NOV){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NOVUM()));
-//					}else if (nomStatusFk == NAME_ST_NOM_CONFUS){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONFUSUM()));
-//					}else if (nomStatusFk == NAME_ST_NOM_ALTERN){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-//					}else if (nomStatusFk == NAME_ST_COMB_INVAL){
-//						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID()));
-//					}else {
-//						//TODO
-//						logger.warn("NomStatusType " + nomStatusFk + " not yet implemented");
-//					}
-//					nameStore.add(taxonName);
-//					//TODO
-//					//Reference
-//					//ID
-//					//etc.
-//				}else{
-//					logger.warn("TaxonName for NomStatus (" + nomStatusRelId + ") does not exist in store");
-//				}
-//			}
-//			logger.info("TaxonNames to save: " + nameStore.size());
-//			nameService.saveTaxonNameAll(nameStore);
-//			
-//			logger.info("end makeNameStatus ...");
-//			return true;
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			return false;
-//		}
-		return false;
-
-	}
 	
 	public static boolean invoke(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+		
+		String tcsElementName;
+		Namespace tcsNamespace;
+		String cdmAttrName;
+		String value;
 		
 		logger.info("start makeTaxonNames ...");
 		Element root = tcsConfig.getSourceRoot();
@@ -210,20 +101,13 @@ public class TcsTaxonNameIO {
 			if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
 			
 			Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
-//			System.out.println(elTaxonName.toString());
-//			System.out.println(about.getValue());
-			
 
 			//create TaxonName element
-			String nameId = elTaxonName.getAttributeValue("about", rdfNamespace);
+			String nameAbout = elTaxonName.getAttributeValue("about", rdfNamespace);
 			String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
 			//FIXME namespace
 			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonConceptNamespace, "resource", rdfNamespace);
-			System.out.println(strRank);
 			
-			String tcsElementName;
-			String cdmAttrName;
-			String value;
 			try {
 				Rank rank = TcsTransformer.rankString2Rank(strRank);
 				NomenclaturalCode nomCode = TcsTransformer.nomCodeString2NomCode(strNomenclaturalCode);
@@ -231,26 +115,30 @@ public class TcsTaxonNameIO {
 				
 				//Epethita
 				tcsElementName = "genusPart";
+				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "genusOrUninomial";
-				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 
 				tcsElementName = "specificEpithet";
+				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "specificEpithet";
-				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 
 				tcsElementName = "specificEpithet";
+				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "infraSpecificEpithet";
-				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 				
 				tcsElementName = "specificEpithet";
+				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "infraGenericEpithet";
-				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 				
 				//Reference
 				//TODO
 				tcsElementName = "publishedIn";
-				cdmAttrName = "nomenclaturalReference";
-				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, commonNamespace);
+				tcsNamespace = commonNamespace;
+				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 				if (value != null){
 					Generic nomRef = Generic.NewInstance(); //TODO
 					nomRef.setTitleCache(value);
@@ -258,9 +146,10 @@ public class TcsTaxonNameIO {
 					
 					//TODO
 					tcsElementName = "year";
+					tcsNamespace = taxonNameNamespace;
 					Integer year = null;
 					try {
-						value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+						value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 						year = Integer.valueOf(value);
 						Calendar cal = Calendar.getInstance();
 						//FIXME
@@ -275,25 +164,30 @@ public class TcsTaxonNameIO {
 				
 				//microReference
 				tcsElementName = "microReference";
+				tcsNamespace = commonNamespace;
 				cdmAttrName = "nomenclaturalMicroReference";
-				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, taxonNameNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 				
 				//Status
-				Element elAnnotation = elTaxonName.getChild("hasAnnotation", taxonNameNamespace);
+				tcsNamespace = taxonNameNamespace;
+				Element elAnnotation = elTaxonName.getChild("hasAnnotation", tcsNamespace);
 				if (elAnnotation != null){
-					Element elNomenclaturalNote = elAnnotation.getChild("NomenclaturalNote", taxonNameNamespace);
+					Element elNomenclaturalNote = elAnnotation.getChild("NomenclaturalNote", tcsNamespace);
 					if (elNomenclaturalNote != null){
-						String statusValue = (String)ImportHelper.getXmlInputValue(elNomenclaturalNote, "note", taxonNameNamespace);
+						String statusValue = (String)ImportHelper.getXmlInputValue(elNomenclaturalNote, "note", tcsNamespace);
 						String type = XmlHelp.getChildAttributeValue(elNomenclaturalNote, "type", taxonConceptNamespace, "resource", rdfNamespace);
 						String tdwgType = "http://rs.tdwg.org/ontology/voc/TaxonName#PublicationStatus";
 						if (tdwgType.equalsIgnoreCase(type)){
 							try {
-								NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								//NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								NomenclaturalStatusType statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusValue);
 								if (statusType != null){
 									nameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
 								}
 							} catch (UnknownCdmTypeException e) {
-								logger.warn("Unknown NomenclaturalStatusType: " +  statusValue);
+								if (! statusValue.equals("valid")){
+									logger.warn("Unknown NomenclaturalStatusType: " +  statusValue);
+								}
 							}
 						}
 					}
@@ -322,17 +216,22 @@ public class TcsTaxonNameIO {
 					}
 						
 				}
-				System.out.println(nameBase);
+				//nameId
+				//TODO
+				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
+				taxonNameMap.put(nameAbout, nameBase);
 				
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
-				logger.warn("Name with id " + nameId + " has unknown rank " + strRank + " and could not be saved.");
+				logger.warn("Name with id " + nameAbout + " has unknown rank " + strRank + " and could not be saved.");
 				success = false; 
 			}
-			
-			
 		}
-		return false;
+		logger.info(i + " names handled");
+		nameService.saveTaxonNameAll(taxonNameMap.objects());
+//		makeNameSpecificData(nameMap);
+		logger.info("end makeTaxonNames ...");
+		return success;
 
 	}
 	

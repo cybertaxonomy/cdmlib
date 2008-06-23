@@ -179,7 +179,6 @@ public class BerlinModelTaxonNameIO {
 		
 		logger.info("start makeTaxonNames ...");
 		INameService nameService = cdmApp.getNameService();
-		boolean delete = bmiConfig.isDeleteAll();
 		
 		try {
 			

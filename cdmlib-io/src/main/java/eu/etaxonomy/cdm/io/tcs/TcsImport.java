@@ -112,13 +112,8 @@ public class TcsImport implements ICdmImport {
 		if(tcsConfig.isDoRelNames()){
 			result &= TcsTaxonNameIO.checkRelations(tcsConfig);
 		}
-//		
-//		//check nameStatus
-//		if(iConfig.isDoNameStatus()){
-//			result &= BerlinModelTaxonNameIO.checkNomStatus(iConfig);
-//		}
-//
-//		//check nomStatus
+
+//		//check types
 //		if(iConfig.isDoTypes()){
 //			result &= BerlinModelTypesIO.check(iConfig);
 //		}
@@ -215,16 +210,6 @@ public class TcsImport implements ICdmImport {
 			logger.warn("No RelNames imported");
 		}
 
-		//check nameStatus
-		if(tcsConfig.isDoNameStatus()){
-			if (! TcsTaxonNameIO.invokeStatus(tcsConfig, cdmApp, taxonNameStore, referenceStore)){
-				return false;
-			}
-		}else{
-			logger.warn("No NomStatus imported");
-		}
-		
-		
 		//make and save Taxa
 		if(tcsConfig.isDoTaxa()){
 			if (! TcsTaxonIO.invoke(tcsConfig, cdmApp, taxonStore, taxonNameStore, referenceStore)){

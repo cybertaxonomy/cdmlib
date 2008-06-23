@@ -33,7 +33,7 @@ public class MapWrapper<T extends CdmBase> {
 		}
 	}
 	
-	public void put(Integer id, T cdmBase){
+	public void put(Object id, T cdmBase){
 		if (service != null){
 			throw new RuntimeException();
 		}else{
@@ -41,7 +41,7 @@ public class MapWrapper<T extends CdmBase> {
 		}
 	}
 
-	public void put(Integer id, UUID uuid){
+	public void put(Object id, UUID uuid){
 		if (service == null){
 			throw new RuntimeException();
 		}else{
@@ -51,7 +51,7 @@ public class MapWrapper<T extends CdmBase> {
 		}
 	}
 	
-	public T get(Integer id){
+	public T get(Object id){
 		T result;
 		if (service == null){
 			result = (T)internalMap.get(id);
@@ -70,7 +70,7 @@ public class MapWrapper<T extends CdmBase> {
 		return (Collection<T>)internalMap.values();
 	}
 	
-	private T getObjectFromService(Integer id){
+	private T getObjectFromService(Object id){
 		if (service == null){
 			throw new RuntimeException("no service defined");
 		}else{
@@ -79,6 +79,7 @@ public class MapWrapper<T extends CdmBase> {
 			if (uuid == null){
 				result = null;
 			}else{
+				//logger.warn(uuid);
 				//TODO
 				//result  = (T)service.getObjectUuid(uuid); //.getCdmObjectByUuid(uuid);//  taxonService.getTaxonByUuid(taxonUuid);
 			}
