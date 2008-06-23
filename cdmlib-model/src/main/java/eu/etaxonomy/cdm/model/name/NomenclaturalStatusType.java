@@ -50,7 +50,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidNudum = UUID.fromString("e0d733a8-7777-4b27-99a3-05ab50e9f312");
 	private static final UUID uuidCombinationInvalid = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
 	private static final UUID uuidProvisional = UUID.fromString("a277507e-ad93-4978-9419-077eb889c951");
-
+	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
+	
 	
 	
 	public NomenclaturalStatusType() {
@@ -192,6 +193,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getByUuid(uuidProvisional);
+	}
+	
+	public static final NomenclaturalStatusType VALID(){
+		return getByUuid(uuidValid);
 	}
 	
 	
