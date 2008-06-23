@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -91,5 +92,26 @@ public class NomenclaturalCode extends DefinedTermBase {
 	public static final NomenclaturalCode VIRAL(){
 		return getByUuid(uuidViral);
 	}
+	
+	@Transient
+	public TaxonNameBase getNewTaxonNameInstance(Rank rank){
+		TaxonNameBase result;
+		if (this.equals(NomenclaturalCode.ICBN())){
+			result = BotanicalName.NewInstance(rank);
+		}else if (this.equals(NomenclaturalCode.ICZN())){
+			result = ZoologicalName.NewInstance(rank);
+		}else if (this.equals(NomenclaturalCode.ICNCP())){
+			result = CultivarPlantName.NewInstance(rank);
+		}else if (this.equals(NomenclaturalCode.BACTERIOLOGICAL())){
+			result = BacterialName.NewInstance(rank);
+		}else if (this.equals(NomenclaturalCode.VIRAL())){
+			result = ViralName.NewInstance(rank);
+		}else {
+			logger.warn("Unknown nomenclatural code: " + this.getUuid());
+			result = null;
+		}
+		return result;
+	}
+	
 	
 }

@@ -45,8 +45,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;
-	//'Cache' that is set to true when the first taxonomic child is added and set to false when the last child is deleted
-	private boolean hasTaxonomicChildren;
+	//cached number of taxonomic children
+	private int taxonomicChildrenCount;
 
 	private static Method methodDescriptionSetTaxon;
 	
@@ -178,7 +178,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			if (fromTaxon != null && fromTaxon.equals(this)){
 				this.setTaxonomicParentCache(null);
 			}else if (toTaxon != null && toTaxon.equals(this)){
-				this.setHasTaxonomicChildren(computeHasTaxonomicChildren());	
+				this.setTaxonomicChildrenCount(computeTaxonomicChildrenCount());	
 			}
 		}
 		//delete Relationship from other related Taxon
@@ -214,7 +214,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 						fromTaxon.addTaxonRelation(rel);
 					}
 					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && fromTaxon!=null ){
-						this.setHasTaxonomicChildren(true);
+						this.taxonomicChildrenCount++;
 					}
 					
 				}
@@ -310,36 +310,39 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * 'Cache' that is set to true when the first taxonomic child is added and set to false when the last child is deleted
+	 * Cached number of taxonomic children of this taxon.
 	 *	@return
 	 */
-	public boolean getHasTaxonomicChildren(){
-		return hasTaxonomicChildren;
-	}
+	public int getTaxonomicChildrenCount(){
+		return taxonomicChildrenCount;
+	}	
 	
 	
 	/**
 	 * @param hasTaxonomicChildren the hasTaxonomicChildren to set
 	 */
-	private void setHasTaxonomicChildren(boolean hasTaxonomicChildren) {
-		this.hasTaxonomicChildren = hasTaxonomicChildren;
+	private void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
+		this.taxonomicChildrenCount = taxonomicChildrenCount;
 	}
 
 	/**
 	 * @see getHasTaxonomicChildren() 
 	 *	@return
 	 */
+	@Transient
 	public boolean hasTaxonomicChildren(){
-		return getHasTaxonomicChildren();
+		return this.taxonomicChildrenCount > 0;
 	}
 
-	private boolean computeHasTaxonomicChildren(){
+	@Transient
+	private int computeTaxonomicChildrenCount(){
+		int count = 0;
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
 			if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
-				return true;
+				count++;
 			}
 		}
-		return false;
+		return count;
 	}
 	
 	/**

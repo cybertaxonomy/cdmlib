@@ -26,14 +26,18 @@ import javax.persistence.*;
  */
 @Entity
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
-	static Logger logger = Logger.getLogger(ViralName.class);
+	private static final Logger logger = Logger.getLogger(ViralName.class);
 
-	
 	protected INameCacheStrategy cacheStrategy;
-
-	
 	//The accepted acronym for the Virus, e.g. PCV for Peanut Clump Virus
 	private String acronym;
+
+	
+	public static ViralName NewInstance(Rank rank){
+		return new ViralName(rank);
+	}
+
+	
 
 	public ViralName(Rank rank) {
 		super(rank);

@@ -106,6 +106,16 @@ public class TaxonTest extends EntityTestBase {
 	}
 
 	@Test
+	public void testGetTaxonomicChildrenCount() {
+		assertEquals(0, child2.getTaxonomicChildrenCount());
+		assertEquals(2, rootT.getTaxonomicChildrenCount());
+		rootT.removeTaxonomicChild(child1);
+		assertEquals(1, rootT.getTaxonomicChildrenCount());
+		rootT.removeTaxonomicChild(child2);
+		assertEquals(0, rootT.getTaxonomicChildrenCount());
+	}
+	
+	@Test
 	public void testGetSynonyms() {
 		assertTrue(child1.getSynonyms().contains(syn1));
 		assertTrue(child2.getSynonyms().contains(syn2));
