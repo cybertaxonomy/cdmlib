@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.app.tcs;
 
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -30,9 +29,9 @@ public class TcsImportActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String tcsSource = TcsSources.arecaceae_short();
+	static final String tcsSource = TcsSources.arecaceae_local();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	//check - import
@@ -45,13 +44,12 @@ public class TcsImportActivator {
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = false;
-	static final boolean doNameStatus = false;
 	static final boolean doTypes = false;
 	static final boolean doNameFacts = false;
 	
 	//taxa
-	static final boolean doTaxa = false;
-	static final boolean doRelTaxa = false;
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
 	static final boolean doFacts = false;
 	
 	/**
@@ -69,7 +67,7 @@ public class TcsImportActivator {
 		tcsImportConfigurator.setDoReferences(doReferences);
 		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
 		tcsImportConfigurator.setDoRelNames(doRelNames);
-		tcsImportConfigurator.setDoNameStatus(doNameStatus);
+		//tcsImportConfigurator.setDoNameStatus(doNameStatus);
 		tcsImportConfigurator.setDoTypes(doTypes);
 		tcsImportConfigurator.setDoNameFacts(doNameFacts);
 		
@@ -82,11 +80,8 @@ public class TcsImportActivator {
 
 		// invoke import
 		TcsImport tcsImport = new TcsImport();
-		//TODO for testing only
-		Element root = tcsImportConfigurator.getSourceRoot();
-		System.out.println(root);
-		new Test().invoke(tcsImportConfigurator);
-		//tcsImport.invoke(tcsImportConfigurator);
+		//new Test().invoke(tcsImportConfigurator);
+		tcsImport.invoke(tcsImportConfigurator);
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}
 
