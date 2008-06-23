@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.Source;
 
 
 /**
@@ -82,6 +83,8 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoOccurrence(doOccurences);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
+		bmImportConfigurator.setCheck(check);
+		
 		// invoke import
 		BerlinModelImport bmImport = new BerlinModelImport();
 		bmImport.invoke(bmImportConfigurator);

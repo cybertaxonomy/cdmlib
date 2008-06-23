@@ -12,8 +12,9 @@ package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.app.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.Source;
 
 
 public class BerlinModelSources {
@@ -86,12 +87,12 @@ public class BerlinModelSources {
 			// on success store userName, pwd in property file
 			if(doStore){
 				accounts.setPassword(dbms, strServer, userName, pwd);
-				logger.info("password stored in "+accounts.accountsFile);
+				logger.info("password stored in " + accounts.getAccountsFileName());
 			}
 		} catch (Exception e) {
 			if(doStore){
 				accounts.removePassword(dbms, strServer, userName);
-				logger.info("password removed from "+accounts.accountsFile);
+				logger.info("password removed from " + accounts.getAccountsFileName());
 			}
 			logger.error(e);
 		}

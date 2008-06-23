@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.berlinModelImport;
+package eu.etaxonomy.cdm.app.common;
 
 import org.apache.log4j.Logger;
 
@@ -85,6 +85,14 @@ public class CdmDestinations {
 		String cdmDB = "cdm_portal_test";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource NULL(){
+		return null;
+	}
+	
+	public static ICdmDataSource localH2(){
+		return CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 	}
 	
 	public static ICdmDataSource cdm_portal_test_pollux(){

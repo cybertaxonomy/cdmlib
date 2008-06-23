@@ -16,13 +16,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.berlinModelImport.AccountStore;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
-import eu.etaxonomy.cdm.app.berlinModelImport.CdmDestinations;
+import eu.etaxonomy.cdm.app.common.AccountStore;
+import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.io.source.Source;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.OriginalSource;

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.berlinModelImport;
+package eu.etaxonomy.cdm.app.common;
 
 import java.io.File;
 import java.io.FileReader;
@@ -21,6 +21,15 @@ public class AccountStore {
 	private static Logger logger = Logger.getLogger(AccountStore.class);
 	
 	final static File accountsFile = new File(System.getenv("USERPROFILE")+File.separator+".cdmLibrary"+File.separator+".dbaccounts.properties");
+	
+	public static String getAccountsFileName(){
+		try {
+			return accountsFile.getCanonicalPath();
+		} catch (IOException e) {
+			logger.warn(e);
+			return "AN ERROR OCCURRED WHEN RETRIEVING THE FILE NAME";
+		}
+	}
 	
 	public String getPassword(String dbms, String strServer, String userName){
 		String pwd = null;
