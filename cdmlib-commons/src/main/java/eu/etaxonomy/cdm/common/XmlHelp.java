@@ -158,9 +158,45 @@ public class XmlHelp {
 		return  bean;
 	}
 	
-	
+
 	//returns the root Element in the File xmlFile
 	static public  Element getRoot(InputStream xmlInput){
+		try {
+			SAXBuilder builder = new SAXBuilder();
+			Document doc = builder.build(xmlInput);
+			Element root = doc.getRootElement();
+			return root;
+		} catch (JDOMException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
+	
+	//returns the root Element in the File xmlFile
+	static public  Element getRoot(InputStream xmlInput, String elementName){
+		try {
+			SAXBuilder builder = new SAXBuilder();
+			Document doc = builder.build(xmlInput);
+			Element root = doc.getRootElement();
+			if (root.getName() != elementName){
+				return null;
+			}else{
+				return root;
+			}
+		} catch (JDOMException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
+	
+	//returns the root Element in the File xmlFile
+	static public  Element getBeansRoot(InputStream xmlInput){
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			Document doc = builder.build(xmlInput);
