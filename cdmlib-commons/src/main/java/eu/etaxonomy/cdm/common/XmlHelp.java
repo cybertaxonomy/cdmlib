@@ -93,7 +93,19 @@ public class XmlHelp {
 			}
 		}
 		return resultList;
-	}	
+	}
+	
+	public static String getChildAttributeValue(Element element, String childElementName, Namespace childElementNamespace, String childAttributeName, Namespace childAttributeNamespace){
+		Element child = element.getChild(childElementName, childElementNamespace);
+		if (child == null){
+			return null;
+		}
+		Attribute childAttribute = child.getAttribute(childAttributeName, childAttributeNamespace);
+		if (childAttribute == null){
+			return null;
+		}
+		return childAttribute.getValue();
+	}
 
 	/**
 	 * @param parent
