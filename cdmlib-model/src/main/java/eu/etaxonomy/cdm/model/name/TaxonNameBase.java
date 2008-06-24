@@ -240,6 +240,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	
+	/**
+	 * Does exactly the same as the addNameRelationship method provided that
+	 * the given relationship is a name relationship.
+	 * 
+	 * @param relation  the relationship to be added to one of this taxon name's name relationships sets
+	 * @see    	   		#addNameRelationship(NameRelationship)
+	 * @see    	   		#getNameRelations()
+	 * @see    	   		NameRelationship
+	 * @see    	   		common.RelationshipBase
+	 */
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof NameRelationship){
 			addNameRelationship((NameRelationship)relation);
@@ -330,7 +340,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	
 	/**
-	 * Indicates if this taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
+	 * Indicates whether this taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
 	 * or a {@link NameRelationshipType.REPLACED_SYNONYM() replaced synonym}
 	 * of any other taxon name. Returns true, if a basionym or a replaced synonym 
 	 * relationship from this taxon name to another taxon name exists,
@@ -585,7 +595,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
-	 * to the set of specimen type designations assigned to the
+	 * (using its attributes as parameters) to the set of specimen type designations assigned to the
 	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
 	 *
 	 * @param  typeSpecimen				the specimen to be used as a type for this taxon name's homotypical group
@@ -604,11 +614,30 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	//only to be used for xxx
+	/** 
+	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
+	 * to the set of specimen type designations assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 *
+	 * @param  specimenTypeDesignation	the specimen type designation to be added for this taxon name's homotypical group
+	 * @see 			  				#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
+	 * @see 			  				HomotypicalGroup#getTypeDesignations()
+	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 */
 	protected void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
 		this.specimenTypeDesignations.add(specimenTypeDesignation);
 	}
 	
 	//only to be used for xxx
+	/** 
+	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 *
+	 * @param  SpecimenTypeDesignation  the specimen type designation which should be deleted
+	 * @see     		  				HomotypicalGroup#getTypeDesignations()
+	 * @see     		  				#removeTypeDesignation(SpecimenTypeDesignation)
+	 * @see     		  		#removeNameTypeDesignation(NameTypeDesignation)
+	 */
 	protected void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
 		this.specimenTypeDesignations.remove(specimenTypeDesignation);
 	}
@@ -620,7 +649,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 *
 	 * @param  typeDesignation  the specimen type designation which should be deleted
 	 * @see     		  		HomotypicalGroup#getTypeDesignations()
-	 * @see     		  		#removeTypeDesignation(NameTypeDesignation)
+	 * @see     		  		#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
+	 * @see     		  		#removeNameTypeDesignation(NameTypeDesignation)
 	 */
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
 		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
@@ -644,6 +674,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}
 
+	/** 
+	 * @see #getNomenclaturalReference()
+	 */
 	@Transient
 	public StrictReferenceBase getCitation(){
 		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
@@ -656,9 +689,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * {@link reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
 	 * (including {@link #getNomenclaturalMicroReference() details}) assigned to this taxon name.
 	 * 
-	 * @see	reference.INomenclaturalReference#getNomenclaturalCitation()
-	 * @see	#getNomenclaturalReference()
-	 * @see	#getNomenclaturalMicroReference()
+	 * @return  the string containing the nomenclatural reference of this taxon name
+	 * @see		reference.INomenclaturalReference#getNomenclaturalCitation()
+	 * @see		#getNomenclaturalReference()
+	 * @see		#getNomenclaturalMicroReference()
 	 */
 	@Transient
 	public String getCitationString(){
@@ -674,10 +708,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/**
 	 * Returns the string containing the publication date (generally only year)
-	 * of the nomenclatural reference, null if there is no nomenclatural
-	 * reference.
+	 * of the nomenclatural reference for this taxon name, null if there is
+	 * no nomenclatural reference.
 	 * 
-	 * @see	reference.INomenclaturalReference#getYear()
+	 * @return  the string containing the publication date of this taxon name
+	 * @see		reference.INomenclaturalReference#getYear()
 	 */
 	@Transient
 	public String getReferenceYear(){
@@ -695,7 +730,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * A taxon name can be used by several distinct references but only once
 	 * within a taxonomic treatment (identified by one reference).
 	 *
-	 * @see  taxon.TaxonBase
+	 * @see taxon.TaxonBase
 	 * @see	#getTaxa()
 	 * @see	#getSynonyms()
 	 */
@@ -726,6 +761,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		initMethods();
 		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
+	/** 
+	 * Removes one element from the set of {@link taxon.TaxonBase taxon bases} that refer to this taxon name.
+	 *
+	 * @param  taxonBase	the taxon base which should be removed from the corresponding set
+	 * @see    				#addTaxonBase(TaxonBase)
+	 */
 	public void removeTaxonBase(TaxonBase taxonBase){
 		taxonBases.remove(taxonBase);
 		initMethods();
@@ -814,7 +855,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 //*********  Rank comparison shortcuts   ********************//
 	/**
-	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is higher than the genus rank (true) or not (false).
 	 * Suprageneric non viral names are monomials.
 	 * 
@@ -828,7 +869,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isSupraGeneric();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is the genus rank (true) or not (false). Non viral names with
 	 * genus rank are monomials.
 	 *
@@ -842,8 +883,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isGenus();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic rank of this
-	 * taxon name is higher than the species rank and lower than
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * taxon name is higher than the species aggregate rank and lower than
 	 * the genus rank (true) or not (false). Infrageneric non viral names
 	 * are binomials.
 	 *
@@ -857,8 +898,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isInfraGeneric();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic rank of this
-	 * taxon name is the species rank (true) or not (false). Non viral names
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * taxon name is the species or species aggregate rank (true) or not (false). Non viral names
 	 * with species rank are binomials.
 
 	 *
@@ -872,7 +913,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isSpecies();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic rank of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is lower than the species rank (true) or not (false).
 	 * Infraspecific non viral names are trinomials.
 	 *
@@ -892,13 +933,26 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * the construction of this taxon name. Each taxon name is governed by one
 	 * and only one nomenclatural code. 
 	 *
-	 * @see  #isCodeCompliant()
-	 * @see  #getHasProblem()
+	 * @return  the nomenclatural code governing this non viral taxon name
+	 * @see  	#isCodeCompliant()
+	 * @see  	#getHasProblem()
 	 */
 	@Transient
 	abstract public NomenclaturalCode getNomeclaturalCode();
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 */
+	/**
+	 * Generates and returns the string with the scientific name of this
+	 * taxon name.
+	 * This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#generateTitle() method.
+	 *
+	 * @return  the string with the composed name of this non viral taxon name with authorship (and maybe year)
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
 	public String generateTitle() {

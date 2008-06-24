@@ -40,13 +40,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	//The scientific name without author strings and year
 	private String nameCache;
-	//The suprageneric or the genus name
 	private String genusOrUninomial;
-	//Genus subdivision epithet
 	private String infraGenericEpithet;
-	//species epithet
 	private String specificEpithet;
-	//Species subdivision epithet
 	private String infraSpecificEpithet;
 	private INomenclaturalAuthor combinationAuthorTeam;
 	private INomenclaturalAuthor exCombinationAuthorTeam;
@@ -84,8 +80,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * its {@link common.HomotypicalGroup homotypical group} and
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @param	rank  the rank to be assigned to this taxon name
-	 * @param	homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @param	rank  the rank to be assigned to this non viral taxon name
+	 * @param	homotypicalGroup  the homotypical group to which this non viral taxon name belongs
 	 * @see 	#NonViralName()
 	 * @see		#NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
@@ -105,18 +101,18 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @param	rank  the rank to be assigned to this taxon name
+	 * @param	rank  the rank to be assigned to this non viral taxon name
 	 * @param	genusOrUninomial the string for this taxon name
-	 * 			if its rank is genus or above or for the genus component
+	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
 	 * @param	specificEpithet  the string for the first epithet of
-	 * 			this taxon name if its rank is lower than genus
+	 * 			this non viral taxon name if its rank is lower than genus
 	 * @param	infraSpecificEpithet  the string for the second epithet of
-	 * 			this taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published this taxon name
-	 * @param	nomenclaturalReference  the nomenclatural reference where this taxon name was published
+	 * 			this non viral taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published this non viral taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where this non viral taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-	 * @param	homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @param	homotypicalGroup  the homotypical group to which this non viral taxon name belongs
 	 * @see 	#NonViralName()
 	 * @see		#NonViralName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
@@ -160,7 +156,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * its {@link common.HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
-	 * taxon names belonging to this homotypical group. If the homotypical 
+	 * non viral taxon names belonging to this homotypical group. If the homotypical 
 	 * group does not exist a new instance will be created for it.
 	 * 
 	 * @param  rank  the rank to be assigned to this non viral taxon name
@@ -301,62 +297,104 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	public INomenclaturalAuthor getExBasionymAuthorTeam(){
 		return exBasionymAuthorTeam;
 	}
+	/**
+	 * @see  #getExBasionymAuthorTeam()
+	 */
 	public void setExBasionymAuthorTeam(INomenclaturalAuthor exBasionymAuthorTeam) {
 		this.exBasionymAuthorTeam = exBasionymAuthorTeam;
 	}
-
+	/**
+	 * Returns either the scientific name string (without authorship) for this
+	 * non viral taxon name if its rank is genus or higher (monomial) or the string for
+	 * the genus part of it if its {@link Rank rank} is lower than genus (bi- or trinomial).
+	 * Genus or uninomial strings begin with an upper case letter.
+	 * 
+	 * @return  the string containing the suprageneric name, the genus name or the genus part of this non viral taxon name
+	 * @see 	#getNameCache()
+	 */
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}
 	
+	/**
+	 * @see  #getGenusOrUninomial()
+	 */
 	public void setGenusOrUninomial(String genusOrUninomial) {
 		this.genusOrUninomial = genusOrUninomial;
 	}
 
+	/**
+	 * Returns the genus subdivision epithet string (infrageneric part) for
+	 * this non viral taxon name if its {@link Rank rank} is infrageneric (lower than genus and
+	 * higher than species aggregate). Genus subdivision epithet strings begin
+	 * with an upper case letter.
+	 * 
+	 * @return  the string containing the infrageneric part of this non viral taxon name
+	 * @see 	#getNameCache()
+	 */
 	public String getInfraGenericEpithet(){
 		return this.infraGenericEpithet;
 	}
 
 	/**
-	 * 
-	 * @param infraGenericEpithet    infraGenericEpithet
+	 * @see  #getInfraGenericEpithet()
 	 */
 	public void setInfraGenericEpithet(String infraGenericEpithet){
 		this.infraGenericEpithet = infraGenericEpithet;
 	}
 
+	/**
+	 * Returns the species epithet string for this non viral taxon name if its {@link Rank rank} is
+	 * species aggregate or lower. Species epithet strings begin with a
+	 * lower case letter.
+	 * 
+	 * @return  the string containing the species epithet of this non viral taxon name
+	 * @see 	#getNameCache()
+	 */
 	public String getSpecificEpithet(){
 		return this.specificEpithet;
 	}
 
 	/**
-	 * 
-	 * @param specificEpithet    specificEpithet
+	 * @see  #getSpecificEpithet()
 	 */
 	public void setSpecificEpithet(String specificEpithet){
 		this.specificEpithet = specificEpithet;
 	}
 
+	/**
+	 * Returns the species subdivision epithet string (infraspecific part) for
+	 * this non viral taxon name if its {@link Rank rank} is infraspecific (lower than species).
+	 * Species subdivision epithet strings begin with a lower case letter.
+	 * 
+	 * @return  the string containing the infraspecific part of this non viral taxon name
+	 * @see 	#getNameCache()
+	 */
 	public String getInfraSpecificEpithet(){
 		return this.infraSpecificEpithet;
 	}
 
 	/**
-	 * 
-	 * @param infraSpecificEpithet    infraSpecificEpithet
+	 * @see  #getInfraSpecificEpithet()
 	 */
 	public void setInfraSpecificEpithet(String infraSpecificEpithet){
 		this.infraSpecificEpithet = infraSpecificEpithet;
 	}
 
 	/**
-	 * Returns the string with the scientific name of this taxon name including
-	 * author strings and maybe year. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * Generates and returns the string with the scientific name of this
+	 * non viral taxon name including author strings and maybe year according to
+	 * the strategy defined in
+	 *  {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy INonViralNameCacheStrategy}.
+	 * This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#getTitleCache() method.
+	 * TaxonNameBase#generateTitle() method.
 	 *
-	 * @see  common.IdentifiableEntity#getTitleCache()
+	 * @return  the string with the composed name of this non viral taxon name with authorship (and maybe year)
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	TaxonNameBase#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -369,13 +407,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 	
 	/**
-	 * Generates the composed name string of this taxon name without author
+	 * Generates the composed name string of this non viral taxon name without author
 	 * strings or year according to the strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy INonViralNameCacheStrategy}.
 	 * The result might be stored in {@link #getNameCache() nameCache} if the
 	 * flag {@link #isProtectedNameCache() protectedNameCache} is not set.
 	 * 
-	 * @return  the string with the composed name of this taxon name without authors or year
+	 * @return  the string with the composed name of this non viral taxon name without authors or year
+	 * @see 	#getNameCache()
 	 */
 	protected String generateNameCache(){
 		if (cacheStrategy == null){
@@ -388,12 +427,12 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	/**
 	 * Returns or generates the nameCache (scientific name
-	 * without author strings and year) string for this taxon name. If the
+	 * without author strings and year) string for this non viral taxon name. If the
 	 * {@link #isProtectedNameCache() protectedNameCache} flag is not set (False)
 	 * the string will be generated according to a defined strategy,
 	 * otherwise the value of the actual nameCache string will be returned.
 	 * 
-	 * @return  the string which identifies this taxon name (without authors or year)
+	 * @return  the string which identifies this non viral taxon name (without authors or year)
 	 * @see 	#generateNameCache()
 	 */
 	public String getNameCache() {
@@ -408,9 +447,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * Assigns a nameCache string to this taxon name and protects it from being overwritten.
+	 * Assigns a nameCache string to this non viral taxon name and protects it from being overwritten.
 	 *  
-	 * @param  nameCache  the string which identifies this taxon name (without authors or year)
+	 * @param  nameCache  the string which identifies this non viral taxon name (without authors or year)
 	 * @see	   #getNameCache()
 	 */
 	public void setNameCache(String nameCache){
@@ -422,7 +461,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/**
 	 * Returns the boolean value of the flag intended to protect (true)
 	 * or not (false) the {@link #getNameCache() nameCache} (scientific name without author strings and year)
-	 * string of this taxon name.
+	 * string of this non viral taxon name.
 	 *  
 	 * @return  the boolean value of the protectedNameCache flag
 	 * @see     #getNameCache()
@@ -439,6 +478,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	
+	/**
+	 * Generates and returns a concatenated and formated authorteams string
+	 * including basionym and combination authors of this non viral taxon name
+	 * according to the strategy defined in
+	 * {@link eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorshipCache(NonViralName) INonViralNameCacheStrategy}.
+	 * 
+	 * @return  the string with the concatenated and formated authorteams for this non viral taxon name
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorshipCache(NonViralName)
+	 */
 	public String generateAuthorship(){
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
@@ -449,8 +497,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * returns concatenated und formated authorteams including basionym and
-	 * combination authors
+	 * Returns the concatenated and formated authorteams string including
+	 * basionym and combination authors of this non viral taxon name.
+	 * This method also stores, if still not existing, the string in
+	 * the authorshipCache attribute.
+	 * 
+	 * @return  the string with the concatenated and formated authorteams for this non viral taxon name
+	 * @see 	#generateAuthorship()
 	 */
 	public String getAuthorshipCache() {
 		if (protectedAuthorshipCache){
@@ -466,23 +519,32 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		return authorshipCache;
 	}
 
+	/**
+	 * Assigns an authorshipCache string to this non viral taxon name.
+	 *  
+	 * @param  authorshipCache  the string which identifies the complete authorship of this non viral taxon name
+	 * @see	   #getAuthorshipCache()
+	 */
 	public void setAuthorshipCache(String authorshipCache) {
 		this.authorshipCache = authorshipCache;
 	}
 
 	/**
-	 * Returns the boolean value "true" if the components of this taxon name
+	 * Returns the boolean value "true" if the components of this non viral taxon name
 	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
 	 * "false" otherwise. The nomenclature code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
-	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} ot
-	 * {@link ZoologicalName ZoologicalName} to which this taxon name belongs.
+	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} or
+	 * {@link ZoologicalName ZoologicalName} to which this non viral taxon name belongs.
+	 * This method overrides the isCodeCompliant method from {@link TaxonNameBase#isCodeCompliant() TaxonNameBase}.
 	 *  
-	 * @return  the boolean value expressing the compliance of this taxon name to the nomenclatural code
+	 * @return  the boolean value expressing the compliance of this non viral taxon name to its nomenclatural code
+	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
 	@Transient
 	public boolean isCodeCompliant() {
+		//TODO What is the purpose of overriding the inherited method? 
 		//FIXME
 		logger.warn("is CodeCompliant not yet implemented");
 		return false;
@@ -491,9 +553,20 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()
 	 */
+	/**
+	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
+	 * the construction of this non viral taxon name. Each taxon name is governed by one
+	 * and only one nomenclatural code. 
+	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 *
+	 * @return  the nomenclatural code governing this non viral taxon name
+	 * @see  	#isCodeCompliant()
+	 * @see  	TaxonNameBase#getHasProblem()
+	 */
 	@Transient
 	@Override
 	public NomenclaturalCode getNomeclaturalCode() {
+		//TODO What is the purpose of overriding the inherited method? 
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");
 		return null;
 	}
