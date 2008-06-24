@@ -5,19 +5,27 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -41,6 +49,54 @@ public class BerlinModelFactsIO {
 		return result;
 	}
 
+	private static Map<Integer, Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
+		
+		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
+		IDescriptionService descriptionService = cdmApp.getDescriptionService();
+		ITermService termService = cdmApp.getTermService();
+
+		Source source = bmiConfig.getSource();
+
+		
+		try {
+			//get data from database
+			String strQuery = 
+					" SELECT FactCategory.* " + 
+					" FROM FactCategory "+
+                    " WHERE (1=1)";
+			ResultSet rs = source.getResultSet(strQuery) ;
+
+			int i = 0;
+			//for each reference
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0){ logger.info("FactCategories handled: " + (i-1));}
+				
+				int factCategoryId = rs.getInt("factCategoryId");
+				String factCategory = rs.getString("factCategory");
+
+				Feature feature = Feature.NewInstance(factCategory, factCategory, null);
+				feature.setSupportsTextData(true);
+				featureMap.put(factCategoryId, feature);
+
+				//TODO
+//				MaxFactNumber	int	Checked
+//				ExtensionTableName	varchar(100)	Checked
+//				Description	nvarchar(1000)	Checked
+//				locExtensionFormName	nvarchar(80)	Checked
+//				RankRestrictionFk	int	Checked
+	
+			}
+			Collection col = featureMap.values();
+			termService.saveTermsAll(col);
+			return featureMap;
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return null;
+		}
+
+	}
+	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
 		
@@ -53,8 +109,12 @@ public class BerlinModelFactsIO {
 		
 		logger.info("start makeFacts ...");
 		
-		boolean delete = bmiConfig.isDeleteAll();
-
+		Map<Integer, Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
+		
+		//FIXME for testing only
+		TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+		
+		
 		try {
 			//get data from database
 			String strQuery = 
@@ -75,9 +135,11 @@ public class BerlinModelFactsIO {
 				int factRefFk = rs.getInt("factRefFk");
 				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
 				int categoryFk = rs.getInt("factCategoryFk");
+				String fact = rs.getString("Fact");
+				//FIXME
+				//TaxonBase taxonBase = taxonMap.get(taxonId);
 				
-				TaxonBase taxonBase = taxonMap.get(taxonId);
-				
+				Feature feature = featureMap.get(categoryFk); 
 				if (taxonBase != null){
 					Taxon taxon;
 					if ( taxonBase instanceof Taxon ) {
@@ -92,9 +154,10 @@ public class BerlinModelFactsIO {
 					taxon.addDescription(taxonDescription);
 					//textData
 					TextData textData = TextData.NewInstance();
-					//TODO textData.putText("XXX", bmiConfig.getFactLanguage());  
+					//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
-					textData.putText("XXX", Language.DEFAULT());
+					textData.putText(fact, Language.DEFAULT());
+					textData.setType(feature);
 					taxonDescription.addElement(textData);
 					
 					//commonNames
