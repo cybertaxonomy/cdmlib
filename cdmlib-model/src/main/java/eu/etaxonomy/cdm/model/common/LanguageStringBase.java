@@ -43,6 +43,7 @@ public abstract class LanguageStringBase  extends VersionableEntity{
 		this.language = language;
 	}
 
+	@Column(length=4096)
 	public String getText(){
 		return this.text;
 	}
