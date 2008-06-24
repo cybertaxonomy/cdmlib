@@ -30,7 +30,8 @@ public class CdmDocumentBuilderTest {
 		dataSet = dataSetTest.buildDataSet();
 	}
 	
-//	@Ignore
+/* ******************** TESTS ***********************************************************/
+	
 	@Test
 	public void testCdmDocumentBuilderInit() {
 		Assert.assertNotNull(cdmDocumentBuilder);
@@ -49,7 +50,7 @@ public class CdmDocumentBuilderTest {
 //		cdmDocumentBuilder.writeFile(dataSet, new File(filename));
 //	}
 
-//	@Ignore
+	@Ignore
 	@Test
 	public void marshalDataSet2FileWriter() throws Exception {
 		cdmDocumentBuilder.write(dataSet, new FileWriter(filename));

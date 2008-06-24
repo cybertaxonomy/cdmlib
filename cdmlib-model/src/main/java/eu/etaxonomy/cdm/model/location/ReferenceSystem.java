@@ -37,6 +37,13 @@ public class ReferenceSystem extends DefinedTermBase {
 	/**
 	 * Constructor
 	 */
+	private ReferenceSystem() {
+		super();
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public ReferenceSystem(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
