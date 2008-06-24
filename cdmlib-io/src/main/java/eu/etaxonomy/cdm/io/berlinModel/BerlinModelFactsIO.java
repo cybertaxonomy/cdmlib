@@ -180,7 +180,7 @@ public class BerlinModelFactsIO {
 						//
 					}else {
 						//TODO
-						logger.warn("FactCategory " + categoryFk + " not yet implemented");
+						//logger.warn("FactCategory " + categoryFk + " not yet implemented");
 					}
 					
 					//TODO
