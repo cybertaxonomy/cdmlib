@@ -15,6 +15,12 @@ import eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A team exists for itself or is built with the list of (distinct) persons
@@ -29,14 +35,24 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Team", propOrder = {
+	"protectedNomenclaturalTitleCache",
+    "teamMembers"
+})
 @Entity
 public class Team extends TeamOrPersonBase {
+	
 	static Logger logger = Logger.getLogger(Team.class);
+	
+    @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache;
 
-	
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
+    @XmlElementWrapper(name = "TeamMembers")
+    @XmlElement(name = "Member")
+    //@XmlIDREF
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	

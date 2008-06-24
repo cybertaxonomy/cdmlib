@@ -16,6 +16,14 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A public or private institution.
@@ -27,13 +35,38 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Institution", propOrder = {
+	"code",
+	"name",
+	"types",
+	"isPartOf",
+	"contact"
+})
+@XmlRootElement(name = "Institution")
 @Entity
 public class Institution extends Agent {
+	
 	static Logger logger = Logger.getLogger(Institution.class);
+	
+    @XmlElement(name = "Code")
 	private String code;
+	
+    @XmlElement(name = "Name")
 	private String name;
+	
+    @XmlElementWrapper(name = "Types")
+    @XmlElement(name = "Type")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private Set<InstitutionType> types = new HashSet<InstitutionType>();
+	
+    @XmlElement(name = "IsPartOf")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private Institution isPartOf;
+	
+    @XmlElement(name = "Contact")
 	private Contact contact;
 
 	/**

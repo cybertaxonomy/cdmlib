@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.agent;
 
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
@@ -29,6 +32,9 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
  * @version 1.0
  * @created 08-Nov-2007 13:06:57
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Agent", propOrder = {
+})
 @Entity
 @Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class Agent extends IdentifyableMediaEntity{

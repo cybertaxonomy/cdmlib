@@ -17,6 +17,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A representation of a human being, living or dead.
@@ -34,17 +42,49 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:42
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Person", propOrder = {
+	    "prefix",
+	    "firstname",
+	    "lastname",
+	    "suffix",
+	    "lifespan",
+	    "institutionalMemberships",
+	    "contact",
+	    "keywords"
+	})
+@XmlRootElement(name = "Person")
 @Entity
 public class Person extends TeamOrPersonBase {
 	static Logger logger = Logger.getLogger(Person.class);
 
+    @XmlElement(name = "Prefix")
 	private String prefix;
+    
+    @XmlElement(name = "FirstName")
 	private String firstname;
+	
+    @XmlElement(name = "LastName")
 	private String lastname;
+	
+    @XmlElement(name = "Suffix")
 	private String suffix;
+	
+    @XmlElement(name = "Lifespan")
+    //@XmlJavaTypeAdapter(IntervalAdapter.class)
 	private TimePeriod lifespan;
+	
+    @XmlElementWrapper(name = "InstitutionalMemberships")
+    @XmlElement(name = "InstitutionalMembership")
 	protected Set<InstitutionalMembership> institutionalMemberships;
+	
+    @XmlElement(name = "Contact")
 	private Contact contact;
+	
+    @XmlElementWrapper(name = "Keywords")
+    @XmlElement(name = "Keyword")
+    //@XmlIDREF
+    //@XmlSchemaType(name="IDREF")
 	private Set<Keyword> keywords = new HashSet<Keyword>();
 
 	/** 

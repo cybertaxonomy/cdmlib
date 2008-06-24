@@ -9,6 +9,12 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.strategy.cache.INomenclaturalAuthorCacheStrategy;
@@ -22,11 +28,18 @@ import eu.etaxonomy.cdm.strategy.cache.INomenclaturalAuthorCacheStrategy;
  * @version 1.0
  * @created 17-APR-2008
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TeamOrPersonBase", propOrder = {
+	"nomenclaturalTitle"
+})
 @Entity
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase> extends Agent implements INomenclaturalAuthor {
 	static Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
+	@XmlElement(name="NomenclaturalTitle")
 	protected String nomenclaturalTitle;
+	
+	@XmlTransient
 	protected INomenclaturalAuthorCacheStrategy<T> cacheStrategy;
 
 	/**

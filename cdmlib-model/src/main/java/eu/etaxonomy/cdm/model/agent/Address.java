@@ -14,7 +14,16 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Representation of an atomized postal address.
@@ -25,17 +34,46 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:09
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "pobox",
+    "street",
+    "postcode",
+    "locality",
+    "region",
+    "country",
+    "location",
+    "contact"
+})
+@XmlRootElement(name = "Address")
 @Entity
 public class Address extends VersionableEntity {
+	
 	static Logger logger = Logger.getLogger(Address.class);
+	
+    @XmlElement(name = "POBox")
 	private String pobox;
+    
+    @XmlElement(name = "Street")
 	private String street;
+    
+    @XmlElement(name = "Postcode")
 	private String postcode;
+    
+    @XmlElement(name = "Locality", required = true)
 	private String locality;
+    
+    @XmlElement(name = "Region")
 	private String region;
+    
+    @XmlElement(name = "Country")
 	private WaterbodyOrCountry country;
+    
+    @XmlElement(name = "Location")
 	private Point location;
+    
 	//Bidirectional only private
+    @XmlElement(name = "Contact")
 	private Contact contact;
 	
 	
@@ -96,6 +134,7 @@ public class Address extends VersionableEntity {
 	 * @return  the point corresponding to this address
 	 * @see		eu.etaxonomy.cdm.model.location.Point
 	 */
+	@XmlTransient
 	public Point getLocation(){
 		return this.location;
 	}

@@ -16,6 +16,13 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Information on how to approach a {@link Person person} or an {@link Institution institution}.
@@ -28,6 +35,15 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:18
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "email",
+    "url",
+    "phone",
+    "fax",
+    "addresses"
+})
+@XmlRootElement(name = "Contact")
 @Entity
 public class Contact extends VersionableEntity {
 	/** 
@@ -39,10 +55,22 @@ public class Contact extends VersionableEntity {
 	}
 
 	static Logger logger = Logger.getLogger(Contact.class);
+	
+	@XmlElement(name = "EmailAddress")
 	private String email;
+	
+	@XmlElement(name = "URL")
+    @XmlSchemaType(name = "anyURI")
 	private String url;
+	
+	@XmlElement(name = "PhoneNumber")
 	private String phone;
+	
+	@XmlElement(name = "FaxNumber")
 	private String fax;
+	
+    @XmlElementWrapper(name = "Addresses")
+    @XmlElement(name = "Address")
 	protected Set<Address> addresses;
 	
 	

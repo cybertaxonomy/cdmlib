@@ -17,6 +17,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Allows to hold one {@link Institution institution} to which a {@link Person person} is affiliated.
@@ -29,20 +35,53 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:30
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "period",
+    "department",
+    "role",
+    "institute",
+    "person"
+})
+@XmlRootElement(name = "InstitutionalMembership")
 @Entity
 public class InstitutionalMembership extends VersionableEntity {
+	
 	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
+	
 	/*Time period a person belonged to the institution*/
+    @XmlElement(name = "Period")
+    //@XmlJavaTypeAdapter(IntervalAdapter.class)
 	private TimePeriod period;
+	
 	//Department of the institution this person was working in
+    @XmlElement(name = "Department")
 	private String department;
+	
 	//Role this person had in the institution
+    @XmlElement(name = "Role")
 	private String role;
+	
 	//current institute the person belongs to
+    @XmlElement(name = "Institution", required = true)
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private Institution institute;
+	
+    @XmlElement(name = "Person", required = true)
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private Person person;
 	
-	
+	public static InstitutionalMembership NewInstance() {
+		InstitutionalMembership mship = new InstitutionalMembership();
+		return mship;
+	}
+
+	public InstitutionalMembership() {
+		super();
+	}
+
 	/** 
 	 * Class constructor using an {@link Institution institution}, a {@link Person person}, a {@link common.TimePeriod time period},
 	 * a department name string and a role string.

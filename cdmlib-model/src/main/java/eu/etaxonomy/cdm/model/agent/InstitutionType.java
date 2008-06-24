@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.agent;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Represents an element of a controlled {@link common.TermVocabulary vocabulary} for different kinds of institutions.
@@ -24,6 +27,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:30
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "InstitutionType")
 @Entity
 public class InstitutionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(InstitutionType.class);
