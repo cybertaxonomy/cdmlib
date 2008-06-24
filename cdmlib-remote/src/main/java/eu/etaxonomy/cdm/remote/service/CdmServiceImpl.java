@@ -201,7 +201,9 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting {
 		ReferenceBase sec = null;
-		sec = getCdmReferenceBase(uuid);
+		if(uuid != null){
+			sec = getCdmReferenceBase(uuid);
+		}
 		return taxonAssembler.getTreeNodeListSortedByName(taxonDAO.getRootTaxa(sec));
 	}
 

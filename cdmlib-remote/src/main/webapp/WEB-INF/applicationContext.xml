@@ -13,10 +13,10 @@
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
   
     <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.p6spy.engine.spy.P6SpyDriver"/>
-        <!-- 
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <!-- 
 
+        <property name="driverClassName" value="com.p6spy.engine.spy.P6SpyDriver"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal"/>
         <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_cichorieae"/>
