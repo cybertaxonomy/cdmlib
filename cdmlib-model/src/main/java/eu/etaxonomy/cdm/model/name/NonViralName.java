@@ -38,7 +38,6 @@ import javax.persistence.*;
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName, INonViralNameCacheStrategy> {
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
-	//The scientific name without author strings and year
 	private String nameCache;
 	private String genusOrUninomial;
 	private String infraGenericEpithet;
@@ -48,9 +47,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	private INomenclaturalAuthor basionymAuthorTeam;
 	private INomenclaturalAuthor exBasionymAuthorTeam;
-	//concatenated und formated author teams including basionym and combination authors
 	private String authorshipCache;
-	//this flag shows if the getAuthorshipCache should return generated value(false) or the given String(true)  
 	protected boolean protectedAuthorshipCache;
 	protected boolean protectedNameCache;
 
@@ -499,7 +496,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/**
 	 * Returns the concatenated and formated authorteams string including
 	 * basionym and combination authors of this non viral taxon name.
-	 * This method also stores, if still not existing, the string in
+	 * If the protectedAuthorshipCache flag is set this method returns the
+	 * string stored in the the authorshipCache attribute, otherwise it
+	 * generates the complete authorship string, returns it and stores it in
 	 * the authorshipCache attribute.
 	 * 
 	 * @return  the string with the concatenated and formated authorteams for this non viral taxon name
@@ -534,7 +533,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/**
 	 * Returns the boolean value "true" if the components of this non viral taxon name
 	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
-	 * "false" otherwise. The nomenclature code depends on
+	 * "false" otherwise. The nomenclatural code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} or
 	 * {@link ZoologicalName ZoologicalName} to which this non viral taxon name belongs.
@@ -546,7 +545,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@Override
 	@Transient
 	public boolean isCodeCompliant() {
-		//TODO What is the purpose of overriding the inherited method? 
 		//FIXME
 		logger.warn("is CodeCompliant not yet implemented");
 		return false;
@@ -556,12 +554,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()
 	 */
 	/**
-	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this non viral taxon name. Each taxon name is governed by one
-	 * and only one nomenclatural code. 
+	 * Returns null as {@link NomenclaturalCode nomenclatural code} that governs
+	 * the construction of this non viral taxon name since there is no specific
+	 * nomenclatural code defined. The real implementention takes place in the
+	 * subclasses {@link BacterialName BacterialName},
+	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
+	 * {@link ZoologicalName ZoologicalName}.
 	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
 	 *
-	 * @return  the nomenclatural code governing this non viral taxon name
+	 * @return  null
 	 * @see  	#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
@@ -574,14 +575,20 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * @return the protectedAuthorshipCache
+	 * Returns the boolean value of the flag intended to protect (true)
+	 * or not (false) the {@link #getAuthorshipCache() authorshipCache} (complete authorship string)
+	 * of this non viral taxon name.
+	 *  
+	 * @return  the boolean value of the protectedAuthorshipCache flag
+	 * @see     #getAuthorshipCache()
 	 */
 	public boolean isProtectedAuthorshipCache() {
 		return protectedAuthorshipCache;
 	}
 
-	/**
-	 * @param protectedAuthorshipCache the protectedAuthorshipCache to set
+	/** 
+	 * @see     #isProtectedAuthorshipCache()
+	 * @see     #getAuthorshipCache()
 	 */
 	public void setProtectedAuthorshipCache(boolean protectedAuthorshipCache) {
 		this.protectedAuthorshipCache = protectedAuthorshipCache;

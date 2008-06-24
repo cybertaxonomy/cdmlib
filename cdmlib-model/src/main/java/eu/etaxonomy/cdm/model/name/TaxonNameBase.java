@@ -137,15 +137,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 //	}
 	
 	/**
-	 * Returns the boolean value "true" if the components of this taxon name
-	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
-	 * "false" otherwise. The nomenclature code depends on
+	 * Returns the boolean value "false" since the components of this taxon name
+	 * cannot follow the rules of a corresponding {@link NomenclaturalCode nomenclatural code}
+	 * which is not defined for this class. The nomenclature code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName},
 	 * {@link ZoologicalName ZoologicalName} or {@link ViralName ViralName}) 
-	 * to which this taxon name belongs.
+	 * to which a taxon name belongs.
 	 *  
-	 * @return  the boolean value expressing the compliance of this taxon name to the nomenclatural code
+	 * @return  false
 	 */
 	@Transient
 	public abstract boolean isCodeCompliant();
@@ -929,11 +929,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	
 	/**
-	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this taxon name. Each taxon name is governed by one
+	 * Returns null as the {@link NomenclaturalCode nomenclatural code} that governs
+	 * the construction of this taxon name since there is no specific
+	 * nomenclatural code defined. The real implementention takes place in the
+	 * subclasses {@link ViralName ViralName}, {@link BacterialName BacterialName},
+	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
+	 * {@link ZoologicalName ZoologicalName}. Each taxon name is governed by one
 	 * and only one nomenclatural code. 
 	 *
-	 * @return  the nomenclatural code governing this non viral taxon name
+	 * @return  null
 	 * @see  	#isCodeCompliant()
 	 * @see  	#getHasProblem()
 	 */

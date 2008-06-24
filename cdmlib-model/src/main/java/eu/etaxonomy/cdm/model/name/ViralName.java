@@ -18,8 +18,14 @@ import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
 import javax.persistence.*;
 
 /**
- * use name attribute for the entire virus name!  examples see ICTVdb: http://www.
- * ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
+ * The taxon name class for viral taxa. The scientific name will be stored
+ * as a string (consisting eventually of several words even combined also with
+ * non alphabetical characters) in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+ * Classification has no influence on the names of viral taxon names and no
+ * viral taxon must be taxonomically included in another viral taxon with
+ * higher rank. For examples see ICTVdb:
+ * http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:02
