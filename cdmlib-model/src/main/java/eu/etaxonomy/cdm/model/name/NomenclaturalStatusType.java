@@ -51,6 +51,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidCombinationInvalid = UUID.fromString("f858e619-7b7f-4225-913b-880a2143ec83");
 	private static final UUID uuidProvisional = UUID.fromString("a277507e-ad93-4978-9419-077eb889c951");
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
+	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	
 	
 	
@@ -69,10 +70,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isInvalidType(){
-		if (this.equals(INVALID()) || 
-				this.equals(NUDUM()) || 
-				this.equals(PROVISIONAL()) ||
-				this.equals(COMBINATION_INVALID())
+		if (this.equals(INVALID()) 
+			|| this.equals(NUDUM())  
+			|| 	this.equals(PROVISIONAL()) 
+			|| 	this.equals(COMBINATION_INVALID())
+			|| 	this.equals(OPUS_UTIQUE_OPPR())
 			){
 			return true;	
 		}else{
@@ -199,11 +201,25 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getByUuid(uuidValid);
 	}
 	
+	/**
+	 * Relates to article 32.7 (old ICBN) and article 32.9 (new - McNeill et al. 2006: 32) and 
+	 * App. 5. (Greuter et al. 2000) as well as App. 6 (McNeill et al. 2006) of the International 
+	 * Code of Botanical Nomenclature. This is a reference list of botanical opera, in which all 
+	 * names (or names of a certain rank) are oppressed.
+	 * Such a name has the status "invalid" but in contrary to "nom. rej." not a single name is rejected
+	 * by the commission but an opus with regard to the validity of of the names occurring in it.
+	 * @return
+	 */
+	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
+		return getByUuid(uuidOpusUtiqueOppr);
+	}
+
+	
+	
 	
 //TODO Soraya
 //	nom. subnud.: nomen subnudum
 //	orth. var.: orthographic variant
-//	opus utique oppr.: operautique oppressa
 //	pro syn.: pro synonymo
 	
 	/** TODO
@@ -225,6 +241,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
+		}else if (statusAbbreviation.equalsIgnoreCase("opus utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
+		
 		//TODO
 		}else { 
 			if (statusAbbreviation == null){
