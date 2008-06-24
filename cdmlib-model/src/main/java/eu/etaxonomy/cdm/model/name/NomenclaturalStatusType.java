@@ -52,7 +52,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidProvisional = UUID.fromString("a277507e-ad93-4978-9419-077eb889c951");
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
-	
+	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 	
 	
 	public NomenclaturalStatusType() {
@@ -202,6 +202,16 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 	
 	/**
+	 * Nomenclatural status that is not covered by the ICBN. It appears sometimes in literature and
+	 * represents the opinion of the author who considers the name to be unusable for an unambiguous
+	 * taxonomic use. 
+	 * @return
+	 */
+	public static final NomenclaturalStatusType SUBNUDUM(){
+		return getByUuid(uuidSubnudum);
+	}
+	
+	/**
 	 * Relates to article 32.7 (old ICBN) and article 32.9 (new - McNeill et al. 2006: 32) and 
 	 * App. 5. (Greuter et al. 2000) as well as App. 6 (McNeill et al. 2006) of the International 
 	 * Code of Botanical Nomenclature. This is a reference list of botanical opera, in which all 
@@ -213,12 +223,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getByUuid(uuidOpusUtiqueOppr);
 	}
-
-	
-	
 	
 //TODO Soraya
-//	nom. subnud.: nomen subnudum
 //	orth. var.: orthographic variant
 //	pro syn.: pro synonymo
 	
@@ -236,11 +242,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
-		//TODO
-		//}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.su;
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
 		}else if (statusAbbreviation.equalsIgnoreCase("opus utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
 		
 		//TODO

@@ -157,6 +157,8 @@ public class Feature extends DefinedTermBase {
 	}
 
 	public static final Feature DISTRIBUTION(){
+		//TODO
+		logger.warn("DISTRIBUTION not yet implemented");
 		return null;
 	}
 
@@ -164,10 +166,14 @@ public class Feature extends DefinedTermBase {
 	 * special kind of OrganismInteraction
 	 */
 	public static final Feature HYBRID_PARENT(){
+		//TODO
+		logger.warn("HYBRID_PARENT not yet implemented");
 		return null;
 	}
 
 	public static final Feature COMMON_NAME(){
+		//TODO
+		logger.warn("COMMON_NAME not yet implemented");
 		return null;
 	}
 

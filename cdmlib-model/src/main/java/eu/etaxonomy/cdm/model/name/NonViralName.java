@@ -529,6 +529,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		this.authorshipCache = authorshipCache;
 	}
 
+	
+	
 	/**
 	 * Returns the boolean value "true" if the components of this non viral taxon name
 	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
@@ -571,6 +573,21 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 		return null;
 	}
 
+	/**
+	 * @return the protectedAuthorshipCache
+	 */
+	public boolean isProtectedAuthorshipCache() {
+		return protectedAuthorshipCache;
+	}
+
+	/**
+	 * @param protectedAuthorshipCache the protectedAuthorshipCache to set
+	 */
+	public void setProtectedAuthorshipCache(boolean protectedAuthorshipCache) {
+		this.protectedAuthorshipCache = protectedAuthorshipCache;
+	}
+
+	
 	
 
 }
