@@ -147,7 +147,7 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @see     InstitutionalMembership
 	 */
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
@@ -203,7 +203,7 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @see 	common.Keyword
 	 */
-	@OneToMany
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Keyword> getKeywords(){
 		return this.keywords;
@@ -243,7 +243,7 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @see 	Contact
 	 */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){
 		return this.contact;
