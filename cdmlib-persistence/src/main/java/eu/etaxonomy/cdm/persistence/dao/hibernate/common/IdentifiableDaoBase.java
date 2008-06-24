@@ -52,4 +52,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 	
 	
 
+	public List<T> findByTitle(String queryString, boolean matchAnywhere, int page, int pagesize) {
+		queryString = matchAnywhere ? "%"+queryString+"%" : queryString+"%";
+		Criteria crit = getSession().createCriteria(type);
+		crit.add(Restrictions.ilike("titleCache", queryString));
+		crit.setMaxResults(pagesize);
+		int firstItem = (page - 1) * pagesize + 1;
+		crit.setFirstResult(firstItem);
+		List<T> results = crit.list();
+		return results;
+	}
+	
+	
+
 }

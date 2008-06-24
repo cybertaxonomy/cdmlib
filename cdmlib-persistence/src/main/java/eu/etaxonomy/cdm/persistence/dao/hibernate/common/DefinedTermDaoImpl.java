@@ -19,8 +19,10 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -45,6 +47,16 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return findByTitle(queryString, null);
 	}
 	
+	public List<DefinedTermBase> findByTitle(String queryString, boolean matchAnywhere, int page, int pagesize) {
+		queryString = matchAnywhere ? "%"+queryString+"%" : queryString+"%";
+		Criteria crit = getSession().createCriteria(type);
+		crit.add(Restrictions.ilike("titleCache", queryString));
+		crit.setMaxResults(pagesize);
+		int firstItem = (page - 1) * pagesize + 1;
+		crit.setFirstResult(firstItem);
+		List<DefinedTermBase> results = crit.list();
+		return results;
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
@@ -96,6 +108,4 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 //		return (List<DefinedTermBase>) query.list();
 //	}
 
-	
-	
 }

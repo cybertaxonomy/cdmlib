@@ -84,11 +84,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (sec != null){
 			crit.add(Restrictions.eq("sec", sec) );
 		}
-//		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
-//			logger.warn("no child taxa fetch qq");
+		
+		
+		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
+			logger.warn("no child taxa fetch qq");
 			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
-//			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
-//		}
+			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
+		}
 		
 		List<Taxon> results = new ArrayList<Taxon>();
 		for(Taxon taxon : (List<Taxon>) crit.list()){

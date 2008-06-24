@@ -15,7 +15,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface ITitledDao<T extends CdmBase> {
 
+	/**
+	 * @param queryString
+	 * @return
+	 */
 	public List<T> findByTitle(String queryString);
+	/**
+	 * @param queryString
+	 * @param matchAnywhere
+	 * @param page
+	 * @param pagesize
+	 * @return
+	 */
+	public List<T> findByTitle(String queryString, boolean matchAnywhere, int page, int pagesize);
 	
 	public List<T> findByTitle(String queryString, CdmBase sessionObject);
 }
