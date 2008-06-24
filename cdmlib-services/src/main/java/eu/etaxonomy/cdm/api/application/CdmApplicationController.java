@@ -28,6 +28,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -264,6 +265,10 @@ public class CdmApplicationController {
 	
 	public final ITermService getTermService(){
 		return configuration.getTermService();
+	}
+
+	public final IDescriptionService getDescriptionService(){
+		return configuration.getDescriptionService();
 	}
 	
 	/* **** flush ***********/

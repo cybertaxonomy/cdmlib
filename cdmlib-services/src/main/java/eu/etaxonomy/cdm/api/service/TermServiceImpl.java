@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -56,6 +60,16 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	 */
 	public DefinedTermBase getTermByUuid(UUID uuid) {
 		return DefinedTermBase.findByUuid(uuid);  
+	}
+	
+	@Transactional(readOnly = false)
+	public UUID saveTerm(DefinedTermBase termBase) {
+		return super.saveCdmObject(termBase);
+	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<DefinedTermBase> termBaseCollection){
+		return saveCdmObjectAll(termBaseCollection);
 	}
 
 	/* (non-Javadoc)

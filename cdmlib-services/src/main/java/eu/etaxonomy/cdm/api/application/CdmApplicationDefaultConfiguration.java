@@ -17,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -45,6 +46,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ITermService termService;
 	@Autowired
 	private HibernateTransactionManager transactionManager;
+	@Autowired
+	private IDescriptionService descriptionService;
 
 	
 	/**
@@ -86,6 +89,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public ITaxonService getTaxonService() {
 		return this.taxonService;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDescriptionService()
+	 */
+	public IDescriptionService getDescriptionService(){
+		return this.descriptionService;
 	}
 
 	/* (non-Javadoc)

@@ -490,8 +490,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRc
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSavePathMatchingResourcePatternResolver.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text

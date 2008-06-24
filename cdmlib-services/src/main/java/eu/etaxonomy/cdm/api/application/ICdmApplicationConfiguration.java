@@ -13,6 +13,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -44,6 +45,11 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public IAgentService getAgentService();
+	
+	/**
+	 * @return
+	 */
+	public IDescriptionService getDescriptionService();
 	
 	/**
 	 * @return
