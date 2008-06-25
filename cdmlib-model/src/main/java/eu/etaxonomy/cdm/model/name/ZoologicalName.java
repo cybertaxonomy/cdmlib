@@ -10,17 +10,16 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Index;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-
-
-import javax.persistence.*;
 
 /**
  * Taxon name class for animals
