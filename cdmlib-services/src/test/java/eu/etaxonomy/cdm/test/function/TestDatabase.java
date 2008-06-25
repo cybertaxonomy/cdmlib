@@ -28,8 +28,16 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 public class TestDatabase {
-	static Logger logger = Logger.getLogger(TestDatabase.class);
+	private static final Logger logger = Logger.getLogger(TestDatabase.class);
 	
+	private void test(){
+		System.out.println("Start TestDatabase");
+		//testNewDatabaseConnection();
+		testFacts();
+		//testNewDatasourceClass();
+	//	testPaddie();
+		System.out.println("\nEnd TestDatabase");
+	}
 	
 	public void testNewDatabaseConnection(){
 		try {
@@ -187,15 +195,7 @@ public class TestDatabase {
 		}
 	}
 	
-	
-	private void test(){
-		System.out.println("Start TestDatabase");
-		//testNewDatabaseConnection();
-		testFacts();
-		//testNewDatasourceClass();
-	//	testPaddie();
-		System.out.println("\nEnd TestDatabase");
-	}
+
 	
 	/**
 	 * @param args
