@@ -23,10 +23,11 @@ public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitled
 	 * @param iso639 a two or three letter language code according to iso639-1 or iso639-2
 	 * @return the Language or null
 	 */
+	//TODO refactor typo:
 	public Language getLangaugeByIso(String iso639);
-	
+	//TODO refactor typo:
 	public List<Language> getLangaugesByIso(List<String> iso639List);
-	
+	//TODO refactor typo:
 	public List<Language> getLangaugesByLocale(Enumeration<Locale> locales);
 
 	

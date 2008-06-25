@@ -13,22 +13,20 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 
 /**
  * @author a.kohlbecker
@@ -47,10 +45,27 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return findByTitle(queryString, null);
 	}
 	
-	public List<DefinedTermBase> findByTitle(String queryString, boolean matchAnywhere, int page, int pagesize) {
-		queryString = matchAnywhere ? "%"+queryString+"%" : queryString+"%";
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
+	public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
+		Session session = getSession();
+		if ( sessionObject != null ) {
+			session.update(sessionObject);
+		}
+		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
+		query.setParameter("label", queryString);
+		return (List<DefinedTermBase>) query.list();
+
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE, int, int, java.util.List)
+	 */
+	public List<DefinedTermBase> findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria) {
+		//FXIME is query parametrised?
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("titleCache", queryString));
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		crit.setMaxResults(pagesize);
 		int firstItem = (page - 1) * pagesize + 1;
 		crit.setFirstResult(firstItem);
@@ -58,6 +73,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return results;
 	}
 	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
 	 */
@@ -85,20 +101,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return languages;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public List<DefinedTermBase> findByTitle(String queryString,
-			CdmBase sessionObject) {
-		Session session = getSession();
-		if ( sessionObject != null ) {
-			session.update(sessionObject);
-		}
-		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
-		query.setParameter("label", queryString);
-		return (List<DefinedTermBase>) query.list();
-
-	}
+	
 
 //	@Override
 //	public List<DefinedTermBase> list(int limit, int start) {

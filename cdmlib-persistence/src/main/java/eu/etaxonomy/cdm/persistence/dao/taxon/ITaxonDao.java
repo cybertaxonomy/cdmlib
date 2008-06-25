@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+
+import org.hibernate.Criteria;
+
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -48,4 +51,25 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return
 	 */
 	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page);
+	
+	
+	/**
+	 * Find taxa by searching for @{link NameBase}
+	 * @param queryString
+	 * @param matchMode
+	 * @param page
+	 * @param pagesize
+	 * @param onlyAcccepted
+	 * @return
+	 */
+	public List<Taxon> findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted);
+	
+	/**
+	 * @param queryString
+	 * @param matchMode
+	 * @param onlyAcccepted
+	 * @return
+	 */
+	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted);
+	
 }

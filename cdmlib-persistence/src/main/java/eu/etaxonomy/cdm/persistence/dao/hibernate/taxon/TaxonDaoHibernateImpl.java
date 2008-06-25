@@ -20,11 +20,16 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -33,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -171,6 +177,24 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			} ;
 		}
 		return super.delete(taxonBase);
+	}
+
+	
+	// TODO add generic return type !!
+	public List findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted) {
+			ArrayList<Criterion> criteria = new ArrayList<Criterion>();
+			//TODO ... Restrictions.eq(propertyName, value)
+			return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
+		
+	}
+	
+	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
+		
+		Criteria crit = getSession().createCriteria(type);
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
+		crit.setProjection(Projections.rowCount());
+		int result = ((Integer)crit.list().get(0)).intValue();
+		return result;
 	}
 	
 }
