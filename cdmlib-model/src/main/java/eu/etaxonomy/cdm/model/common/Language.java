@@ -17,6 +17,12 @@ import au.com.bytecode.opencsv.CSVWriter;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * list of languages according to current internet best practices as given by IANA
@@ -26,6 +32,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Language")
 @Entity
 @Component
 public class Language extends DefinedTermBase {
@@ -53,8 +61,9 @@ public class Language extends DefinedTermBase {
 		return new Language(uuid);
 	}
 	
-	
+	@XmlAttribute(name = "iso639_1")
 	private char[] iso639_1 = new char[2];
+	@XmlAttribute(name = "iso639_2")
 	private char[] iso639_2 = new char[3];
 	
 	public Language() {

@@ -8,15 +8,33 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TermBase", propOrder = {
+    "uri",
+    "representations",
+})
+@XmlRootElement(name = "TermBase")
 @MappedSuperclass
 public abstract class TermBase extends VersionableEntity {
 	private static final Logger logger = Logger.getLogger(TermBase.class);
 	
+	@XmlElement(name = "URI")
 	private String uri;
+	
+	@XmlElementWrapper(name = "Representations")
+	@XmlElement(name = "Representation")
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){

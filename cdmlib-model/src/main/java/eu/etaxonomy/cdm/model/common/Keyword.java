@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * simple keywords. could be taxonomic scope/skill , geographic scope or anything else
@@ -19,6 +23,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Keyword")
 @Entity
 public class Keyword extends OrderedTermBase<Keyword> {
 	static Logger logger = Logger.getLogger(Keyword.class);

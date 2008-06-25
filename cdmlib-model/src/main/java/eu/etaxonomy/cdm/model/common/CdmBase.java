@@ -18,9 +18,22 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 
@@ -39,13 +52,37 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * @author m.doering
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "CdmBase", propOrder = {
+    "uuid",
+    "id",
+    "created",
+    "createdBy",
+})
+@XmlRootElement(name = "CdmBase")
 @MappedSuperclass
 public abstract class CdmBase implements Serializable, ICdmBase{
+
+	@XmlTransient
+	// TODO
+	// JAXB requests a default constructor for PropertyChangeSupport!?
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+	@XmlElement(name = "ID")
 	private int id;
-	private UUID uuid;
+
+	//@XmlElement(name = "UUID", type = String.class)
+	@XmlAttribute(name = "uuid", required = true)
+    @XmlJavaTypeAdapter(UUIDAdapter.class)
+	//@XmlID
+	//@XmlSchemaType(name = "ID")
+    private UUID uuid;
+
+	@XmlElement (name = "Created")
 	private Calendar created;
-	private Person createdBy;
+
+	@XmlElement (name = "CreatedBy")
+    private Person createdBy;
 
 	/**
 	 * Class constructor assigning a unique UUID and creation date.

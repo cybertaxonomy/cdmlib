@@ -12,6 +12,12 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import javax.persistence.*;
 
 /**
@@ -19,11 +25,17 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "OrderedTermBase", propOrder = {
+    "orderIndex"
+})
+@XmlRootElement(name = "OrderedTermBase")
 @Entity
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase implements Comparable<T> {
 	static Logger logger = Logger.getLogger(OrderedTermBase.class);
 	
 	//Order index, value < 1 means that this Term is not in order yet
+	@XmlElement(name = "OrderIndex")
 	protected int orderIndex;
 	
 	public OrderedTermBase() {
@@ -32,8 +44,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public OrderedTermBase(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
-
-	
 	private int getOrderIndex(){
 		return this.orderIndex;
 	}

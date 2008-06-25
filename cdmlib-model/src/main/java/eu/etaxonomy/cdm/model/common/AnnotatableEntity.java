@@ -16,6 +16,11 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.
@@ -23,11 +28,21 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "AnnotatableEntity", propOrder = {
+    "markers",
+    "annotations"
+})
 @MappedSuperclass
 public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends VersionableEntity<T> {
 	static Logger logger = Logger.getLogger(AnnotatableEntity.class);
 
+	@XmlElementWrapper(name = "Markers")
+	@XmlElement(name = "Marker")
 	protected Set<Marker> markers = new HashSet<Marker>();
+	
+	@XmlElementWrapper(name = "Annotations")
+	@XmlElement(name = "Annotation")
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	protected AnnotatableEntity() {

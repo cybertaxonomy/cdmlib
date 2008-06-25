@@ -15,6 +15,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
 import eu.etaxonomy.cdm.model.media.Rights;
 
 
@@ -35,19 +42,44 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "IdentifiableEntity", propOrder = {
+    "lsid",
+    "titleCache",
+    "protectedTitleCache",
+    "rights",
+    "extensions",
+    "sources"
+})
 @MappedSuperclass
 public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
+	@XmlTransient
 	public final boolean PROTECTED = true;
+	@XmlTransient
 	public final boolean NOT_PROTECTED = false;
 	
+	@XmlElement(name = "LSID")
 	private String lsid;
+	
+	@XmlElement(name = "TitleCache", required = true)
 	private String titleCache;
+	
 	//if true titleCache will not be automatically generated/updated
+	@XmlElement(name = "ProtectedTitleCache")
 	private boolean protectedTitleCache;
+	
+    @XmlElementWrapper(name = "Rights")
+    @XmlElement(name = "Rights")
 	private Set<Rights> rights = new HashSet<Rights>();
+	
+    @XmlElementWrapper(name = "Extensions")
+    @XmlElement(name = "Extension")
 	private Set<Extension> extensions = new HashSet<Extension>();
+	
+    @XmlElementWrapper(name = "Sources")
+    @XmlElement(name = "OriginalSource")
 	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
 
 	

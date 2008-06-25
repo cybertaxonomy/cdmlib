@@ -16,6 +16,11 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class keeps track of versions via a full linked list to different version objects, or a simple updated/updatedBy property in the same object.
@@ -32,14 +37,29 @@ import javax.persistence.*;
  *
  * @param <T>
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "VersionableEntity", propOrder = {
+    "updated",
+    "updatedBy",
+    "nextVersion",
+    "previousVersion"
+})
+@XmlRootElement(name = "VersionableEntity")
 @MappedSuperclass
 public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 	
 	//time of last update for this object
+	@XmlElement(name ="Updated")
 	private Calendar updated;
+	
+	@XmlElement(name = "UpdatedBy")
 	private Person updatedBy;
+	
+	@XmlElement(name = "NextVersion")
 	private T nextVersion;
+	
+	@XmlElement(name = "PreviousVersion")
 	private T previousVersion;
 
 	

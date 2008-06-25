@@ -12,6 +12,11 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * workaround for enumerations
@@ -20,11 +25,20 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:49
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Representation", propOrder = {
+    "label",
+    "abbreviatedLabel"
+})
+@XmlRootElement(name = "Representation")
 @Entity
 public class Representation extends LanguageStringBase {
 	static Logger logger = Logger.getLogger(Representation.class);
 
+    @XmlElement(name = "Label")
 	private String label;
+    
+    @XmlElement(name = "AbbreviatedLabel")
 	private String abbreviatedLabel;
 
 	/**

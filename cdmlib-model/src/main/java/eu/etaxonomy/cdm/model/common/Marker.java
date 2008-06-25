@@ -14,6 +14,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class aims to make available some "flags" for identifiable entities in a
@@ -23,14 +27,29 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:33
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Marker")
 @Entity
 public class Marker extends VersionableEntity {
 	private static final Logger logger = Logger.getLogger(Marker.class);
 	
+    @XmlElement(name = "Flag")
 	private boolean flag;
+    
+    @XmlElement(name = "MarkerType")
 	private MarkerType markerType;
+    
+    @XmlElement(name = "MarkedObject")
 	private AnnotatableEntity markedObj;
 	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Marker NewInstance(){
+		return new Marker();
+	}
+
 	/**
 	 * Factory method
 	 * @param markerType The type of the marker
@@ -42,13 +61,18 @@ public class Marker extends VersionableEntity {
 	}
 	
 	/**
+	 * Default Constructor
+	 */
+	private Marker() {
+	}
+
+	/**
 	 * Constructor
-	 * @param flage
+	 * @param flag
 	 */
 	protected Marker(MarkerType markerType, boolean flag){
 		this.markerType = markerType;
 		this.flag = flag;
-		
 	}
 	
 	/**

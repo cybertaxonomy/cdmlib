@@ -17,12 +17,21 @@ import org.hibernate.annotations.CascadeType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Annotation", propOrder = {
+    "",
+    ""
+})
 @Entity
 public class Annotation extends LanguageStringBase {
 	private static final Logger logger = Logger.getLogger(Annotation.class);
@@ -61,13 +70,21 @@ public class Annotation extends LanguageStringBase {
 	}
 	
 	
-
 	//Human annotation
+	@XmlElement(name = "Commentator")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private Person commentator;
+	
+	@XmlElement(name = "AnnotatedObject")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private AnnotatableEntity annotatedObj;
+	
 	// for external annotations/comments the URL of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
+	@XmlElement(name = "LinkbackURL")
 	private URL linkbackUrl;
 	
 	@Transient

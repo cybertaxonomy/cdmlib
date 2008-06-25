@@ -18,11 +18,19 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -33,6 +41,16 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:19
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DefinedTermBase", propOrder = {
+    "kindOf",
+    "generalizationOf",
+    "partOf",
+    "includes",
+    "media",
+    "vocabulary"
+})
+@XmlRootElement(name = "DefinedTermBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm{
@@ -44,11 +62,24 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		DefinedTermBase.vocabularyStore = vocabularyStore;
 	}
 	
+	@XmlElement(name = "KindOf")
 	private DefinedTermBase kindOf;
+	
+	@XmlElement(name = "GeneralizationOf")
 	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
+	
+	@XmlElement(name = "PartOf")
 	private DefinedTermBase partOf;
+	
+	@XmlElementWrapper(name = "Includes")
+	@XmlElement(name = "Include")
 	private Set<DefinedTermBase> includes = new HashSet<DefinedTermBase>();
+	
+	@XmlElementWrapper(name = "Media")
+	@XmlElement(name = "Medium")
 	private Set<Media> media = new HashSet<Media>();
+	
+	@XmlElement(name = "Vocabulary")
 	protected TermVocabulary<T> vocabulary;
 	
 
@@ -159,6 +190,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
 	 */
 	@Transient
+	@XmlTransient
 	public TermVocabulary getVocabulary() {
 		return this.vocabulary;
 	}

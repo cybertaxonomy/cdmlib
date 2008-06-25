@@ -17,15 +17,36 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "RelationshipBase", propOrder = {
+	"relatedFrom",
+	"relatedTo",
+    "type"
+})
+@XmlRootElement(name = "RealtionshipBase")
 @MappedSuperclass
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
+
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
+
+	@XmlAnyElement
 	private FROM relatedFrom;
+
+	@XmlAnyElement
 	private TO relatedTo;
+
+	@XmlElement(name = "Type")
 	private TYPE type;
 
 	protected RelationshipBase(){

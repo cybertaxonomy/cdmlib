@@ -11,16 +11,35 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author a.mueller
  * @version 1.0
  * @created 25.04.2008
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "LanguageStringBase", propOrder = {
+    "text",
+//    "language",
+})
 @MappedSuperclass
-public abstract class LanguageStringBase  extends VersionableEntity{
+public abstract class LanguageStringBase extends VersionableEntity{
+	
 	static Logger logger = Logger.getLogger(LanguageStringBase.class);
+
+	@XmlElement(name = "Text")
 	protected String text;
+	
+	@XmlTransient
+	// TODO: 
+	// Fix stack overflow. Annotate as @XmlIDREF.
+	//@XmlAttribute(name = "lang")
 	protected Language language;
 
 	protected LanguageStringBase() {
