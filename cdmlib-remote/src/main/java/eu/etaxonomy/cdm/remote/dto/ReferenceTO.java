@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,7 +49,7 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 	 */
 	private String year;
 
-	private Set<MediaSTO> media;
+	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 
 
 	

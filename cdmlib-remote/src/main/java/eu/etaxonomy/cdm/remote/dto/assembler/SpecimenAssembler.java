@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
  * @version 1.0
  */
 @Component
-public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, SpecimenTypeDesignation> {
+public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, DerivedUnitBase> {
 	private static Logger logger = Logger.getLogger(SpecimenTypeDesignationAssembler.class);
 	
 	@Autowired
@@ -38,13 +39,14 @@ public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, Specim
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
 	 */
 	@Override
-	public SpecimenSTO getSTO(SpecimenTypeDesignation specimenTypeDesignation, Enumeration<Locale> locales) {
-		SpecimenSTO specimenSTO = new SpecimenSTO();
-		specimenSTO.setUuid(specimenTypeDesignation.getUuid().toString());
-		for(Media media : specimenTypeDesignation.getTypeSpecimen().getMedia()){
-			specimenSTO.addMedia(mediaAssembler.getSTO(media, locales));			
+	public SpecimenSTO getSTO(DerivedUnitBase typeSpecimen, Enumeration<Locale> locales) {
+		SpecimenSTO sto = new SpecimenSTO();
+		sto.setUuid(typeSpecimen.getUuid().toString());
+		sto.setSpecimenLabel(typeSpecimen.getTitleCache());
+		for(Media media : typeSpecimen.getMedia()){
+			sto.addMedia(mediaAssembler.getSTO(media, locales));			
 		}
-		return specimenSTO;
+		return sto;
 	}
 
 	/** 
@@ -53,7 +55,7 @@ public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, Specim
 	 */
 	@Override
 	@Deprecated
-	public BaseTO getTO(SpecimenTypeDesignation cdmObj, Enumeration<Locale> locales) {
+	public BaseTO getTO(DerivedUnitBase cdmObj, Enumeration<Locale> locales) {
 		throw new RuntimeException("unimplemented method");
 	}
 }

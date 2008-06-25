@@ -24,6 +24,8 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
@@ -91,8 +93,13 @@ public class RestController extends AbstractController
 					List<NameSTO> n = service.getSimpleNames(uuids, locales);
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					List<TaxonSTO> t = service.getSimpleTaxa(uuids, locales);
-					mv.addObject(t);
+					if(op.equalsIgnoreCase("acceptedfor")){
+						List<TaxonSTO> t = service.getAcceptedTaxon(getUuid(uuid), locales);
+						mv.addObject(t);
+					} else {
+						List<TaxonSTO> t = service.getSimpleTaxa(uuids, locales);
+						mv.addObject(t);
+					}
 				}else if(dto.equalsIgnoreCase("ref")){
 					List<ReferenceSTO> r = service.getSimpleReferences(uuids, locales);
 					mv.addObject(r);
@@ -108,10 +115,18 @@ public class RestController extends AbstractController
 				}
 				Set<UUID> higherTaxa = new HashSet<UUID>();
 				// TODO: take higher taxa UUIDs from "higherTaxa"
-				Boolean matchAnywhere = getBoolPara("matchAnywhere",req);
-				if (matchAnywhere==null){
-					matchAnywhere=false;
-				};
+				//
+				
+				MATCH_MODE matchMode = null;
+				try{
+					String matchModeStr = getStringPara("mode",req);
+					matchMode = MATCH_MODE.valueOf(matchModeStr.toUpperCase());
+				} catch(Exception e){
+					matchMode = MATCH_MODE.BEGINNING;
+				}
+//				if(matchMode == null){
+//				}
+				
 				Boolean onlyAccepted = getBoolPara("onlyAccepted",req);
 				if (onlyAccepted==null){
 					onlyAccepted=false;
@@ -126,7 +141,7 @@ public class RestController extends AbstractController
 				};
 				//
 				// search for taxa
-				Object obj = service.findTaxa(q, u, higherTaxa, matchAnywhere, onlyAccepted, page, pagesize, locales);
+				Object obj = service.findTaxa(q, u, higherTaxa, matchMode, onlyAccepted, page, pagesize, locales);
 				mv.addObject(obj);
 			}else if(action.equalsIgnoreCase("taxonomy")){
 				List results = null; 

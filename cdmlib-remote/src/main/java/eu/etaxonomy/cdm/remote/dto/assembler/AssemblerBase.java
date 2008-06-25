@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.IBaseSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
-
 public abstract class AssemblerBase<STO extends BaseSTO, TO extends BaseTO, C extends CdmBase> {
 	
 	public String getRandomUUID(){
@@ -57,6 +56,7 @@ public abstract class AssemblerBase<STO extends BaseSTO, TO extends BaseTO, C ex
 	 *            <code>request.getLocales()</code>
 	 * @return Simple Data Transfer Object
 	 */
+	//TODO might be better to pass List<Language> instead of Enumeration<Locale> 
 	abstract STO getSTO(C cdmObj, Enumeration<Locale> locales);
 
 	/**

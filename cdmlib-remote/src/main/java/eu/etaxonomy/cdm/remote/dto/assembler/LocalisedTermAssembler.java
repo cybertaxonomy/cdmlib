@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.dto.assembler;
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
@@ -43,17 +45,8 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 	@Override
 	LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales) {
 		LocalisedTermSTO lt = new LocalisedTermSTO();
-		Representation r = null;
-		// look for terms in preferred languages
-		while(locales != null && r == null && locales.hasMoreElements()) {
-			Locale locale = locales.nextElement();
-			Language language  = languageDao.getLangaugeByIso(locale.getLanguage());
-			r = term.getRepresentation(language);
-		}
-		// nothing found? fall back using the first entry
-		if(r == null){
-			r = term.getRepresentations().iterator().next();
-		}
+		List<Language> languages = languageDao.getLangaugesByLocale(locales);
+		Representation r = term.getPreferredRepresentation(languages);
 		lt.setTerm(r.getLabel());
 		lt.setLanguage(r.getLanguage().toString());
 		return lt;
@@ -66,5 +59,6 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 	BaseTO getTO(TermBase cdmObj, Enumeration<Locale> locales) {
 		throw new RuntimeException("not implemented, class LocalisedTermTO does not exist.");
 	}
+	
 
 }

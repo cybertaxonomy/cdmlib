@@ -421,9 +421,9 @@ cdmlib-remote/src/main/java/carbonfive/spring/web/pathparameter/ParameterizedUrl
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/AssociationFeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionElementSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DistributionSTO.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/HomotypicTaxonGroupSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IBaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IReferenceSTO.java -text
@@ -453,6 +453,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TaxonTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/TreeNode.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/AssemblerBase.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/DescriptionAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/LocalisedTermAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/MediaAssembler.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/NameAssembler.java -text

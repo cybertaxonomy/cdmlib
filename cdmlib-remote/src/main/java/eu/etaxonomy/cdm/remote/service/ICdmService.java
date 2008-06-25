@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
@@ -136,7 +137,7 @@ public interface ICdmService {
 	 *         accepted taxon, this one will be returned.
 	 *         
 	 *         For pro parte synonyms there might exist more than 1 accepted taxon,
-	 *         therefore we use the ResultSetPageSTO wrapper
+	 *         therefore we return a List
 	 * @throws CdmObjectNonExisting 
 	 */
 	/**
@@ -144,7 +145,7 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	public List<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 	/**
 	 * Find taxa matching the query defined by the given parameters.
@@ -156,10 +157,8 @@ public interface ICdmService {
 	 * @param higherTaxa
 	 *            Set of taxon UUIDs, if higherTaxa are defined only taxa which
 	 *            are included in one of these taxa are taken in to account
-	 * @param matchAnywhere
-	 *            match beginning of a name or any inner substring.
-	 *            <code>false</code> should be default for a web service
-	 *            implementation.
+	 * @param matchMode
+	 *            TODO ...
 	 * @param onlyAccepted
 	 *            return only taxa which are accepted in the sence of the
 	 *            concept reference as given by parameter sec
@@ -170,7 +169,7 @@ public interface ICdmService {
 	 * @return a ResultSetPageSTO<TaxonSTO> instance
 	 */
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,
-			Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted,
+			Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted,
 			int pagesize, int page, Enumeration<Locale> locales);
 
 	/**

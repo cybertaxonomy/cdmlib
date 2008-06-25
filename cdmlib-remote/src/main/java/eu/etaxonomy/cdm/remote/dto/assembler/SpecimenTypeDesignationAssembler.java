@@ -41,14 +41,14 @@ public class SpecimenTypeDesignationAssembler extends AssemblerBase<SpecimenType
 	 */
 	@Override
 	public SpecimenTypeDesignationSTO getSTO(SpecimenTypeDesignation specimenTypeDesignation, Enumeration<Locale> locales) {
-		SpecimenTypeDesignationSTO specimenTypeDesignationSTO = new SpecimenTypeDesignationSTO();
-		specimenTypeDesignationSTO.setUuid(specimenTypeDesignation.getUuid().toString());
-		specimenTypeDesignationSTO.setStatus(
+		SpecimenTypeDesignationSTO sto = new SpecimenTypeDesignationSTO();
+		sto.setUuid(specimenTypeDesignation.getUuid().toString());
+		sto.setStatus(
 				new IdentifiedString(
 						specimenTypeDesignation.getTypeStatus().getLabel(),
 						specimenTypeDesignation.getTypeStatus().getUuid().toString()));
-		specimenTypeDesignationSTO.setTypeSpecimen(specimenAssembler.getSTO(specimenTypeDesignation, locales));
-		return specimenTypeDesignationSTO;
+		sto.setTypeSpecimen(specimenAssembler.getSTO(specimenTypeDesignation.getTypeSpecimen(), locales));
+		return sto;
 	}
 	
 	/**
@@ -57,11 +57,11 @@ public class SpecimenTypeDesignationAssembler extends AssemblerBase<SpecimenType
 	 * @return
 	 */
 	public List<SpecimenTypeDesignationSTO> getSTOs(Set<SpecimenTypeDesignation> specimenTypeDesignations, Enumeration<Locale> locales){
-		List<SpecimenTypeDesignationSTO> specimenTypeDesignationSTOs = new ArrayList<SpecimenTypeDesignationSTO>(specimenTypeDesignations.size());
+		List<SpecimenTypeDesignationSTO> stoList = new ArrayList<SpecimenTypeDesignationSTO>(specimenTypeDesignations.size());
 		for(SpecimenTypeDesignation specimenTypeDesignation : specimenTypeDesignations){
-			specimenTypeDesignationSTOs.add(getSTO(specimenTypeDesignation, locales));
+			stoList.add(getSTO(specimenTypeDesignation, locales));
 		}
-		return specimenTypeDesignationSTOs;
+		return stoList;
 	}
 
 	/** 

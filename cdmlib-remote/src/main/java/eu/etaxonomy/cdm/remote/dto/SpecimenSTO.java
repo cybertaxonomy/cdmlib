@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class SpecimenSTO extends BaseSTO {
 	private String specimenLabel;
-	private Set<MediaSTO> media;
+	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 	public String getSpecimenLabel() {
 		return specimenLabel;
 	}

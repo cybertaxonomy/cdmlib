@@ -13,12 +13,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +31,12 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.remote.dto.HomotypicTaxonGroupSTO;
 import eu.etaxonomy.cdm.remote.dto.SynonymRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonRelationshipTO;
@@ -47,6 +55,9 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	private LocalisedTermAssembler termAssembler;
 	@Autowired
 	private SpecimenTypeDesignationAssembler specimenTypeDesignationAssembler;
+	@Autowired
+	private DescriptionAssembler descriptionAssembler;
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
@@ -58,11 +69,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			setVersionableEntity(tb, t);
 			t.setName(nameAssembler.getSTO(tb.getName(), locales));
 			t.setSecUuid(tb.getSec().getUuid().toString());
-			if (Taxon.class.isInstance(tb)){
-				t.setAccepted(true);
-			}else{
-				t.setAccepted(false);
-			}
+			t.setAccepted((tb instanceof Taxon));
 			//TODO: add more mappings
 		}
 		return t;
@@ -78,8 +85,11 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			setVersionableEntity(taxonBase, taxonTO);
 			taxonTO.setName(nameAssembler.getSTO(taxonBase.getName(), locales));
 			taxonTO.setSec(refAssembler.getTO(taxonBase.getSec(), locales));
+			taxonTO.setAccepted((taxonBase instanceof Taxon));
 		    if(taxonBase instanceof Taxon){
+		    	
 		    	Taxon taxon = (Taxon) taxonBase;
+		    	// -- homotypic & heterotypic synonyms
 		    	List<Synonym> syns = taxon.getHomotypicSynonymsByHomotypicGroup();
 		    	List<Synonym> synList = new ArrayList<Synonym>();
 		    	for(Synonym synonym : syns) {
@@ -95,7 +105,17 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		    	for (HomotypicalGroup homotypicalGroup : heterotypicGroups) {
 		    		heterotypicSynonymyGroups.add(getHomotypicTaxonGroupSTO(homotypicalGroup, taxon, locales));
 				}
-		    	taxonTO.setHeterotypicSynonymyGroups(heterotypicSynonymyGroups);	
+		    	taxonTO.setHeterotypicSynonymyGroups(heterotypicSynonymyGroups);
+		    	
+		    	// -- taxon relations (MISAPPLIED_NAME_FOR + INVALID_DESIGNATION)
+		    	Set<TaxonRelationshipType> matchTypes = new HashSet<TaxonRelationshipType>();
+				matchTypes.add(TaxonRelationshipType.MISAPPLIEDNAMEFOR());
+				matchTypes.add(TaxonRelationshipType.INVALIDDESIGNATIONFOR());
+		    	taxonTO.setTaxonRelations(getTaxonRelationshipTOs(taxon.getTaxonRelations(), taxon, matchTypes, locales));
+		    	
+		    	// -- descriptive data
+		    	taxonTO.setDescriptions(descriptionAssembler.getTOs(taxon.getDescriptions(), locales));
+		    	
 		    	//TODO: add more mappings
 			}
 		}
@@ -134,6 +154,41 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	}
 	
 	/**
+	 * @param synonyms
+	 * @param taxon
+	 * @param locales
+	 * @return
+	 */
+	public List<TaxonRelationshipTO> getTaxonRelationshipTOs(Set<TaxonRelationship> taxonRelationships, Taxon taxon, Set<TaxonRelationshipType> matchTypes, Enumeration<Locale> locales){
+		List<TaxonRelationshipTO> taxonRelationshipTOs = new ArrayList<TaxonRelationshipTO>(taxonRelationships.size());
+		for (TaxonRelationship taxonRelationship : taxonRelationships) {
+			boolean myType = false;
+			for (TaxonRelationshipType matchType : matchTypes) {
+				myType = myType || matchType.equals(taxonRelationship.getType());
+			}
+			if(myType){
+				taxonRelationshipTOs.add(getTaxonRelationshipTO(taxonRelationship, taxon, locales));
+			}
+		}
+		return taxonRelationshipTOs;
+	}
+	
+	/**
+	 * @param syn
+	 * @param t
+	 * @param locales
+	 * @return
+	 */
+	public TaxonRelationshipTO getTaxonRelationshipTO(TaxonRelationship taxrel, Taxon t, Enumeration<Locale> locales){
+		TaxonRelationshipTO to = new TaxonRelationshipTO();
+		if(taxrel != null){
+			to.setType(termAssembler.getSTO(taxrel.getType(), locales));
+			to.setTaxon(getSTO(taxrel.getFromTaxon(), locales));
+		}
+		return to;
+	}
+	
+	/**
 	 * @param syn
 	 * @param t
 	 * @param locales
@@ -142,7 +197,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	public SynonymRelationshipTO getSynonymRelationshipTO(Synonym syn, Taxon t, Enumeration<Locale> locales){
 		SynonymRelationshipTO sr = new SynonymRelationshipTO();
 		if(syn != null){
-			sr.setSynoynm(getSTO(syn, null));
+			sr.setSynoynm(getSTO(syn, locales));
 			sr.setType(termAssembler.getSTO(syn.getRelationType(t), locales));
 		}
 		return sr;
@@ -190,5 +245,5 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		}
 		return treeNodeList;
 	}
-
+	
 }

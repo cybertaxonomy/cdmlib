@@ -8,6 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
-public class InteractionFeatureSTO extends FeatureSTO {
+public class InteractionFeatureSTO extends DescriptionElementSTO {
 	private TaxonSTO taxon;
 }

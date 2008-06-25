@@ -8,6 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
-public class AssociationFeatureSTO extends FeatureSTO {
+public class AssociationFeatureSTO extends DescriptionElementSTO {
 	private SpecimenSTO associatedSpecimen;
 }

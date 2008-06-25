@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -68,6 +69,8 @@ public class CdmServiceImpl implements ICdmService {
 	private ITaxonNameDao nameDAO;
 	@Autowired
 	private IReferenceDao refDAO;
+	
+	private final int MAXRESULTS = 500;
 	
 //	private CdmEntityDaoBase entityDAO = new CdmEntityDaoBase<CdmBase>();
 		
@@ -142,10 +145,18 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, boolean matchAnywhere, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
+
+		rs.setPageNumber(page);
+		rs.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted));
+//		if(MAXRESULTS > 0 && rs.getTotalResultsCount() > MAXRESULTS){
+//			rs.setTotalResultsCount(-1);
+//			return rs;
+//		}
 		// TODO: add other criteria. Has to be done in DAO...
-		List<TaxonBase> results = taxonDAO.findByTitle(q, matchAnywhere, page, pagesize);
+		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, null);
+		rs.setPageSize(results.size());
 		for (TaxonBase tb : results){
 			TaxonSTO tx = taxonAssembler.getSTO(tb, locales);
 			rs.getResults().add(tx);
@@ -153,23 +164,22 @@ public class CdmServiceImpl implements ICdmService {
 		return rs;
 	}
 
-	public ResultSetPageSTO<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting {
+	public List<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting {
+		List<TaxonSTO> stoList = new ArrayList<TaxonSTO>();
+		
 		TaxonBase tb = getCdmTaxonBase(uuid);
-		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
-		rs.setPageNumber(1);
-		rs.setPageSize(25);
 		if (tb.getClass().equals(Taxon.class)){
 			TaxonSTO t = taxonAssembler.getSTO(tb, locales);
-			rs.addResultToFirstPage(t);
+			stoList.add(t);
 		}else{
 			Synonym s = (Synonym)tb;
 			Set<Taxon> taxa = s.getAcceptedTaxa();
 			for (Taxon tx: taxa){
 				TaxonSTO t = taxonAssembler.getSTO(tx, locales);
-				rs.addResultToFirstPage(t);
+				stoList.add(t);
 			}
 		}
-		return rs;
+		return stoList;
 	}
 
 	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting {

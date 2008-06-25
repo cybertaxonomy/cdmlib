@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+
 // select * from TaxonBase where titlecache LIKE '%peren%';
 
 /**
@@ -34,6 +36,7 @@ public class TaxonTO extends BaseTO{
 	 * The concept reference
 	 */
 	private ReferenceTO sec;
+	private boolean isAccepted;
 
 	// homotypic data
 	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
@@ -42,7 +45,7 @@ public class TaxonTO extends BaseTO{
 	// heterotypic data
 	private List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>();
 	// other
-	private Set<TaxonRelationshipTO> taxonRelations = new HashSet<TaxonRelationshipTO>();
+	private List<TaxonRelationshipTO> taxonRelations = new ArrayList<TaxonRelationshipTO>();
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	
 	
@@ -57,6 +60,12 @@ public class TaxonTO extends BaseTO{
 	}
 	public void setSec(ReferenceTO sec) {
 		this.sec = sec;
+	}
+	public boolean isAccepted() {
+		return isAccepted;
+	}
+	public void setAccepted(boolean isAccepted) {
+		this.isAccepted = isAccepted;
 	}
 	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
 		return typeDesignations;
@@ -85,10 +94,10 @@ public class TaxonTO extends BaseTO{
 			List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups) {
 		this.heterotypicSynonymyGroups = heterotypicSynonymyGroups;
 	}
-	public Set<TaxonRelationshipTO> getTaxonRelations() {
+	public List<TaxonRelationshipTO> getTaxonRelations() {
 		return taxonRelations;
 	}
-	public void setTaxonRelations(Set<TaxonRelationshipTO> taxonRelations) {
+	public void setTaxonRelations(List<TaxonRelationshipTO> taxonRelations) {
 		this.taxonRelations = taxonRelations;
 	}
 	public Set<DescriptionTO> getDescriptions() {

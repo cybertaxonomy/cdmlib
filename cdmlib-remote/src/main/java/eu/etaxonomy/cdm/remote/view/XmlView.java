@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.DistributionSTO;
-import eu.etaxonomy.cdm.remote.dto.FeatureSTO;
+import eu.etaxonomy.cdm.remote.dto.DescriptionElementSTO;
 import eu.etaxonomy.cdm.remote.dto.HomotypicTaxonGroupSTO;
 import eu.etaxonomy.cdm.remote.dto.MediaTO;
 import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
@@ -78,7 +78,7 @@ public class XmlView extends BaseView implements View {
 		xstream.alias("SynonymRelationshipTO", SynonymRelationshipTO.class);
 		xstream.alias("TaxonRelationshipTO", TaxonRelationshipTO.class);
 		xstream.alias("DistributionSTO", DistributionSTO.class);
-		xstream.alias("FeatureSTO", FeatureSTO.class);
+		xstream.alias("DescriptionElementSTO", DescriptionElementSTO.class);
 		xstream.alias("HomotypicTaxonGroupSTO", HomotypicTaxonGroupSTO.class);
 		xstream.alias("NameSTO", NameSTO.class);
 		xstream.alias("NameTypeDesignationSTO", NameTypeDesignationSTO.class);
