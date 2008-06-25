@@ -11,7 +11,9 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.*;
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,10 +28,9 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
  * @author a.mueller
  *
  */
-public class BerlinModelReferenceIO {
+public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceIO.class);
 
 	private static int modCount = 1000;
@@ -138,7 +139,7 @@ public class BerlinModelReferenceIO {
 	
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+			MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
@@ -319,6 +320,10 @@ public class BerlinModelReferenceIO {
 						
 						//TODO
 						// all attributes
+						
+						//created, notes
+						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId );
+						
 						
 						if (! referenceStore.containsId(refId)){
 							referenceStore.put(refId, referenceBase);

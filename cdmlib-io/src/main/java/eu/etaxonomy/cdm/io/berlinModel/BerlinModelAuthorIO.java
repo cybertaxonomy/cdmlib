@@ -13,15 +13,15 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 
 /**
  * @author a.mueller
  *
  */
-public class BerlinModelAuthorIO {
+public class BerlinModelAuthorIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorIO.class);
 
 	private static int modCount = 1000;
@@ -36,7 +36,7 @@ public class BerlinModelAuthorIO {
 	}
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<Team> teamMap){
+			MapWrapper<TeamOrPersonBase> teamMap){
 		
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
@@ -60,27 +60,22 @@ public class BerlinModelAuthorIO {
 				
 				if ((i++ % modCount) == 0){ logger.info("Authors handled: " + (i-1));}
 				
-				//create TaxonName element
+				//create Agent element
 				int teamId = rs.getInt("AuthorTeamId");
-				//int rankId = rs.getInt("rankFk");
-				//Object nomRefFk = rs.getObject("NomRefFk");
 				
-				Team team = new Team();
+				TeamOrPersonBase team = new Team();
 				
 				dbAttrName = "AuthorTeamCache";
 				cdmAttrName = "titleCache";
 				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
 	
-	
 				//TODO
 				//FullAuthorTeamCache
 				//preliminaryFlag
-				//created
-				//notes
-				
-				//authorTeamId
-				ImportHelper.setOriginalSource(team, bmiConfig.getSourceReference(), teamId);
-				
+
+				//created, notes
+				doIdCreatedUpdatedNotes(bmiConfig, team, rs, teamId);
+
 				teamMap.put(teamId, team);
 			} //while rs.hasNext()
 		} catch (SQLException e) {
@@ -91,8 +86,6 @@ public class BerlinModelAuthorIO {
 			
 		logger.info(i + " authors handled");
 		agentService.saveAgentAll(teamMap.objects());
-		
-//			makeNameSpecificData(nameMap);
 
 		logger.info("end makeTaxonNames ...");
 		return success;

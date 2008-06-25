@@ -27,7 +27,7 @@ public class ImportHelper {
 	public static final boolean  NO_OVERWRITE = false;
 	
 	
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, int sourceId){
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, long sourceId){
 		OriginalSource originalSource = new OriginalSource();
 		originalSource.setIdInSource(String.valueOf(sourceId));
 		originalSource.setCitation(sourceReference);

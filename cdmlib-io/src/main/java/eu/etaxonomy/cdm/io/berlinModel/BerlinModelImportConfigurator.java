@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -23,6 +24,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	 */
 	private BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
 	   super();
+	   setNomenclaturalCode(NomenclaturalCode.ICBN()); //default for Berlin Model
 	   setSource(berlinModelSource);
 	   setDestination(destination);
 	}

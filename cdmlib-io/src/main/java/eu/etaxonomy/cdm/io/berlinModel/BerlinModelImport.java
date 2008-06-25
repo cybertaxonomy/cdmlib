@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -28,7 +29,7 @@ public class BerlinModelImport {
 	//Hashmaps for Joins
 	//OLD: private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
 	IService service = null;
-	private MapWrapper<Team> authorStore= new MapWrapper<Team>(service);
+	private MapWrapper<TeamOrPersonBase> authorStore= new MapWrapper<TeamOrPersonBase>(service);
 	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(service);
 	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(service);
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(service);

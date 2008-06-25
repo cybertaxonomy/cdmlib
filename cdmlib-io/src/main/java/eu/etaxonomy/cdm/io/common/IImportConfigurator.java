@@ -4,9 +4,8 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
 
 public interface IImportConfigurator {
 
@@ -124,5 +123,11 @@ public interface IImportConfigurator {
 	public abstract Language getFactLanguage();
 
 	public abstract void setFactLanguage(Language factLanguage);
+	
+	public abstract NomenclaturalCode getNomenclaturalCode();
+	
+	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
+
+
 
 }

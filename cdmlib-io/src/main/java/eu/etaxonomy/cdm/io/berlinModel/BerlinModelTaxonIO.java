@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class BerlinModelTaxonIO {
+public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
 
 	private static int modCount = 30000;

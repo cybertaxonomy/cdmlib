@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -52,6 +53,9 @@ public abstract class ImportConfiguratorBase {
 
 	//occurrence
 	private boolean doOccurrence = true;
+	
+	//Nomenclatural Code
+	private NomenclaturalCode nomenclaturalCode = null;
 	
 	private Object source;
 	protected ReferenceBase sourceReference;
@@ -339,6 +343,22 @@ public abstract class ImportConfiguratorBase {
 	 */
 	public void setFactLanguage(Language factLanguage) {
 		this.factLanguage = factLanguage;
+	}
+
+
+	/**
+	 * @return the nomenclaturalCode
+	 */
+	public NomenclaturalCode getNomenclaturalCode() {
+		return nomenclaturalCode;
+	}
+
+
+	/**
+	 * @param nomenclaturalCode the nomenclaturalCode to set
+	 */
+	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
+		this.nomenclaturalCode = nomenclaturalCode;
 	}
 
 

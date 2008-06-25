@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class BerlinModelTypesIO implements IIO<BerlinModelImportConfigurator> {
+public class BerlinModelTypesIO extends BerlinModelIOBase implements IIO<BerlinModelImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
 
 	private static int modCount = 10000;
@@ -105,6 +105,11 @@ public class BerlinModelTypesIO implements IIO<BerlinModelImportConfigurator> {
 						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
 						typeMap.put(typeDesignationId, specimen);
 						taxonNameStore.add(taxonNameBase);
+						
+						//TODO
+						//Update, Created, Notes, origId
+						//doIdCreatedUpdatedNotes(bmiConfig, media, rs, nameFactId);
+
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");
 					}

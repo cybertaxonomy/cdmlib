@@ -1,6 +1,31 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_BASIONYM_FOR;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_CONSERVED_TYPE_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_HOMONYM_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REJECTED_TYPE_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REPLACED_SYNONYM_FOR;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_COMB_INVAL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ALTERN;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_AMBIG;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONFUS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_DUB;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ILLEG;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_INVAL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NOV;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NUD;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_PROVIS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_SUPERFL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS_PROP;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,23 +40,24 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
-public class BerlinModelTaxonNameIO {
+public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameIO.class);
 
 	private static int modCount = 5000;
@@ -170,7 +196,7 @@ public class BerlinModelTaxonNameIO {
 	}
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
 		
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
@@ -193,7 +219,6 @@ public class BerlinModelTaxonNameIO {
                     " WHERE (1=1) ";
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 			
-			
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
@@ -211,20 +236,16 @@ public class BerlinModelTaxonNameIO {
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				Object nomRefFk = rs.getObject("NomRefFk");
 				
-				Object createdWhen = rs.getObject("Created_When");
-				Object createdWho = rs.getObject("Created_Who");
-//				Object updatedWhen = rs.getObject("Updated_When");
-//				Object updatedWho = rs.getObject("Updated_who");
-				Object updatedWhen = "";
-				Object updatedWho = "";
-				Object notes = rs.getObject("notes");
-				
 				try {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
 					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
-					//FIXME
-					//BotanicalName name = BotanicalName.NewInstance(TcsTransformer.rankId2Rank(rankId));
-					BotanicalName botanicalName = BotanicalName.NewInstance(rank);
+					
+					TaxonNameBase taxonNameBase;
+					if (bmiConfig.getNomenclaturalCode() != null){
+						taxonNameBase = bmiConfig.getNomenclaturalCode().getNewTaxonNameInstance(rank);
+					}else{
+						taxonNameBase = NonViralName.NewInstance(rank);
+					}
 					
 					if (rankId < 40){
 						dbAttrName = "supraGenericName";
@@ -232,76 +253,34 @@ public class BerlinModelTaxonNameIO {
 						dbAttrName = "genus";
 					}
 					cdmAttrName = "genusOrUninomial";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "genusSubdivisionEpi";
 					cdmAttrName = "infraGenericEpithet";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "speciesEpi";
 					cdmAttrName = "specificEpithet";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 
 					dbAttrName = "infraSpeciesEpi";
 					cdmAttrName = "infraSpecificEpithet";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "unnamedNamePhrase";
 					cdmAttrName = "appendedPhrase";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 					dbAttrName = "preliminaryFlag";
 					cdmAttrName = "XX" + "protectedTitleCache";
-					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-
-					dbAttrName = "HybridFormulaFlag";
-					cdmAttrName = "isHybridFormula";
-					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-
-					dbAttrName = "MonomHybFlag";
-					cdmAttrName = "isMonomHybrid";
-					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-
-					dbAttrName = "BinomHybFlag";
-					cdmAttrName = "isBinomHybrid";
-					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-
-					dbAttrName = "TrinomHybFlag";
-					cdmAttrName = "isTrinomHybrid";
-					success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
-
-					//botanicalName.s
-
-//					dbAttrName = "notes";
-//					cdmAttrName = "isTrinomHybrid";
-//					ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
-					
-					//TODO
-					//Created
-					//Note
-					//makeAuthorTeams
-					//CultivarGroupName
-					//CultivarName
-					//Source_Acc
-					//OrthoProjection
+					success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
 					//Details
-					
 					dbAttrName = "details";
 					cdmAttrName = "nomenclaturalMicroReference";
-					success &= ImportHelper.addStringValue(rs, botanicalName, dbAttrName, cdmAttrName);
+					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 
-					//TODO
-					//preliminaryFlag
-					
-					//authorTeams
-					if (authorMap != null){
-						botanicalName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId));
-						botanicalName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId));
-						botanicalName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId));
-						botanicalName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId));
-					}
 					
 					//nomenclatural Reference
 					if (referenceMap != null){
@@ -316,44 +295,88 @@ public class BerlinModelTaxonNameIO {
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
 								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
 							}else{
-								botanicalName.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
+								taxonNameBase.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
 							}
 						}
 					}
+
+					//created, notes
+					doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId);
 					
-					//refId
-					String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + " (" + String.valueOf(createdWhen) + ") " +
-					 						" and updated By: " + String.valueOf(updatedWho) + " (" + String.valueOf(updatedWhen) + ")";
-					Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
-					annotation.setCommentator(bmiConfig.getCommentator());
-//					try {
-//						URL linkbackUrl = new URL("http:\\www.abc.de");
-//						annotation.setLinkbackUrl(linkbackUrl);
-//					} catch (MalformedURLException e) {
-//						logger.warn("MalformedURLException");
-//					}
-					botanicalName.addAnnotation(annotation);
-					
-					if (notes != null){
-						String notesString = String.valueOf(notes);
-						if (notesString.length() > 254 ){
-							notesString = notesString.substring(0, 250) + "...";
+					//Marker
+					boolean flag = true;
+					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
+					taxonNameBase.addMarker(marker);
+
+					//NonViralName
+					if (taxonNameBase instanceof NonViralName){
+						NonViralName nonViralName = (NonViralName)taxonNameBase;
+						
+						//authorTeams
+						if (authorMap != null ){
+							nonViralName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId));
+							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId));
+							nonViralName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId));
+							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId));
 						}
-						Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
-						//notes.setCommentator(bmiConfig.getCommentator());
-						botanicalName.addAnnotation(notesAnnotation);
+						
+						
+					}//nonviralName
+
+					if (taxonNameBase instanceof ZoologicalName){
+						ZoologicalName zooName = (ZoologicalName)taxonNameBase;
+						//publicationYear
+						String authorTeamYear = rs.getString("authorTeamYear");
+						try {
+							Integer publicationYear  = Integer.valueOf(authorTeamYear);
+							zooName.setPublicationYear(publicationYear);
+						} catch (NumberFormatException e) {
+							logger.warn("authorTeamYear could not be parsed for taxonName: "+ nameId);
+						}
+						//original publication year
+						String basAuthorTeamYear = rs.getString("basAuthorTeamYear");
+						try {
+							Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear);
+							zooName.setOriginalPublicationYear(OriginalPublicationYear);
+						} catch (NumberFormatException e) {
+							logger.warn("basAuthorTeamYear could not be parsed for taxonName: "+ nameId);
+						}
+						
+					}else if (taxonNameBase instanceof BotanicalName){
+						BotanicalName botanicalName = (BotanicalName)taxonNameBase;
+
+						dbAttrName = "HybridFormulaFlag";
+						cdmAttrName = "isHybridFormula";
+						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+
+						dbAttrName = "MonomHybFlag";
+						cdmAttrName = "isMonomHybrid";
+						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+
+						dbAttrName = "BinomHybFlag";
+						cdmAttrName = "isBinomHybrid";
+						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+
+						dbAttrName = "TrinomHybFlag";
+						cdmAttrName = "isTrinomHybrid";
+						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
+
+						if (taxonNameBase instanceof CultivarPlantName){
+							//TODO
+							//CultivarGroupName
+							//CultivarName
+						}	
 					}
 					
 					
-					boolean flag = true;
-					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
-					botanicalName.addMarker(marker);
+					//TODO
+					//Source_Acc
+					//OrthoProjection
+
+					//TODO
+					//preliminaryFlag see above
 					
-					
-					//nameId
-					ImportHelper.setOriginalSource(botanicalName, bmiConfig.getSourceReference(), nameId);
-					
-					taxonNameMap.put(nameId, botanicalName);
+					taxonNameMap.put(nameId, taxonNameBase);
 					
 				}
 				catch (UnknownCdmTypeException e) {
@@ -376,19 +399,19 @@ public class BerlinModelTaxonNameIO {
 
 	}
 	
-	private static Team getAuthorTeam(MapWrapper<Team> authorMap, Object teamIdObject, int nameId){
+	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId){
 		if (teamIdObject == null){
 			return null;
 		}else {
 			int teamId = (Integer)teamIdObject;
-			Team team = authorMap.get(teamId);
-			if (team == null){
+			TeamOrPersonBase author = authorMap.get(teamId);
+			if (author == null){
 				//TODO
 				logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
 				" was not found in authorTeam store. Relation was not set!!");
 				return null;
 			}else{
-				return team;
+				return author;
 			}
 		}
 	}

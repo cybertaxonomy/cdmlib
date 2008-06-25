@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author a.mueller
  *
  */
-public class BerlinModelNameFactsIO {
+public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
 	private static int modCount = 500000;
@@ -163,6 +163,7 @@ public class BerlinModelNameFactsIO {
 							if (media.getRepresentations().size() > 0){
 								ref.addMedia(media);
 							}
+
 						}//end NAME_FACT_PROTOLOGUE
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){

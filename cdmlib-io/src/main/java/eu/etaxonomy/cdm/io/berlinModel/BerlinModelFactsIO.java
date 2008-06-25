@@ -3,6 +3,10 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DESCRIPTION;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DISTIRBUTION_EM;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_OBSERVATION;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -12,20 +16,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -35,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class BerlinModelFactsIO {
+public class BerlinModelFactsIO  extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactsIO.class);
 
 	private static int modCount = 10000;
@@ -111,8 +113,8 @@ public class BerlinModelFactsIO {
 		
 		Map<Integer, Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
 		
-		//FIXME for testing only
-		TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+		//for testing only
+		//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		
 		
 		try {
@@ -136,10 +138,10 @@ public class BerlinModelFactsIO {
 				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
 				int categoryFk = rs.getInt("factCategoryFk");
 				String fact = rs.getString("Fact");
-				//FIXME
-				//TaxonBase taxonBase = taxonMap.get(taxonId);
 				
+				TaxonBase taxonBase = taxonMap.get(taxonId);
 				Feature feature = featureMap.get(categoryFk); 
+				
 				if (taxonBase != null){
 					Taxon taxon;
 					if ( taxonBase instanceof Taxon ) {
@@ -158,8 +160,10 @@ public class BerlinModelFactsIO {
 					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 					textData.putText(fact, Language.DEFAULT());
 					textData.setType(feature);
+					
 					taxonDescription.addElement(textData);
 					
+					//FIXME delete, just for testing
 					//commonNames
 					String commonNameString;
 					if (taxon.getName() != null){
@@ -186,6 +190,10 @@ public class BerlinModelFactsIO {
 					//TODO
 					//References
 					//etc.
+					
+					//TODO created, notes
+					//doIdCreatedUpdatedNotes(bmiConfig, textData, rs, factId);
+
 					
 					taxonStore.add(taxon);
 				}else{
