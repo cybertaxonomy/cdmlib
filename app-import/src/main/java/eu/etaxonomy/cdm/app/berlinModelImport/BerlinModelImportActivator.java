@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
 /**
@@ -40,7 +41,10 @@ public class BerlinModelImportActivator {
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
-	
+
+	//NomeclaturalCode
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -69,6 +73,9 @@ public class BerlinModelImportActivator {
 		ICdmDataSource destination = cdmDestination;
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
+		
+		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+		
 		bmImportConfigurator.setDoAuthors(doAuthors);
 		bmImportConfigurator.setDoReferences(doReferences);
 		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
