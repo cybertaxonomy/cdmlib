@@ -66,12 +66,17 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 				TeamOrPersonBase team = new Team();
 				
 				dbAttrName = "AuthorTeamCache";
+				cdmAttrName = "nomenclaturalTitle";
+				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+
+				dbAttrName = "AuthorTeamCache";
 				cdmAttrName = "titleCache";
 				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
-	
+
 				//TODO
 				//FullAuthorTeamCache
 				//preliminaryFlag
+				//title cache or nomenclaturalTitle?
 
 				//created, notes
 				doIdCreatedUpdatedNotes(bmiConfig, team, rs, teamId);
