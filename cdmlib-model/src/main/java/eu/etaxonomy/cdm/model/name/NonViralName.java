@@ -531,15 +531,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	
 	/**
-	 * Returns the boolean value "true" if the components of this non viral taxon name
-	 * follow the rules of the corresponding {@link NomenclaturalCode nomenclatural code},
-	 * "false" otherwise. The nomenclatural code depends on
+	 * Returns the boolean value "false" since the components of this taxon name
+	 * cannot follow the rules of a corresponding {@link NomenclaturalCode nomenclatural code}
+	 * which is not defined for this class. The nomenclature code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} or
 	 * {@link ZoologicalName ZoologicalName} to which this non viral taxon name belongs.
-	 * This method overrides the isCodeCompliant method from {@link TaxonNameBase#isCodeCompliant() TaxonNameBase}.
+	 * This method overrides the isCodeCompliant method from the abstract
+	 * {@link TaxonNameBase#isCodeCompliant() TaxonNameBase} class.
 	 *  
-	 * @return  the boolean value expressing the compliance of this non viral taxon name to its nomenclatural code
+	 * @return  false
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
