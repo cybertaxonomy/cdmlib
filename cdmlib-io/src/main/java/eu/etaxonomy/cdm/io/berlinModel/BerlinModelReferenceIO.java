@@ -332,15 +332,16 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase = new Generic();	
 						}
 						
+						
+						dbAttrName = "nomRefCache";
+						cdmAttrName = "titleCache";
+						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
+
 						dbAttrName = "refCache";
 						cdmAttrName = "titleCache";
 						//TODO wohin kommt der refCache
 						//INomenclaturalReference hat nur getNomenclaturalCitation , müsste es nicht so was wie setAbbrevTitle geben? 
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
-						
-						dbAttrName = "nomRefCache";
-						cdmAttrName = "titleCache";
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.OVERWRITE);
+						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.NO_OVERWRITE);
 						
 						//refId
 						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);
