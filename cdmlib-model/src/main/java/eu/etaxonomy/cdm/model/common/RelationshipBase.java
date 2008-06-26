@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -34,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 	"relatedTo",
     "type"
 })
-@XmlRootElement(name = "RealtionshipBase")
+@XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
 
