@@ -90,7 +90,7 @@ public class BerlinModelImport {
 		
 		//check nameStatus
 		if(bmiConfig.isDoNameStatus()){
-			result &= BerlinModelTaxonNameIO.checkNomStatus(bmiConfig);
+			result &= BerlinModelNameStatusIO.check(bmiConfig);
 		}
 
 		//check nomStatus
@@ -192,7 +192,7 @@ public class BerlinModelImport {
 
 		//check nameStatus
 		if(bmiConfig.isDoNameStatus()){
-			if (! BerlinModelTaxonNameIO.invokeStatus(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
+			if (! BerlinModelNameStatusIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{

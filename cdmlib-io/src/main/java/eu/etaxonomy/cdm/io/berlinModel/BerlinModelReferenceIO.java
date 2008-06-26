@@ -137,6 +137,47 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 	}
 	
+	private static boolean checkXXX(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
+			" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 9) ";
+			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are part-of-references that have a Journal as in-reference!");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("RefId");
+				int categoryFk = rs.getInt("RefCategoryFk");
+				String cat = rs.getString("RefCategoryAbbrev");
+				int inRefFk = rs.getInt("InRefId");
+				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				String inRefCat = rs.getString("InRefCat");
+				String refCache = rs.getString("RefCache");
+				String nomRefCache = rs.getString("nomRefCache");
+				String title = rs.getString("title");
+				String inRefTitle = rs.getString("InRefTitle");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
+						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
+						"\n  inRefTitle: " + inRefTitle );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
 			MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
@@ -152,16 +193,6 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		boolean delete = bmiConfig.isDeleteAll();
 
-//		if (delete){
-//			List<TaxonNameBase> listAllReferences =  referenceService.getAllReferences(0, 1000);
-//			while(listAllReferences.size() > 0 ){
-//				for (TaxonNameBase name : listAllReferences ){
-//					//FIXME
-//					//nameService.remove(name);
-//				}
-//				listAllReferences =  referenceService.getAllReferences(0, 1000);
-//			}			
-//		}
 		try {
 			
 			
