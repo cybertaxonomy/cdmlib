@@ -51,10 +51,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * @author m.doering
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "CdmBase", propOrder = {
-    "uuid",
-    "id",
     "created",
     "createdBy",
 })
@@ -62,24 +60,10 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @MappedSuperclass
 public abstract class CdmBase implements Serializable, ICdmBase{
 
-	@XmlTransient
-	// TODO
-	// JAXB requests a default constructor for PropertyChangeSupport!?
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-	@XmlElement(name = "ID")
 	private int id;
-
-	//@XmlElement(name = "UUID", type = String.class)
-	@XmlAttribute(name = "uuid", required = true)
-	//@XmlID
-	//@XmlSchemaType(name = "ID")
     private UUID uuid;
-
-	@XmlElement (name = "Created")
 	private Calendar created;
-
-	@XmlElement (name = "CreatedBy")
     private Person createdBy;
 
 	/**
@@ -144,27 +128,14 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		propertyChangeSupport.firePropertyChange(evt);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
-	 */
-	@Id
-	@GeneratedValue(generator = "system-increment")
-	public int getId() {
-		return this.id;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setId(int)
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
 	/**
 	 * Method for hibernate only to read the UUID value as a simple string from the object and persist it (e.g. in a database).
 	 * For reading the UUID please use getUuid method
 	 * @return String representation of the UUID
 	 */
+	@XmlAttribute(name = "uuid", required = true)
+	@XmlID
+	@XmlSchemaType(name = "ID")
 	private String getStrUuid() {
 		return this.uuid.toString();
 	}
@@ -178,8 +149,25 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	
 	
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
+	 */
+	@XmlAttribute(name = "id", required = true)
+	@Id
+	@GeneratedValue(generator = "system-increment")
+	public int getId() {
+		return this.id;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setId(int)
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
 	 */
+    @XmlTransient
 	@Transient
 	public UUID getUuid() {
 		return this.uuid;
@@ -195,6 +183,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
 	 */
+	@XmlElement (name = "Created")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Basic(fetch = FetchType.LAZY)
 	public Calendar getCreated() {
@@ -214,6 +203,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
 	 */
+	@XmlElement (name = "CreatedBy")
 	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Person getCreatedBy() {
