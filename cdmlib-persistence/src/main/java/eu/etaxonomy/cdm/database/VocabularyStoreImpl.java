@@ -9,14 +9,11 @@
 
 package eu.etaxonomy.cdm.database;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -182,7 +178,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 				initialized = result;
 				logger.info("inititialize VocabularyStoreImpl end ...");				
 			} catch (Exception e) {
-				logger.error("loadBasicTerms: Error ocurred when initializing and loading terms");
+				logger.error("loadBasicTerms: Error ocurred when initializing and loading terms: " + e.getMessage());
 				initialized = false;
 				return false;
 			}
