@@ -17,6 +17,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Only taxon names which have a rank above "species" are typified by other
@@ -33,6 +36,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
  */
+@XmlType(name="NameTypeDesignation")
 @Entity
 public class NameTypeDesignation extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
@@ -40,6 +44,13 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	private boolean isConservedType;
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
+	
+	/**
+	 * Default Constructor
+	 */
+	private NameTypeDesignation() {
+		super();
+	}
 
 	protected NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean isRejectedType, boolean isConservedType) {
@@ -51,8 +62,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
 	}
-	
-	
+		
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getTypifiedName() {
 		return typifiedName;
