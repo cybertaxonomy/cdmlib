@@ -48,7 +48,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	/**
 	 * Returns the set of specimens or observations involved in this description
-	 * as a whole. Also taxa descriptions are often based on concrete specimens
+	 * as a whole. Also taxon descriptions are often based on concrete specimens
 	 * or observations. 
 	 * 
 	 * @return	the set of of specimens or observations 
