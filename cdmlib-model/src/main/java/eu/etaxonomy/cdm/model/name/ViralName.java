@@ -18,6 +18,11 @@ import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The taxon name class for viral taxa. The scientific name will be stored
@@ -32,11 +37,20 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:02
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "cacheStrategy",
+    "acronym"
+})
+@XmlRootElement(name = "ViralName")
 @Entity
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
+	
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
+	@XmlElement(name = "CacheStrategy")
 	protected INameCacheStrategy cacheStrategy;
+	@XmlElement(name = "Acronym")
 	private String acronym;
 
 	// ************* CONSTRUCTORS *************/	

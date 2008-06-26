@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -24,6 +27,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:46
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Rank")
 @Entity
 public class Rank extends OrderedTermBase<Rank> {
 	private static final Logger logger = Logger.getLogger(Rank.class);

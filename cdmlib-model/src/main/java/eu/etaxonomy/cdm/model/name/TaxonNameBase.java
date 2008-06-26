@@ -38,6 +38,15 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -51,22 +60,63 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:57
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "appendedPhrase",
+    "nomenclaturalMicroReference",
+    "nomenclaturalReference",
+    "rank",
+    "homotypicalGroup",
+    "nameTypeDesignations",
+    "specimenTypeDesignations",
+    "relationsFromThisName",
+    "relationsToThisName",
+    "status",
+    "taxonBases",
+})
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
+
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
+
 	private String appendedPhrase;
+	
 	private String nomenclaturalMicroReference;
+	
+    @XmlAttribute
 	private boolean hasProblem = false;
-	protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet<NameTypeDesignation>();
+	
+    @XmlElementWrapper(name = "NameTypeDesignations")
+    @XmlElement(name = "NameTypeDesignation")
+    protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet<NameTypeDesignation>();
+	
+    @XmlElementWrapper(name = "SpecimenTypeDesignations")
+    @XmlElement(name = "SpecimenTypeDesignation")
 	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
+
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
+
+    @XmlElementWrapper(name = "RelationsFromThisName")
+    @XmlElement(name = "RelationFromThisName")
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
+
+    @XmlElementWrapper(name = "RelationsToThisName")
+    @XmlElement(name = "RelationToThisName")
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
+
+    @XmlElementWrapper(name = "Stati")
+    @XmlElement(name = "Status")
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
+
+    @XmlElementWrapper(name = "TaxonBases")
+    @XmlElement(name = "TaxonBase")
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
+
 	private Rank rank;
+
+	@XmlAnyElement
 	private INomenclaturalReference nomenclaturalReference;
 
 	static Method methodTaxonBaseSetName;

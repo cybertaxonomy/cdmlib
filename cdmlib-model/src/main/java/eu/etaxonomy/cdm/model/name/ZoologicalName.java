@@ -21,19 +21,38 @@ import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Taxon name class for animals
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:03
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "breed",
+    "publicationYear",
+    "originalPublicationYear"
+})
+@XmlRootElement(name = "ZoologicalName")
 @Entity
 public class ZoologicalName extends NonViralName {
+	
 	static Logger logger = Logger.getLogger(ZoologicalName.class);
 
 	//Name of the breed of an animal
+	@XmlElement(name = "Breed")
 	private String breed;
+	
+	@XmlElement(name = "PublicationYear")
 	private Integer publicationYear;
+	
+	@XmlElement(name = "OriginalPublicationYear")
 	private Integer originalPublicationYear;
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();

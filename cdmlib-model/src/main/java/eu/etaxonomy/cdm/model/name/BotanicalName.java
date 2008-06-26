@@ -23,6 +23,13 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Taxon name class for plants
@@ -30,17 +37,41 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:15
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "isHybridFormula",
+    "isMonomHybrid",
+    "isBinomHybrid",
+    "isTrinomHybrid",
+    "isAnamorphic",
+    "hybridRelationships"
+})
+@XmlRootElement(name = "BotanicalName")
 @Entity
 public class BotanicalName extends NonViralName {
+	
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
+	
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
 	//hybrid name  may not have either an authorteam nor other name components.
+    @XmlElement(name ="IsHybridFormula")
 	private boolean isHybridFormula = false;
+	
+    @XmlElement(name ="IsMonomHybrid")
 	private boolean isMonomHybrid = false;
+	
+    @XmlElement(name ="IsBinomHybrid")
 	private boolean isBinomHybrid = false;
+	
+    @XmlElement(name ="IsTrinomHybrid")
 	private boolean isTrinomHybrid = false;
+	
 	//Only for fungi: to indicate that the type of the name is asexual or not
+    @XmlElement(name ="IsAnamorphic")
 	private boolean isAnamorphic;
+	
+    @XmlElementWrapper(name = "HybridRelationships")
+    @XmlElement(name = "HybridRelationship")
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();

@@ -9,10 +9,13 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-
 import org.apache.log4j.Logger;
-
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Taxon name class for cultivars. {only possible for  CULTIVAR, GREX, CONVAR,
@@ -21,13 +24,21 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:18
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "cultivarName"
+})
+@XmlRootElement(name = "CultivarPlantName")
 @Entity
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
 	
-	//the caracteristical name of the cultivar
+	//the characteristical name of the cultivar
+    @XmlElement(name = "CultivarName", required = true)
 	private String cultivarName;
 
+	public CultivarPlantName(){
+	}
 
 	public static CultivarPlantName NewInstance(Rank rank){
 		return new CultivarPlantName(rank, null);

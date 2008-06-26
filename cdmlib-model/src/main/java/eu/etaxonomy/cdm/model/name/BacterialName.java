@@ -13,6 +13,11 @@ package eu.etaxonomy.cdm.model.name;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Taxon name class for bacteria
@@ -20,13 +25,23 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:11
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "subGenusAuthorship",
+    "nameApprobation"
+})
+@XmlRootElement(name = "BacterialName")
 @Entity
 public class BacterialName extends NonViralName {
+	
 	static Logger logger = Logger.getLogger(BacterialName.class);
 
 	//Author team and year of the subgenus name
+	@XmlElement(name = "SubGenusAuthorship")
 	private String subGenusAuthorship;
+	
 	//Approbation of name according to approved list, validation list,or validly published, paper in IJSB after 1980
+	@XmlElement(name = "NameApprobation")
 	private String nameApprobation;
 
 	public static BacterialName NewInstance(Rank rank){

@@ -21,8 +21,14 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
+//import javax.xml.bind.annotation.XmlElement;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The taxon name class for all non viral taxa. Parentetical authorship is derived
@@ -34,23 +40,73 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "nameCache",
+    "genusOrUninomial",
+    "infraGenericEpithet",
+    "specificEpithet",
+    "infraSpecificEpithet",
+    "combinationAuthorTeam",
+    "exCombinationAuthorTeam",
+    "basionymAuthorTeam",
+    "exBasionymAuthorTeam",
+    "authorshipCache",
+    "protectedAuthorshipCache",
+    "protectedNameCache",
+    "cacheStrategy"
+})
+@XmlRootElement(name = "NonViralName")
 @Entity
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName, INonViralNameCacheStrategy> {
+	
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
+	@XmlElement(name = "NameCache")
 	private String nameCache;
+	
+	@XmlElement(name = "GenusOrUninomial")
 	private String genusOrUninomial;
+	
+	@XmlElement(name = "InfraGenericEpithet")
 	private String infraGenericEpithet;
+	
+	@XmlElement(name = "SpecificEpithet")
 	private String specificEpithet;
+	
+	@XmlElement(name = "InfraSpecificEpithet")
 	private String infraSpecificEpithet;
+	
+	@XmlElement(name = "CombinationAuthorTeam")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor combinationAuthorTeam;
+	
+	@XmlElement(name = "ExCombinationAuthorTeam")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor exCombinationAuthorTeam;
+	
+	@XmlElement(name = "BasionymAuthorTeam")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor basionymAuthorTeam;
+	
+	@XmlElement(name = "ExBasionymAuthorTeam")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor exBasionymAuthorTeam;
+	
+	@XmlElement(name = "AuthorshipCache")
 	private String authorshipCache;
+	
+	@XmlElement(name = "ProtectedAuthorshipCache")
 	protected boolean protectedAuthorshipCache;
+	
+	@XmlElement(name = "ProtectedNameCache")
 	protected boolean protectedNameCache;
 
+	@XmlElement(name = "CacheStrategy")
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
