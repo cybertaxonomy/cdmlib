@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Individual property of observed phenomena able to be described or measured.
@@ -29,6 +30,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
+@XmlType(name="Feature", factoryMethod="NewInstance")
 @Entity
 public class Feature extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Feature.class);
@@ -45,11 +47,18 @@ public class Feature extends DefinedTermBase {
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
+
+	public static Feature NewInstance() {
+		return new Feature();
+	}
 	public static Feature NewInstance(String term, String label, String labelAbbrev){
 		return new Feature(term, label, labelAbbrev);
 	}
-	
-	private Feature (){
+
+	/**
+	 * Default Constructor
+	 */
+	private Feature() {
 		super();
 	}
 	
