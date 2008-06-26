@@ -20,7 +20,9 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -69,8 +71,8 @@ public class InstitutionalMembership extends VersionableEntity {
 	private Institution institute;
 	
     @XmlElement(name = "Person", required = true)
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Person person;
 	
 	public static InstitutionalMembership NewInstance() {
