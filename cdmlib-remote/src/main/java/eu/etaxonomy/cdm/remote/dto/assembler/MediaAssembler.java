@@ -37,7 +37,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 	
 	@Override
 	MediaSTO getSTO(Media media, Enumeration<Locale> locales) {
-		List<Language> languages = languageDao.getLangaugesByLocale(locales);
+		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 		MediaSTO mediaSTO = null;
 		if (media !=null){
 			mediaSTO = new MediaSTO();
@@ -50,7 +50,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 
 	@Override
 	MediaTO getTO(Media media, Enumeration<Locale> locales) {
-		List<Language> languages = languageDao.getLangaugesByLocale(locales);
+		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 		MediaTO mediaTO = null;
 		if (media !=null){
 			mediaTO = new MediaTO();

@@ -14,7 +14,6 @@ import java.util.Set;
 public class DescriptionTO extends BaseTO {
 
 	// general bits from DescriptionBase
-	private String label;
 	private Set<ReferenceSTO> sources = new HashSet<ReferenceSTO>();
 	private Set<DescriptionElementSTO> elements = new HashSet<DescriptionElementSTO>();
 
@@ -26,13 +25,6 @@ public class DescriptionTO extends BaseTO {
 	// -- SpecimenDescription specific --
 	private Set<SpecimenSTO> specimensOrObersvations = new HashSet<SpecimenSTO>();
 
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
 
 	public TaxonSTO getTaxon() {
 		return taxon;

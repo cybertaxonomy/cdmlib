@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -71,6 +72,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		to.setUuid(descriptionBase.getUuid().toString());
 		to.setCreated(descriptionBase.getCreated());
 		to.setCreatedBy(descriptionBase.getCreatedBy());
+		//TODO to.setLabel(label);
 		for(DescriptionElementBase descriptionElementBase :  descriptionBase.getElements()){
 			to.addElement(getDescriptionElementSTO(descriptionElementBase, locales));
 		}
@@ -101,13 +103,14 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 			DescriptionElementBase descriptionElementBase,
 			Enumeration<Locale> locales) {
 		
-		List<Language> languages = languageDao.getLangaugesByLocale(locales);
+		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 
 		DescriptionElementSTO sto = new DescriptionElementSTO();
 		sto.setUuid(descriptionElementBase.getUuid().toString());
 		
 		if(descriptionElementBase.getType() != null){
-			sto.setType(localisedTermAssembler.getSTO(descriptionElementBase.getType(), locales));
+			Feature type = descriptionElementBase.getType();
+			sto.setType(localisedTermAssembler.getSTO(type, locales));
 		}
 		// media
 		for(Media media : descriptionElementBase.getMedia()){
@@ -116,6 +119,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		// TextData specific
 		if(descriptionElementBase instanceof TextData){
 			TextData textdata = (TextData)descriptionElementBase;
+			//TODO extract method for finding text by preferred languages
 			for (Language language : languages) {
 				String text = textdata.getText(language);
 				if(text != null){
@@ -124,6 +128,11 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 					break;
 				}
 			}
+			// HACK:
+			Language language = textdata.getMultilanguageText().keySet().iterator().next();
+			String text = textdata.getMultilanguageText().get(language).getText();
+			sto.setLanguage(language.getLabel());
+			sto.setDescription(text);
 		}
 		return sto;
 	}

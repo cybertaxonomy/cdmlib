@@ -45,7 +45,7 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 	@Override
 	LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales) {
 		LocalisedTermSTO lt = new LocalisedTermSTO();
-		List<Language> languages = languageDao.getLangaugesByLocale(locales);
+		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 		Representation r = term.getPreferredRepresentation(languages);
 		lt.setTerm(r.getLabel());
 		lt.setLanguage(r.getLanguage().toString());
