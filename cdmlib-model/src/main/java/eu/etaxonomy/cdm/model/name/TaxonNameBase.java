@@ -253,7 +253,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof NameRelationship){
 			addNameRelationship((NameRelationship)relation);
+			if (relation.getType() != null && 
+						relation.getType().equals(NameRelationshipType.BASIONYM() ) &&
+						relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM() )){
+				TaxonNameBase fromName = ((NameRelationship)relation).getFromName();
+				TaxonNameBase toName = ((NameRelationship)relation).getToName();
+				fromName.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
+			}		
 		}else{
+			logger.warn("Relationship not of type NameRelationship!");
 			//TODO exception handling
 		}
 	}
@@ -369,30 +377,38 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	@Transient
 	public T getBasionym(){
 		//TODO: pick the right name relationships...
+		logger.warn("get Basionym not yet implemented");
 		return null;
 	}
 	/**
 	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name.
 	 * The basionym relationship will be added to this taxon name
 	 * and to the basionym. The basionym cannot have itself a basionym.
-	 * 
+	 * The homotypical group of this taxon name will be changed the basionyms homotypical group.
 	 * @see  #getBasionym()
-	 * @see  #setBasionym(TaxonNameBase, String)
+	 * @see  #addBasionym(TaxonNameBase, String)
 	 */
-	public void setBasionym(T basionym){
-		setBasionym(basionym, null);
+	public void addBasionym(T basionym){
+		addBasionym(basionym, null);
 	}
 	/**
 	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name
 	 * and keeps the nomenclatural rule considered for it. The basionym
 	 * relationship will be added to this taxon name and to the basionym.
-	 * The basionym cannot have itself a basionym.
-	 * 
+	 * The basionym cannot have itself as a basionym.
+	 * The homotypical group of this taxon name will be changed the basionyms homotypical group.
 	 * @see  #getBasionym()
 	 * @see  #setBasionym(TaxonNameBase)
 	 */
-	public void setBasionym(T basionym, String ruleConsidered){
-		basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), ruleConsidered);
+	public void addBasionym(T basionym, String ruleConsidered){
+		if (basionym != null){
+			basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), ruleConsidered);
+		}
+	}
+	
+	public void removeBasionym(){
+		//TODO implement
+		logger.warn("not yet implemented");
 	}
 
 
