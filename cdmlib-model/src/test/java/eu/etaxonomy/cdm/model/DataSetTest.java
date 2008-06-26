@@ -99,7 +99,7 @@ public class DataSetTest {
 		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
 		TimePeriod period = new TimePeriod(birth, death);
 		linne.setLifespan(period);
-		linne.addKeyword(Keyword.NewInstance("plantarum", "naturae", "borealis"));
+		linne.addKeyword(Keyword.NewInstance("plantarum", "lat", ""));
 
 		agents.add(linne);
 		dataSet.setAgents(agents);
