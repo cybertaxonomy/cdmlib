@@ -340,7 +340,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						
 						dbAttrName = "nomRefCache";
 						cdmAttrName = "titleCache";
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.NO_OVERWRITE);
+						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.OVERWRITE);
 						
 						//refId
 						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);
