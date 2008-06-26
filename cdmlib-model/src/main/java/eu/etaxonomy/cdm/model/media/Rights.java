@@ -43,10 +43,25 @@ public class Rights extends LanguageStringBase {
 	 * Factory method
 	 * @return
 	 */
-	public static Rights NewInstance(String text, Language language){
+	public static Rights NewInstance() {
+		return new Rights();
+	}
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Rights NewInstance(String text, Language language) {
 		return new Rights(text, language);
 	}
 	
+	/**
+	 * Default Constructor
+	 */
+	protected Rights() {
+		super();
+	}
+
 	/**
 	 * Constructor
 	 */
