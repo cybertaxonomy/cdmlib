@@ -24,11 +24,11 @@ public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitled
 	 * @return the Language or null
 	 */
 	//TODO refactor typo:
-	public Language getLangaugeByIso(String iso639);
-	//TODO refactor typo:
-	public List<Language> getLangaugesByIso(List<String> iso639List);
-	//TODO refactor typo:
-	public List<Language> getLangaugesByLocale(Enumeration<Locale> locales);
+	public Language getLanguageByIso(String iso639);
+	
+	public List<Language> getLanguagesByIso(List<String> iso639List);
+	
+	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
 
 	
 }

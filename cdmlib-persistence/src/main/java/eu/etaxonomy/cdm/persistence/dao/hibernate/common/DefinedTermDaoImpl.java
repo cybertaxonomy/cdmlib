@@ -77,26 +77,26 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
 	 */
-	public Language getLangaugeByIso(String iso639) {
+	public Language getLanguageByIso(String iso639) {
 		String isoStandart = "iso639_" + (iso639.length() - 1);
 		Query query = getSession().createQuery("from Language where "+isoStandart+"= :isoCode"); 
 		query.setParameter("isoCode", iso639);
 		return (Language) query.uniqueResult();
 	}
 	
-	public List<Language> getLangaugesByIso(List<String> iso639List) {
+	public List<Language> getLanguagesByIso(List<String> iso639List) {
 		List<Language> languages = new ArrayList<Language>(iso639List.size());
 		for (String iso639 : iso639List) {
-			languages.add(getLangaugeByIso(iso639));
+			languages.add(getLanguageByIso(iso639));
 		}
 		return languages;
 	}
 	
-	public List<Language> getLangaugesByLocale(Enumeration<Locale> locales) {
+	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales) {
 		List<Language> languages = new ArrayList<Language>();
 		while(locales.hasMoreElements()) {
 			Locale locale = locales.nextElement();
-			languages.add(getLangaugeByIso(locale.getLanguage()));		
+			languages.add(getLanguageByIso(locale.getLanguage()));		
 		}
 		return languages;
 	}
