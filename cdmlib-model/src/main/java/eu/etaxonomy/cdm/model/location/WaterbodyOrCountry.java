@@ -48,7 +48,7 @@ public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	private char[] iso3166_A2 = new char[2];
 	private TimePeriod validPeriod;
 	
-    @XmlElementWrapper(name = "Continents", required = true)
+    @XmlElementWrapper(name = "Continents")
     @XmlElement(name = "Continent")
 	private Set<Continent> continents = new HashSet();
 	
