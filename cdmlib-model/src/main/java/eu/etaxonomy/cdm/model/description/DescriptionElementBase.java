@@ -64,11 +64,29 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	}
 
 
-	@ManyToOne
+	/**
+	 * Same as getFeature()
+	 * @see getFeature() 
+	 * @return
+	 */
+	@Transient
 	public Feature getType(){
+		return this.getFeature();
+	}
+	/**
+	 * Same as setFeature(Feature feature)
+	 * @see setFeature(Feature feature) 
+	 * @param type
+	 */
+	public void setType(Feature type){
+		this.setFeature(type);
+	}
+	
+	@ManyToOne
+	public Feature getFeature(){
 		return this.type;
 	}
-	public void setType(Feature type){
+	public void setFeature(Feature feature){
 		this.type = type;
 	}
 
