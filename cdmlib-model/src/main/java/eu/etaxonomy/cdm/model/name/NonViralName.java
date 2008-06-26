@@ -131,12 +131,12 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * Class constructor: creates a new non viral taxon name instance
 	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and
-	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank  the rank to be assigned to this non viral taxon name
 	 * @param	homotypicalGroup  the homotypical group to which this non viral taxon name belongs
 	 * @see 	#NonViralName()
-	 * @see		#NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see		#NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
@@ -158,8 +158,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @param	genusOrUninomial the string for this taxon name
 	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
-	 * @param	specificEpithet  the string for the first epithet of
+	 * @param	infraGenericEpithet  the string for the first epithet of
 	 * 			this non viral taxon name if its rank is lower than genus
+	 * 			and higher than species aggregate
+	 * @param	specificEpithet  the string for the first epithet of
+	 * 			this non viral taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
 	 * 			this non viral taxon name if its rank is lower than species
 	 * @param	combinationAuthorTeam  the author or the team who published this non viral taxon name
@@ -169,14 +172,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see 	#NonViralName()
 	 * @see		#NonViralName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.NonViralNameDefaultCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
 	 */
-	protected NonViralName(Rank rank, String genusOrUninomial, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+	protected NonViralName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
 		setNameCacheStrategy();
 		setGenusOrUninomial(genusOrUninomial);
+		setInfraGenericEpithet (infraGenericEpithet);
 		setSpecificEpithet(specificEpithet);
 		setInfraSpecificEpithet(infraSpecificEpithet);
 		setCombinationAuthorTeam(combinationAuthorTeam);
