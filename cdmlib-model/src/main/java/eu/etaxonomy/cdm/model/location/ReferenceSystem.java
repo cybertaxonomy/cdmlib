@@ -16,7 +16,7 @@ import javax.persistence.*;
 
 /**
  * Reference systems for coordinates also according to OGC (Open Geographical
- * Consosrtium) The list should be extensible at runtime through configuration.
+ * Consortium) The list should be extensible at runtime through configuration.
  * This needs to be investigated.
  * @author m.doering
  * @version 1.0
@@ -25,6 +25,14 @@ import javax.persistence.*;
 @Entity
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);
+
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static ReferenceSystem NewInstance(){
+		return new ReferenceSystem();
+	}
 
 	/**
 	 * Factory method
@@ -40,7 +48,7 @@ public class ReferenceSystem extends DefinedTermBase {
 	private ReferenceSystem() {
 		super();
 	}
-	
+
 	/**
 	 * Constructor
 	 */
