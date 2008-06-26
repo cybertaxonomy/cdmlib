@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NONE;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -8,13 +10,11 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.*;
 
 @Service
 public class BerlinModelImport {
