@@ -81,6 +81,20 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		typifiedNames.remove(typifiedName);	
 	}
 
+	/**
+	 * Meges the typified Names of the homotypicalGroupToMerge into this homotypical group 
+	 * @param homotypicalGroup
+	 */
+	public void merge(HomotypicalGroup homotypicalGroupToMerge){
+		if (homotypicalGroupToMerge != null){
+			Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+			typifiedNames.addAll(homotypicalGroupToMerge.getTypifiedNames());
+			for (TaxonNameBase typifiedName: typifiedNames){
+				this.addTypifiedName(typifiedName);
+			}
+		}
+	}
+	
 	
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
