@@ -14,6 +14,9 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The list should be extensible at runtime through configuration. This needs to
@@ -22,8 +25,11 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:27
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
 @Entity
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
+  
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
 	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");

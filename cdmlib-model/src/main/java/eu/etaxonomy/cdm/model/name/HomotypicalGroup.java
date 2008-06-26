@@ -20,6 +20,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -46,11 +51,21 @@ import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
  * @author m.doering
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "HomotypicalGroup", propOrder = {
+    "typifiedNames",
+    "typeDesignations"
+})
 @Entity
 public class HomotypicalGroup extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(HomotypicalGroup.class);
 
+	@XmlElementWrapper(name = "TypifiedNames")
+	@XmlElement(name = "TypifiedName")
 	protected Set<TaxonNameBase> typifiedNames = new HashSet();
+	
+    @XmlElementWrapper(name = "TypeDesignations")
+    @XmlElement(name = "TypeDesignation")
 	protected Set<SpecimenTypeDesignation> typeDesignations = new HashSet();
 
 	public static HomotypicalGroup NewInstance(){

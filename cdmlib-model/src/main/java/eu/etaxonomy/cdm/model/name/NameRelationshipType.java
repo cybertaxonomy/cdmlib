@@ -17,6 +17,9 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm
@@ -29,6 +32,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
 @Entity
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);

@@ -44,7 +44,9 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -61,7 +63,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "TaxonNameBase", propOrder = {
     "appendedPhrase",
     "nomenclaturalMicroReference",
     "nomenclaturalReference",
@@ -81,8 +83,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 
+    @XmlElement(name = "AppendedPhrase")
 	private String appendedPhrase;
 	
+    @XmlElement(name = "NomenclaturalMicroReference")
 	private String nomenclaturalMicroReference;
 	
     @XmlAttribute
@@ -96,27 +100,35 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     @XmlElement(name = "SpecimenTypeDesignation")
 	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
+    @XmlElement(name = "HomotypicalGroup")
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
+    @XmlIDREF
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
     @XmlElement(name = "RelationToThisName")
+    @XmlIDREF
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "Stati")
     @XmlElement(name = "Status")
+    @XmlIDREF
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
     @XmlElementWrapper(name = "TaxonBases")
     @XmlElement(name = "TaxonBase")
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
 
+    @XmlElement(name = "Rank")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Rank rank;
 
-	@XmlAnyElement
+//  TODO: This must be an IDREF to the corresponding nomenclatural reference.
+    @XmlAnyElement
 	private INomenclaturalReference nomenclaturalReference;
 
 	static Method methodTaxonBaseSetName;

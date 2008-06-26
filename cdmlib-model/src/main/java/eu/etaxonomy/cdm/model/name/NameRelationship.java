@@ -13,6 +13,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
@@ -20,12 +24,22 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:37
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "NameRelationship", propOrder = {
+    "ruleConsidered",
+    "type"
+})
 @Entity
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
-	static Logger logger = Logger.getLogger(NameRelationship.class);
-	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
+
+  static Logger logger = Logger.getLogger(NameRelationship.class);
+
+    //The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
+    @XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
+	
+    @XmlElement(name = "NameRelationshipType")
 	private NameRelationshipType type;
 
 	//for hibernate, don't use
