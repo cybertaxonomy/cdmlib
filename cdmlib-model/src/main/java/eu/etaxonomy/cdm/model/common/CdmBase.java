@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 
@@ -73,7 +72,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 
 	//@XmlElement(name = "UUID", type = String.class)
 	@XmlAttribute(name = "uuid", required = true)
-    @XmlJavaTypeAdapter(UUIDAdapter.class)
 	//@XmlID
 	//@XmlSchemaType(name = "ID")
     private UUID uuid;
