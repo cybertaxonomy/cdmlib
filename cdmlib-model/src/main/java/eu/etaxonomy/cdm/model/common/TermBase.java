@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.FetchType;
@@ -72,6 +73,56 @@ public abstract class TermBase extends VersionableEntity {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @see #getPreferredRepresentation(Language)
+	 * @param language
+	 * @return
+	 */
+	@Transient
+	public Representation getPreferredRepresentation(Language language) {
+		Representation repr = getRepresentation(language); 
+		if(repr == null){
+			repr = getRepresentation(Language.DEFAULT());
+		}
+		if(repr == null){
+			repr = getRepresentations().iterator().next();
+		}
+		return repr;
+	}
+	
+	/**
+	 * Returns the Representation in the preferred language. Preferred languages
+	 * are specified by the parameter languages, which receives a list of
+	 * Language instances in the order of preference. If no representation in
+	 * any preferred languages is found the method falls back to return the
+	 * Representation in Language.DEFAULT() and if nessecary further falls back
+	 * to return the first element found.
+	 * 
+	 * TODO think about this fall-back strategy!
+	 * 
+	 * @param languages
+	 * @return
+	 */
+	@Transient
+	public Representation getPreferredRepresentation(List<Language> languages) {
+		Representation repr = null;
+		if(languages != null){
+			for(Language language : languages) {
+				repr = getRepresentation(language); 
+				if(repr != null){
+					return repr;
+				}
+			}
+		}
+		if(repr == null){
+			repr = getRepresentation(Language.DEFAULT());
+		}
+		if(repr == null){
+			repr = getRepresentations().iterator().next();
+		}
+		return repr;
 	}
 
 	public String getUri() {
