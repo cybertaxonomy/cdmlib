@@ -23,6 +23,12 @@ import au.com.bytecode.opencsv.CSVWriter;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -32,6 +38,7 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:02
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
@@ -40,6 +47,9 @@ public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	 */
 	private char[] iso3166_A2 = new char[2];
 	private TimePeriod validPeriod;
+	
+    @XmlElementWrapper(name = "Continents", required = true)
+    @XmlElement(name = "Continent")
 	private Set<Continent> continents = new HashSet();
 	
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
