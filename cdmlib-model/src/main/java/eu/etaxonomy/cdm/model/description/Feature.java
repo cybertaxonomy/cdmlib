@@ -42,15 +42,22 @@ public class Feature extends DefinedTermBase {
 	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet<TermVocabulary>();
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
-
+	
+/* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
+	
 	public static Feature NewInstance(String term, String label, String labelAbbrev){
 		return new Feature(term, label, labelAbbrev);
+	}
+	
+	private Feature (){
+		super();
 	}
 	
 	protected Feature(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
+/* *************************************************************************************/
 	public boolean isSupportsQuantitativeData() {
 		return supportsQuantitativeData;
 	}
