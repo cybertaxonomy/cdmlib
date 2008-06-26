@@ -23,6 +23,7 @@ import org.hibernate.annotations.Table;
 import java.lang.reflect.Method;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Upmost abstract class for the use of a taxon name by a reference either
@@ -68,6 +69,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	
 	//The assignment to the Taxon or to the Synonym class is not definitive
 	private boolean isDoubtful;
+	@XmlTransient
 	private TaxonNameBase name;
 	// The concept reference
 	private ReferenceBase sec;

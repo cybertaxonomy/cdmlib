@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * An accepted potential taxon defined by the combination of a Name and a sec reference
@@ -33,15 +35,20 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
+@XmlRootElement(name = "Taxon")
 @Entity
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
 	static Logger logger = Logger.getLogger(Taxon.class);
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 	// all related synonyms
+	@XmlTransient
+	// Cycle detected
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 	// all taxa relations with rel.fromTaxon==this
+	@XmlTransient
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 	// all taxa relations with rel.toTaxon==this
+	@XmlTransient
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	private Taxon taxonomicParentCache;

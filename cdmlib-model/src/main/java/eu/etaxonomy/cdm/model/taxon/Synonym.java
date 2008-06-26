@@ -20,12 +20,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
+@XmlRootElement(name = "Synonym")
 @Entity
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	static Logger logger = Logger.getLogger(Synonym.class);
