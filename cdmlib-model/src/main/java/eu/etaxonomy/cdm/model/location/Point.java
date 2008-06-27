@@ -8,15 +8,10 @@
 */
 
 package eu.etaxonomy.cdm.model.location;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.Scope;
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-import javax.persistence.*;
 
 /**
  * @author m.doering
