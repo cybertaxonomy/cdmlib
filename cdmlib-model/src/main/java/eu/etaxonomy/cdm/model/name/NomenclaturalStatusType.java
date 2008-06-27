@@ -18,6 +18,9 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
@@ -25,6 +28,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
 @Entity
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);

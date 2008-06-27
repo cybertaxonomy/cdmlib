@@ -13,6 +13,9 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -23,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @created 19.05.2008
  * @version 1.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class NomenclaturalCode extends DefinedTermBase {
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);

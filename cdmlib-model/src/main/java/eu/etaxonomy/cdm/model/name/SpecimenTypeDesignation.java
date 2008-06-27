@@ -20,6 +20,13 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Taxon names which have the a rank "species" or below can only be typified
@@ -31,12 +38,35 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:52
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SpecimenTypeDesignation", propOrder = {
+    "homotypicalGroup",
+    "typeSpecimen",
+    "typeStatus",
+    "typifiedNames"
+})
 @Entity
 public class SpecimenTypeDesignation extends ReferencedEntityBase {
+	
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
+	
+	@XmlElement(name = "HomotypicalGroup")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private HomotypicalGroup homotypicalGroup;
+	
+	@XmlElement(name = "TypeSpecimen")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
 	private DerivedUnitBase typeSpecimen;
+	
+	@XmlElement(name = "TypeStatus")
 	private TypeDesignationStatus typeStatus;
+	
+	@XmlElementWrapper(name = "TypifiedNames")
+	@XmlElement(name = "TypifiedName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,

@@ -20,6 +20,9 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * http://rs.tdwg.org/ontology/voc/TaxonName#NomencalturalTypeTypeTerm
@@ -27,6 +30,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TypeDesignationStatus")
 @Entity
 public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
