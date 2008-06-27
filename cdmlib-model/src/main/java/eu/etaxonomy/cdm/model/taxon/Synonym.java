@@ -20,18 +20,30 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Synonym", propOrder = {
+    "synonymRelations"
+})
 @XmlRootElement(name = "Synonym")
 @Entity
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
+	
 	static Logger logger = Logger.getLogger(Synonym.class);
 	
+	@XmlElementWrapper(name = "SynonymRelations")
+	@XmlElement(name = "SynonymRelationship")
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	public static Synonym NewInstance(TaxonNameBase taxonName, ReferenceBase sec){

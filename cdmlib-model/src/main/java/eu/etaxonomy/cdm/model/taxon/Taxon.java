@@ -25,8 +25,15 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * An accepted potential taxon defined by the combination of a Name and a sec reference
@@ -35,24 +42,56 @@ import javax.xml.bind.annotation.XmlTransient;
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "", propOrder = {
+    "taxonomicParentCache",
+    "taxonomicChildrenCount",
+    "synonymRelations",
+    "relationsFromThisTaxon",
+    "relationsToThisTaxon",
+    "descriptions"
+})
 @XmlRootElement(name = "Taxon")
 @Entity
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
+
 	static Logger logger = Logger.getLogger(Taxon.class);
+
+	@XmlElementWrapper(name = "Descriptions")
+	@XmlElement(name = "Description")
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
+
 	// all related synonyms
-	@XmlTransient
-	// Cycle detected
+	@XmlElementWrapper(name = "SynonymRelations")
+	@XmlElement(name = "SynonymRelationship")
+	// FIXME: Remove @XmlIDREF.
+	// FIXME: "unable to marshal type "Synonym" as an element because it is missing an @XmlRootElement annotation"
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
+
 	// all taxa relations with rel.fromTaxon==this
-	@XmlTransient
+	@XmlElementWrapper(name = "RelationsFromThisTaxon")
+	@XmlElement(name = "FromThisTaxonRelationship")
+	// FIXME: Remove @XmlIDREF. Fix stack overflow.
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
+
 	// all taxa relations with rel.toTaxon==this
-	@XmlTransient
+	@XmlElementWrapper(name = "RelationsToThisTaxon")
+	@XmlElement(name = "ToThisTaxonRelationship")
+	// FIXME: Remove @XmlIDREF. Fix stck overflow.
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
+
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
+	@XmlElement(name = "TaxonomicParentCache")
 	private Taxon taxonomicParentCache;
+
 	//cached number of taxonomic children
+	@XmlElement(name = "TaxonomicChildrenCount")
 	private int taxonomicChildrenCount;
 
 	private static Method methodDescriptionSetTaxon;

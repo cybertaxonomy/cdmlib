@@ -14,12 +14,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
+@XmlRootElement(name = "SynonymRelationship")
 @Entity
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);

@@ -14,15 +14,30 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
+@XmlRootElement(name = "TaxonRelationship")
 @Entity
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
+
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
+
+    @XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private TaxonRelationshipType type;
 	
 	//for hibernate, don't use

@@ -13,6 +13,10 @@ package eu.etaxonomy.cdm.model.taxon;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 import java.util.UUID;
 
 
@@ -22,8 +26,11 @@ import java.util.UUID;
  * @created 08-Nov-2007 13:06:17
  * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TaxonRelationshipType")
 @Entity
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
+	
 	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
 
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");

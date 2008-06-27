@@ -13,6 +13,10 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
@@ -22,8 +26,11 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * @created 08-Nov-2007 13:06:55
  * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SynonymRelationshipType")
 @Entity
 public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
+	
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");

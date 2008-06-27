@@ -23,7 +23,15 @@ import org.hibernate.annotations.Table;
 import java.lang.reflect.Method;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Upmost abstract class for the use of a taxon name by a reference either
@@ -35,9 +43,15 @@ import javax.xml.bind.annotation.XmlTransient;
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TaxonBase", propOrder = {
+    "name",
+    "sec"
+})
 @Entity
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
+	
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	
 	private static Method methodTaxonNameAddTaxonBase;
@@ -68,10 +82,18 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	//The assignment to the Taxon or to the Synonym class is not definitive
+    @XmlAttribute(name = "isDoubtful")
 	private boolean isDoubtful;
-	@XmlTransient
+	
+    @XmlElement(name = "Name", required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private TaxonNameBase name;
+	
 	// The concept reference
+    @XmlElement(name = "Sec")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private ReferenceBase sec;
 
 	@Override
