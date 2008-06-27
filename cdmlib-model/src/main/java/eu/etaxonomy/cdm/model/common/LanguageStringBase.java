@@ -14,8 +14,8 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageStringBase", propOrder = {
     "text",
-//    "language",
+    "language"
 })
 @MappedSuperclass
 public abstract class LanguageStringBase extends VersionableEntity{
@@ -36,10 +36,9 @@ public abstract class LanguageStringBase extends VersionableEntity{
 	@XmlElement(name = "Text")
 	protected String text;
 	
-	@XmlTransient
-	// TODO: 
-	// Fix stack overflow. Annotate as @XmlIDREF.
-	//@XmlAttribute(name = "lang")
+	@XmlElement(name = "Language")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	protected Language language;
 
 	protected LanguageStringBase() {
