@@ -22,8 +22,9 @@ import org.apache.log4j.Logger;
 public class Point {
 	private static final Logger logger = Logger.getLogger(Point.class);
 	
-	private Float longitude;
-	private Float latitude;
+	//TODO was Float but H2 threw errors
+	private Double longitude;
+	private Double latitude;
 	//in Meters
 	private Integer errorRadius = 0;
 	private ReferenceSystem referenceSystem;
@@ -55,7 +56,7 @@ public class Point {
 		this.referenceSystem = referenceSystem;
 	}
 
-	public Float getLongitude(){
+	public Double getLongitude(){
 		return this.longitude;
 	}
 
@@ -63,11 +64,11 @@ public class Point {
 	 * 
 	 * @param longitude    longitude
 	 */
-	public void setLongitude(Float longitude){
+	public void setLongitude(Double longitude){
 		this.longitude = longitude;
 	}
 
-	public Float getLatitude(){
+	public Double getLatitude(){
 		return this.latitude;
 	}
 
@@ -75,7 +76,7 @@ public class Point {
 	 * 
 	 * @param latitude    latitude
 	 */
-	public void setLatitude(Float latitude){
+	public void setLatitude(Double latitude){
 		this.latitude = latitude;
 	}
 
