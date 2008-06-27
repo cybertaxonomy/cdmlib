@@ -48,10 +48,10 @@ public class TaxonTest extends EntityTestBase {
 		sec=new Book();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu");
-		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera","onca",null,linne,null,"p.1467", null);
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies","alba",null,linne,null,"p.317", null);
-		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala","vulgaris","alpina",linne,null,"p.191", null);
-		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria","carminata",null,linne,null,"p.14", null);
+		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
+		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
+		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,linne,null,"p.14", null);
 		rootT = Taxon.NewInstance(name1,sec);
 		freeT = Taxon.NewInstance(name4,sec);
 		// taxonomic children

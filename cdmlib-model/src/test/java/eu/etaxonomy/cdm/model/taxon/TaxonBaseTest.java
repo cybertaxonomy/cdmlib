@@ -62,9 +62,9 @@ public class TaxonBaseTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		sec= Book.NewInstance();
 		sec.setTitleCache("Schoenes saftiges Allg�u");
-		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera","onca",null,null,null,"p.1467", null);
+		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies","alba",null,null,null,"p.317", homotypicalGroup);
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,null,null,"p.317", homotypicalGroup);
 		// taxa
 		taxon1 = Taxon.NewInstance(name1,sec);
 		synonym1 = Synonym.NewInstance(name2,sec);

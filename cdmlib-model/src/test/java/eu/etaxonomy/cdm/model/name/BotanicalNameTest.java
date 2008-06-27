@@ -85,15 +85,17 @@ public class BotanicalNameTest extends EntityTestBase{
 	public final void testBotanicalNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Rank rank = Rank.SPECIALFORM();
 		String genusOrUninomial = "Genus";
+		String infraGenericEpithet = "infraGenericEpi";
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
 		TeamOrPersonBase combinationAuthorTeam = Team.NewInstance();
 		INomenclaturalReference nomenclaturalReference = new Article();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
-		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
+		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
 		assertEquals(Rank.SPECIALFORM(), fullName.getRank());
 		assertEquals("Genus", fullName.getGenusOrUninomial());
+		assertEquals("infraGenericEpi", fullName.getInfraGenericEpithet());
 		assertEquals("specEpi", fullName.getSpecificEpithet());
 		assertEquals("infraSpecificEpi", fullName.getInfraSpecificEpithet());
 		assertEquals(combinationAuthorTeam, fullName.getCombinationAuthorTeam());

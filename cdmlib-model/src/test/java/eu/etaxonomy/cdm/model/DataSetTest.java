@@ -64,10 +64,10 @@ public class DataSetTest {
 		sec=new Book();
 		sec.setAuthorTeam(author);
 		sec.setTitleCache("Schönes saftiges Allgäu");
-		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera","onca",null,author,null,"p.1467", null);
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies","alba",null,author,null,"p.317", null);
-		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala","vulgaris","alpina",author,null,"p.191", null);
-		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria","carminata",null,author,null,"p.14", null);
+		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,author,null,"p.1467", null);
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,author,null,"p.317", null);
+		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",author,null,"p.191", null);
+		name4 = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,author,null,"p.14", null);
 		rootT = Taxon.NewInstance(name1,sec);
 		freeT = Taxon.NewInstance(name4,sec);
 		// taxonomic children
