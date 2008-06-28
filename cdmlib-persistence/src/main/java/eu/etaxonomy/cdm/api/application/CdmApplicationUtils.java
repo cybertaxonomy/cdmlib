@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.api.application;
 
-import static eu.etaxonomy.cdm.common.XmlHelp.getRoot;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,8 +17,6 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.jdom.output.Format;
-
-import sun.security.action.GetBooleanAction;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
