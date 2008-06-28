@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -111,7 +113,7 @@ public class ZoologicalNameCacheStrategyTest {
 /********* TEST *******************************************/
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#NewInstance()}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#NewInstance()}.
 	 */
 	@Test
 	public final void testNewInstance() {
@@ -119,7 +121,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetNameCache() {
@@ -128,7 +130,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetTitleCache() {
@@ -154,7 +156,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetAuthorshipCache() {
@@ -178,7 +180,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getUninomialNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetGenusOrUninomialNameCache() {
@@ -186,7 +188,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraGenusNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetInfraGenusNameCache() {
@@ -198,7 +200,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetSpeciesNameCache() {
@@ -206,7 +208,7 @@ public class ZoologicalNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testGetInfraSpeciesNameCache() {
@@ -215,7 +217,7 @@ public class ZoologicalNameCacheStrategyTest {
 	
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getInfraSpeciesNameCache(eu.etaxonomy.cdm.model.name.BotanicalName)}.
 	 */
 	@Test
 	public final void testAutonyms() {

@@ -207,7 +207,7 @@ public class NonViralNameParserImplTest {
 		assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
 		assertEquals( "alba", nameZoo1.getSpecificEpithet());
 		assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomeclaturalCode() );
+		assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomenclaturalCode() );
 		assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
 		assertTrue(nameZoo1.getCombinationAuthorTeam() instanceof Team);
 		Team teamZoo = (Team)nameZoo1.getCombinationAuthorTeam();
@@ -223,7 +223,7 @@ public class NonViralNameParserImplTest {
 		String strNotParsableZoo = "Abies alba M., 1923, Sp. P. xxwer4352";
 		ZoologicalName nameZooRefNotParsabel = (ZoologicalName)parser.parseFullReference(strNotParsableZoo, null, null);
 		assertTrue(nameZooRefNotParsabel.hasProblem());
-		assertEquals(NomenclaturalCode.ICZN(), nameZooRefNotParsabel.getNomeclaturalCode());
+		assertEquals(NomenclaturalCode.ICZN(), nameZooRefNotParsabel.getNomenclaturalCode());
 		assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
 		
 		// unparseable *********

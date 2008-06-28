@@ -50,7 +50,7 @@ public class CdmDocumentBuilderTest {
 //		cdmDocumentBuilder.writeFile(dataSet, new File(filename));
 //	}
 
-	@Ignore
+
 	@Test
 	public void marshalDataSet2FileWriter() throws Exception {
 		cdmDocumentBuilder.write(dataSet, new FileWriter(filename));
