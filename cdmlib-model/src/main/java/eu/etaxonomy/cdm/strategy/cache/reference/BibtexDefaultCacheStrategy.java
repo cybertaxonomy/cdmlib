@@ -66,7 +66,7 @@ public class BibtexDefaultCacheStrategy <T extends BibtexReference> extends Stra
 	 */
 	public String getTokenizedNomenclaturalTitel(T bibtexReference) {
 		String result =  getNomRefTitleWithoutYearAndAuthor(bibtexReference);
-		result += beforeMicroReference + INomenclaturalReference.MICRO_REFERENCE_TOKEN;
+		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 		result = addYear(result, bibtexReference);
 		return result;
 	}
@@ -82,12 +82,24 @@ public class BibtexDefaultCacheStrategy <T extends BibtexReference> extends Stra
 		return result;
 	}
 	
-	private String addYear(String string, T nomenclaturalReference){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
+	 */
+	public String getBeforeMicroReference(){
+		return beforeMicroReference;
+	}
+	
+	private String addYear(String string, T nomRef){
+		String result;
 		if (string == null){
 			return null;
 		}
-		String year = CdmUtils.Nz(nomenclaturalReference.getYear());
-		String result = string + beforeYear + year + afterYear;
+		String year = CdmUtils.Nz(nomRef.getYear());
+		if ("".equals(year)){
+			result = string + afterYear;
+		}else{
+			result = string + beforeYear + year + afterYear;
+		}
 		return result;
 	}
 	

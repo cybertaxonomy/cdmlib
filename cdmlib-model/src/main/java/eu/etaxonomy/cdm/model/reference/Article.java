@@ -45,7 +45,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 		return result;
 	}
 	
-	public static Article NewInstance(Journal inJournal, TeamOrPersonBase authorTeam, String articleTitle, String pages, String series, TimePeriod datePublished ){
+	public static Article NewInstance(Journal inJournal, TeamOrPersonBase authorTeam, String articleTitle, String pages, String series, String volume, TimePeriod datePublished ){
 		Article result = new Article();
 		result.setInJournal(inJournal);
 		result.setTitle(articleTitle);
@@ -53,6 +53,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 		result.setAuthorTeam(authorTeam);
 		result.setSeries(series);
 		result.setDatePublished(datePublished);
+		result.setVolume(volume);
 		return result;
 	}
 	

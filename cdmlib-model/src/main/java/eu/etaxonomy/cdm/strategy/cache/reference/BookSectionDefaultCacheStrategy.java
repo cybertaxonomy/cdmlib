@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 public class BookSectionDefaultCacheStrategy <T extends BookSection> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
+	private String beforeMicroReference = ": ";
 	private String afterBookAuthor = " - ";
 	private String inBook = "in ";
 	private String blank = " ";
@@ -81,6 +82,13 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Str
 		}
 		
 		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
+	 */
+	public String getBeforeMicroReference(){
+		return beforeMicroReference;
 	}
 
 }

@@ -27,5 +27,11 @@ public interface INomenclaturalReferenceCacheStrategy<T extends ReferenceBase> e
 	 * @return
 	 */
 	public String getTokenizedNomenclaturalTitel(T referenceBase);
+	
+	/**
+	 * Returns the character sequence before the micro reference (e.g. ": ") 
+	 * @return
+	 */
+	public String getBeforeMicroReference();
 
 }

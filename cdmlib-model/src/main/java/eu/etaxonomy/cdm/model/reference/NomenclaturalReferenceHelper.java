@@ -13,6 +13,9 @@ import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
@@ -25,13 +28,17 @@ class NomenclaturalReferenceHelper {
 	private static final Logger logger = Logger.getLogger(NomenclaturalReferenceHelper.class);
 	
 	private ReferenceBase nomenclaturalReference; 
-	private IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy; 
+	//private IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy; 
 	
 	protected static NomenclaturalReferenceHelper NewInstance(INomenclaturalReference<ReferenceBase> nomRef){
 		NomenclaturalReferenceHelper result = new NomenclaturalReferenceHelper();
 		result.nomenclaturalReference = (ReferenceBase)nomRef;
-		result.cacheStrategy = result.nomenclaturalReference.cacheStrategy;
 		return result;
+	}
+	
+	
+	private INomenclaturalReferenceCacheStrategy<ReferenceBase> getCacheStrategy(){	
+		return (INomenclaturalReferenceCacheStrategy)nomenclaturalReference.cacheStrategy;
 	}
 	
 	/* (non-Javadoc)
@@ -41,7 +48,7 @@ class NomenclaturalReferenceHelper {
 	public String getCitation(){
 		//TODO
 		logger.warn("getCitation not yet fully implemented");
-		return cacheStrategy.getTitleCache(nomenclaturalReference);
+		return getCacheStrategy().getTitleCache(nomenclaturalReference);
 	}
 
 	/* (non-Javadoc)
@@ -50,6 +57,10 @@ class NomenclaturalReferenceHelper {
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		String result = getTokenizedFullNomenclaturalTitel();
+		microReference = CdmUtils.Nz(microReference);
+		if (! "".equals(microReference)){
+			microReference = getCacheStrategy().getBeforeMicroReference() + microReference;
+		}
 		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
 		return result;
 	}
@@ -60,16 +71,16 @@ class NomenclaturalReferenceHelper {
 	 */
 	@Transient
 	public String generateTitle(){
-		return cacheStrategy.getTitleCache(nomenclaturalReference);
+		return getCacheStrategy().getTitleCache(nomenclaturalReference);
 	}
 	
 	//
 	private String getTokenizedFullNomenclaturalTitel() {
-		if (cacheStrategy == null || ! (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy) ){
+		if (getCacheStrategy() == null || ! (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy) ){
 			logger.warn("cacheStrategy == null of not instanceOf INomenclaturalReferenceCacheStrategy");
 			return null;
 		}
-		return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getTokenizedNomenclaturalTitel(nomenclaturalReference);
+		return getCacheStrategy().getTokenizedNomenclaturalTitel(nomenclaturalReference);
 	}
 	
 //	//
