@@ -23,6 +23,17 @@ public class Journal extends PublicationBase {
 	static Logger logger = Logger.getLogger(Journal.class);
 	private String issn;
 
+	public static Journal NewInstance(){
+		Journal result = new Journal();
+		return result;
+	}
+	
+	protected Journal(){
+		super();
+		logger.warn("No Strategy attached to Journal");
+	}
+	
+	
 	public String getIssn(){
 		return this.issn;
 	}
