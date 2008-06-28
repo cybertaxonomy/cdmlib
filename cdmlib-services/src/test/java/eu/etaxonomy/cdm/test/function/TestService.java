@@ -49,7 +49,7 @@ public class TestService {
 		ZoologicalName zn = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceBase sec = new Journal();
+		ReferenceBase sec = Journal.NewInstance();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
@@ -126,7 +126,7 @@ public class TestService {
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = new Journal();
+		ReferenceBase ref = Journal.NewInstance();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
@@ -164,7 +164,7 @@ public class TestService {
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = new Journal();
+		ReferenceBase ref = Journal.NewInstance();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
