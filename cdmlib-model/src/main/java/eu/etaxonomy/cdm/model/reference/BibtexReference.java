@@ -356,13 +356,14 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		return "";
 	}
 
-	/**
-	 * returns a formatted string containing the reference citation excluding authors
-	 * as used in a taxon name
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
 	 */
 	@Transient
-	public String getNomenclaturalCitation(){
-		return "";
+	public String getNomenclaturalCitation(String microReference) {
+		String result = getTokenizedFullNomenclaturalTitel();
+		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
+		return result;
 	}
 
 	@Override
@@ -377,6 +378,18 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	public void setType(BibtexEntryType type) {
 		this.type = type;
+	}
+	
+	private String getTokenizedFullNomenclaturalTitel() {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+	}
+	
+	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
 	}
 
 }

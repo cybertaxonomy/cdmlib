@@ -30,7 +30,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Target;
 
-import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
 
@@ -316,8 +316,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		if (relation instanceof NameRelationship){
 			addNameRelationship((NameRelationship)relation);
 			if (relation.getType() != null && 
-						relation.getType().equals(NameRelationshipType.BASIONYM() ) &&
-						relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM() )){
+						( relation.getType().equals(NameRelationshipType.BASIONYM()) ||
+						  relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM()) 
+						 )){
 				TaxonNameBase fromName = ((NameRelationship)relation).getFromName();
 				TaxonNameBase toName = ((NameRelationship)relation).getToName();
 				fromName.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
@@ -936,6 +937,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is higher than the genus rank (true) or not (false).
 	 * Suprageneric non viral names are monomials.
+	 * Returns false if rank is null.
 	 * 
 	 * @see  #isGenus()
 	 * @see  #isInfraGeneric()
@@ -944,12 +946,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public boolean isSupraGeneric() {
+		if (rank == null){
+			return false;
+		}
 		return getRank().isSupraGeneric();
 	}
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is the genus rank (true) or not (false). Non viral names with
 	 * genus rank are monomials.
+	 * Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isInfraGeneric()
@@ -958,6 +964,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public boolean isGenus() {
+		if (rank == null){
+			return false;
+		}
 		return getRank().isGenus();
 	}
 	/**
@@ -965,6 +974,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * taxon name is higher than the species aggregate rank and lower than
 	 * the genus rank (true) or not (false). Infrageneric non viral names
 	 * are binomials.
+	 * Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -973,13 +983,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public boolean isInfraGeneric() {
+		if (rank == null){
+			return false;
+		}
 		return getRank().isInfraGeneric();
 	}
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is the species or species aggregate rank (true) or not (false). Non viral names
 	 * with species rank are binomials.
-
+	 * Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -988,12 +1001,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public boolean isSpecies() {
+		if (rank == null){
+			return false;
+		}
 		return getRank().isSpecies();
 	}
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is lower than the species rank (true) or not (false).
 	 * Infraspecific non viral names are trinomials.
+	 * Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -1002,6 +1019,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public boolean isInfraSpecific() {
+		if (rank == null){
+			return false;
+		}
 		return getRank().isInfraSpecific();
 	}
 	
@@ -1020,7 +1040,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see  	#getHasProblem()
 	 */
 	@Transient
-	abstract public NomenclaturalCode getNomeclaturalCode();
+	abstract public NomenclaturalCode getNomenclaturalCode();
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */

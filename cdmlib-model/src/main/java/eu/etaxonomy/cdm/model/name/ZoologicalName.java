@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -221,7 +221,7 @@ public class ZoologicalName extends NonViralName {
 	
 	@Transient
 	@Override
-	public NomenclaturalCode getNomeclaturalCode(){
+	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICZN();
 	}
 	

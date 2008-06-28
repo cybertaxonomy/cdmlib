@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -143,18 +143,18 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	 */
 	@Transient
 	@Override
-	public NomenclaturalCode getNomeclaturalCode(){
+	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.VIRAL();
 	}
 
 
 	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy cache strategy} used to generate
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
 	 * several strings corresponding to this viral taxon name.
 	 * 
 	 * @return  the cache strategy used for this viral taxon name
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy
-	 * @see     eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	@Transient
 	@Override

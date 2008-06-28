@@ -67,7 +67,7 @@ public class CultivarPlantName extends BotanicalName {
 	
 	@Transient
 	@Override
-	public NomenclaturalCode getNomeclaturalCode(){
+	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICNCP();
 	}
 

@@ -20,6 +20,8 @@ import javax.persistence.Transient;
  */
 public interface INomenclaturalReference {
 
+	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
+	
 	/**
 	 * Returns a formatted string containing the reference citation excluding
 	 * authors but including the details as used in a taxon name.
@@ -27,7 +29,7 @@ public interface INomenclaturalReference {
 	 * @see	TaxonNameBase
 	 */
 	@Transient
-	public String getNomenclaturalCitation();
+	public String getNomenclaturalCitation(String  microReference);
 
 	@Transient
 	public String getYear();

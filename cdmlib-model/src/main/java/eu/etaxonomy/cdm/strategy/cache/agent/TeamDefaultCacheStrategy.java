@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import java.util.List;
 import java.util.UUID;

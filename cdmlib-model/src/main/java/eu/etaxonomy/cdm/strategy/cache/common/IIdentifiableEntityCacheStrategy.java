@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.common;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.IStrategy;

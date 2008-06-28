@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
-
-import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -52,16 +50,39 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	 */
 	@Transient
 	public String getCitation(){
-		return "";
-	}
-	@Transient
-	public String getNomenclaturalCitation(){
+		//TODO
+		logger.warn("Not yet fully implemented");
 		return "";
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	 */
+	@Transient
+	public String getNomenclaturalCitation(String microReference) {
+		String result = getTokenizedFullNomenclaturalTitel();
+		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
+		return result;
+	}
+
+
 	@Override
 	public String generateTitle(){
+		//TODO
+		logger.warn("Not yet fully implemented");
 		return "";
+	}
+	
+	private String getTokenizedFullNomenclaturalTitel() {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+	}
+	
+	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
 	}
 
 }

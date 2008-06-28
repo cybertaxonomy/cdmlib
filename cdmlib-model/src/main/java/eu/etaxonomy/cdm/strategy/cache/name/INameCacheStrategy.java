@@ -1,11 +1,12 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * A name cache rendering strategy for all TaxonNameBase subclasses.

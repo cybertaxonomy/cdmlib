@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.name;
 
 import eu.etaxonomy.cdm.model.name.NonViralName;
 

@@ -81,21 +81,38 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 */
 	@Transient
 	public String getCitation(){
+		//TODO
+		logger.warn("Not yet fully implemented");
 		return "";
 	}
 
-	/**
-	 * returns a formatted string containing the reference citation excluding authors
-	 * as used in a taxon name
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
 	 */
 	@Transient
-	public String getNomenclaturalCitation(){
-		return "";
+	public String getNomenclaturalCitation(String microReference) {
+		String result = getTokenizedFullNomenclaturalTitel();
+		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
+		return result;
 	}
 
 	@Override
 	public String generateTitle(){
+		//TODO
+		logger.warn("Not yet fully implemented");
 		return "";
+	}
+	
+	private String getTokenizedFullNomenclaturalTitel() {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+	}
+	
+	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
+		//TODO
+		logger.warn("Not yet fully implemented");
+		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
 	}
 
 }

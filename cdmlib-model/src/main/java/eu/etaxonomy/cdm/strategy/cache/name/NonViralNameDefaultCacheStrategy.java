@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +170,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	
 	/**
 	 * Generates and returns the "name cache" (only scientific name without author teams and year).
-	 * @see eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
+	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
 	public String getNameCache(T nonViralName) {
 		if (nonViralName == null){

@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -92,7 +93,7 @@ public class Person extends TeamOrPersonBase {
 	 * This can be a provisional solution until more information about this person
 	 * can be gathered, for instance in case a member of a nomenclatural author team
 	 * is not explicitly mentioned. It also includes the cache strategy defined in
-	 * {@link eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
+	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 */
 	public static Person NewInstance(){
 		return new Person();
@@ -343,7 +344,7 @@ public class Person extends TeamOrPersonBase {
 
 	/**
 	 * Generates the "full" name string of this person according to the strategy
-	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
+	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 * The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
 	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.

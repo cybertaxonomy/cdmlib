@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import org.apache.log4j.Logger;
-import eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy;
+
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 import java.util.*;
 
@@ -66,7 +67,7 @@ public class Team extends TeamOrPersonBase {
 	
 	/** 
 	 * Class constructor (including the cache strategy defined in
-	 * {@link eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
+	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
 	public Team() {
 		super();
@@ -133,7 +134,7 @@ public class Team extends TeamOrPersonBase {
 
 	/**
 	 * Generates an identification string for this team according to the strategy
-	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
+	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
 	 * with the full names of all persons belonging to its (ordered) members' list.
 	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
@@ -155,7 +156,7 @@ public class Team extends TeamOrPersonBase {
 	 * {@link #protectedNomenclaturalTitleCache protectedNomenclaturalTitleCache} is not set.
 	 * Otherwise this method returns the present nomenclatural abbreviation.
 	 * In case the string is generated the cache strategy used is defined in
-	 * {@link eu.etaxonomy.cdm.strategy.cache.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}.
+	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}.
 	 * The result might be kept as nomenclatural abbreviation
 	 * by using the {@link #setNomenclaturalTitle(String) setNomenclaturalTitle} method.
 	 * 

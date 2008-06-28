@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.strategy.cache;
+package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.UUID;
 
