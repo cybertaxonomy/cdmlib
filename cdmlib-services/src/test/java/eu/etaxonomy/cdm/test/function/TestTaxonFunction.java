@@ -51,7 +51,7 @@ public class TestTaxonFunction {
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
 		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
-		ReferenceBase sec = new Book();
+		ReferenceBase sec = Book.NewInstance();
 		sec.setTitleCache("ConceptRef");
 		
 		//root

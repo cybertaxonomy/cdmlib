@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.test.function;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.H2Dialect;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -33,8 +34,8 @@ public class TestDatabase {
 	private void test(){
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
-		testFacts();
-		//testNewDatasourceClass();
+		//testFacts();
+		testNewDatasourceClass();
 	//	testPaddie();
 		System.out.println("\nEnd TestDatabase");
 	}
@@ -54,12 +55,14 @@ public class TestDatabase {
 	
 	public void testNewDatasourceClass(){
 		try {
-			String server = "192.168.2.10";
-			String database = "cdm_test_andreasM";
-			String username = "edit";
-			String password = CdmUtils.readInputLine("Password: ");
+//			String server = "192.168.2.10";
+//			String database = "cdm_test_andreasM";
+//			String username = "edit";
+//			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+
+//			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -110,7 +113,7 @@ public class TestDatabase {
 			String database = "cdm_test_andreasM";
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
