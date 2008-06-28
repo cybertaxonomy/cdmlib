@@ -10,9 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -20,7 +20,11 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IParsable;
+import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
  * A year() method is required to get the year of publication out of the
@@ -42,6 +46,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
 	
+	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -49,7 +54,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 		return this.authorTeam;
 	}
 
-	public void setAuthorTeam(Agent authorTeam){
+	public void setAuthorTeam(TeamOrPersonBase authorTeam){
 		this.authorTeam = authorTeam;
 	}
 
@@ -91,4 +96,13 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 		this.hasProblem = hasProblem;
 	}
 	
+	@Override
+	public String generateTitle(){
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for ReferenceBase: " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getTitleCache(this);
+		}
+	}
 }

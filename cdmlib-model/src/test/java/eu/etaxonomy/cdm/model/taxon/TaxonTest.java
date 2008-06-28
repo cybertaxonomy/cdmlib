@@ -45,7 +45,7 @@ public class TaxonTest extends EntityTestBase {
 	@Before
 	public void setUpBeforeClass() throws Exception {
 		Person linne =new Person("Carl", "Linné", "L.");
-		sec=new Book();
+		sec= Book.NewInstance();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu");
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);

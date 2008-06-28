@@ -10,8 +10,12 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
-import javax.persistence.*;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 
 /**
  * @author m.doering
@@ -23,10 +27,17 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	private static final Logger logger = Logger.getLogger(Book.class);
 	private String edition;
 	private String isbn;
+	
+	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 
 	public static Book NewInstance(){
 		return new Book();
+	}
+	
+	protected Book(){
+		super();
+		this.cacheStrategy = BookDefaultCacheStrategy.NewInstance();
 	}
 	
 	
@@ -44,15 +55,13 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 		this.isbn = isbn;
 	}
 
-	/**
-	 * returns a formatted string containing the entire reference citation including
-	 * authors
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
+		return nomRefBase.getCitation();
 	}
 
 	/* (non-Javadoc)
@@ -60,29 +69,17 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		String result = getTokenizedFullNomenclaturalTitel();
-		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
-		return result;
+		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	 */
 	@Override
 	public String generateTitle(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
+		return nomRefBase.generateTitle();
 	}
-	
-	private String getTokenizedFullNomenclaturalTitel() {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
-	}
-	
-	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
-	}
+
 
 }

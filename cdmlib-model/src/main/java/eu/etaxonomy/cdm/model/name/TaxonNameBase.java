@@ -1059,6 +1059,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	@Override
 	public String generateTitle() {
 		// TODO Auto-generated method stub
+		logger.warn("not yet implemented");
 		return null;
 	}
 	

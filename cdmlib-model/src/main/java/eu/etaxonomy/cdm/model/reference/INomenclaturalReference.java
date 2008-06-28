@@ -12,13 +12,16 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Transient;
 
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference {
+public interface INomenclaturalReference<T extends ReferenceBase> extends IIdentifiableEntitiy<T>{
 
 	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
 	

@@ -39,6 +39,7 @@ public abstract class SectionBase extends StrictReferenceBase {
 
 	@Transient
 	public PrintedUnitBase getPrintedUnit(){
+		logger.warn("Not yet implemented");
 		return null;
 	}
 

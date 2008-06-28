@@ -26,6 +26,6 @@ public interface INomenclaturalReferenceCacheStrategy<T extends ReferenceBase> e
 	 * @param object
 	 * @return
 	 */
-	public String getTokenizedNomenclaturalTitel(T strictReferenceBase);
+	public String getTokenizedNomenclaturalTitel(T referenceBase);
 
 }

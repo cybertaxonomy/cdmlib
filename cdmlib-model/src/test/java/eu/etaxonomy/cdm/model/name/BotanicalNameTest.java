@@ -89,7 +89,7 @@ public class BotanicalNameTest extends EntityTestBase{
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
 		TeamOrPersonBase combinationAuthorTeam = Team.NewInstance();
-		INomenclaturalReference nomenclaturalReference = new Article();
+		INomenclaturalReference nomenclaturalReference = Article.NewInstance();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);

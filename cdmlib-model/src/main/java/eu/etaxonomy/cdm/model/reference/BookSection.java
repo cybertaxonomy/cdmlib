@@ -18,6 +18,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+
 /**
  * @author m.doering
  * @version 1.0
@@ -25,9 +29,31 @@ import org.hibernate.annotations.CascadeType;
  */
 @Entity
 public class BookSection extends SectionBase implements INomenclaturalReference {
-	static Logger logger = Logger.getLogger(BookSection.class);
+	private static final Logger logger = Logger.getLogger(BookSection.class);
 	private Book inBook;
+	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
+
+	public static BookSection NewInstance(){
+		BookSection result = new BookSection();
+		return result;
+	}
+	
+	public static BookSection NewInstance(Book inBook, String pages, String sectionTitle ){
+		BookSection result = new BookSection();
+		result.setInBook(inBook);
+		result.setTitle(sectionTitle);
+		result.setPages(pages);
+		return result;
+	}
+	
+	protected BookSection(){
+		super();
+		this.cacheStrategy = BookSectionDefaultCacheStrategy.NewInstance();
+	}
+	
+	
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Book getInBook(){
@@ -42,15 +68,13 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 		this.inBook = inBook;
 	}
 
-	/**
-	 * returns a formatted string containing the entire reference citation including
-	 * authors
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
+		return nomRefBase.getCitation();
 	}
 
 	/* (non-Javadoc)
@@ -58,28 +82,15 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		String result = getTokenizedFullNomenclaturalTitel();
-		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
-		return result;
+		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	 */
 	@Override
 	public String generateTitle(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
+		return nomRefBase.generateTitle();
 	}
-	
-	private String getTokenizedFullNomenclaturalTitel() {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
-	}
-	
-	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
-	}
-
 }

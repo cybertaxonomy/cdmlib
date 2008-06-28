@@ -10,12 +10,20 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * @author m.doering
@@ -29,6 +37,31 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	private String volume;
 	private String pages;
 	private Journal inJournal;
+	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+
+
+	public static Article NewInstance(){
+		Article result = new Article();
+		return result;
+	}
+	
+	public static Article NewInstance(Journal inJournal, TeamOrPersonBase authorTeam, String articleTitle, String pages, String series, TimePeriod datePublished ){
+		Article result = new Article();
+		result.setInJournal(inJournal);
+		result.setTitle(articleTitle);
+		result.setPages(pages);
+		result.setAuthorTeam(authorTeam);
+		result.setSeries(series);
+		result.setDatePublished(datePublished);
+		return result;
+	}
+	
+	protected Article(){
+		super();
+		this.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
+	}	
+	
+
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -75,15 +108,13 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 		this.pages = pages;
 	}
 
-	/**
-	 * returns a formatted string containing the entire reference citation including
-	 * authors
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
+		return nomRefBase.getCitation();
 	}
 
 	/* (non-Javadoc)
@@ -91,28 +122,16 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		String result = getTokenizedFullNomenclaturalTitel();
-		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
-		return result;
+		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	 */
 	@Override
 	public String generateTitle(){
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return "";
-	}
-	
-	private String getTokenizedFullNomenclaturalTitel() {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
-	}
-	
-	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+		return nomRefBase.generateTitle();
 	}
 
 }

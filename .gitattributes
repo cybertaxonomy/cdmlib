@@ -92,6 +92,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Figure.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ICdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntitiy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IOriginalSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
@@ -264,6 +265,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/NameCacheStrateg
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/ZooNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ArticleDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/BibtexDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/BookDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/BookSectionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/GenericDefaultCacheStrategy.java -text
@@ -337,6 +339,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/ZoologicalNameCacheSt
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestBookDefaultCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestNameCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

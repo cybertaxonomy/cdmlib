@@ -60,7 +60,7 @@ public class DataSetTest {
 		BotanicalName name3;
 		BotanicalName name4;
 		Taxon freeT;
-		sec=new Book();
+		sec= Book.NewInstance();
 		sec.setAuthorTeam(author);
 		sec.setTitleCache("Schönes saftiges Allgäu");
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,author,null,"p.1467", null);

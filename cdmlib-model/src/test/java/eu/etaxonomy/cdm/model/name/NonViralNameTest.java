@@ -110,7 +110,7 @@ public class NonViralNameTest extends EntityTestBase {
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
-		Article article = new Article();
+		Article article = Article.NewInstance();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
 		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );

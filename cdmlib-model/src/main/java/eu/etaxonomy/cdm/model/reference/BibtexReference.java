@@ -10,12 +10,17 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 
 /**
  * @author m.doering
@@ -73,6 +78,18 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	//Miscellaneous extra information
 	private String note;
 	private BibtexReference crossref;
+
+	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+
+	public static BibtexReference NewInstance(){
+		BibtexReference result = new BibtexReference();
+		return result;
+	}
+	
+	protected BibtexReference(){
+		super();
+		this.cacheStrategy = BibtexDefaultCacheStrategy.NewInstance();
+	}
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -347,30 +364,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.note = note;
 	}
 
-	/**
-	 * returns a formatted string containing the entire reference citation including
-	 * authors
-	 */
-	@Transient
-	public String getCitation(){
-		return "";
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
-	 */
-	@Transient
-	public String getNomenclaturalCitation(String microReference) {
-		String result = getTokenizedFullNomenclaturalTitel();
-		result = result.replaceAll(MICRO_REFERENCE_TOKEN, microReference);
-		return result;
-	}
-
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 	@ManyToOne
 	public BibtexEntryType getType() {
 		return type;
@@ -380,16 +373,30 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.type = type;
 	}
 	
-	private String getTokenizedFullNomenclaturalTitel() {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
+	 */
+	@Transient
+	public String getCitation(){
+		return nomRefBase.getCitation();
 	}
-	
-	private String setTokenizedFullNomenclaturalTitel(String tokenizedFullNomenclaturalTitel) {
-		//TODO
-		logger.warn("Not yet fully implemented");
-		return this.getTitleCache() +  MICRO_REFERENCE_TOKEN;
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	 */
+	@Transient
+	public String getNomenclaturalCitation(String microReference) {
+		return nomRefBase.getNomenclaturalCitation(microReference);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	 */
+	@Override
+	public String generateTitle(){
+		return nomRefBase.generateTitle();
 	}
 
 }

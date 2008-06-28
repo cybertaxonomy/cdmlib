@@ -280,15 +280,15 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		if (articleMatcher.matches()){
 			//if (articlePatter)
 			//(type, author, title, volume, editor, series;
-			Article article = new Article();
+			Article article = Article.NewInstance();
 			article.setTitleCache(reference);
 			result = article;
 		}else if(bookMatcher.matches()){
-			Book book = new Book();
+			Book book = Book.NewInstance();
 			book .setTitleCache(reference);
 			result = book;
 		}else if (bookSectionMatcher.matches()){
-			BookSection bookSection = new BookSection();
+			BookSection bookSection = BookSection.NewInstance();
 			bookSection.setTitleCache(reference);
 			result = bookSection;
 		}else{

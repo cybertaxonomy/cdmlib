@@ -52,7 +52,7 @@ import javax.persistence.*;
     "sources"
 })
 @MappedSuperclass
-public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource {
+public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements IOriginalSource, IIdentifiableEntitiy<T> {
 	static Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
 	@XmlTransient
@@ -83,16 +83,28 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getLsid()
+	 */
 	public String getLsid(){
 		return this.lsid;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setLsid(java.lang.String)
+	 */
 	public void setLsid(String lsid){
 		this.lsid = lsid;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#generateTitle()
+	 */
 	public abstract String generateTitle();
 
 	//@Index(name="titleCacheIndex")
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
+	 */
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
@@ -103,6 +115,9 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		}
 		return titleCache;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setTitleCache(java.lang.String)
+	 */
 	public void setTitleCache(String titleCache){
 		//TODO truncation of title cach
 		if (titleCache != null && titleCache.length() > 254){
@@ -112,11 +127,17 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(PROTECTED);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setTitleCache(java.lang.String, boolean)
+	 */
 	public void setTitleCache(String titleCache, boolean protectCache){
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(protectCache);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getRights()
+	 */
 	@ManyToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){
@@ -126,13 +147,22 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	protected void setRights(Set<Rights> rights) {
 		this.rights = rights;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#addRights(eu.etaxonomy.cdm.model.media.Rights)
+	 */
 	public void addRights(Rights right){
 		this.rights.add(right);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#removeRights(eu.etaxonomy.cdm.model.media.Rights)
+	 */
 	public void removeRights(Rights right){
 		this.rights.remove(right);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getExtensions()
+	 */
 	@OneToMany//(mappedBy="extendedObj")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Extension> getExtensions(){
@@ -141,22 +171,37 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	protected void setExtensions(Set<Extension> extensions) {
 		this.extensions = extensions;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#addExtension(eu.etaxonomy.cdm.model.common.Extension)
+	 */
 	public void addExtension(Extension extension){
 		this.extensions.add(extension);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#removeExtension(eu.etaxonomy.cdm.model.common.Extension)
+	 */
 	public void removeExtension(Extension extension){
 		this.extensions.remove(extension);
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#isProtectedTitleCache()
+	 */
 	public boolean isProtectedTitleCache() {
 		return protectedTitleCache;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setProtectedTitleCache(boolean)
+	 */
 	public void setProtectedTitleCache(boolean protectedTitleCache) {
 		this.protectedTitleCache = protectedTitleCache;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getSources()
+	 */
 	@OneToMany //(mappedBy="sourcedObj")		
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<OriginalSource> getSources() {
@@ -165,22 +210,21 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	protected void setSources(Set<OriginalSource> sources) {
 		this.sources = sources;		
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#addSource(eu.etaxonomy.cdm.model.common.OriginalSource)
+	 */
 	public void addSource(OriginalSource source) {
 		this.sources.add(source);		
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#removeSource(eu.etaxonomy.cdm.model.common.OriginalSource)
+	 */
 	public void removeSource(OriginalSource source) {
 		this.sources.remove(source);		
 	}
 	
-	/**
-	 * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
-	 * This returns an String that identifies the object well without beeing necessarily unique.
-	 * Specification: This method should never call other object' methods so it can be well used for debugging 
-	 * without problems like lazy loading, unreal states etc.
-	 * Note: If overriding this method's javadoc always copy or link the above requirement. 
-	 * If not overwritten by a subclass method returns the class, id and uuid as a string for any CDM object. 
-	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
-	 * @see java.lang.Object#toString()
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#toString()
 	 */
 	 @Override
 	public String toString() {
