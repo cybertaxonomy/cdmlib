@@ -37,7 +37,7 @@ public class DatabaseInitialiser {
 
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
-		ReferenceBase sec = new Journal();
+		ReferenceBase sec = Journal.NewInstance();
 		NonViralName nvName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon tax = Taxon.NewInstance(nvName, sec);
 		//BotanicalName ve = nm.getNextVersion();

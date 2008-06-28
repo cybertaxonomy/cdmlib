@@ -32,7 +32,7 @@ public class TestModel {
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceBase sec = new Journal();
+		ReferenceBase sec = Journal.NewInstance();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
@@ -62,7 +62,7 @@ public class TestModel {
 	
 	public void testParentRelation(){
 		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = new Journal();
+		ReferenceBase ref = Journal.NewInstance();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
