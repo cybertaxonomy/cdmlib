@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
@@ -39,11 +40,12 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 		return result;
 	}
 	
-	public static BookSection NewInstance(Book inBook, String pages, String sectionTitle ){
+	public static BookSection NewInstance(Book inBook, TeamOrPersonBase author, String sectionTitle, String pages ){
 		BookSection result = new BookSection();
 		result.setInBook(inBook);
 		result.setTitle(sectionTitle);
 		result.setPages(pages);
+		result.setAuthorTeam(author);
 		return result;
 	}
 	

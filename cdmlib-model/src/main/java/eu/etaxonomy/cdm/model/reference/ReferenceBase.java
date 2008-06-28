@@ -42,7 +42,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
 	private boolean isNomenclaturallyRelevant;
-	private Agent authorTeam;
+	private TeamOrPersonBase authorTeam;
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	private boolean hasProblem = false;
 	
@@ -50,7 +50,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getAuthorTeam(){
+	public TeamOrPersonBase getAuthorTeam(){
 		return this.authorTeam;
 	}
 
