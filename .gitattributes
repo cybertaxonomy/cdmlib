@@ -229,6 +229,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/INomenclaturalRefere
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/InProceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Journal.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Map.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/NomenclaturalReferenceHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Patent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PersonalCommunication.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PrintSeries.java -text
