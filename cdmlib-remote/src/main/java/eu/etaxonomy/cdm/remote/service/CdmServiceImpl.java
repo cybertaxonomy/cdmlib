@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
-import eu.etaxonomy.cdm.strategy.cache.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
