@@ -257,11 +257,11 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						logger.debug("RefCategoryFk: " + categoryFk);
 						
 						if (categoryFk == REF_JOURNAL){
-							referenceBase = new Journal();
+							referenceBase = Journal.NewInstance();
 						}else if(categoryFk == REF_BOOK){
-							referenceBase = new Book();
+							referenceBase = Book.NewInstance();
 						}else if(categoryFk == REF_ARTICLE){
-							referenceBase = new Article();
+							referenceBase = Article.NewInstance();
 							if (inRefFk != null){
 								if (inRefCategoryFk == REF_JOURNAL){
 									int inRefFkInt = (Integer)inRefFk;
@@ -286,7 +286,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase = new Database();
 						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
 							if (inRefCategoryFk == REF_BOOK){
-								referenceBase = new BookSection();
+								referenceBase = BookSection.NewInstance();
 								if (inRefFk != null){
 									int inRefFkInt = (Integer)inRefFk;
 									if (referenceStore.containsId(inRefFkInt)){
