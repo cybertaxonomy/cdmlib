@@ -68,7 +68,7 @@ public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 		Rank genus = Rank.GENUS();
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 		botanicalName.setGenusOrUninomial("GenusName");
-		Journal journal = new Journal();
+		Journal journal = Journal.NewInstance();
 		journal.setTitle("JournalTitel");
 		
 		Taxon taxon = Taxon.NewInstance(botanicalName, journal);
