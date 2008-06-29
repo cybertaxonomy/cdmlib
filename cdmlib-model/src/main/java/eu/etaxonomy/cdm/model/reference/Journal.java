@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
+
 import javax.persistence.*;
 
 /**
@@ -30,7 +33,7 @@ public class Journal extends PublicationBase implements Cloneable {
 	
 	protected Journal(){
 		super();
-		logger.warn("No Strategy attached to Journal");
+		cacheStrategy = JournalDefaultCacheStrategy.NewInstance();
 	}
 	
 	
