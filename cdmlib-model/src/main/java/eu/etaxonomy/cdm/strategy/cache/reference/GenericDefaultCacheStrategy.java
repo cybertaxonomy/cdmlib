@@ -19,13 +19,10 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
-public class GenericDefaultCacheStrategy <T extends Generic> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T> {
+public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
 	
-	private String beforeYear = ". ";
-	private String beforeMicroReference = ": ";
-	private String afterYear = ".";
-	private String afterAuthor = ", ";
+
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
 	private String prefixVolume = "vol.";
@@ -58,55 +55,8 @@ public class GenericDefaultCacheStrategy <T extends Generic> extends StrategyBas
 	private GenericDefaultCacheStrategy(){
 		super();
 	}
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	public String getTokenizedNomenclaturalTitel(T nomenclaturalReference) {
-		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
-		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-		result = addYear(result, nomenclaturalReference);
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	public String getTitleCache(T nomenclaturalReference) {
-		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
-		result = addYear(result, nomenclaturalReference);
-		String author = CdmUtils.Nz(nomenclaturalReference.getAuthorTeam().getTitleCache());
-		result = author + afterAuthor + result;
-		return result;
-	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
-	 */
-	public String getBeforeMicroReference(){
-		return beforeMicroReference;
-	}
-	
-	
-	private String addYear(String string, T nomRef){
-		String result;
-		if (string == null){
-			return null;
-		}
-		String year = CdmUtils.Nz(nomRef.getYear());
-		if ("".equals(year)){
-			result = string + afterYear;
-		}else{
-			result = string + beforeYear + year + afterYear;
-		}
-		return result;
-	}
-	
-	
-	private String getNomRefTitleWithoutYearAndAuthor(T genericReference){
+	protected String getNomRefTitleWithoutYearAndAuthor(T genericReference){
 		if (genericReference == null){
 			return null;
 		}

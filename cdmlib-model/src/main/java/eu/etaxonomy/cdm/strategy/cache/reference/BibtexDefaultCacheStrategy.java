@@ -19,13 +19,9 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
-public class BibtexDefaultCacheStrategy <T extends BibtexReference> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BibtexDefaultCacheStrategy <T extends BibtexReference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BibtexDefaultCacheStrategy.class);
 	
-	private String beforeYear = ". ";
-	private String beforeMicroReference = ": ";
-	private String afterYear = ".";
-	private String afterAuthor = ", ";
 	private String prefixSeries = "ser.";
 	private String prefixVolume = "vol.";
 	private String prefixReferenceJounal = "in";
@@ -59,52 +55,7 @@ public class BibtexDefaultCacheStrategy <T extends BibtexReference> extends Stra
 		super();
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	public String getTokenizedNomenclaturalTitel(T bibtexReference) {
-		String result =  getNomRefTitleWithoutYearAndAuthor(bibtexReference);
-		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-		result = addYear(result, bibtexReference);
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	public String getTitleCache(T bibtexReference) {
-		String result =  getNomRefTitleWithoutYearAndAuthor(bibtexReference);
-		result = addYear(result, bibtexReference);
-		String author = CdmUtils.Nz(bibtexReference.getAuthorTeam().getTitleCache());
-		result = author + afterAuthor + result;
-		return result;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
-	 */
-	public String getBeforeMicroReference(){
-		return beforeMicroReference;
-	}
-	
-	private String addYear(String string, T nomRef){
-		String result;
-		if (string == null){
-			return null;
-		}
-		String year = CdmUtils.Nz(nomRef.getYear());
-		if ("".equals(year)){
-			result = string + afterYear;
-		}else{
-			result = string + beforeYear + year + afterYear;
-		}
-		return result;
-	}
-	
-	
-	private String getNomRefTitleWithoutYearAndAuthor(T article){
+	protected String getNomRefTitleWithoutYearAndAuthor(T article){
 		
 		if (true){
 			//TODO

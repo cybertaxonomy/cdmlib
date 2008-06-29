@@ -18,10 +18,9 @@ import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
-public class BookSectionDefaultCacheStrategy <T extends BookSection> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookSectionDefaultCacheStrategy <T extends BookSection> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
-	private String beforeMicroReference = ": ";
 	private String afterBookAuthor = " - ";
 	private String inBook = "in ";
 	private String blank = " ";
@@ -86,12 +85,17 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Str
 		
 		return result;
 	}
-	
+
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.NomRefDefaultCacheStrategyBase#getNomRefTitleWithoutYearAndAuthor(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
-	public String getBeforeMicroReference(){
-		return beforeMicroReference;
+	@Override
+	protected String getNomRefTitleWithoutYearAndAuthor(T reference) {
+		// not needed in BookSection
+		logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
+		return null;
 	}
+	
 
 }
