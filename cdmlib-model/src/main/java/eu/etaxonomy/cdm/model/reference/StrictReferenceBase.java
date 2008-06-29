@@ -74,7 +74,7 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	public Object clone() {
 		try {
 			StrictReferenceBase result = (StrictReferenceBase)super.clone();
-			result.setDatePublished((TimePeriod)datePublished.clone());
+			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
 			//no change to: title
 			return result;
 		} catch (CloneNotSupportedException e) {
