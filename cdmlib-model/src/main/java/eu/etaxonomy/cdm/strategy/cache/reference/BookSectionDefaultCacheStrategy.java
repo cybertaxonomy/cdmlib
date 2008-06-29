@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -75,7 +76,8 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 			return null;
 		}
 		String result = bookSection.getInBook().getTitleCache();
-		String bookAuthor = CdmUtils.Nz(bookSection.getInBook().getAuthorTeam().getTitleCache());
+		TeamOrPersonBase team = bookSection.getAuthorTeam();
+		String bookAuthor = CdmUtils.Nz(team == null? "" : team.getTitleCache());
 		result = bookAuthor + afterBookAuthor + result;
 		result = inBook +  result;
 		String title = CdmUtils.Nz(bookSection.getTitle());

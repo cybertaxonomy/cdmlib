@@ -71,7 +71,7 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 		String lastChar;
 		String character =".";
 		len = titelAbbrev.length();
-		lastChar = titelAbbrev.substring(len-1, len);
+		if (len > 0){lastChar = titelAbbrev.substring(len-1, len);}
 		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
 		lastCharIsDouble = titelAbbrev.equals(character);
 
