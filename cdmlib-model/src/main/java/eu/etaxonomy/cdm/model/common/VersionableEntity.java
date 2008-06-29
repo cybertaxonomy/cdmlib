@@ -15,6 +15,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -175,5 +176,27 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 		   //hashCode = 29 * hashCode + this.getCreated().hashCode();
 		   return hashCode;
 	}
-
+	 
+//********************** CLONE *****************************************/
+	
+	/** 
+	 * Clones this versionable entity.
+	 * Set fields for nextVersion, previousVersion, updated, updatedBy and createdBy are set to <tt>null</tt>
+	 * The id is set to 0.
+	 * The uuid is created new.
+	 * The createdWhen is set to the current date.
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		VersionableEntity result = (VersionableEntity)super.clone();
+		
+		//TODO ?
+		result.setNextVersion(null);
+		result.setPreviousVersion(null);
+		result.setUpdated(null);
+		result.setUpdatedBy(null);
+		
+		//no changes to: -
+		return result;
+	}
 }

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  * @created 08-Nov-2007 13:06:14
  */
 @Entity
-public class BookSection extends SectionBase implements INomenclaturalReference {
+public class BookSection extends SectionBase implements INomenclaturalReference, Cloneable {
 	private static final Logger logger = Logger.getLogger(BookSection.class);
 	private Book inBook;
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
@@ -94,5 +94,16 @@ public class BookSection extends SectionBase implements INomenclaturalReference 
 	@Override
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
+	}
+	
+//*********** CLONE **********************************/	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.SectionBase#clone()
+	 */
+	public BookSection clone(){
+		BookSection result = (BookSection)super.clone();
+		//no changes to: inBook
+		return result;
 	}
 }

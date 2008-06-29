@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -21,12 +20,23 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:15
  */
 @Entity
-public class CdDvd extends PublicationBase {
+public class CdDvd extends PublicationBase implements Cloneable{
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
 	@Override
 	public String generateTitle(){
 		return "";
+	}
+
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public CdDvd clone(){
+		CdDvd result = (CdDvd)super.clone();
+		//no changes to: -
+		return result;
 	}
 
 }

@@ -21,12 +21,21 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:07:03
  */
 @Entity
-public class WebPage extends PublicationBase {
+public class WebPage extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(WebPage.class);
 
 	@Override
 	public String generateTitle(){
 		return "";
 	}
-
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public WebPage clone(){
+		WebPage result = (WebPage)super.clone();
+		//no changes to: -
+		return result;
+	}
 }

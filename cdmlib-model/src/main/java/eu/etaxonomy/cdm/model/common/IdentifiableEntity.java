@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 
 
@@ -72,15 +74,15 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	
     @XmlElementWrapper(name = "Rights")
     @XmlElement(name = "Rights")
-	private Set<Rights> rights = new HashSet<Rights>();
+	private Set<Rights> rights = getNewRightsSet();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
-	private Set<Extension> extensions = new HashSet<Extension>();
+	private Set<Extension> extensions = getNewExtensionSet();
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "OriginalSource")
-	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
+	private Set<OriginalSource> sources = getNewOriginalSourcesSet();
 
 	
 	/* (non-Javadoc)
@@ -214,7 +216,14 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#addSource(eu.etaxonomy.cdm.model.common.OriginalSource)
 	 */
 	public void addSource(OriginalSource source) {
-		this.sources.add(source);		
+		if (source != null){
+			IdentifiableEntity oldSourcedObj = source.getSourcedObj();
+			if (oldSourcedObj != null && oldSourcedObj != this){
+				oldSourcedObj.getSources().remove(source);
+			}
+			this.sources.add(source);
+			source.setSourcedObj(this);
+		}
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#removeSource(eu.etaxonomy.cdm.model.common.OriginalSource)
@@ -235,6 +244,58 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 			result = this.titleCache;
 		}
 		return result;	
+	}
+	 
+//****************** CLONE ************************************************/
+	 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		IdentifiableEntity result = (IdentifiableEntity)super.clone();
+		
+		//Extensions
+		Set<Extension> newExtensions = getNewExtensionSet();
+		for (Extension extension : this.extensions ){
+			Extension newExtension = (Extension)extension.clone(this);
+			newExtensions.add(newExtension);
+		}
+		result.setExtensions(newExtensions);
+		
+		//OriginalSources
+		Set<OriginalSource> newOriginalSources = getNewOriginalSourcesSet();
+		for (OriginalSource originalSource : this.sources){
+			OriginalSource newSource = (OriginalSource)originalSource.clone(this);
+			newOriginalSources.add(newSource);	
+		}
+		result.setSources(newOriginalSources);
+		
+		//Rights
+		Set<Rights> rights = getNewRightsSet();
+		rights.addAll(this.rights);
+		result.setRights(rights);
+		
+		//result.setLsid(lsid);
+		//result.setTitleCache(titleCache); 
+		//result.setProtectedTitleCache(protectedTitleCache);  //must be after setTitleCache
+		
+		//no changes to: lsid, titleCache, protectedTitleCache
+		return result;
+	}
+	
+	@Transient
+	private Set<Extension> getNewExtensionSet(){
+		return new HashSet<Extension>();
+	}
+	
+	@Transient
+	private Set<OriginalSource> getNewOriginalSourcesSet(){
+		return new HashSet<OriginalSource>();
+	}
+	
+	@Transient
+	private Set<Rights> getNewRightsSet(){
+		return new HashSet<Rights>();
 	}
 
 }

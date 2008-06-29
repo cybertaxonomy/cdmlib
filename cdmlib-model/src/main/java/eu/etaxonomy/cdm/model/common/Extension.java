@@ -10,10 +10,11 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * This class aims to make available more "attributes" for identifiable entities
@@ -25,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:23
  */
 @Entity
-public class Extension extends VersionableEntity {
+public class Extension extends VersionableEntity implements Cloneable {
 	static Logger logger = Logger.getLogger(Extension.class);
 	private String value;
 	private ExtensionType type;
@@ -62,6 +63,27 @@ public class Extension extends VersionableEntity {
 	 */
 	public void setValue(String value){
 		this.value = value;
+	}
+	
+	//****************** CLONE ************************************************/
+	 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		Extension result = (Extension)super.clone();	
+		//no changes to: type, value
+		return result;
+	}
+	
+	/**
+	 * Clones this extension and sets the clone's extended object to 'extendedObject'
+	 * @see java.lang.Object#clone()
+	 */
+	public Extension clone(IdentifiableEntity extendedObject) throws CloneNotSupportedException{
+		Extension result = (Extension)clone();
+		result.setExtendedObj(extendedObject);
+		return result;
 	}
 
 }

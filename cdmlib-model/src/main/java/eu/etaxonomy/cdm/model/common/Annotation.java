@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
     ""
 })
 @Entity
-public class Annotation extends LanguageStringBase {
+public class Annotation extends LanguageStringBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Annotation.class);
 	
 	
@@ -133,5 +133,27 @@ public class Annotation extends LanguageStringBase {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	
+//****************** CLONE ************************************************/
+	 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		Annotation result = (Annotation)super.clone();
+		//no changes to: type, flag
+		return result;
+	}
+	
+	/**
+	 * Clones this annotation and sets the clone's annotated object to 'annotatedObject'
+	 * @see java.lang.Object#clone()
+	 */
+	public Annotation clone(AnnotatableEntity annotatedObject) throws CloneNotSupportedException{
+		Annotation result = (Annotation)clone();
+		result.setAnnotatedObj(annotatedObject);
+		return result;
 	}
 }

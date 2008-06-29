@@ -65,6 +65,24 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 			return getDatePublished().getYear();
 		}
 	}
+	
+//******************** CLONE *****************************************/
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#clone()
+	 */
+	public Object clone() {
+		try {
+			StrictReferenceBase result = (StrictReferenceBase)super.clone();
+			result.setDatePublished((TimePeriod)datePublished.clone());
+			//no change to: title
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 
 }

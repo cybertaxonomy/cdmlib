@@ -291,4 +291,31 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		}
 	}
 	
+//********************** CLONE *****************************************/
+	
+	protected void clone(CdmBase clone){
+		clone.setCreatedBy(createdBy);
+		clone.setId(id);
+		//Constructor Attributes
+		//clone.setCreated(created);
+		//clone.setUuid(getUuid());
+
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		CdmBase result = (CdmBase)super.clone();
+		
+		//TODO ?
+		result.setId(0);
+		result.setUuid(UUID.randomUUID());
+		result.setCreated(Calendar.getInstance());
+		result.setCreatedBy(null);
+		
+		//no changes to: -
+		return result;
+	}
+	
 }

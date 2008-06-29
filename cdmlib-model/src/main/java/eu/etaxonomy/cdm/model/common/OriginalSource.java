@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
-import javax.persistence.*;
 
 /**
  * Other names/labels/titles (abreviated or not) for the same object (person,
@@ -22,7 +24,7 @@ import javax.persistence.*;
  */
 
 @Entity
-public class OriginalSource extends ReferencedEntityBase {
+public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	static Logger logger = Logger.getLogger(OriginalSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
@@ -65,6 +67,28 @@ public class OriginalSource extends ReferencedEntityBase {
 	}
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
+	}
+	
+//****************** CLONE ************************************************/
+	 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		OriginalSource result = (OriginalSource)super.clone();
+		
+		//no changes to: idInSource, sourcedObj
+		return result;
+	}
+	
+	/**
+	 * Clones this original source and sets the clones sourced object to 'sourceObj'
+	 * @see java.lang.Object#clone()
+	 */
+	public OriginalSource clone(IdentifiableEntity sourcedObj) throws CloneNotSupportedException{
+		OriginalSource result = (OriginalSource)clone();
+		result.setSourcedObj(sourcedObj);
+		return result;
 	}
 
 }

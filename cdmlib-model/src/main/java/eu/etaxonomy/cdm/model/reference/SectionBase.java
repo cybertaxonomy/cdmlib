@@ -43,4 +43,15 @@ public abstract class SectionBase extends StrictReferenceBase {
 		return null;
 	}
 
+//*********** CLONE **********************************/	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#clone()
+	 */
+	public Object clone(){
+		SectionBase result = (SectionBase)super.clone();
+		//no changes to: setPages
+		return result;
+	}
 }

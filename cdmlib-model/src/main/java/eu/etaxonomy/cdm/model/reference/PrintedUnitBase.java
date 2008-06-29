@@ -80,4 +80,14 @@ public abstract class PrintedUnitBase extends PublicationBase {
 		this.pages = pages;
 	}
 
+//*********** CLONE **********************************/	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public Object clone(){
+		PrintedUnitBase result = (PrintedUnitBase)super.clone();
+		//no changes to: editor, inSeries, pages volume
+		return result;
+	}
 }

@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -21,7 +20,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:19
  */
 @Entity
-public class Database extends PublicationBase {
+public class Database extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Database.class);
 
 	public static Database NewInstance(){
@@ -31,6 +30,18 @@ public class Database extends PublicationBase {
 	@Override
 	public String generateTitle(){
 		return "";
+	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public Database clone(){
+		Database result = (Database)super.clone();
+		//no changes to: -
+		return result;
 	}
 
 }

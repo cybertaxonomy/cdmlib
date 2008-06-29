@@ -18,13 +18,15 @@ import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.reference.Generic;
+
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
 @Embeddable
-public class TimePeriod {
+public class TimePeriod implements Cloneable{
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
 	
 	
@@ -102,6 +104,24 @@ public class TimePeriod {
 			}
 		}
 		return result;
+	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public TimePeriod clone()  {
+		try {
+			TimePeriod result = (TimePeriod)super.clone();
+			result.setStart((Calendar)start.clone());
+			result.setEnd((Calendar)start.clone());
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Clone not supported exception. Should never occurr !!");
+			return null;
+		}
 	}
 	
 }

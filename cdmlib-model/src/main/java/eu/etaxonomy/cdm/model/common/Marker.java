@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Marker")
 @Entity
-public class Marker extends VersionableEntity {
+public class Marker extends VersionableEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Marker.class);
 	
     @XmlElement(name = "Flag")
@@ -107,6 +107,28 @@ public class Marker extends VersionableEntity {
 	}
 	public void setFlag(boolean flag){
 		this.flag = flag;
+	}
+	
+	
+//****************** CLONE ************************************************/
+	 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		Marker result = (Marker)super.clone();
+		//no changes to: type, flag
+		return result;
+	}
+	
+	/**
+	 * Clones this marker and sets the clones marked object to 'markedObject'
+	 * @see java.lang.Object#clone()
+	 */
+	public Marker clone(AnnotatableEntity markedObject) throws CloneNotSupportedException{
+		Marker result = (Marker)clone();
+		result.setMarkedObj(markedObject);
+		return result;
 	}
 
 }

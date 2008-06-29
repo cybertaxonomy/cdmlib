@@ -72,5 +72,17 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	public void setCitation(ReferenceBase citation) {
 		this.citation = citation;
 	}
+	
+//****************** CLONE ************************************************/
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		ReferencedEntityBase result = (ReferencedEntityBase)super.clone();
+		
+		//no changes to: citation, citationMicroReference, originalNameString
+		return result;
+	}
 
 }

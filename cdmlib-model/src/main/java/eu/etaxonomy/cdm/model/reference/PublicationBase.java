@@ -37,5 +37,17 @@ public abstract class PublicationBase extends StrictReferenceBase {
 	public void setPlacePublished(String placePublished){
 		this.placePublished = placePublished;
 	}
+	
+//*********** CLONE **********************************/	
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#clone()
+	 */
+	public Object clone(){
+		PublicationBase result = (PublicationBase)super.clone();
+		//no changes to: placePublished, publisher
+		return result;
+	}
 
 }

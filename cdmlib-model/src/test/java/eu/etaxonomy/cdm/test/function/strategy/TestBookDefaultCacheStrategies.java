@@ -7,6 +7,7 @@ import java.util.Calendar;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -55,7 +56,7 @@ public class TestBookDefaultCacheStrategies {
 		System.out.println("Citation: " + article.getCitation());
 		System.out.println("Titel: " + article.getTitleCache());
 
-		//Article
+		//Generic
 		System.out.println("*********** GENERIC **************");
 		Generic generic = Generic.NewInstance();
 		Person genericAuthor = Person.NewTitledInstance("GenericAuthorTitle");
@@ -70,6 +71,11 @@ public class TestBookDefaultCacheStrategies {
 		System.out.println("FULL: " + generic.getNomenclaturalCitation("4444"));
 		System.out.println("Citation: " + generic.getCitation());
 		System.out.println("Titel: " + generic.getTitleCache());
+		
+		Media media = Media.NewInstance();
+		generic.addMedia(media);
+		Generic newGeneric = generic.clone();
+		System.out.println(newGeneric);
 		
 		return true;
 		

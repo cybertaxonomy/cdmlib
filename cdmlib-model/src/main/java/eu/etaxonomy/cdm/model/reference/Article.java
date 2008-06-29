@@ -21,9 +21,6 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * @author m.doering
@@ -31,7 +28,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  * @created 08-Nov-2007 13:06:10
  */
 @Entity
-public class Article extends StrictReferenceBase implements INomenclaturalReference {
+public class Article extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
 	static Logger logger = Logger.getLogger(Article.class);
 	private String series;
 	private String volume;
@@ -134,5 +131,18 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
 	}
+	
+//*********** CLONE **********************************/	
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#clone()
+	 */
+	public Article clone(){
+		Article result = (Article)super.clone();
+		//no changes to: inJournal, pages, publisher, series, volume
+		return result;
+	}
+	
 
 }

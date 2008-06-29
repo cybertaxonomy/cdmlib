@@ -20,7 +20,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
@@ -105,4 +104,16 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 			return cacheStrategy.getTitleCache(this);
 		}
 	}
+	
+//**************************** CLONE *********************************/
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		ReferenceBase result = (ReferenceBase)super.clone();
+		//no changes to: authorTeam, hasProblem, nomenclaturallyRelevant, uri
+		return result;
+	}
+	
 }

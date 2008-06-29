@@ -19,7 +19,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:31
  */
 @Entity
-public class Journal extends PublicationBase {
+public class Journal extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Journal.class);
 	private String issn;
 
@@ -49,6 +49,16 @@ public class Journal extends PublicationBase {
 	@Override
 	public String generateTitle(){
 		return "";
+	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Journal clone(){
+		return (Journal)super.clone();
 	}
 
 }

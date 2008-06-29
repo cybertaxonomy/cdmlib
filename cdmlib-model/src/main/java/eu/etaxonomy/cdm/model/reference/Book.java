@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
  * @created 08-Nov-2007 13:06:13
  */
 @Entity
-public class Book extends PrintedUnitBase implements INomenclaturalReference {
+public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
 	private static final Logger logger = Logger.getLogger(Book.class);
 	private String edition;
 	private String isbn;
@@ -79,6 +79,18 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference {
 	@Override
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
+	}
+	
+	
+//*********** CLONE **********************************/	
+		
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PrintedUnitBase#clone()
+	 */
+	public Book clone(){
+		Book result = (Book)super.clone();
+		//no changes to: edition, isbn
+		return result;
 	}
 
 

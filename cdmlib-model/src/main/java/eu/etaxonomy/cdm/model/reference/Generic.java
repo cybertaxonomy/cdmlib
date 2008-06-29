@@ -10,13 +10,12 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
-
-import javax.persistence.*;
 
 /**
  * This class is to represent all references which cannot be clearly assigned to a
@@ -27,7 +26,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:26
  */
 @Entity
-public class Generic extends StrictReferenceBase implements INomenclaturalReference {
+public class Generic extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
 	static Logger logger = Logger.getLogger(Generic.class);
 	private String publisher;
 	private String placePublished;
@@ -143,6 +142,18 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	@Override
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
+	}
+	
+//*********** CLONE **********************************/	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#clone()
+	 */
+	public Generic clone(){
+		Generic result = (Generic)super.clone();
+		//no changes to: editor, pages, placePublished,publisher, series, volume
+		return result;
 	}
 
 }

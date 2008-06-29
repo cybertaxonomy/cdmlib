@@ -61,7 +61,10 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Str
 		if (bookSection.getInBook() == null){
 			return null;
 		}
-		String result = "in " +  bookSection.getInBook().getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		String result = bookSection.getInBook().getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		//TODO beforeMicroReference should be the bookstrategy one's
+		result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		result = "in " +  result;
 		return result;
 	}
 

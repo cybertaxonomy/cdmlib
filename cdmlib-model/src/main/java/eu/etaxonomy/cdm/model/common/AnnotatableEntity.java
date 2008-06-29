@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.media.Rights;
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -39,11 +41,11 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 
 	@XmlElementWrapper(name = "Markers")
 	@XmlElement(name = "Marker")
-	protected Set<Marker> markers = new HashSet<Marker>();
+	protected Set<Marker> markers = getNewMarkerSet();
 	
 	@XmlElementWrapper(name = "Annotations")
 	@XmlElement(name = "Annotation")
-	protected Set<Annotation> annotations = new HashSet<Annotation>();
+	protected Set<Annotation> annotations = getNewAnnotationSet();
 	
 	protected AnnotatableEntity() {
 		super();
@@ -89,5 +91,44 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 	protected void setAnnotations(Set<Annotation> annotations) {
 		this.annotations = annotations;
 	}
+	
+//********************** CLONE *****************************************/
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException{
+		AnnotatableEntity result = (AnnotatableEntity)super.clone();
+		
+		//Annotations
+		Set<Annotation> newAnnotations = getNewAnnotationSet();
+		for (Annotation annotation : this.annotations ){
+			Annotation newExtension = (Annotation)annotation.clone(this);
+			newAnnotations.add(newExtension);
+		}
+		result.setAnnotations(newAnnotations);
+		
+		
+		//Markers
+		Set<Marker> newMarkers = getNewMarkerSet();
+		for (Marker marker : this.markers ){
+			Marker newMarker = (Marker)marker.clone(this);
+			newMarkers.add(newMarker);
+		}
+		result.setMarkers(newMarkers);
+		
+		//no changes to: -
+		return result;
+	}
+	
+	@Transient
+	private Set<Annotation> getNewAnnotationSet(){
+		return new HashSet<Annotation>();
+	}
+	
+	@Transient
+	private Set<Marker> getNewMarkerSet(){
+		return new HashSet<Marker>();
+	}
+	
 }

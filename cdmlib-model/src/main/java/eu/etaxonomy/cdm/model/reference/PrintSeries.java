@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -21,7 +20,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:45
  */
 @Entity
-public class PrintSeries extends PublicationBase {
+public class PrintSeries extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(PrintSeries.class);
 	private String series;
 
@@ -41,5 +40,15 @@ public class PrintSeries extends PublicationBase {
 	public String generateTitle(){
 		return "";
 	}
-
+	
+//*********** CLONE **********************************/	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public PrintSeries clone(){
+		PrintSeries result = (PrintSeries)super.clone();
+		//no changes to: series
+		return result;
+	}
 }
