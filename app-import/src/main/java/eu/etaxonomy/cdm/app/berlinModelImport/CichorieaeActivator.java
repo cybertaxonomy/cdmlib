@@ -37,7 +37,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
