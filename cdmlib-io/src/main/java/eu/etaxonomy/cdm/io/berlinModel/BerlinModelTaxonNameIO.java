@@ -80,7 +80,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 	}
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
+			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> nomRefMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
 		
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
@@ -170,7 +170,10 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					if (referenceMap != null){
 						if (nomRefFk != null){
 							int nomRefFkInt = (Integer)nomRefFk;
-							ReferenceBase nomenclaturalReference = referenceMap.get(nomRefFkInt);
+							ReferenceBase nomenclaturalReference = nomRefMap.get(nomRefFkInt);
+							if (nomenclaturalReference == null){
+								nomenclaturalReference = referenceMap.get(nomRefFkInt);
+							}									
 							if (nomenclaturalReference == null){
 								//TODO
 								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+

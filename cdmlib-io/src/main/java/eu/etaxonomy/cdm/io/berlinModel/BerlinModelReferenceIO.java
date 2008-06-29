@@ -18,6 +18,7 @@ import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMEN
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,17 +26,20 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
@@ -177,25 +181,21 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 	}
 
-	
-	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
+			MapWrapper<ReferenceBase> nomRefMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		boolean success = true;
 		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
-		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
+		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
 		
+		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
 		
 		logger.info("start makeReferences ...");
 		IReferenceService referenceService = cdmApp.getReferenceService();
-		boolean delete = bmiConfig.isDeleteAll();
-
+		
 		try {
-			
-			
 			//get data from database
 			String strQueryBase = 
 					" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
@@ -236,21 +236,44 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			}
 			
 			
-			int i = 0;
-			//for each reference
+			int j = 0;
 			Iterator<ResultSet> resultSetListIterator =  resultSetList.listIterator();
+			//for each resultsetlist
 			while (resultSetListIterator.hasNext()){
-				i = 0;
+				int i = 0;
 				ResultSet rs = resultSetListIterator.next();
+				//for each resultset
 				while (rs.next()){
 					
-					if ((i++ % modCount) == 0){ logger.info("References handled: " + (i-1));}
+					if ((i++ % modCount) == 0){ logger.info("References handled: " + (i-1) + " in round " + j);}
 					
 					//create TaxonName element
 					int refId = rs.getInt("refId");
 					int categoryFk = rs.getInt("refCategoryFk");
+					boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 					Object inRefFk = rs.getObject("inRefFk");
 					int inRefCategoryFk = rs.getInt("InRefCategoryFk");
+					String nomRefCache = rs.getString("nomRefCache");
+					String refCache = rs.getString("refCache");
+					String title = rs.getString("title");
+					String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+					
+					//for debuggin , may be deleted
+					if (refId == 123456){
+						logger.warn("XXXXXXXXXXXXXXXXXXXXXXX FOUND XXXXXXXXXXXXXXXXXX");
+					}
+					
+					String pages = rs.getString("pageString");
+					String issn = rs.getString("issn");
+					String isbn = rs.getString("isbn");
+					String refYear = rs.getString("refYear");
+					String edition = rs.getString("Edition");
+					String volume = rs.getString("Volume");
+					String series = rs.getString("Series");
+					
+					//TODO
+					Calendar cal = Calendar.getInstance();
+					TimePeriod datePublished = TimePeriod.NewInstance(cal);
 					
 					StrictReferenceBase referenceBase;
 					try {
@@ -261,21 +284,34 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						}else if(categoryFk == REF_BOOK){
 							referenceBase = Book.NewInstance();
 						}else if(categoryFk == REF_ARTICLE){
-							referenceBase = Article.NewInstance();
+							Article article = Article.NewInstance();
+							referenceBase = article;
 							if (inRefFk != null){
 								if (inRefCategoryFk == REF_JOURNAL){
 									int inRefFkInt = (Integer)inRefFk;
-									if (referenceStore.containsId(inRefFkInt)){
-										ReferenceBase inJournal = referenceStore.get(inRefFkInt);
-										if (Journal.class.isAssignableFrom(inJournal.getClass())){
-											((Article)referenceBase).setInJournal((Journal)inJournal);
+									if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
+										ReferenceBase inJournal = nomRefStore.get(inRefFkInt);
+										if (inJournal == null){
+											inJournal = referenceStore.get(inRefFkInt);
+											logger.info("inJournal (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
+											nomRefStore.put(inRefFkInt, inJournal);
+										}
+										if (inJournal == null){
+											logger.warn("inJournal for " + inRefFkInt + " is null. "+
+											" InReference relation could not be set");;
+										}else if (Journal.class.isAssignableFrom(inJournal.getClass())){
+											article.setInJournal((Journal)inJournal);
+											article.setDatePublished(datePublished);
+											article.setVolume(volume);
+											article.setSeries(series);
+											//logger.info("InJournal success " + inRefFkInt);
 										}else{
 											logger.warn("InJournal is not of type journal but of type " + inJournal.getClass().getSimpleName() +
 												" Inreference relation could not be set");
 										}
 									}else{
-										logger.error("Journal for Article (refID = " + refId +") could not be found. Inconsistency error. ");
-										return false;
+										logger.error("Journal (refId = " + inRefFkInt + " ) for Article (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
+										success = false;;
 									}
 								}else{
 									logger.warn("Wrong inrefCategory for Article (refID = " + refId +"). Type must be 'Journal' but was not (RefCategoryFk=" + inRefCategoryFk + "))." +
@@ -286,83 +322,110 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase = new Database();
 						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
 							if (inRefCategoryFk == REF_BOOK){
-								referenceBase = BookSection.NewInstance();
+								BookSection bookSection = BookSection.NewInstance();
+								referenceBase = bookSection;
 								if (inRefFk != null){
 									int inRefFkInt = (Integer)inRefFk;
-									if (referenceStore.containsId(inRefFkInt)){
-										ReferenceBase inBook = referenceStore.get(inRefFkInt);
-										if (Book.class.isAssignableFrom(inBook.getClass())){
-											((BookSection)referenceBase).setInBook((Book)inBook);
+									if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
+										ReferenceBase inBook = nomRefStore.get(inRefFkInt);
+										if (inBook == null){
+											inBook = referenceStore.get(inRefFkInt);
+											logger.info("inBook (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
+											nomRefStore.put(inRefFkInt, inBook);
+										}
+										if (inBook == null){
+											logger.warn("inBook for " + inRefFkInt + " is null. "+
+											" InReference relation could not be set");;
+										}else if (Book.class.isAssignableFrom(inBook.getClass())){
+											bookSection.setInBook((Book)inBook);
+											bookSection.setPages(pages);
+											//logger.info("InBook success " + inRefFkInt);
+											//TODO
 										}else{
 											logger.warn("InBook is not of type book but of type " + inBook.getClass().getSimpleName() +
 													" Inreference relation could not be set");
 										}
 									}else{
-										logger.error("Book (refId = " + inRefFkInt + " for part_of_other_title (refID = " + refId +") could not be found in Hashmap. Inconsistency error. ");
-										return false;
+										logger.error("Book (refId = " + inRefFkInt + ") for part_of_other_title (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
+										success = false;
 									}
 								}
 							}else if (inRefCategoryFk == REF_ARTICLE){
 								//TODO 
 								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
 										" This type is not implemented yet. Generic reference created instead") ;
-								referenceBase = new Generic();
+								referenceBase = Generic.NewInstance();
 							}else if (inRefCategoryFk == REF_JOURNAL){
 								//TODO 
 								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' has inReference of type 'journal'." +
 										" This is not allowed! Generic reference created instead") ;
-								referenceBase = new Generic();
+								referenceBase = Generic.NewInstance();
 								referenceBase.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
 							}else{
 								logger.warn("InReference type (catFk = " + inRefCategoryFk + ") of part-of-reference not recognized for refId " + refId + "." +
 									" Create 'Generic' reference instead");
-								referenceBase = new Generic();
+								referenceBase = Generic.NewInstance();
 							}
 						}else if(categoryFk == REF_INFORMAL){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
-							referenceBase = new Generic();
+							referenceBase = Generic.NewInstance();
 						}else if(categoryFk == REF_WEBSITE){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
-							referenceBase = new Generic();
+							referenceBase = Generic.NewInstance();
 						}else if(categoryFk == REF_UNKNOWN){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
-							referenceBase = new Generic();
+							Generic generic = Generic.NewInstance();
+							referenceBase = generic;
+							generic.setVolume(volume);
+							generic.setSeries(series);
+							generic.setDatePublished(datePublished);
+							//TODO
 						}else{
 							logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
-							referenceBase = new Generic();	
+							referenceBase = Generic.NewInstance();
 						}
 						
-						
-						dbAttrName = "nomRefCache";
-						cdmAttrName = "titleCache";
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
 
-						dbAttrName = "refCache";
-						cdmAttrName = "titleCache";
-						//TODO wohin kommt der refCache
-						//INomenclaturalReference hat nur getNomenclaturalCitation , müsste es nicht so was wie setAbbrevTitle geben? 
-						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.NO_OVERWRITE);
-						
-						//refId
-						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);
-						
-						//	dbAttrName = "BinomHybFlag";
-						//	cdmAttrName = "isBinomHybrid";
-						//	ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);
-						
-						//TODO
-						// all attributes
-						
 						//created, notes
-						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId );
+						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId );						
+						//refId
+						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);							
 						
-						
-						if (! referenceStore.containsId(refId)){
-							referenceStore.put(refId, referenceBase);
-							referenceMap.put(refId, referenceBase);
-						}else{
-							logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
+						boolean hasNomRef = false;
+						//is Nomenclatural Reference
+						if ( (CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
+							referenceBase.setTitle(nomTitleAbbrev);
+							if (isPreliminary){
+								referenceBase.setTitleCache(nomRefCache);
+							}
+							if (! nomRefStore.containsId(refId)){
+								if (referenceBase == null){
+									logger.warn("refBase is null");
+								}
+								nomRefStore.put(refId, referenceBase);
+							}else{
+								logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
+							}
+							nomRefMap.put(refId, referenceBase);
+							hasNomRef = true;
 						}
+						//is bibliographical Reference
+						if ((CdmUtils.Nz(refCache).equals("") && isPreliminary) || (CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
+							if (hasNomRef){
+								referenceBase = (StrictReferenceBase)referenceBase.clone();
+							}
+							referenceBase.setTitle(title);
+							if (isPreliminary){
+								referenceBase.setTitleCache(refCache);
+							}
+							if (! referenceStore.containsId(refId)){
+								referenceStore.put(refId, referenceBase);
+							}else{
+								logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
+							}
+							referenceMap.put(refId, referenceBase);
+						}
+
 					} catch (Exception e) {
 						logger.warn("Reference with id " + refId +  " threw Exception and could not be saved");
 						e.printStackTrace();
@@ -372,7 +435,11 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					
 				} // end resultSet
 				//save and store in map
+				logger.info("Save bibliographical references");
 				referenceService.saveReferenceAll(referenceStore.objects());
+				logger.info("Save nomenclatural references");
+				referenceService.saveReferenceAll(nomRefStore.objects());
+				j++;
 			}//end resultSetList	
 
 			logger.info("end makeReferences ...");

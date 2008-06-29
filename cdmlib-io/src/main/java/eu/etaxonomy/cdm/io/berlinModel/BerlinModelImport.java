@@ -31,6 +31,7 @@ public class BerlinModelImport {
 	IService service = null;
 	private MapWrapper<TeamOrPersonBase> authorStore= new MapWrapper<TeamOrPersonBase>(service);
 	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(service);
+	private MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(service);
 	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(service);
 	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(service);
 
@@ -163,7 +164,7 @@ public class BerlinModelImport {
 		
 		//References
 		if (bmiConfig.getDoReferences() != NONE){
-			if (! BerlinModelReferenceIO.invoke(bmiConfig, cdmApp, referenceStore, authorStore)){
+			if (! BerlinModelReferenceIO.invoke(bmiConfig, cdmApp, nomRefStore, referenceStore, authorStore)){
 				return false;
 			}
 		}else{
@@ -173,7 +174,7 @@ public class BerlinModelImport {
 		
 		//TaxonNames
 		if (bmiConfig.isDoTaxonNames()){
-			if (! BerlinModelTaxonNameIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore, authorStore)){
+			if (! BerlinModelTaxonNameIO.invoke(bmiConfig, cdmApp, taxonNameStore, nomRefStore, referenceStore, authorStore)){
 				//return false;
 			}
 		}else{
