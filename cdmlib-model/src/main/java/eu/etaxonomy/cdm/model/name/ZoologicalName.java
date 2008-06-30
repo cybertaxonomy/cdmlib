@@ -196,11 +196,11 @@ public class ZoologicalName extends NonViralName {
 	
 	
 	/**
-	 * Returns a zoological taxon name based on parsing a string composed of
-	 * just one word (uninomial) and supposing that it is compliant to the ICZN.
+	 * Returns a zoological taxon name based on parsing a string representing
+	 * all elements (according to the ICZN) of a zoological taxon name in which
+	 * the scientific name is an uninomial.
 	 * 
-	 * @param 	fullNameString  string representing the scientific name of a
-	 * 							uninomial zoological taxon name 
+	 * @param	fullNameString  the string to be parsed 
 	 * @return					the new zoological taxon name
 	 */
 	public static ZoologicalName PARSED_NAME(String fullNameString){
@@ -208,9 +208,14 @@ public class ZoologicalName extends NonViralName {
 	}
 	
 	/**
-	 * Returns a parsed Name
-	 * @param fullName
-	 * @return
+	 * Returns a zoological taxon name based on parsing a string representing
+	 * all elements (according to the ICZN) of a zoological taxon name. The
+	 * parsing result depends on the given rank of the zoological taxon name
+	 * to be created.
+	 * 
+	 * @param 	fullNameString  the string to be parsed 
+	 * @param   rank			the rank of the taxon name
+	 * @return					the new zoological taxon name
 	 */
 	public static ZoologicalName PARSED_NAME(String fullNameString, Rank rank){
 		if (nameParser == null){
@@ -219,6 +224,16 @@ public class ZoologicalName extends NonViralName {
 		return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN(), rank);
 	}
 	
+	/**
+	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
+	 * the construction of this zoological taxon name, that is the
+	 * International Code of Zoological Nomenclature. This method overrides
+	 * the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 *
+	 * @return  the nomenclatural code for animals
+	 * @see  	NonViralName#isCodeCompliant()
+	 * @see  	TaxonNameBase#getHasProblem()
+	 */
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
@@ -227,23 +242,57 @@ public class ZoologicalName extends NonViralName {
 	
 /* ***************** GETTER / SETTER ***************************/
 	
+	/**
+	 * Returns the breed name string for this animal (zoological taxon name).
+	 * 
+	 * @return  the string containing the breed name for this zoological taxon name
+	 */
 	public String getBreed(){
 		return this.breed;
 	}
+	/**
+	 * @see  #getBreed()
+	 */
 	public void setBreed(String breed){
 		this.breed = breed;
 	}
 
+	/**
+	 * Returns the publication year (as an integer) for this zoological taxon
+	 * name. If this attribute is null and a nomenclatural reference exists
+	 * the year might be computed from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
+	 * 
+	 * @return  the integer representing the publication year for this zoological taxon name
+	 * @see  	#getOriginalPublicationYear()
+	 */
 	public Integer getPublicationYear() {
 		return publicationYear;
 	}
+	/**
+	 * @see  #getPublicationYear()
+	 */
 	public void setPublicationYear(Integer publicationYear) {
 		this.publicationYear = publicationYear;
 	}
 
+	/**
+	 * Returns the publication year (as an integer) of the original validly
+	 * published species epithet for this zoological taxon name. This only
+	 * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
+	 * If the originalPublicationYear attribute is null the year might be taken
+	 * from the publication year of the corresponding original name (basionym)
+	 * or from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference} of the basionym
+	 * if it exists.
+	 * 
+	 * @return  the integer representing the publication year for this zoological taxon name
+	 * @see  	#getPublicationYear()
+	 */
 	public Integer getOriginalPublicationYear() {
 		return originalPublicationYear;
 	}
+	/**
+	 * @see  #getOriginalPublicationYear()
+	 */
 	public void setOriginalPublicationYear(Integer originalPublicationYear) {
 		this.originalPublicationYear = originalPublicationYear;
 	}

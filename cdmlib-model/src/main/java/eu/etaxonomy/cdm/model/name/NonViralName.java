@@ -31,9 +31,10 @@ import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 
 /**
- * The taxon name class for all non viral taxa. Parentetical authorship is derived
+ * The taxon name class for all non viral taxa. Parenthetical authorship is derived
  * from basionym relationship. The scientific name including author strings and
  * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+ * The year itself is an information obtained from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * 
  * @author m.doering
