@@ -87,7 +87,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 		return this.type;
 	}
 	public void setFeature(Feature feature){
-		this.type = type;
+		this.type = feature;
 	}
 
 	
