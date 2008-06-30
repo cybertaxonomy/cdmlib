@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ServiceBase;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -243,6 +244,9 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			//for each resultsetlist
 			while (resultSetListIterator.hasNext()){
 				int i = 0;
+				int nomRefCount = 0;
+				int biblioRefsCount = 0;
+				
 				ResultSet rs = resultSetListIterator.next();
 				//for each resultset
 				while (rs.next()){
@@ -449,6 +453,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							}
 							nomRefMap.put(refId, referenceBase);
 							hasNomRef = true;
+							nomRefCount++;
 						}
 						//is bibliographical Reference
 						if ((! CdmUtils.Nz(refCache).equals("") && isPreliminary) || (! CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
@@ -468,6 +473,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 								logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
 							}
 							referenceMap.put(refId, referenceBase);
+							biblioRefsCount++;
 						}
 
 					} catch (Exception e) {
@@ -479,10 +485,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					
 				} // end resultSet
 				//save and store in map
-				logger.info("Save bibliographical references");
-				referenceService.saveReferenceAll(referenceStore.objects());
-				logger.info("Save nomenclatural references");
+				logger.info("Save nomenclatural references (" + nomRefCount + ")");
 				referenceService.saveReferenceAll(nomRefStore.objects());
+				logger.info("Save bibliographical references (" + biblioRefsCount +")");
+				referenceService.saveReferenceAll(referenceStore.objects());
 				j++;
 			}//end resultSetList	
 
@@ -526,6 +532,9 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	
 	private static TimePeriod getDatePublished(String refYear){
 		//FIXME until now only quick and dirty and wrong
+		if (refYear == null){
+			return null;
+		}
 		String[] years = refYear.split("-");
 		Calendar calStart = null;
 		Calendar calEnd = null;
