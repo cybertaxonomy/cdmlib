@@ -14,9 +14,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
@@ -62,9 +59,9 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 			return null;
 		}
 		
-		String titelAbbrev = CdmUtils.Nz(article.getInJournal().getTitle());
-		String series = CdmUtils.Nz(article.getSeries());
-		String volume = CdmUtils.Nz(article.getVolume());
+		String titelAbbrev = CdmUtils.Nz(article.getInJournal().getTitle()).trim();
+		String series = CdmUtils.Nz(article.getSeries()).trim();
+		String volume = CdmUtils.Nz(article.getVolume()).trim();
 		
 		boolean lastCharIsDouble;
 		Integer len;
@@ -118,12 +115,12 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 		}
 		nomRefCache += volumePart;
 		
-		//delete .
+		//delete "."
 		while (nomRefCache.endsWith(".")){
 			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
 		}
 		
-		return nomRefCache;
+		return nomRefCache.trim();
 	}
 	
 	private boolean isNumeric(String string){

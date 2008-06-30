@@ -13,11 +13,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(GenericDefaultCacheStrategy.class);
@@ -61,11 +57,11 @@ public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefau
 			return null;
 		}
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(genericReference.getTitle());
+		String titelAbbrev = CdmUtils.Nz(genericReference.getTitle()).trim();
 		//String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
-		String series = CdmUtils.Nz(genericReference.getSeries()); //nomenclaturalReference.getSeries();
-		String volume = CdmUtils.Nz(genericReference.getVolume());
+		String series = CdmUtils.Nz(genericReference.getSeries()).trim(); //nomenclaturalReference.getSeries();
+		String volume = CdmUtils.Nz(genericReference.getVolume()).trim();
 
 		String nomRefCache = "";
 		boolean lastCharIsDouble;
@@ -209,7 +205,7 @@ public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefau
 //
 //		Return @NomRefCache
 
-		return nomRefCache;
+		return nomRefCache.trim();
 	}
 	
 	private boolean isNumeric(String string){

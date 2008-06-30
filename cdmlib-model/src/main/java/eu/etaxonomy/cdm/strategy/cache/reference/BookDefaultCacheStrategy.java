@@ -57,11 +57,11 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 			return null;
 		}
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(nomenclaturalReference.getTitle());
-		String edition = CdmUtils.Nz(nomenclaturalReference.getEdition());
+		String titelAbbrev = CdmUtils.Nz(nomenclaturalReference.getTitle()).trim();
+		String edition = CdmUtils.Nz(nomenclaturalReference.getEdition()).trim();
 		//TODO
 		String series = ""; //nomenclaturalReference.getSeries();
-		String volume = CdmUtils.Nz(nomenclaturalReference.getVolume());
+		String volume = CdmUtils.Nz(nomenclaturalReference.getVolume()).trim();
 		String refYear = "";  //TODO nomenclaturalReference.getYear();
 
 
@@ -206,7 +206,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 //
 //		Return @NomRefCache
 
-		return nomRefCache;
+		return nomRefCache.trim();
 	}
 	
 	private boolean isNumeric(String string){
