@@ -30,6 +30,7 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	public int compare(TaxonBase taxonBase1, TaxonBase taxonBase2) {
+		int result;
 		String date1 = getDate(taxonBase1);;
 		String date2 = getDate(taxonBase2);
 		if (date1 == null && date2 == null){
@@ -39,7 +40,8 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 		}else if (date2 == null){
 			return -1;
 		}
-		return date1.compareTo(date2);
+		result = date1.compareTo(date2);
+		return result;
 	}
 	
 	

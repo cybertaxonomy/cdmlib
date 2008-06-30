@@ -613,8 +613,25 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 */
 	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
-		List<HomotypicalGroup> result = getHomotypicSynonymyGroups();
-		result.remove(this.getHomotypicGroup());
+		List<HomotypicalGroup> list = getHomotypicSynonymyGroups();
+		list.remove(this.getHomotypicGroup());
+		//sort
+		Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
+		for (HomotypicalGroup homoGroup: list){
+			List<Synonym> synonymList = homoGroup.getSynonymsInGroup(getSec());
+			if (synonymList.size() > 0){
+				map.put(synonymList.get(0), homoGroup);
+			}
+		}
+		List<Synonym> keyList = new ArrayList<Synonym>();
+		keyList.addAll(map.keySet());
+		Collections.sort(keyList, new TaxonComparator());
+		
+		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
+		for(Synonym synonym: keyList){
+			result.add(map.get(synonym));
+		}
+		//sort end
 		return result;
 	}	
 
