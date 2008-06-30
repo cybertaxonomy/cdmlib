@@ -57,7 +57,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 	protected Map<UUID, T> saveCdmObjectAll(Collection<T> cdmObjCollection){
 		int types = cdmObjCollection.getClass().getTypeParameters().length;
 		if (types > 0){
-			logger.info("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
+			if (logger.isDebugEnabled()){logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);}
 		}
 		
 		Map<UUID, T> resultMap = new HashMap<UUID, T>();
