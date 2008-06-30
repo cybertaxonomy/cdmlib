@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -119,7 +120,14 @@ public class TaxonComparatorTest {
 		Collections.sort(list, new TaxonComparator());
 		
 		for (TaxonBase taxon : list){
-			System.out.println(taxon.getId());
+			String year = "";
+			TaxonNameBase tnb = taxon.getName();
+			if (tnb instanceof ZoologicalName){
+				year = String.valueOf(((ZoologicalName)tnb).getPublicationYear());
+			}else{
+				year = tnb.getNomenclaturalReference().getYear();
+			}
+			System.out.println(taxon.getId() + ": " + year);
 		}
 	}
 }
