@@ -160,7 +160,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 			}
 		}
 		//TODO test
-		//Collections.sort(result, new TaxonComparator());
+		Collections.sort(result, new TaxonComparator());
 		return result;
 	}
 }
