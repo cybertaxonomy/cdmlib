@@ -33,15 +33,15 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @author a.mueller
  *
  */
-public class CichorieaeActivator {
-	private static final Logger logger = Logger.getLogger(CichorieaeActivator.class);
+public class DipteraActivator {
+	private static final Logger logger = Logger.getLogger(DipteraActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae();
-	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
-	static final int sourceSecId = 7800000;
+	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
+	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
+	static final int sourceSecId = 1000000;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -100,7 +100,6 @@ public class CichorieaeActivator {
 		
 		bmImportConfigurator.setSecUuid(secUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
-		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
 		bmImportConfigurator.setDoAuthors(doAuthors);
