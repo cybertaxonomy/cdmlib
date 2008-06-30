@@ -554,12 +554,12 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	private static Calendar getCalendar(String strYear){
 		//FIXME until now only quick and dirty and wrong
 		Calendar cal = Calendar.getInstance();
-		cal.set(9999, 11, 30);
+		cal.set(9999, Calendar.DECEMBER, 30, 0, 0, 0);
 		if (CdmUtils.isNumeric(strYear)){
 			try {
 				Integer year = Integer.valueOf(strYear.trim());
 				if (year > 1750 && year < 2030){
-					cal.set(year, 1, 1);
+					cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
