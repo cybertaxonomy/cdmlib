@@ -260,7 +260,7 @@ public class ZoologicalName extends NonViralName {
 	/**
 	 * Returns the publication year (as an integer) for this zoological taxon
 	 * name. If this attribute is null and a nomenclatural reference exists
-	 * the year might be computed from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
+	 * the year could be computed from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
 	 * 
 	 * @return  the integer representing the publication year for this zoological taxon name
 	 * @see  	#getOriginalPublicationYear()
@@ -279,7 +279,7 @@ public class ZoologicalName extends NonViralName {
 	 * Returns the publication year (as an integer) of the original validly
 	 * published species epithet for this zoological taxon name. This only
 	 * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
-	 * If the originalPublicationYear attribute is null the year might be taken
+	 * If the originalPublicationYear attribute is null the year could be taken
 	 * from the publication year of the corresponding original name (basionym)
 	 * or from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference} of the basionym
 	 * if it exists.
