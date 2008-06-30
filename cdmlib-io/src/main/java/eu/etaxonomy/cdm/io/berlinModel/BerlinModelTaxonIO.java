@@ -45,12 +45,54 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	
 	public static boolean checkRelations(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
-		logger.warn("Checking for TaxonRelations not yet implemented");
+		logger.warn("Checking for TaxonRelations not yet fully implemented");
+		result &= checkTaxonStatus(bmiConfig);
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 		
 		return result;
 	}
+	
+	private static boolean checkTaxonStatus(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryPartOfJournal = " SELECT RelPTaxon.RelQualifierFk, RelPTaxon.relPTaxonId, PTaxon.PTNameFk, PTaxon.PTRefFk, PTaxon_1.PTNameFk AS Expr1, PTaxon.RIdentifier, PTaxon_1.RIdentifier AS Expr3, Name.FullNameCache "  +
+				" FROM RelPTaxon " + 
+					" INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " + 
+					" INNER JOIN PTaxon AS PTaxon_1 ON RelPTaxon.PTNameFk2 = PTaxon_1.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon_1.PTRefFk  " + 
+					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
+				" WHERE (dbo.PTaxon.StatusFk = 1) AND ((RelPTaxon.RelQualifierFk = 7) OR (RelPTaxon.RelQualifierFk = 6) OR (RelPTaxon.RelQualifierFk = 2)) ";
+			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			boolean firstRow = true;
+			int i = 0;
+			while (rs.next()){
+				i++;
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are taxa that have a 'is synonym of' - relationship but having taxon status 'accepted'!");
+					System.out.println("========================================================");
+				}
+				int rIdentifier = rs.getInt("RIdentifier");
+				int nameFk = rs.getInt("PTNameFk");
+				int refFk = rs.getInt("PTRefFk");
+				int relPTaxonId = rs.getInt("relPTaxonId");
+				String taxonName = rs.getString("FullNameCache");
+				
+				System.out.println("RIdentifier:" + rIdentifier + "\n  name: " + nameFk + 
+						"\n  taxonName: " + taxonName + "\n  refId: " + refFk + "\n  RelPTaxonId: " + relPTaxonId );
+				result = firstRow = false;
+			}
+			if (i > 0){
+				System.out.println(" ");
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
 			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<ReferenceBase> nomRefMap){
