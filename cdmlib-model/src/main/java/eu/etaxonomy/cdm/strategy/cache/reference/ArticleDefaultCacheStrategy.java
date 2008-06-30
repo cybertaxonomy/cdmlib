@@ -63,7 +63,7 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 		}
 		
 		String titelAbbrev = CdmUtils.Nz(article.getInJournal().getTitle());
-		String series = article.getSeries();
+		String series = CdmUtils.Nz(article.getSeries());
 		String volume = CdmUtils.Nz(article.getVolume());
 		
 		boolean lastCharIsDouble;

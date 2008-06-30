@@ -64,7 +64,7 @@ public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefau
 		String titelAbbrev = CdmUtils.Nz(genericReference.getTitle());
 		//String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
-		String series = genericReference.getSeries(); //nomenclaturalReference.getSeries();
+		String series = CdmUtils.Nz(genericReference.getSeries()); //nomenclaturalReference.getSeries();
 		String volume = CdmUtils.Nz(genericReference.getVolume());
 
 		String nomRefCache = "";
