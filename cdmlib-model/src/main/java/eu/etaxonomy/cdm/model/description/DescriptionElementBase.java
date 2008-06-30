@@ -83,6 +83,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	}
 	
 	@ManyToOne
+	@Cascade(CascadeType.SAVE_UPDATE)
 	public Feature getFeature(){
 		return this.type;
 	}
