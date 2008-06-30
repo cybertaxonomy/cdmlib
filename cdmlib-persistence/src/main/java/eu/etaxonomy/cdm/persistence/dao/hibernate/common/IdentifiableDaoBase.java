@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -67,6 +68,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 				crit.add(criterion);
 			}
 		}
+		crit.addOrder(Order.asc("titleCache"));
 		int firstItem = (page - 1) * pagesize;
 		crit.setFirstResult(firstItem);
 		List<T> results = crit.list();
