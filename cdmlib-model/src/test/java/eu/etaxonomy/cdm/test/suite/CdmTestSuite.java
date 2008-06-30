@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.common.*;
 import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.taxon.*;
-import eu.etaxonomy.cdm.strategy.cache.BotanicNameCacheStrategyTest;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameCacheStrategyTest;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 
 
