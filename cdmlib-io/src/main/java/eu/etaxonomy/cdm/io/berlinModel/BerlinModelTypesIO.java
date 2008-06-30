@@ -66,7 +66,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase implements IIO<BerlinM
 			//get data from database
 			String strQuery = 
 					" SELECT TypeDesignation.*, TypeStatus.Status " + 
-					" FROM TypeDesignation INNER JOIN" +
+					" FROM TypeDesignation LEFT OUTER JOIN " +
                       	" TypeStatus ON TypeDesignation.TypeStatusFk = TypeStatus.TypeStatusId " + 
                     " WHERE (1=1) ";
 			ResultSet rs = source.getResultSet(strQuery) ;

@@ -102,6 +102,7 @@ public final class BerlinModelTransformer {
 	//TypeDesignation
 	public static TypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
 		switch (typeStatusId){
+			case 0: return null;
 			case 1: return TypeDesignationStatus.HOLOTYPE();
 			case 2: return TypeDesignationStatus.LECTOTYPE();
 			case 3: return TypeDesignationStatus.NEOTYPE();
@@ -131,6 +132,7 @@ public final class BerlinModelTransformer {
 	 */
 	public static Rank rankId2Rank (int rankId) throws UnknownCdmTypeException{
 		switch (rankId){
+			case 0: return null;
 			case 1: return Rank.KINGDOM();
 			case 3: return Rank.SUBKINGDOM();
 			case 5: return Rank.PHYLUM();

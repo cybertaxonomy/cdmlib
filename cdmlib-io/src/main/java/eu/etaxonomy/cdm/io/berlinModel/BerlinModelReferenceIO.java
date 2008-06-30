@@ -482,16 +482,18 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						success = false;
 						return success;
 					}
-					//change conceptRef uuid
-					ReferenceBase sec = referenceStore.get(bmiConfig.getSourceSecId());
-					if (sec == null){
-						sec = nomRefStore.get(bmiConfig.getSourceSecId());	
-					}
-					if (sec != null){
-						sec.setUuid(bmiConfig.getSecUuid());
-						logger.info("SecUuid changed to: " + bmiConfig.getSecUuid());
-					}
 				} // end resultSet
+				
+				//change conceptRef uuid
+				ReferenceBase sec = referenceStore.get(bmiConfig.getSourceSecId());
+				if (sec == null){
+					sec = nomRefStore.get(bmiConfig.getSourceSecId());	
+				}
+				if (sec != null){
+					sec.setUuid(bmiConfig.getSecUuid());
+					logger.info("SecUuid changed to: " + bmiConfig.getSecUuid());
+				}
+				
 				//save and store in map
 				logger.info("Save nomenclatural references (" + nomRefCount + ")");
 				referenceService.saveReferenceAll(nomRefStore.objects());
