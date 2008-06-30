@@ -166,5 +166,17 @@ public class CdmUtils {
 		return false;
 	}
 	
+	static public boolean isNumeric(String string){
+		if (string == null){
+			return false;
+		}
+		try {
+			Double.valueOf(string);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		
+	}
 	
 }
