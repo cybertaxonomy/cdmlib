@@ -13,6 +13,14 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -32,19 +40,37 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ReferenceBase", propOrder = {
+	"uri",
+	"isNomenclaturallyRelevant",
+    "authorTeam",
+    "cacheStrategy"
+})
+@XmlRootElement(name = "RelationshipBase")
 @Entity
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase extends IdentifyableMediaEntity implements IParsable{
+	
 	static Logger logger = Logger.getLogger(ReferenceBase.class);
+	
 	//URIs like DOIs, LSIDs or Handles for this reference
+	@XmlElement(name = "URI")
 	private String uri;
+	
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
+	@XmlElement(name = "IsNomenclaturallyRelevant")
 	private boolean isNomenclaturallyRelevant;
+	
+	@XmlElement(name = "AuthorTeam")
 	private TeamOrPersonBase authorTeam;
+
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
+	@XmlAttribute
 	private boolean hasProblem = false;
 	
+	@XmlAnyElement
 	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
 	@ManyToOne
