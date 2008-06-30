@@ -53,7 +53,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	}
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
+			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<ReferenceBase> nomRefMap){
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
@@ -94,6 +94,9 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 				ReferenceBase reference = null;
 				if (referenceMap != null){
 					reference = referenceMap.get(refFk);
+					if (reference == null){
+						reference = nomRefMap.get(refFk);
+					}
 				}
 				
 				if (taxonName == null ){

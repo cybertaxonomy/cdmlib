@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.WebPage;
 
 /**
  * @author a.mueller
@@ -257,6 +259,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					String refCache = rs.getString("refCache");
 					String title = rs.getString("title");
 					String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+					int nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
+					TeamOrPersonBase nomAuthor = authorMap.get(nomAuthorTeamFk);
+					String refAuthorString = rs.getString("refAuthorString");
+					String refYear = rs.getString("refYear");
 					
 					//for debuggin , may be deleted
 					if (refId == 123456){
@@ -266,23 +272,36 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					String pages = rs.getString("pageString");
 					String issn = rs.getString("issn");
 					String isbn = rs.getString("isbn");
-					String refYear = rs.getString("refYear");
 					String edition = rs.getString("Edition");
 					String volume = rs.getString("Volume");
 					String series = rs.getString("Series");
-					
-					//TODO
-					Calendar cal = Calendar.getInstance();
-					TimePeriod datePublished = TimePeriod.NewInstance(cal);
+					String publicationTown = rs.getString("PublicationTown");
+					String publisher = rs.getString("publisher");
+					String url = rs.getString("url");
+
 					
 					StrictReferenceBase referenceBase;
 					try {
 						logger.debug("RefCategoryFk: " + categoryFk);
 						
 						if (categoryFk == REF_JOURNAL){
-							referenceBase = Journal.NewInstance();
+							Journal journal = Journal.NewInstance();
+							referenceBase = journal;
+							journal.setIssn(issn);
+							journal.setPlacePublished(publicationTown);
+							journal.setPublisher(publisher);
 						}else if(categoryFk == REF_BOOK){
-							referenceBase = Book.NewInstance();
+							Book book = Book.NewInstance();
+							referenceBase = book;
+							book.setEdition(edition);
+							book.setIsbn(isbn);
+							book.setPages(pages);
+							book.setPlacePublished(publicationTown);
+							book.setPublisher(publisher);
+							book.setVolume(volume);
+							book.setEditor(null);
+							book.setInSeries(null);
+							
 						}else if(categoryFk == REF_ARTICLE){
 							Article article = Article.NewInstance();
 							referenceBase = article;
@@ -301,9 +320,9 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 											" InReference relation could not be set");;
 										}else if (Journal.class.isAssignableFrom(inJournal.getClass())){
 											article.setInJournal((Journal)inJournal);
-											article.setDatePublished(datePublished);
-											article.setVolume(volume);
+											article.setPages(pages);
 											article.setSeries(series);
+											article.setVolume(volume);
 											//logger.info("InJournal success " + inRefFkInt);
 										}else{
 											logger.warn("InJournal is not of type journal but of type " + inJournal.getClass().getSimpleName() +
@@ -322,8 +341,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase = new Database();
 						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
 							if (inRefCategoryFk == REF_BOOK){
+								//BookSection
 								BookSection bookSection = BookSection.NewInstance();
 								referenceBase = bookSection;
+								bookSection.setPages(pages);
 								if (inRefFk != null){
 									int inRefFkInt = (Integer)inRefFk;
 									if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
@@ -351,6 +372,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 									}
 								}
 							}else if (inRefCategoryFk == REF_ARTICLE){
+								//Article
 								//TODO 
 								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
 										" This type is not implemented yet. Generic reference created instead") ;
@@ -368,33 +390,52 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							}
 						}else if(categoryFk == REF_INFORMAL){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
-							referenceBase = Generic.NewInstance();
+							Generic informal = Generic.NewInstance();
+							referenceBase = informal;
+							//informal.setEditor(edition);
+							informal.setPages(pages);
+							informal.setPlacePublished(publicationTown);
+							informal.setPublisher(publisher);
+							informal.setSeries(series);
+							informal.setVolume(volume);
 						}else if(categoryFk == REF_WEBSITE){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
-							referenceBase = Generic.NewInstance();
+							WebPage webPage = WebPage.NewInstance();
+							referenceBase = webPage;
+							webPage.setPlacePublished(publicationTown);
+							webPage.setPublisher(publisher);
 						}else if(categoryFk == REF_UNKNOWN){
 							if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
 							Generic generic = Generic.NewInstance();
 							referenceBase = generic;
-							generic.setVolume(volume);
+							generic.setPages(pages);
+							generic.setPlacePublished(publicationTown);
+							generic.setPublisher(publisher);
 							generic.setSeries(series);
-							generic.setDatePublished(datePublished);
+							generic.setVolume(volume);
 							//TODO
 						}else{
 							logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
 							referenceBase = Generic.NewInstance();
 						}
 						
-
+						referenceBase.setUri(url);
 						//created, notes
 						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId );						
 						//refId
 						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);							
 						
+						
+						//TODO
+						referenceBase.setDatePublished(getDatePublished(refYear)); 
+						
 						boolean hasNomRef = false;
 						//is Nomenclatural Reference
-						if ( (CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
+						if ( (! CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (! CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
 							referenceBase.setTitle(nomTitleAbbrev);
+							TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, true);
+							referenceBase.setAuthorTeam(author);
+							referenceBase.setNomenclaturallyRelevant(true);
 							if (isPreliminary){
 								referenceBase.setTitleCache(nomRefCache);
 							}
@@ -410,11 +451,14 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							hasNomRef = true;
 						}
 						//is bibliographical Reference
-						if ((CdmUtils.Nz(refCache).equals("") && isPreliminary) || (CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
+						if ((! CdmUtils.Nz(refCache).equals("") && isPreliminary) || (! CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
 							if (hasNomRef){
 								referenceBase = (StrictReferenceBase)referenceBase.clone();
 							}
 							referenceBase.setTitle(title);
+							TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, false);
+							referenceBase.setAuthorTeam(author);
+							referenceBase.setNomenclaturallyRelevant(false);
 							if (isPreliminary){
 								referenceBase.setTitleCache(refCache);
 							}
@@ -449,5 +493,79 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			return false;
 		}
 	}
+	
+	private static TeamOrPersonBase getAuthorTeam(String authorString, TeamOrPersonBase nomAuthor, boolean preferNomeclaturalAuthor){
+		TeamOrPersonBase result;
+		if (preferNomeclaturalAuthor){
+			if (nomAuthor != null){
+				result = nomAuthor;
+			}else{
+				if (CdmUtils.Nz(authorString).equals("")){
+					result = null;
+				}else{
+					TeamOrPersonBase team = Team.NewInstance();
+					//TODO which one to use??
+					team.setNomenclaturalTitle(authorString);
+					team.setTitleCache(authorString);
+					result = team;
+				}
+			}
+		}else{ //prefer bibliographic
+			if (! CdmUtils.Nz(authorString).equals("")){
+				TeamOrPersonBase team = Team.NewInstance();
+				//TODO which one to use??
+				team.setNomenclaturalTitle(authorString);
+				team.setTitleCache(authorString);
+				result = team;
+			}else{
+				result = nomAuthor;
+			}
+		}
+		return result;
+	}
+	
+	private static TimePeriod getDatePublished(String refYear){
+		//FIXME until now only quick and dirty and wrong
+		String[] years = refYear.split("-");
+		Calendar calStart = null;
+		Calendar calEnd = null;
+		
+		if (years.length > 2 || years.length <= 0){
+			logger.warn("XXX");
+		}else {
+			calStart = getCalendar(years[0]);
+			if (years.length >= 2){
+				calEnd = getCalendar(years[1]);
+			}
+		}
+		TimePeriod result = TimePeriod.NewInstance(calStart, calEnd);
+		return result;
+	}
+	
+	private static Calendar getCalendar(String strYear){
+		//FIXME until now only quick and dirty and wrong
+		Calendar cal = Calendar.getInstance();
+		cal.set(9999, 11, 30);
+		if (CdmUtils.isNumeric(strYear)){
+			try {
+				Integer year = Integer.valueOf(strYear.trim());
+				if (year > 1750 && year < 2030){
+					cal.set(year, 1, 1);
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("Not a Integer format in getCalendar()");
+			}
+		}
+		return cal;
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		TimePeriod timePeriod = getDatePublished("1756 - 1783");
+		System.out.println(timePeriod.getYear());
+	}
+	
 	
 }

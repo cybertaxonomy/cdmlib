@@ -221,7 +221,7 @@ public class BerlinModelImport {
 		
 		//make and save Taxa
 		if(bmiConfig.isDoTaxa()){
-			if (! BerlinModelTaxonIO.invoke(bmiConfig, cdmApp, taxonStore, taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonIO.invoke(bmiConfig, cdmApp, taxonStore, taxonNameStore, referenceStore, nomRefStore)){
 				return false;
 			}
 		}else{
