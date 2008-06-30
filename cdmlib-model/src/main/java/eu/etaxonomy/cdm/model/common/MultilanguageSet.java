@@ -22,6 +22,9 @@ import org.apache.log4j.Logger;
  * Special array that takes care that all LanguageString elements have a unique language
  */
 public class MultilanguageSet extends HashMap<Language, LanguageString> {
+	
+	private static final long serialVersionUID = 7876604337076705862L;
+	
 	static Logger logger = Logger.getLogger(MultilanguageSet.class);
 	
 	/**
