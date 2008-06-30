@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -56,6 +58,10 @@ public abstract class ImportConfiguratorBase {
 	
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
+	
+	//uuid of concept reference
+	private UUID  secUuid = UUID.randomUUID();
+	private int sourceSecId = -1;
 	
 	private Object source;
 	protected ReferenceBase sourceReference;
@@ -362,8 +368,33 @@ public abstract class ImportConfiguratorBase {
 	}
 
 
+	/**
+	 * @return the secUuid
+	 */
+	public UUID getSecUuid() {
+		return secUuid;
+	}
 
 
+	/**
+	 * @param secUuid the secUuid to set
+	 */
+	public void setSecUuid(UUID secUuid) {
+		this.secUuid = secUuid;
+	}
 
+	/**
+	 * @return the sourceSecId
+	 */
+	public int getSourceSecId() {
+		return sourceSecId;
+	}
+
+	/**
+	 * @param sourceSecId the sourceSecId to set
+	 */
+	public void setSourceSecId(int sourceSecId) {
+		this.sourceSecId = sourceSecId;
+	}
 	
 }
