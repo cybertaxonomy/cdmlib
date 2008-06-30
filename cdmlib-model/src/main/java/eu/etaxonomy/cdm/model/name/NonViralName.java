@@ -15,7 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -78,24 +80,22 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@XmlElement(name = "InfraSpecificEpithet")
 	private String infraSpecificEpithet;
 	
-	@XmlElement(name = "CombinationAuthorTeam")
+	@XmlAnyElement
     //@XmlIDREF
     //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor combinationAuthorTeam;
 	
-	@XmlElement(name = "ExCombinationAuthorTeam")
+	@XmlAnyElement
     //@XmlIDREF
     //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
-	@XmlElement(name = "BasionymAuthorTeam")
+	@XmlAnyElement
     //@XmlIDREF
     //@XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor basionymAuthorTeam;
 	
-	@XmlElement(name = "ExBasionymAuthorTeam")
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+	@XmlAnyElement
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")
@@ -107,7 +107,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@XmlElement(name = "ProtectedNameCache")
 	protected boolean protectedNameCache;
 
-	@XmlElement(name = "CacheStrategy")
+	@XmlAnyElement
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
