@@ -13,6 +13,7 @@ import java.util.Comparator;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -73,4 +74,5 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 		}
 		return result;
 	}
+	
 }

@@ -21,9 +21,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 
 
@@ -107,13 +104,14 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
 	 */
+	@Column(length=330)
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
 		}
 		// is title dirty, i.e. equal NULL?
 		if (titleCache == null){
-			this.titleCache = generateTitle();
+			this.setTitleCache(generateTitle(),protectedTitleCache) ; //for truncating
 		}
 		return titleCache;
 	}
@@ -122,9 +120,9 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	 */
 	public void setTitleCache(String titleCache){
 		//TODO truncation of title cach
-		if (titleCache != null && titleCache.length() > 254){
+		if (titleCache != null && titleCache.length() > 328){
 			logger.warn("Truncation of title cache: " + this.toString());
-			titleCache = titleCache.substring(0, 252) + "...";
+			titleCache = titleCache.substring(0, 325) + "...";
 		}
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(PROTECTED);
