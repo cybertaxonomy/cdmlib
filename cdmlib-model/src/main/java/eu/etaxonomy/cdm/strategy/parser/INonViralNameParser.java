@@ -49,7 +49,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
 	 * 
-	 * @param fullName the string containing the scientific name with authorship, year, reference etc.,
+	 * @param fullName the string containing the scientific name with authorship but without year, reference etc.
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials. 
 	 */
 	public T parseFullName(String fullName);
@@ -59,7 +59,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
  	 * 
-	 * @param fullName the string containing the scientific name with authorship, year, reference etc.,
+	 * @param fullName the string containing the scientific name with authorship but without year, reference etc.
 	 * @param rank
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
 	 */
@@ -72,20 +72,20 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * No change is done to nameToBeFilled if fullName == null.
  	 * 
-	 * @param fullName The string containing the scientific name with authorship, year, reference etc.,
+	 * @param fullName the string containing the scientific name with authorship but without year, reference etc.
 	 * @param rank
 	 * @param nameToBeFilled The TaxonNameBaseToBeFilled
 	 */
 	public void parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
 	/**
-	 * @param fullReference
+	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
 	 * @return
 	 */
 	public T parseFullReference(String fullReference);
 	
 	/**
-	 * @param fullReference
+	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
 	 * @param nomCode
 	 * @param rank
 	 * @return
@@ -94,7 +94,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 
 	/**
 	 * @param nameToBeFilled
-	 * @param fullReference
+	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
 	 * @param rank
 	 * @param makeEmpty
 	 */
