@@ -160,8 +160,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.HomotypicalGroup homotypical group}.
 	 * The new taxon name will be also added to the set of taxon names
-	 * belonging to this homotypical group. If the homotypical group 
-	 * does not exist a new instance will be created for it.
+	 * belonging to this homotypical group.
 	 * 
 	 * @param  homotypicalGroup  the homotypical group to which this taxon name belongs
 	 * @see    #TaxonNameBase()
@@ -175,6 +174,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.Rank rank} and
 	 * its {@link common.HomotypicalGroup homotypical group}.
+	 * The new taxon name will be also added to the set of taxon names
+	 * belonging to this homotypical group.
 	 * 
 	 * @param  rank  the rank to be assigned to this taxon name
 	 * @param  homotypicalGroup  the homotypical group to which this taxon name belongs

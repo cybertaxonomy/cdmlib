@@ -78,9 +78,11 @@ public class ZoologicalName extends NonViralName {
 	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
+	 * The new zoological taxon name instance will be also added to the set of
+	 * zoological taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this non viral taxon name
-	 * @param	homotypicalGroup  the homotypical group to which this non viral taxon name belongs
+	 * @param	rank  the rank to be assigned to this zoological taxon name
+	 * @param	homotypicalGroup  the homotypical group to which this zoological taxon name belongs
 	 * @see 	#ZoologicalName()
 	 * @see 	#ZoologicalName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy
@@ -97,6 +99,8 @@ public class ZoologicalName extends NonViralName {
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
+	 * The new zoological taxon name instance will be also added to the set of
+	 * zoological taxon names belonging to this homotypical group.
 	 * 
 	 * @param	rank  the rank to be assigned to this zoological taxon name
 	 * @param	genusOrUninomial the string for this zoological taxon name
@@ -137,7 +141,7 @@ public class ZoologicalName extends NonViralName {
 	 * @see 			#ZoologicalName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see 			eu.etaxonomy.cdm.strategy.cache.BookDefaultCacheStrategy
+	 * @see 			eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy
 	 */
 	public static ZoologicalName NewInstance(Rank rank){
 		return new ZoologicalName(rank, null);
@@ -145,12 +149,11 @@ public class ZoologicalName extends NonViralName {
 
 	/** 
 	 * Creates a new zoological taxon name instance
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
-	 * zoological taxon names belonging to this homotypical group. If the homotypical 
-	 * group does not exist a new instance will be created for it.
+	 * zoological taxon names belonging to this homotypical group.
 	 * 
 	 * @param  rank  the rank to be assigned to this zoological taxon name
 	 * @param  homotypicalGroup  the homotypical group to which this zoological taxon name belongs
@@ -169,6 +172,8 @@ public class ZoologicalName extends NonViralName {
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
+	 * The new zoological taxon name instance will be also added to the set of
+	 * zoological taxon names belonging to this homotypical group.
 	 * 
 	 * @param	rank  the rank to be assigned to this zoological taxon name
 	 * @param	genusOrUninomial the string for this zoological taxon name

@@ -51,6 +51,8 @@ public class BacterialName extends NonViralName {
 	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * The new bacterial taxon name instance will be also added to the set of
+	 * bacterial taxon names belonging to this homotypical group.
 	 * 
 	 * @param	rank  the rank to be assigned to this bacterial taxon name
 	 * @param	homotypicalGroup  the homotypical group to which this bacterial taxon name belongs
@@ -83,12 +85,11 @@ public class BacterialName extends NonViralName {
 
 	/** 
 	 * Creates a new bacterial taxon name instance
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new bacterial taxon name instance will be also added to the set of
-	 * bacterial taxon names belonging to this homotypical group. If the homotypical 
-	 * group does not exist a new instance will be created for it.
+	 * bacterial taxon names belonging to this homotypical group.
 	 * 
 	 * @param  rank  the rank to be assigned to this bacterial taxon name
 	 * @param  homotypicalGroup  the homotypical group to which this bacterial taxon name belongs

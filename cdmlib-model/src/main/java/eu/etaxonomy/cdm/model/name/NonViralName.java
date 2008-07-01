@@ -133,6 +133,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * The new non viral taxon name instance will be also added to the set of
+	 * non viral taxon names belonging to this homotypical group.
 	 * 
 	 * @param	rank  the rank to be assigned to this non viral taxon name
 	 * @param	homotypicalGroup  the homotypical group to which this non viral taxon name belongs
@@ -154,6 +156,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * The new non viral taxon name instance will be also added to the set of
+	 * non viral taxon names belonging to this homotypical group.
 	 * 
 	 * @param	rank  the rank to be assigned to this non viral taxon name
 	 * @param	genusOrUninomial the string for this taxon name
@@ -210,12 +214,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	/** 
 	 * Creates a new non viral taxon name instance
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link common.Rank rank},
 	 * its {@link common.HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
-	 * non viral taxon names belonging to this homotypical group. If the homotypical 
-	 * group does not exist a new instance will be created for it.
+	 * non viral taxon names belonging to this homotypical group.
 	 * 
 	 * @param  rank  the rank to be assigned to this non viral taxon name
 	 * @param  homotypicalGroup  the homotypical group to which this non viral taxon name belongs
