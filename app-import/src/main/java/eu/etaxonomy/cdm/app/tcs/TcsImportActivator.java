@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -33,6 +35,9 @@ public class TcsImportActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
+	
+	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
+	static final int sourceSecId = 7800000;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -63,6 +68,10 @@ public class TcsImportActivator {
 		ICdmDataSource destination = cdmDestination;
 		
 		TcsImportConfigurator tcsImportConfigurator = TcsImportConfigurator.NewInstance(source,  destination);
+		
+		tcsImportConfigurator.setSecUuid(secUuid);
+		tcsImportConfigurator.setSourceSecId(sourceSecId);
+		
 		tcsImportConfigurator.setDoAuthors(doAuthors);
 		tcsImportConfigurator.setDoReferences(doReferences);
 		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
