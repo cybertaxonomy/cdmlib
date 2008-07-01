@@ -202,8 +202,9 @@ public class ZoologicalName extends NonViralName {
 	
 	/**
 	 * Returns a zoological taxon name based on parsing a string representing
-	 * all elements (according to the ICZN) of a zoological taxon name in which
-	 * the scientific name is an uninomial.
+	 * all elements (according to the ICZN) of a zoological taxon name (where
+	 * the scientific name is an uninomial) including authorship but without
+	 * nomenclatural reference.
 	 * 
 	 * @param	fullNameString  the string to be parsed 
 	 * @return					the new zoological taxon name
@@ -214,9 +215,9 @@ public class ZoologicalName extends NonViralName {
 	
 	/**
 	 * Returns a zoological taxon name based on parsing a string representing
-	 * all elements (according to the ICZN) of a zoological taxon name. The
-	 * parsing result depends on the given rank of the zoological taxon name
-	 * to be created.
+	 * all elements (according to the ICZN) of a zoological taxon name including
+	 * authorship but without nomenclatural reference. The parsing result
+	 * depends on the given rank of the zoological taxon name to be created.
 	 * 
 	 * @param 	fullNameString  the string to be parsed 
 	 * @param   rank			the rank of the taxon name

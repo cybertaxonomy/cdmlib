@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
- * The taxon name class for plants.
+ * The taxon name class for plants and fungi.
  * 
  * @author m.doering
  * @version 1.0
@@ -219,18 +219,27 @@ public class BotanicalName extends NonViralName {
 	}
 	
 	/**
-	 * Returns a parsed Name
-	 * @param fullName
-	 * @return
+	 * Returns a botanical taxon name based on parsing a string representing
+	 * all elements (according to the ICBN) of a botanical taxon name (where
+	 * the scientific name is an uninomial) including authorship but without
+	 * nomenclatural reference.
+	 * 
+	 * @param	fullNameString  the string to be parsed 
+	 * @return					the new botanical taxon name
 	 */
 	public static BotanicalName PARSED_NAME(String fullNameString){
 		return PARSED_NAME(fullNameString, Rank.GENUS());
 	}
 	
 	/**
-	 * Returns a parsed Name
-	 * @param fullName
-	 * @return
+	 * Returns a botanical taxon name based on parsing a string representing
+	 * all elements (according to the ICBN) of a botanical taxon name including
+	 * authorship but without nomenclatural reference. The parsing result
+	 * depends on the given rank of the botanical taxon name to be created.
+	 * 
+	 * @param 	fullNameString  the string to be parsed 
+	 * @param   rank			the rank of the taxon name
+	 * @return					the new botanical taxon name
 	 */
 	public static BotanicalName PARSED_NAME(String fullNameString, Rank rank){
 		if (nameParser == null){
@@ -240,18 +249,29 @@ public class BotanicalName extends NonViralName {
 	}
 	
 	/**
-	 * Returns a parsed Name
-	 * @param fullName
-	 * @return
+	 * Returns a botanical taxon name based on parsing a string representing
+	 * all elements (according to the ICBN) of a botanical taxon name (where
+	 * the scientific name is an uninomial) including authorship and
+	 * nomenclatural reference. Eventually a new {@link reference.INomenclaturalReference nomenclatural reference}
+	 * instance will also be created.
+	 * 
+	 * @param	fullNameAndReferenceString  the string to be parsed 
+	 * @return								the new botanical taxon name
 	 */
 	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString){
 		return PARSED_REFERENCE(fullNameAndReferenceString, Rank.GENUS());
 	}
 	
 	/**
-	 * Returns a parsed Name
-	 * @param fullName
-	 * @return
+	 * Returns a botanical taxon name based on parsing a string representing
+	 * all elements (according to the ICBN) of a botanical taxon name including
+	 * authorship and nomenclatural reference. The parsing result depends on
+	 * the given rank of the botanical taxon name to be created.
+	 * Eventually a new {@link reference.INomenclaturalReference nomenclatural reference}
+	 * instance will also be created.
+	 * 
+	 * @param	fullNameAndReferenceString  the string to be parsed 
+	 * @return								the new botanical taxon name
 	 */
 	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString, Rank rank){
 		if (nameParser == null){
@@ -261,32 +281,100 @@ public class BotanicalName extends NonViralName {
 	}
 	
 	
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which this botanical taxon name is involved. Any botanical taxon name
+	 * (even itself a hybrid taxon name) can be a parent of another hybrid
+	 * taxon name.
+	 *  
+	 * @see    #getParentRelationships()
+	 * @see    #getChildRelationships()
+	 * @see    #addHybridRelationship(HybridRelationship)
+	 * @see    #addRelationship(RelationshipBase)
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<HybridRelationship> getHybridRelationships() {
 		return hybridRelationships;
 	}
+	/**
+	 * @see  #getHybridRelationships()
+	 */
 	protected void setHybridRelationships(Set<HybridRelationship> relationships) {
 		this.hybridRelationships = relationships;
 	}
+	/**
+	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
+	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
+	 * involved in this hybrid relationship. One of both botanical taxon names
+	 * must be this botanical taxon name else no addition will be carried out.
+	 * The {@link common.RelationshipBase#getRelatedTo() child botanical taxon name}
+	 * must be a hybrid, which means that one of its four hybrid flags must be set.
+	 * 
+	 * @param relationship  the hybrid relationship to be added
+	 * @see    				#isHybridFormula()
+	 * @see    				#isMonomHybrid()
+	 * @see    				#isBinomHybrid()
+	 * @see    				#isTrinomHybrid()
+	 * @see    				#getHybridRelationships()
+	 * @see    				#getParentRelationships()
+	 * @see    				#getChildRelationships()
+	 * @see    				#addRelationship(RelationshipBase)
+	 */
 	public void addHybridRelationship(HybridRelationship relationship) {
 		this.hybridRelationships.add(relationship);
 	}
+	/** 
+	 * Removes one {@link HybridRelationship hybrid relationship} from the set of
+	 * {@link #getHybridRelationships() hybrid relationships} in which this botanical taxon name
+	 * is involved. The hybrid relationship will also be removed from the set
+	 * belonging to the second botanical taxon name involved. 
+	 *
+	 * @param  relationship  the hybrid relationship which should be deleted from the corresponding sets
+	 * @see    				 #getHybridRelationships()
+	 */
 	public void removeHybridRelationship(HybridRelationship relationship) {
 		this.hybridRelationships.remove(relationship);
 	}
 
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which this botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getChildRelationships()
+	 * @see    HybridRelationshipType
+	 */
 	@Transient
 	public Set<HybridRelationship> getParentRelationships() {
 		// FIXME: filter relations
 		return hybridRelationships;
 	}
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which this botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getParentRelationships()
+	 * @see    HybridRelationshipType
+	 */
 	@Transient
 	public Set<HybridRelationship> getChildRelationships() {
 		// FIXME: filter relations
 		return hybridRelationships;
 	}
 
+	/**
+	 * Does the same as the addHybridRelationship method if the given
+	 * {@link common.RelationshipBase relation} is also a {@link HybridRelationship hybrid relationship}.
+	 * Otherwise this method does the same as the overwritten {@link TaxonNameBase#addRelationship(RelationshipBase) addRelationship}
+	 * method from TaxonNameBase.
+	 * 
+	 * @param relation  the relationship to be added to some of this taxon name's relationships sets
+	 * @see    	   		#addHybridRelationship(HybridRelationship)
+	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
+	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
+	 */
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof HybridRelationship){
 			addHybridRelationship((HybridRelationship)relation);
@@ -295,63 +383,119 @@ public class BotanicalName extends NonViralName {
 		}
 	}
 
-	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
-	//hybrid name  may not have either an authorteam nor other name components.
+	/**
+	 * Returns the boolean value of the flag indicating whether the name of this
+	 * botanical taxon name is a hybrid formula (true) or not (false). A hybrid
+	 * named by a hybrid formula (composed with its parent names by placing the
+	 * multiplication sign between them) does not have an own published name
+	 * and therefore has neither an {@link NonViralName#getAuthorshipCache() autorship}
+	 * nor other name components. If this flag is set no other hybrid flags may
+	 * be set.
+	 *  
+	 * @return  the boolean value of the isHybridFormula flag
+	 * @see		#isMonomHybrid()
+	 * @see		#isBinomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
 	public boolean isHybridFormula(){
 		return this.isHybridFormula;
 	}
 
 	/**
-	 * 
-	 * @param isHybridFormula    isHybridFormula
+	 * @see  #isHybridFormula()
 	 */
 	public void setHybridFormula(boolean isHybridFormula){
 		this.isHybridFormula = isHybridFormula;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether this botanical
+	 * taxon name is the name of an intergeneric hybrid (true) or not (false).
+	 * In this case the multiplication sign is placed before the scientific
+	 * name. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isMonomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isBinomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
 	public boolean isMonomHybrid(){
 		return this.isMonomHybrid;
 	}
 
 	/**
-	 * 
-	 * @param isMonomHybrid    isMonomHybrid
+	 * @see  #isMonomHybrid()
+	 * @see	 #isBinomHybrid()
+	 * @see	 #isTrinomHybrid()
 	 */
 	public void setMonomHybrid(boolean isMonomHybrid){
 		this.isMonomHybrid = isMonomHybrid;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether this botanical
+	 * taxon name is the name of an interspecific hybrid (true) or not (false).
+	 * In this case the multiplication sign is placed before the species
+	 * epithet. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isBinomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isMonomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
 	public boolean isBinomHybrid(){
 		return this.isBinomHybrid;
 	}
 
 	/**
-	 * 
-	 * @param isBinomHybrid    isBinomHybrid
+	 * @see	 #isBinomHybrid()
+	 * @see  #isMonomHybrid()
+	 * @see	 #isTrinomHybrid()
 	 */
 	public void setBinomHybrid(boolean isBinomHybrid){
 		this.isBinomHybrid = isBinomHybrid;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether this botanical
+	 * taxon name is the name of an infraspecific hybrid (true) or not (false).
+	 * In this case the term "notho-" (optionally abbreviated "n-") is used as
+	 * a prefix to the term denoting the infraspecific rank of this botanical
+	 * taxon name. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isTrinomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isMonomHybrid()
+	 * @see		#isBinomHybrid()
+	 */
 	public boolean isTrinomHybrid(){
 		return this.isTrinomHybrid;
 	}
 
 	/**
-	 * 
-	 * @param isTrinomHybrid    isTrinomHybrid
+	 * @see	 #isTrinomHybrid()
+	 * @see	 #isBinomHybrid()
+	 * @see  #isMonomHybrid()
 	 */
 	public void setTrinomHybrid(boolean isTrinomHybrid){
 		this.isTrinomHybrid = isTrinomHybrid;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether the specimen
+	 * type of this botanical taxon name for a fungus is asexual (true) or not
+	 * (false). This applies only in case of fungi. The Article 59 of the ICBN
+	 * permits mycologists to give asexually reproducing fungi (anamorphs)
+	 * separate names from their sexual states (teleomorphs).
+	 *  
+	 * @return  the boolean value of the isAnamorphic flag
+	 */
 	public boolean isAnamorphic(){
 		return this.isAnamorphic;
 	}
 
 	/**
-	 * 
-	 * @param isAnamorphic    isAnamorphic
+	 * @see  #isAnamorphic()
 	 */
 	public void setAnamorphic(boolean isAnamorphic){
 		this.isAnamorphic = isAnamorphic;
