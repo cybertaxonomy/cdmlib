@@ -26,7 +26,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
 	 * 
-	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
+	 * @param simpleName the scientific name string without authorship, year, reference etc.
 	 * @param rank
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials  
 	 */
@@ -37,7 +37,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
 	 * 
-	 * @param fullName TaxonNameBase without Author, Year, Reference etc.
+	 * @param simpleName the scientific name string without authorship, year, reference etc.
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
 	 */
 	public T parseSimpleName(String simpleName);
@@ -49,7 +49,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
 	 * 
-	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
+	 * @param fullName the string containing the scientific name with authorship, year, reference etc.,
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials. 
 	 */
 	public T parseFullName(String fullName);
@@ -59,7 +59,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * Returns null if fullName == null.
  	 * 
-	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
+	 * @param fullName the string containing the scientific name with authorship, year, reference etc.,
 	 * @param rank
 	 * @return TaxonNameBase name, with name.rank = rank for all Uninomials and name.rank = Rank.GENUS for rank = null  
 	 */
@@ -72,7 +72,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * If the String is not parseable the "hasProblem" bit is set to true.
  	 * No change is done to nameToBeFilled if fullName == null.
  	 * 
-	 * @param fullName TaxonNameBase with Author, Year, Reference etc.,
+	 * @param fullName The string containing the scientific name with authorship, year, reference etc.,
 	 * @param rank
 	 * @param nameToBeFilled The TaxonNameBaseToBeFilled
 	 */
