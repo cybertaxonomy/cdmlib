@@ -11,27 +11,15 @@ package eu.etaxonomy.cdm.io.tcs;
 
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NONE;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelAuthorIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelFactsIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelNameFactsIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelOccurrenceIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelReferenceIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTaxonIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTaxonNameIO;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTypesIO;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;

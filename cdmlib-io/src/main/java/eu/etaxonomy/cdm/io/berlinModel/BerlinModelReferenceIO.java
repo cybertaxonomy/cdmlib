@@ -439,7 +439,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase.setTitle(nomTitleAbbrev);
 							TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, true);
 							referenceBase.setAuthorTeam(author);
-							referenceBase.setNomenclaturallyRelevant(true);
+							//referenceBase.setNomenclaturallyRelevant(true);
 							if (isPreliminary){
 								referenceBase.setTitleCache(nomRefCache);
 							}

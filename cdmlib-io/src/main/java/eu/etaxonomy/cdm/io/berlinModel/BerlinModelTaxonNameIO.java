@@ -182,6 +182,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
 								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
 							}else{
+								nomenclaturalReference.setNomenclaturallyRelevant(true);
 								taxonNameBase.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
 							}
 						}

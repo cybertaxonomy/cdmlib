@@ -100,7 +100,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 	}
 	
 	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
+			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<ReferenceBase> nomRefMap){
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
@@ -122,9 +122,10 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 			//get data from database
 			String strQuery = 
 					" SELECT Fact.*, PTaxon.RIdentifier as taxonId " + 
-					" FROM Fact INNER JOIN " +
-                      	" dbo.PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk "+
-                    " WHERE (1=1)";
+					" FROM Fact " +
+                      	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
+                      	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
+                      	" WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
@@ -136,9 +137,12 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				int factId = rs.getInt("factId");
 				int taxonId = rs.getInt("taxonId");
 				int factRefFk = rs.getInt("factRefFk");
-				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
+				String details = rs.getString("Details");
+//				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
+//				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
 				int categoryFk = rs.getInt("factCategoryFk");
 				String fact = rs.getString("Fact");
+				String notes = rs.getString("notes");
 				
 				TaxonBase taxonBase = taxonMap.get(taxonId);
 				Feature feature = featureMap.get(categoryFk); 
@@ -159,10 +163,29 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 					TextData textData = TextData.NewInstance();
 					//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
+					
+					//for diptera database
+					if (categoryFk == 99 && notes != null && notes.contains("<OriginalName>")){
+						notes = notes.replaceAll("<OriginalName>", "");
+						notes = notes.replaceAll("<\\OriginalName>", "");
+						fact = notes + ": " +  fact ;
+					}
 					textData.putText(fact, Language.DEFAULT());
 					textData.setType(feature);
+					ReferenceBase citation = referenceMap.get(factRefFk);
+					if (citation == null){
+						citation = nomRefMap.get(factRefFk);
+					}
+					if (citation == null){
+						logger.warn("Citation not found");
+					}
+
 					
+					textData.setCitation(citation);
+					textData.setCitationMicroReference(details);
 					taxonDescription.addElement(textData);
+					
+					
 					
 //					//FIXME delete, just for testing
 //					//commonNames

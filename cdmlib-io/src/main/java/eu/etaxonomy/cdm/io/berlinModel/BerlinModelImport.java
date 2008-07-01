@@ -240,7 +240,7 @@ public class BerlinModelImport {
 		
 		//make and save Facts
 		if(bmiConfig.isDoFacts()){
-			if (! BerlinModelFactsIO.invoke(bmiConfig, cdmApp, taxonStore, referenceStore)){
+			if (! BerlinModelFactsIO.invoke(bmiConfig, cdmApp, taxonStore, referenceStore, nomRefStore)){
 				return false;
 			}
 		}else{
