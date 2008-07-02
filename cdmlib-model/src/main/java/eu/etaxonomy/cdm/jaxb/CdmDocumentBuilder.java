@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.model.DataSet;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 
 /*
 Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet) 
@@ -29,8 +30,10 @@ which allows to package the schemas into a jar file.
 public class CdmDocumentBuilder {
 	private static Log log = LogFactory.getLog(CdmDocumentBuilder.class);
 	
+	private JAXBContext jaxbContext;
 	private Marshaller marshaller;
 	
+	public static String CDM_NAMESPACE = "eu.etaxonomy.cdm.model";
 	public static String[] CDM_SCHEMA_FILES = { "/schema/cdm/common.xsd",
 		                                        "/schema/cdm/name.xsd",
 		                                        "/schema/cdm/cdm.xsd" };
@@ -46,9 +49,12 @@ public class CdmDocumentBuilder {
 //		}
 //		Schema cdmSchema = schemaFactory.newSchema(sources);
 					
-		JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class});
+		jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class, BookDefaultCacheStrategy.class});
+
 		marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		// validate with explicit schema
 		//marshaller.setSchema(cdmSchema);
 	}
 

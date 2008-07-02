@@ -73,8 +73,8 @@ import javax.xml.bind.annotation.XmlType;
     "specimenTypeDesignations",
     "relationsFromThisName",
     "relationsToThisName",
-    "status",
-    "taxonBases",
+    "status"
+//    "taxonBases",
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -101,6 +101,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
     @XmlElement(name = "HomotypicalGroup")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 
     @XmlElementWrapper(name = "RelationsFromThisName")
@@ -113,13 +115,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     @XmlIDREF
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
-    @XmlElementWrapper(name = "Stati")
+    @XmlElementWrapper(name = "Statuses")
     @XmlElement(name = "Status")
     @XmlIDREF
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
-    @XmlElementWrapper(name = "TaxonBases")
-    @XmlElement(name = "TaxonBase")
+    @XmlTransient
+    //@XmlElementWrapper(name = "TaxonBases")
+    //@XmlElement(name = "TaxonBase")
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
 
     @XmlElement(name = "Rank")

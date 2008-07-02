@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -56,8 +57,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
     "exBasionymAuthorTeam",
     "authorshipCache",
     "protectedAuthorshipCache",
-    "protectedNameCache",
-    "cacheStrategy"
+    "protectedNameCache"
+//    "cacheStrategy"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
@@ -107,7 +108,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@XmlElement(name = "ProtectedNameCache")
 	protected boolean protectedNameCache;
 
-	@XmlAnyElement
+    @XmlTransient
+	//@XmlAnyElement
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	

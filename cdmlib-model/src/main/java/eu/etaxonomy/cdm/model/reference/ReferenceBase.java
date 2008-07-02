@@ -44,8 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @XmlType(name = "ReferenceBase", propOrder = {
 	"uri",
 	"isNomenclaturallyRelevant",
-    "authorTeam",
-    "cacheStrategy"
+    "authorTeam"
 })
 @XmlRootElement(name = "RelationshipBase")
 @Entity
@@ -70,7 +69,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	@XmlAttribute
 	private boolean hasProblem = false;
 	
-	@XmlAnyElement
+	@XmlTransient
 	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
 	@ManyToOne

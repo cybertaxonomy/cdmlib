@@ -86,14 +86,14 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	private boolean isDoubtful;
 	
     @XmlElement(name = "Name", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private TaxonNameBase name;
 	
 	// The concept reference
     @XmlElement(name = "Sec")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private ReferenceBase sec;
 
 	@Override

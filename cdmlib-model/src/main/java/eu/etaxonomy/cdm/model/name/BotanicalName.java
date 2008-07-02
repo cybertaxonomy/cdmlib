@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @created 08-Nov-2007 13:06:15
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "BotanicalName", propOrder = {
     "isHybridFormula",
     "isMonomHybrid",
     "isBinomHybrid",

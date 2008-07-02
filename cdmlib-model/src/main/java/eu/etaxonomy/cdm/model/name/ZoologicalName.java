@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  * @see NonViralName
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "ZoologicalName", propOrder = {
     "breed",
     "publicationYear",
     "originalPublicationYear"

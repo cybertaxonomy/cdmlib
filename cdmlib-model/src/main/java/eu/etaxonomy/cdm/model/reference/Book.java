@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -22,12 +26,23 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:13
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Book", propOrder = {
+    "edition",
+    "isbn"
+})
 @Entity
 public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
+	
 	private static final Logger logger = Logger.getLogger(Book.class);
+	
+    @XmlElement(name = "Edition")
 	private String edition;
+
+    @XmlElement(name = "ISBN")
 	private String isbn;
 	
+    @XmlElement(name = "NomRefBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 

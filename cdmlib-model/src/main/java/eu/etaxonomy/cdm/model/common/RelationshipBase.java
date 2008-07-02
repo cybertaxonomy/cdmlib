@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipBase", propOrder = {
-	"relatedFrom",
-	"relatedTo",
-    "type"
+//	"relatedFrom",
+//	"relatedTo",
+//  "type"
 })
 @XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
@@ -41,13 +41,16 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
 
-	@XmlAnyElement
+	@XmlTransient
+	//@XmlAnyElement
 	private FROM relatedFrom;
 
-	@XmlAnyElement
+	@XmlTransient
+	//@XmlAnyElement
 	private TO relatedTo;
 
-	@XmlElement(name = "Type")
+	@XmlTransient
+	//@XmlElement(name = "SynonymRelationshipType")
 	private TYPE type;
 
 	protected RelationshipBase(){

@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "Taxon", propOrder = {
     "taxonomicParentCache",
     "taxonomicChildrenCount",
     "synonymRelations",
@@ -64,10 +64,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	// all related synonyms
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
-	// FIXME: Remove @XmlIDREF.
-	// FIXME: "unable to marshal type "Synonym" as an element because it is missing an @XmlRootElement annotation"
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// all taxa relations with rel.fromTaxon==this
@@ -81,7 +77,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	// all taxa relations with rel.toTaxon==this
 	@XmlElementWrapper(name = "RelationsToThisTaxon")
 	@XmlElement(name = "ToThisTaxonRelationship")
-	// FIXME: Remove @XmlIDREF. Fix stck overflow.
+	// FIXME: Remove @XmlIDREF. Fix stack overflow.
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
