@@ -16,6 +16,8 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.MediaMetaData;
+import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -105,27 +107,29 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							
 							
 							Media media = Media.NewInstance();
+							ImageMetaData imageMetaData = new ImageMetaData();
 							String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 							String strFilePath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
 							//tiff
 							String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
 							String fileTif = strFilePath + "tif" + sep + nameFact + "." + suffixTif;;
 							//if (CdmUtils.urlExists(urlTif, true)){
-							if (new File(fileTif).exists()){
-								ImageFile tifImage = ImageFile.NewInstance(urlTif, size);
+							if (imageMetaData.readFrom(new File(strFilePath))){
+								ImageFile tifImage = ImageFile.NewInstance(urlTif, size, imageMetaData);
 								MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
 								tifRepresentation.addRepresentationPart(tifImage);
 								media.addRepresentation(tifRepresentation);
 							}
 							//jpeg
 							boolean fileExists = true;
-							int jpgCount = 1;
+							int jpgCount = 0;
 							while (fileExists){
-								String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
-								String fileJpeg = strFilePath + "jpeg" + sep + nameFact + "_p" + jpgCount++ + "." + suffixJpg;
-								if (new File(fileJpeg).exists()){
+								jpgCount++;
+								String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
+								String fileJpeg = strFilePath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
+								if (imageMetaData.readFrom(new File(fileJpeg))){
 								//if (CdmUtils.urlExists(urlJpeg, true)){
-									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size);
+									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
 									MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
 									jpgRepresentation.addRepresentationPart(jpgImage);
 									media.addRepresentation(jpgRepresentation);
@@ -136,21 +140,22 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							//png
 							String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
 							String filePng = strFilePath + "png" + sep + nameFact + "." + suffixPng;
-							if (new File(filePng).exists()){
+							if (imageMetaData.readFrom(new File(filePng))){
 							//if (CdmUtils.urlExists(urlPng, true)){
-								ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
+								ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
 								MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
 								pngRepresentation.addRepresentationPart(pngImage);
 								media.addRepresentation(pngRepresentation);
 							}else{
 								fileExists = true;
-								int pngCount = 1;
+								int pngCount = 0;
 								while (fileExists){
-									urlPng = urlPath + "png/" + nameFact + "00" + pngCount++ + "." + suffixPng;
-									filePng = strFilePath + "png" + sep + nameFact + "00" + pngCount++ + "." + suffixPng;
-									if (new File(filePng).exists()){
+									pngCount++;
+									urlPng = urlPath + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
+									filePng = strFilePath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
+									if (imageMetaData.readFrom(new File(filePng))){
 									//if (CdmUtils.urlExists(urlPng, true)){
-										ImageFile pngImage = ImageFile.NewInstance(urlPng, size);
+										ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
 										MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
 										pngRepresentation.addRepresentationPart(pngImage);
 										media.addRepresentation(pngRepresentation);
