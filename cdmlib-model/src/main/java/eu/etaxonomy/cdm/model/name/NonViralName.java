@@ -133,7 +133,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/** 
 	 * Class constructor: creates a new non viral taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and
+	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * non viral taxon names belonging to this homotypical group.
@@ -154,7 +154,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/** 
 	 * Class constructor: creates a new non viral taxon name instance
 	 * containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group},
+	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
@@ -217,7 +217,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/** 
 	 * Creates a new non viral taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and 
+	 * its {@link HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * non viral taxon names belonging to this homotypical group.
@@ -636,7 +636,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
-		//TODO What is the purpose of overriding the inherited method? 
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");
 		return null;
 	}

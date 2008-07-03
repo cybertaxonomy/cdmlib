@@ -161,7 +161,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Class constructor: creates a new taxon name
-	 * only containing its {@link common.HomotypicalGroup homotypical group}.
+	 * only containing its {@link HomotypicalGroup homotypical group}.
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
 	 * 
@@ -176,7 +176,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/** 
 	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.Rank rank} and
-	 * its {@link common.HomotypicalGroup homotypical group}.
+	 * its {@link HomotypicalGroup homotypical group}.
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
 	 * 

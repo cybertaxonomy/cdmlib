@@ -49,7 +49,7 @@ public class BacterialName extends NonViralName {
 	/** 
 	 * Class constructor: creates a new bacterial taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and
+	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new bacterial taxon name instance will be also added to the set of
 	 * bacterial taxon names belonging to this homotypical group.
@@ -86,7 +86,7 @@ public class BacterialName extends NonViralName {
 	/** 
 	 * Creates a new bacterial taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and 
+	 * its {@link HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new bacterial taxon name instance will be also added to the set of
 	 * bacterial taxon names belonging to this homotypical group.
@@ -153,7 +153,7 @@ public class BacterialName extends NonViralName {
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of this bacterial taxon name, that is the
 	 * International Code of Nomenclature of Bacteria. This method overrides
-	 * the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 * the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
 	 *
 	 * @return  the nomenclatural code for bacteria
 	 * @see  	NonViralName#isCodeCompliant()

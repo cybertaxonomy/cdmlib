@@ -76,7 +76,7 @@ public class ZoologicalName extends NonViralName {
 	/** 
 	 * Class constructor: creates a new zoological taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and
+	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
@@ -95,7 +95,7 @@ public class ZoologicalName extends NonViralName {
 	/** 
 	 * Class constructor: creates a new zoological taxon name instance
 	 * containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group},
+	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
@@ -150,7 +150,7 @@ public class ZoologicalName extends NonViralName {
 	/** 
 	 * Creates a new zoological taxon name instance
 	 * only containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group} and 
+	 * its {@link HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
@@ -168,7 +168,7 @@ public class ZoologicalName extends NonViralName {
 	/** 
 	 * Creates a new zoological taxon name instance
 	 * containing its {@link common.Rank rank},
-	 * its {@link common.HomotypicalGroup homotypical group},
+	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
@@ -234,7 +234,7 @@ public class ZoologicalName extends NonViralName {
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of this zoological taxon name, that is the
 	 * International Code of Zoological Nomenclature. This method overrides
-	 * the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 * the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
 	 *
 	 * @return  the nomenclatural code for animals
 	 * @see  	NonViralName#isCodeCompliant()
