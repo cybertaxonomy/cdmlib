@@ -173,7 +173,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation} to the set
 	 * of specimen type designations assigned to this homotypical group and eventually
 	 * (with a boolean parameter) also to the corresponding set of each of the
-	 * taxon names belonging to this homotypical group.
+	 * {@link TaxonNameBase taxon names} belonging to this homotypical group.
 	 *
 	 * @param  typeDesignation	the specimen type designation to be added
 	 * @param  addToAllNames	the boolean flag indicating whether the addition will also
@@ -193,6 +193,20 @@ public class HomotypicalGroup extends AnnotatableEntity {
 			}
 		}
 	}	
+	/** 
+	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this {@link TaxonNameBase taxon name} belongs.
+	 * The same element will be removed from the corresponding set of each of
+	 * the taxon names belonging to this homotypical group. Furthermore the
+	 * homotypical group attribute of the specimen type designation will be
+	 * nullified.
+	 *
+	 * @param  typeDesignation  the specimen type designation which should be deleted
+	 * @see     		  		#getTypeDesignations()
+	 * @see    					#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @see     		  		TaxonNameBase#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
+	 * @see     		  		SpecimenTypeDesignation#getHomotypicalGroup()
+	 */
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
 		if (typeDesignation != null){
 			typeDesignation.setHomotypicalGroup(null);
@@ -205,11 +219,17 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	
 	/**
-	 * Retrieves the synonyms of reference sec that are part of this homotypical group.
-	 * If other names are part of this group that are not considered synonyms in the respective sec-reference,
-	 * then they will not be included in the resultset.
-	 * @param sec
-	 * @return
+	 * Retrieves the ordered list of {@link taxon.Synonym synonyms} (according to a given reference)
+	 * the {@link TaxonNameBase taxon names} of which belong to this homotypical group.
+	 * If other names are part of this group that are not considered synonyms
+	 * according to the respective reference, then they will not be included in
+	 * the result set.
+	 * 
+	 * @param  sec	the reference whose treatment is to be considered
+	 * @return		the ordered list of synonyms
+	 * @see			taxon.Synonym
+	 * @see			TaxonNameBase#getSynonyms()
+	 * @see			TaxonNameBase#getTaxa()
 	 */
 	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
