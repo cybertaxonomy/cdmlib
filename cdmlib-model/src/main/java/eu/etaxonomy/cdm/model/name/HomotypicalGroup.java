@@ -39,17 +39,19 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
 /**
- * A homotypical group represents all taxon names that share the same type
- * specimens. This also includes suprageneric names like genera or families
- * which usually have a name type designation that finally (a name type
- * designation can also point to another suprageneric name) points to a species
- * name, which in turn has a (set of) physical type specimen(s). This class
- * allows to define the type designation only once for the homotypical group
- * instead of defining a type designation for each one of the taxon names
- * subsumed under one homotypical group.
+ * A homotypical group represents all {@link TaxonNameBase taxon names} sharing the same type
+ * specimens. It can also include names with a {@link common.Rank rank} higher
+ * than species aggregate like genera or families which usually are typified by
+ * a taxon name that finally (a name type designation can also point to another
+ * taxon name) points to a species name, which in turn is typified by a (set of)
+ * physical type specimen(s). This class allows to define the
+ * {@link SpecimenTypeDesignation specimen type designation} only once
+ * for the homotypical group instead of defining a type designation for each one
+ * of the taxon names subsumed under one homotypical group.
  * 
  * @author m.doering
- *
+ * @version 1.0
+ * @created 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HomotypicalGroup", propOrder = {
@@ -68,16 +70,33 @@ public class HomotypicalGroup extends AnnotatableEntity {
     @XmlElement(name = "TypeDesignation")
 	protected Set<SpecimenTypeDesignation> typeDesignations = new HashSet();
 
+	/** 
+	 * Class constructor: creates a new homotypical group instance with an
+	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of
+	 * {@link SpecimenTypeDesignation specimen type designations}.
+	 */
+	public HomotypicalGroup() {
+		super();
+	}
+	
+	/** 
+	 * Creates a new homotypical group instance with an
+	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of
+	 * {@link SpecimenTypeDesignation specimen type designations}.
+	 * 
+	 * @see #HomotypicalGroup()
+	 */
 	public static HomotypicalGroup NewInstance(){
 		return new HomotypicalGroup();
 	}
 	
 	
-	public HomotypicalGroup() {
-		super();
-	}
 	
-	
+	/** 
+	 * Returns the set of {@link TaxonNameBase taxon names} that belong to this homotypical group.
+	 *
+	 * @see	#getTypeDesignations()
+	 */
 	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
@@ -97,8 +116,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 	/**
-	 * Meges the typified Names of the homotypicalGroupToMerge into this homotypical group 
-	 * @param homotypicalGroup
+	 * Merges the typified Names of the homotypicalGroupToMerge into this homotypical group 
+	 * @param homotypicalGroupToMerge
 	 */
 	public void merge(HomotypicalGroup homotypicalGroupToMerge){
 		if (homotypicalGroupToMerge != null){
