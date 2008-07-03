@@ -644,16 +644,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.nameTypeDesignations.remove(typeDesignation);
 	}
 	
-	/**
-	 * @return the specimenTypeDesignations
+	/** 
+	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
+	 * that typify this taxon name.
 	 */
 	@ManyToMany
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
 		return specimenTypeDesignations;
 	}
-	/**
-	 * @param specimenTypeDesignations the specimenTypeDesignations to set
+	/** 
+	 * @see #getSpecimenTypeDesignations()
 	 */
 	protected void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
 		this.specimenTypeDesignations = specimenTypeDesignations;
@@ -719,7 +720,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  SpecimenTypeDesignation  the specimen type designation which should be deleted
 	 * @see     		  				HomotypicalGroup#getTypeDesignations()
 	 * @see     		  				#removeTypeDesignation(SpecimenTypeDesignation)
-	 * @see     		  		#removeNameTypeDesignation(NameTypeDesignation)
+	 * @see     		  				#removeNameTypeDesignation(NameTypeDesignation)
 	 */
 	protected void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
 		this.specimenTypeDesignations.remove(specimenTypeDesignation);
@@ -837,6 +838,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 *
 	 * @param  taxonBase  the taxon base to be added
 	 * @see 			  #getTaxonBases()
+	 * @see 			  #removeTaxonBase(TaxonBase)
 	 */
 	//TODO protected
 	public void addTaxonBase(TaxonBase taxonBase){

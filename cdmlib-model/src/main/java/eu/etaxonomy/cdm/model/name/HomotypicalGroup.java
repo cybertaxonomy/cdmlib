@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
@@ -101,23 +102,44 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
 	}
+	/** 
+	 * @see #getTypifiedNames()
+	 */
 	protected void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
 		this.typifiedNames = typifiedNames;
 	}
+	/** 
+	 * Adds a new {@link TaxonNameBase taxon name}
+	 * to the set of taxon names that belong to this homotypical group.
+	 *
+	 * @param  typifiedName  the taxon name to be added to this group
+	 * @see 			  	 #getTypifiedNames()
+	 * @see 			  	 #removeTypifiedName(TaxonNameBase)
+	 */
 	public void addTypifiedName(TaxonNameBase typifiedName) {
 		if (typifiedName != null){
 			typifiedName.setHomotypicalGroup(this);
 			typifiedNames.add(typifiedName);
 		}
 	}
+	/** 
+	 * Removes one element from the set of {@link TaxonNameBase taxon names}
+	 * that belong to this homotypical group.
+	 *
+	 * @param  taxonBase	the taxon name which should be removed from the corresponding set
+	 * @see    				#addTypifiedName(TaxonNameBase)
+	 */
 	public void removeTypifiedName(TaxonNameBase typifiedName) {
 		typifiedName.setHomotypicalGroup(null);
 		typifiedNames.remove(typifiedName);	
 	}
 
 	/**
-	 * Merges the typified Names of the homotypicalGroupToMerge into this homotypical group 
-	 * @param homotypicalGroupToMerge
+	 * Merges the typified {@link TaxonNameBase taxon names} from one homotypical group into
+	 * the set of typified taxon names of this homotypical group.
+	 *  
+	 * @param	homotypicalGroupToMerge the homotypical group the typified names of which
+	 * 									are to be transferred to this homotypical group
 	 */
 	public void merge(HomotypicalGroup homotypicalGroupToMerge){
 		if (homotypicalGroupToMerge != null){
@@ -130,14 +152,36 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	
 	
+	/** 
+	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} that
+	 * typify this homotypical group including the status of these designations.
+	 *
+	 * @see	#getTypifiedNames()
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SpecimenTypeDesignation> getTypeDesignations() {
 		return typeDesignations;
 	}
+	/** 
+	 * @see #getTypeDesignations()
+	 */
 	protected void setTypeDesignations(Set<SpecimenTypeDesignation> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}	
+	/** 
+	 * Adds a new {@link SpecimenTypeDesignation specimen type designation} to the set
+	 * of specimen type designations assigned to this homotypical group and eventually
+	 * (with a boolean parameter) also to the corresponding set of each of the
+	 * taxon names belonging to this homotypical group.
+	 *
+	 * @param  typeDesignation	the specimen type designation to be added
+	 * @param  addToAllNames	the boolean flag indicating whether the addition will also
+	 * 							carried out for each taxon name
+	 * 
+	 * @see 			  		TaxonNameBase#getSpecimenTypeDesignations()
+	 * @see 			  		SpecimenTypeDesignation
+	 */
 	public void addTypeDesignation(SpecimenTypeDesignation typeDesignation, boolean addToAllNames) {
 		if (typeDesignation != null){
 			typeDesignation.setHomotypicalGroup(this);
