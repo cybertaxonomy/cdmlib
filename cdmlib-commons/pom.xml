@@ -29,5 +29,15 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
     </dependency>
+
+
+    <!--  ImageMetadata  -->
+    <dependency>
+    <groupId>org.devlib.schmidt</groupId>
+    <artifactId>imageinfo</artifactId>
+    <version>1.7</version>
+    </dependency>
+    
+
   </dependencies>
 </project>
