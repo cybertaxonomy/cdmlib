@@ -40,8 +40,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
 /**
- * A homotypical group represents all {@link TaxonNameBase taxon names} sharing the same type
- * specimens. It can also include names with a {@link common.Rank rank} higher
+ * The homotypical group class represents a set of {@link TaxonNameBase taxon names} all sharing
+ * the same type specimens. It can also include names with a {@link common.Rank rank} higher
  * than species aggregate like genera or families which usually are typified by
  * a taxon name that finally (a name type designation can also point to another
  * taxon name) points to a species name, which in turn is typified by a (set of)

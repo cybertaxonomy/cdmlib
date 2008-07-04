@@ -19,7 +19,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNote
+ * The class representing a relationship between two {@link TaxonNameBase taxon names} according
+ * to the {@link NomenclaturalCode nomenclatural code} which governs both of them. 
+ * This includes a {@link NameRelationshipType name relationship type} (for instance "later homonym" or
+ * "orthographic variant") and the article of the corresponding nomenclatural
+ * code on which the assignation of the relationship type is based.
+ 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:37
@@ -49,52 +54,100 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	}
 
 	
+	// ************* CONSTRUCTORS *************/	
 	/**
-	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
-	 * @param toName
-	 * @param fromName
-	 * @param type
-	 * @param ruleConsidered
+	 * Class constructor: creates a new name relationship instance with no
+	 * reference and adds it to the respective
+	 * {@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
+	 * 
+	 * @param toName			the taxon name to be set as target for the new name relationship
+	 * @param fromName			the taxon name to be set as source for the new name relationship
+	 * @param type				the relationship type to be assigned to the new name relationship
+	 * @param ruleConsidered	the string indicating the article of the nomenclatural code for the new name relationship
+	 * @see						#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, ReferenceBase, String, String)
+	 * @see						TaxonNameBase#addNameRelationship(NameRelationship)
+	 * @see						TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see						TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	protected NameRelationship(TaxonNameBase toName, TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered) {
 		this(toName, fromName, type, null, null, ruleConsidered);
 	}
 	
 	/**
-	 * Constructor that adds immediately a relationship instance to both 
-	 * Creates a relationship between 2 names and adds this relationship object to the respective name relation sets
-	 * @param toName
-	 * @param fromName
-	 * @param type
-	 * @param citation
-	 * @param citationMicroReference
-	 * @param ruleConsidered
+	 * Class constructor: creates a new name relationship instance including
+	 * its {@link reference.ReferenceBase reference source} and adds it to the respective 
+	 *{@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
+	 * 
+	 * @param toName				the taxon name to be set as target for the new name relationship
+	 * @param fromName				the taxon name to be set as source for the new name relationship
+	 * @param type					the relationship type to be assigned to the new name relationship
+	 * @param citation				the reference source for the new name relationship
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param ruleConsidered		the string indicating the article of the nomenclatural code justifying the new name relationship
+	 * @see							#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String)
+	 * @see							TaxonNameBase#addNameRelationship(NameRelationship)
+	 * @see							TaxonNameBase#addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see							TaxonNameBase#addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	protected NameRelationship(TaxonNameBase  toName, TaxonNameBase fromName, NameRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
 		super(fromName, toName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}
 	
+	//********* METHODS **************************************/
+
+	/** 
+	 * Returns the {@link TaxonNameBase taxon name} that plays the source role
+	 * in this taxon name relationship.
+	 *  
+	 * @see   #getToName()
+	 * @see   common.RelationshipBase#getRelatedFrom()
+	 */
 	@Transient
 	public TaxonNameBase getFromName(){
 		return super.getRelatedFrom();
 	}
+	/**
+	 * @see  #getFromName()
+	 */
 	private void setFromName(TaxonNameBase fromName){
 		super.setRelatedFrom(fromName);
 	}
 
+	/** 
+	 * Returns the {@link TaxonNameBase taxon name} that plays the target role
+	 * in this taxon name relationship.
+	 *  
+	 * @see   #getFromName()
+	 * @see   common.RelationshipBase#getRelatedTo()
+	 */
 	@Transient
 	public TaxonNameBase getToName(){
 		return super.getRelatedTo();
 	}
+	/**
+	 * @see  #getToName()
+	 */
 	private void setToName(TaxonNameBase toName){
 		super.setRelatedTo(toName);
 	}
 
+	/** 
+	 * Returns the nomenclatural code rule considered (that is the
+	 * article/note/recommendation in the nomenclatural code ruling
+	 * the {@link TaxonNameBase#getNomenclaturalCode() taxon name(s)}) of this
+	 * nomenclatural status. The considered rule gives the reason why the
+	 * {@link NomenclaturalStatusType nomenclatural status type} has been
+	 * assigned to the {@link TaxonNameBase taxon name(s)}.
+	 */
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
 	}
-	private void setRuleConsidered(String ruleConsidered){
+
+	/**
+	 * @see  #getRuleConsidered()
+	 */
+	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
 	}
 

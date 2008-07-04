@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Only taxon names which have a rank above "species" are typified by other
+ * 
+ * Only taxon names which have a rank above "species aggregate" are typified by other
  * taxon names of lower rank. A type of a name of a genus or of any
  * subdivision of a genus can only be the name of a species. A type of a name
  * of a family or of any subdivision of a family is the name of a genus
