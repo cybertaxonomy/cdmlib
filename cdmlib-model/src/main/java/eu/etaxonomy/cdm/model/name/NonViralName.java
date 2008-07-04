@@ -389,8 +389,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/**
 	 * Returns the genus subdivision epithet string (infrageneric part) for
 	 * this non viral taxon name if its {@link Rank rank} is infrageneric (lower than genus and
-	 * higher than species aggregate). Genus subdivision epithet strings begin
-	 * with an upper case letter.
+	 * higher than species aggregate: binomial). Genus subdivision epithet
+	 * strings begin with an upper case letter.
 	 * 
 	 * @return  the string containing the infrageneric part of this non viral taxon name
 	 * @see 	#getNameCache()
@@ -408,8 +408,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	/**
 	 * Returns the species epithet string for this non viral taxon name if its {@link Rank rank} is
-	 * species aggregate or lower. Species epithet strings begin with a
-	 * lower case letter.
+	 * species aggregate or lower (bi- or trinomial). Species epithet strings
+	 * begin with a lower case letter.
 	 * 
 	 * @return  the string containing the species epithet of this non viral taxon name
 	 * @see 	#getNameCache()
@@ -427,8 +427,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	/**
 	 * Returns the species subdivision epithet string (infraspecific part) for
-	 * this non viral taxon name if its {@link Rank rank} is infraspecific (lower than species).
-	 * Species subdivision epithet strings begin with a lower case letter.
+	 * this non viral taxon name if its {@link Rank rank} is infraspecific
+	 * (lower than species: trinomial). Species subdivision epithet strings
+	 * begin with a lower case letter.
 	 * 
 	 * @return  the string containing the infraspecific part of this non viral taxon name
 	 * @see 	#getNameCache()

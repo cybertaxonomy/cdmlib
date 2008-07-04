@@ -20,7 +20,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
+ * The class representing a nomenclatural status for a {@link TaxonNameBase taxon name}. 
+ * This includes a {@link NomenclaturalStatusType nomenclatural status type} (for instance "invalid", "novum"
+ * or "conserved") and eventually the article of the corresponding
+ * {@link NomenclaturalCode nomenclatural code} this status assignation is based on.
+ * One nomenclatural status can be assigned to several taxon names.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
@@ -43,6 +48,19 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	@XmlElement(name = "NomenclaturalStatusType")
 	private NomenclaturalStatusType type;
 
+	/** 
+	 * Class constructor: creates a new empty nomenclatural status instance.
+	 */
+	protected NomenclaturalStatus() {
+		super();
+	}
+
+	/** 
+	 * Creates a new nomenclatural status instance with a given
+	 * {@link NomenclaturalStatusType nomenclatural status type}.
+	 * 
+	 * @see #NomenclaturalStatus()
+	 */
 	public static NomenclaturalStatus NewInstance(NomenclaturalStatusType nomStatusType){
 		NomenclaturalStatus status = new NomenclaturalStatus();
 		status.setType(nomStatusType);
@@ -50,26 +68,36 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	}
 	
 
+	/** 
+	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of this
+	 * nomenclatural status.
+	 */
 	@ManyToOne
 	public NomenclaturalStatusType getType(){
 		return this.type;
 	}
 
 	/**
-	 * 
-	 * @param type    type
+	 * @see  #getType()
 	 */
 	public void setType(NomenclaturalStatusType type){
 		this.type = type;
 	}
 
+	/** 
+	 * Returns the nomenclatural code rule considered (that is the
+	 * article/note/recommendation in the nomenclatural code ruling
+	 * the {@link TaxonNameBase#getNomenclaturalCode() taxon name(s)}) of this
+	 * nomenclatural status. The considered rule gives the reason why the
+	 * {@link NomenclaturalStatusType nomenclatural status type} has been
+	 * assigned to the {@link TaxonNameBase taxon name(s)}.
+	 */
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
 	}
 
 	/**
-	 * 
-	 * @param ruleConsidered    ruleConsidered
+	 * @see  #getRuleConsidered()
 	 */
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;

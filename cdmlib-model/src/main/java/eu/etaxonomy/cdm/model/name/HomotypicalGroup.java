@@ -81,8 +81,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	
 	/** 
-	 * Creates a new homotypical group instance with an
-	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of
+	 * Creates a new homotypical group instance with an empty set of typified
+	 * {@link TaxonNameBase taxon names} and an empty set of
 	 * {@link SpecimenTypeDesignation specimen type designations}.
 	 * 
 	 * @see #HomotypicalGroup()
