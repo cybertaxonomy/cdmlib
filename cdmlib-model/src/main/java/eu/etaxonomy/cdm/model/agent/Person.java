@@ -84,8 +84,8 @@ public class Person extends TeamOrPersonBase {
 	
     @XmlElementWrapper(name = "Keywords")
     @XmlElement(name = "Keyword")
-    //@XmlIDREF
-    //@XmlSchemaType(name="IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name="IDREF")
 	private Set<Keyword> keywords = new HashSet<Keyword>();
 
 	/** 

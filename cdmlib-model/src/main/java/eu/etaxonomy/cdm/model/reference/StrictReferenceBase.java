@@ -13,6 +13,11 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A year() method is required to get the year of publication out of the
@@ -21,13 +26,24 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:54
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "StrictReferenceBase", propOrder = {
+	"title",
+    "datePublished"
+})
+@XmlRootElement(name = "RelationshipBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase extends ReferenceBase{
+	
 	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
+	
 	//Title of the reference
+	@XmlElement(name ="Title" )
 	private String title;
+	
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
+	@XmlElement(name ="DatePublished" )
 	private TimePeriod datePublished;
 	
 

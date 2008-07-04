@@ -15,10 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -81,22 +81,24 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	@XmlElement(name = "InfraSpecificEpithet")
 	private String infraSpecificEpithet;
 	
-	@XmlAnyElement
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor combinationAuthorTeam;
 	
-	@XmlAnyElement
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
-	@XmlAnyElement
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor basionymAuthorTeam;
 	
-	@XmlAnyElement
+	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")

@@ -18,7 +18,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -63,6 +65,8 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	private boolean isNomenclaturallyRelevant;
 	
 	@XmlElement(name = "AuthorTeam")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private TeamOrPersonBase authorTeam;
 
 	//this flag will be set to true if the parseName method was unable to successfully parse the name

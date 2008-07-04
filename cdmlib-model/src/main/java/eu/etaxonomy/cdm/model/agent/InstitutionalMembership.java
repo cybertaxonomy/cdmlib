@@ -66,8 +66,8 @@ public class InstitutionalMembership extends VersionableEntity {
 	
 	//current institute the person belongs to
     @XmlElement(name = "Institution", required = true)
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Institution institute;
 	
     @XmlElement(name = "Person", required = true)

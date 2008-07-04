@@ -27,10 +27,13 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public class DataSetTest {
 
@@ -38,6 +41,7 @@ public class DataSetTest {
 	private List<Agent> agents;
     private List<VersionableEntity> agentData;
     private List<TermBase> terms;
+    private List<StrictReferenceBase> references;
     private List<NonViralName> taxonomicNames;
     private List<Taxon> taxa;
     private List<Synonym> synonyms;
@@ -53,155 +57,149 @@ public class DataSetTest {
 		Assert.assertNotNull(dataSet);
 	}
 
-    // not used
-	public List<AnnotatableEntity> buildHomotypicalGroups(TeamOrPersonBase author) {
-		
-		homotypicalGroups = new ArrayList<AnnotatableEntity>();
-		
-		// TODO
-		
-		return homotypicalGroups;
-	}
+	/**
+	 * This method constructs a small sample taxonomic tree to test JAXB marshaling.
+	 * The sample tree contains four taxa. The root taxon has two children taxa, and
+	 * there is one "free" taxon without a parent and children.
+	 */
+	public void buildTaxa() {
 
-    // not used
-	public void setSynonyms(TeamOrPersonBase author) {
-
-		// create some Synonyms
-		//synonyms = new ArrayList<Synonym>();
-
-		NonViralName scientificNames[] = {
-				ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,author,null,"p.1467", null),
-				BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,author,null,"p.317", null)
-		};
-
-		String titleCaches[] = {
-				"Schönes saftiges Allgäu",
-				"Weisstanne"
-		};
-		
-		ReferenceBase sec;
-		sec= Book.NewInstance();
-		sec.setAuthorTeam(author);
-
-		for (int i = 0; i < 2; i++) {
-			sec.setTitleCache(titleCaches[i]);
-			synonyms.add(Synonym.NewInstance(scientificNames[i], sec));
-		}
-	}
-
-	public List<Taxon> buildTaxa(TeamOrPersonBase author) {
-
-		// create some Taxa
+		agents = new ArrayList<Agent>();
+		agentData = new ArrayList<VersionableEntity>();
+		terms = new ArrayList<TermBase>();
+	    references = new ArrayList<StrictReferenceBase>();
+		taxonomicNames = new ArrayList<NonViralName>();
 		taxa = new ArrayList<Taxon>();
 		synonyms = new ArrayList<Synonym>();
 		
-		ReferenceBase sec1, sec2, secRoot, secFree;
+		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, nameRoot, nameFree;
 		Taxon child1, child2, rootT, freeT;
 		Synonym syn1, syn2, synRoot, synFree;
 
-		nameRoot = BotanicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,author,null,"p.1467", null);
-		name1 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,author,null,"p.317", null);
-		name2 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",author,null,"p.191", null);
-		nameFree = BotanicalName.NewInstance(Rank.SPECIES(),"Cichoria",null,"carminata",null,author,null,"p.14", null);
-
-		secRoot= Book.NewInstance();
-		secRoot.setAuthorTeam(author);
-		secRoot.setTitleCache("Root Taxon");
-		synRoot = Synonym.NewInstance(nameRoot, secRoot);
-		synonyms.add(synRoot);
-		rootT = Taxon.NewInstance(nameRoot, secRoot);
-		
-		secFree = Book.NewInstance();
-		secFree.setAuthorTeam(author);
-		secFree.setTitleCache("Free Taxon");
-		synFree = Synonym.NewInstance(nameFree, secFree);
-		synonyms.add(synFree);
-		freeT = Taxon.NewInstance(nameFree, secFree);
-		
-		// taxonomic children
-		sec1 = Book.NewInstance();
-		sec1.setAuthorTeam(author);
-		sec1.setTitleCache("Child 1");
-		syn1 = Synonym.NewInstance(name1, sec1);
-		synonyms.add(syn1);
-		child1 = Taxon.NewInstance(name1, sec1);
-		rootT.addTaxonomicChild(child1, sec1, "p.998");
-		
-		sec2 = Book.NewInstance();
-		sec2.setAuthorTeam(author);
-		sec2.setTitleCache("Child 2");
-		syn2 = Synonym.NewInstance(name2, sec2);
-		synonyms.add(syn2);
-		child2 = Taxon.NewInstance(name2, sec2);
-		rootT.addTaxonomicChild(child2, sec2, "p.987");
-				
-		child1.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-		rootT.addSynonym(synRoot, SynonymRelationshipType.PRO_PARTE_SYNONYM_OF());
-		freeT.addSynonym(synFree, SynonymRelationshipType.PARTIAL_SYNONYM_OF());
-
-		taxa.add(rootT);
-		taxa.add(child1);
-		taxa.add(child2);
-		taxa.add(freeT);
-		
-		return taxa;
-	}
-		
-	public DataSet buildDataSet() {
-
-		// create some Persons 
-		agents = new ArrayList<Agent>();
+		// agents 
+		// - persons, institutions 
 
 		Person linne = new Person("Carl", "Linné", "L.");
 		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
 		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
 		TimePeriod period = new TimePeriod(birth, death);
 		linne.setLifespan(period);
-		linne.addKeyword(Keyword.NewInstance("plantarum", "lat", ""));
+
+		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
+		linne.addKeyword(keyword);
+
+		Institution institute = Institution.NewInstance();
 
 		agents.add(linne);
-		dataSet.setAgents(agents);
+		agents.add(institute);
 
-		// create some contacts, addresses, memberships
-
-		agentData = new ArrayList<VersionableEntity>();
+		// agent data
+		// - contacts, addresses, memberships
 
 		//Contact contact1 = new Contact();
 		//contact1.setEmail("someone@somewhere.org");
-		Institution institute = Institution.NewInstance();
 		InstitutionalMembership membership 
 		= new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
 		//agentData.add(contact1);
 
 		agentData.add(membership);
-		dataSet.setAgentData(agentData);
 
+		// terms
+		// - ranks, keywords
 
-		// create some Ranks
+		Rank rankRoot = new Rank();
+		Rank rankChildren = new Rank();
+		Rank rankFree = new Rank();
+		
+//      Do something like this? If yes, FIXME: Stack overflow.
+//		try {
+//			rankRoot = Rank.getRankByName("Species");
+//			rankChildren = Rank.getRankByName("Subspecies");
+//			rankFree = Rank.getRankByName("Genus");
+//			
+//		} catch (UnknownCdmTypeException ex) {
+//			ex.printStackTrace();
+//		}
+		
+		terms.add(rankRoot);
+		terms.add(rankChildren);
+		terms.add(rankFree);
+		
+		terms.add(keyword);
+		
+        // taxonomic names
+		
+		nameRoot = BotanicalName.NewInstance(rankRoot,"Panthera",null,"onca",null,linne,null,"p.1467", null);
+		name1 = BotanicalName.NewInstance(rankChildren,"Abies",null,"alba",null,linne,null,"p.317", null);
+		name2 = BotanicalName.NewInstance(rankChildren,"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
+		nameFree = BotanicalName.NewInstance(rankFree,"Cichoria",null,"carminata",null,linne,null,"p.14", null);
 
-		terms = new ArrayList<TermBase>();
-
-		Rank rank = new Rank();
-		terms.add(rank);
-		//rank = new Rank("term", "label");
-		//assertEquals("label", rank.getLabel());
-
-		terms.add(rank);
-		dataSet.setTerms(terms);
+		taxonomicNames.add(nameRoot);
+		taxonomicNames.add(name1);
+		taxonomicNames.add(name2);
+		taxonomicNames.add(nameFree);
+		
+        // references
+		
+		sec = Book.NewInstance();
+		sec.setAuthorTeam(linne);
+		sec.setTitleCache("Plant Speciation");
+		references.add(sec);
+		
+		citRef = Database.NewInstance();
+		citRef.setAuthorTeam(linne);
+		citRef.setTitleCache("BioCASE");
+		references.add(citRef);
 
 		// taxa
 		
-		taxa = buildTaxa(linne);
-		dataSet.setTaxa(taxa);
+		rootT = Taxon.NewInstance(nameRoot, sec);
+		freeT = Taxon.NewInstance(nameFree, sec);
+		child1 = Taxon.NewInstance(name1, sec);
+		child2 = Taxon.NewInstance(name2, sec);
 		
 		// synonyms
 		
+		synRoot = Synonym.NewInstance(nameRoot, sec);
+		synFree = Synonym.NewInstance(nameFree, sec);
+		syn1 = Synonym.NewInstance(name1, sec);
+		syn2 = Synonym.NewInstance(name2, sec);
+		
+		child1.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		child2.addSynonym(syn2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		rootT.addSynonym(synRoot, SynonymRelationshipType.PRO_PARTE_SYNONYM_OF());
+		freeT.addSynonym(synFree, SynonymRelationshipType.PARTIAL_SYNONYM_OF());
+
+		synonyms.add(synRoot);
+		synonyms.add(synFree);
+		synonyms.add(syn2);
+		synonyms.add(syn1);
+		
+		// taxonomic children
+		rootT.addTaxonomicChild(child1, sec, "p.998");
+		rootT.addTaxonomicChild(child2, sec, "p.987");
+				
+		taxa.add(rootT);
+		taxa.add(freeT);
+		taxa.add(child1);
+		taxa.add(child2);
+		
+	}
+		
+	public DataSet buildDataSet() {
+
+		buildTaxa();
+		
+		dataSet.setAgents(agents);
+		dataSet.setAgentData(agentData);
+		dataSet.setTerms(terms);
+		dataSet.setReferences(references);
+		dataSet.setTaxonomicNames(taxonomicNames);
+		dataSet.setTaxa(taxa);
 		dataSet.setSynonyms(synonyms);
 
 		return dataSet;
-
 	}
 
 }

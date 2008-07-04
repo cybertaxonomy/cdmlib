@@ -29,7 +29,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Book", propOrder = {
     "edition",
-    "isbn"
+    "isbn",
+    "nomRefBase"
 })
 @Entity
 public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {

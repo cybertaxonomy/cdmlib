@@ -17,6 +17,13 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * abstract class for all objects that may have a reference
@@ -24,13 +31,29 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ReferencedEntityBase", propOrder = {
+    "citationMicroReference",
+    "originalNameString",
+    "citation"
+})
+@XmlRootElement(name = "ReferencedEntityBase")
 @MappedSuperclass
 public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
+
 	static Logger logger = Logger.getLogger(ReferencedEntityBase.class);
+
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
 	//publication. {if the citationMicroReference exists then there must be also a reference}
+    @XmlElement(name = "Citation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private ReferenceBase citation;
+
+    @XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
+
+    @XmlElement(name = "OriginalNameString")
 	private String originalNameString;
 
 	public ReferencedEntityBase() {

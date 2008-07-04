@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.model;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,18 +18,33 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.CdDvd;
+import eu.etaxonomy.cdm.model.reference.ConferenceProceedings;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.InProceedings;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Map;
+import eu.etaxonomy.cdm.model.reference.Patent;
+import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.Report;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,6 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 		"agents",
 		"agentData",
 	    "terms",
+	    "references",
 	    "taxonomicNames",
 	    "taxa",
 	    "synonyms",
@@ -65,9 +79,32 @@ public class DataSet {
 
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
+        @XmlElement(name = "Keyword", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Keyword.class),
         @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class)
     })
     protected List<TermBase> terms;
+
+    @XmlElementWrapper(name = "References")
+    @XmlElements({
+    	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
+    	@XmlElement(name = "ConferenceProceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = ConferenceProceedings.class),
+    	@XmlElement(name = "Generic", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Generic.class),
+    	@XmlElement(name = "Patent", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Patent.class),
+    	@XmlElement(name = "PersonalCommunication", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = PersonalCommunication.class),
+    	@XmlElement(name = "CdDvd", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = CdDvd.class),
+    	@XmlElement(name = "Database", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Database.class),
+    	@XmlElement(name = "Journal", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Journal.class),
+    	@XmlElement(name = "Map", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Map.class),
+    	@XmlElement(name = "Book", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Book.class),
+    	@XmlElement(name = "Proceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Proceedings.class),
+    	@XmlElement(name = "PrintSeries", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = PrintSeries.class),
+    	@XmlElement(name = "Report", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Report.class),
+    	@XmlElement(name = "Thesis", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Thesis.class),
+    	@XmlElement(name = "WebPage", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = WebPage.class),
+    	@XmlElement(name = "BookSection", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = BookSection.class),
+    	@XmlElement(name = "InProceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = InProceedings.class),
+    })
+    protected List<StrictReferenceBase> references;
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
@@ -188,6 +225,30 @@ public class DataSet {
      */
     public void setTaxonomicNames(List<NonViralName> value) {
         this.taxonomicNames = value;
+    }
+
+    /**
+     * Gets the value of the taxonomicNames property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<NonViralName> }
+     *     
+     */
+    public List<StrictReferenceBase> getReferences() {
+        return references;
+    }
+
+    /**
+     * Sets the value of the taxonomicNames property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<NonViralName> }
+     *     
+     */
+    public void setReferences(List<StrictReferenceBase> value) {
+        this.references = value;
     }
 
     /**
