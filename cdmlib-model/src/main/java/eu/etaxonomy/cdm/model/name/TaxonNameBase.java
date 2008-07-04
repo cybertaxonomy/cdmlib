@@ -132,7 +132,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	@XmlSchemaType(name = "IDREF")
 	private Rank rank;
 
-//  TODO: This must be an IDREF to the corresponding nomenclatural reference.
+//  FIXME: This must be an IDREF to the corresponding nomenclatural reference.
     @XmlAnyElement
 	private INomenclaturalReference nomenclaturalReference;
 

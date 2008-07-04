@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -43,6 +45,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
 	@XmlTransient
 	//@XmlAnyElement
+	//@XmlElement(name = "RelatedFrom", type = Taxon.class)
 	private FROM relatedFrom;
 
 	@XmlTransient
@@ -50,7 +53,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	private TO relatedTo;
 
 	@XmlTransient
-	//@XmlElement(name = "SynonymRelationshipType")
+	//@XmlElement(name = "RelationshipType")
 	private TYPE type;
 
 	protected RelationshipBase(){

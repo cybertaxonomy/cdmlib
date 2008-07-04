@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "SynonymRelationship")
 @XmlRootElement(name = "SynonymRelationship")
 @Entity
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {

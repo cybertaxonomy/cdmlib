@@ -28,14 +28,16 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:58
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "TaxonRelationship", propOrder = {
+    "type"		
+})
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
 
-    @XmlElement(name = "Type")
+    @XmlElement(name = "TaxonRelationshipType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private TaxonRelationshipType type;

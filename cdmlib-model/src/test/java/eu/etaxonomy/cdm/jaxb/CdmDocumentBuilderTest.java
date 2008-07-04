@@ -20,7 +20,10 @@ public class CdmDocumentBuilderTest {
 	private DataSet dataSet;
 	private DataSetTest dataSetTest;
 	private CdmDocumentBuilder cdmDocumentBuilder;
-	private String filename = new String(System.getProperty("user.home") + File.separator + "cdm1.xml");
+	private String userHome = System.getProperty("user.home");
+	private String marshOut = new String( userHome + File.separator + "cdm_marshalled.xml");
+	private String unmarshIn = new String( userHome + File.separator + "cdm_marshalled.xml");
+	private String unmarshOut = new String( userHome + File.separator + "cdm_roundtrip.xml");
 	
 	@Before
 	public void onSetUp() throws Exception {
@@ -41,7 +44,7 @@ public class CdmDocumentBuilderTest {
 	@Test
 	public void marshalDataSet2Stdout() throws Exception {
 		Writer writer = new OutputStreamWriter(System.out, Charset.forName("UTF-8"));
-		cdmDocumentBuilder.write(dataSet, writer);
+		cdmDocumentBuilder.marshal(dataSet, writer);
 	}
 	
 //  can only be used with JAXB 2.1
@@ -51,9 +54,21 @@ public class CdmDocumentBuilderTest {
 //	}
 
 
-	@Test
-	public void marshalDataSet2FileWriter() throws Exception {
-		cdmDocumentBuilder.write(dataSet, new FileWriter(filename));
-	}
+//	@Test
+//	public void marshalDataSet2FileWriter() throws Exception {
+//		cdmDocumentBuilder.write(dataSet, new FileWriter(filename));
+//	}
 
+	@Test
+	public void testMarshal() throws Exception {
+		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
+	}
+	
+	@Test
+	public void testUnmarshal() throws Exception {
+		DataSet newDataSet = new DataSet();
+		newDataSet = cdmDocumentBuilder.unmarshal(newDataSet, new File(marshOut));
+		cdmDocumentBuilder.marshal(newDataSet, new FileWriter(unmarshOut));
+	}
+	
 }
