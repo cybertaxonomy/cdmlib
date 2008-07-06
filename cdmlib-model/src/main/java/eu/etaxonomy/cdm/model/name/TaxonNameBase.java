@@ -622,7 +622,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  typeSpecies				the taxon name to be used as type of this taxon name
 	 * @param  citation					the reference for this new designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
-	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
 	 * @param  isRejectedType			the boolean status for rejected
 	 * @param  isConservedType			the boolean status for conserved
 	 * @see 			  				#getNameTypeDesignations()
