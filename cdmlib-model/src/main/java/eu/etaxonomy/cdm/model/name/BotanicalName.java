@@ -307,8 +307,8 @@ public class BotanicalName extends NonViralName {
 	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
 	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
 	 * involved in this hybrid relationship. One of both botanical taxon names
-	 * must be this botanical taxon name else no addition will be carried out.
-	 * The {@link common.RelationshipBase#getRelatedTo() child botanical taxon name}
+	 * must be this botanical taxon name otherwise no addition will be carried
+	 * out. The {@link common.RelationshipBase#getRelatedTo() child botanical taxon name}
 	 * must be a hybrid, which means that one of its four hybrid flags must be set.
 	 * 
 	 * @param relationship  the hybrid relationship to be added

@@ -135,8 +135,8 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	/** 
 	 * Returns the nomenclatural code rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code ruling
-	 * the {@link TaxonNameBase#getNomenclaturalCode() taxon name(s)}) of this
-	 * nomenclatural status. The considered rule gives the reason why the
+	 * the  taxon name(s) of this nomenclatural status.
+	 * The considered rule gives the reason why the
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
 	 * assigned to the {@link TaxonNameBase taxon name(s)}.
 	 */
