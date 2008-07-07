@@ -24,7 +24,7 @@ import org.hibernate.annotations.CascadeType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
     "uri",
-    "representations",
+    "representations"
 })
 @XmlRootElement(name = "TermBase")
 @MappedSuperclass

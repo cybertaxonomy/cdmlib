@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "CdmBase", propOrder = {
     "created",
-    "createdBy",
+    "createdBy"
 })
 @XmlRootElement(name = "CdmBase")
 @MappedSuperclass
