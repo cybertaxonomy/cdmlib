@@ -109,9 +109,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		super(taxonNameBase, sec);
 	}
-	
-
-	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
+	 
+	 
+	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
@@ -167,8 +167,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		}
 		this.synonymRelations.remove(synonymRelation);
 	}
-	
 
+	
 	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {

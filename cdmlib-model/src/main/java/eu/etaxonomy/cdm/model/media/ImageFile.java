@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.media;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.Agent;
 
 import javax.persistence.*;
@@ -36,6 +38,10 @@ public class ImageFile extends MediaRepresentationPart {
 	
 	public static ImageFile NewInstance(String uri, Integer size, Integer height, Integer width){
 		return new ImageFile(uri, size, height, width);
+	}
+	
+	public static ImageFile NewInstance(String uri, Integer size, ImageMetaData imageMetaData){
+		return new ImageFile(uri, size, imageMetaData.getHeight(), imageMetaData.getWidth());
 	}
 	
 	/**

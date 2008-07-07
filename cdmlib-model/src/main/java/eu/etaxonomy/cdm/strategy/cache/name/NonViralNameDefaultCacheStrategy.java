@@ -264,6 +264,14 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags.add(nvn.getRank());			
 			tags.add(nvn.getInfraSpecificEpithet());			
 		}
+		if (nvn.isInfraGeneric()){
+			//TODO choose right strategy or generic approach?
+			// --- strategy 1 --- 
+			tags.add(nvn.getRank());			
+			tags.add(nvn.getInfraGenericEpithet());			
+			// --- strategy 2 --- 
+//			tags.add('('+nvn.getInfraGenericEpithet()+')');	
+		}
 		Team at = Team.NewInstance();
 		at.setProtectedTitleCache(true);
 		at.setTitleCache(nvn.getAuthorshipCache());
