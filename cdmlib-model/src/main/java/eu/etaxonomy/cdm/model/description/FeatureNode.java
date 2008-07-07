@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -48,11 +50,13 @@ public class FeatureNode extends VersionableEntity {
 	}
 
 	
+	
+//** ********************** FEATURE ******************************/
 	/**
 	 * Same as getFeature
 	 * @return
 	 */
-	@ManyToOne
+	@Transient
 	@Deprecated
 	protected Feature getType() {
 		return type;
@@ -61,7 +65,7 @@ public class FeatureNode extends VersionableEntity {
 		this.type = feature;
 	}
 
-	@Transient  //TODO 
+	@ManyToOne
 	public Feature getFeature() {
 		return type;
 	}
@@ -69,8 +73,12 @@ public class FeatureNode extends VersionableEntity {
 		this.type = feature;
 	}
 	
+
+//** ********************** PARENT ******************************/
+
 	
 	@ManyToOne
+	@JoinColumn(name="parent_fk")
 	public FeatureNode getParent() {
 		return parent;
 	}
@@ -78,7 +86,9 @@ public class FeatureNode extends VersionableEntity {
 		this.parent = parent;
 	}
 	
-	@OneToMany(mappedBy="parent_fk")
+	//** ********************** CHILDREN ******************************/
+
+	@OneToMany(mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<FeatureNode> getChildren() {
 		return children;
