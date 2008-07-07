@@ -286,6 +286,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserIm
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
+cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
