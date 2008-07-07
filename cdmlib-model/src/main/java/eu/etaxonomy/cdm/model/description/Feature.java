@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.location.Continent;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -58,7 +60,7 @@ public class Feature extends DefinedTermBase {
 	/**
 	 * Default Constructor
 	 */
-	private Feature() {
+	public Feature() {
 		super();
 	}
 	
@@ -172,12 +174,70 @@ public class Feature extends DefinedTermBase {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
-	public static final Feature DISTRIBUTION(){
-		//TODO
-		logger.warn("DISTRIBUTION not yet implemented");
-		return null;
+	
+	private static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
+	private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
+	private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
+	private static final UUID uuidBiologyEcology = UUID.fromString("9832e24f-b670-43b4-ac7c-20a7261a1d8c");
+	private static final UUID uuidKey = UUID.fromString("a677f827-22b9-4205-bb37-11cb48dd9106");
+	private static final UUID uuidMaterialsExamined = UUID.fromString("7c0c7571-a864-47c1-891d-01f59000dae1");
+	private static final UUID uuidMaterialsMethods = UUID.fromString("1e87d9c3-0844-4a03-9686-773e2ccb3ab6");
+	private static final UUID uuidEtymology = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
+	private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
+//	private static final UUID uuidDistribution = UUID.fromString("");
+//	private static final UUID uuidDistribution = UUID.fromString("");
+//	private static final UUID uuidDistribution = UUID.fromString("");
+
+//	"d3c4cbb6-0025-4322-886b-cd0156753a25",,"Discussion","Discussion"
+//	"86bd920d-f8c5-48b9-af1d-03f63c31de5c",,"Abstract","Abstract"
+//	"e75255ca-8ff4-4905-baad-f842927fe1d3",,"Introduction","Introduction"
+//	"489bf358-b78a-45e2-a691-f9f3f10446ce",,"Synopsis","Synopsis"
+//	"89d3b005-9876-4923-89d9-60eb75b9583b",,"Multiple","Multiple"
+//	"555a46bc-211a-476f-a022-c472970d6f8b",,"Acknowledgments","Acknowledgments"
+	
+	
+	public static final Feature getByUuid(UUID uuid){
+		return (Feature)findByUuid(uuid);
+	}
+	
+	public static final Feature DESCRIPTION(){
+		return getByUuid(uuidDescription);
 	}
 
+	public static final Feature DISTRIBUTION(){
+		return getByUuid(uuidDistribution);
+	}
+
+	public static final Feature ECOLOGY(){
+		return getByUuid(uuidEcology);
+	}	
+	
+	public static final Feature BIOLOGY_ECOLOGY(){
+		return getByUuid(uuidBiologyEcology);
+	}
+	
+	public static final Feature KEY(){
+		return getByUuid(uuidKey);
+	}		
+	
+	
+	public static final Feature MATERIALS_EXAMINED(){
+		return getByUuid(uuidMaterialsExamined);
+	}
+	
+	public static final Feature MATERIALS_METHODS(){
+		return getByUuid(uuidMaterialsMethods);
+	}
+	
+	public static final Feature ETYMOLOGY(){
+		return getByUuid(uuidEtymology);
+	}
+		
+	public static final Feature DIAGNOSIS(){
+		return getByUuid(uuidDiagnosis);
+	}
+
+	
 	/**
 	 * special kind of OrganismInteraction
 	 */

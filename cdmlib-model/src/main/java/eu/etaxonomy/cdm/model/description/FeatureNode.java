@@ -15,6 +15,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -33,33 +35,109 @@ public class FeatureNode extends VersionableEntity {
 	public static FeatureNode NewInstance(){
 		return new FeatureNode();
 	}
+
+	public static FeatureNode NewInstance(Feature feature){
+		FeatureNode result = new FeatureNode();
+		result.setFeature(feature);
+		return result;
+	}
+
 	
 	protected FeatureNode() {
 		super();
 	}
 
 	
+	/**
+	 * Same as getFeature
+	 * @return
+	 */
 	@ManyToOne
-	public Feature getType() {
+	@Deprecated
+	protected Feature getType() {
 		return type;
 	}
-	public void setType(Feature type) {
-		this.type = type;
+	protected void setType(Feature feature) {
+		this.type = feature;
 	}
+
+	@Transient  //TODO 
+	public Feature getFeature() {
+		return type;
+	}
+	public void setFeature(Feature feature) {
+		this.type = feature;
+	}
+	
 	
 	@ManyToOne
 	public FeatureNode getParent() {
 		return parent;
 	}
-	public void setParent(FeatureNode parent) {
+	protected void setParent(FeatureNode parent) {
 		this.parent = parent;
 	}
 	
-	@OneToMany(mappedBy="parent")
-	@Cascade({CascadeType.SAVE_UPDATE})	public List<FeatureNode> getChildren() {
+	@OneToMany(mappedBy="parent_fk")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public List<FeatureNode> getChildren() {
 		return children;
 	}
 	public void setChildren(List<FeatureNode> children) {
 		this.children = children;
 	}
+	public void addChild(FeatureNode child){
+		addChild(child, children.size());
+	}
+	public void addChild(FeatureNode child, int index){
+		if (index < 0 || index > children.size() + 1){
+			throw new IndexOutOfBoundsException("Wrong index");
+		}
+		if (child.getParent() != null){
+			child.getParent().removeChild(child);
+		}
+		child.setParent(this);		
+		children.add(index, child);
+	}
+	public void removeChild(FeatureNode child){
+		int index = children.indexOf(child);
+		if (index >= 0){
+			removeChild(index);
+		}
+	}
+	public void removeChild(int index){
+		FeatureNode child = children.get(index);
+		if (child != null){
+			children.remove(index);
+			child.setParent(child);
+		}
+	}
+	
+
+	@Transient
+	public FeatureNode getChildAt(int childIndex) {
+			return children.get(childIndex);
+	}
+
+	@Transient
+	public int getChildCount() {
+		return children.size();
+	}
+
+	@Transient
+	public int getIndex(TreeNode node) {
+		if (! children.contains(node)){
+			return -1;
+		}else{
+			return children.indexOf(node);
+		}
+	}
+
+	@Transient
+	public boolean isLeaf() {
+		return children.size() < 1;
+	}
+	
+	
+	
 }

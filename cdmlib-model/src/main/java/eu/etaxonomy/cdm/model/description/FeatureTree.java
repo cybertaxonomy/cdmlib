@@ -36,19 +36,27 @@ public class FeatureTree extends TermBase {
 	public static FeatureTree NewInstance(){
 		return new FeatureTree();
 	}
+
+	public static FeatureTree NewInstance(UUID uuid){
+		FeatureTree result =  new FeatureTree();
+		result.setUuid(uuid);
+		return result;
+	}
+
 	
 	protected FeatureTree() {
 		super();
+		root = FeatureNode.NewInstance();
 	}
 	
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<FeatureNode> getNodes() {
-		return nodes;
-	}
-	public void setNodes(Set<FeatureNode> nodes) {
-		this.nodes = nodes;
-	}
+//	@OneToMany
+//	@Cascade({CascadeType.SAVE_UPDATE})
+//	public Set<FeatureNode> getNodes() {
+//		return nodes;
+//	}
+//	public void setNodes(Set<FeatureNode> nodes) {
+//		this.nodes = nodes;
+//	}
 
 	@ManyToOne
 	public FeatureNode getRoot() {
@@ -56,6 +64,13 @@ public class FeatureTree extends TermBase {
 	}
 	public void setRoot(FeatureNode root) {
 		this.root = root;
+	}
+	
+	@Transient
+	public List getRootChildren(){
+		List<FeatureNode> result = new ArrayList<FeatureNode>();
+		result.addAll(root.getChildren());
+		return result;
 	}
 
 }

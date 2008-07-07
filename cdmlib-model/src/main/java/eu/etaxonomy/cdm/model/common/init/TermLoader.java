@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -151,6 +152,7 @@ public class TermLoader {
 		insertDefaultTerms(MarkerType.class, NOT_ORDERED);
 		insertDefaultTerms(NamedAreaType.class, NOT_ORDERED);
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);
+		insertDefaultTerms(Feature.class, NOT_ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

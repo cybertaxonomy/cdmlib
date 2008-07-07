@@ -9,16 +9,13 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Scope;
+import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
-
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
  * @author m.doering

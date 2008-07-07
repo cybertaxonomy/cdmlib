@@ -10,11 +10,12 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.Language;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 import org.apache.log4j.Logger;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
