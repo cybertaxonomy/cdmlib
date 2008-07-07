@@ -95,6 +95,7 @@
             <value>eu.etaxonomy.cdm.model.description.StatisticalMeasure</value>
             <value>eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue</value>
             <value>eu.etaxonomy.cdm.model.description.TaxonDescription</value>
+            <value>eu.etaxonomy.cdm.model.description.TaxonNameDescription</value>
             <value>eu.etaxonomy.cdm.model.description.TaxonInteraction</value>
             <value>eu.etaxonomy.cdm.model.description.TextData</value>
             <value>eu.etaxonomy.cdm.model.description.TextFormat</value>
