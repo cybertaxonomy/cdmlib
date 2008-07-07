@@ -13,11 +13,13 @@ import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NONE;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
+import eu.etaxonomy.cdm.io.common.IIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -31,7 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 20.06.2008
  * @version 1.0
  */
-public class TcsImport implements ICdmImport {
+@Service
+public class TcsImport<T extends TcsImportConfigurator> implements ICdmImport<T> {
 	private static Logger logger = Logger.getLogger(TcsImport.class);
 	
 	
@@ -67,19 +70,20 @@ public class TcsImport implements ICdmImport {
 	}
 	
 	
-	protected boolean doCheck(TcsImportConfigurator tcsConfig){
+	protected boolean doCheck(TcsImportConfigurator config){
 		boolean result = true;
-		System.out.println("Start check BerlinModel ("+ tcsConfig.getSource().toString() + ") ...");
+		System.out.println("Start check TcsImport ("+ config.getSource().toString() + ") ...");
 		
 		//check
-		if (tcsConfig == null){
+		if (config == null){
 			logger.warn("BerlinModelImportConfiguration is null");
 			return false;
-		}else if (! tcsConfig.isValid()){
+		}else if (! config.isValid()){
 			logger.warn("BerlinModelImportConfiguration is not valid");
 			return false;
 		}
 		
+		IIO<IImportConfigurator> iio;
 		
 //		//check Authors
 //		if (iConfig.isDoAuthors()){
@@ -87,18 +91,27 @@ public class TcsImport implements ICdmImport {
 //		}
 
 		//check References
-		if (tcsConfig.getDoReferences() != NONE){
-			result &= TcsReferenceIO.check(tcsConfig);
+		if (config.getDoReferences() != NONE){
+			iio = config.getReferenceIO();
+			if (iio != null){
+				result &= iio.check(config);
+			}
 		}
 		
 		//check TaxonNames
-		if (tcsConfig.isDoTaxonNames()){
-			result &=  TcsTaxonNameIO.check(tcsConfig);
+		if (config.isDoTaxonNames()){
+			iio = config.getTaxonNameIO();
+			if (iio != null){
+				result &= iio.check(config);
+			}
 		}
 		
 		//check RelNames
-		if(tcsConfig.isDoRelNames()){
-			result &= TcsTaxonNameIO.checkRelations(tcsConfig);
+		if(config.isDoRelNames()){
+			iio = config.getTaxonNameRelationIO();
+			if (iio != null){
+				result &= iio.check(config);
+			}
 		}
 
 //		//check types
@@ -107,13 +120,19 @@ public class TcsImport implements ICdmImport {
 //		}
 	
 		//check Taxa
-		if(tcsConfig.isDoTaxa()){
-			result &= TcsTaxonIO.check(tcsConfig);
+		if(config.isDoTaxa()){
+			iio = config.getTaxonIO();
+			if (iio != null){
+				result &= iio.check(config);
+			}
 		}
 		
 		//check RelPTaxa
-		if(tcsConfig.isDoRelTaxa()){
-			result &= TcsTaxonIO.checkRelations(tcsConfig);
+		if(config.isDoRelTaxa()){
+			iio = config.getTaxonRelationIO();
+			if (iio != null){
+				result &= iio.check(config);
+			}
 		}
 		
 //		//check Facts
@@ -127,7 +146,7 @@ public class TcsImport implements ICdmImport {
 //		}
 		
 		//return
-		System.out.println("End checking BerlinModel ("+ tcsConfig.getSource().toString() + ") for import to CDM");
+		System.out.println("End checking BerlinModel ("+ config.getSource().toString() + ") for import to CDM");
 		return result;
 
 	}
@@ -136,17 +155,17 @@ public class TcsImport implements ICdmImport {
 	/**
 	 * Executes the whole 
 	 */
-	protected boolean doImport(TcsImportConfigurator tcsConfig){
+	protected boolean doImport(TcsImportConfigurator config){
 		CdmApplicationController cdmApp;
-		if (tcsConfig == null){
+		if (config == null){
 			logger.warn("BerlinModelImportConfiguration is null");
 			return false;
-		}else if (! tcsConfig.isValid()){
+		}else if (! config.isValid()){
 			logger.warn("BerlinModelImportConfiguration is not valid");
 			return false;
 		}
 		try {
-			cdmApp = CdmApplicationController.NewInstance(tcsConfig.getDestination(), tcsConfig.getDbSchemaValidation());
+			cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 		} catch (DataSourceNotFoundException e) {
 			logger.warn("could not connect to destination database");
 			return false;
@@ -154,11 +173,11 @@ public class TcsImport implements ICdmImport {
 			logger.warn("could not find needed term in destination datasource");
 			return false;
 		}
-		Element source = tcsConfig.getSourceRoot();
-		ReferenceBase sourceReference = tcsConfig.getSourceReference();
-		System.out.println("Start import from BerlinModel ("+ tcsConfig.getSource().toString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		Element source = config.getSourceRoot();
+		ReferenceBase sourceReference = config.getSourceReference();
+		System.out.println("Start import from BerlinModel ("+ config.getSource().toString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		
-
+		IIO iio;
 //		//Authors
 //		if (tcsConfig.isDoAuthors()){
 //			if (! BerlinModelAuthorIO.invoke(tcsConfig, cdmApp, authorStore)){
@@ -170,8 +189,9 @@ public class TcsImport implements ICdmImport {
 //		}
 		
 		//References
-		if (tcsConfig.getDoReferences() != NONE){
-			if (! TcsReferenceIO.invoke(tcsConfig, cdmApp, referenceStore, authorStore)){
+		if (config.getDoReferences() != NONE){
+			iio = config.getReferenceIO();
+			if (iio != null && ! iio.invoke(config, cdmApp, new MapWrapper[]{referenceStore, authorStore})){
 				return false;
 			}
 		}else{
@@ -180,18 +200,21 @@ public class TcsImport implements ICdmImport {
 		}
 		
 		//TaxonNames
-		if (tcsConfig.isDoTaxonNames()){
-			if (! TcsTaxonNameIO.invoke(tcsConfig, cdmApp, taxonNameStore, referenceStore, authorStore)){
+		if (config.isDoTaxonNames()){
+			iio = config.getTaxonNameIO();
+			if (iio != null && ! iio.invoke(config, cdmApp, new MapWrapper[]{taxonNameStore, referenceStore, authorStore})){
 				//return false;
 			}
+
 		}else{
 			logger.warn("No TaxonNames imported");
 			//taxonNameStore = null;
 		}
 
 		//make and save RelNames
-		if(tcsConfig.isDoRelNames()){
-			if (! TcsTaxonNameIO.invokeRelations(tcsConfig, cdmApp, taxonNameStore, referenceStore)){
+		if(config.isDoRelNames()){
+			iio = config.getTaxonNameRelationIO();
+			if (iio != null && ! iio.invoke(config, cdmApp, new MapWrapper[]{taxonNameStore, referenceStore})){
 				return false;
 			}
 		}else{
@@ -199,8 +222,9 @@ public class TcsImport implements ICdmImport {
 		}
 
 		//make and save Taxa
-		if(tcsConfig.isDoTaxa()){
-			if (! TcsTaxonIO.invoke(tcsConfig, cdmApp, taxonStore, taxonNameStore, referenceStore)){
+		if(config.isDoTaxa()){
+			iio = config.getTaxonIO();
+			if (iio != null && ! iio.invoke(config, cdmApp, new MapWrapper[]{ taxonStore, taxonNameStore, referenceStore})){
 				return false;
 			}
 		}else{
@@ -209,8 +233,8 @@ public class TcsImport implements ICdmImport {
 		}
 		
 		//make and save RelPTaxa
-		if(tcsConfig.isDoRelTaxa()){
-			if (! TcsTaxonIO.invokeRelations(tcsConfig, cdmApp, taxonStore, referenceStore)){
+		if(config.isDoRelTaxa()){
+			if (! TcsTaxonIO.invokeRelations(config, cdmApp, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -219,7 +243,7 @@ public class TcsImport implements ICdmImport {
 //		
 //		//make and save Facts
 //		if(tcsConfig.isDoFacts()){
-//			if (! BerlinModelFactsIO.invoke(tcsConfig, cdmApp, taxonStore, referenceStore)){
+//			if (! TaxonXDescriptionIO.invoke(tcsConfig, cdmApp, taxonStore, referenceStore)){
 //				return false;
 //			}
 //		}else{

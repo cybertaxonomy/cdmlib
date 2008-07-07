@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -51,9 +51,10 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		return result;
 	}
 
-	private static Map<Integer, Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
+	private static MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
 		
-		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
+//		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
+		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
 		IDescriptionService descriptionService = cdmApp.getDescriptionService();
 		ITermService termService = cdmApp.getTermService();
 
@@ -79,8 +80,9 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 
 				Feature feature = Feature.NewInstance(factCategory, factCategory, null);
 				feature.setSupportsTextData(true);
-				featureMap.put(factCategoryId, feature);
-
+				
+			//	featureMap.put(factCategoryId, feature);
+				result.put(factCategoryId, feature);
 				//TODO
 //				MaxFactNumber	int	Checked
 //				ExtensionTableName	varchar(100)	Checked
@@ -89,9 +91,9 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 //				RankRestrictionFk	int	Checked
 	
 			}
-			Collection col = featureMap.values();
+			Collection col = result.getAllValues();
 			termService.saveTermsAll(col);
-			return featureMap;
+			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return null;
@@ -111,7 +113,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		
 		logger.info("start makeFacts ...");
 		
-		Map<Integer, Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
+		MapWrapper<Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
 		
 		Feature commonNameFeature = Feature.NewInstance("CommonName", "CommonName", null);
 		//for testing only
@@ -121,7 +123,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT Fact.*, PTaxon.RIdentifier as taxonId " + 
+					" SELECT Fact.*, PTaxon.RIdentifier as taxonId, RefDetail.Details " + 
 					" FROM Fact " +
                       	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
                       	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
@@ -141,8 +143,8 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 //				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
 //				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
 				int categoryFk = rs.getInt("factCategoryFk");
-				String fact = rs.getString("Fact");
-				String notes = rs.getString("notes");
+				String fact = CdmUtils.Nz(rs.getString("Fact"));
+				String notes = CdmUtils.Nz(rs.getString("notes"));
 				
 				TaxonBase taxonBase = taxonMap.get(taxonId);
 				Feature feature = featureMap.get(categoryFk); 
@@ -156,28 +158,36 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 						continue;
 					}
 					
-					TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+					TaxonDescription taxonDescription;
+					Set<TaxonDescription> descriptionSet= taxon.getDescriptions();
+					if (descriptionSet.size() > 0) {
+						taxonDescription = descriptionSet.iterator().next(); 
+					}else{
+						taxonDescription = TaxonDescription.NewInstance();
+						taxon.addDescription(taxonDescription);
+					}
 					
-					taxon.addDescription(taxonDescription);
 					//textData
 					TextData textData = TextData.NewInstance();
 					//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 					
 					//for diptera database
-					if (categoryFk == 99 && notes != null && notes.contains("<OriginalName>")){
+					if (categoryFk == 99 && notes.contains("<OriginalName>")){
 						notes = notes.replaceAll("<OriginalName>", "");
-						notes = notes.replaceAll("<\\OriginalName>", "");
+						notes = notes.replaceAll("<\\\\OriginalName>", "");
 						fact = notes + ": " +  fact ;
 					}
 					textData.putText(fact, Language.DEFAULT());
 					textData.setType(feature);
+					
+					//
 					ReferenceBase citation = referenceMap.get(factRefFk);
 					if (citation == null){
 						citation = nomRefMap.get(factRefFk);
 					}
-					if (citation == null){
-						logger.warn("Citation not found");
+					if (citation == null && factRefFk != 0){
+						logger.warn("Citation not found in referenceMap: " + CdmUtils.Nz(factRefFk));
 					}
 
 					

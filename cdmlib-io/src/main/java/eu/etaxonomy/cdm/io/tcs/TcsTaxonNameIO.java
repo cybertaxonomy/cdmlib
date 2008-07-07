@@ -1,10 +1,5 @@
 package eu.etaxonomy.cdm.io.tcs;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
-
-import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -18,19 +13,14 @@ import org.jdom.Namespace;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.io.common.IIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -38,17 +28,16 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
-public class TcsTaxonNameIO {
+public class TcsTaxonNameIO implements IIO<IImportConfigurator>{
 	private static final Logger logger = Logger.getLogger(TcsTaxonNameIO.class);
 
 	private static int modCount = 5000;
 
-	public static boolean check(TcsImportConfigurator tcsConfig){
+	public boolean check(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("BasionymRelations not yet implemented");
 		logger.warn("Checking for TaxonNames not yet implemented");
@@ -58,18 +47,11 @@ public class TcsTaxonNameIO {
 		return result;
 	}
 	
-	public static boolean checkRelations(TcsImportConfigurator tcsConfig){
-		boolean result = true;
-		logger.warn("Checking for TaxonNameRelations not yet implemented");
-		//result &= checkArticlesWithoutJournal(tcsConfig);
-		//result &= checkPartOfJournal(tcsConfig);
+	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp, MapWrapper<? extends CdmBase>[] storeArray){
 		
-		return result;
-	}
-	
-	
-	public static boolean invoke(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)storeArray[0];
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[1];
+		MapWrapper<Team> authorMap = (MapWrapper<Team>)storeArray[2];
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
@@ -77,6 +59,7 @@ public class TcsTaxonNameIO {
 		String value;
 		
 		logger.info("start makeTaxonNames ...");
+		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
 		INameService nameService = cdmApp.getNameService();
@@ -179,7 +162,7 @@ public class TcsTaxonNameIO {
 						String tdwgType = "http://rs.tdwg.org/ontology/voc/TaxonName#PublicationStatus";
 						if (tdwgType.equalsIgnoreCase(type)){
 							try {
-								//NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								//NomenclaturalStatusType statusType = TaxonXTransformer.nomStatusString2NomStatus(statusValue);
 								NomenclaturalStatusType statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusValue);
 								if (statusType != null){
 									nameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
@@ -234,119 +217,5 @@ public class TcsTaxonNameIO {
 		return success;
 
 	}
-	
-	private static Team getAuthorTeam(MapWrapper<Team> authorMap, Object teamIdObject, int nameId){
-		if (teamIdObject == null){
-			return null;
-		}else {
-			int teamId = (Integer)teamIdObject;
-			Team team = authorMap.get(teamId);
-			if (team == null){
-				//TODO
-				logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
-				" was not found in authorTeam store. Relation was not set!!");
-				return null;
-			}else{
-				return team;
-			}
-		}
-	}
-	
-	
-	public static boolean invokeRelations(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp,
-			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){
 
-		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		Element source = tcsConfig.getSourceRoot();
-		String dbAttrName;
-		String cdmAttrName;
-		
-		logger.info("start makeNameRelationships ...");
-		
-		INameService nameService = cdmApp.getNameService();
-		boolean delete = tcsConfig.isDeleteAll();
-
-//		try {
-//			//get data from database
-//			String strQuery = 
-//					" SELECT RelName.*, FromName.nameId as name1Id, ToName.nameId as name2Id, RefDetail.Details " + 
-//					" FROM Name as FromName INNER JOIN " +
-//                      	" RelName ON FromName.NameId = RelName.NameFk1 INNER JOIN " +
-//                      	" Name AS ToName ON RelName.NameFk2 = ToName.NameId LEFT OUTER JOIN "+
-//                      	" RefDetail ON RelName.RefDetailFK = RefDetail.RefDetailId " + 
-//                    " WHERE (1=1)";
-//			ResultSet rs = source.getResultSet(strQuery) ;
-//			
-//			int i = 0;
-//			//for each reference
-//			while (rs.next()){
-//				
-//				if ((i++ % modCount) == 0){ logger.info("RelName handled: " + (i-1));}
-//				
-//				int relNameId = rs.getInt("RelNameId");
-//				int name1Id = rs.getInt("name1Id");
-//				int name2Id = rs.getInt("name2Id");
-//				int relRefFk = rs.getInt("refFk");
-//				String details = rs.getString("details");
-//				int relQualifierFk = rs.getInt("relNameQualifierFk");
-//				
-//				TaxonNameBase nameFrom = nameMap.get(name1Id);
-//				TaxonNameBase nameTo = nameMap.get(name2Id);
-//				
-//				ReferenceBase citation = referenceMap.get(relRefFk);
-//				//TODO (preliminaryFlag = true testen
-//				String microcitation = details;
-//
-//				if (nameFrom != null && nameTo != null){
-//					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
-//						//TODO references, mikroref, etc
-//						nameTo.setBasionym(nameFrom);
-//					}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
-//						String rule = null;  //TODO
-//						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), rule) ;
-//						//TODO reference
-//					}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
-//						String rule = null;  //TODO
-//						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
-//						//TODO reference
-//					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF ){
-//						//TODO
-//						String originalNameString = null;
-//						boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
-//						boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
-//						//TODO nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType);
-//					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
-//						String rule = null;  //TODO
-//						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;
-//						//TODO reference
-//					}else {
-//						//TODO
-//						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
-//					}
-//					nameStore.add(nameFrom);
-//					
-//					//TODO
-//					//ID
-//					//etc.
-//				}else{
-//					//TODO
-//					if (nameFrom == null){
-//						 logger.warn("from TaxonName for RelName (" + relNameId + ") does not exist in store");
-//					}
-//					if (nameTo == null){
-//						logger.warn("to TaxonNames for RelName (" + relNameId + ") does not exist in store");
-//					}
-//				}
-//			}
-//			logger.info("TaxonName to save: " + nameStore.size());
-//			nameService.saveTaxonNameAll(nameStore);
-//			
-//			logger.info("end makeRelName ...");
-//			return true;
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			return false;
-//		}
-		return false;
-	}
 }

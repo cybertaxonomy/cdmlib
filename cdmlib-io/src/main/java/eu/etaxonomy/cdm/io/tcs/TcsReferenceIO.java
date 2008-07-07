@@ -3,59 +3,30 @@
  */
 package eu.etaxonomy.cdm.io.tcs;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_ARTICLE;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_BOOK;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_DATABASE;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_INFORMAL;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
-import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
-
-import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.io.common.IIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 
 /**
  * @author a.mueller
  *
  */
-public class TcsReferenceIO {
+public class TcsReferenceIO implements IIO<IImportConfigurator>{
 	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
 
 	private static int modCount = 1000;
 
-	public static boolean check(IImportConfigurator bmiConfig){
+	public boolean check(IImportConfigurator config){
 		boolean result = true;
-		result &= checkArticlesWithoutJournal(bmiConfig);
-		result &= checkPartOfJournal(bmiConfig);
+		result &= checkArticlesWithoutJournal(config);
+		result &= checkPartOfJournal(config);
 		
 		return result;
 	}
@@ -100,7 +71,7 @@ public class TcsReferenceIO {
 		}
 	}
 	
-	private static boolean checkPartOfJournal(IImportConfigurator bmiConfig){
+	private boolean checkPartOfJournal(IImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 //			Source source = bmiConfig.getSource();
@@ -141,8 +112,13 @@ public class TcsReferenceIO {
 	}
 	
 	
-	public static boolean invoke(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp,
-			MapWrapper<ReferenceBase> referenceMap, MapWrapper<Team> authorMap){
+	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp,
+			MapWrapper<? extends CdmBase>[] storeArray){
+		
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[0]; 
+		MapWrapper<Team> authorMap = (MapWrapper<Team>)storeArray[1];
+		
+		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element source = tcsConfig.getSourceRoot();
 		
 		String dbAttrName;

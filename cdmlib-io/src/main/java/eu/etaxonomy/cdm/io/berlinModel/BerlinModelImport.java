@@ -52,7 +52,7 @@ public class BerlinModelImport {
 	
 	protected boolean doCheck(BerlinModelImportConfigurator bmiConfig){
 		boolean result = true;
-		System.out.println("Start check BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") ...");
+		System.out.println("Start check BerlinModel ("+ bmiConfig.getSourceNameString() + ") ...");
 		
 		//check
 		if (bmiConfig == null){
@@ -120,7 +120,7 @@ public class BerlinModelImport {
 		}
 		
 		//return
-		System.out.println("End checking BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") for import to CDM");
+		System.out.println("End checking BerlinModel ("+ bmiConfig.getSourceNameString() + ") for import to CDM");
 		return result;
 
 	}
@@ -149,7 +149,7 @@ public class BerlinModelImport {
 		}
 		Source source = bmiConfig.getSource();
 		ReferenceBase sourceReference = bmiConfig.getSourceReference();
-		System.out.println("Start import from BerlinModel ("+ bmiConfig.getSource().getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("Start import from BerlinModel ("+ bmiConfig.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		
 
 		//Authors
@@ -257,7 +257,7 @@ public class BerlinModelImport {
 		}
 		
 		//return
-		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("End import from BerlinModel ("+ bmiConfig.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		return true;
 	}
 	

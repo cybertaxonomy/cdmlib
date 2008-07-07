@@ -110,6 +110,20 @@ public interface IImportConfigurator {
 
 	public abstract ReferenceBase getSourceReference();
 
+	
+	/**
+	 * A String representation of the used source (e.g. BerlinModel Cichorieae Database)
+	 * @return
+	 */
+	public abstract String getSourceNameString();
+	
+	/**
+	 * Any object that represents the Source. The implementing class must cast this to 
+	 * the correct class type
+	 * @return
+	 */
+	public abstract Object getSource();
+	
 	public abstract void setSourceReference(ReferenceBase sourceReference);
 
 	public abstract String getSourceReferenceTitle();
@@ -128,6 +142,31 @@ public interface IImportConfigurator {
 	
 	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 
+	public abstract IIO getAuthorIO();
+	
+	public abstract IIO getReferenceIO();
 
+	public abstract IIO getTaxonNameIO();
 
+	public abstract IIO getTaxonNameRelationIO();
+	
+	public abstract IIO getTypeIO();
+
+	public abstract IIO getNameStatusIO();
+	
+	public abstract IIO getTaxonIO();
+
+	public abstract IIO getTaxonRelationIO();
+	
+	public abstract IIO getDescriptionIO();
+	
+	public abstract IIO getOccurrenceIO();
+	
+	//TODO not CDM like
+	public abstract IIO getNameFactsIO();
+
+	//public IIO<IImportConfigurator>[] getIioArray();
+
+	public ICdmIO<IImportConfigurator>[] getICdmIo();
+	
 }

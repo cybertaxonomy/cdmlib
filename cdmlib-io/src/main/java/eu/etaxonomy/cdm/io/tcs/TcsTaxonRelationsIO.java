@@ -4,19 +4,14 @@
 package eu.etaxonomy.cdm.io.tcs;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.filter.ElementFilter;
-import org.jdom.filter.Filter;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.IIO;
@@ -24,8 +19,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -39,21 +32,13 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TcsTaxonIO implements IIO<IImportConfigurator>{
-	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
+public class TcsTaxonRelationsIO implements IIO<IImportConfigurator>{
+	private static final Logger logger = Logger.getLogger(TcsTaxonRelationsIO.class);
 
 	private static int modCount = 30000;
 
-	public boolean check(IImportConfigurator config){
-		boolean result = true;
-		logger.warn("Checking for Taxa not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
-		return result;
-	}
 	
-	public boolean checkRelations(IImportConfigurator config){
+	public boolean check(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -62,111 +47,10 @@ public class TcsTaxonIO implements IIO<IImportConfigurator>{
 		return result;
 	}
 	
-	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp, MapWrapper<? extends CdmBase>[] storeArray){
-		
+	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp,MapWrapper<? extends CdmBase>[] storeArray){ 
+			
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)storeArray[0];
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>) storeArray[1];
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>) storeArray[2];
-		
-		String xmlElementName;
-		String xmlAttributeName;
-		Namespace elementNamespace;
-		Namespace attributeNamespace;
-		String cdmAttrName;
-		String value;
-
-		logger.info("start makeTaxa ...");
-		
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
-		boolean success =true;
-		INameService nameService = cdmApp.getNameService();
-		
-		String prefix;
-		Namespace rdfNamespace = root.getNamespace();
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		
-		xmlElementName = "TaxonConcept";
-		elementNamespace = taxonConceptNamespace;
-		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
-
-		ITaxonService taxonService = cdmApp.getTaxonService();
-		
-		int i = 0;
-		//for each taxonName
-		for (Element elTaxonConcept : elTaxonConcepts){
-			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			
-			//
-			String taxonAbout = elTaxonConcept.getAttributeValue("about", rdfNamespace);
-			
-			//hasName
-			xmlElementName = "hasName";
-			elementNamespace = taxonConceptNamespace;
-			xmlAttributeName = "resource";
-			attributeNamespace = rdfNamespace;
-			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-			TaxonNameBase taxonNameBase = taxonNameMap.get(strNameResource);
-				
-			//accordingTo
-			xmlElementName = "accordingTo";
-			elementNamespace = taxonConceptNamespace;
-			String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
-			//FIXME
-			Generic sec = Generic.NewInstance();
-			sec.setTitleCache(strAccordingTo);
-			
-			//FIXME or synonym
-			TaxonBase taxonBase;
-			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
-				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
-			}else{
-				taxonBase = Taxon.NewInstance(taxonNameBase, sec);
-			}
-			
-			//primary
-//			xmlElementName = "primary";
-//			elementNamespace = taxonConceptNamespace;
-//			cdmAttrName = "isPrimary";
-//			Boolean primary = ImportHelper.addXmlBooleanValue(elTaxonConcept, taxon, xmlElementName, elementNamespace, cdmAttrName);
-			
-			taxonMap.put(taxonAbout, taxonBase);
-			
-		}
-		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-		logger.info("saving taxa ...");
-		taxonService.saveTaxonAll(taxonMap.objects());
-		logger.info("end makeTaxa ...");
-		return success;
-	}
-	
-	
-	private static boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
-		boolean result = false;
-		if (taxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(taxonConcept.getName()) ){
-			return false;
-		}
-		
-		String elName = "relationshipCategory";
-		Filter filter = new ElementFilter(elName, taxonConcept.getNamespace());
-		Iterator<Element> relationshipCategories = taxonConcept.getDescendants(filter);
-		while (relationshipCategories.hasNext()){
-			Element relationshipCategory = relationshipCategories.next();
-			Attribute resource = relationshipCategory.getAttribute("resource", rdfNamespace);
-			String isSynonymFor = "http://rs.tdwg.org/ontology/voc/TaxonConcept#IsSynonymFor";
-			if (resource != null && isSynonymFor.equalsIgnoreCase(resource.getValue()) ){
-				return true;
-			}
-		}
-		return result;
-	}
-	
-
-	public static boolean invokeRelations(TcsImportConfigurator tcsConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[1]; 
 
 		String xmlElementName;
 		String xmlAttributeName;
@@ -179,6 +63,7 @@ public class TcsTaxonIO implements IIO<IImportConfigurator>{
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
+		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 
 		ITaxonService taxonService = cdmApp.getTaxonService();

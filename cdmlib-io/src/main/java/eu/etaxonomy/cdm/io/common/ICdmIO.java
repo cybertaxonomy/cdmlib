@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.Map;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -18,11 +20,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 
-public interface IIO<T extends IImportConfigurator> {
+public interface ICdmIO<T extends IImportConfigurator> {
 
+	
+	final String AUTHOR_STORE = "author";
+	final String REFERENCE_STORE = "reference";
+	final String NOMREF_STORE = "nomRef";
+	final String TAXONNAME_STORE = "taxonName";
+	final String TAXON_STORE = "taxon";
+	final String FEATURE_STORE = "feature";
+	
 	public boolean check(T config);
 	
-	public boolean invoke(T config, CdmApplicationController app, MapWrapper<? extends CdmBase>[] storeArray);
+	public boolean invoke(T config, CdmApplicationController app, Map<String, MapWrapper<? extends CdmBase>> stores);
 	
 
 	

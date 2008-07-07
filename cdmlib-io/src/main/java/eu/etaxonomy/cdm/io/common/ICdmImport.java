@@ -1,11 +1,8 @@
 package eu.etaxonomy.cdm.io.common;
 
-import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+public interface ICdmImport<T extends IImportConfigurator> {
 
-public interface ICdmImport {
-
-	public abstract boolean invoke(TcsImportConfigurator tcsiConfig);
+	public abstract boolean invoke(T tcsiConfig);
 
 }

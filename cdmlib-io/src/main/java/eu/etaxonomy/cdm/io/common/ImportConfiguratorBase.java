@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 20.06.2008
  * @version 1.0
  */
-public abstract class ImportConfiguratorBase {
+public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ {
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//TODO
@@ -59,6 +60,24 @@ public abstract class ImportConfiguratorBase {
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
 	
+	//IOs
+	protected IIO authorIO = null;
+	protected IIO referenceIO = null;
+	protected IIO taxonNameIO = null;
+	protected IIO nameStatusIO = null;
+	protected IIO nameRelationIO = null;
+	protected IIO taxonIO = null;
+	protected IIO taxonRelationIO = null;
+	protected IIO typeIO = null;
+	protected IIO descriptionIO = null;
+	protected IIO occurrenceIO = null;
+	protected IIO taxonNameRelationIO = null;
+	protected IIO nameFactsIO = null;
+	
+	protected ICdmIO<IImportConfigurator>[] iCdmIoArray; 
+	
+	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
+	
 	//uuid of concept reference
 	private UUID  secUuid = UUID.randomUUID();
 	private int sourceSecId = -1;
@@ -72,6 +91,13 @@ public abstract class ImportConfiguratorBase {
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 
 /* *****************CONSTRUCTOR *****************************/
+	
+	public ImportConfiguratorBase(){
+		super();
+		makeIOs();
+	}
+	
+	abstract protected void makeIOs();
 	
 	/**
 	 * @param source the source to set
@@ -396,5 +422,116 @@ public abstract class ImportConfiguratorBase {
 	public void setSourceSecId(int sourceSecId) {
 		this.sourceSecId = sourceSecId;
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getAuthorIO()
+	 */
+	public IIO getAuthorIO() {
+		return this.authorIO;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getDescriptionIO()
+	 */
+	public IIO getDescriptionIO() {
+		return descriptionIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNameFactsIO()
+	 */
+	public IIO getNameFactsIO() {
+		return this.nameFactsIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNameStatusIO()
+	 */
+	public IIO getNameStatusIO() {
+		return this.nameStatusIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getOccurrenceIO()
+	 */
+	public IIO getOccurrenceIO() {
+		return this.occurrenceIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getReferenceIO()
+	 */
+	public IIO getReferenceIO() {
+		return this.referenceIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonIO()
+	 */
+	public IIO getTaxonIO() {
+		return this.taxonIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonNameIO()
+	 */
+	public IIO getTaxonNameIO() {
+		return this.taxonNameIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonNameRelationIO()
+	 */
+	public IIO getTaxonNameRelationIO() {
+		return this.taxonNameRelationIO;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonRelationIO()
+	 */
+	public IIO getTaxonRelationIO() {
+		return this.getTaxonRelationIO();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTypeIO()
+	 */
+	public IIO getTypeIO() {
+		return this.typeIO;
+	}
+
+	/**
+	 * @return the iioArray
+	 */
+	public ICdmIO<IImportConfigurator>[] getICdmIo() {
+		return iCdmIoArray;
+	}
+
+	/**
+	 * @return the featureMap
+	 */
+	public MapWrapper<Feature> getFeatureMap() {
+		return featureMap;
+	}
+
+	/**
+	 * @param featureMap the featureMap to set
+	 */
+	public void setFeatureMap(MapWrapper<Feature> featureMap) {
+		this.featureMap = featureMap;
+	}
+
+
 	
 }

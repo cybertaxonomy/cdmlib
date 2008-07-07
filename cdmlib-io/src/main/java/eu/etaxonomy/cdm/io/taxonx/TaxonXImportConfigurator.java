@@ -1,4 +1,4 @@
- package eu.etaxonomy.cdm.io.tcs;
+ package eu.etaxonomy.cdm.io.taxonx;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -9,42 +9,46 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public class TcsImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
-	private static Logger logger = Logger.getLogger(TcsImportConfigurator.class);
-	
+public class TaxonXImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
 	protected void makeIOs(){
-		this.referenceIO = new TcsReferenceIO();
-		this.taxonIO = new TcsTaxonIO();
-		this.taxonNameIO = new TcsTaxonNameIO();
-		this.taxonNameRelationIO = new TcsTaxonNameRelationsIO();
-		this.taxonRelationIO = new TcsTaxonRelationsIO();
+		//this.descriptionIO = new TaxonXDescriptionIO(this.isDoFacts());
 		
+		iCdmIoArray = new ICdmIO []{
+				new TaxonXDescriptionIO(! this.isDoFacts())
+//				, new TaxonXDescriptionIO(config.isDoFacts())
+
+		};
 	}
-	
-	
-	public static TcsImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new TcsImportConfigurator(url, destination);
-	}
-	
 	
 	/**
-	 * @param berlinModelSource
-	 * @param sourceReference
+	 * @param url
+	 * @param destination
+	 * @return
+	 */
+	public static TaxonXImportConfigurator NewInstance(String url, ICdmDataSource destination){
+		return new TaxonXImportConfigurator(url, destination);
+	}
+
+
+	/**
+	 * @param url
 	 * @param destination
 	 */
-	private TcsImportConfigurator(String url, ICdmDataSource destination) {
+	private TaxonXImportConfigurator(String url, ICdmDataSource destination) {
 		super();
 		setSource(url);
 		setDestination(destination);
 	}
 	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
@@ -52,7 +56,7 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	public String getSource() {
 		return (String)super.getSource();
 	}
-	
+
 	/**
 	 * @param file
 	 */
@@ -60,9 +64,6 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 		super.setSource(file);
 	}
 	
-	/**
-	 * @return
-	 */
 	public Element getSourceRoot(){
 		String source = getSource();
 		try {
@@ -93,7 +94,7 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 		result.setTitleCache("XXX");
 		return result;
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
@@ -105,7 +106,7 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 			return this.getSource();
 		}
 	}
-	
-	
+
+
 	
 }

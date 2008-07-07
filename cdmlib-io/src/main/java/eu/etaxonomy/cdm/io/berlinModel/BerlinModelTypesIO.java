@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class BerlinModelTypesIO extends BerlinModelIOBase implements IIO<BerlinModelImportConfigurator> {
+public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<BerlinModelImportConfigurator>*/ {
 	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
 
 	private static int modCount = 10000;

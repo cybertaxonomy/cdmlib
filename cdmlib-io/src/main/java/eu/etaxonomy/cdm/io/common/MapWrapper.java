@@ -4,8 +4,10 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -57,6 +59,24 @@ public class MapWrapper<T extends CdmBase> {
 			result = (T)internalMap.get(id);
 		}else{
 			result = getObjectFromService(id);
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns all values that are either stored in the wrapper or the the database.
+	 * If <code>service</code> is null then only the elements stored in the wrapper are returned. 
+	 * @return
+	 */
+	public Set<T> getAllValues(){
+		Set<T> result = new HashSet<T>();
+		if (service == null){
+			result.addAll(internalMap.values());
+		}else{
+			result.addAll(internalMap.values());
+			logger.warn("getAll not yet implemented !!");
+			//TODO Set<T> persitentAll = service.getAll();
+			//result.addAll(persistentALl);
 		}
 		return result;
 	}
