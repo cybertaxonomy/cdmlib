@@ -9,15 +9,9 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 @Entity
 public class SpecimenDescription extends DescriptionBase {

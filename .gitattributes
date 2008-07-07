@@ -164,6 +164,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/StatisticalMeasure
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/StatisticalMeasurementValue.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TaxonDescription.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TaxonInteraction.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TaxonNameDescription.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TextData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TextFormat.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/package.html -text
@@ -177,6 +178,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/WaterbodyOrCountry.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/AudioFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IMediaDocumented.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IMediaEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IdentifyableMediaEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ImageFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Media.java -text

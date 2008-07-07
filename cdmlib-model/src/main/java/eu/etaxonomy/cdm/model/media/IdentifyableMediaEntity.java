@@ -16,12 +16,15 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 @MappedSuperclass
-public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented{
+public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
 	static Logger logger = Logger.getLogger(IdentifyableMediaEntity.class);
 
 	private Set<Media> media = getNewMediaSet();
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia() {
@@ -30,9 +33,15 @@ public abstract class IdentifyableMediaEntity extends IdentifiableEntity impleme
 	protected void setMedia(Set<Media> media) {
 		this.media = media;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#addMedia(eu.etaxonomy.cdm.model.media.Media)
+	 */
 	public void addMedia(Media media) {
 		this.media.add(media);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#removeMedia(eu.etaxonomy.cdm.model.media.Media)
+	 */
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}

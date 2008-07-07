@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import eu.etaxonomy.cdm.model.media.IMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -38,7 +39,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends ReferencedEntityBase {
+public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
 	
 	//type, category of information. In structured descriptions characters

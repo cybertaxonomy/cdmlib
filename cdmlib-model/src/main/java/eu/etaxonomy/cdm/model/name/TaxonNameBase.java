@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 
 
 import org.apache.log4j.Logger;
@@ -83,6 +85,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 
+	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
+	private static Method methodDescriptionSetTaxonName;
+
+
+	
     @XmlElement(name = "AppendedPhrase")
 	private String appendedPhrase;
 	
@@ -870,7 +877,17 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 				//TODO handle exception
 			}
 		}
+		if (methodDescriptionSetTaxonName == null){
+			try {
+				methodDescriptionSetTaxonName = TaxonNameDescription.class.getDeclaredMethod("setTaxonName", TaxonNameBase.class);
+				methodDescriptionSetTaxonName.setAccessible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//TODO handle exception
+			}
+		}
 	}
+	
 	
 	
 	/**
@@ -912,6 +929,37 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		}
 		return result;
 	}
+	
+	
+// *********** DESCRIPTIONS *************************************	
+
+	@OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<TaxonNameDescription> getDescriptions() {
+		return descriptions;
+	}
+	protected void setDescriptions(Set<TaxonNameDescription> descriptions) {
+		this.descriptions = descriptions;
+	}
+	/**
+	 * Adds a description to this taxon. Set the taxon property of description to this taxon.
+	 * @param description
+	 */
+	public void addDescription(TaxonNameDescription description) {
+		initMethods();
+		this.invokeSetMethod(methodDescriptionSetTaxonName, description);
+		descriptions.add(description);
+	}
+	public void removeDescription(TaxonNameDescription description) {
+		initMethods();
+		this.invokeSetMethod(methodDescriptionSetTaxonName, null);
+		descriptions.remove(description);
+	}
+	
+	
+	
+	
+	
 	
 // ***********
 	/**
