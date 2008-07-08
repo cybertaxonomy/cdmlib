@@ -31,11 +31,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 public class NomenclaturalCode extends DefinedTermBase {
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 
-	private static final UUID uuidBacteriological = UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e");
+	private static final UUID uuidIcnb = UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e");
 	private static final UUID uuidIcbn = UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482");
 	private static final UUID uuidIcncp = UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e");
 	private static final UUID uuidIczn = UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b");
-	private static final UUID uuidViral = UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a");
+	private static final UUID uuidIcvcn = UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a");
 
 	/**
 	 * Constructor
@@ -61,8 +61,8 @@ public class NomenclaturalCode extends DefinedTermBase {
 	/**
 	 * @return
 	 */
-	public static final NomenclaturalCode BACTERIOLOGICAL(){
-		return getByUuid(uuidBacteriological);
+	public static final NomenclaturalCode ICNB(){
+		return getByUuid(uuidIcnb);
 	}
 	
 	/**
@@ -93,8 +93,8 @@ public class NomenclaturalCode extends DefinedTermBase {
 	 * Rules that govern the names of viral species
 	 * @return
 	 */
-	public static final NomenclaturalCode VIRAL(){
-		return getByUuid(uuidViral);
+	public static final NomenclaturalCode ICVCN(){
+		return getByUuid(uuidIcvcn);
 	}
 	
 	@Transient
@@ -106,9 +106,9 @@ public class NomenclaturalCode extends DefinedTermBase {
 			result = ZoologicalName.NewInstance(rank);
 		}else if (this.equals(NomenclaturalCode.ICNCP())){
 			result = CultivarPlantName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.BACTERIOLOGICAL())){
+		}else if (this.equals(NomenclaturalCode.ICNB())){
 			result = BacterialName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.VIRAL())){
+		}else if (this.equals(NomenclaturalCode.ICVCN())){
 			result = ViralName.NewInstance(rank);
 		}else {
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());

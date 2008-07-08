@@ -144,7 +144,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.VIRAL();
+		return NomenclaturalCode.ICVCN();
 	}
 
 

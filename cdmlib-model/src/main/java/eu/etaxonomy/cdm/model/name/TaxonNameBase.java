@@ -428,8 +428,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/**
 	 * Indicates whether this taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
 	 * or a {@link NameRelationshipType.REPLACED_SYNONYM() replaced synonym}
-	 * of any other taxon name. Returns true, if a basionym or a replaced synonym 
-	 * relationship from this taxon name to another taxon name exists,
+	 * of any other taxon name. Returns "true", if a basionym or a replaced 
+	 * synonym relationship from this taxon name to another taxon name exists,
 	 * false otherwise (also in case this taxon name is the only one in the
 	 * homotypical group).
 	 */

@@ -162,7 +162,7 @@ public class BacterialName extends NonViralName {
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.BACTERIOLOGICAL();
+		return NomenclaturalCode.ICNB();
 
 	}
 
