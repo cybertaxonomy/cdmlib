@@ -97,10 +97,10 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		}else if (code.equals(NomenclaturalCode.ICNCP())){
 			logger.warn("ICNCP parsing not yet implemented");
 			result = CultivarPlantName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.BACTERIOLOGICAL())){
-			logger.warn("ICNCP not yet implemented");
+		}else if (code.equals(NomenclaturalCode.ICNB())){
+			logger.warn("ICNB not yet implemented");
 			result = BacterialName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.VIRAL())){
+		}else if (code.equals(NomenclaturalCode.ICVCN())){
 			logger.error("Viral name is not a NonViralName !!");
 		}else{
 			logger.error("Unknown Nomenclatural Code !!");
