@@ -86,10 +86,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
 
-	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 	private static Method methodDescriptionSetTaxonName;
 
-
+    @XmlElementWrapper(name = "Descriptions")
+    @XmlElement(name = "Description")
+	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 	
     @XmlElement(name = "AppendedPhrase")
 	private String appendedPhrase;
