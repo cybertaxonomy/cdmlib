@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * a {@link Rank rank} above "species aggregate" by a species taxon name. A type of a
  * genus name or of any subdivision of a genus can only be a species name.
  * A type of a family name or of any subdivision of a family is a genus name 
- * (or resolving it: a species name typifying this genus).
+ * (and resolving it: a species name typifying this genus).
  * Moreover the designation of a particular species name as a type for a
  * suprageneric taxon name might be nomenclaturally rejected or conserved.
  * Depending on the date of publication, the same typification could be rejected

@@ -42,10 +42,10 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 /**
  * The homotypical group class represents a set of {@link TaxonNameBase taxon names} all sharing
  * the same type specimens. It can also include names with a {@link common.Rank rank} higher
- * than species aggregate like genera or families which usually are typified by
+ * than "species aggregate" like genera or families which usually are typified by
  * a taxon name that finally (a name type designation can also point to another
  * taxon name) points to a species name, which in turn is typified by a (set of)
- * physical type specimen(s). This class allows to define the
+ * physical type specimen(s). This class allows to define a
  * {@link SpecimenTypeDesignation specimen type designation} only once
  * for the homotypical group instead of defining a type designation for each one
  * of the taxon names subsumed under one homotypical group.
@@ -109,8 +109,10 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		this.typifiedNames = typifiedNames;
 	}
 	/** 
-	 * Adds a new {@link TaxonNameBase taxon name}
-	 * to the set of taxon names that belong to this homotypical group.
+	 * Adds a new {@link TaxonNameBase taxon name} to the set of taxon names that belong
+	 * to this homotypical group and to the corresponding set of each 
+	 * {@link SpecimenTypeDesignation#getTypifiedNames() type designation}
+	 * associated with this homotypical group.
 	 *
 	 * @param  typifiedName  the taxon name to be added to this group
 	 * @see 			  	 #getTypifiedNames()

@@ -29,14 +29,21 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Taxon names which have the a rank "species" or below can only be typified
- * by specimens. Above the species rank the taxon names are generally typified
- * by taxon names with lower rank (species for genus and genus for family) but
- * can also be typified directly by specimens.
+ * The class representing a typification of an {@link HomotypicalGroup homotypical group} by a
+ * {@link occurrence.DerivedUnitBase specimen or a figure}. This allows to define a specimen type designation
+ * only once for the homotypical group instead of defining a type designation
+ * for each one of the taxon names subsumed under one homotypical group.
+ * All {@link TaxonNameBase taxon names} which have a {@link Rank rank}
+ * "species aggregate" or lower can only be typified by specimens, but taxon
+ * names with a higher rank might be typified by an other taxon name with
+ * "species" rank a ({@link NameTypeDesignation name type designation}).
+ * Moreover each typification by a specimen (or by a figure) has a {@link TypeDesignationStatus status}
+ * like "holotype" or "isotype".
  * 
- * @author m.doering
+ * @see		NameTypeDesignation
+ * @author	m.doering
  * @version 1.0
- * @created 08-Nov-2007 13:06:52
+ * @created 08-Nov-2007 13:06:38
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignation", propOrder = {
@@ -69,51 +76,121 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
-	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,
-			ReferenceBase citation, String citationMicroReference, String originalNameString){
-		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
-		return specTypeDesig;
-	}
-	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty specimen type designation.
+	 * 
+	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
+	 */
 	protected SpecimenTypeDesignation(){
 		
 	}
 	
-	private SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
+	/**
+	 * Class constructor: creates a new specimen type designation instance
+	 * (including its {@link reference.ReferenceBase reference source} and eventually
+	 * the taxon name string originally used by this reference when establishing
+	 * the former designation) and adds it to the corresponding 
+	 * {@link HomotypicalGroup#getTypeDesignations() specimen type designation set} of the
+	 * {@link HomotypicalGroup homotypical group}.
+	 * 
+	 * @param specimen				the derived unit (specimen or figure) used as type
+	 * @param status				the type designation status 
+	 * @param citation				the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @see							#SpecimenTypeDesignation()
+	 * @see							HomotypicalGroup#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @see							occurrence.DerivedUnitBase
+	 */
+	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}
 	
 
+	/**
+	 * Creates a new specimen type designation instance
+	 * (including its {@link reference.ReferenceBase reference source} and eventually
+	 * the taxon name string originally used by this reference when establishing
+	 * the former designation) and adds it to the corresponding 
+	 * {@link HomotypicalGroup#getTypeDesignations() specimen type designation set} of the
+	 * {@link HomotypicalGroup homotypical group}.
+	 * 
+	 * @param specimen				the derived unit (specimen or figure) used as type
+	 * @param status				the type designation status 
+	 * @param citation				the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
+	 * @see							HomotypicalGroup#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @see							occurrence.DerivedUnitBase
+	 */
+	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,
+			ReferenceBase citation, String citationMicroReference, String originalNameString){
+		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
+		return specTypeDesig;
+	}
+	
+	
+	//********* METHODS **************************************/
+
+	/** 
+	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
+	 * in this specimen type designation.
+	 *  
+	 * @see   #getTypeSpecimen()
+	 */
 	@ManyToOne
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
 	}
+	/**
+	 * @see  #getHomotypicalGroup()
+	 */
 	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}
 
 
+	/** 
+	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
+	 * in this specimen type designation to typify the {@link HomotypicalGroup homotypical group}.
+	 *  
+	 * @see   #getHomotypicalGroup()
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public DerivedUnitBase getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
+	/**
+	 * @see  #getTypeSpecimen()
+	 */
 	public void setTypeSpecimen(DerivedUnitBase typeSpecimen){
 		this.typeSpecimen = typeSpecimen;
 	}
 
+	/** 
+	 * Returns the {@link TypeDesignationStatus type designation status} for this specimen type
+	 * designation. This status describes the kind of possible types like
+	 * "holotype", "neotype", "syntype" or "isotype".
+	 */
 	@ManyToOne
 	public TypeDesignationStatus getTypeStatus(){
 		return this.typeStatus;
 	}
+	/**
+	 * @see  #getTypeStatus()
+	 */
 	public void setTypeStatus(TypeDesignationStatus typeStatus){
 		this.typeStatus = typeStatus;
 	}
 
-	/**
-	 * @return the typifiedNames
+	/** 
+	 * Returns the set of {@link TaxonNameBase taxon names} included in the
+	 * {@link HomotypicalGroup homotypical group} typified in this specimen type designation.
 	 */
 	@ManyToMany
 	public Set<TaxonNameBase> getTypifiedNames() {
@@ -121,7 +198,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	}
 
 	/**
-	 * @param typifiedNames the typifiedNames to set
+	 * @see  #getTypifiedNames()
 	 */
 	public void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
 		this.typifiedNames = typifiedNames;
