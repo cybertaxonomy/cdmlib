@@ -174,8 +174,9 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the {@link TypeDesignationStatus type designation status} for this specimen type
-	 * designation. This status describes the kind of possible types like
-	 * "holotype", "neotype", "syntype" or "isotype".
+	 * designation. This status describes which of the possible categories of
+	 * types like "holotype", "neotype", "syntype" or "isotype" applies to this
+	 * specimen type designation.
 	 */
 	@ManyToOne
 	public TypeDesignationStatus getTypeStatus(){

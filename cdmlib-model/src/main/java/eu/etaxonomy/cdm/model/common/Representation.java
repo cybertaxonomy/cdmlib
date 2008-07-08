@@ -54,9 +54,15 @@ public class Representation extends LanguageStringBase {
 	public Representation() {
 		super();
 	}	
+
+	/**
+	 * text represents an explanation/declaration ('The name is illegitimate according to ICBN'); label a string identifier ('illegitimate name');
+	 * abbreviatedLabel a shortened string for the label ('nom. illeg.') 
+	 */
 	public Representation(String text, String label, String abbreviatedLabel, Language language) {
 		super(text, language);
 		this.label = label;
+		this.abbreviatedLabel = abbreviatedLabel;
 	}
 
 	
