@@ -332,6 +332,7 @@ cdmlib-model/src/site/resources/images/uml/package_overview.png -text
 cdmlib-model/src/site/site.xml -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilderTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/jaxb/CdmSchemaGeneratorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DataSetTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text

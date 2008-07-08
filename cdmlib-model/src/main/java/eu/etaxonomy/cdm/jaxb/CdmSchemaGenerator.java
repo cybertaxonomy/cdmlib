@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.jaxb;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.DataSet;
 public class CdmSchemaGenerator extends SchemaOutputResolver {
 	
 	private JAXBContext jaxbContext;
-	StringWriter out = new StringWriter();
+	private StringWriter out = new StringWriter();
 
 	public CdmSchemaGenerator() throws SAXException, JAXBException, IOException {
 
@@ -41,18 +42,30 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
 	}
 
 	/** 
-     * Prints one single generated schema on console.
+     * Buffers one schema file per namespace.
+     * Result here is schema1.xsd, ..., schema7.xsd in C:\Temp.
+     * filename param is ignored.
 	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Result createOutput(String namespaceUri, String filename) throws IOException {
 
-		StreamResult res = new StreamResult(System.out);
-		res.setSystemId(filename);
+		StreamResult res = new StreamResult(new File("C:" + File.separator + "Temp", filename));
 		return res;
 	}
 	
 	/** 
+     * Writes one schema file per namespace.
+	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
+	 */
+	public void writeSchema() throws JAXBException, IOException, SAXException {
+
+		jaxbContext.generateSchema(this);
+	}
+
+	/** 
+	 * Not used
+	 * 
      * Buffers one single generated schema.
 	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
 	 */
@@ -62,12 +75,10 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
 		SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema").newSchema(
 				new StreamSource( new StringReader(out.toString())));
 		return schema;
+		
 	}
+	
+	// set implicit schema for validation
+	// Schema implicitSchema = cdmSchemaGenerator.createSchema();
 
-	public void writeSchema(DataSet dataSet, Writer writer) throws JAXBException, IOException, SAXException {
-
-		CdmSchemaGenerator out = new CdmSchemaGenerator();
-		jaxbContext.generateSchema(out);
-		Schema implicitSchema = out.createSchema();
-	}
 }

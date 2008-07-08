@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 	"title",
     "datePublished"
 })
-@XmlRootElement(name = "RelationshipBase")
+@XmlRootElement(name = "StrictReferenceBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase extends ReferenceBase{

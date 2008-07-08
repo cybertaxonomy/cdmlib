@@ -22,7 +22,6 @@ public class CdmDocumentBuilderTest {
 	private CdmDocumentBuilder cdmDocumentBuilder;
 	private String userHome = System.getProperty("user.home");
 	private String marshOut = new String( userHome + File.separator + "cdm_marshalled.xml");
-	private String unmarshIn = new String( userHome + File.separator + "cdm_marshalled.xml");
 	private String unmarshOut = new String( userHome + File.separator + "cdm_roundtrip.xml");
 	
 	@Before

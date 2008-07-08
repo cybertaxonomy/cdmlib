@@ -75,8 +75,9 @@ import javax.xml.bind.annotation.XmlType;
     "specimenTypeDesignations",
     "relationsFromThisName",
     "relationsToThisName",
-    "status"
-//    "taxonBases",
+    "status",
+    "descriptions"
+//    "taxonBases"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
