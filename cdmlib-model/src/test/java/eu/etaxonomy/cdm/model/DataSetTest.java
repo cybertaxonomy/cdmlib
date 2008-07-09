@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public class DataSetTest {
@@ -43,7 +44,7 @@ public class DataSetTest {
     private List<TermBase> terms;
     private List<StrictReferenceBase> references;
     private List<NonViralName> taxonomicNames;
-    private List<Taxon> taxa;
+    private List<TaxonBase> taxa;
     private List<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
 	
@@ -62,20 +63,21 @@ public class DataSetTest {
 	 * The sample tree contains four taxa. The root taxon has two children taxa, and
 	 * there is one "free" taxon without a parent and children.
 	 */
-	public void buildTaxa() {
+	public void buildData(boolean persistentContext) {
 
 		agents = new ArrayList<Agent>();
 		agentData = new ArrayList<VersionableEntity>();
 		terms = new ArrayList<TermBase>();
 	    references = new ArrayList<StrictReferenceBase>();
 		taxonomicNames = new ArrayList<NonViralName>();
-		taxa = new ArrayList<Taxon>();
+		taxa = new ArrayList<TaxonBase>();
 		synonyms = new ArrayList<Synonym>();
 		
 		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, nameRoot, nameFree;
 		Taxon child1, child2, rootT, freeT;
 		Synonym syn1, syn2, synRoot, synFree;
+		Rank rankSpecies, rankSubspecies, rankGenus;
 
 		// agents 
 		// - persons, institutions 
@@ -108,32 +110,40 @@ public class DataSetTest {
 		// terms
 		// - ranks, keywords
 
-		Rank rankRoot = new Rank();
-		Rank rankChildren = new Rank();
-		Rank rankFree = new Rank();
+		if (persistentContext == true) {
+			
+		rankSpecies = Rank.SPECIES();
+		rankSubspecies = Rank.SUBSPECIES();
+		rankGenus = Rank.GENUS();
+		
+		} else {
+		rankSpecies = new Rank ();
+		rankSubspecies = new Rank();
+		rankGenus = new Rank();
+		}
 		
 //      Do something like this? If yes, FIXME: Stack overflow.
 //		try {
-//			rankRoot = Rank.getRankByName("Species");
-//			rankChildren = Rank.getRankByName("Subspecies");
-//			rankFree = Rank.getRankByName("Genus");
+//			rankSpecies = Rank.getRankByName("Species");
+//			rankSubspecies = Rank.getRankByName("Subspecies");
+//			rankGenus = Rank.getRankByName("Genus");
 //			
 //		} catch (UnknownCdmTypeException ex) {
 //			ex.printStackTrace();
 //		}
 		
-		terms.add(rankRoot);
-		terms.add(rankChildren);
-		terms.add(rankFree);
+		terms.add(rankSpecies);
+		terms.add(rankSubspecies);
+		terms.add(rankGenus);
 		
 		terms.add(keyword);
 		
         // taxonomic names
 		
-		nameRoot = BotanicalName.NewInstance(rankRoot,"Panthera",null,"onca",null,linne,null,"p.1467", null);
-		name1 = BotanicalName.NewInstance(rankChildren,"Abies",null,"alba",null,linne,null,"p.317", null);
-		name2 = BotanicalName.NewInstance(rankChildren,"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
-		nameFree = BotanicalName.NewInstance(rankFree,"Cichoria",null,"carminata",null,linne,null,"p.14", null);
+		nameRoot = BotanicalName.NewInstance(rankSpecies,"Panthera",null,"onca",null,linne,null,"p.1467", null);
+		name1 = BotanicalName.NewInstance(rankSubspecies,"Abies",null,"alba",null,linne,null,"p.317", null);
+		name2 = BotanicalName.NewInstance(rankSubspecies,"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
+		nameFree = BotanicalName.NewInstance(rankGenus,"Cichoria",null,"carminata",null,linne,null,"p.14", null);
 
 		taxonomicNames.add(nameRoot);
 		taxonomicNames.add(name1);
@@ -187,9 +197,9 @@ public class DataSetTest {
 		
 	}
 		
-	public DataSet buildDataSet() {
+	public DataSet buildDataSet(boolean persistentContext) {
 
-		buildTaxa();
+		buildData(persistentContext);
 		
 		dataSet.setAgents(agents);
 		dataSet.setAgentData(agentData);
@@ -202,4 +212,18 @@ public class DataSetTest {
 		return dataSet;
 	}
 
+	public DataSet buildDataSet(DataSet dataSet, boolean persistentContext) {
+
+		buildData(persistentContext);
+		
+		dataSet.setAgents(agents);
+		dataSet.setAgentData(agentData);
+		dataSet.setTerms(terms);
+		dataSet.setReferences(references);
+		dataSet.setTaxonomicNames(taxonomicNames);
+		dataSet.setTaxa(taxa);
+		dataSet.setSynonyms(synonyms);
+
+		return dataSet;
+	}
 }

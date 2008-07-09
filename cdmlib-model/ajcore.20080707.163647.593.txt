@@ -1,0 +1,168 @@
+---- AspectJ Properties ---
+AspectJ Compiler 1.5.4 built on Thursday Dec 20, 2007 at 13:44:10 GMT
+---- Dump Properties ---
+Dump file: ajcore.20080707.163647.593.txt
+Dump reason: org.aspectj.weaver.BCException
+Dump on exception: true
+Dump at exit condition: abort
+---- Exception Information ---
+---- System Properties ---
+java.runtime.name=Java(TM) 2 Runtime Environment, Standard Edition
+sun.boot.library.path=C:\Programme\Java\jdk1.5.0_15\jre\bin
+java.vm.version=1.5.0_15-b04
+java.vm.vendor=Sun Microsystems Inc.
+java.vendor.url=http://java.sun.com/
+path.separator=;
+java.vm.name=Java HotSpot(TM) Client VM
+file.encoding.pkg=sun.io
+sun.java.launcher=SUN_STANDARD
+user.country=DE
+sun.os.patch.level=Service Pack 2
+java.vm.specification.name=Java Virtual Machine Specification
+user.dir=C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model
+java.runtime.version=1.5.0_15-b04
+java.awt.graphicsenv=sun.awt.Win32GraphicsEnvironment
+java.endorsed.dirs=C:\Programme\Java\jdk1.5.0_15\jre\lib\endorsed
+os.arch=x86
+java.io.tmpdir=C:\DOKUME~1\A70AD~1.BAB\LOKALE~1\Temp\
+line.separator=
+
+java.vm.specification.vendor=Sun Microsystems Inc.
+user.variant=
+os.name=Windows XP
+classworlds.conf=C:\Programme\Apache\apache-maven-2.0.9\bin\..\bin\m2.conf
+sun.jnu.encoding=Cp1252
+java.library.path=C:\Programme\Java\jdk1.5.0_15\bin;.;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programme\Intel\Wireless\Bin\;C:\Programme\Diskeeper Corporation\Diskeeper\;C:\Programme\ThinkPad\ConnectUtilities;C:\Programme\Gemeinsame Dateien\Lenovo;C:\Programme\Lenovo\Client Security Solution;c:\Programme\Microsoft SQL Server\90\Tools\binn\;C:\Programme\Subversion\bin;C:\Programme\Apache\apache-maven-2.0.9\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Programme\Intel\Wireless\Bin\;C:\Programme\Diskeeper Corporation\Diskeeper\;C:\Programme\ThinkPad\ConnectUtilities;C:\Programme\Gemeinsame Dateien\Lenovo;C:\Programme\Lenovo\Client Security Solution;c:\Programme\Microsoft SQL Server\90\Tools\binn\;C:\Programme\Subversion\bin;C:\Programme\Java\jdk1.6.0_06\bin
+java.specification.name=Java Platform API Specification
+java.class.version=49.0
+sun.management.compiler=HotSpot Client Compiler
+os.version=5.1
+user.home=C:\Dokumente und Einstellungen\a.babadshanjan
+user.timezone=Europe/Berlin
+java.awt.printerjob=sun.awt.windows.WPrinterJob
+file.encoding=Cp1252
+java.specification.version=1.5
+java.class.path=C:\Programme\Apache\apache-maven-2.0.9\bin\..\boot\classworlds-1.1.jar
+user.name=a.babadshanjan
+java.vm.specification.version=1.0
+java.home=C:\Programme\Java\jdk1.5.0_15\jre
+sun.arch.data.model=32
+user.language=de
+java.specification.vendor=Sun Microsystems Inc.
+awt.toolkit=sun.awt.windows.WToolkit
+java.vm.info=mixed mode, sharing
+java.version=1.5.0_15
+java.ext.dirs=C:\Programme\Java\jdk1.5.0_15\jre\lib\ext
+sun.boot.class.path=C:\Programme\Java\jdk1.5.0_15\jre\lib\rt.jar;C:\Programme\Java\jdk1.5.0_15\jre\lib\i18n.jar;C:\Programme\Java\jdk1.5.0_15\jre\lib\sunrsasign.jar;C:\Programme\Java\jdk1.5.0_15\jre\lib\jsse.jar;C:\Programme\Java\jdk1.5.0_15\jre\lib\jce.jar;C:\Programme\Java\jdk1.5.0_15\jre\lib\charsets.jar;C:\Programme\Java\jdk1.5.0_15\jre\classes
+java.vendor=Sun Microsystems Inc.
+maven.home=C:\Programme\Apache\apache-maven-2.0.9\bin\..
+file.separator=\
+java.vendor.url.bug=http://java.sun.com/cgi-bin/bugreport.cgi
+sun.io.unicode.encoding=UnicodeLittle
+sun.cpu.endian=little
+sun.desktop=windows
+sun.cpu.isalist=pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86
+---- Command Line ---
+-source
+1.5
+-target
+1.5
+-classpath
+C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\antlr\antlr\2.7.6\antlr-2.7.6.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\aopalliance\aopalliance\1.0\aopalliance-1.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\asm\asm\1.5.3\asm-1.5.3.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\asm\asm-attrs\1.5.3\asm-attrs-1.5.3.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\aspectj\aspectjrt\1.5.2a\aspectjrt-1.5.2a.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\cglib\cglib\2.1_3\cglib-2.1_3.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\com\sun\jdmk\jmxtools\1.2.1\jmxtools-1.2.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\com\sun\jmx\jmxri\1.2.1\jmxri-1.2.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\com\sun\xml\bind\jaxb-impl\2.0\jaxb-impl-2.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\com\sun\xml\bind\jaxb-xjc\2.0\jaxb-xjc-2.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\com\sun\xml\bind\jaxb1-impl\2.0\jaxb1-impl-2.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\commons-collections\commons-collections\3.2\commons-collections-3.2.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\commons-logging\commons-logging\1.1\commons-logging-1.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\dom4j\dom4j\1.6.1\dom4j-1.6.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\eu\etaxonomy\cdmlib-commons\1.3\cdmlib-commons-1.3.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\activation\activation\1.1\activation-1.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\jms\jms\1.1\jms-1.1.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\mail\mail\1.4\mail-1.4.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\persistence\persistence-api\1.0\persistence-api-1.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\transaction\jta\1.0.1B\jta-1.0.1B.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\xml\bind\jaxb-api\2.0\jaxb-api-2.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\javax\xml\bind\jsr173_api\1.0\jsr173_api-1.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\jdom\jdom\1.0\jdom-1.0.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\junit\junit\4.4\junit-4.4.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\log4j\log4j\1.2.15\log4j-1.2.15.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\net\sf\ehcache\ehcache\1.2.3\ehcache-1.2.3.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\net\sf\opencsv\opencsv\1.8\opencsv-1.8.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\devlib\schmidt\imageinfo\1.7\imageinfo-1.7.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\hibernate\hibernate\3.2.5.ga\hibernate-3.2.5.ga.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\hibernate\hibernate-annotations\3.3.0.ga\hibernate-annotations-3.3.0.ga.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-beans\2.5\spring-beans-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-context\2.5\spring-context-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-core\2.5\spring-core-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-jdbc\2.5\spring-jdbc-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-test\2.5\spring-test-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\org\springframework\spring-tx\2.5\spring-tx-2.5.jar;C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\xml-resolver\xml-resolver\1.2\xml-resolver-1.2.jar;C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\target\test-classes;C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\target\classes
+-aspectpath
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\target\classes
+-d
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\target\test-classes
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\CdmBaseTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\OrderedTermVocabularyTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\taxon\TaxonBaseTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\strategy\cache\name\BotanicNameCacheStrategyTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\unit\EntityTestBase.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\function\strategy\TestTaxonNameParserBotanicalNameImpl.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\function\strategy\TestBookDefaultCacheStrategies.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\strategy\cache\name\ZoologicalNameCacheStrategyTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\DatabaseInitialiser.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\MarkerTypeTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\DataSetTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\description\TextDataTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\name\RankTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\name\BotanicalNameTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\init\TermLoaderTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\name\NonViralNameTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\strategy\parser\NonViralNameParserImplTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\function\TestModel.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\OrderedTermBaseTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\jaxb\CdmSchemaGeneratorTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\jaxb\CdmDocumentBuilderTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\taxon\TaxonComparatorTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\agent\InstitutionalMembershipTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\TermVocabularyTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\DefinedTermBaseTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\aspectj\PropertyChangeTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\function\strategy\TestNameCacheStrategies.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\taxon\TaxonTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\init\DefaultVocabularyStoreTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\unit\CdmUnitTestBase.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\name\TaxonNameBaseTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\function\TestSpecimen.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\MarkerTest.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\test\suite\CdmTestSuite.java
+C:\Dokumente und Einstellungen\a.babadshanjan\workspaces\cdmlib\cdmlib-model\src\test\java\eu\etaxonomy\cdm\model\common\AnnotationTest.java
+---- Full Classpath ---
+Empty
+---- Compiler Messages ---
+warning bad version number found in C:\Dokumente und Einstellungen\a.babadshanjan\.m2\repository\aspectj\aspectjrt\1.5.2a\aspectjrt-1.5.2a.jar expected 1.5.4 found 1.5.2a
+info directory classpath entry does not exist: C:\Programme\Java\jdk1.5.0_15\jre\lib\i18n.jar
+info directory classpath entry does not exist: C:\Programme\Java\jdk1.5.0_15\jre\lib\sunrsasign.jar
+info zipfile classpath entry does not exist: C:\Programme\Java\jdk1.5.0_15\jre\classes
+abort ABORT -- (BCException) Unable to continue, this version of AspectJ supports classes built with weaver version 3.0 but the class eu.etaxonomy.cdm.aspectj.PropertyChangeAspect is version 5.0
+when batch building BuildConfig[null] #Files=35
+
+Unable to continue, this version of AspectJ supports classes built with weaver version 3.0 but the class eu.etaxonomy.cdm.aspectj.PropertyChangeAspect is version 5.0
+when batch building BuildConfig[null] #Files=35
+
+org.aspectj.weaver.BCException: Unable to continue, this version of AspectJ supports classes built with weaver version 3.0 but the class eu.etaxonomy.cdm.aspectj.PropertyChangeAspect is version 5.0
+when batch building BuildConfig[null] #Files=35
+
+	at org.aspectj.weaver.bcel.BcelAttributes.readAjAttributes(BcelAttributes.java:53)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureAspectJAttributesUnpacked(BcelObjectType.java:312)
+	at org.aspectj.weaver.bcel.BcelObjectType.<init>(BcelObjectType.java:142)
+	at org.aspectj.weaver.bcel.BcelWorld.buildBcelDelegate(BcelWorld.java:360)
+	at org.aspectj.weaver.bcel.BcelWorld.addSourceObjectType(BcelWorld.java:422)
+	at org.aspectj.weaver.bcel.BcelWeaver.addIfAspect(BcelWeaver.java:283)
+	at org.aspectj.weaver.bcel.BcelWeaver.addAspectsFromDirectory(BcelWeaver.java:274)
+	at org.aspectj.weaver.bcel.BcelWeaver.addLibraryJarFile(BcelWeaver.java:223)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.initBcelWorld(AjBuildManager.java:802)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.doBuild(AjBuildManager.java:243)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:180)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:378)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:253)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:378)
+	at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:451)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:558)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:499)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:478)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalAndHandleFailures(DefaultLifecycleExecutor.java:330)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:291)
+	at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:142)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:336)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:129)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:287)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+	at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+	at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:375)
+
+---- org.aspectj.weaver.bcel.BcelWorld@2ab653 ----
+Shadow mungers:
+Empty
+Type mungers:
+Empty
+Late Type mungers:
+Empty

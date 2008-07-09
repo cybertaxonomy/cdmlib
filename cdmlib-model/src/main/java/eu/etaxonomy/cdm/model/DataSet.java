@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -116,7 +117,7 @@ public class DataSet {
 
     @XmlElementWrapper(name = "Taxa")
     @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<Taxon> taxa;
+    protected List<TaxonBase> taxa;
 	
     @XmlElementWrapper(name = "Synonyms")
     @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -259,7 +260,7 @@ public class DataSet {
      *     {@link List<Taxon> }
      *     
      */
-    public List<Taxon> getTaxa() {
+    public List<TaxonBase> getTaxa() {
         return taxa;
     }
 
@@ -271,7 +272,7 @@ public class DataSet {
      *     {@link List<Taxon> }
      *     
      */
-    public void setTaxa(List<Taxon> value) {
+    public void setTaxa(List<TaxonBase> value) {
         this.taxa = value;
     }
 

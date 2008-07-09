@@ -50,7 +50,9 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
 	@Override
 	public Result createOutput(String namespaceUri, String filename) throws IOException {
 
+		String userHome = System.getProperty("user.home");
 		StreamResult res = new StreamResult(new File("C:" + File.separator + "Temp", filename));
+		//StreamResult res = new StreamResult(new File(filename));
 		return res;
 	}
 	

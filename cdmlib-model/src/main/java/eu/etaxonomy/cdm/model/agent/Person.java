@@ -204,7 +204,14 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @see 	common.Keyword
 	 */
-	@OneToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY,
+	        targetEntity=eu.etaxonomy.cdm.model.common.Keyword.class
+	    )
+	@JoinTable(
+	        name="Person_Keyword",
+	        joinColumns=@JoinColumn(name="person_fk"),
+	        inverseJoinColumns=@JoinColumn(name="keyword_fk")
+	)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Keyword> getKeywords(){
 		return this.keywords;

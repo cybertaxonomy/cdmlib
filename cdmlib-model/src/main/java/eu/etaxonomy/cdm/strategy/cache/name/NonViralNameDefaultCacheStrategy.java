@@ -333,7 +333,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
 		 */
 		protected boolean isAutonym(NonViralName nonViralName){
-			if (nonViralName.getRank() != null && nonViralName.getRank().isInfraSpecific() && nonViralName.getSpecificEpithet() != null && nonViralName.getSpecificEpithet().trim().equals(nonViralName.getInfraSpecificEpithet().trim())){
+			if (nonViralName != null && nonViralName.getRank() != null && nonViralName.getSpecificEpithet() != null && nonViralName.getInfraSpecificEpithet() != null && 
+					nonViralName.getRank().isInfraSpecific() && nonViralName.getSpecificEpithet().trim().equals(nonViralName.getInfraSpecificEpithet().trim())){
 				return true;
 			}else{
 				return false;

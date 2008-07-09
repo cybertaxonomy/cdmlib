@@ -29,7 +29,7 @@ public class CdmDocumentBuilderTest {
 		cdmDocumentBuilder = new CdmDocumentBuilder();
 		dataSetTest = new DataSetTest();
 		dataSetTest.onSetUp();
-		dataSet = dataSetTest.buildDataSet();
+		dataSet = dataSetTest.buildDataSet(false);
 	}
 	
 /* ******************** TESTS ***********************************************************/
