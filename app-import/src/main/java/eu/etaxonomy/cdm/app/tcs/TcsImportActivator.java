@@ -33,7 +33,7 @@ public class TcsImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");

@@ -26,6 +26,13 @@ public class TcsSources {
 		
 	}
 	
+	public static String taxonX_local(){
+		//		Monocots rdf
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/palm_tn_29336.xml";
+		return sourceUrl;
+		
+	}
+	
 	public static String arecaceae_local(){
 		//		Monocots rdf
 		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae.rdf";
