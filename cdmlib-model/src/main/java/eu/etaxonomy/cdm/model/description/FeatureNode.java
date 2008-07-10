@@ -78,6 +78,7 @@ public class FeatureNode extends VersionableEntity {
 	
 	@ManyToOne
 	@JoinColumn(name="parent_fk")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getParent() {
 		return parent;
 	}

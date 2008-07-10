@@ -59,6 +59,7 @@ public class FeatureTree extends TermBase {
 //	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getRoot() {
 		return root;
 	}
