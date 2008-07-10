@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 
 /**
  * @author a.mueller
@@ -29,9 +31,16 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase> implements IDescriptionService {
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
+	IFeatureTreeDao featureTreeDao;
+	
 	@Autowired
 	protected void setDao(IDescriptionDao dao) {
 		this.dao = dao;
+	}
+	
+	@Autowired
+	protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
+		this.featureTreeDao = featureTreeDao;
 	}
 	
 	/**
@@ -62,4 +71,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	public void generateTitleCache() {
 		logger.warn("generateTitleCache not yet implemented");
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#saveFeatureTree(eu.etaxonomy.cdm.model.description.FeatureTree)
+	 */
+	@Transactional(readOnly = false)
+	public UUID saveFeatureTree(FeatureTree tree) {
+		return featureTreeDao.saveOrUpdate(tree);
+	}
+
+	
 }

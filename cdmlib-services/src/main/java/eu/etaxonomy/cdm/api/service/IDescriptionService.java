@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
@@ -22,9 +23,17 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public abstract DescriptionBase getDescriptionBaseByUuid(UUID uuid);
 
 	/**
-	 * @param description
+	 * Persists a <code>Description</code>
+	  * @param description
 	 * @return
 	 */
 	public abstract UUID saveDescription(DescriptionBase description);
+
+	/**
+	 * Persists a <code>FeatureTree</code>
+	 * @param tree
+	 * @return
+	 */
+	public abstract UUID saveFeatureTree(FeatureTree tree);
 
 }
