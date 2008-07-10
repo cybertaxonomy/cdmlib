@@ -59,6 +59,7 @@ public class NomenclaturalCode extends DefinedTermBase {
 	}
 	
 	/**
+	 * International Code of Nomenclature of Bacteria
 	 * @return
 	 */
 	public static final NomenclaturalCode ICNB(){

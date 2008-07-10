@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,6 +31,11 @@ import javax.xml.bind.annotation.XmlType;
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
+ */
+/**
+ * @author a.mueller
+ * @created 10.07.2008
+ * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
@@ -229,6 +238,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getByUuid(uuidOpusUtiqueOppr);
 	}
 	
+
 //TODO Soraya
 //	orth. var.: orthographic variant
 //	pro syn.: pro synonymo
@@ -261,5 +271,48 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusAbbreviation);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List, eu.etaxonomy.cdm.model.common.Language)
+	 */
+	@Override
+	public ILoadableTerm readCsvLine(List csvLine_, Language lang) {
+		List<String> csvLine = (List<String>) csvLine_;
+		this.setUuid(UUID.fromString(csvLine.get(0)));
+		this.setUri(csvLine.get(1));
+		String label = csvLine.get(2).trim();
+		String abbreviatedLabel = csvLine.get(3);
+		String text = label;
+		this.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
+	 */
+	@Override
+	public ILoadableTerm readCsvLine(List csvLine) {   //TODO should be List<String> but makes error for some strange reason
+		return readCsvLine(csvLine, Language.LATIN());
+	}
+	
+
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
+//	 */
+//	@Override
+//	public ILoadableTerm readCsvLine(List<String> csvLine) {
+//		return readCsvLine(csvLine, Language.ENGLISH());
+//	}
+//	
+//	
+//	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
+//		this.setUuid(UUID.fromString(csvLine.get(0)));
+//		this.setUri(csvLine.get(1));
+//		String text = csvLine.get(3);
+//		String label = csvLine.get(2).trim();
+//		String abbreviatedLabel = null;
+//		this.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+//		return this;
+//	}
 
 }

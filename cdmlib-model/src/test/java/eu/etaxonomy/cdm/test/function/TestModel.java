@@ -7,7 +7,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -24,9 +26,10 @@ public class TestModel {
 	static Logger logger = Logger.getLogger(TestModel.class);
 	
 	
-	public void testAppController(){
+	public void testSomething(){
 		
 		logger.info("Create name objects...");
+		logger.info(NomenclaturalStatusType.NUDUM().getRepresentation(Language.LATIN()).getAbbreviatedLabel());
 		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
 		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
@@ -74,7 +77,8 @@ public class TestModel {
 	private void test(){
 		System.out.println("Start ...");
 		TestModel sc = new TestModel();
-    	sc.testParentRelation();
+		sc.testSomething();
+		sc.testParentRelation();
 		System.out.println("\nEnd ...");
 	}
 	

@@ -52,6 +52,7 @@ public class Language extends DefinedTermBase {
 	private static final UUID uuidItalian = UUID.fromString("fecbf0c7-fea9-465b-8a16-950517c5c0c4");
 	private static final UUID uuidDutch = UUID.fromString("9965d79a-acf9-4921-a2c0-863b8c16c056");
 	private static final UUID uuidPolish = UUID.fromString("3fdca387-f1b0-4ec1-808f-1bc3dc482194");
+	private static final UUID uuidLatin = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
 	
 	public static Language NewInstance(){
 		return new Language();
@@ -158,6 +159,10 @@ public class Language extends DefinedTermBase {
 
 	public static final Language POLISH(){
 		return getByUuid(uuidPolish);
+	}
+	
+	public static final Language LATIN(){
+		return getByUuid(uuidLatin);
 	}
 	
 	/**
