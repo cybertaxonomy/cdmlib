@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.reference.Patent;
 import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
@@ -105,7 +107,7 @@ public class DataSet {
     	@XmlElement(name = "BookSection", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = BookSection.class),
     	@XmlElement(name = "InProceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = InProceedings.class)
     })
-    protected List<StrictReferenceBase> references;
+    protected List<ReferenceBase> references;
 
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
@@ -113,7 +115,7 @@ public class DataSet {
     	@XmlElement(name = "CultivarPlantName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = CultivarPlantName.class),
     	@XmlElement(name = "BotanicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BotanicalName.class)
     })
-    protected List<NonViralName> taxonomicNames;
+    protected List<TaxonNameBase> taxonomicNames;
 
     @XmlElementWrapper(name = "Taxa")
     @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -212,7 +214,7 @@ public class DataSet {
      *     {@link List<NonViralName> }
      *     
      */
-    public List<NonViralName> getTaxonomicNames() {
+    public List<TaxonNameBase> getTaxonomicNames() {
         return taxonomicNames;
     }
 
@@ -224,7 +226,7 @@ public class DataSet {
      *     {@link List<NonViralName> }
      *     
      */
-    public void setTaxonomicNames(List<NonViralName> value) {
+    public void setTaxonomicNames(List<TaxonNameBase> value) {
         this.taxonomicNames = value;
     }
 
@@ -236,7 +238,7 @@ public class DataSet {
      *     {@link List<NonViralName> }
      *     
      */
-    public List<StrictReferenceBase> getReferences() {
+    public List<ReferenceBase> getReferences() {
         return references;
     }
 
@@ -248,7 +250,7 @@ public class DataSet {
      *     {@link List<NonViralName> }
      *     
      */
-    public void setReferences(List<StrictReferenceBase> value) {
+    public void setReferences(List<ReferenceBase> value) {
         this.references = value;
     }
 

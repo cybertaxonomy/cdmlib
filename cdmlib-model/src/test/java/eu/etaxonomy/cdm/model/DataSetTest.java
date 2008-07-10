@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -42,8 +43,8 @@ public class DataSetTest {
 	private List<Agent> agents;
     private List<VersionableEntity> agentData;
     private List<TermBase> terms;
-    private List<StrictReferenceBase> references;
-    private List<NonViralName> taxonomicNames;
+    private List<ReferenceBase> references;
+    private List<TaxonNameBase> taxonomicNames;
     private List<TaxonBase> taxa;
     private List<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
@@ -68,8 +69,8 @@ public class DataSetTest {
 		agents = new ArrayList<Agent>();
 		agentData = new ArrayList<VersionableEntity>();
 		terms = new ArrayList<TermBase>();
-	    references = new ArrayList<StrictReferenceBase>();
-		taxonomicNames = new ArrayList<NonViralName>();
+	    references = new ArrayList<ReferenceBase>();
+		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<TaxonBase>();
 		synonyms = new ArrayList<Synonym>();
 		
