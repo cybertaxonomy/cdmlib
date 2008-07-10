@@ -130,7 +130,6 @@ public class BerlinModelImport {
 	 * Executes the whole 
 	 */
 	protected boolean doImport(BerlinModelImportConfigurator bmiConfig){
-		CdmApplicationController cdmApp;
 		if (bmiConfig == null){
 			logger.warn("BerlinModelImportConfiguration is null");
 			return false;
@@ -138,15 +137,16 @@ public class BerlinModelImport {
 			logger.warn("BerlinModelImportConfiguration is not valid");
 			return false;
 		}
-		try {
-			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getDbSchemaValidation());
-		} catch (DataSourceNotFoundException e) {
-			logger.warn("could not connect to destination database");
-			return false;
-		}catch (TermNotFoundException e) {
-			logger.warn("could not find needed term in destination datasource");
-			return false;
-		}
+//		try {
+//			cdmApp = CdmApplicationController.NewInstance(bmiConfig.getDestination(), bmiConfig.getDbSchemaValidation());
+//		} catch (DataSourceNotFoundException e) {
+//			logger.warn("could not connect to destination database");
+//			return false;
+//		}catch (TermNotFoundException e) {
+//			logger.warn("could not find needed term in destination datasource");
+//			return false;
+//		}
+		CdmApplicationController cdmApp = bmiConfig.getCdmAppController();
 		Source source = bmiConfig.getSource();
 		ReferenceBase sourceReference = bmiConfig.getSourceReference();
 		System.out.println("Start import from BerlinModel ("+ bmiConfig.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");

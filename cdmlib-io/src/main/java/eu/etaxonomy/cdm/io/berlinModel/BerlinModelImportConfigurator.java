@@ -2,16 +2,13 @@
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.tcs.TcsReferenceIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonNameIO;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 public class BerlinModelImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
@@ -73,8 +70,5 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 			return this.getSource().getDatabase();
 		}
 	}
-	
-	
-	
 	
 }

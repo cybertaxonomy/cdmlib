@@ -13,12 +13,15 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -89,7 +92,8 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	
 	private Language factLanguage = Language.ENGLISH();
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-
+	private CdmApplicationController cdmApp = null;
+	
 /* *****************CONSTRUCTOR *****************************/
 	
 	public ImportConfiguratorBase(){
@@ -532,6 +536,43 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 		this.featureMap = featureMap;
 	}
 
-
 	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If a controller was already created before the last created controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(){
+		return getCdmAppController(false);
+	}
+	
+	/**
+	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
+	 * @return
+	 */
+	public CdmApplicationController getNewCdmAppController(){
+		return getCdmAppController(true);
+	}
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(boolean createNew){
+		if (cdmApp == null || createNew == true){
+			try {
+				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation());
+			} catch (DataSourceNotFoundException e) {
+				logger.error("could not connect to destination database");
+				return null;
+			}catch (TermNotFoundException e) {
+				logger.error("could not find needed term in destination datasource");
+				return null;
+			}
+		}
+		return cdmApp;
+	}
+
 }
