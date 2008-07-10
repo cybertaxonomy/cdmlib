@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "sec"
 })
 @Entity
-@Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
 	
 	static Logger logger = Logger.getLogger(TaxonBase.class);

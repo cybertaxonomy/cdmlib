@@ -28,7 +28,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:16
  */
 @Entity
-@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public class Collection extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	

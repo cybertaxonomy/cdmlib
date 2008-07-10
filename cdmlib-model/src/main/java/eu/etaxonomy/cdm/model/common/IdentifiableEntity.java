@@ -10,24 +10,26 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.ManyToMany;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import eu.etaxonomy.cdm.model.media.Rights;
-
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -100,11 +102,10 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	 */
 	public abstract String generateTitle();
 
-	//@Index(name="titleCacheIndex")
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
 	 */
-	@Column(length=330)
+    @Transient
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
@@ -119,18 +120,34 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setTitleCache(java.lang.String)
 	 */
 	public void setTitleCache(String titleCache){
-		//TODO truncation of title cach
-		if (titleCache != null && titleCache.length() > 328){
-			logger.warn("Truncation of title cache: " + this.toString());
-			titleCache = titleCache.substring(0, 325) + "...";
-		}
-		this.titleCache = titleCache;
-		this.setProtectedTitleCache(PROTECTED);
+		setTitleCache(titleCache, PROTECTED);
 	}
+	
+	//@Index(name="titleCacheIndex")
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
+	 */
+	@Column(length=254)
+	@Deprecated //for hibernate use only
+	protected String getPersistentTitleCache(){
+		return getTitleCache();
+	}	
+	@Deprecated //for hibernate use only
+	protected void setPersistentTitleCache(String titleCache){
+		this.titleCache = titleCache;
+	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#setTitleCache(java.lang.String, boolean)
 	 */
 	public void setTitleCache(String titleCache, boolean protectCache){
+		//TODO truncation of title cache
+		if (titleCache != null && titleCache.length() > 250){
+			logger.warn("Truncation of title cache: " + this.toString());
+			titleCache = titleCache.substring(0, 249) + "...";
+		}
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(protectCache);
 	}

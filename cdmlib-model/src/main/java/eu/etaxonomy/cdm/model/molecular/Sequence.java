@@ -29,7 +29,7 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:51
  */
 @Entity
-@Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	

@@ -15,9 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**

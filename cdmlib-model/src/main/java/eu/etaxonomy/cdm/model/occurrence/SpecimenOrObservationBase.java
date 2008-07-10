@@ -35,7 +35,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
