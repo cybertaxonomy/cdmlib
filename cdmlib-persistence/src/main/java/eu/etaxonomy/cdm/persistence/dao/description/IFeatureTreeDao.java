@@ -9,9 +9,14 @@
 
 package eu.etaxonomy.cdm.persistence.dao.description;
 
-import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
-public interface IFeatureTreeDao extends ICdmEntityDao<Feature> {
+/**
+ * @author a.mueller
+ * @created 10.07.2008
+ * @version 1.0
+ */
+public interface IFeatureTreeDao extends ICdmEntityDao<FeatureTree> {
 	
 }

@@ -12,17 +12,21 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 
-
+/**
+ * @author a.mueller
+ * @created 10.07.2008
+ * @version 1.0
+ */
 @Repository
-public class FeatureTreeDaoImpl extends CdmEntityDaoBase<Feature> implements IFeatureDao{
+public class FeatureTreeDaoImpl extends CdmEntityDaoBase<FeatureTree> implements IFeatureTreeDao{
 	private static final Logger logger = Logger.getLogger(FeatureTreeDaoImpl.class);
 
 	public FeatureTreeDaoImpl() {
-		super(Feature.class); 
+		super(FeatureTree.class); 
 	}
 
 }
