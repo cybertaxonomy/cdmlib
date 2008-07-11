@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -24,7 +25,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -46,6 +49,8 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	@XmlTransient
 	//@XmlAnyElement
 	//@XmlElement(name = "RelatedFrom", type = Taxon.class)
+    //@XmlIDREF
+    //@XmlSchemaType(name = "IDREF")
 	private FROM relatedFrom;
 
 	@XmlTransient

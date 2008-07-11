@@ -45,7 +45,7 @@ public class DataSetTest {
     private List<TermBase> terms;
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
-    private List<TaxonBase> taxa;
+    private List<Taxon> taxa;
     private List<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
 	
@@ -71,13 +71,13 @@ public class DataSetTest {
 		terms = new ArrayList<TermBase>();
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
-		taxa = new ArrayList<TaxonBase>();
+		taxa = new ArrayList<Taxon>();
 		synonyms = new ArrayList<Synonym>();
 		
 		StrictReferenceBase citRef, sec;
-		BotanicalName name1, name2, nameRoot, nameFree;
+		BotanicalName name1, name2, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
 		Taxon child1, child2, rootT, freeT;
-		Synonym syn1, syn2, synRoot, synFree;
+		Synonym syn11, syn12, syn2, synFree;
 		Rank rankSpecies, rankSubspecies, rankGenus;
 
 		// agents 
@@ -141,15 +141,26 @@ public class DataSetTest {
 		
         // taxonomic names
 		
-		nameRoot = BotanicalName.NewInstance(rankSpecies,"Panthera",null,"onca",null,linne,null,"p.1467", null);
-		name1 = BotanicalName.NewInstance(rankSubspecies,"Abies",null,"alba",null,linne,null,"p.317", null);
-		name2 = BotanicalName.NewInstance(rankSubspecies,"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
-		nameFree = BotanicalName.NewInstance(rankGenus,"Cichoria",null,"carminata",null,linne,null,"p.14", null);
+		nameRoot = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
+		
+		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
+		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
+		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
+		
+		name2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzae",null,linne,null,"p.2", null);
+		synName2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"echinata",null,linne,null,"p.2", null);
+		
+		nameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"intybus",null,linne,null,"p.200", null);
+		synNameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"balearicum",null,linne,null,"p.2", null);
 
 		taxonomicNames.add(nameRoot);
 		taxonomicNames.add(name1);
+		taxonomicNames.add(synName11);
+		taxonomicNames.add(synName12);
 		taxonomicNames.add(name2);
+		taxonomicNames.add(synName2);
 		taxonomicNames.add(nameFree);
+		taxonomicNames.add(synNameFree);
 		
         // references
 		
@@ -172,22 +183,23 @@ public class DataSetTest {
 		
 		// synonyms
 		
-		synRoot = Synonym.NewInstance(nameRoot, sec);
-		synFree = Synonym.NewInstance(nameFree, sec);
-		syn1 = Synonym.NewInstance(name1, sec);
-		syn2 = Synonym.NewInstance(name2, sec);
+		synFree = Synonym.NewInstance(synNameFree, sec);
+		syn11 = Synonym.NewInstance(synName11, sec);
+		syn12 = Synonym.NewInstance(synName12, sec);
+		syn2 = Synonym.NewInstance(synName2, sec);
 		
-		child1.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-		rootT.addSynonym(synRoot, SynonymRelationshipType.PRO_PARTE_SYNONYM_OF());
-		freeT.addSynonym(synFree, SynonymRelationshipType.PARTIAL_SYNONYM_OF());
+		child1.addSynonym(syn11, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		child1.addSynonym(syn12, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		child2.addSynonym(syn2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+		freeT.addSynonym(synFree, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 
-		synonyms.add(synRoot);
 		synonyms.add(synFree);
+		synonyms.add(syn11);
+		synonyms.add(syn12);
 		synonyms.add(syn2);
-		synonyms.add(syn1);
 		
 		// taxonomic children
+		
 		rootT.addTaxonomicChild(child1, sec, "p.998");
 		rootT.addTaxonomicChild(child2, sec, "p.987");
 				

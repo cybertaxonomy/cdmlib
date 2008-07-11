@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -59,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 	    "taxonomicNames",
 	    "taxa",
 	    "synonyms",
+	    "relationships",
 	    "homotypicalGroups"
 })
 @XmlRootElement(name = "DataSet", namespace = "http://etaxonomy.eu/cdm/model/1.0")
@@ -119,11 +122,20 @@ public class DataSet {
 
     @XmlElementWrapper(name = "Taxa")
     @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<TaxonBase> taxa;
+    protected List<Taxon> taxa;
 	
     @XmlElementWrapper(name = "Synonyms")
     @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<Synonym> synonyms;
+
+    @XmlElementWrapper(name = "Relationships")
+    @XmlElements({
+    	@XmlElement(name = "TaxonRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0"),
+    	@XmlElement(name = "SynonymRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0"),
+    	@XmlElement(name = "NameRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0"),
+    	@XmlElement(name = "HybridRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
+    })
+    protected List<RelationshipBase> relationships;
 
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
@@ -262,7 +274,7 @@ public class DataSet {
      *     {@link List<Taxon> }
      *     
      */
-    public List<TaxonBase> getTaxa() {
+    public List<Taxon> getTaxa() {
         return taxa;
     }
 
@@ -274,8 +286,24 @@ public class DataSet {
      *     {@link List<Taxon> }
      *     
      */
-    public void setTaxa(List<TaxonBase> value) {
+    public void setTaxa(List<Taxon> value) {
         this.taxa = value;
+    }
+
+    /**
+     * Gets the value of the taxa property as {@link Collection<TaxonBase> }
+     * 
+     * @return
+     *     possible object is
+     *     {@link Collection<TaxonBase> }
+     *     
+     */
+    public Collection<TaxonBase> getTaxonBases() {
+    	
+        // FIXME: This is a dirty trick.
+    	Object obj = (Object)taxa;
+    	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
+        return taxonBases;
     }
 
     /**
@@ -302,6 +330,30 @@ public class DataSet {
         this.synonyms = value;
     }
     
+    /**
+     * Gets the value of the relationships property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<RelationshipBase> }
+     *     
+     */
+    public List<RelationshipBase> getRelationships() {
+        return relationships;
+    }
+
+    /**
+     * Sets the value of the relationships property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<RelationshipBase> }
+     *     
+     */
+    public void setRelationships(List<RelationshipBase> value) {
+        this.relationships = value;
+    }
+
     /**
      * Gets the value of the synonyms property.
      * 
