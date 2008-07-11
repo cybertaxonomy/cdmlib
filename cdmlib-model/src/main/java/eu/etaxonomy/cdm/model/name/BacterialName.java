@@ -129,10 +129,14 @@ public class BacterialName extends NonViralName {
 	 * Returns the string representing the reason for the approbation of this
 	 * bacterial taxon name. Bacterial taxon names are valid or approved
 	 * according to:
-	 * - the approved list, c.f.r. IJSB 1980 (AL)
-	 * - the validation list, in IJSB after 1980 (VL)
+	 * <ul>
+	 * <li>the approved list, c.f.r. IJSB 1980 (AL)
+	 * <li>the validation list, in IJSB after 1980 (VL)
+	 * </ul>
 	 * or
-	 * - are validly published as paper in IJSB after 1980 (VP).
+	 * <ul>
+	 * <li>are validly published as paper in IJSB after 1980 (VP).
+	 * </ul>
 	 * IJSB is the acronym for International Journal of Systematic Bacteriology.
 	 * 
 	 * @return  the string with the source of the approbation for this bacterial taxon name

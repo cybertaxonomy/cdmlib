@@ -1012,8 +1012,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
 	 * taxon name is the genus rank (true) or not (false). Non viral names with
-	 * genus rank are monomials.
-	 * Returns false if rank is null.
+	 * genus rank are monomials. Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isInfraGeneric()
@@ -1029,10 +1028,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
-	 * taxon name is higher than the species aggregate rank and lower than
-	 * the genus rank (true) or not (false). Infrageneric non viral names
-	 * are binomials.
-	 * Returns false if rank is null.
+	 * taxon name is higher than the species rank and lower than the
+	 * genus rank (true) or not (false). Infrageneric non viral names are
+	 * binomials. Returns false if rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -1048,7 +1046,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
-	 * taxon name is the species or species aggregate rank (true) or not (false). Non viral names
+	 * taxon name is the species rank (true) or not (false). Non viral names
 	 * with species rank are binomials.
 	 * Returns false if rank is null.
 	 *

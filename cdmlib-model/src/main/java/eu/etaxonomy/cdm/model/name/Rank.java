@@ -22,7 +22,21 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm
+ * The class representing the taxonomical ranks (like "Family", "Genus" or
+ * "Species") used for {@link TaxonNameBase taxon names} across all {@link NomenclaturalCode nomenclatural codes}
+ * for bacteria (ICNB), viruses (ICVCN), plants and fungi (ICBN),
+ * cultivars (ICNCP) and animals (ICZN).
+ * <P>
+ * A standard (ordered) list of taxonomical rank instances will be automatically
+ * created as the project starts. But this class allows to extend this standard
+ * list by creating new instances of additional taxonomical ranks if needed. 
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> TaxonRankTerm according to the TDWG ontology
+ * <li> TaxonomicRankEnum according to the TCS
+ * <li> Rank according to the ABCD schema
+ * </ul>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:46
@@ -95,15 +109,41 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
 	
-	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty rank instance.
+	 * 
+	 * @see 	#Rank(String, String, String)
+	 */
 	public Rank() {
 			super();
 	}
 
+	/** 
+	 * Class constructor: creates an additional rank instance with a description,
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new rank to be created 
+	 * @param	label  		 the string identifying the new rank to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new rank to be created
+	 * @see 	#Rank()
+	 */
 	public Rank(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
+	//********* METHODS **************************************/
+
+	/**
+	 * Returns the taxonomical rank identified through its immutable universally
+	 * unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the rank corresponding to the given universally unique
+	 * 					identifier
+	 */
 	public static final Rank getByUuid(UUID uuid){
 		return (Rank)   findByUuid(uuid);
 	}
@@ -294,8 +334,13 @@ public class Rank extends OrderedTermBase<Rank> {
 
 	
 	/**
-	 * True, if this Rank is higher than GENUS, else false.
-	 * @return
+	 * Returns the boolean value indicating whether this rank is higher than 
+	 * the genus rank (true) or not (false). Returns false if this rank is null.
+	 *
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
 	 */
 	@Transient
 	public boolean isSupraGeneric(){
@@ -303,8 +348,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 	
 	/**
-	 * True, if this Rank equals GENUS, else false.
-	 * @return
+	 * Returns the boolean value indicating whether this rank is the genus rank
+	 * (true) or not (false). Returns false if this rank is null.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
 	 */
 	@Transient
 	public boolean isGenus(){
@@ -312,8 +362,14 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * True, if this Rank is lower than GENUS and higher than SPECIES, else false.
-	 * @return
+	 * Returns the boolean value indicating whether this rank is higher than the
+	 * species rank and lower than the genus rank (true) or not (false).
+	 * Returns false if this rank is null.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
 	 */
 	@Transient
 	public boolean isInfraGeneric(){
@@ -321,8 +377,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * True, if this Rank equals SPECIES, else false.
-	 * @return
+	 * Returns the boolean value indicating whether this rank is the species
+	 * rank (true) or not (false). Returns false if this rank is null.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isInfraSpecific()
 	 */
 	@Transient
 	public boolean isSpecies(){
@@ -330,8 +391,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * True, if this Rank is lower than SPECIES, else false.
-	 * @return
+	 * Returns the boolean value indicating whether this rank is lower than the
+	 * species rank (true) or not (false). Returns false if this rank is null.
+	 *
+	 * @see  #isSupraGeneric()
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
 	 */
 	@Transient
 	public boolean isInfraSpecific(){

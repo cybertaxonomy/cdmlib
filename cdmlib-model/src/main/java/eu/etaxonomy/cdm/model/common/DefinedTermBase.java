@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * workaround for enumerations, base type according to TDWG.  For linear ordering
+ * walkaround for enumerations, base type according to TDWG.  For linear ordering
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
  * @author m.doering

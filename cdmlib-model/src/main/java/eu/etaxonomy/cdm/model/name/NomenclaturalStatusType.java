@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -27,7 +27,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * <P>
+ * This class corresponds to:
  * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:39
@@ -67,8 +70,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
-	
-	
+
+
 	public NomenclaturalStatusType() {
 		super();
 	}
@@ -80,17 +83,17 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType getByUuid(UUID uuid){
 		return (NomenclaturalStatusType) findByUuid(uuid);
 	}
-	
+
 
 	@Transient
 	public boolean isInvalidType(){
-		if (this.equals(INVALID()) 
-			|| this.equals(NUDUM())  
-			|| 	this.equals(PROVISIONAL()) 
+		if (this.equals(INVALID())
+			|| this.equals(NUDUM())
+			|| 	this.equals(PROVISIONAL())
 			|| 	this.equals(COMBINATION_INVALID())
 			|| 	this.equals(OPUS_UTIQUE_OPPR())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
@@ -98,15 +101,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isLegitimateType(){
-		if (this.equals(LEGITIMATE()) || 
-				this.equals(NOVUM()) || 
+		if (this.equals(LEGITIMATE()) ||
+				this.equals(NOVUM()) ||
 				this.equals(ALTERNATIVE()) ||
 				this.equals(CONSERVED()) ||
 				this.equals(ORTHOGRAPHY_CONSERVED()) ||
 				this.equals(REJECTED_PROP()) ||
-				this.equals(UTIQUE_REJECTED_PROP()) 
+				this.equals(UTIQUE_REJECTED_PROP())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
@@ -114,19 +117,19 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	@Transient
 	public boolean isIllegitimateType(){
-		if (this.equals(ILLEGITIMATE()) || 
-				this.equals(SUPERFLUOUS()) || 
+		if (this.equals(ILLEGITIMATE()) ||
+				this.equals(SUPERFLUOUS()) ||
 				this.equals(REJECTED()) ||
 				this.equals(UTIQUE_REJECTED()) ||
 				this.equals(CONSERVED_PROP()) ||
 				this.equals(ORTHOGRAPHY_CONSERVED_PROP())
 			){
-			return true;	
+			return true;
 		}else{
 			return false;
 		}
 	}
-	
+
 	public static final NomenclaturalStatusType AMBIGUOUS(){
 		return getByUuid(uuidAmbiguous);
 	}
@@ -182,7 +185,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED(){
 		return getByUuid(uuidOrthographyConserved);
 	}
-	
+
 	public static final NomenclaturalStatusType REJECTED_PROP(){
 		return getByUuid(uuidRejectedProp);
 	}
@@ -210,25 +213,25 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getByUuid(uuidProvisional);
 	}
-	
+
 	public static final NomenclaturalStatusType VALID(){
 		return getByUuid(uuidValid);
 	}
-	
+
 	/**
 	 * Nomenclatural status that is not covered by the ICBN. It appears sometimes in literature and
 	 * represents the opinion of the author who considers the name to be unusable for an unambiguous
-	 * taxonomic use. 
+	 * taxonomic use.
 	 * @return
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getByUuid(uuidSubnudum);
 	}
-	
+
 	/**
-	 * Relates to article 32.7 (old ICBN) and article 32.9 (new - McNeill et al. 2006: 32) and 
-	 * App. 5. (Greuter et al. 2000) as well as App. 6 (McNeill et al. 2006) of the International 
-	 * Code of Botanical Nomenclature. This is a reference list of botanical opera, in which all 
+	 * Relates to article 32.7 (old ICBN) and article 32.9 (new - McNeill et al. 2006: 32) and
+	 * App. 5. (Greuter et al. 2000) as well as App. 6 (McNeill et al. 2006) of the International
+	 * Code of Botanical Nomenclature. This is a reference list of botanical opera, in which all
 	 * names (or names of a certain rank) are oppressed.
 	 * Such a name has the status "invalid" but in contrary to "nom. rej." not a single name is rejected
 	 * by the commission but an opus with regard to the validity of of the names occurring in it.
@@ -237,12 +240,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getByUuid(uuidOpusUtiqueOppr);
 	}
-	
+
 
 //TODO Soraya
 //	orth. var.: orthographic variant
 //	pro syn.: pro synonymo
-	
+
 	/** TODO
 	 * preliminary implementation for BotanicalNameParser
 	 *  * not yet complete
@@ -262,9 +265,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
 		}else if (statusAbbreviation.equalsIgnoreCase("opus utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-		
+
 		//TODO
-		}else { 
+		}else {
 			if (statusAbbreviation == null){
 				statusAbbreviation = "(null)";
 			}
@@ -294,7 +297,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public ILoadableTerm readCsvLine(List csvLine) {   //TODO should be List<String> but makes error for some strange reason
 		return readCsvLine(csvLine, Language.LATIN());
 	}
-	
+
 
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
@@ -303,8 +306,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 //	public ILoadableTerm readCsvLine(List<String> csvLine) {
 //		return readCsvLine(csvLine, Language.ENGLISH());
 //	}
-//	
-//	
+//
+//
 //	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
 //		this.setUuid(UUID.fromString(csvLine.get(0)));
 //		this.setUri(csvLine.get(1));
