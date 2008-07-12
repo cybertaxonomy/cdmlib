@@ -10,16 +10,16 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
+
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing a typification of a {@link TaxonNameBase taxon name} with
@@ -100,6 +100,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 *  
 	 * @see   #getTypeSpecies()
 	 */
+	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getTypifiedName() {
 		return typifiedName;
