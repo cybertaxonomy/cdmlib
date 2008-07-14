@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
- * Controlled vocabulary to diferenctiate levels of areas such as province, state,
+ * Controlled vocabulary to diferenciate levels of areas such as province, state,
  * etc.
  * @author m.doering
  * @version 1.0
