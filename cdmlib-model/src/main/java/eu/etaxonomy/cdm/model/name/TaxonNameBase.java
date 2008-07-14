@@ -516,7 +516,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Returns the {@link reference.INomenclaturalReference nomenclatural reference} of this taxon name.
 	 * The nomenclatural reference is here meant to be the one publication
 	 * this taxon name was originally published in while fulfilling the formal
-	 * requirements as specified by the corresponding nomenclatural code.
+	 * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural codes}.
 	 *
 	 * @see 	reference.INomenclaturalReference
 	 * @see 	reference.ReferenceBase

@@ -12,7 +12,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 public interface ILoadableTerm extends ICdmBase{
 
 	/**
-	 * Fills the {@link ILoadableTerm} with contents from a csvLine. If the csvLine represents the default language
+	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine represents the default language
 	 * the csvLine attributes are merged into the existing default language and the default Language is returned.
 	 * @param csvLine
 	 * @return

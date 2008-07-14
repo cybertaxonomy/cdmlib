@@ -27,15 +27,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * The class representing categories of nomenclatural status (like "invalid",
+ * "conserved" or "novum") to qualify the use of a particular taxon name string
+ * depending on its {@link reference.INomenclaturalReference nomenclatural reference} (original publication),
+ * on its {@link NomenclaturalCode nomenclatural code} and on possible decisions of the corresponding
+ * nomenclature authorities.
  * <P>
- * This class corresponds to:
- * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#PublicationStatus
+ * A standard (ordered) list of nomenclatural status type instances will be
+ * automatically created as the project starts. But this class allows to extend
+ * this standard list by creating new instances of additional nomenclatural
+ * status types if needed. 
+ * <P>
+ * This class corresponds more or less to: <ul>
+ * <li> NomenclaturalNoteTypeTerm according to the TDWG ontology
+ * <li> NomenclaturalNoteType  according to the TCS
+ * </ul>
  * 
- * @author m.doering
- * @version 1.0
- * @created 08-Nov-2007 13:06:39
- */
-/**
  * @author a.mueller
  * @created 10.07.2008
  * @version 1.0
@@ -72,19 +79,60 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 
 
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty nomenclatural status type instance.
+	 * 
+	 * @see 	#NomenclaturalStatusType(String, String, String)
+	 * @see 	#readCsvLine(List, Language)
+	 * @see 	#readCsvLine(List)
+	 */
 	public NomenclaturalStatusType() {
 		super();
 	}
 
+	/** 
+	 * Class constructor: creates an additional nomenclatural status type
+	 * instance with a description, a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new nomenclatural status type to be created 
+	 * @param	label  		 the string identifying the new nomenclatural status
+	 * 						 type to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new nomenclatural status type to be created
+	 * @see 	#NomenclaturalStatusType()
+	 * @see 	#readCsvLine(List, Language)
+	 * @see 	#readCsvLine(List)
+	 */
 	public NomenclaturalStatusType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
+	//********* METHODS **************************************/
+
+	/**
+	 * Returns the nomenclatural status type identified through its immutable
+	 * universally unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the nomenclatural status type corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final NomenclaturalStatusType getByUuid(UUID uuid){
 		return (NomenclaturalStatusType) findByUuid(uuid);
 	}
 
 
+	/**
+	 * Returns the boolean value indicating whether this nomenclatural status
+	 * type is itself "invalid" or a kind of "invalid" (true) or not (false).
+	 * Returns false if this nomenclatural status type is null.
+	 *
+	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimateType()
+	 * @see  common.DefinedTermBase#getKindOf()
+	 */
 	@Transient
 	public boolean isInvalidType(){
 		if (this.equals(INVALID())
@@ -99,6 +147,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+	/**
+	 * Returns the boolean value indicating whether this nomenclatural status
+	 * type is itself "legitimate" or a kind of "legitimate" (true)
+	 * or not (false). Returns false if this nomenclatural status type is null.
+	 *
+	 * @see  #isInvalidType()
+	 * @see  #isIllegitimateType()
+	 * @see  common.DefinedTermBase#getKindOf()
+	 */
 	@Transient
 	public boolean isLegitimateType(){
 		if (this.equals(LEGITIMATE()) ||
@@ -115,6 +172,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+	/**
+	 * Returns the boolean value indicating whether this nomenclatural status
+	 * type is itself "illegitimate" or a kind of "illegitimate" (true)
+	 * or not (false). Returns false if this nomenclatural status type is null.
+	 *
+	 * @see  #isInvalidType()
+	 * @see  #isLegitimateType()
+	 * @see  common.DefinedTermBase#getKindOf()
+	 */
 	@Transient
 	public boolean isIllegitimateType(){
 		if (this.equals(ILLEGITIMATE()) ||
@@ -219,23 +285,23 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Nomenclatural status that is not covered by the ICBN. It appears sometimes in literature and
-	 * represents the opinion of the author who considers the name to be unusable for an unambiguous
-	 * taxonomic use.
-	 * @return
+	 * Returns the nomenclatural status type "subnudum". This type is not
+	 * covered by nomenclature codes. It appears sometimes in literature and
+	 * represents the opinion of the author who considers the name to be
+	 * unusable for an unambiguous taxonomic use.
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getByUuid(uuidSubnudum);
 	}
 
 	/**
-	 * Relates to article 32.7 (old ICBN) and article 32.9 (new - McNeill et al. 2006: 32) and
-	 * App. 5. (Greuter et al. 2000) as well as App. 6 (McNeill et al. 2006) of the International
-	 * Code of Botanical Nomenclature. This is a reference list of botanical opera, in which all
-	 * names (or names of a certain rank) are oppressed.
-	 * Such a name has the status "invalid" but in contrary to "nom. rej." not a single name is rejected
-	 * by the commission but an opus with regard to the validity of of the names occurring in it.
-	 * @return
+	 * Returns the nomenclatural status type "opus utique oppressum". This type
+	 * relates to article 32.7 (old ICBN) and article 32.9 as well as App. 6
+	 * (new ICBN). This is a reference list of botanical opera, in which all
+	 * names (or names of a certain rank) are oppressed. Such a name has the
+	 * status "invalid" but in contrary to "nomen rejicendum" not a single name
+	 * is rejected by the commission but an opus with regard to the validity of
+	 * the names occurring in it.
 	 */
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getByUuid(uuidOpusUtiqueOppr);
@@ -278,6 +344,19 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List, eu.etaxonomy.cdm.model.common.Language)
 	 */
+	/** 
+	 * Fills this nomenclatural status type with contents (uuid, uri, 
+	 * description text, label and label abbreviation) coming from a csv line.
+	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
+	 * 
+	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
+	 * 						to be used to fill this nomenclatural status type
+	 * @param	lang		the language in which the description text for this
+	 * 						nomenclatural status type is written
+	 * @see					#NomenclaturalStatusType(String, String, String)
+	 * @see					#readCsvLine(List)
+	 * @see					common.DefinedTermBase#readCsvLine(List, Language)
+	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine_, Language lang) {
 		List<String> csvLine = (List<String>) csvLine_;
@@ -292,6 +371,18 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
+	 */
+	/** 
+	 * Fills this nomenclatural status type with contents (uuid, uri, 
+	 * description text, label and label abbreviation) coming from a csv line.
+	 * The implicit language for the description text is "latin".
+	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
+	 * 
+	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
+	 * 						to be used to fill this nomenclatural status type
+	 * @see					#NomenclaturalStatusType(String, String, String)
+	 * @see					#readCsvLine(List, Language)
+	 * @see					common.DefinedTermBase#readCsvLine(List)
 	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine) {   //TODO should be List<String> but makes error for some strange reason
