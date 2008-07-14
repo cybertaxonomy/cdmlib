@@ -21,7 +21,18 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
- * @see http://rs.tdwg.org/ontology/voc/TaxonName#NomenclaturalCodeTerm
+ * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
+ * ruling {@link TaxonNameBase taxon names}.
+ * <P>
+ * The standard set of nomenclature code instances will be automatically created
+ * as the project starts. But this class allows to extend this standard set by
+ * creating new instances of additional nomenclature codes if unlikely needed. 
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> NomenclaturalCodeTerm according to the TDWG ontology
+ * <li> NomenclaturalCodesEnum  according to the TCS
+ * </ul>
+ * 
  * @author a.mueller
  * @created 19.05.2008
  * @version 1.0
@@ -37,53 +48,69 @@ public class NomenclaturalCode extends DefinedTermBase {
 	private static final UUID uuidIczn = UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b");
 	private static final UUID uuidIcvcn = UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a");
 
-	/**
-	 * Constructor
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty nomenclature code instance.
+	 * 
+	 * @see 	#NomenclaturalCode(String, String, String)
 	 */
 	public NomenclaturalCode() {
 		super();
 	}
 	
-	/**
-	 * Constructor
-	 * @param term
-	 * @param label
+	/** 
+	 * Class constructor: creates an additional rank instance with a description,
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new nomenclature code to be created 
+	 * @param	label  		 the string identifying the new nomenclature code
+	 * 						 to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new nomenclature code to be created
+	 * @see 	#NomenclaturalCode()
 	 */
 	public NomenclaturalCode(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
 
+	//********* METHODS **************************************/
+
+	/**
+	 * Returns the nomenclature code identified through its immutable universally
+	 * unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the nomenclature code corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final NomenclaturalCode getByUuid(UUID uuid){
 		return (NomenclaturalCode) findByUuid(uuid);
 	}
 	
 	/**
-	 * International Code of Nomenclature of Bacteria
-	 * @return
+	 * Returns the International Code of Nomenclature of Bacteria
 	 */
 	public static final NomenclaturalCode ICNB(){
 		return getByUuid(uuidIcnb);
 	}
 	
 	/**
-	 * International Code of Botanical Nomenclature
-	 * @return
+	 * Returns the International Code of Botanical Nomenclature
 	 */
 	public static final NomenclaturalCode ICBN(){
 		return getByUuid(uuidIcbn);
 	}
 	/**
-	 * International Code of Cultivated Plants
-	 * @return
+	 * Returns the International Code of Cultivated Plants
 	 */
 	public static final NomenclaturalCode ICNCP(){
 		return getByUuid(uuidIcncp);
 	}
 
 	/**
-	 * International Code of Zoological Nomenclature
-	 * @return
+	 * Returns the International Code of Zoological Nomenclature
 	 */
 	public static final NomenclaturalCode ICZN(){
 		return getByUuid(uuidIczn);
@@ -91,13 +118,24 @@ public class NomenclaturalCode extends DefinedTermBase {
 
 
 	/**
-	 * Rules that govern the names of viral species
-	 * @return
+	 * Returns the International Code for Virus Classification and Nomenclature
 	 */
 	public static final NomenclaturalCode ICVCN(){
 		return getByUuid(uuidIcvcn);
 	}
 	
+	/**
+	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
+	 * cultivar plant, bacterial or viral name) instance depending on this
+	 * nomenclature code only containing the given {@link Rank rank}.
+	 * 
+	 * @param	rank	the rank of the new taxon name instance
+	 * @see 			BotanicalName#NewInstance(Rank)
+	 * @see 			ZoologicalName#NewInstance(Rank)
+	 * @see 			CultivarPlantName#NewInstance(Rank)
+	 * @see 			BacterialName#NewInstance(Rank)
+	 * @see 			ViralName#NewInstance(Rank)
+	 */
 	@Transient
 	public TaxonNameBase getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase result;
