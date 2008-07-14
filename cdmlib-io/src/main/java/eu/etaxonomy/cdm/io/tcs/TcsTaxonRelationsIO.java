@@ -5,6 +5,7 @@ package eu.etaxonomy.cdm.io.tcs;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -14,11 +15,14 @@ import org.jdom.Namespace;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -32,13 +36,22 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TcsTaxonRelationsIO implements IIO<IImportConfigurator>{
+public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonRelationsIO.class);
 
 	private static int modCount = 30000;
 
+	private static final String ioNameLocal = "TcsTaxonRelationsIO";
 	
-	public boolean check(IImportConfigurator config){
+	public TcsTaxonRelationsIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	
+	
+	
+	@Override
+	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -47,10 +60,11 @@ public class TcsTaxonRelationsIO implements IIO<IImportConfigurator>{
 		return result;
 	}
 	
-	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp,MapWrapper<? extends CdmBase>[] storeArray){ 
+	@Override
+	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){ 
 			
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)storeArray[0];
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[1]; 
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 
 		String xmlElementName;
 		String xmlAttributeName;

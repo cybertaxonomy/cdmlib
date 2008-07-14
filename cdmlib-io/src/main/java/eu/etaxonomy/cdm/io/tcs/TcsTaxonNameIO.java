@@ -1,9 +1,8 @@
 package eu.etaxonomy.cdm.io.tcs;
 
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -13,12 +12,14 @@ import org.jdom.Namespace;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.IIO;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -29,15 +30,22 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
-public class TcsTaxonNameIO implements IIO<IImportConfigurator>{
+public class TcsTaxonNameIO  extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonNameIO.class);
 
 	private static int modCount = 5000;
+	private static final String ioNameLocal = "TcsTaxonNameIO";
+	
+	public TcsTaxonNameIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
 
-	public boolean check(IImportConfigurator config){
+	@Override
+	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("BasionymRelations not yet implemented");
 		logger.warn("Checking for TaxonNames not yet implemented");
@@ -47,12 +55,13 @@ public class TcsTaxonNameIO implements IIO<IImportConfigurator>{
 		return result;
 	}
 	
-	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp, MapWrapper<? extends CdmBase>[] storeArray){
+	@Override
+	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)storeArray[0];
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[1];
-		MapWrapper<Team> authorMap = (MapWrapper<Team>)storeArray[2];
-		
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+
 		String tcsElementName;
 		Namespace tcsNamespace;
 		String cdmAttrName;
@@ -88,8 +97,7 @@ public class TcsTaxonNameIO implements IIO<IImportConfigurator>{
 			//create TaxonName element
 			String nameAbout = elTaxonName.getAttributeValue("about", rdfNamespace);
 			String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
-			//FIXME namespace
-			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonConceptNamespace, "resource", rdfNamespace);
+			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonNameNamespace, "resource", rdfNamespace);
 			
 			try {
 				Rank rank = TcsTransformer.rankString2Rank(strRank);
@@ -107,12 +115,12 @@ public class TcsTaxonNameIO implements IIO<IImportConfigurator>{
 				cdmAttrName = "specificEpithet";
 				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 
-				tcsElementName = "specificEpithet";
+				tcsElementName = "infraspecificEpithet";
 				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "infraSpecificEpithet";
 				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
 				
-				tcsElementName = "specificEpithet";
+				tcsElementName = "infragenericEpithet";
 				tcsNamespace = taxonNameNamespace;
 				cdmAttrName = "infraGenericEpithet";
 				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);

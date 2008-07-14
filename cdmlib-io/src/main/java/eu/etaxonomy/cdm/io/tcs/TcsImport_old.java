@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Service
-public class TcsImport<T extends TcsImportConfigurator> implements ICdmImport<T> {
-	private static Logger logger = Logger.getLogger(TcsImport.class);
+public class TcsImport_old<T extends TcsImportConfigurator> implements ICdmImport<T> {
+	private static Logger logger = Logger.getLogger(TcsImport_old.class);
 	
 	
 	//Constants
@@ -72,7 +72,7 @@ public class TcsImport<T extends TcsImportConfigurator> implements ICdmImport<T>
 	
 	protected boolean doCheck(TcsImportConfigurator config){
 		boolean result = true;
-		System.out.println("Start check TcsImport ("+ config.getSource().toString() + ") ...");
+		System.out.println("Start check TcsImport_old ("+ config.getSource().toString() + ") ...");
 		
 		//check
 		if (config == null){
@@ -234,7 +234,8 @@ public class TcsImport<T extends TcsImportConfigurator> implements ICdmImport<T>
 		
 		//make and save RelPTaxa
 		if(config.isDoRelTaxa()){
-			if (! TcsTaxonIO.invokeRelations(config, cdmApp, taxonStore, referenceStore)){
+			iio = config.getTaxonRelationIO();
+			if(iio != null && ! iio.invoke(config, cdmApp, new MapWrapper[]{taxonStore, referenceStore})){
 				return false;
 			}
 		}else{

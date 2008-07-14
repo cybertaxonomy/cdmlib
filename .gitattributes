@@ -67,8 +67,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/CdmDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsImport_old.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsReferenceIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameIO.java -text

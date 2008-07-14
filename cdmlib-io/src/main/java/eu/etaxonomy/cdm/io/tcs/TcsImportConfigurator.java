@@ -9,8 +9,10 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.taxonx.TaxonXDescriptionIO;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -18,12 +20,25 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	private static Logger logger = Logger.getLogger(TcsImportConfigurator.class);
 	
 	
+//	protected void makeIOs(){
+//		this.referenceIO = new TcsReferenceIO();
+//		this.taxonIO = new TcsTaxonIO();
+//		this.taxonNameIO = new TcsTaxonNameIO();
+//		this.taxonNameRelationIO = new TcsTaxonNameRelationsIO();
+//		this.taxonRelationIO = new TcsTaxonRelationsIO();
+//		
+//	}
+	
 	protected void makeIOs(){
-		this.referenceIO = new TcsReferenceIO();
-		this.taxonIO = new TcsTaxonIO();
-		this.taxonNameIO = new TcsTaxonNameIO();
-		this.taxonNameRelationIO = new TcsTaxonNameRelationsIO();
-		this.taxonRelationIO = new TcsTaxonRelationsIO();
+		iCdmIoArray = new ICdmIO []{
+				new TcsReferenceIO(false)
+				, new TcsTaxonNameIO(! this.isDoTaxonNames())
+				, new TcsTaxonNameIO(! this.isDoTaxonNames())
+				, new TcsTaxonNameRelationsIO(! this.isDoRelNames())
+				, new TcsTaxonIO(! this.isDoTaxa())
+				, new TcsTaxonRelationsIO(! this.isDoRelTaxa())
+
+		};
 		
 	}
 	

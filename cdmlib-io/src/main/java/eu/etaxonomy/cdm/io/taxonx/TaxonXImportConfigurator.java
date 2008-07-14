@@ -19,8 +19,6 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase implements 
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
 	protected void makeIOs(){
-		//this.descriptionIO = new TaxonXDescriptionIO(this.isDoFacts());
-		
 		iCdmIoArray = new ICdmIO []{
 				new TaxonXDescriptionIO(! this.isDoFacts())
 //				, new TaxonXDescriptionIO(config.isDoFacts())

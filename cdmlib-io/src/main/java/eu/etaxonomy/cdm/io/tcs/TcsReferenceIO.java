@@ -3,27 +3,40 @@
  */
 package eu.etaxonomy.cdm.io.tcs;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
  *
  */
-public class TcsReferenceIO implements IIO<IImportConfigurator>{
+public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
 
 	private static int modCount = 1000;
-
-	public boolean check(IImportConfigurator config){
+	private static final String ioNameLocal = "TcsReferenceIO";
+	
+	public TcsReferenceIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	@Override
+	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		result &= checkArticlesWithoutJournal(config);
 		result &= checkPartOfJournal(config);
@@ -112,11 +125,12 @@ public class TcsReferenceIO implements IIO<IImportConfigurator>{
 	}
 	
 	
-	public boolean invoke(IImportConfigurator config, CdmApplicationController cdmApp,
-			MapWrapper<? extends CdmBase>[] storeArray){
+	@Override
+	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)storeArray[0]; 
-		MapWrapper<Team> authorMap = (MapWrapper<Team>)storeArray[1];
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element source = tcsConfig.getSourceRoot();
