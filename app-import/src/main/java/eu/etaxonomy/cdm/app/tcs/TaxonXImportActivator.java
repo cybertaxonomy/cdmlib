@@ -22,8 +22,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.taxonx.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
-import eu.etaxonomy.cdm.io.tcs.TcsImport;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 
 /**
  * @author a.mueller

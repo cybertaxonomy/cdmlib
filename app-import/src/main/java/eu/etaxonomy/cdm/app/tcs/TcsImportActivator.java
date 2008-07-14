@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.taxonx.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.tcs.TcsImport;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 
@@ -33,7 +34,7 @@ public class TcsImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
@@ -48,14 +49,14 @@ public class TcsImportActivator {
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 	//names
 	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
+	static final boolean doRelNames = true;
+	static final boolean doTypes = true;
+	static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doFacts = false;
+	static final boolean doFacts = true;
 	
 	/**
 	 * @param args
@@ -88,7 +89,7 @@ public class TcsImportActivator {
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		TcsImport tcsImport = new TcsImport();
+		CdmDefaultImport tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		tcsImport.invoke(tcsImportConfigurator);
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
