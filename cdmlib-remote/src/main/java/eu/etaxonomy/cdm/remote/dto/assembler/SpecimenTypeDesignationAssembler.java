@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.IdentifiedString;
 import eu.etaxonomy.cdm.remote.dto.SpecimenTypeDesignationSTO;
@@ -43,10 +44,19 @@ public class SpecimenTypeDesignationAssembler extends AssemblerBase<SpecimenType
 	public SpecimenTypeDesignationSTO getSTO(SpecimenTypeDesignation specimenTypeDesignation, Enumeration<Locale> locales) {
 		SpecimenTypeDesignationSTO sto = new SpecimenTypeDesignationSTO();
 		sto.setUuid(specimenTypeDesignation.getUuid().toString());
+		TypeDesignationStatus status = specimenTypeDesignation.getTypeStatus();
+		if (status == null){
+			sto.setStatus(new IdentifiedString(
+					null,
+					null)
+			);
+		}else{
 		sto.setStatus(
 				new IdentifiedString(
-						specimenTypeDesignation.getTypeStatus().getLabel(),
-						specimenTypeDesignation.getTypeStatus().getUuid().toString()));
+						status.getLabel(),
+						status.getUuid().toString())
+				);
+		}
 		sto.setTypeSpecimen(specimenAssembler.getSTO(specimenTypeDesignation.getTypeSpecimen(), locales));
 		return sto;
 	}
