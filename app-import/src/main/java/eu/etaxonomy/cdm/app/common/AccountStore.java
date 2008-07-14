@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +22,10 @@ import org.apache.log4j.Logger;
 public class AccountStore {
 	private static Logger logger = Logger.getLogger(AccountStore.class);
 	
-	final static File accountsFile = new File(System.getenv("USERPROFILE")+File.separator+".cdmLibrary"+File.separator+".dbaccounts.properties");
+	// getting the home directory is platform dependent.
+	final static String userprofile = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getenv("HOME");
+	
+	final static File accountsFile = new File(userprofile + File.separator + ".cdmLibrary" + File.separator + ".dbaccounts.properties");
 	
 	public static String getAccountsFileName(){
 		try {
@@ -44,9 +49,17 @@ public class AccountStore {
 		Properties accounts = new Properties(); 
 		try {
 			accountsFile.createNewFile();
-			FileReader in = new FileReader(accountsFile);
-			accounts.load(in);
-			in.close();
+			
+			// this gives me errors. Properties object doesn't have a method 
+			// with this signature
+			//FileReader in = new FileReader(accountsFile);
+			//accounts.load(in);
+			//in.close();
+			
+			FileInputStream inStream = new FileInputStream(accountsFile);
+			accounts.load(inStream);
+			inStream.close();
+			
 		} catch (IOException e) {
 			logger.error(e);		
 		}
@@ -61,11 +74,15 @@ public class AccountStore {
 	}
 
 	private void saveAccounts(Properties accounts) {
-		FileWriter out;
+		//FileWriter out;
+		FileOutputStream outStream;
 		try {
-			out = new FileWriter(accountsFile);
-			accounts.store(out, "");
-			out.close();
+			//out = new FileWriter(accountsFile);
+			//accounts.store(out, "");
+			//out.close();
+			outStream = new FileOutputStream(accountsFile);
+			accounts.store(outStream, "");
+			outStream.close();
 		} catch (IOException e) {
 			logger.error("Unable to write properties", e);
 		}
