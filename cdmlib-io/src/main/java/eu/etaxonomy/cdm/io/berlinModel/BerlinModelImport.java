@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -81,7 +79,7 @@ public class BerlinModelImport {
 		
 		//check RelNames
 		if(bmiConfig.isDoRelNames()){
-			result &= BerlinModelTaxonNameIO.checkRelations(bmiConfig);
+			result &= BerlinModelTaxonNameRelationIO.check(bmiConfig);
 		}
 
 		//check nameFacts
@@ -106,7 +104,7 @@ public class BerlinModelImport {
 		
 		//check RelPTaxa
 		if(bmiConfig.isDoRelTaxa()){
-			result &= BerlinModelTaxonIO.checkRelations(bmiConfig);
+			result &= BerlinModelTaxonRelationIO.check(bmiConfig);
 		}
 		
 		//check Facts
@@ -184,7 +182,7 @@ public class BerlinModelImport {
 
 		//make and save RelNames
 		if(bmiConfig.isDoRelNames()){
-			if (! BerlinModelTaxonNameIO.invokeRelations(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
+			if (! BerlinModelTaxonNameRelationIO.invoke(bmiConfig, cdmApp, taxonNameStore, referenceStore)){
 				return false;
 			}
 		}else{
@@ -231,7 +229,7 @@ public class BerlinModelImport {
 		
 		//make and save RelPTaxa
 		if(bmiConfig.isDoRelTaxa()){
-			if (! BerlinModelTaxonIO.invokeRelations(bmiConfig, cdmApp, taxonStore, referenceStore)){
+			if (! BerlinModelTaxonRelationIO.invoke(bmiConfig, cdmApp, taxonStore, referenceStore)){
 				return false;
 			}
 		}else{
