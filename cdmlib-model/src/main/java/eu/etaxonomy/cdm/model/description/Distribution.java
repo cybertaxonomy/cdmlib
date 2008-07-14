@@ -30,7 +30,17 @@ public class Distribution extends DescriptionElementBase {
 	private NamedArea area;
 	private PresenceAbsenceTermBase status;
 
+	public static Distribution NewInstance(){
+		return new Distribution();
+	}
+
+	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase status){
+		return new Distribution();
+	}
 	
+	private Distribution(){
+		super();
+	}
 	
 	
 	@ManyToOne
