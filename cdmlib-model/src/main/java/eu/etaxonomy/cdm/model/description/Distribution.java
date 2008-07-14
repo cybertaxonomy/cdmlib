@@ -38,7 +38,7 @@ public class Distribution extends DescriptionElementBase {
 		return new Distribution();
 	}
 	
-	private Distribution(){
+	protected Distribution(){
 		super();
 	}
 	
