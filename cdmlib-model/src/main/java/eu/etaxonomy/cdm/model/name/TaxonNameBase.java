@@ -1102,8 +1102,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	/**
 	 * Generates and returns the string with the scientific name of this
-	 * taxon name.
-	 * This string may be stored in the inherited
+	 * taxon name (only non viral taxon names can be generated from their
+	 * components). This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
 	 * IdentifiableEntity#generateTitle() method.
