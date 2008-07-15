@@ -46,6 +46,8 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	private boolean isRejectedType;
 	private boolean isConservedType;
+	private boolean isLectoType;
+	private ReferenceBase lectoTypeReference;
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
 	
@@ -168,5 +170,37 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	public void setConservedType(boolean isConservedType){
 		this.isConservedType = isConservedType;
 	}
+
+	/**
+	 * @return the isLectoType
+	 */
+	public boolean isLectoType() {
+		return isLectoType;
+	}
+
+	/**
+	 * @param isLectoType the isLectoType to set
+	 */
+	public void setLectoType(boolean isLectoType) {
+		this.isLectoType = isLectoType;
+	}
+
+	/**
+	 * @return the lectoTypeReference
+	 */
+	public ReferenceBase getLectoTypeReference() {
+		return lectoTypeReference;
+	}
+
+	/**
+	 * @param lectoTypeReference the lectoTypeReference to set
+	 */
+	public void setLectoTypeReference(ReferenceBase lectoTypeReference) {
+		this.lectoTypeReference = lectoTypeReference;
+	}
+	
+	
+	
+	
 
 }
