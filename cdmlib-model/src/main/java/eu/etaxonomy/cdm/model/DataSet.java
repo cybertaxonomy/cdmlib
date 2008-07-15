@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -288,6 +289,34 @@ public class DataSet {
      */
     public void setTaxa(List<Taxon> value) {
         this.taxa = value;
+    }
+
+    /**
+     * Adds the taxa in value to the taxa property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<Taxon> }
+     *     
+     */
+    public void addTaxa(List<Taxon> value) {
+    	for (Taxon taxon: value) {
+    		this.taxa.add(taxon);
+    	}
+    }
+
+    /**
+     * Adds the taxa in value to the taxa property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<Taxon> }
+     *     
+     */
+    public void addTaxa(Set<Taxon> value) {
+    	for (Taxon taxon: value) {
+    		this.taxa.add(taxon);
+    	}
     }
 
     /**
