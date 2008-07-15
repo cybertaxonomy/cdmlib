@@ -14,7 +14,11 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
@@ -36,8 +40,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * An accepted potential taxon defined by the combination of a Name and a sec reference
- * {@link Iterable} interface is supported to iterate through taxonomic children
+ * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa can
+ * build a taxonomical tree according to the opinion of the {@link reference.ReferenceBase reference}.
+ * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.
+ * Splitting taxa in "accepted/correct" and "synonyms" makes it easier to handle
+ * particular relationship between ("accepted/correct") taxa on the one hand
+ * and between ("synonym") taxa and ("accepted/correct") taxa on the other.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:56
@@ -89,39 +98,73 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	private static Method methodDescriptionSetTaxon;
 	
 	
+// ************* CONSTRUCTORS *************/	
 
-	/**
-	 * Factory method
-	 * @param taxonNameBase The TaxonNameBase that belongs to the new taxon
-	 * @param sec The taxon concept reference that 
-	 * @return
+	//TODO should be private, but still produces Spring init errors
+	@Deprecated
+	public Taxon(){
+	}
+	
+	/** 
+	 * Class constructor: creates a new (accepted/correct) taxon instance with
+	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * using it.
+	 * 
+	 * @param  taxonNameBase	the taxon name used
+	 * @param  sec				the reference using the taxon name
+	 * @see    					TaxonBase#TaxonBase(TaxonNameBase, ReferenceBase)
+	 */
+	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		super(taxonNameBase, sec);
+	}
+	 
+//********* METHODS **************************************/
+
+	/** 
+	 * Creates a new (accepted/correct) taxon instance with
+	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * using it.
+	 * 
+	 * @param  taxonNameBase	the taxon name used
+	 * @param  sec				the reference using the taxon name
+	 * @see    					#Taxon(TaxonNameBase, ReferenceBase)
 	 */
 	public static Taxon NewInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		Taxon result = new Taxon(taxonNameBase, sec);
 		return result;
 	}
 	
-	//TODO should be private, but still produces Spring init errors
-	@Deprecated
-	public Taxon(){
-	}
-	
-	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
-		super(taxonNameBase, sec);
-	}
 	 
-	 
+	/** 
+	 * Returns the set of {@link description.TaxonDescription taxon descriptions}
+	 * concerning this taxon.
+	 * 
+	 * @see description.TaxonDescription#getTaxon()
+	 * @see #removeDescription(TaxonDescription)
+	 * @see #addDescription(TaxonDescription)
+	 */
 	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
 	}
+	/** 
+	 * @see #getDescriptions()
+	 */
 	protected void setDescriptions(Set<TaxonDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
-	/**
-	 * Adds a description to this taxon. Set the taxon property of description to this taxon.
-	 * @param description
+	/** 
+	 * Adds a new {@link description.TaxonDescription taxon description} to the set
+	 * of taxon descriptions assigned to this (accepted/correct) taxon.
+	 * The {@link description.TaxonDescription#getTaxon() taxon} of the taxon description
+	 * will be filled with this taxon. The taxon description must be removed
+	 * from the set of taxon descriptions assigned to the previous taxon. 
+	 *
+	 * @param  description	the taxon description to be added for this taxon
+	 * @see     		  	#getDescriptions()
+	 * @see     		  	#removeDescription(TaxonDescription)
+	 * @see 			  	description.TaxonDescription#getTaxon()
 	 */
 	public void addDescription(TaxonDescription description) {
 		initMethods();
@@ -133,6 +176,14 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		descriptions.add(description);
 		
 	}
+	/** 
+	 * Removes one element from the set of {@link description.TaxonDescription taxon descriptions} assigned to the
+	 * to this taxon. The The {@link description.TaxonDescription#getTaxon() taxon} in the description itself will be nullified.
+	 *
+	 * @param  description  the taxon description which should be deleted
+	 * @see     		  	#getDescriptions()
+	 * @see     		  	#addDescription(TaxonDescription)
+	 */
 	public void removeDescription(TaxonDescription description) {
 		initMethods();
 		//description.setTaxon(null) for not visible method
