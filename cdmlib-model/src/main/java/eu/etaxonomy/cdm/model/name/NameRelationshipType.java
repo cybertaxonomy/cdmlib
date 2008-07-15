@@ -111,6 +111,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		return (NameRelationshipType)findByUuid(uuid);
 	}
 
+	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
@@ -134,6 +135,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
+	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
@@ -159,6 +161,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
+	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
@@ -188,9 +191,21 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
 		  return getByUuid(uuidOrthographicVariant);
 	}
+	/**
+	 * Returns the "later homonym" name relationship type. The two {@link TaxonNameBase taxon names}
+	 * involved in such a relationship must belong to different
+	 * {@link HomotypicalGroup homotypical groups}.
+	 */
 	public static final NameRelationshipType LATER_HOMONYM(){
 	  return getByUuid(uuidLaterHomonym);
 	}
+	/**
+	 * Returns the "treated as later homonym" name relationship type. The first
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is
+	 * treated as an homonym although it has been published before the second
+	 * taxon name. The two taxon names involved must belong to different
+	 * {@link HomotypicalGroup homotypical groups}.
+	 */
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
 	  return getByUuid(uuidTreatedAsLaterHomonym);
 	}
@@ -206,9 +221,23 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType CONSERVED_AGAINST(){
 	  return getByUuid(uuidConservedAgainst);
 	}
+	/**
+	 * Returns the "validated by name" name relationship type. The two
+	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
+	 * in order to circumscribe the same taxonomical group but the first
+	 * (earlier) taxon name was invalidly published whereas the second (later)
+	 * taxon name is the one which was validly published for the first time.
+	 */
 	public static final NameRelationshipType VALIDATED_BY_NAME(){
 	  return getByUuid(uuidValidatedByName);
 	}
+	/**
+	 * Returns the "later validated by name" name relationship type. The two
+	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
+	 * in order to circumscribe the same taxonomical group but the first
+	 * (earlier) taxon name was invalidly published whereas the second (later)
+	 * taxon name is the one which was validly published for the first time.
+	 */
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
 	  return getByUuid(uuidLaterValidatedByName);
 	}

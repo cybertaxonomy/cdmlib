@@ -175,63 +175,80 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 		this.isConservedType = isConservedType;
 	}
 
-	/**
-	 * @return the isLectoType
+	/** 
+	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name} for
+	 * this taxon name type designation was posterior to the publication of the
+	 * typified taxon name. In this case the taxon name type designation should
+	 * have a {@link reference.ReferenceBase reference} that is different to the
+	 * nomenclatural reference of the typified taxon name.
+	 *  
+	 * @see   #getLectoTypeReference()
 	 */
 	public boolean isLectoType() {
 		return isLectoType;
 	}
 
 	/**
-	 * @param isLectoType the isLectoType to set
+	 * @see   #isLectoType()
 	 */
 	public void setLectoType(boolean isLectoType) {
 		this.isLectoType = isLectoType;
 	}
 
-	/**
-	 * @return the lectoTypeReference
+	/** 
+	 * Returns the {@link reference.ReferenceBase reference} used in case this 
+	 * taxon name type designation is a lectotype. This reference is different
+	 * to the nomenclatural reference of the typified taxon name.
+	 *  
+	 * @see   #isLectoType()
 	 */
 	public ReferenceBase getLectoTypeReference() {
 		return lectoTypeReference;
 	}
 
 	/**
-	 * @param lectoTypeReference the lectoTypeReference to set
+	 * @see   #getLectoTypeReference()
 	 */
 	public void setLectoTypeReference(ReferenceBase lectoTypeReference) {
 		this.lectoTypeReference = lectoTypeReference;
 	}
 
-	/**
-	 * @return the lectoTypeMicroReference
+	/** 
+	 * Returns the details string of the reference corresponding to this taxon 
+	 * type designation if it is a lectotype. The details describe the exact
+	 * localisation within the publication used for the lectotype assignation.
+	 * These are mostly (implicitly) pages but can also be figures or tables or
+	 * any other element of a publication. A lectotype micro reference (details)
+	 * requires the existence of a lectotype reference.
+	 * 
+	 * @see   #getLectoTypeReference()
 	 */
 	public String getLectoTypeMicroReference() {
 		return lectoTypeMicroReference;
 	}
 
 	/**
-	 * @param lectoTypeMicroReference the lectoTypeMicroReference to set
+	 * @see   #getLectoTypeMicroReference()
 	 */
 	public void setLectoTypeMicroReference(String lectoTypeMicroReference) {
 		this.lectoTypeMicroReference = lectoTypeMicroReference;
 	}
 
 	/**
-	 * If true this indicates that a name type does not exist.
-	 * This is differentiate that <BR> 
-	 * 	a) it is unknown if a name type exists and <BR>
-	 *  b) it is known that no name type exists <BR>
-	 *  If b is true there should be a NameTypeDesignation with <code>isNotDesignate == true</code> 
-	 * The typeSpecies should be <code>null</code> then.
-	 * @return the notDesignated
+	 * Returns the boolean value "true" if a name type does not exist.
+	 * Two cases must be differentiated: <BR><ul> 
+	 * <li> a) it is unknown whether a name type exists and <BR>
+	 * <li> b) it is known that no name type exists <BR>
+	 *  </ul>
+	 * If b) is true there should be a NameTypeDesignation with the flag
+	 * isNotDesignated set. The typeSpecies should then be "null".
 	 */
 	public boolean isNotDesignated() {
 		return isNotDesignated;
 	}
 
 	/**
-	 * @param notDesignated the notDesignated to set
+	 * @see   #isNotDesignated()
 	 */
 	public void setNotDesignated(boolean isNotDesignated) {
 		this.isNotDesignated = isNotDesignated;
