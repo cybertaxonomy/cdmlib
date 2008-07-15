@@ -275,8 +275,24 @@ public class DataSet {
      *     {@link List<Taxon> }
      *     
      */
-    public List<Taxon> getTaxa() {
-        return taxa;
+//    public List<Taxon> getTaxa() {
+//        return taxa;
+//    }
+
+    /**
+     * Gets the value of the taxa property as {@link Collection<TaxonBase> }
+     * 
+     * @return
+     *     possible object is
+     *     {@link Collection<TaxonBase> }
+     *     
+     */
+    public Collection<TaxonBase> getTaxonBases() {
+    	
+        // FIXME: This is a dirty trick.
+    	Object obj = (Object)taxa;
+    	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
+        return taxonBases;
     }
 
     /**
@@ -296,43 +312,13 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<Taxon> }
+     *     {@link Collection<Taxon> }
      *     
      */
-    public void addTaxa(List<Taxon> value) {
+    public void addTaxa(Collection<Taxon> value) {
     	for (Taxon taxon: value) {
     		this.taxa.add(taxon);
     	}
-    }
-
-    /**
-     * Adds the taxa in value to the taxa property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link List<Taxon> }
-     *     
-     */
-    public void addTaxa(Set<Taxon> value) {
-    	for (Taxon taxon: value) {
-    		this.taxa.add(taxon);
-    	}
-    }
-
-    /**
-     * Gets the value of the taxa property as {@link Collection<TaxonBase> }
-     * 
-     * @return
-     *     possible object is
-     *     {@link Collection<TaxonBase> }
-     *     
-     */
-    public Collection<TaxonBase> getTaxonBases() {
-    	
-        // FIXME: This is a dirty trick.
-    	Object obj = (Object)taxa;
-    	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
-        return taxonBases;
     }
 
     /**
@@ -359,6 +345,20 @@ public class DataSet {
         this.synonyms = value;
     }
     
+    /**
+     * Adds the synonym in value to the synonyms property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<Synonym> }
+     *     
+     */
+    public void addSynonyms(Collection<Synonym> value) {
+    	for (Synonym synonym: value) {
+    		this.synonyms.add(synonym);
+    	}
+    }
+
     /**
      * Gets the value of the relationships property.
      * 
