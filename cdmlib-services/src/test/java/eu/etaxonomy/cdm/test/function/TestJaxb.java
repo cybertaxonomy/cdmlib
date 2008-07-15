@@ -3,8 +3,15 @@ package eu.etaxonomy.cdm.test.function;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -38,6 +45,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
@@ -46,9 +54,11 @@ public class TestJaxb {
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
 	private static final String dbName = "cdm_test_jaxb";
+	//private static final String dbName = "cdm_test_anahit";
 	private String server = "192.168.2.10";
 	private String username = "edit";
 	private String marshOut = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
+	private String test = new String( System.getProperty("user.home") + File.separator + "cdm_test.xml");
 
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
@@ -72,7 +82,7 @@ public class TestJaxb {
 		}
 
 		DataSet dataSet = buildDataSet();
-
+		
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
@@ -82,68 +92,99 @@ public class TestJaxb {
 
     }
     
-	public void testSerialize(){
-		
-		CdmApplicationController appCtr = null;
+    public void testSerialize(){
 
-		try {
-			String password = CdmUtils.readInputLine("Password: ");
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
-			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-			
+    	CdmApplicationController appCtr = null;
 
-		} catch (DataSourceNotFoundException e) {
-			logger.error("datasource error");
-		} catch (TermNotFoundException e) {
-			logger.error("defined terms not found");
-		}
-		TransactionStatus txStatus = appCtr.startTransaction();
-		DataSet dataSet = new DataSet();
+    	try {
+    		String password = CdmUtils.readInputLine("Password: ");
+    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
+    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
-		// get data from DB
 
-		try {
+    	} catch (DataSourceNotFoundException e) {
+    		logger.error("datasource error");
+    	} catch (TermNotFoundException e) {
+    		logger.error("defined terms not found");
+    	}
+    	TransactionStatus txStatus = appCtr.startTransaction();
+    	DataSet dataSet = new DataSet();
+    	List<Taxon> taxa = null;
 
-			logger.info("Load data from DB ...");
-			
-			dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
-			dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
-			dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+    	// get data from DB
 
-			// load Root taxa 
-			
-			List<Taxon> taxa = 
-				appCtr.getTaxonService().getRootTaxa(null, CdmFetch.FETCH_CHILDTAXA(), false);
-			
-			for (Taxon rt: taxa){
-				logger.info("Root taxon: "+ rt.toString());
-				for (Taxon child: rt){
-					logger.info("Child: "+ child.toString());
-					logger.info("  Child.higherTaxon: "+ child.getTaxonomicParent().toString());
-					for (Synonym synonym: child.getSynonyms()){
-						logger.info("  Child synonyms: "+ synonym.toString());
-					}
-				}
-			}
-			//TODO: Store the children taxa as well
-			dataSet.setTaxa(taxa);
-			
-		} catch (Exception e) {
-			logger.error("data retrieving error");
-		}
+    	try {
 
-		try {
-			cdmDocumentBuilder = new CdmDocumentBuilder();
-			cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
+    		logger.info("Load data from DB ...");
 
-		} catch (Exception e) {
-			logger.error("marshalling error");
-		} 
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
-	}
-	
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
+    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+
+    		// load Root taxa 
+
+    		taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.FETCH_CHILDTAXA(), false);
+    		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
+
+
+    	} catch (Exception e) {
+    		logger.info("error while fetching root taxa");
+    	}
+
+    	try {
+    		dataSet.setTaxa(taxa);
+    		
+    	} catch (Exception e) {
+    		logger.info("error setting root taxa");
+    	}
+
+    	Set<Taxon> children = null;
+
+    	try {
+    		for (Taxon root: taxa) {
+
+    			logger.info("root: " + root.toString());
+    			logger.info("# children: " + root.getTaxonomicChildrenCount());
+    			
+    			//TODO: Make this recursive to traverse down the tree
+    			
+    			if (root.hasTaxonomicChildren() == true) {
+    				children = root.getTaxonomicChildren();
+    				logger.info("got children");
+
+    				for (Taxon child: children) {
+    					logger.info("child: "+ child.toString());
+    				}
+    			}
+    		} 
+    	} catch (Exception e) {
+    		logger.error("data getting children taxa");
+    		e.printStackTrace();
+    	}
+    	
+    	try {
+    		if (children != null) {
+    			dataSet.addTaxa(children);
+    		}
+
+    	} catch (Exception e) {
+    		logger.error("error adding children taxa");
+    		e.printStackTrace();
+    	}
+
+    	try {
+    		cdmDocumentBuilder = new CdmDocumentBuilder();
+    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
+
+    	} catch (Exception e) {
+    		logger.error("marshalling error");
+    	} 
+    	appCtr.commitTransaction(txStatus);
+    	appCtr.close();
+    }
+
+
 	public void testDeserialize() {
 		
 		CdmApplicationController appCtr = null;
@@ -160,14 +201,13 @@ public class TestJaxb {
 			logger.error("defined terms not found");
 		}
 
-		TransactionStatus txStatus = appCtr.startTransaction();
 		DataSet dataSet = new DataSet();
 		
         // unmarshalling test XML file
 		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(marshOut));
+			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(test));
 
 		} catch (Exception e) {
 			logger.error("unmarshalling error");
@@ -175,11 +215,27 @@ public class TestJaxb {
 		
 		// save data in DB
 		
+		Collection<TaxonBase> taxonBases;
+		List<Agent> agents;
+		Map<UUID, TaxonBase> taxonBaseMap;
+		Map<UUID, Agent> agentMap;
+		
 		// Currently it's sufficient to save the taxa only since all other data
 		// related to the taxa, such as synonyms, are automatically saved as well.
 		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
+		agents = dataSet.getAgents();
+//		taxonBases = dataSet.getTaxonBases();
+		
+		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		if (agents != null) {
+		agentMap = appCtr.getAgentService().saveAgentAll(agents);
+		}
+//		if (taxonBases != null) {
+//		taxonBaseMap = appCtr.getTaxonService().saveTaxonAll(taxonBases);
+//		}
+		//appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
@@ -193,11 +249,11 @@ public class TestJaxb {
 		System.out.println("\nEnd Initializing");
 
 		System.out.println("\nStart Serializing");
-		//testSerialize();
+		testSerialize();
 		System.out.println("\nEnd Serializing");
 		
 		System.out.println("\nStart Deserializing");
-		testDeserialize();
+		//testDeserialize();
 		System.out.println("\nEnd Deserializing");
 	}
 	
