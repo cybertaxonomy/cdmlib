@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +18,10 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.jaxb.CdmDocumentBuilder;
 import eu.etaxonomy.cdm.model.DataSet;
-import eu.etaxonomy.cdm.model.DataSetTest;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -93,50 +90,47 @@ public class TestJaxb {
     }
 
     
-    public void traverse (Collection<Taxon> taxonCollection, DataSet dataSet) {
+    public void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
 
-    	System.out.println("*** traverse ***");
+    	//System.out.println("*** traverse ***");
 
+    	// FIXME: Clean the collection types
     	Set<Taxon> children = null;
+    	List<Taxon> children_ = new ArrayList();
     	Set<Synonym> synonyms = null;
-    	// TODO: Get rid of synonym List, need Set only.
-    	// Change methods in DataSet.
-    	List<Synonym> dataSetSynonyms = new ArrayList();
+    	Set<Synonym> synonyms_ = new HashSet();
 
-		try {
     	for (Taxon taxon: taxonCollection) {
 
     		// get the synonyms
 
     		try {
     			if (taxon.hasSynonyms() == true) {
+
     				synonyms = taxon.getSynonyms();
 
     				for (Synonym synonym: synonyms) {
     					logger.info("synonym: "+ synonym.toString());
+    					synonyms_.add(synonym);
     				}
+
+    				// If calling dataSet.addSynonyms() inside this for loop
+    				// get ConcurrentModificationException.
     			}
     		} catch (Exception e) {
     			logger.error("error getting synonyms");
     			e.printStackTrace();
     		}
 
-    		try {
-    			if (synonyms != null) {
-    				dataSet.setSynonyms(dataSetSynonyms);
-    				dataSet.addSynonyms(synonyms);
-    			}
-    		} catch (Exception e) {
-    			logger.error("error adding synonyms");
-    			e.printStackTrace();
-    		}
-
     		// get the children
+
     		try {   		
     			if (taxon.hasTaxonomicChildren() == true) {
+
     				children = taxon.getTaxonomicChildren();
 
     				for (Taxon child: children) {
+    					children_.add(child);
     					logger.info("child: "+ child.toString());
     				}
     			}
@@ -144,23 +138,25 @@ public class TestJaxb {
     			logger.error("error getting children");
     			e.printStackTrace();
     		}
-
-    		try {   		
-    			if (children != null) {
-    				dataSet.addTaxa(children);
-    				traverse(children, dataSet);
-    			} 
-    		} catch (Exception e) {
-    			logger.error("error adding children");
-    			e.printStackTrace();
-    		}
     	}
-    	// After coming here it calls traverse() on line 151 again
-    	// and throws a ConcurrentModificationException !?
-		} catch (Exception e) {
-			logger.error("error for loop");
-			e.printStackTrace();
-		}
+
+    	try {
+    		if (synonyms_ != null) {
+    			dataSet.addSynonyms(synonyms_);
+    		}
+
+    		if (children_ != null) {
+    			dataSet.addTaxa(children_);
+    		} 
+
+    	} catch (Exception e) {
+    		logger.error("error setting DataSet");
+    		e.printStackTrace();
+    	}
+
+    	if (children != null) {
+    		traverse(children_, dataSet);
+    	} 
     }
     
     public void testSerialize_() {
@@ -183,6 +179,9 @@ public class TestJaxb {
     	TransactionStatus txStatus = appCtr.startTransaction();
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
+    	// TODO: Get rid of synonym List, need Set only.
+    	// Change methods in DataSet.
+    	List<Synonym> dataSetSynonyms = new ArrayList();
 
     	// get data from DB
 
@@ -217,7 +216,19 @@ public class TestJaxb {
     		logger.info("error setting root taxa");
     	}
 
+		dataSet.setSynonyms(dataSetSynonyms);
     	traverse(taxa, dataSet);
+    	
+    	try {
+    		cdmDocumentBuilder = new CdmDocumentBuilder();
+    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
+
+    	} catch (Exception e) {
+    		logger.error("marshalling error");
+    	} 
+    	appCtr.commitTransaction(txStatus);
+    	appCtr.close();
+    	
     }
 
     
@@ -390,7 +401,7 @@ public class TestJaxb {
 		System.out.println("\nEnd Initializing");
 
 		System.out.println("\nStart Serializing");
-		testSerialize();
+		testSerialize_();
 		System.out.println("\nEnd Serializing");
 		
 		System.out.println("\nStart Deserializing");
