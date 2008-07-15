@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -30,15 +31,26 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * Upmost abstract class for the use of a taxon name by a reference either
- * as a taxon ("accepted/correct" name) or as a (junior) synonym.
- * For instance: "Juncus longirostris Kuvaev sec. Kirschner, J. et al. 2002".
- * Within a taxonomic view/treatment a taxon name can be used only once.
+ * The upmost (abstract) class for the use of a {@link name.TaxonNameBase taxon name} in a {@link reference.ReferenceBase reference}
+ * or within a taxonomic view/treatment either as a {@link Taxon taxon}
+ * ("accepted" respectively "correct" name) or as a (junior) {@link Synonym synonym}.
+ * Within a taxonomic view/treatment or a reference a taxon name can be used
+ * only in one of both described meanings. The reference using the taxon name
+ * is generally cited with "sec." (secundum, sensu). For instance:
+ * "Juncus longirostris Kuvaev sec. Kirschner, J. et al. 2002".
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> TaxonConcept according to the TDWG ontology
+ * <li> TaxonConcept according to the TCS
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -69,19 +81,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		}
 	}
 	
-	protected TaxonBase(){
-		super();
-	}
-	
-	protected TaxonBase(TaxonNameBase taxonNameBase, ReferenceBase sec){
-		super();
-		if (taxonNameBase != null){
-			initMethods(); 
-			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
-		}
-		this.setSec(sec);
-	}
-	
 	//The assignment to the Taxon or to the Synonym class is not definitive
     @XmlAttribute(name = "isDoubtful")
 	private boolean isDoubtful;
@@ -97,6 +96,51 @@ public abstract class TaxonBase extends IdentifiableEntity {
     @XmlSchemaType(name = "IDREF")
 	private ReferenceBase sec;
 
+	
+// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty (abstract) taxon.
+	 * 
+	 * @see 	#TaxonBase(TaxonNameBase, ReferenceBase)
+	 */
+	protected TaxonBase(){
+		super();
+	}
+	
+	/** 
+	 * Class constructor: creates a new (abstract) taxon with the
+	 * {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * using it.
+	 * 
+	 * @param  taxonNameBase	the taxon name used
+	 * @param  sec				the reference using the taxon name
+	 * @see    #TaxonBase()
+	 */
+	protected TaxonBase(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		super();
+		if (taxonNameBase != null){
+			initMethods(); 
+			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
+		}
+		this.setSec(sec);
+	}
+
+//********* METHODS **************************************/
+
+	/**
+	 * Generates and returns the string with the full scientific name (including
+	 * authorship) of the {@link name.TaxonNameBase taxon name} used in this
+	 * (abstract) taxon as well as the title of the {@link reference.ReferenceBase reference} using
+	 * this taxon name. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#generateTitle() method.
+	 *
+	 * @return  the string with the full scientific name of the taxon name
+	 *			and with the title of the reference involved in this (abstract) taxon
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 */
 	@Override
 	public String generateTitle() {
 		String title;
@@ -113,6 +157,9 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		return title;
 	}
 	
+	/** 
+	 * Returns the {@link name.TaxonNameBase taxon name} used in this (abstract) taxon.
+	 */
 	@ManyToOne
 	@JoinColumn(name="taxonName_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)
@@ -124,6 +171,10 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		this.name = newName;
 	}
 	
+	/** 
+	 * Returns the {@link name.HomotypicalGroup homotypical group} of the
+	 * {@link name.TaxonNameBase taxon name} used in this (abstract) taxon.
+	 */
 	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
 		if (this.getName() == null){
@@ -133,23 +184,47 @@ public abstract class TaxonBase extends IdentifiableEntity {
 		}
 	}
 
+	/**
+	 * Returns the boolean value indicating whether the assignment of this
+	 * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
+	 * (false) or not (true). If this flag is set the use of this (abstract)
+	 * taxon as an "accepted/correct" name or as a (junior) "synonym" might
+	 * still change in the course of taxonomical working process. 
+	 */
 	public boolean isDoubtful(){
 		return this.isDoubtful;
 	}
+	/**
+	 * @see  #isDoubtful()
+	 */
 	public void setDoubtful(boolean isDoubtful){
 		this.isDoubtful = isDoubtful;
 	}
 
+	/** 
+	 * Returns the {@link reference.ReferenceBase reference} of this (abstract) taxon.
+	 * This is the reference or the treatment using the {@link name.TaxonNameBase taxon name}
+	 * in this (abstract) taxon.
+	 */
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public ReferenceBase getSec() {
 		return sec;
 	}
 
+	/**
+	 * @see  #getSec()
+	 */
 	public void setSec(ReferenceBase sec) {
 		this.sec = sec;
 	}
 	
+	/**
+	 * Returns the boolean value indicating whether this (abstract) taxon
+	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
+	 * as long as both the {@link name.TaxonNameBase taxon name} and the {@link reference.ReferenceBase reference}
+	 * exist (are not "null").
+	 */
 	@Transient
 	public boolean isSaveable(){
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
