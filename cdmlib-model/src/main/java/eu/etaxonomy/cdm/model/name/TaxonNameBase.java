@@ -9,21 +9,28 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.common.IRelated;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -32,25 +39,20 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Target;
 
+import eu.etaxonomy.cdm.model.common.IParsable;
+import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-
-
-
-import java.lang.reflect.Method;
-import java.util.*;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -634,11 +636,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
 	 * @param  isRejectedType			the boolean status for rejected
 	 * @param  isConservedType			the boolean status for conserved
+	 * @param  isLectoType				the boolean status for isLectotype
+	 * @param  lectoCitation		the reference for the lectotype
+	 * @param  lectoMicroCitation	the String for the micro citation of a lectotype
 	 * @see 			  				#getNameTypeDesignations()
 	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
 	 */
-	public void addNameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType) {
-		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType);
+	public void addNameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isLectoType, ReferenceBase lectoCitation, String lectoMicroCitation, boolean isNotDesignated) {
+		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isNotDesignated);
 	}
 	
 	/** 
