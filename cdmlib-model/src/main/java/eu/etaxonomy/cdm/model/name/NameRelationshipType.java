@@ -224,7 +224,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/**
 	 * Returns the "validated by name" name relationship type. The two
 	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
-	 * in order to circumscribe the same taxonomical group but the first
+	 * in order to define the same taxonomical group but the first
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.
 	 */
@@ -234,7 +234,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/**
 	 * Returns the "later validated by name" name relationship type. The two
 	 * {@link TaxonNameBase taxon names} involved in such a relationship were published
-	 * in order to circumscribe the same taxonomical group but the first
+	 * in order to define the same taxonomical group but the first
 	 * (earlier) taxon name was invalidly published whereas the second (later)
 	 * taxon name is the one which was validly published for the first time.
 	 */
