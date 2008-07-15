@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  * The class representing the categories of parent relationships between a
  * {@link BotanicalName botanical taxon name} used as a parent of a hybrid taxon
  * name and the hybrid taxon name itself. Hybrids and their parents are always
- * plants.  
+ * plants. The relationships are to be understood as 'is .... of'. 
  * <P>
  * A standard (ordered) list of hybrid relationship type instances will be
  * automatically created as the project starts. But this class allows to extend

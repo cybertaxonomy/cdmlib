@@ -22,11 +22,26 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm
- * The relationship are to be understood as 'is .... of'. For instance 
- * Linum radiola L. is a replaced synonym of Radiola linoides Roth
- * or Astragalus rhizanthus Boiss. is a later homonym of
+ * The class representing the categories of taxon name relationships between
+ * two {@link TaxonNameBase taxon names}. These name relationship types are
+ * based on the concrete {@link NomenclaturalCode nomenclatural code} governing
+ * the taxon names involved in the name relationship or on decisions taken by
+ * the corresponding authorities; they do not depend on the use made of these
+ * taxon names in a particular reference or on a particular taxonomic treatment.
+ * Most relationships are to be understood as 'is .... of': for instance 
+ * Linum radiola L. is a replaced synonym of Radiola linoides Roth or
+ * Astragalus rhizanthus Boiss. is a later homonym of
  * Astragalus rhizanthus Royle.  
+ * <P>
+ * A standard (ordered) list of name relationship type instances will be
+ * automatically created as the project starts. But this class allows to extend
+ * this standard list by creating new instances of additional name relationship
+ * types if needed. 
+ * <P>
+ * This class corresponds partially to: <ul>
+ * <li> TaxonRelationshipTerm and NomenclaturalNoteTypeTerm according to the TDWG ontology
+ * <li> RelationshipType and NomenclaturalNoteType according to the TCS
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -49,19 +64,65 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
 	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty name relationship type instance.
+	 * 
+	 * @see 	#NameRelationshipType(String, String, String, boolean, boolean)
+	 */
 	public NameRelationshipType() {
 		super();
 	}
 	
+	/** 
+	 * Class constructor: creates an additional name relationship type
+	 * instance with a description, a label, a label abbreviation and the flags
+	 * indicating whether this new name relationship type is symmetric and/or
+	 * transitive.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new name relationship type to be created 
+	 * @param	label  		 the string identifying the new name relationship
+	 * 						 type to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new name relationship type to be created
+	 * @param	symmetric	 the boolean indicating whether the new name
+	 * 						 relationship type to be created is symmetric
+	 * @param	transitive	 the boolean indicating whether the new name
+	 * 						 relationship type to be created is transitive
+	 * @see 				 #NameRelationshipType()
+	 */
 	public NameRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(term, label, labelAbbrev, symmetric, transitive);
 	}
 
 
+	//********* METHODS **************************************/
+
+	/**
+	 * Returns the name relationship type identified through its immutable universally
+	 * unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the name relationship type corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final NameRelationshipType getByUuid(UUID uuid){
 		return (NameRelationshipType)findByUuid(uuid);
 	}
 
+	/**
+	 * Returns the boolean value indicating whether the nomenclatural status
+	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * involved in a name relationship with this name relationship type should
+	 * be "invalid" (true) or not (false). Returns false if this name
+	 * relationship status type is null.
+	 *
+	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimateType()
+	 * @see  NomenclaturalStatusType#isInvalidType()
+	 * @see  common.RelationshipBase#getRelatedFrom()
+	 */
 	@Transient
 	public boolean isInvalidType(){
 		if (this.equals(VALIDATED_BY_NAME()) || 
@@ -73,6 +134,18 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
+	/**
+	 * Returns the boolean value indicating whether the nomenclatural status
+	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * involved in a name relationship with this name relationship type should
+	 * be "legitimate" (true) or not (false). Returns false if this name
+	 * relationship status type is null.
+	 *
+	 * @see  #isInvalidType()
+	 * @see  #isIllegitimateType()
+	 * @see  NomenclaturalStatusType#isLegitimateType()
+	 * @see  common.RelationshipBase#getRelatedFrom()
+	 */
 	@Transient
 	public boolean isLegitimateType(){
 		if (this.equals(BASIONYM()) || 
@@ -86,6 +159,18 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
+	/**
+	 * Returns the boolean value indicating whether the nomenclatural status
+	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * involved in a name relationship with this name relationship type should
+	 * be "illegitimate" (true) or not (false). Returns false if this name
+	 * relationship status type is null.
+	 *
+	 * @see  #isInvalidType()
+	 * @see  #isLegitimateType()
+	 * @see  NomenclaturalStatusType#isIllegitimateType()
+	 * @see  common.RelationshipBase#getRelatedFrom()
+	 */
 	@Transient
 	public boolean isIllegitimateType(){
 		//TODO: implement isX method. Maybe as persistent class attribute?
