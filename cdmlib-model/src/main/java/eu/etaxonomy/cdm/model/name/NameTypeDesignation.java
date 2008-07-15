@@ -48,6 +48,8 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	private boolean isConservedType;
 	private boolean isLectoType;
 	private ReferenceBase lectoTypeReference;
+	private String lectoTypeMicroReference;
+	private boolean notDesignated;
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
 	
@@ -197,6 +199,40 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 */
 	public void setLectoTypeReference(ReferenceBase lectoTypeReference) {
 		this.lectoTypeReference = lectoTypeReference;
+	}
+
+	/**
+	 * @return the lectoTypeMicroReference
+	 */
+	public String getLectoTypeMicroReference() {
+		return lectoTypeMicroReference;
+	}
+
+	/**
+	 * @param lectoTypeMicroReference the lectoTypeMicroReference to set
+	 */
+	public void setLectoTypeMicroReference(String lectoTypeMicroReference) {
+		this.lectoTypeMicroReference = lectoTypeMicroReference;
+	}
+
+	/**
+	 * If true this indicates that a name type does not exist.
+	 * This is differentiate that <BR> 
+	 * 	a) it is unknown if a name type exists and <BR>
+	 *  b) it is known that no name type exists <BR>
+	 *  If b is true there should be a NameTypeDesignation with <code>isNotDesignate == true</code> 
+	 * The typeSpecies should be <code>null</code> then.
+	 * @return the notDesignated
+	 */
+	public boolean isNotDesignated() {
+		return notDesignated;
+	}
+
+	/**
+	 * @param notDesignated the notDesignated to set
+	 */
+	public void setNotDesignated(boolean notDesignated) {
+		this.notDesignated = notDesignated;
 	}
 	
 	
