@@ -125,12 +125,18 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 */
 	public void addDescription(TaxonDescription description) {
 		initMethods();
+		if (description.getTaxon() != null){
+			description.getTaxon().removeDescription(description);
+		}
+		//description.setTaxon(this) for not visible method
 		this.invokeSetMethod(methodDescriptionSetTaxon, description);
 		descriptions.add(description);
+		
 	}
 	public void removeDescription(TaxonDescription description) {
 		initMethods();
-		this.invokeSetMethod(methodDescriptionSetTaxon, null);
+		//description.setTaxon(null) for not visible method
+		this.invokeSetMethodWithNull(methodDescriptionSetTaxon, description);
 		descriptions.remove(description);
 	}
 
