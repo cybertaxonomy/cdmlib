@@ -49,7 +49,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	private boolean isLectoType;
 	private ReferenceBase lectoTypeReference;
 	private String lectoTypeMicroReference;
-	private boolean notDesignated;
+	private boolean isNotDesignated;
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
 	
@@ -81,17 +81,19 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 * 								this name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
 	 * 								this name type designation
+	 * @param isNotDesignated		see at {@link #isNotDesignated()}
 	 * @see							#NameTypeDesignation()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean isRejectedType, boolean isConservedType) {
+			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecies(typeSpecies);
 		this.setTypifiedName(typifiedName);
 		typifiedName.setHomotypicalGroup(typeSpecies.getHomotypicalGroup());
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
+		this.isNotDesignated = isNotDesignated;
 	}
 		
 	//********* METHODS **************************************/
@@ -225,14 +227,14 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 * @return the notDesignated
 	 */
 	public boolean isNotDesignated() {
-		return notDesignated;
+		return isNotDesignated;
 	}
 
 	/**
 	 * @param notDesignated the notDesignated to set
 	 */
-	public void setNotDesignated(boolean notDesignated) {
-		this.notDesignated = notDesignated;
+	public void setNotDesignated(boolean isNotDesignated) {
+		this.isNotDesignated = isNotDesignated;
 	}
 	
 	
