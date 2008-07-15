@@ -91,8 +91,138 @@ public class TestJaxb {
 		appCtr.close();
 
     }
+
     
-    public void testSerialize(){
+    public void traverse (Collection<Taxon> taxonCollection, DataSet dataSet) {
+
+    	System.out.println("*** traverse ***");
+
+    	Set<Taxon> children = null;
+    	Set<Synonym> synonyms = null;
+    	// TODO: Get rid of synonym List, need Set only.
+    	// Change methods in DataSet.
+    	List<Synonym> dataSetSynonyms = new ArrayList();
+
+		try {
+    	for (Taxon taxon: taxonCollection) {
+
+    		// get the synonyms
+
+    		try {
+    			if (taxon.hasSynonyms() == true) {
+    				synonyms = taxon.getSynonyms();
+
+    				for (Synonym synonym: synonyms) {
+    					logger.info("synonym: "+ synonym.toString());
+    				}
+    			}
+    		} catch (Exception e) {
+    			logger.error("error getting synonyms");
+    			e.printStackTrace();
+    		}
+
+    		try {
+    			if (synonyms != null) {
+    				dataSet.setSynonyms(dataSetSynonyms);
+    				dataSet.addSynonyms(synonyms);
+    			}
+    		} catch (Exception e) {
+    			logger.error("error adding synonyms");
+    			e.printStackTrace();
+    		}
+
+    		// get the children
+    		try {   		
+    			if (taxon.hasTaxonomicChildren() == true) {
+    				children = taxon.getTaxonomicChildren();
+
+    				for (Taxon child: children) {
+    					logger.info("child: "+ child.toString());
+    				}
+    			}
+    		} catch (Exception e) {
+    			logger.error("error getting children");
+    			e.printStackTrace();
+    		}
+
+    		try {   		
+    			if (children != null) {
+    				dataSet.addTaxa(children);
+    				traverse(children, dataSet);
+    			} 
+    		} catch (Exception e) {
+    			logger.error("error adding children");
+    			e.printStackTrace();
+    		}
+    	}
+    	// After coming here it calls traverse() on line 151 again
+    	// and throws a ConcurrentModificationException !?
+		} catch (Exception e) {
+			logger.error("error for loop");
+			e.printStackTrace();
+		}
+    }
+    
+    public void testSerialize_() {
+    	
+    	CdmApplicationController appCtr = null;
+
+    	try {
+    		String password = CdmUtils.readInputLine("Password: ");
+    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
+    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+
+
+    	} catch (DataSourceNotFoundException e) {
+    		logger.error("datasource error");
+    	} catch (TermNotFoundException e) {
+    		logger.error("defined terms not found");
+    	}
+    	
+    	TransactionStatus txStatus = appCtr.startTransaction();
+    	DataSet dataSet = new DataSet();
+    	List<Taxon> taxa = null;
+
+    	// get data from DB
+
+    	try {
+
+    		logger.info("Load data from DB ...");
+
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
+    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+
+    		// load Root taxa 
+
+    		taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.FETCH_CHILDTAXA(), false);
+    		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
+
+
+    	} catch (Exception e) {
+    		logger.info("error while fetching root taxa");
+    	}
+
+		for (Taxon root: taxa) {
+
+			logger.info("root: " + root.toString());
+			logger.info("# children: " + root.getTaxonomicChildrenCount());
+		}
+    	
+    	try {
+    		dataSet.setTaxa(taxa);
+    		
+    	} catch (Exception e) {
+    		logger.info("error setting root taxa");
+    	}
+
+    	traverse(taxa, dataSet);
+    }
+
+    
+	//TODO: Replace by testSerialize_()
+    public void testSerialize() {
 
     	CdmApplicationController appCtr = null;
 
@@ -108,6 +238,7 @@ public class TestJaxb {
     	} catch (TermNotFoundException e) {
     		logger.error("defined terms not found");
     	}
+    	
     	TransactionStatus txStatus = appCtr.startTransaction();
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
@@ -155,8 +286,6 @@ public class TestJaxb {
     					logger.info("synonym: "+ synonym.toString());
     				}
     			}
-    			
-    			//TODO: Make this recursive to traverse down the tree
     			
     			if (root.hasTaxonomicChildren() == true) {
     				children = root.getTaxonomicChildren();
@@ -343,24 +472,6 @@ public class TestJaxb {
 		rankSpecies = Rank.SPECIES();
 		rankSubspecies = Rank.SUBSPECIES();
 		rankGenus = Rank.GENUS();
-		
-//		rankSpecies = new Rank ();
-//		rankSubspecies = new Rank();
-//		rankGenus = new Rank();
-		
-//      Do something like this? If yes, FIXME: Stack overflow.
-//		try {
-//			rankSpecies = Rank.getRankByName("Species");
-//			rankSubspecies = Rank.getRankByName("Subspecies");
-//			rankGenus = Rank.getRankByName("Genus");
-//			
-//		} catch (UnknownCdmTypeException ex) {
-//			ex.printStackTrace();
-//		}
-		
-//		terms.add(rankSpecies);
-//		terms.add(rankSubspecies);
-//		terms.add(rankGenus);
 		
 		terms.add(keyword);
 		
