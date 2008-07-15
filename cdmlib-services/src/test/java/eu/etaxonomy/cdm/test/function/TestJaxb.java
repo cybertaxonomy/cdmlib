@@ -140,6 +140,7 @@ public class TestJaxb {
     	}
 
     	Set<Taxon> children = null;
+    	Set<Synonym> synonyms = null;
 
     	try {
     		for (Taxon root: taxa) {
@@ -147,11 +148,18 @@ public class TestJaxb {
     			logger.info("root: " + root.toString());
     			logger.info("# children: " + root.getTaxonomicChildrenCount());
     			
+    			if (root.hasSynonyms() == true) {
+    			    synonyms = root.getSynonyms();
+    			    
+    				for (Synonym synonym: synonyms) {
+    					logger.info("synonym: "+ synonym.toString());
+    				}
+    			}
+    			
     			//TODO: Make this recursive to traverse down the tree
     			
     			if (root.hasTaxonomicChildren() == true) {
     				children = root.getTaxonomicChildren();
-    				logger.info("got children");
 
     				for (Taxon child: children) {
     					logger.info("child: "+ child.toString());
@@ -167,9 +175,13 @@ public class TestJaxb {
     		if (children != null) {
     			dataSet.addTaxa(children);
     		}
+    		if (synonyms != null) {
+    			dataSet.setSynonyms(new ArrayList());
+    			dataSet.addSynonyms(synonyms);
+    		}
 
     	} catch (Exception e) {
-    		logger.error("error adding children taxa");
+    		logger.error("error adding root children or synonyms");
     		e.printStackTrace();
     	}
 
