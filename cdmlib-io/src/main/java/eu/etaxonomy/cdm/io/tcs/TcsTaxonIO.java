@@ -27,6 +27,13 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -90,6 +97,9 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 		Namespace taxonConceptNamespace = root.getNamespace(prefix);
 		prefix = "tcom";
 		Namespace commonNamespace = root.getNamespace(prefix);
+		prefix = "tgeo";
+		Namespace geoNamespace = root.getNamespace(prefix);
+
 		
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
@@ -98,7 +108,7 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 		ITaxonService taxonService = cdmApp.getTaxonService();
 		
 		int i = 0;
-		//for each taxonName
+		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConcepts){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
 			
@@ -135,6 +145,7 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 //			cdmAttrName = "isPrimary";
 //			Boolean primary = ImportHelper.addXmlBooleanValue(elTaxonConcept, taxon, xmlElementName, elementNamespace, cdmAttrName);
 			
+			makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 			taxonMap.put(taxonAbout, taxonBase);
 			
 		}
@@ -146,7 +157,7 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 	}
 	
 	
-	private static boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
+	private boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
 		boolean result = false;
 		if (taxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(taxonConcept.getName()) ){
 			return false;
@@ -163,6 +174,31 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 				return true;
 			}
 		}
+		return result;
+	}
+	
+	private boolean makeGeo(Element elConcept, Namespace geoNamespace, Namespace rdfNamespace){
+		boolean result = true;
+		String xmlElementName = "code";
+		List<Element> elGeos = elConcept.getChildren(xmlElementName, geoNamespace);
+
+		int i = 0;
+		//for each geoTag
+		for (Element elGeo : elGeos){
+			if ((i++ % modCount) == 0){ logger.info("Geocodes handled: " + (i-1));}
+			
+			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
+			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
+			NamedArea namedArea = TdwgArea.getAreaByTdwgLabel(strGeoRegion);
+			PresenceAbsenceTermBase status = null;
+			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
+			
+			System.out.println(namedArea);
+		
+		
+		}
+		//<tgeo:code rdf:resource="http://rs.tdwg.org/ontology/voc/GeographicRegion#ECU"/>
+
 		return result;
 	}
 	

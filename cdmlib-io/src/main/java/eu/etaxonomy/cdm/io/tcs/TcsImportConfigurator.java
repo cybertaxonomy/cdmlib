@@ -33,7 +33,6 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 		iCdmIoArray = new ICdmIO []{
 				new TcsReferenceIO(false)
 				, new TcsTaxonNameIO(! this.isDoTaxonNames())
-				, new TcsTaxonNameIO(! this.isDoTaxonNames())
 				, new TcsTaxonNameRelationsIO(! this.isDoRelNames())
 				, new TcsTaxonIO(! this.isDoTaxa())
 				, new TcsTaxonRelationsIO(! this.isDoRelTaxa())
