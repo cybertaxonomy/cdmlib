@@ -27,8 +27,10 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -74,9 +76,10 @@ public class TermLoader {
 			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 			logger.debug("strResourceFileName is " + strResourceFileName);
 			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
-			if (inputStream == null) {logger.debug("inputStream is null");}
+			if (inputStream == null) {logger.info("inputStream is null");}
 			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
 			
+			//vocabulary
 			TermVocabulary voc = null;
 			String labelAbbrev = null;
 			if (isOrdered){
@@ -89,6 +92,7 @@ public class TermLoader {
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
 			saveVocabulary(voc, termClass);
+			//terms
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				if (nextLine.length == 0){
@@ -131,8 +135,12 @@ public class TermLoader {
 	}
 
 	public TermVocabulary<DefinedTermBase> insertDefaultTerms(Class termClass, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
-		if (termClass != null){logger.info("load class " + termClass.getName());}
-		return this.insertTerms(termClass, termClass.getSimpleName()+".csv", true, isOrdered );
+		return insertDefaultTerms(termClass, termClass.getSimpleName()+".csv", isOrdered );
+	}
+	
+	public TermVocabulary<DefinedTermBase> insertDefaultTerms(Class termClass, String csvName, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
+		if (termClass != null){logger.info("load file " + csvName);}
+		return this.insertTerms(termClass, csvName, true, isOrdered );
 	}
 	
 	public boolean insertDefaultTerms() throws FileNotFoundException, NoDefinedTermClassException{
@@ -155,6 +163,7 @@ public class TermLoader {
 		insertDefaultTerms(NamedAreaLevel.class, NOT_ORDERED);
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);
 		insertDefaultTerms(Feature.class, NOT_ORDERED);
+		insertDefaultTerms(NamedArea.class, "TdwgArea.csv", ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

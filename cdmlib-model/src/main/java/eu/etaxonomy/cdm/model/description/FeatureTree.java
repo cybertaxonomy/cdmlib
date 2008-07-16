@@ -30,9 +30,24 @@ import javax.persistence.*;
 @Entity
 public class FeatureTree extends TermBase {
 	static Logger logger = Logger.getLogger(FeatureTree.class);
-	private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
+	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	private FeatureNode root;
+	private boolean isDescriptionSeperated = false;
 	
+	/**
+	 * @return the isDescriptionSeperated
+	 */
+	public boolean isDescriptionSeperated() {
+		return isDescriptionSeperated;
+	}
+
+	/**
+	 * @param isDescriptionSeperated the isDescriptionSeperated to set
+	 */
+	public void setDescriptionSeperated(boolean isDescriptionSeperated) {
+		this.isDescriptionSeperated = isDescriptionSeperated;
+	}
+
 	public static FeatureTree NewInstance(){
 		return new FeatureTree();
 	}
@@ -68,7 +83,7 @@ public class FeatureTree extends TermBase {
 	}
 	
 	@Transient
-	public List getRootChildren(){
+	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
 		result.addAll(root.getChildren());
 		return result;

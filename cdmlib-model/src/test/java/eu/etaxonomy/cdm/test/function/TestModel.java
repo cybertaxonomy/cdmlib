@@ -8,6 +8,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -74,11 +77,26 @@ public class TestModel {
 		}
 	}
 	
+	public void testDescription(){
+		ReferenceBase ref = Journal.NewInstance();
+		Taxon taxon = Taxon.NewInstance(null, ref);
+		TaxonDescription desc = TaxonDescription.NewInstance();
+		taxon.addDescription(desc);
+		taxon.removeDescription(desc);
+	}
+
+	public void testTDWG(){
+		NamedArea tdwgArea = TdwgArea.getAreaByTdwgLabel("GER");
+		System.out.println(tdwgArea.getLabel());
+	}
+	
 	private void test(){
 		System.out.println("Start ...");
 		TestModel sc = new TestModel();
-		sc.testSomething();
-		sc.testParentRelation();
+		//sc.testSomething();
+		//sc.testParentRelation();
+		//sc.testDescription();
+		sc.testTDWG();
 		System.out.println("\nEnd ...");
 	}
 	

@@ -179,6 +179,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaLevel.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Point.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/ReferenceSystem.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/TdwgArea.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/WaterbodyOrCountry.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/AudioFile.java -text
@@ -313,6 +314,7 @@ cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
+cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
 cdmlib-model/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlib-model/src/site/resources/images/uml/Agent.png -text
