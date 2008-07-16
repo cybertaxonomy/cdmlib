@@ -159,12 +159,10 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 				makeDefaultLanguage();
 				logger.debug("defaultLanguage ...");
 				Language defaultLanguage = (Language)termDao.findByUuid(DEFAULT_LANGUAGE.getUuid());
-				logger.info("222 ...");
 				if (defaultLanguage == null){
 					termDao.saveOrUpdate(DEFAULT_LANGUAGE);
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 					definedTermsMap.put(DEFAULT_LANGUAGE.getUuid(), DEFAULT_LANGUAGE);
-					logger.info("ccc ...");
 					initialized = true;
 					TermLoader termLoader = new TermLoader(this);
 					//termLoader.setVocabularyStore(this);
