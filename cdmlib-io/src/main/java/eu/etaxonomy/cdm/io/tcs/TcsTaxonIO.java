@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -188,15 +189,15 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 		int i = 0;
 		//for each geoTag
 		for (Element elGeo : elGeos){
-			if ((i++ % modCount) == 0){ logger.info("Geocodes handled: " + (i-1));}
+			//if ((i++ % modCount) == 0){ logger.info("Geocodes handled: " + (i-1));}
 			
 			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
 			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
 			NamedArea namedArea = TdwgArea.getAreaByTdwgLabel(strGeoRegion);
 			PresenceAbsenceTermBase status = null;
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
-			
-			System.out.println(namedArea);
+			distribution.setFeature(Feature.DISTRIBUTION());
+			//System.out.println(namedArea);
 			
 			result.add(distribution);
 		}

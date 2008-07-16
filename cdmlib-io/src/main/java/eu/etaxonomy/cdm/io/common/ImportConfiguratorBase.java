@@ -63,20 +63,6 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
 	
-	//IOs
-	protected IIO authorIO = null;
-	protected IIO referenceIO = null;
-	protected IIO taxonNameIO = null;
-	protected IIO nameStatusIO = null;
-	protected IIO nameRelationIO = null;
-	protected IIO taxonIO = null;
-	protected IIO taxonRelationIO = null;
-	protected IIO typeIO = null;
-	protected IIO descriptionIO = null;
-	protected IIO occurrenceIO = null;
-	protected IIO taxonNameRelationIO = null;
-	protected IIO nameFactsIO = null;
-	
 	protected ICdmIO<IImportConfigurator>[] iCdmIoArray; 
 	
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
@@ -425,94 +411,6 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	 */
 	public void setSourceSecId(int sourceSecId) {
 		this.sourceSecId = sourceSecId;
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getAuthorIO()
-	 */
-	public IIO getAuthorIO() {
-		return this.authorIO;
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getDescriptionIO()
-	 */
-	public IIO getDescriptionIO() {
-		return descriptionIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNameFactsIO()
-	 */
-	public IIO getNameFactsIO() {
-		return this.nameFactsIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNameStatusIO()
-	 */
-	public IIO getNameStatusIO() {
-		return this.nameStatusIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getOccurrenceIO()
-	 */
-	public IIO getOccurrenceIO() {
-		return this.occurrenceIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getReferenceIO()
-	 */
-	public IIO getReferenceIO() {
-		return this.referenceIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonIO()
-	 */
-	public IIO getTaxonIO() {
-		return this.taxonIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonNameIO()
-	 */
-	public IIO getTaxonNameIO() {
-		return this.taxonNameIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonNameRelationIO()
-	 */
-	public IIO getTaxonNameRelationIO() {
-		return this.taxonNameRelationIO;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTaxonRelationIO()
-	 */
-	public IIO getTaxonRelationIO() {
-		return this.getTaxonRelationIO();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTypeIO()
-	 */
-	public IIO getTypeIO() {
-		return this.typeIO;
 	}
 
 	/**

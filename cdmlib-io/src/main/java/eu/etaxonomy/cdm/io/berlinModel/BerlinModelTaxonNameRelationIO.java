@@ -13,17 +13,22 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TY
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
@@ -31,7 +36,17 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 
 	private static int modCount = 5000;
 
-	public static boolean check(BerlinModelImportConfigurator config){
+	private static final String ioNameLocal = "BerlinModelTaxonNameRelationIO";
+	
+	public BerlinModelTaxonNameRelationIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for TaxonNameRelations not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -40,11 +55,19 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 		return result;
 	}
 	
-	public static boolean invoke(BerlinModelImportConfigurator config, CdmApplicationController cdmApp,
-			MapWrapper<TaxonNameBase> nameMap, MapWrapper<ReferenceBase> referenceMap){
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){				
+			
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		Source source = config.getSource();
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		
@@ -75,8 +98,8 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 				String details = rs.getString("details");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				
-				TaxonNameBase nameFrom = nameMap.get(name1Id);
-				TaxonNameBase nameTo = nameMap.get(name2Id);
+				TaxonNameBase nameFrom = taxonNameMap.get(name1Id);
+				TaxonNameBase nameTo = taxonNameMap.get(name2Id);
 				
 				ReferenceBase citation = referenceMap.get(relRefFk);
 				//TODO (preliminaryFlag = true testen

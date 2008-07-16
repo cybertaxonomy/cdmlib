@@ -3,30 +3,31 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_ALSO_PUBLISHED_IN;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_FACT_PROTOLOGUE;
+
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.MediaMetaData;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
-
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -39,9 +40,20 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
-	private static int modCount = 500000;
+	private int modCount = 500000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	
+	private static final String ioNameLocal = "BerlinModelNameFactsIO";
+	
+	public BerlinModelNameFactsIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for NameFacts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -50,16 +62,22 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		return result;
 	}
 
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+		
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		INameService nameService = cdmApp.getNameService();
 		
 		logger.info("start makeNameFacts ...");
-		
-		boolean delete = bmiConfig.isDeleteAll();
 
 		try {
 			//get data from database

@@ -21,17 +21,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -52,10 +56,21 @@ import eu.etaxonomy.cdm.model.reference.WebPage;
 public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceIO.class);
 
-	private static int modCount = 1000;
-
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	private int modCount = 1000;
+	
+	private static final String ioNameLocal = "BerlinModelReferenceIO";
+	
+	public BerlinModelReferenceIO(IImportConfigurator.DO_REFERENCES ignore){
+		super(ioNameLocal, ignore == IImportConfigurator.DO_REFERENCES.NONE);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		result &= checkArticlesWithoutJournal(bmiConfig);
 		result &= checkPartOfJournal(bmiConfig);
 		
@@ -182,8 +197,15 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 	}
 
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp,
-			MapWrapper<ReferenceBase> nomRefMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<TeamOrPersonBase> authorMap){
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+			
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+				
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;

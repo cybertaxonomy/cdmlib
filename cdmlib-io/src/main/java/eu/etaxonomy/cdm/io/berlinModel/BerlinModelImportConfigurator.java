@@ -3,9 +3,16 @@
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+import eu.etaxonomy.cdm.io.tcs.TcsReferenceIO;
+import eu.etaxonomy.cdm.io.tcs.TcsTaxonIO;
+import eu.etaxonomy.cdm.io.tcs.TcsTaxonNameIO;
+import eu.etaxonomy.cdm.io.tcs.TcsTaxonNameRelationsIO;
+import eu.etaxonomy.cdm.io.tcs.TcsTaxonRelationsIO;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -17,12 +24,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
 	
-	
 	protected void makeIOs(){
-		//not needed yet
-//		this.referenceIO = new TcsReferenceIO();
-//		this.taxonIO = new TcsTaxonIO();
-//		this.taxonNameIO = new TcsTaxonNameIO();
+		iCdmIoArray = new ICdmIO []{
+				new BerlinModelAuthorIO(! this.isDoAuthors())
+				, new BerlinModelReferenceIO(this.getDoReferences())
+				, new BerlinModelTaxonNameIO(! this.isDoTaxonNames())
+				, new BerlinModelTaxonNameRelationIO(! this.isDoRelNames())
+				, new BerlinModelNameStatusIO(! this.isDoNameStatus())
+				, new BerlinModelNameFactsIO(! this.isDoNameFacts())
+				, new BerlinModelTypesIO(! this.isDoTypes())
+				, new BerlinModelTaxonIO(! this.isDoTaxa())
+				, new BerlinModelTaxonRelationIO(! this.isDoRelTaxa())
+				, new BerlinModelFactsIO(! this.isDoFacts())
+				, new BerlinModelOccurrenceIO(! this.isDoOccurrence())
+		};
 		
 	}
 	

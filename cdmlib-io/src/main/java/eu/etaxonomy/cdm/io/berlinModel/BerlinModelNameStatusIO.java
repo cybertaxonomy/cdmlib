@@ -1,12 +1,5 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_BASIONYM_FOR;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_CONSERVED_TYPE_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LATER_HOMONYM_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REJECTED_TYPE_OF;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_REPLACED_SYNONYM_FOR;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_COMB_INVAL;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ALTERN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_AMBIG;
@@ -30,38 +23,42 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORT
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameStatusIO.class);
 
-	private static int modCount = 5000;
+	private int modCount = 5000;
+	
+	
+	private static final String ioNameLocal = "BerlinModelNameStatusIO";
+	
+	public BerlinModelNameStatusIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator bmiConfig){
 		boolean result = true;
 		logger.warn("Checking for NomenclaturalStatus not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -70,14 +67,16 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 		return result;
 	}
 	
-	//TODO
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonNameBase> taxonNameMap,	MapWrapper<ReferenceBase> referenceMap){
-		
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+			
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+				
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		String dbAttrName;
-		String cdmAttrName;
 		
 		logger.info("start makeNameStatus ...");
 		

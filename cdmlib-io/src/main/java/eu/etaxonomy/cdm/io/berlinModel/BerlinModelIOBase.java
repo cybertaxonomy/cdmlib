@@ -5,17 +5,24 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
 
-public class BerlinModelIOBase {
+public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelIOBase.class);
-
 	
-	protected static boolean doIdCreatedUpdatedNotes(BerlinModelImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id)
+	public BerlinModelIOBase(String name, boolean ignore) {
+		super(name, ignore);
+	}
+	
+	
+	protected boolean doIdCreatedUpdatedNotes(IImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id)
 			throws SQLException{
 		
 		Object createdWhen = rs.getObject("Created_When");

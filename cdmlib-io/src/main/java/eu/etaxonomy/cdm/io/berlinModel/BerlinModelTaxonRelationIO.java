@@ -8,15 +8,19 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -34,8 +38,19 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 
 	private static int modCount = 30000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	private static final String ioNameLocal = "BerlinModelTaxonRelationIO";
+	
+	public BerlinModelTaxonRelationIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		logger.warn("Checking for TaxonRelations not yet fully implemented");
 		result &= checkTaxonStatus(bmiConfig);
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -43,7 +58,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		return result;
 	}
 	
-	private static boolean checkTaxonStatus(BerlinModelImportConfigurator bmiConfig){
+	private boolean checkTaxonStatus(BerlinModelImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
@@ -84,11 +99,19 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		}
 	}
 
-	public static boolean invoke(BerlinModelImportConfigurator config, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){				
+			
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		Source source = config.getSource();
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		

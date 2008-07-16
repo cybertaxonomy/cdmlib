@@ -19,16 +19,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TcsImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static Logger logger = Logger.getLogger(TcsImportConfigurator.class);
 	
-	
-//	protected void makeIOs(){
-//		this.referenceIO = new TcsReferenceIO();
-//		this.taxonIO = new TcsTaxonIO();
-//		this.taxonNameIO = new TcsTaxonNameIO();
-//		this.taxonNameRelationIO = new TcsTaxonNameRelationsIO();
-//		this.taxonRelationIO = new TcsTaxonRelationsIO();
-//		
-//	}
-	
 	protected void makeIOs(){
 		iCdmIoArray = new ICdmIO []{
 				new TcsReferenceIO(false)

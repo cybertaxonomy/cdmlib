@@ -142,31 +142,6 @@ public interface IImportConfigurator {
 	
 	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 
-	public abstract IIO getAuthorIO();
-	
-	public abstract IIO getReferenceIO();
-
-	public abstract IIO getTaxonNameIO();
-
-	public abstract IIO getTaxonNameRelationIO();
-	
-	public abstract IIO getTypeIO();
-
-	public abstract IIO getNameStatusIO();
-	
-	public abstract IIO getTaxonIO();
-
-	public abstract IIO getTaxonRelationIO();
-	
-	public abstract IIO getDescriptionIO();
-	
-	public abstract IIO getOccurrenceIO();
-	
-	//TODO not CDM like
-	public abstract IIO getNameFactsIO();
-
-	//public IIO<IImportConfigurator>[] getIioArray();
-
 	public ICdmIO<IImportConfigurator>[] getICdmIo();
 	
 }

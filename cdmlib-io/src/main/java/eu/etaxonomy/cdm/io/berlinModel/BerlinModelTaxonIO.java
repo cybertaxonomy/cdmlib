@@ -3,24 +3,26 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_ACCEPTED;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SYNONYM;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -32,9 +34,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
 
-	private static int modCount = 30000;
+	private int modCount = 30000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	private static final String ioNameLocal = "BerlinModelTaxonIO";
+	
+	public BerlinModelTaxonIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for Taxa not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -43,8 +55,19 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		return result;
 	}
 	
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<ReferenceBase> nomRefMap){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){				
+			
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;

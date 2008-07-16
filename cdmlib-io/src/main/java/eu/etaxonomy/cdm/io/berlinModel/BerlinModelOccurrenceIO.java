@@ -6,18 +6,23 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -32,7 +37,18 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 
 	private static int modCount = 10000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	
+	private static final String ioNameLocal = "BerlinModelOccurrenceIO";
+	
+	public BerlinModelOccurrenceIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for Occurrence not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -41,8 +57,16 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 		return result;
 	}
 
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+		
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		
 		if (true){
 			return false;

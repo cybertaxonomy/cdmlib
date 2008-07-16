@@ -22,8 +22,12 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -40,9 +44,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class BerlinModelFactsIO  extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactsIO.class);
 
-	private static int modCount = 10000;
+	private int modCount = 10000;
+	
+	private static final String ioNameLocal = "BerlinModelFactsIO";
+	
+	public BerlinModelFactsIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for Facts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -51,7 +65,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		return result;
 	}
 
-	private static MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
+	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
 		
 //		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
 		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
@@ -101,10 +115,21 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 
 	}
 	
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<ReferenceBase> referenceMap, MapWrapper<ReferenceBase> nomRefMap){
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+			
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
+		
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		ITaxonService taxonService = cdmApp.getTaxonService();
 		

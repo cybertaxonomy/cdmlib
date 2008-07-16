@@ -46,7 +46,6 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	private static int modCount = 10000;
 
 	private static final String ioNameLocal = "TaxonXDescriptionIO";
-	protected boolean ignore = false;
 	
 	public TaxonXDescriptionIO(boolean ignore){
 		super(ioNameLocal, ignore);

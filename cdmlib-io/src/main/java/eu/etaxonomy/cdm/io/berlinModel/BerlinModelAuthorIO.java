@@ -5,16 +5,20 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
 /**
@@ -26,7 +30,17 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 
 	private static int modCount = 1000;
 
-	public static boolean check(BerlinModelImportConfigurator bmiConfig){
+	private static final String ioNameLocal = "BerlinModelAuthorIO";
+	
+	public BerlinModelAuthorIO(boolean ignore){
+		super(ioNameLocal, ignore);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	@Override
+	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for Authors not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -35,9 +49,17 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		return result;
 	}
 	
-	public static boolean invoke(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp, 
-			MapWrapper<TeamOrPersonBase> teamMap){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, 
+			CdmApplicationController cdmApp, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
@@ -79,7 +101,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 				//title cache or nomenclaturalTitle?
 
 				//created, notes
-				doIdCreatedUpdatedNotes(bmiConfig, team, rs, teamId);
+				doIdCreatedUpdatedNotes(config, team, rs, teamId);
 
 				teamMap.put(teamId, team);
 			} //while rs.hasNext()

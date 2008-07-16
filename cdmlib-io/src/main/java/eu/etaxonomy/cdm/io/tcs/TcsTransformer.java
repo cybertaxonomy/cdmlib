@@ -230,23 +230,5 @@ public final class TcsTransformer {
 		}
 	}
 	
-//	
-//	/** Creates an NameArea by a TDWG Label
-//	 */
-//	public static NamedArea strTdwgArea2NamedArea (String tdwgArea) throws UnknownCdmTypeException{
-//	
-//		if (tdwgArea == null){ return null;
-//		}else if ("Valid".equalsIgnoreCase(tdwgArea)){return NamedArea.VALID();
-//		
-//		}else if ("Alternative".equalsIgnoreCase(tdwgArea)){return NamedArea.ALTERNATIVE();
-//		}else if ("nom. altern.".equalsIgnoreCase(tdwgArea)){return NamedArea.ALTERNATIVE();
-//		
-//		}else if ("Provisional".equalsIgnoreCase(tdwgArea)){return NamedArea.PROVISIONAL();
-//		}else if ("nom. provis.".equalsIgnoreCase(tdwgArea)){return NamedArea.PROVISIONAL();
-//		}
-//		else {
-//			throw new UnknownCdmTypeException("Unknown Nomenclatural status type " + nomStatus);
-//		}
-//	}
 	
 }

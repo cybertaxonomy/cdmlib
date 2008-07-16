@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.taxonx;
+package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +17,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.ICdmImport;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
