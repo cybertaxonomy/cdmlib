@@ -30,16 +30,30 @@ public class Distribution extends DescriptionElementBase {
 	private NamedArea area;
 	private PresenceAbsenceTermBase status;
 
+	
+	/**
+	 * Creates an empty distribution. Feature set to <code>Feature.DISTRIBUTION</code>
+	 * @return
+	 */
 	public static Distribution NewInstance(){
-		return new Distribution();
+		Distribution result = new Distribution();
+		return result;
 	}
 
+	/**
+	 * Creates a distribution and sets the area and status. Feature is set to <code>Feature.DISTRIBUTION</code>
+	 * @return
+	 */
 	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase status){
-		return new Distribution();
+		Distribution result = new Distribution();
+		result.setArea(area);
+		result.setStatus(status);
+		return result;
 	}
 	
 	protected Distribution(){
 		super();
+		this.setFeature(Feature.DISTRIBUTION());
 	}
 	
 	
