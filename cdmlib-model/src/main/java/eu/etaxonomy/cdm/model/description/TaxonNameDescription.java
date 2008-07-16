@@ -19,6 +19,15 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
+/**
+ * This class represents all piece of information (not ruled by a {@link name.NomenclaturalCode nomenclatural code})
+ * concerning a {@link name.TaxonNameBase taxon name} like for instance the content of its first
+ * publication (protolog) or a picture of this publication.
+ *  
+ * @author a.mueller
+ * @version 1.0
+ * @created 08-Jul-2008
+ */
 @Entity
 public class TaxonNameDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(TaxonNameDescription.class);

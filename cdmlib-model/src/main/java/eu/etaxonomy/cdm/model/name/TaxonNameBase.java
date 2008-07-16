@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -284,7 +285,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Adds an existing {@link NameRelationship name relationship} either to the set of
 	 * {@link #getRelationsToThisName() relations to this taxon name} or to the set of
 	 * {@link #getRelationsFromThisName() relations from this taxon name}. If neither the
-	 * source nor the target of the name relationship match with this taxon
+	 * source nor the target of the name relationship match with this taxon name
 	 * no addition will be carried out.
 	 * 
 	 * @param rel  the name relationship to be added to one of this taxon name's name relationships sets
@@ -940,23 +941,52 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 // *********** DESCRIPTIONS *************************************	
 
+	/**
+	 * Returns the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
+	 * to this taxon name. A taxon name description is a piece of information
+	 * concerning the taxon name like for instance the content of its first
+	 * publication (protolog) or a picture of this publication.
+	 * 
+	 * @see	#addDescription(TaxonNameDescription)
+	 * @see	#removeDescription(TaxonNameDescription)
+	 * @see	description.TaxonNameDescription
+	 */
 	@OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameDescription> getDescriptions() {
 		return descriptions;
 	}
+	/**
+	 * @see	#getDescriptions()
+	 */
 	protected void setDescriptions(Set<TaxonNameDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
-	/**
-	 * Adds a description to this taxon. Set the taxon property of description to this taxon.
-	 * @param description
+	/** 
+	 * Adds a new {@link description.TaxonNameDescription taxon name description}
+	 * to the set of taxon name descriptions assigned to this taxon name. The
+	 * content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute} of the
+	 * taxon name description itself will be replaced with this taxon name.
+	 *
+	 * @param  description  the taxon name description to be added
+	 * @see					#getDescriptions()
+	 * @see 			  	#removeDescription(TaxonNameDescription)
 	 */
 	public void addDescription(TaxonNameDescription description) {
 		initMethods();
 		this.invokeSetMethod(methodDescriptionSetTaxonName, description);
 		descriptions.add(description);
 	}
+	/** 
+	 * Removes one element from the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
+	 * to this taxon name. The content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute}
+	 * of the description itself will be set to "null".
+	 *
+	 * @param  description  the taxon name description which should be removed
+	 * @see     		  	#getDescriptions()
+	 * @see     		  	#addDescription(TaxonNameDescription)
+	 * @see 			  	description.TaxonNameDescription#getTaxonName()
+	 */
 	public void removeDescription(TaxonNameDescription description) {
 		initMethods();
 		this.invokeSetMethod(methodDescriptionSetTaxonName, null);

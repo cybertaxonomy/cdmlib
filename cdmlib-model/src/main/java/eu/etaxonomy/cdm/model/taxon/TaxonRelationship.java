@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
@@ -23,6 +26,10 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}. 
+ * This includes a {@link TaxonRelationshipType taxon relationship type} (for instance "congruent to" or
+ * "misapplied name for").
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
