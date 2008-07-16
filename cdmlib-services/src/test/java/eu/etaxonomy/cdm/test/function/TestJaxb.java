@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -40,9 +41,11 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
@@ -50,12 +53,12 @@ public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
-	private static final String dbName = "cdm_test_jaxb";
-	//private static final String dbName = "cdm_test_anahit";
+	private static final String serializeFromDb = "cdm_test_jaxb";
+	private static final String deserializeToDb = "cdm_test_anahit";
 	private String server = "192.168.2.10";
 	private String username = "edit";
 	private String marshOut = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
-	private String test = new String( System.getProperty("user.home") + File.separator + "cdm_test.xml");
+	//private String test = new String( System.getProperty("user.home") + File.separator + "cdm_test.xml");
 
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
@@ -69,7 +72,7 @@ public class TestJaxb {
 		try {
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 		} catch (DataSourceNotFoundException e) {
@@ -92,42 +95,57 @@ public class TestJaxb {
     
     public void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
 
-    	//System.out.println("*** traverse ***");
-
-    	// FIXME: Clean the collection types
-    	Set<Taxon> children = null;
+    	// FIXME: Clean the collection types List/Set
+    	
+    	// These collections store data of a particular horizontal level, 
+    	// such as all synonyms, relationships, and children of all taxa of this level.
     	List<Taxon> children_ = new ArrayList();
-    	Set<Synonym> synonyms = null;
     	Set<Synonym> synonyms_ = new HashSet();
+    	Set<TaxonRelationship> taxonRelationships_ = new HashSet();
+    	Set<SynonymRelationship> synonymRelationships_ = new HashSet();
 
     	for (Taxon taxon: taxonCollection) {
 
-    		// get the synonyms
-
     		try {
+    			
+    			logger.info("taxon: " + taxon.toString());
+    			
+    			// get the synonyms and synonym relationships
     			if (taxon.hasSynonyms() == true) {
 
-    				synonyms = taxon.getSynonyms();
+    				Set<Synonym> synonyms = taxon.getSynonyms();
+    				Set<SynonymRelationship> synonymRelationships = taxon.getSynonymRelations();
 
     				for (Synonym synonym: synonyms) {
-    					logger.info("synonym: "+ synonym.toString());
+    					logger.info("synonym: " + synonym.toString());
     					synonyms_.add(synonym);
+    				}
+
+    				for (SynonymRelationship synonymRelationship: synonymRelationships) {
+    					logger.info("synonym relationship: " + synonymRelationship.toString());
+    					synonymRelationships_.add(synonymRelationship);
     				}
 
     				// If calling dataSet.addSynonyms() inside this for loop
     				// get ConcurrentModificationException.
     			}
-    		} catch (Exception e) {
-    			logger.error("error getting synonyms");
-    			e.printStackTrace();
-    		}
 
-    		// get the children
+    			// get the taxon relationships
+    			if (taxon.hasTaxonRelationships() == true) {
 
-    		try {   		
+    				Set<TaxonRelationship> taxonRelationships = taxon.getTaxonRelations();
+
+    				for (TaxonRelationship taxonRelationship: taxonRelationships) {
+    					logger.info("taxon relationship: " + taxonRelationship.toString());
+    					taxonRelationships_.add(taxonRelationship);
+    				}
+    			}
+
+    			// get the children
+    			logger.info("# children: " + taxon.getTaxonomicChildrenCount());
     			if (taxon.hasTaxonomicChildren() == true) {
 
-    				children = taxon.getTaxonomicChildren();
+    				Set<Taxon> children = taxon.getTaxonomicChildren();
 
     				for (Taxon child: children) {
     					children_.add(child);
@@ -135,7 +153,7 @@ public class TestJaxb {
     				}
     			}
     		} catch (Exception e) {
-    			logger.error("error getting children");
+    			logger.error("error retrieving taxon data");
     			e.printStackTrace();
     		}
     	}
@@ -144,29 +162,35 @@ public class TestJaxb {
     		if (synonyms_ != null) {
     			dataSet.addSynonyms(synonyms_);
     		}
-
+    		if (synonymRelationships_ != null) {
+    			dataSet.addRelationships(synonymRelationships_);
+    		}
+    		if (taxonRelationships_ != null) {
+    			dataSet.addRelationships(taxonRelationships_);
+    		}
     		if (children_ != null) {
     			dataSet.addTaxa(children_);
     		} 
 
     	} catch (Exception e) {
-    		logger.error("error setting DataSet");
+    		logger.error("error setting DataSet structure");
     		e.printStackTrace();
     	}
 
-    	if (children != null) {
+    	if (children_ != null && children_.size() > 0) {
     		traverse(children_, dataSet);
     	} 
     }
     
-    public void testSerialize_() {
+    
+    public void testSerialize() {
     	
     	CdmApplicationController appCtr = null;
 
     	try {
     		String password = CdmUtils.readInputLine("Password: ");
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
 
@@ -193,9 +217,11 @@ public class TestJaxb {
     		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
     		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
 
-    		// load Root taxa 
+    		// get root taxa 
 
-    		taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.FETCH_CHILDTAXA(), false);
+    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
+    		
+    		// CdmFetch options not yet implemented
     		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
 
 
@@ -203,20 +229,15 @@ public class TestJaxb {
     		logger.info("error while fetching root taxa");
     	}
 
-		for (Taxon root: taxa) {
-
-			logger.info("root: " + root.toString());
-			logger.info("# children: " + root.getTaxonomicChildrenCount());
-		}
-    	
     	try {
     		dataSet.setTaxa(taxa);
+    		// set empty synonym collection
+    		dataSet.setSynonyms(dataSetSynonyms);
     		
     	} catch (Exception e) {
     		logger.info("error setting root taxa");
     	}
 
-		dataSet.setSynonyms(dataSetSynonyms);
     	traverse(taxa, dataSet);
     	
     	try {
@@ -231,112 +252,6 @@ public class TestJaxb {
     	
     }
 
-    
-	//TODO: Replace by testSerialize_()
-    public void testSerialize() {
-
-    	CdmApplicationController appCtr = null;
-
-    	try {
-    		String password = CdmUtils.readInputLine("Password: ");
-    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-
-
-    	} catch (DataSourceNotFoundException e) {
-    		logger.error("datasource error");
-    	} catch (TermNotFoundException e) {
-    		logger.error("defined terms not found");
-    	}
-    	
-    	TransactionStatus txStatus = appCtr.startTransaction();
-    	DataSet dataSet = new DataSet();
-    	List<Taxon> taxa = null;
-
-    	// get data from DB
-
-    	try {
-
-    		logger.info("Load data from DB ...");
-
-    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
-    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
-    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
-
-    		// load Root taxa 
-
-    		taxa = appCtr.getTaxonService().getRootTaxa(null, CdmFetch.FETCH_CHILDTAXA(), false);
-    		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
-
-
-    	} catch (Exception e) {
-    		logger.info("error while fetching root taxa");
-    	}
-
-    	try {
-    		dataSet.setTaxa(taxa);
-    		
-    	} catch (Exception e) {
-    		logger.info("error setting root taxa");
-    	}
-
-    	Set<Taxon> children = null;
-    	Set<Synonym> synonyms = null;
-
-    	try {
-    		for (Taxon root: taxa) {
-
-    			logger.info("root: " + root.toString());
-    			logger.info("# children: " + root.getTaxonomicChildrenCount());
-    			
-    			if (root.hasSynonyms() == true) {
-    			    synonyms = root.getSynonyms();
-    			    
-    				for (Synonym synonym: synonyms) {
-    					logger.info("synonym: "+ synonym.toString());
-    				}
-    			}
-    			
-    			if (root.hasTaxonomicChildren() == true) {
-    				children = root.getTaxonomicChildren();
-
-    				for (Taxon child: children) {
-    					logger.info("child: "+ child.toString());
-    				}
-    			}
-    		} 
-    	} catch (Exception e) {
-    		logger.error("data getting children taxa");
-    		e.printStackTrace();
-    	}
-    	
-    	try {
-    		if (children != null) {
-    			dataSet.addTaxa(children);
-    		}
-    		if (synonyms != null) {
-    			dataSet.setSynonyms(new ArrayList());
-    			dataSet.addSynonyms(synonyms);
-    		}
-
-    	} catch (Exception e) {
-    		logger.error("error adding root children or synonyms");
-    		e.printStackTrace();
-    	}
-
-    	try {
-    		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
-
-    	} catch (Exception e) {
-    		logger.error("marshalling error");
-    	} 
-    	appCtr.commitTransaction(txStatus);
-    	appCtr.close();
-    }
-
-
 	public void testDeserialize() {
 		
 		CdmApplicationController appCtr = null;
@@ -344,7 +259,7 @@ public class TestJaxb {
 		try {
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbName, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, deserializeToDb, username, password);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 		} catch (DataSourceNotFoundException e) {
@@ -359,10 +274,11 @@ public class TestJaxb {
 		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(test));
+			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(marshOut));
 
 		} catch (Exception e) {
 			logger.error("unmarshalling error");
+			e.printStackTrace();
 		} 
 		
 		// save data in DB
@@ -376,10 +292,10 @@ public class TestJaxb {
 		// related to the taxa, such as synonyms, are automatically saved as well.
 		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
+		TransactionStatus txStatus = appCtr.startTransaction();
+		
 		agents = dataSet.getAgents();
 //		taxonBases = dataSet.getTaxonBases();
-		
-		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		if (agents != null) {
 		agentMap = appCtr.getAgentService().saveAgentAll(agents);
@@ -397,15 +313,15 @@ public class TestJaxb {
 	private void test(){
 		
 		System.out.println("Start Initializing");
-		//testInitDb();
+		testInitDb();
 		System.out.println("\nEnd Initializing");
 
 		System.out.println("\nStart Serializing");
-		testSerialize_();
+		testSerialize();
 		System.out.println("\nEnd Serializing");
 		
 		System.out.println("\nStart Deserializing");
-		//testDeserialize();
+		testDeserialize();
 		System.out.println("\nEnd Deserializing");
 	}
 	
