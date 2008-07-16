@@ -3,11 +3,10 @@
  */
 package eu.etaxonomy.cdm.io.tcs;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -22,27 +21,21 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -135,8 +128,19 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 			TaxonBase taxonBase;
 			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
 				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
+				List<DescriptionElementBase> geo = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
+				if (geo.size() > 0){
+					logger.warn("Synonym (" + taxonAbout + ") has geo description!");
+				}
 			}else{
-				taxonBase = Taxon.NewInstance(taxonNameBase, sec);
+				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
+				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
+				TaxonDescription description = TaxonDescription.NewInstance(taxon);
+				for (DescriptionElementBase geo: geoList){
+					description.addElement(geo);
+				}
+				taxon.addDescription(description);
+				taxonBase = taxon;
 			}
 			
 			//primary
@@ -145,7 +149,6 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 //			cdmAttrName = "isPrimary";
 //			Boolean primary = ImportHelper.addXmlBooleanValue(elTaxonConcept, taxon, xmlElementName, elementNamespace, cdmAttrName);
 			
-			makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 			taxonMap.put(taxonAbout, taxonBase);
 			
 		}
@@ -177,8 +180,8 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 		return result;
 	}
 	
-	private boolean makeGeo(Element elConcept, Namespace geoNamespace, Namespace rdfNamespace){
-		boolean result = true;
+	private List<DescriptionElementBase> makeGeo(Element elConcept, Namespace geoNamespace, Namespace rdfNamespace){
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 		String xmlElementName = "code";
 		List<Element> elGeos = elConcept.getChildren(xmlElementName, geoNamespace);
 
@@ -194,11 +197,9 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
 			
 			System.out.println(namedArea);
-		
-		
+			
+			result.add(distribution);
 		}
-		//<tgeo:code rdf:resource="http://rs.tdwg.org/ontology/voc/GeographicRegion#ECU"/>
-
 		return result;
 	}
 	
