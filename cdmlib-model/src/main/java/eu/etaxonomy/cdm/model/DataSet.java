@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +28,8 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -46,12 +49,13 @@ import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -131,18 +135,21 @@ public class DataSet {
 
     @XmlElementWrapper(name = "Relationships")
     @XmlElements({
-    	@XmlElement(name = "TaxonRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0"),
-    	@XmlElement(name = "SynonymRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0"),
-    	@XmlElement(name = "NameRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0"),
-    	@XmlElement(name = "HybridRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
+    	@XmlElement(name = "TaxonRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = TaxonRelationship.class),
+    	@XmlElement(name = "SynonymRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = SynonymRelationship.class),
+    	@XmlElement(name = "NameRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameRelationship.class),
+    	@XmlElement(name = "HybridRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = HybridRelationship.class)
     })
-    protected List<RelationshipBase> relationships;
+    protected Set<RelationshipBase> relationships;
 
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
-    protected List<AnnotatableEntity> homotypicalGroups;
+    protected Set<AnnotatableEntity> homotypicalGroups;
 
     public DataSet () {
+    	
+    	this.relationships = new HashSet();
+    	this.homotypicalGroups = new HashSet();
     	
     }
 
@@ -364,10 +371,10 @@ public class DataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<RelationshipBase> }
+     *     {@link Set<RelationshipBase> }
      *     
      */
-    public List<RelationshipBase> getRelationships() {
+    public Set<RelationshipBase> getRelationships() {
         return relationships;
     }
 
@@ -376,11 +383,25 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<RelationshipBase> }
+     *     {@link Set<RelationshipBase> }
      *     
      */
-    public void setRelationships(List<RelationshipBase> value) {
+    public void setRelationships(Set<RelationshipBase> value) {
         this.relationships = value;
+    }
+
+    /**
+     * Adds the relationship in value to the relationships property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<RelationshipBase> }
+     *     
+     */
+    public void addRelationships(Collection<? extends RelationshipBase> value) {
+    	for (RelationshipBase relationship: value) {
+    		this.relationships.add(relationship);
+    	}
     }
 
     /**
@@ -391,7 +412,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public List<AnnotatableEntity> getHomotypicalGroups() {
+    public Set<AnnotatableEntity> getHomotypicalGroups() {
         return homotypicalGroups;
     }
 
@@ -403,7 +424,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public void setHomotypicalGroups(List<AnnotatableEntity> value) {
+    public void setHomotypicalGroups(Set<AnnotatableEntity> value) {
         this.homotypicalGroups = value;
     }
     

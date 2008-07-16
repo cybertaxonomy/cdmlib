@@ -600,6 +600,14 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 	
+	/**
+	 * @return
+	 */
+	@Transient
+	public boolean hasTaxonRelationships(){
+		return this.getTaxonRelations().size() > 0;
+	}
+
 	/*
 	 * MISAPPLIED NAMES
 	 */

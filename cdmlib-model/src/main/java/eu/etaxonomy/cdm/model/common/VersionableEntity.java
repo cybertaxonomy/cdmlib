@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -40,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VersionableEntity", propOrder = {
-    "updated",
+//    "updated",
     "updatedBy",
     "nextVersion",
     "previousVersion"
@@ -51,7 +52,9 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 	
 	//time of last update for this object
-	@XmlElement(name ="Updated")
+	// There is a problem with "updated" during deserialization because of the @Version annotation.
+	@XmlTransient
+	//@XmlElement(name ="Updated")
 	private Calendar updated;
 	
 	@XmlElement(name = "UpdatedBy")
