@@ -50,8 +50,8 @@ public class TdwgArea {
 	
 	private static Map<String, UUID> labelUuidMap;
 	
-
-	public static NamedArea areaByTdwgLabel(String tdwgLabel){
+	//private until implemented
+	private static NamedArea areaByTdwgLabel(String tdwgLabel){
 		//from Hashtable
 		UUID uuid = getUuidByTdwgLabel(tdwgLabel);
 		//does Area already exist?
@@ -1148,6 +1148,7 @@ public class TdwgArea {
 	private static final UUID uuidZAMOO = UUID.fromString("597b7676-a24d-4eaf-b7a9-dec4a2ecc712");
 	private static final UUID uuidZIMOO = UUID.fromString("4cc60186-d723-4ff6-913a-5dd8d293a92a");
 	
+	//preliminary
 	private static boolean initMap(){
 		map = new HashMap<String, UUID>();
 		map.put("1", UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b"));
