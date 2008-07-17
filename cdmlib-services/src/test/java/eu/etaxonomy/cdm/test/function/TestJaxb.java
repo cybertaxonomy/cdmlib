@@ -219,8 +219,8 @@ public class TestJaxb {
     		logger.info("Load data from DB ...");
 
     		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
-    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
     		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
 
     		// get root taxa 
 
@@ -315,10 +315,10 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		//testInitDb(serializeFromDb);
+		testInitDb(serializeFromDb);
 		testSerialize(serializeFromDb, marshOutOne);
-		//testDeserialize(deserializeToDb, marshOutOne);
-		//testSerialize(deserializeToDb, marshOutTwo);
+		testDeserialize(deserializeToDb, marshOutOne);
+		testSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
