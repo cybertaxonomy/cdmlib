@@ -28,6 +28,7 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	static Logger logger = Logger.getLogger(OriginalSource.class);
 	//The object's ID in the source, where the alternative string comes from
 	private String idInSource;
+	private String idNamespace;
 	private IdentifiableEntity sourcedObj;
 
 	/**
@@ -43,7 +44,14 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 		result.setIdInSource(id);
 		return result;
 	}
-	
+
+	public static OriginalSource NewInstance(String id, String idNamespace){
+		OriginalSource result = new OriginalSource();
+		result.setIdInSource(id);
+		result.setIdNamespace(idNamespace);
+		return result;
+	}
+
 	
 	/**
 	 * Constructor
@@ -68,6 +76,22 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
+
+
+	/**
+	 * @return the idNamespace
+	 */
+	public String getIdNamespace() {
+		return idNamespace;
+	}
+
+	/**
+	 * @param idNamespace the idNamespace to set
+	 */
+	public void setIdNamespace(String idNamespace) {
+		this.idNamespace = idNamespace;
+	}
+
 	
 //****************** CLONE ************************************************/
 	 
