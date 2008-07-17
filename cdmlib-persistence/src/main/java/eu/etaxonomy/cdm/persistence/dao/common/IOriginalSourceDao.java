@@ -20,6 +20,6 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSource>{
 	 * @param idNamespace
 	 * @return
 	 */
-	public OriginalSource getOriginalSourceById(String idInSource, String idNamespace);
+	public OriginalSource findOriginalSourceByIdInSource(String idInSource, String idNamespace);
 	
 }

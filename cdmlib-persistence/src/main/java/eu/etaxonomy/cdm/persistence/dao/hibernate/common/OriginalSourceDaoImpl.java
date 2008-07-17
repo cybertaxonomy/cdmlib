@@ -16,6 +16,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
  * @created 17.07.2008
  * @version 1.0
  */
+@Repository
 public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> implements	IOriginalSourceDao {
 	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);
 
@@ -33,9 +35,9 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#getOriginalSourceById(java.lang.String, java.lang.String)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.String, java.lang.String)
 	 */
-	public OriginalSource getOriginalSourceById(String idInSource, String idNamespace) {
+	public OriginalSource findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("idInSource", idInSource));
