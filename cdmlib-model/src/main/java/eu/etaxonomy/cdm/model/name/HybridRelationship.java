@@ -45,7 +45,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	@XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
 
-	//for hibernate, don't use
+	//for hibernate use only, don't use
 	@Deprecated
 	private HybridRelationship(){
 		super();
@@ -66,7 +66,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see						BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
 	protected HybridRelationship(BotanicalName hybridName, BotanicalName parentName, HybridRelationshipType type, String ruleConsidered) {
-		this(parentName, hybridName, type, null, null, ruleConsidered);
+		this(hybridName, parentName, type, null, null, ruleConsidered);
 	}
 	
 	/**

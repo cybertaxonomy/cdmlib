@@ -340,7 +340,7 @@ public class BotanicalName extends NonViralName {
 //	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addHybridParent(BotanicalName parentName, HybridRelationshipType type, String ruleConsidered){
-		HybridRelationship rel = new HybridRelationship(parentName, this, type, ruleConsidered);
+		HybridRelationship rel = new HybridRelationship(this, parentName, type, ruleConsidered);
 	}
 	
 	/**
@@ -358,7 +358,7 @@ public class BotanicalName extends NonViralName {
 //	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addHybridChild(BotanicalName childName, HybridRelationshipType type, String ruleConsidered){
-		HybridRelationship rel = new HybridRelationship(this, childName, type, ruleConsidered);
+		HybridRelationship rel = new HybridRelationship(childName, this, type, ruleConsidered);
 	}
 	
 	
