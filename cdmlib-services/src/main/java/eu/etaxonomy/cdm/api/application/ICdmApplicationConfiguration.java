@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.application;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -60,6 +61,12 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public ITermService getTermService();
+
+	
+	/**
+	 * @return
+	 */
+	public ICommonService getCommonService();
 	
 	/**
 	 * @return

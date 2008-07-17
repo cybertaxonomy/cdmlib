@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -48,6 +49,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private HibernateTransactionManager transactionManager;
 	@Autowired
 	private IDescriptionService descriptionService;
+	@Autowired
+	private ICommonService commonService;
 
 	
 	/**
@@ -105,6 +108,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.termService;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
+	 */
+	public ICommonService getCommonService(){
+		return this.commonService;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTransactionManager()
 	 */
