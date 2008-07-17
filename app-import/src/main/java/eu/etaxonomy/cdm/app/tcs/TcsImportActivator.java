@@ -18,8 +18,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.taxonx.CdmDefaultImport;
-import eu.etaxonomy.cdm.io.tcs.TcsImport;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 
 /**
@@ -89,7 +88,7 @@ public class TcsImportActivator {
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		CdmDefaultImport tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
+		CdmDefaultImport<TcsImportConfigurator> tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		tcsImport.invoke(tcsImportConfigurator);
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
