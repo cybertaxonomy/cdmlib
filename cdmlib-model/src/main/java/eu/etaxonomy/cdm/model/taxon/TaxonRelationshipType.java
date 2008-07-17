@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;

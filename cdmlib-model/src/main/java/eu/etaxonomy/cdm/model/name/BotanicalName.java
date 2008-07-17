@@ -321,9 +321,47 @@ public class BotanicalName extends NonViralName {
 	 * @see    				#getChildRelationships()
 	 * @see    				#addRelationship(RelationshipBase)
 	 */
-	public void addHybridRelationship(HybridRelationship relationship) {
+	protected void addHybridRelationship(HybridRelationship relationship) {
 		this.hybridRelationships.add(relationship);
 	}
+	
+	/**
+	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
+	 * to this taxon. A HybridRelationship may be of type "is first/second parent" or "is male/female parent".
+	 * By invoking this method this object becomes a habrid child of the parent Name.
+	 * 
+	 * @param parentName		  the botanical name of the parent for this new hybrid name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #addHybridChild(BotanicalName, HybridRelationshipType,String )
+//	 * @see    				  #getRelationsToThisName()
+//	 * @see    				  #getNameRelations()
+//	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+//	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
+	public void addHybridParent(BotanicalName parentName, HybridRelationshipType type, String ruleConsidered){
+		HybridRelationship rel = new HybridRelationship(parentName, this, type, ruleConsidered);
+	}
+	
+	/**
+	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
+	 * to this taxon. A HybridRelationship may be of type "is first/second parent" or "is male/female parent".
+	 * By invoking this method this object becomes a hybrid parent of the parent Name.
+	 * 
+	 * @param childName		  the botanical name of the child for this new hybrid name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #addHybridParent(BotanicalName, HybridRelationshipType,String )
+//	 * @see    				  #getRelationsToThisName()
+//	 * @see    				  #getNameRelations()
+//	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+//	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
+	public void addHybridChild(BotanicalName childName, HybridRelationshipType type, String ruleConsidered){
+		HybridRelationship rel = new HybridRelationship(this, childName, type, ruleConsidered);
+	}
+	
+	
 	/** 
 	 * Removes one {@link HybridRelationship hybrid relationship} from the set of
 	 * {@link #getHybridRelationships() hybrid relationships} in which this botanical taxon name
@@ -334,6 +372,8 @@ public class BotanicalName extends NonViralName {
 	 * @see    				 #getHybridRelationships()
 	 */
 	public void removeHybridRelationship(HybridRelationship relationship) {
+		//TODO
+		logger.warn("Birelationship not yet implemented");
 		this.hybridRelationships.remove(relationship);
 	}
 
@@ -375,6 +415,7 @@ public class BotanicalName extends NonViralName {
 	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
 	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
 	 */
+	@Deprecated  //To be used by RelationshipBase only
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof HybridRelationship){
 			addHybridRelationship((HybridRelationship)relation);
