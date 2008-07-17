@@ -1,9 +1,12 @@
 package eu.etaxonomy.cdm.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -18,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -35,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public class DataSetTest {
@@ -48,6 +53,8 @@ public class DataSetTest {
     private List<Taxon> taxa;
     private List<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
+	Set<TaxonRelationship> taxonRelationships;
+	Set<RelationshipBase> relationshipBases;
 	
 	@Before
 	public void onSetUp() throws Exception {
@@ -73,6 +80,7 @@ public class DataSetTest {
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
 		synonyms = new ArrayList<Synonym>();
+    	taxonRelationships = new HashSet();
 		
 		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
@@ -198,6 +206,9 @@ public class DataSetTest {
 		synonyms.add(syn12);
 		synonyms.add(syn2);
 		
+		// relationships
+		
+		
 		// taxonomic children
 		
 		rootT.addTaxonomicChild(child1, sec, "p.998");
@@ -207,6 +218,15 @@ public class DataSetTest {
 		taxa.add(freeT);
 		taxa.add(child1);
 		taxa.add(child2);
+		
+//	    List<Taxon> taxa;
+//    	Object obj = (Object)taxa;
+//    	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
+
+//		Set<TaxonRelationship> taxonRelationships;
+    	taxonRelationships = rootT.getTaxonRelations();
+    	Object obj = (Object)taxonRelationships;
+    	relationshipBases = (Set<RelationshipBase>)obj;
 		
 	}
 		
@@ -221,6 +241,7 @@ public class DataSetTest {
 		dataSet.setTaxonomicNames(taxonomicNames);
 		dataSet.setTaxa(taxa);
 		dataSet.setSynonyms(synonyms);
+		dataSet.setRelationships(relationshipBases);
 
 		return dataSet;
 	}

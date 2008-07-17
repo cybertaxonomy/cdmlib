@@ -41,7 +41,9 @@ import javax.xml.bind.annotation.XmlType;
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	
 	static Logger logger = Logger.getLogger(Synonym.class);
-	
+
+	//@XmlTransient
+	// Don't need the synonym relations here since they are stored at taxon side?
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
