@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -76,6 +77,7 @@ public class DatabaseEnumTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String, int)}.
 	 */
+	@Ignore
 	@Test
 	public void testGetConnectionStringStringStringInt() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", 1234, null, null);
@@ -85,6 +87,7 @@ public class DatabaseEnumTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.DatabaseTypeEnum#getConnectionString(java.lang.String, java.lang.String)}.
 	 */
+	@Ignore
 	@Test
 	public void testGetConnectionStringStringString() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
