@@ -57,7 +57,8 @@ public class TestJaxb {
 	private static final String deserializeToDb = "cdm_test_anahit";
 	private String server = "192.168.2.10";
 	private String username = "edit";
-	private String marshOut = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
+	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
+	private String marshOutTwo = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_roundtrip.xml");
 	//private String test = new String( System.getProperty("user.home") + File.separator + "cdm_test.xml");
 
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
@@ -65,14 +66,16 @@ public class TestJaxb {
     public TestJaxb() {	
     }
 
-    public void testInitDb() {
+    public void testInitDb(String dbname) {
     	
+		logger.info("Initializing DB " + "dbname");
+
 		CdmApplicationController appCtr = null;
     	
 		try {
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 		} catch (DataSourceNotFoundException e) {
@@ -183,9 +186,11 @@ public class TestJaxb {
     }
     
     
-    public void testSerialize() {
+    public void testSerialize(String dbname, String filename) {
     	
-    	CdmApplicationController appCtr = null;
+		logger.info("Serializing DB " + dbname + " to file " + filename);
+
+		CdmApplicationController appCtr = null;
 
     	try {
     		String password = CdmUtils.readInputLine("Password: ");
@@ -242,7 +247,7 @@ public class TestJaxb {
     	
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
+    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(filename));
 
     	} catch (Exception e) {
     		logger.error("marshalling error");
@@ -252,14 +257,16 @@ public class TestJaxb {
     	
     }
 
-	public void testDeserialize() {
+	public void testDeserialize(String dbname, String filename) {
 		
+		logger.info("Deserializing file " + filename + " to DB " + dbname);
+
 		CdmApplicationController appCtr = null;
 
 		try {
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, deserializeToDb, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 		} catch (DataSourceNotFoundException e) {
@@ -270,11 +277,11 @@ public class TestJaxb {
 
 		DataSet dataSet = new DataSet();
 		
-        // unmarshalling test XML file
+        // unmarshalling XML file
 		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(marshOut));
+			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(filename));
 
 		} catch (Exception e) {
 			logger.error("unmarshalling error");
@@ -285,25 +292,21 @@ public class TestJaxb {
 		
 		Collection<TaxonBase> taxonBases;
 		List<Agent> agents;
-		Map<UUID, TaxonBase> taxonBaseMap;
-		Map<UUID, Agent> agentMap;
 		
-		// Currently it's sufficient to save the taxa only since all other data
-		// related to the taxa, such as synonyms, are automatically saved as well.
 		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
-		agents = dataSet.getAgents();
-//		taxonBases = dataSet.getTaxonBases();
-		
-		if (agents != null) {
-		agentMap = appCtr.getAgentService().saveAgentAll(agents);
-		}
-//		if (taxonBases != null) {
-//		taxonBaseMap = appCtr.getTaxonService().saveTaxonAll(taxonBases);
+//		if ((agents = dataSet.getAgents()) != null) {
+//		appCtr.getAgentService().saveAgentAll(agents);
 //		}
-		//appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
+		
+		// Currently it's sufficient to save the taxa only since all other data
+		// related to the taxa, such as synonyms, are automatically saved as well.
+		
+		if ((taxonBases = dataSet.getTaxonBases()) != null) {
+		appCtr.getTaxonService().saveTaxonAll(taxonBases);
+		}
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
@@ -312,18 +315,11 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		System.out.println("Start Initializing");
-		testInitDb();
-		System.out.println("\nEnd Initializing");
-
-		System.out.println("\nStart Serializing");
-		testSerialize();
-		System.out.println("\nEnd Serializing");
-		
-		System.out.println("\nStart Deserializing");
-		testDeserialize();
-		System.out.println("\nEnd Deserializing");
-	}
+		//testInitDb(serializeFromDb);
+		testSerialize(serializeFromDb, marshOutOne);
+		//testDeserialize(deserializeToDb, marshOutOne);
+		//testSerialize(deserializeToDb, marshOutTwo);
+		}
 	
 	/**
 	 * @param args
