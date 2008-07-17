@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IOriginalSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 
 
 public interface ICommonService extends IService<CdmBase>{
@@ -22,7 +22,7 @@ public interface ICommonService extends IService<CdmBase>{
 //	public abstract UUID saveCdmBase(CdmBase cdmBase);
 
 	/** find cdmBase by UUID**/
-	public abstract IOriginalSource getSourcedObjectByIdInSource(String idInSource, String idNamespace);
+	public abstract ISourceable getSourcedObjectByIdInSource(String idInSource, String idNamespace);
 
 	
 }

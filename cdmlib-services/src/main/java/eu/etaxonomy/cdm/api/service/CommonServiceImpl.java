@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IOriginalSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
@@ -31,8 +31,8 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
-	public IOriginalSource getSourcedObjectByIdInSource(String idInSource, String idNamespace) {
-		IOriginalSource result = null;
+	public ISourceable getSourcedObjectByIdInSource(String idInSource, String idNamespace) {
+		ISourceable result = null;
 		OriginalSource originalSource = originalSourceDao.findOriginalSourceByIdInSource(idInSource, idNamespace);
 		if (originalSource!= null){
 			result = originalSource.getSourcedObj();
