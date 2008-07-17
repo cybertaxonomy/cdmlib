@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
@@ -43,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa can
- * build a taxonomical tree according to the opinion of the {@link reference.ReferenceBase reference}.
+ * build a taxonomic tree according to the opinion of the {@link reference.ReferenceBase reference}.
  * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.
  * Splitting taxa in "accepted/correct" and "synonyms" makes it easier to handle
  * particular relationship between ("accepted/correct") taxa on the one hand
@@ -139,7 +140,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 
 	/** 
 	 * Returns the set of {@link description.TaxonDescription taxon descriptions}
-	 * concerning this taxon.
+	 * concerning <i>this</i> taxon.
 	 * 
 	 * @see #removeDescription(TaxonDescription)
 	 * @see #addDescription(TaxonDescription)
@@ -158,13 +159,13 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/** 
 	 * Adds a new {@link description.TaxonDescription taxon description} to the set
-	 * of taxon descriptions assigned to this (accepted/correct) taxon.
+	 * of taxon descriptions assigned to <i>this</i> (accepted/correct) taxon.
 	 * Due to bidirectionality the content of the {@link description.TaxonDescription#getTaxon() taxon attribute} of the
-	 * taxon description itself will be replaced with this taxon. The taxon
+	 * taxon description itself will be replaced with <i>this</i> taxon. The taxon
 	 * description will also be removed from the set of taxon descriptions
 	 * assigned to its previous taxon. 
 	 *
-	 * @param  description	the taxon description to be added for this taxon
+	 * @param  description	the taxon description to be added for <i>this</i> taxon
 	 * @see     		  	#getDescriptions()
 	 * @see     		  	#removeDescription(TaxonDescription)
 	 * @see 			  	description.TaxonDescription#getTaxon()
@@ -181,7 +182,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/** 
 	 * Removes one element from the set of {@link description.TaxonDescription taxon descriptions} assigned
-	 * to this (accepted/correct) taxon. Due to bidirectionality the content of
+	 * to <i>this</i> (accepted/correct) taxon. Due to bidirectionality the content of
 	 * the {@link description.TaxonDescription#getTaxon() taxon attribute} of the taxon description
 	 * itself will be set to "null".
 	 *
@@ -212,7 +213,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/** 
 	 * Returns the set of all {@link SynonymRelationship synonym relationships}
-	 * in which this ("accepted/correct") taxon is involved. This taxon can only
+	 * in which <i>this</i> ("accepted/correct") taxon is involved. <i>This</i> taxon can only
 	 * be the target of these synonym relationships.
 	 *  
 	 * @see    #addSynonymRelation(SynonymRelationship)
@@ -233,11 +234,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
-	 * {@link #getSynonymRelations() synonym relationships} assigned to this taxon. If the
-	 * the target of the synonym relationship does not match with this taxon
+	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon. If the
+	 * the target of the synonym relationship does not match with <i>this</i> taxon
 	 * no addition will be carried out.
 	 * 
-	 * @param synonymRelation	the synonym relationship to be added to this taxon's
+	 * @param synonymRelation	the synonym relationship to be added to <i>this</i> taxon's
 	 * 							synonym relationships set
 	 * @see    	   				#getSynonymRelations()
 	 * @see    	   				#addSynonym(Synonym, SynonymRelationshipType)
@@ -250,7 +251,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/** 
 	 * Removes one element from the set of {@link SynonymRelationship synonym relationships} assigned
-	 * to this (accepted/correct) taxon. Due to bidirectionality the given
+	 * to <i>this</i> (accepted/correct) taxon. Due to bidirectionality the given
 	 * synonym relationship will also be removed from the set of synonym
 	 * relationships assigned to the {@link Synonym#getSynonymRelations() synonym} involved in the
 	 * relationship. Furthermore the content of
@@ -276,7 +277,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	/** 
 	 * Returns the set of all {@link TaxonRelationship taxon relationships}
-	 * between two taxa in which this taxon is involved as a source.
+	 * between two taxa in which <i>this</i> taxon is involved as a source.
 	 *  
 	 * @see    #getRelationsToThisTaxon()
 	 * @see    #getTaxonRelations()
@@ -297,7 +298,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/** 
 	 * Returns the set of all {@link TaxonRelationship taxon relationships}
-	 * between two taxa in which this taxon is involved as a target.
+	 * between two taxa in which <i>this</i> taxon is involved as a target.
 	 *  
 	 * @see    #getRelationsFromThisTaxon()
 	 * @see    #getTaxonRelations()
@@ -325,7 +326,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/** 
 	 * Returns the set of all {@link TaxonRelationship taxon relationships}
-	 * between two taxa in which this taxon is involved either as a source or
+	 * between two taxa in which <i>this</i> taxon is involved either as a source or
 	 * as a target.
 	 *  
 	 * @see    #getRelationsFromThisTaxon()
@@ -340,13 +341,13 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/** 
 	 * Removes one {@link TaxonRelationship taxon relationship} from one of both sets of
-	 * {@link #getTaxonRelations() taxon relationships} in which this taxon is involved
+	 * {@link #getTaxonRelations() taxon relationships} in which <i>this</i> taxon is involved
 	 * either as a {@link #getRelationsFromThisTaxon() source} or as a {@link #getRelationsToThisTaxon() target}.
 	 * The taxon relationship will also be removed from one of both sets
 	 * belonging to the second taxon involved. Furthermore the inherited RelatedFrom and
-	 * RelatedTo attributes of the given taxon relationship will be nullified.
-	 * If the taxon relationship concerns the taxonomical tree possible
-	 * modifications of the {@link #getTaxonomicParent() parent} or of the number of
+	 * RelatedTo attributes of the given taxon relationship will be nullified.<P>
+	 * If the taxon relationship concerns the taxonomic tree possible
+	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 *
 	 * @param  rel  the taxon relationship which should be removed from one
@@ -385,16 +386,16 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/**
 	 * Adds an existing {@link TaxonRelationship taxon relationship} either to the set of
-	 * {@link #getRelationsToThisTaxon() taxon relationships to this taxon} or to the set of
-	 * {@link #getRelationsFromThisTaxon() taxon relationships from this taxon}. If neither the
-	 * source nor the target of the taxon relationship match with this taxon
+	 * {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon} or to the set of
+	 * {@link #getRelationsFromThisTaxon() taxon relationships from <i>this</i> taxon}. If neither the
+	 * source nor the target of the taxon relationship match with <i>this</i> taxon
 	 * no addition will be carried out. The taxon relationship will also be
-	 * added to the second taxon involved in the given relationship.
-	 * If the taxon relationship concerns the taxonomical tree possible
-	 * modifications of the {@link #getTaxonomicParent() parent} or of the number of
+	 * added to the second taxon involved in the given relationship.<P>
+	 * If the taxon relationship concerns the taxonomic tree possible
+	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
 	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 * 
-	 * @param rel  the taxon relationship to be added to one of this taxon's taxon relationships sets
+	 * @param rel  the taxon relationship to be added to one of <i>this</i> taxon's taxon relationships sets
 	 * @see    	   #addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
 	 * @see    	   #getTaxonRelations()
 	 * @see    	   #getRelationsFromThisTaxon()
@@ -447,13 +448,14 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * Creates a new {@link TaxonRelationship taxon relationship} instance where this taxon
+	 * Creates a new {@link TaxonRelationship taxon relationship} instance where <i>this</i> taxon
 	 * plays the source role and adds it to the set of
-	 * {@link #getRelationsFromThisTaxon() taxon relationships from this taxon}. The taxon relationship
-	 * will also be added to the set of taxon relationships to the second taxon
-	 * involved in the created relationship. If the taxon relationship concerns
-	 * the taxonomical tree possible modifications of the {@link #getTaxonomicParent() parent}
-	 * or of the number of {@link #getTaxonomicChildrenCount() childrens} will be stored.
+	 * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to <i>this</i> taxon.
+	 * The taxon relationship will also be added to the set of taxon
+	 * relationships to the second taxon involved in the created relationship.<P>
+	 * If the taxon relationship concerns the taxonomic tree possible
+	 * modifications of the {@link #getTaxonomicParent() parent taxon} or of the number of
+	 * {@link #getTaxonomicChildrenCount() childrens} will be stored.
 	 * 
 	 * @param toTaxon		the taxon which plays the target role in the new taxon relationship
 	 * @param type			the taxon relationship type for the new taxon relationship
@@ -471,14 +473,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/**
 	 * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
-	 * "misapplied name for") instance where this taxon plays the target role
-	 * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to this taxon}.
+	 * "misapplied name for") instance where <i>this</i> taxon plays the target role
+	 * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
 	 * The taxon relationship will also be added to the set of taxon
 	 * relationships to the other (misapplied name) taxon involved in the created relationship.
 	 * 
 	 * @param misappliedNameTaxon	the taxon which plays the target role in the new taxon relationship
 	 * @param citation				the reference source for the new taxon relationship
 	 * @param microcitation			the string with the details describing the exact localisation within the reference
+	 * @see    	   					#getMisappliedNames()
 	 * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
 	 * @see    	   					#addTaxonRelation(TaxonRelationship)
 	 * @see    	   					#getTaxonRelations()
@@ -490,6 +493,32 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 	
+	/**
+	 * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+	 * "taxonomically included in") instance where <i>this</i> taxon plays the target
+	 * role (parent) and adds it to the set of
+	 * {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging to <i>this</i> taxon.
+	 * The taxon relationship will also be added to the set of
+	 * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the second taxon
+	 * (child) involved in the created relationship.<P>
+	 * Since the taxon relationship concerns the modifications
+	 * of the number of {@link #getTaxonomicChildrenCount() childrens} for <i>this</i> taxon and
+	 * of the {@link #getTaxonomicParent() parent taxon} for the child taxon will be stored.
+	 * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
+	 * than the rank of the taxon name used as a child taxon.
+	 * 
+	 * @param child			the taxon which plays the source role (child) in the new taxon relationship
+	 * @param citation		the reference source for the new taxon relationship
+	 * @param microcitation	the string with the details describing the exact localisation within the reference
+	 * @see    	   			#setTaxonomicParent(Taxon, ReferenceBase, String)
+	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addTaxonRelation(TaxonRelationship)
+	 * @see    	   			#getTaxonRelations()
+	 * @see    	   			#getRelationsFromThisTaxon()
+	 * @see    	   			#getRelationsToThisTaxon()
+	 * @see    	   			#getTaxonomicParent()
+	 * @see    	   			#getTaxonomicChildrenCount()
+	 */
 	@Transient
 	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
 		if (child == null){
@@ -498,6 +527,28 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			child.setTaxonomicParent(this, citation, microcitation);
 		}
 	}
+	/** 
+	 * Removes one {@link TaxonRelationship taxon relationship} with {@link TaxonRelationshipType taxon relationship type}
+	 * "taxonomically included in" and with the given child taxon playing the
+	 * source role from the set of {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging
+	 * to <i>this</i> taxon. The taxon relationship will also be removed from the set
+	 * of {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the child taxon.
+	 * Furthermore the inherited RelatedFrom and RelatedTo attributes of the
+	 * taxon relationship will be nullified.<P>
+	 * Since the taxon relationship concerns the taxonomic tree modifications
+	 * of the number of {@link #getTaxonomicChildrenCount() childrens} for <i>this</i> taxon and
+	 * of the {@link #getTaxonomicParent() parent taxon} for the child taxon will be stored.
+	 *
+	 * @param  child	the taxon playing the source role in the relationship to be removed
+	 * @see    	    	#removeTaxonRelation(TaxonRelationship)
+	 * @see    			#getRelationsToThisTaxon()
+	 * @see    			#getRelationsFromThisTaxon()
+	 * @see    	    	#getTaxonomicParent()
+	 * @see    	    	#getTaxonomicChildrenCount()
+	 * @see    			common.RelationshipBase#getRelatedFrom()
+	 * @see    			common.RelationshipBase#getRelatedTo()
+	 * 
+	 */
 	@Transient
 	public void removeTaxonomicChild(Taxon child){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
@@ -508,17 +559,50 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		}
 	}
 	
-	/**
-	 * @return
+	/** 
+	 * Returns the taxon which is the next higher taxon (parent) of <i>this</i> taxon
+	 * within the taxonomic tree and which is stored in the
+	 * TaxonomicParentCache attribute. Each taxon can have only one parent taxon.
+	 * The child taxon and the parent taxon play the source respectively the
+	 * target role in one {@link TaxonRelationship taxon relationship} with
+	 * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
+	 * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
+	 * than the rank of the taxon name used as a child taxon.
+	 * 
+	 * @see  #setTaxonomicParent(Taxon, ReferenceBase, String)
+	 * @see  #getTaxonomicChildren()
+	 * @see  #getTaxonomicChildrenCount()
+	 * @see  #getRelationsFromThisTaxon()
 	 */
 	@Transient
 	public Taxon getTaxonomicParent() {
 		return getTaxonomicParentCache();
 	}
 	/**
-	 * @param parent
-	 * @param citation
-	 * @param microcitation 
+	 * Replaces both the taxonomic parent cache with the given new parent taxon
+	 * and the corresponding taxon relationship with a new {@link TaxonRelationship taxon relationship}
+	 * (with {@link TaxonRelationshipType taxon relationship type} "taxonomically included in") instance.
+	 * In the new taxon relationship <i>this</i> taxon plays the source role (child).
+	 * This method creates and adds the new taxon relationship to the set of
+	 * {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to <i>this</i> taxon.
+	 * The taxon relationship will also be added to the set of
+	 * {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging to the second taxon
+	 * (parent) involved in the new relationship.<P>
+	 * Since the taxon relationship concerns the taxonomic tree modifications
+	 * of the {@link #getTaxonomicParent() parent taxon} for <i>this</i> taxon and of the number of
+	 * {@link #getTaxonomicChildrenCount() childrens} for the child taxon will be stored.
+	 * 
+	 * @param newParent		the taxon which plays the target role (parent) in the new taxon relationship
+	 * @param citation		the reference source for the new taxon relationship
+	 * @param microcitation	the string with the details describing the exact localisation within the reference
+	 * @see    	   			#removeTaxonRelation(TaxonRelationship)
+	 * @see    	   			#getTaxonomicParent()
+	 * @see    	   			#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   			#addTaxonRelation(TaxonRelationship)
+	 * @see    	   			#getTaxonRelations()
+	 * @see    	   			#getRelationsFromThisTaxon()
+	 * @see    	   			#getRelationsToThisTaxon()
+	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
 	public void setTaxonomicParent(Taxon newParent, ReferenceBase citation, String microcitation){
 		//remove previously existing parent relationship!!!
@@ -538,8 +622,19 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	
 
-	/**
-	 * @return
+	/** 
+	 * Returns the set of taxa which have <i>this</i> taxon as next higher taxon
+	 * (parent) within the taxonomic tree. Each taxon can have several child
+	 * taxa. The child taxon and the parent taxon play the source respectively
+	 * the target role in one {@link TaxonRelationship taxon relationship} with
+	 * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
+	 * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
+	 * than the rank of the taxon name used as a child taxon.
+	 * 
+	 * @see  #getTaxonomicParent()
+	 * @see  #addTaxonomicChild(Taxon, ReferenceBase, String)
+	 * @see  #getTaxonomicChildrenCount()
+	 * @see  #getRelationsToThisTaxon()
 	 */
 	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
@@ -555,9 +650,18 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return taxa;
 	}
 	
-	/**
-	 * Cached number of taxonomic children of this taxon.
-	 *	@return
+	/** 
+	 * Returns the number of taxa which have <i>this</i> taxon as next higher taxon
+	 * (parent) within the taxonomic tree and the number of which is stored in
+	 * the TaxonomicChildrenCount attribute. Each taxon can have several child
+	 * taxa. The child taxon and the parent taxon play the source respectively
+	 * the target role in one {@link TaxonRelationship taxon relationship} with
+	 * {@link TaxonRelationshipType taxon relationship type} "taxonomically included in".
+	 * The {@link name.Rank rank} of the taxon name used as a parent taxon must be higher
+	 * than the rank of the taxon name used as a child taxon.
+	 * 
+	 * @see  #getTaxonomicChildren()
+	 * @see  #getRelationsToThisTaxon()
 	 */
 	public int getTaxonomicChildrenCount(){
 		return taxonomicChildrenCount;
@@ -565,15 +669,18 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	
 	/**
-	 * @param hasTaxonomicChildren the hasTaxonomicChildren to set
+	 * @see  #getTaxonomicChildrenCount()
 	 */
 	private void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
 		this.taxonomicChildrenCount = taxonomicChildrenCount;
 	}
 
 	/**
-	 * @see #getTaxonomicChildren() 
-	 *	@return
+	 * Returns the boolean value indicating whether <i>this</i> taxon has at least one
+	 * taxonomic child taxon within the taxonomic tree (true) or not (false).
+	 * 
+	 * @see  #getTaxonomicChildrenCount()
+	 * @see  #getTaxonomicChildren()
 	 */
 	@Transient
 	public boolean hasTaxonomicChildren(){
@@ -592,7 +699,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * @return
+	 * Returns the boolean value indicating whether <i>this</i> taxon has at least one
+	 * {@link Synoynm synonym} (true) or not (false). If true the {@link #getSynonymRelations() set of synonym relationships}
+	 * belonging to <i>this</i> ("accepted/correct") taxon is not empty .
+	 * 
+	 * @see  #getSynonymRelations()
+	 * @see  #getSynonyms()
+	 * @see  #getSynonymNames()
+	 * @see  #removeSynonym(Synonym)
+	 * @see  SynonymRelationship
 	 */
 	@Transient
 	public boolean hasSynonyms(){
@@ -601,7 +716,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	
 	/**
-	 * @return
+	 * Returns the boolean value indicating whether <i>this</i> taxon is at least
+	 * involved in one {@link #getTaxonRelations() taxon relationship} between
+	 * two taxa (true), either as a source or as a target, or not (false).
+	 * 
+	 * @see  #getTaxonRelations()
+	 * @see  #getRelationsToThisTaxon()
+	 * @see  #getRelationsFromThisTaxon()
+	 * @see  #removeTaxonRelation(TaxonRelationship)
+	 * @see  TaxonRelationship
 	 */
 	@Transient
 	public boolean hasTaxonRelationships(){
@@ -610,6 +733,35 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/*
 	 * MISAPPLIED NAMES
+	 */
+	/**
+	 * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
+	 * "misapplied name for") instance where <i>this</i> taxon plays the target role
+	 * and adds it to the set of {@link #getRelationsToThisTaxon() taxon relationships to <i>this</i> taxon}.
+	 * The taxon relationship will also be added to the set of taxon
+	 * relationships to the other (misapplied name) taxon involved in the created relationship.
+	 * 
+	 * @param misappliedNameTaxon	the taxon which plays the target role in the new taxon relationship
+	 * @param citation				the reference source for the new taxon relationship
+	 * @param microcitation			the string with the details describing the exact localisation within the reference
+	 * @see    	   					#getMisappliedNames()
+	 * @see    	   					#addTaxonRelation(Taxon, TaxonRelationshipType, ReferenceBase, String)
+	 * @see    	   					#addTaxonRelation(TaxonRelationship)
+	 * @see    	   					#getTaxonRelations()
+	 * @see    	   					#getRelationsFromThisTaxon()
+	 * @see    	   					#getRelationsToThisTaxon()
+	 */
+	/** 
+	 * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
+	 * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
+	 * <i>this</i> taxon plays the target role. A misapplied name is a taxon the
+	 * {@link name.TaxonNameBase taxon name} of which has been erroneously used
+	 * by the {@link TaxonBase#getSec() taxon reference} to denominate the same taxonomic group
+	 * as the one meant by <i>this</i> ("accepted/correct") taxon. 
+	 * 
+	 * @see  #getTaxonRelations()
+	 * @see  #getRelationsToThisTaxon()
+	 * @see  #addMisappliedName(Taxon, ReferenceBase, String)
 	 */
 	@Transient
 	public Set<Taxon> getMisappliedNames(){
@@ -652,7 +804,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return names;
 	}
 	/**
-	 * Adds a synonym as a Synonym to this Taxon using the defined synonym relationship type.<BR>
+	 * Adds a synonym as a Synonym to <i>this</i> Taxon using the defined synonym relationship type.<BR>
 	 * If you want to add further information to this relationship use the returned SynonymRelationship.
 	 * @param synonym the Synoynm to add as a synonym
 	 * @param synonymType the SynonymRelationshipType between <i>this</i> taxon and the synonym (e.g. homotypic, heterotypic, proparte ...)
