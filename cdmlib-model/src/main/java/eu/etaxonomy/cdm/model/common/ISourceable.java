@@ -3,7 +3,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Set;
 
  
-public interface IOriginalSource {
+public interface ISourceable {
 
 	public abstract Set<OriginalSource> getSources();
 
