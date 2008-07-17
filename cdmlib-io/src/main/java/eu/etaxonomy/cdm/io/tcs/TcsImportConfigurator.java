@@ -17,20 +17,17 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class TcsImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
-	private static Logger logger = Logger.getLogger(TcsImportConfigurator.class);
+	private static final Logger logger = Logger.getLogger(TcsImportConfigurator.class);
 	
-	protected void makeIOs(){
-		iCdmIoArray = new ICdmIO []{
-				new TcsReferenceIO(false)
-				, new TcsTaxonNameIO(! this.isDoTaxonNames())
-				, new TcsTaxonNameRelationsIO(! this.isDoRelNames())
-				, new TcsTaxonIO(! this.isDoTaxa())
-				, new TcsTaxonRelationsIO(! this.isDoRelTaxa())
-
+	protected void makeIoClassList(){
+		ioClassList = new Class[]{
+			TcsReferenceIO.class
+			, TcsTaxonNameIO.class
+			, TcsTaxonNameRelationsIO.class
+			, TcsTaxonIO.class
+			, TcsTaxonRelationsIO.class
 		};
-		
-	}
-	
+	};
 	
 	public static TcsImportConfigurator NewInstance(String url,
 			ICdmDataSource destination){

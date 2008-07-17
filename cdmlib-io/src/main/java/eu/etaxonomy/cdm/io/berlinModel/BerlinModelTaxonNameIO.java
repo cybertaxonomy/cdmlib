@@ -33,10 +33,8 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 
 	private static int modCount = 5000;
 
-	private static final String ioNameLocal = "BerlinModelTaxonNameIO";
-	
-	public BerlinModelTaxonNameIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelTaxonNameIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -285,6 +283,13 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				return author;
 			}
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoTaxonNames();
 	}
 	
 }

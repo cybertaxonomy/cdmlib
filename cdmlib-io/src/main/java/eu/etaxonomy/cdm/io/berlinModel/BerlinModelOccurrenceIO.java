@@ -37,11 +37,8 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 
 	private static int modCount = 10000;
 
-	
-	private static final String ioNameLocal = "BerlinModelOccurrenceIO";
-	
-	public BerlinModelOccurrenceIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelOccurrenceIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -158,6 +155,13 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			return false;
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoOccurrence();
 	}
 
 	

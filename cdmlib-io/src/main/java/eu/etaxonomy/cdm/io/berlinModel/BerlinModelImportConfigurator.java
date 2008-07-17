@@ -24,19 +24,19 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
 	
-	protected void makeIOs(){
-		iCdmIoArray = new ICdmIO []{
-				new BerlinModelAuthorIO(! this.isDoAuthors())
-				, new BerlinModelReferenceIO(this.getDoReferences())
-				, new BerlinModelTaxonNameIO(! this.isDoTaxonNames())
-				, new BerlinModelTaxonNameRelationIO(! this.isDoRelNames())
-				, new BerlinModelNameStatusIO(! this.isDoNameStatus())
-				, new BerlinModelNameFactsIO(! this.isDoNameFacts())
-				, new BerlinModelTypesIO(! this.isDoTypes())
-				, new BerlinModelTaxonIO(! this.isDoTaxa())
-				, new BerlinModelTaxonRelationIO(! this.isDoRelTaxa())
-				, new BerlinModelFactsIO(! this.isDoFacts())
-				, new BerlinModelOccurrenceIO(! this.isDoOccurrence())
+	protected void makeIoClassList(){
+		ioClassList = new Class[]{
+				BerlinModelAuthorIO.class
+				, BerlinModelReferenceIO.class
+				, BerlinModelTaxonNameIO.class
+				, BerlinModelTaxonNameRelationIO.class
+				, BerlinModelNameStatusIO.class
+				, BerlinModelNameFactsIO.class
+				, BerlinModelTypesIO.class
+				, BerlinModelTaxonIO.class
+				, BerlinModelTaxonRelationIO.class
+				, BerlinModelFactsIO.class
+				, BerlinModelOccurrenceIO.class
 		};
 		
 	}

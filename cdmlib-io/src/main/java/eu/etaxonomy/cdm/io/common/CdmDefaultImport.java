@@ -38,14 +38,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 	final boolean FACULTATIVE = false; 
 	final int modCount = 1000;
 
-	//Hashmaps for Joins
-	//OLD: private Map<Integer, UUID> referenceMap = new HashMap<Integer, UUID>();
 	IService service = null;
-//	private MapWrapper<TeamOrPersonBase> authorStore= new MapWrapper<TeamOrPersonBase>(service);
-//	private MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(service);
-//	private MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(service);
-//	private MapWrapper<TaxonNameBase> taxonNameStore = new MapWrapper<TaxonNameBase>(service);
-//	private MapWrapper<TaxonBase> taxonStore = new MapWrapper<TaxonBase>(service);
 	
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
@@ -85,8 +78,16 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			return false;
 		}
 		
-		for (ICdmIO<IImportConfigurator> iCdmIo: config.getICdmIo()){
-			result &= iCdmIo.check(config);
+		//do check for each class
+		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+			ICdmIO cdmIo = null;
+			try {
+				cdmIo = ioClass.newInstance();
+				result &= cdmIo.check(config);
+			} catch (Exception e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
 		}
 		
 		//return
@@ -123,8 +124,16 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		ReferenceBase sourceReference = config.getSourceReference();
 		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
 		
-		for (ICdmIO<IImportConfigurator> iCdmIo: config.getICdmIo()){
-			result &= iCdmIo.invoke(config, cdmApp, stores);
+		//do invoke for each class
+		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+			ICdmIO cdmIo = null;
+			try {
+				cdmIo = ioClass.newInstance();
+				result &= cdmIo.invoke(config, cdmApp, stores);
+			} catch (Exception e) {
+				logger.error(e);
+				e.printStackTrace();
+			}
 		}
 		
 		//return

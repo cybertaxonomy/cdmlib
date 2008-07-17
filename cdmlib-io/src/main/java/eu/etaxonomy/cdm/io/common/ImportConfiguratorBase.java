@@ -62,8 +62,7 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
-	
-	protected ICdmIO<IImportConfigurator>[] iCdmIoArray; 
+	protected Class<ICdmIO>[] ioClassList; 
 	
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
 	
@@ -84,10 +83,10 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	
 	public ImportConfiguratorBase(){
 		super();
-		makeIOs();
+		makeIoClassList();
 	}
 	
-	abstract protected void makeIOs();
+	abstract protected void makeIoClassList();
 	
 	/**
 	 * @param source the source to set
@@ -412,13 +411,11 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	public void setSourceSecId(int sourceSecId) {
 		this.sourceSecId = sourceSecId;
 	}
-
-	/**
-	 * @return the iioArray
-	 */
-	public ICdmIO<IImportConfigurator>[] getICdmIo() {
-		return iCdmIoArray;
+	
+	public Class<ICdmIO>[] getIoClassList(){
+		return ioClassList;
 	}
+	
 
 	/**
 	 * @return the featureMap

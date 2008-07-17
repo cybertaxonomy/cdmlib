@@ -25,10 +25,9 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
 
 	private static int modCount = 1000;
-	private static final String ioNameLocal = "TcsReferenceIO";
 	
-	public TcsReferenceIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TcsReferenceIO(){
+		super();
 	}
 	
 	@Override
@@ -325,6 +324,13 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 //			return false;
 //		}
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
 	
 }

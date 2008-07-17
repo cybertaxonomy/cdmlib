@@ -38,10 +38,9 @@ public class TcsTaxonNameIO  extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonNameIO.class);
 
 	private static int modCount = 5000;
-	private static final String ioNameLocal = "TcsTaxonNameIO";
 	
-	public TcsTaxonNameIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TcsTaxonNameIO(){
+		super();
 	}
 
 	@Override
@@ -225,5 +224,10 @@ public class TcsTaxonNameIO  extends CdmIoBase implements ICdmIO {
 		return success;
 
 	}
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoTaxonNames();
+	}
 }

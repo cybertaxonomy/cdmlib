@@ -141,7 +141,7 @@ public interface IImportConfigurator {
 	public abstract NomenclaturalCode getNomenclaturalCode();
 	
 	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
-
-	public ICdmIO<IImportConfigurator>[] getICdmIo();
+	
+	public Class<ICdmIO>[] getIoClassList();
 	
 }

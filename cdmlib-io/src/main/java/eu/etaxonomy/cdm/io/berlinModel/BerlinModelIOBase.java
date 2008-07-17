@@ -17,8 +17,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(BerlinModelIOBase.class);
 	
-	public BerlinModelIOBase(String name, boolean ignore) {
-		super(name, ignore);
+	public BerlinModelIOBase() {
+		super();
 	}
 	
 	

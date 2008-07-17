@@ -35,11 +35,9 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
 
 	private int modCount = 30000;
-
-	private static final String ioNameLocal = "BerlinModelTaxonIO";
 	
-	public BerlinModelTaxonIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelTaxonIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -177,6 +175,13 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 			return false;
 		}
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoTaxa();
 	}
 	
 }

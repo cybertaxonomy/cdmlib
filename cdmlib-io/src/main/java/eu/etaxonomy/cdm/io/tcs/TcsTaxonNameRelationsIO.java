@@ -22,10 +22,9 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonNameRelationsIO.class);
 
 	private static int modCount = 5000;
-	private static final String ioNameLocal = "TcsTaxonNameRelationsIO";
 	
-	public TcsTaxonNameRelationsIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TcsTaxonNameRelationsIO(){
+		super();
 	}
 	
 	@Override
@@ -136,5 +135,12 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 //			return false;
 //		}
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoRelNames();
 	}
 }

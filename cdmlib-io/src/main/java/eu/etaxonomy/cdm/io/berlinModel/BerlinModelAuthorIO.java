@@ -30,10 +30,8 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 
 	private static int modCount = 1000;
 
-	private static final String ioNameLocal = "BerlinModelAuthorIO";
-	
-	public BerlinModelAuthorIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelAuthorIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -117,4 +115,13 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		logger.info("end makeTaxonNames ...");
 		return success;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoAuthors();
+	}
+
+	
 }

@@ -25,22 +25,21 @@ public abstract class CdmIoBase implements ICdmIO {
 	private static Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	protected String ioName = null;
-	protected boolean ignore = false;
 
 	
 	/**
 	 * 
 	 */
-	public CdmIoBase(String name, boolean ignore) {
-		this.ioName = name;
-		this.ignore = ignore;
+	public CdmIoBase() {
+		super();
+		this.ioName = this.getClass().getSimpleName();
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	public boolean check(IImportConfigurator config) {
-		if (ignore){
+		if (isIgnore(config)){
 			logger.warn("No check for " + ioName + " (ignored)");
 			return true;
 		}else{
@@ -56,7 +55,7 @@ public abstract class CdmIoBase implements ICdmIO {
 	 */
 	public boolean invoke(IImportConfigurator config,
 			CdmApplicationController app, Map stores) {
-		if (ignore){
+		if (isIgnore(config)){
 			logger.warn("No invoke for " + ioName + " (ignored)");
 			return true;
 		}else{
@@ -66,5 +65,10 @@ public abstract class CdmIoBase implements ICdmIO {
 	
 	protected abstract boolean doInvoke(IImportConfigurator config,
 			CdmApplicationController app, Map<String, MapWrapper<? extends CdmBase>> stores);
+
+	
+	protected abstract boolean isIgnore(IImportConfigurator config);
+
+
 
 }

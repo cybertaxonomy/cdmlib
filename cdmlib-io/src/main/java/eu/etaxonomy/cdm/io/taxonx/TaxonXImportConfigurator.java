@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TaxonXImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
-	protected void makeIOs(){
-		iCdmIoArray = new ICdmIO []{
-				new TaxonXDescriptionIO(! this.isDoFacts())
+	protected void makeIoClassList(){
+		ioClassList = new Class[]{
+				TaxonXDescriptionIO.class
 //				, new TaxonXDescriptionIO(config.isDoFacts())
 
 		};

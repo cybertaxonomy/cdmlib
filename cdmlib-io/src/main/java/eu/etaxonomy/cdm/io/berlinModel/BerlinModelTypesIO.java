@@ -38,11 +38,9 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
 
 	private static int modCount = 10000;
-
-	private static final String ioNameLocal = "BerlinModelTypesIO";
 	
-	public BerlinModelTypesIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelTypesIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -203,6 +201,13 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		}
 			
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoTypes();
 	}
 
 	

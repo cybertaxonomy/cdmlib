@@ -45,10 +45,8 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 
 	private static int modCount = 10000;
 
-	private static final String ioNameLocal = "TaxonXDescriptionIO";
-	
-	public TaxonXDescriptionIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TaxonXDescriptionIO(){
+		super();
 	}
 	
 	public boolean doCheck(IImportConfigurator config){
@@ -130,6 +128,13 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	private Taxon getTaxon(){
 		logger.warn("not yet implemented");
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoFacts();
 	}
 
 }

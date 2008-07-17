@@ -47,11 +47,8 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 
 	private int modCount = 5000;
 	
-	
-	private static final String ioNameLocal = "BerlinModelNameStatusIO";
-	
-	public BerlinModelNameStatusIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelNameStatusIO(){
+		super();
 	}
 
 	/* (non-Javadoc)
@@ -191,5 +188,13 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoNameStatus();
+	}
+
 	
 }

@@ -39,14 +39,9 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 
 	private static int modCount = 30000;
 
-	private static final String ioNameLocal = "TcsTaxonRelationsIO";
-	
-	public TcsTaxonRelationsIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TcsTaxonRelationsIO(){
+		super();
 	}
-	
-	
-	
 	
 	@Override
 	public boolean doCheck(IImportConfigurator config){
@@ -187,6 +182,13 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		logger.info("end makeRelTaxa ...");
 		return success;
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoRelTaxa();
 	}
 	
 	

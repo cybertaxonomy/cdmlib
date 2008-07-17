@@ -46,10 +46,8 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 
 	private int modCount = 10000;
 	
-	private static final String ioNameLocal = "BerlinModelFactsIO";
-	
-	public BerlinModelFactsIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelFactsIO(){
+		super();
 	}
 
 	/* (non-Javadoc)
@@ -273,6 +271,14 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		}
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoFacts();
+	}
+
 
 	
 }

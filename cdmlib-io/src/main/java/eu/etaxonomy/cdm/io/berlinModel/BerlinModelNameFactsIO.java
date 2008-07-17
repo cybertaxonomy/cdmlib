@@ -42,11 +42,8 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 
 	private int modCount = 500000;
 
-	
-	private static final String ioNameLocal = "BerlinModelNameFactsIO";
-	
-	public BerlinModelNameFactsIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelNameFactsIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -127,12 +124,12 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							Media media = Media.NewInstance();
 							ImageMetaData imageMetaData = new ImageMetaData();
 							String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
-							String strFilePath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
+							String strFolderPath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
 							//tiff
 							String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
-							String fileTif = strFilePath + "tif" + sep + nameFact + "." + suffixTif;;
+							String fileTif = strFolderPath + "tif" + sep + nameFact + "." + suffixTif;;
 							//if (CdmUtils.urlExists(urlTif, true)){
-							if (imageMetaData.readFrom(new File(strFilePath))){
+							if (imageMetaData.readFrom(new File(strFolderPath))){
 								ImageFile tifImage = ImageFile.NewInstance(urlTif, size, imageMetaData);
 								MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
 								tifRepresentation.addRepresentationPart(tifImage);
@@ -144,7 +141,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							while (fileExists){
 								jpgCount++;
 								String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
-								String fileJpeg = strFilePath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
+								String fileJpeg = strFolderPath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
 								if (imageMetaData.readFrom(new File(fileJpeg))){
 								//if (CdmUtils.urlExists(urlJpeg, true)){
 									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
@@ -157,7 +154,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							}
 							//png
 							String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
-							String filePng = strFilePath + "png" + sep + nameFact + "." + suffixPng;
+							String filePng = strFolderPath + "png" + sep + nameFact + "." + suffixPng;
 							if (imageMetaData.readFrom(new File(filePng))){
 							//if (CdmUtils.urlExists(urlPng, true)){
 								ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
@@ -170,7 +167,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 								while (fileExists){
 									pngCount++;
 									urlPng = urlPath + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
-									filePng = strFilePath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
+									filePng = strFolderPath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
 									if (imageMetaData.readFrom(new File(filePng))){
 									//if (CdmUtils.urlExists(urlPng, true)){
 										ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
@@ -230,5 +227,55 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 
 	}
 
+	public static void main(String[] args) {
+		String mimeTypeTif = "image/tiff";
+		String mimeTypeJpeg = "image/jpeg";
+		String mimeTypePng = "image/png";
+		String suffixTif = "tif";
+		String suffixJpg = "jpg";
+		String suffixPng = "png";
+		String sep = File.separator;
+		Media media = Media.NewInstance();
+		ImageMetaData imageMetaData = new ImageMetaData();
+		Integer size = null;
+		String nameFact = "Lactuca_adenophora";
 	
+		String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+		String strFolderPath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
+		//tiff
+		String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
+		String fileTif = strFolderPath + "tif" + sep + nameFact + "." + suffixTif;;
+		//if (CdmUtils.urlExists(urlTif, true)){
+		if (imageMetaData.readFrom(new File(fileTif))){
+			
+		}
+		
+		//jpeg
+		boolean fileExists = true;
+		int jpgCount = 0;
+		
+		while (fileExists){
+			jpgCount++;
+			String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
+			String fileJpeg = strFolderPath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
+			
+			if (imageMetaData.readFrom(new File(fileJpeg))){
+			//if (CdmUtils.urlExists(urlJpeg, true)){
+				ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
+				MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
+				jpgRepresentation.addRepresentationPart(jpgImage);
+				media.addRepresentation(jpgRepresentation);
+			}else{
+				fileExists = false;
+			}
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoNameFacts();
+	}
+
 }

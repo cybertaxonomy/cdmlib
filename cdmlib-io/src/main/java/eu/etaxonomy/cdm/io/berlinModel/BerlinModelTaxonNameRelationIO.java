@@ -42,11 +42,9 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameRelationIO.class);
 
 	private static int modCount = 5000;
-
-	private static final String ioNameLocal = "BerlinModelTaxonNameRelationIO";
 	
-	public BerlinModelTaxonNameRelationIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public BerlinModelTaxonNameRelationIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -195,6 +193,13 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 			return false;
 		}
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoRelNames();
 	}
 	
 }

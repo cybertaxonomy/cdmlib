@@ -47,10 +47,9 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
 
 	private static int modCount = 30000;
-	private static final String ioNameLocal = "TcsTaxonIO";
 	
-	public TcsTaxonIO(boolean ignore){
-		super(ioNameLocal, ignore);
+	public TcsTaxonIO(){
+		super();
 	}
 	
 	
@@ -202,6 +201,13 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 			result.add(distribution);
 		}
 		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoTaxa();
 	}
 	
 }

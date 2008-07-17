@@ -58,10 +58,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 
 	private int modCount = 1000;
 	
-	private static final String ioNameLocal = "BerlinModelReferenceIO";
-	
-	public BerlinModelReferenceIO(IImportConfigurator.DO_REFERENCES ignore){
-		super(ioNameLocal, ignore == IImportConfigurator.DO_REFERENCES.NONE);
+	public BerlinModelReferenceIO(){
+		super();
 	}
 	
 	/* (non-Javadoc)
@@ -605,6 +603,14 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		TimePeriod timePeriod = getDatePublished("1756 - 1783");
 		System.out.println(timePeriod.getYear());
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	}
+
 	
 	
 }
