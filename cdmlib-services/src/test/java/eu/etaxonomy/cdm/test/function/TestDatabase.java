@@ -5,7 +5,6 @@ package eu.etaxonomy.cdm.test.function;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.dialect.H2Dialect;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -13,8 +12,8 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -22,6 +21,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -35,7 +35,8 @@ public class TestDatabase {
 		System.out.println("Start TestDatabase");
 		//testNewDatabaseConnection();
 		//testFacts();
-		testNewDatasourceClass();
+//		testNewDatasourceClass();
+		testHybridRelationships();
 	//	testPaddie();
 		System.out.println("\nEnd TestDatabase");
 	}
@@ -147,6 +148,41 @@ public class TestDatabase {
 			
 			//save
 			appCtr.getTaxonService().saveTaxon(taxon);
+
+			
+			appCtr.close();
+
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
+	
+	
+	public void testHybridRelationships(){
+		try {
+//			String database = "cdm";
+//			String username = "sa";
+
+			String server = "192.168.2.10";
+			String database = "cdm_test_andreasM";
+			String username = "edit";
+			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			
+			Rank genus = Rank.GENUS();
+			BotanicalName parentName = BotanicalName.NewInstance(genus);
+			parentName.setGenusOrUninomial("parent");
+		
+			BotanicalName childName = BotanicalName.NewInstance(genus);
+			childName.setGenusOrUninomial("child");
+			parentName.addHybridChild(childName, HybridRelationshipType.FIRST_PARENT(), null);
+			
+			//save
+			appCtr.getNameService().saveTaxonName(parentName);
 
 			
 			appCtr.close();
