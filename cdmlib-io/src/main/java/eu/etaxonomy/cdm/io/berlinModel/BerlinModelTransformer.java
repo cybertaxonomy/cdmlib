@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -119,6 +120,20 @@ public final class BerlinModelTransformer {
 			case 22: return TypeDesignationStatus.PHOTOTYPE();
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+			}
+		}
+	}
+	
+	//TypeDesignation
+	public static HybridRelationshipType relNameId2HybridRel (int relNameId)  throws UnknownCdmTypeException{
+		switch (relNameId){
+			case 0: return null;
+			case 9: return HybridRelationshipType.FIRST_PARENT();
+			case 10: return HybridRelationshipType.SECOND_PARENT();
+			case 11: return HybridRelationshipType.FEMALE_PARENT();
+			case 12: return HybridRelationshipType.MALE_PARENT();
+			default: {
+				throw new UnknownCdmTypeException("Unknown HybridRelationshipType (id=" + Integer.valueOf(relNameId).toString() + ")");
 			}
 		}
 	}

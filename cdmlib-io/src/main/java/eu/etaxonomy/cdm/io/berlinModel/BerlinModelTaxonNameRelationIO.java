@@ -9,6 +9,10 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_LECTOTYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FIRST_PARENT_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_SECOND_PARENT_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_FEMALE_PARENT_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_MALE_PARENT_OF;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,10 +29,13 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
@@ -136,6 +143,24 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 						String rule = null;  //TODO
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;
 						//TODO reference
+					}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
+						//HybridRelationships
+						if (! (nameTo instanceof BotanicalName) || ! (nameFrom instanceof BotanicalName)){
+							logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type BotanicalName but are not");
+						}
+						try {
+							HybridRelationshipType hybridRelType = BerlinModelTransformer.relNameId2HybridRel(relQualifierFk);
+							String rule = null;  //TODO
+							BotanicalName parent = (BotanicalName)nameFrom;
+							BotanicalName child = (BotanicalName)nameTo;
+							
+							parent.addHybridChild(child, hybridRelType, rule);
+							
+							//TODO reference
+						} catch (UnknownCdmTypeException e) {
+							//TODO
+							logger.warn(e);
+						}
 					}else {
 						//TODO
 						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
