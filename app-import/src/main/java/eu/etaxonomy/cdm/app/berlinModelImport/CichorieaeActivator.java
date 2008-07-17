@@ -16,11 +16,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
@@ -39,7 +40,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final int sourceSecId = 7800000;
 	
@@ -59,7 +60,7 @@ public class CichorieaeActivator {
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
 	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
+	static final boolean doNameFacts = false;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -120,7 +121,7 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setCheck(check);
 		
 		// invoke import
-		BerlinModelImport bmImport = new BerlinModelImport();
+		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
 		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");

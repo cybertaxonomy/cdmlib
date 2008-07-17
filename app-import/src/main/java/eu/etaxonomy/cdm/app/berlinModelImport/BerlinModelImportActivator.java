@@ -14,11 +14,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImport;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
@@ -93,7 +94,7 @@ public class BerlinModelImportActivator {
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		BerlinModelImport bmImport = new BerlinModelImport();
+		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
 		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
