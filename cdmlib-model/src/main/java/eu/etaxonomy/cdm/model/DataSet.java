@@ -315,6 +315,19 @@ public class DataSet {
         return taxonBases;
     }
 
+    public Collection<TaxonBase> getTaxonBases_() {
+    	
+    	Collection<TaxonBase> taxonBases = new HashSet<TaxonBase>();
+    	
+    	for (Taxon taxon: taxa) {
+    		taxonBases.add(taxon);
+    	}
+    	for (Synonym synonym: synonyms) {
+    		taxonBases.add(synonym);
+    	}
+        return taxonBases;
+    }
+
     /**
      * Sets the value of the taxa property.
      * 
