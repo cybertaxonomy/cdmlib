@@ -9,17 +9,24 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.List;
+
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 
 
 public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSource>{
 	
+
+	public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace);
+
 	/**
 	 * Returns the first OriginalSource with according idInSource and idNamespace
 	 * @param idInSource
 	 * @param idNamespace
 	 * @return
 	 */
-	public OriginalSource findOriginalSourceByIdInSource(String idInSource, String idNamespace);
+	public List<OriginalSource> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
+
 	
 }

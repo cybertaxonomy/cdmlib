@@ -13,11 +13,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
@@ -35,20 +37,47 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 	}
 	
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.Class, java.lang.String, java.lang.String)
+	 */
+	public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace) {
+		Session session = getSession();
+//		Criteria crit = session.createCriteria(type);
+//		crit.add(Restrictions.eq("idInSource", idInSource));
+//		if (idNamespace == null){
+//			crit.add(Restrictions.isNull("idNamespace"));
+//		}else{
+//			crit.add(Restrictions.eq("idNamespace", idNamespace));
+//		}
+//		crit.addOrder(Order.desc("created"));
+//		List<OriginalSource> results = crit.list();
+//		
+		Query q = session.createQuery(
+                "Select c from " + clazz.getSimpleName() + " as c " +
+                "inner join c.sources as source " +
+                "where source.idInSource = :idInSource "
+            );
+		q.setString("idInSource", idInSource);
+		List<IdentifiableEntity> results = q.list();
+		
+		return results;
+	}
+	
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.String, java.lang.String)
 	 */
-	public OriginalSource findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
+	public List<OriginalSource> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("idInSource", idInSource));
-		crit.add(Restrictions.eq("idNamespace", idNamespace));
+		if (idNamespace == null){
+			crit.add(Restrictions.isNull("idNamespace"));
+		}else{
+			crit.add(Restrictions.eq("idNamespace", idNamespace));
+		}
 		crit.addOrder(Order.desc("created"));
 		List<OriginalSource> results = crit.list();
-		if (results.isEmpty()){
-			return null;
-		}else{
-			return results.get(0);			
-		}
+		
+		return results;
 	}
 
 }
