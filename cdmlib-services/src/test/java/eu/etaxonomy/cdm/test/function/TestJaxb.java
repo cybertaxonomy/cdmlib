@@ -98,8 +98,6 @@ public class TestJaxb {
     	// such as all synonyms, relationships, and children of all taxa of this level.
     	// Would it be better to implement traversing vertically instead of horizontally?
 
-    	// TaxonServiceImpl.getRootTaxa() returns List<Taxon>. Should be Set<Taxon>?
-    	// Taxon.getTaxonomicChildren() returns Set<Taxon>
     	ArrayList<Taxon> children_ = new ArrayList<Taxon>();
     	Set<Synonym> synonyms_ = new HashSet();
     	Set<TaxonRelationship> taxonRelationships_ = new HashSet();
@@ -308,10 +306,10 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		//testInitDb(serializeFromDb);
+		testInitDb(serializeFromDb);
 		testSerialize(serializeFromDb, marshOutOne);
 		testDeserialize(deserializeToDb, marshOutOne);
-		//testSerialize(deserializeToDb, marshOutTwo);
+		testSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
