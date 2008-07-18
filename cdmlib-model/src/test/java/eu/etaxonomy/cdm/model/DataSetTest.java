@@ -51,10 +51,10 @@ public class DataSetTest {
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
     private List<Taxon> taxa;
-    private List<Synonym> synonyms;
+    private Set<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
-	Set<TaxonRelationship> taxonRelationships;
-	Set<RelationshipBase> relationshipBases;
+	private Set<TaxonRelationship> taxonRelationships;
+	private Set<RelationshipBase> relationshipBases;
 	
 	@Before
 	public void onSetUp() throws Exception {
@@ -79,7 +79,7 @@ public class DataSetTest {
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
-		synonyms = new ArrayList<Synonym>();
+		synonyms = new HashSet<Synonym>();
     	taxonRelationships = new HashSet();
 		
 		StrictReferenceBase citRef, sec;

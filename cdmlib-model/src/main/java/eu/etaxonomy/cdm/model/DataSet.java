@@ -21,13 +21,13 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -131,7 +131,7 @@ public class DataSet {
 	
     @XmlElementWrapper(name = "Synonyms")
     @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<Synonym> synonyms;
+    protected Set<Synonym> synonyms;
 
     @XmlElementWrapper(name = "Relationships")
     @XmlElements({
@@ -144,13 +144,19 @@ public class DataSet {
 
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
-    protected Set<AnnotatableEntity> homotypicalGroups;
+    protected Set<HomotypicalGroup> homotypicalGroups;
 
     public DataSet () {
-    	
-    	this.relationships = new HashSet();
-    	this.homotypicalGroups = new HashSet();
-    	
+
+//    	this.agents = new 
+//    	this.agentData = new 
+//        this.terms   	
+//        this.references    	
+//    	this.taxonomicNames
+//    	this.taxa
+        this.synonyms = new HashSet<Synonym>();
+    	this.relationships = new HashSet<RelationshipBase>();
+    	this.homotypicalGroups = new HashSet<HomotypicalGroup>();
     }
 
     /**
@@ -336,7 +342,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public List<Synonym> getSynonyms() {
+    public Set<Synonym> getSynonyms() {
         return synonyms;
     }
 
@@ -348,7 +354,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public void setSynonyms(List<Synonym> value) {
+    public void setSynonyms(Set<Synonym> value) {
         this.synonyms = value;
     }
     
@@ -412,7 +418,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public Set<AnnotatableEntity> getHomotypicalGroups() {
+    public Set<HomotypicalGroup> getHomotypicalGroups() {
         return homotypicalGroups;
     }
 
@@ -424,7 +430,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public void setHomotypicalGroups(Set<AnnotatableEntity> value) {
+    public void setHomotypicalGroups(Set<HomotypicalGroup> value) {
         this.homotypicalGroups = value;
     }
     
