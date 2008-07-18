@@ -110,15 +110,17 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-		try {
-			cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-		} catch (DataSourceNotFoundException e) {
-			logger.warn("could not connect to destination database");
-			return false;
-		}catch (TermNotFoundException e) {
-			logger.warn("could not find needed term in destination datasource");
-			return false;
-		}
+		cdmApp = config.getCdmAppController();
+//		try {
+			//cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
+			
+//		} catch (DataSourceNotFoundException e) {
+//			logger.warn("could not connect to destination database");
+//			return false;
+//		}catch (TermNotFoundException e) {
+//			logger.warn("could not find needed term in destination datasource");
+//			return false;
+//		}
 		
 		
 		ReferenceBase sourceReference = config.getSourceReference();

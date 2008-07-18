@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -143,5 +144,12 @@ public interface IImportConfigurator {
 	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 	
 	public Class<ICdmIO>[] getIoClassList();
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If a controller was already created before the last created controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController();
 	
 }
