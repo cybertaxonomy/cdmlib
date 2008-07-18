@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * A synonym to an ("accepted/correct") taxon must have the same
+ * {@link TaxonBase#getSec() concept reference} as the taxon itself.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55

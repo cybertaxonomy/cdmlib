@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
+ * (e.g. homotypic, heterotypic, proparte ...)
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
@@ -65,10 +66,22 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 		return getByUuid(uuidPartialSynonymOf);
 	}
 
+	/**
+	 * Returns the synonym relationship type "is heterotypic synonym of". This
+	 * indicates that the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym}
+	 * and the taxon name used as the ("accepted/correct") {@link Taxon taxon} belong
+	 * to the same {@link name.HomotypicalGroup homotypical group}.
+	 */
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHomotypicSynonymOf);
 	}
 
+	/**
+	 * Returns the synonym relationship type "is heterotypic synonym of". This
+	 * indicates that the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym}
+	 * and the taxon name used as the ("accepted/correct") {@link Taxon taxon} do not
+	 * belong to the same {@link name.HomotypicalGroup homotypical group}.
+	 */
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHeterotypicSynonymOf);
 	}
