@@ -72,6 +72,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 @XmlRootElement(name = "DataSet", namespace = "http://etaxonomy.eu/cdm/model/1.0")
 public class DataSet {
 
+    // Some fields are of type List and some are of type Set. 
+	// This is mainly because
+	// the service classes return lists, i.e.
+    // TaxonServiceImpl.getRootTaxa() returns List<Taxon>
+	// and the Taxon methods return sets, i.e.
+    // Taxon.getTaxonomicChildren() returns Set<Taxon>.
+
     @XmlElementWrapper(name = "Agents")
     @XmlElements({
         @XmlElement(name = "Team", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Team.class),
@@ -150,8 +157,8 @@ public class DataSet {
 
 //    	this.agents = new 
 //    	this.agentData = new 
-//        this.terms   	
-//        this.references    	
+//      this.terms   	
+//      this.references    	
 //    	this.taxonomicNames
 //    	this.taxa
         this.synonyms = new HashSet<Synonym>();
