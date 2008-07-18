@@ -22,7 +22,7 @@ public interface ICommonService extends IService<CdmBase>{
 //	public abstract UUID saveCdmBase(CdmBase cdmBase);
 
 	/** find cdmBase by UUID**/
-	public abstract ISourceable getSourcedObjectByIdInSource(String idInSource, String idNamespace);
+	public abstract ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
 	
 }

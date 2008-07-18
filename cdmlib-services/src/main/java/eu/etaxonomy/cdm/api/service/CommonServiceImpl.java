@@ -9,13 +9,17 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
@@ -31,13 +35,16 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
-	public ISourceable getSourcedObjectByIdInSource(String idInSource, String idNamespace) {
+	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
-		OriginalSource originalSource = originalSourceDao.findOriginalSourceByIdInSource(idInSource, idNamespace);
-		if (originalSource!= null){
-			result = originalSource.getSourcedObj();
-		}
-		return result;
+//		List<OriginalSource> originalSource = originalSourceDao.findOriginalSourceByIdInSource(idInSource, idNamespace);
+//		if (! originalSource.isEmpty()){
+//			result = originalSource.get(0).getSourcedObj();
+//		}
+		List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
+		if (! list.isEmpty()){
+			result = list.get(0);
+		}return result;
 	}
 
 	
