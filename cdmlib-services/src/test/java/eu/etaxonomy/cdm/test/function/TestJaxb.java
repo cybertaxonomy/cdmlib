@@ -7,9 +7,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -28,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -46,7 +43,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 public class TestJaxb {
@@ -98,11 +94,13 @@ public class TestJaxb {
     
     public void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
 
-    	// FIXME: Clean the collection types List/Set
-    	
-    	// These collections store data of a particular horizontal level, 
+    	// The following collections store data of a particular horizontal level, 
     	// such as all synonyms, relationships, and children of all taxa of this level.
-    	List<Taxon> children_ = new ArrayList();
+    	// Would it be better to implement traversing vertically instead of horizontally?
+
+    	// TaxonServiceImpl.getRootTaxa() returns List<Taxon>. Should be Set<Taxon>?
+    	// Taxon.getTaxonomicChildren() returns Set<Taxon>
+    	ArrayList<Taxon> children_ = new ArrayList<Taxon>();
     	Set<Synonym> synonyms_ = new HashSet();
     	Set<TaxonRelationship> taxonRelationships_ = new HashSet();
     	Set<SynonymRelationship> synonymRelationships_ = new HashSet();
@@ -208,9 +206,6 @@ public class TestJaxb {
     	TransactionStatus txStatus = appCtr.startTransaction();
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
-    	// TODO: Get rid of synonym List, need Set only.
-    	// Change methods in DataSet.
-    	List<Synonym> dataSetSynonyms = new ArrayList();
 
     	// get data from DB
 
@@ -229,15 +224,12 @@ public class TestJaxb {
     		// CdmFetch options not yet implemented
     		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
 
-
     	} catch (Exception e) {
     		logger.info("error while fetching root taxa");
     	}
 
     	try {
     		dataSet.setTaxa(taxa);
-    		// set empty synonym collection
-    		dataSet.setSynonyms(dataSetSynonyms);
     		
     	} catch (Exception e) {
     		logger.info("error setting root taxa");
@@ -316,10 +308,10 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		testInitDb(serializeFromDb);
+		//testInitDb(serializeFromDb);
 		testSerialize(serializeFromDb, marshOutOne);
 		testDeserialize(deserializeToDb, marshOutOne);
-		testSerialize(deserializeToDb, marshOutTwo);
+		//testSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
@@ -345,7 +337,7 @@ public class TestJaxb {
 	    List<ReferenceBase> references;
 	    List<TaxonNameBase> taxonomicNames;
 	    List<Taxon> taxa;
-	    List<Synonym> synonyms;
+	    Set<Synonym> synonyms;
 	    List<AnnotatableEntity> homotypicalGroups;
 
 	    agents = new ArrayList<Agent>();
@@ -354,7 +346,7 @@ public class TestJaxb {
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
-		synonyms = new ArrayList<Synonym>();
+		synonyms = new HashSet<Synonym>();
 		
 		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
