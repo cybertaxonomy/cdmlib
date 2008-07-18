@@ -96,7 +96,6 @@ public class TestJaxb {
 
     	// The following collections store data of a particular horizontal level, 
     	// such as all synonyms, relationships, and children of all taxa of this level.
-    	// Would it be better to implement traversing vertically instead of horizontally?
 
     	ArrayList<Taxon> children_ = new ArrayList<Taxon>();
     	Set<Synonym> synonyms_ = new HashSet();
@@ -208,12 +207,7 @@ public class TestJaxb {
     	// get data from DB
 
     	try {
-
     		logger.info("Load data from DB ...");
-
-    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
-    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
-    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
 
     		// get root taxa 
 
@@ -227,10 +221,13 @@ public class TestJaxb {
     	}
 
     	try {
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
+    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
     		dataSet.setTaxa(taxa);
     		
     	} catch (Exception e) {
-    		logger.info("error setting root taxa");
+    		logger.info("error setting root data");
     	}
 
     	traverse(taxa, dataSet);
@@ -282,20 +279,20 @@ public class TestJaxb {
 		// save data in DB
 		
 		Collection<TaxonBase> taxonBases;
-		List<Agent> agents;
-		
-		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		// Currently it's sufficient to save the taxa only since all other data
+		// related to the taxa, such as synonyms, are automatically saved as well.
 		
 //		if ((agents = dataSet.getAgents()) != null) {
 //		appCtr.getAgentService().saveAgentAll(agents);
 //		}
 		
-		// Currently it's sufficient to save the taxa only since all other data
-		// related to the taxa, such as synonyms, are automatically saved as well.
+		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
-		if ((taxonBases = dataSet.getTaxonBases()) != null) {
+		// Need to get the taxa and the synonyms here.
+		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
 		appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 
