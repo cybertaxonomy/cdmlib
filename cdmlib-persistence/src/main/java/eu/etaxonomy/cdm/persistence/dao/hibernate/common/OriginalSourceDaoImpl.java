@@ -41,16 +41,6 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 	 */
 	public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		Session session = getSession();
-//		Criteria crit = session.createCriteria(type);
-//		crit.add(Restrictions.eq("idInSource", idInSource));
-//		if (idNamespace == null){
-//			crit.add(Restrictions.isNull("idNamespace"));
-//		}else{
-//			crit.add(Restrictions.eq("idNamespace", idNamespace));
-//		}
-//		crit.addOrder(Order.desc("created"));
-//		List<OriginalSource> results = crit.list();
-//		
 		Query q = session.createQuery(
                 "Select c from " + clazz.getSimpleName() + " as c " +
                 "inner join c.sources as source " +
