@@ -344,8 +344,8 @@ public class TestJaxb {
 		synonyms = new HashSet<Synonym>();
 		
 		StrictReferenceBase citRef, sec;
-		BotanicalName name1, name2, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
-		Taxon child1, child2, rootT, freeT;
+		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
+		Taxon child1, child2, child21, rootT, freeT;
 		Synonym syn11, syn12, syn2, synFree;
 		Rank rankSpecies, rankSubspecies, rankGenus;
 
@@ -394,6 +394,10 @@ public class TestJaxb {
 		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
 		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
 		
+		name21 = BotanicalName.NewInstance(rankSubspecies,"Calendula",null,"arvensis","something",linne,null,"p.1", null);
+		//name211 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
+		//name212 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
+		
 		name2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzae",null,linne,null,"p.2", null);
 		synName2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"echinata",null,linne,null,"p.2", null);
 		
@@ -405,6 +409,7 @@ public class TestJaxb {
 		taxonomicNames.add(synName11);
 		taxonomicNames.add(synName12);
 		taxonomicNames.add(name2);
+		taxonomicNames.add(name21);
 		taxonomicNames.add(synName2);
 		taxonomicNames.add(nameFree);
 		taxonomicNames.add(synNameFree);
@@ -427,6 +432,7 @@ public class TestJaxb {
 		freeT = Taxon.NewInstance(nameFree, sec);
 		child1 = Taxon.NewInstance(name1, sec);
 		child2 = Taxon.NewInstance(name2, sec);
+		child21 = Taxon.NewInstance(name21, sec);
 		
 		// synonyms
 		
@@ -449,11 +455,13 @@ public class TestJaxb {
 		
 		rootT.addTaxonomicChild(child1, sec, "p.998");
 		rootT.addTaxonomicChild(child2, sec, "p.987");
+		child2.addTaxonomicChild(child21, sec, "p.1002");
 				
 		taxa.add(rootT);
 		taxa.add(freeT);
 		taxa.add(child1);
 		taxa.add(child2);
+		taxa.add(child21);
 		
 		DataSet dataSet = new DataSet();
 		
