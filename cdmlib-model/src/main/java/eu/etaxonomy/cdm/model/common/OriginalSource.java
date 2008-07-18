@@ -10,10 +10,13 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import org.hibernate.annotations.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
 
 /**
  * Other names/labels/titles (abreviated or not) for the same object (person,
@@ -69,14 +72,6 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 		this.idInSource = idInSource;
 	}
 
-	@Transient		
-	public IdentifiableEntity getSourcedObj() {
-		return sourcedObj;
-	}
-	public void setSourcedObj(IdentifiableEntity sourcedObj) {
-		this.sourcedObj = sourcedObj;
-	}
-
 
 	/**
 	 * @return the idNamespace
@@ -91,6 +86,18 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	public void setIdNamespace(String idNamespace) {
 		this.idNamespace = idNamespace;
 	}
+
+
+//	@ManyToOne
+//	@Cascade(CascadeType.SAVE_UPDATE)
+	@Transient //beacause IdentifiableEntity is MappedSuperclass
+	public IdentifiableEntity getSourcedObj() {
+		return sourcedObj;
+	}
+	public void setSourcedObj(IdentifiableEntity sourcedObj) {
+		this.sourcedObj = sourcedObj;
+	}
+
 
 	
 //****************** CLONE ************************************************/
