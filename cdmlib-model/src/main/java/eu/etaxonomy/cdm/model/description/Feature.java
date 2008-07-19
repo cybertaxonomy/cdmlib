@@ -187,6 +187,7 @@ public class Feature extends DefinedTermBase {
 	private static final UUID uuidEtymology = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
 	private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
 	private static final UUID uuidProtolog = UUID.fromString("7f1fd111-fc52-49f0-9e75-d0097f576b2d");
+	private static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -248,6 +249,9 @@ public class Feature extends DefinedTermBase {
 	public static final Feature PROTOLOG(){
 		return getByUuid(uuidProtolog);
 	}
+	public static final Feature COMMON_NAME(){
+		return getByUuid(uuidCommonName);
+	}
 
 	
 	/**
@@ -259,10 +263,5 @@ public class Feature extends DefinedTermBase {
 		return null;
 	}
 
-	public static final Feature COMMON_NAME(){
-		//TODO
-		logger.warn("COMMON_NAME not yet implemented");
-		return null;
-	}
 
 }
