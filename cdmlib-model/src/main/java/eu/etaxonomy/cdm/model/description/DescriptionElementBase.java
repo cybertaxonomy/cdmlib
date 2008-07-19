@@ -46,6 +46,9 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 	
 	protected DescriptionElementBase(Feature feature){
+		if (feature == null){
+			feature = Feature.UNKNOWN();
+		}
 		this.feature = feature; 
 	}
 	
