@@ -43,7 +43,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	 * Constructor
 	 */
 	protected IndividualsAssociation(){
-		super();
+		super(null);
 	}
 	
 

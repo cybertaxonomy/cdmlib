@@ -40,7 +40,7 @@ public class CategoricalData extends DescriptionElementBase {
 	}
 	
 	protected CategoricalData() {
-		super();
+		super(null);
 	}
 	
 	@ManyToMany

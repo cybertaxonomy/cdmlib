@@ -39,7 +39,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * Constructor
 	 */
 	protected QuantitativeData(){
-		super();
+		super(null);
 	}
 	
 	@OneToMany

@@ -31,7 +31,8 @@ public class CommonTaxonName extends DescriptionElementBase {
 	private Language language;
 
 	/**
-	 * Factory method
+	 * Factory method. Sets the feature (type) of this description element to COMMON_NAME
+	 * and sets the name and language
 	 * @param name
 	 * @param language
 	 * @return
@@ -44,6 +45,7 @@ public class CommonTaxonName extends DescriptionElementBase {
 	}
 	
 	protected CommonTaxonName(){
+		super(Feature.COMMON_NAME());
 	}
 	
 	

@@ -42,8 +42,15 @@ import javax.persistence.*;
 public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
 	
+	protected DescriptionElementBase(){
+	}
+	
+	protected DescriptionElementBase(Feature feature){
+		this.feature = feature; 
+	}
+	
 	//type, category of information. In structured descriptions characters
-	private Feature type;
+	private Feature feature;
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	private MultilanguageSet modifyingText;
 	private Set<Media> media = new HashSet<Media>();
@@ -86,10 +93,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Feature getFeature(){
-		return this.type;
+		return this.feature;
 	}
 	public void setFeature(Feature feature){
-		this.type = feature;
+		this.feature = feature;
 	}
 
 	

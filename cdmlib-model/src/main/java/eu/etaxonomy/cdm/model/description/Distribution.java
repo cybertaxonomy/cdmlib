@@ -52,8 +52,7 @@ public class Distribution extends DescriptionElementBase {
 	}
 	
 	protected Distribution(){
-		super();
-		this.setFeature(Feature.DISTRIBUTION());
+		super(Feature.DISTRIBUTION());
 	}
 	
 	

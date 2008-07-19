@@ -39,7 +39,11 @@ public class TextData extends DescriptionElementBase {
 	public static TextData NewInstance(){
 		return new TextData();
 	}
-
+	
+	public static TextData NewInstance(Feature feature){
+		return new TextData(feature);
+	}
+	
 	public static TextData NewInstance(String text, Language language, TextFormat format){
 		TextData result =  new TextData();
 		result.putText(text, language);
@@ -51,7 +55,11 @@ public class TextData extends DescriptionElementBase {
 	 * Constructor
 	 */
 	public TextData(){
-		super();
+		this(null);
+	}
+	
+	public TextData(Feature feature){
+		super(feature);
 		initTextSet();
 	}
 

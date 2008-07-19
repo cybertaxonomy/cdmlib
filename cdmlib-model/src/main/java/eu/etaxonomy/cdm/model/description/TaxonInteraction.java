@@ -10,16 +10,15 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-import org.apache.log4j.Logger;
-
-import java.util.*;
-import javax.persistence.*;
 
 /**
  * FIXME
@@ -42,7 +41,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 	}
 	
 	public TaxonInteraction() {
-		super();
+		super(null);
 	}
 	
 	
