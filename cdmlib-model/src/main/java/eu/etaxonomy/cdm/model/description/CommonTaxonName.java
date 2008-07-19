@@ -49,6 +49,19 @@ public class CommonTaxonName extends DescriptionElementBase {
 	}
 	
 	
+	
+	
+	/** Deprecated because feature should always be <code>COMMON_NAME</code> for class CommonTaxonName
+	*/
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
+	 */
+	@Override
+	@Deprecated 
+	public void setFeature(Feature feature) {
+		super.setFeature(feature);
+	}
+
 	@ManyToOne
 	public Language getLanguage(){
 		return this.language;

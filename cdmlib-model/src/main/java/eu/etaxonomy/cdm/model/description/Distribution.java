@@ -56,6 +56,17 @@ public class Distribution extends DescriptionElementBase {
 	}
 	
 	
+	/** Deprecated because feature should always be <code>DISTRIBUTION</code> for class Distribution
+	*/
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
+	 */
+	@Override
+	@Deprecated
+	public void setFeature(Feature feature) {
+		super.setFeature(feature);
+	}
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedArea getArea(){
