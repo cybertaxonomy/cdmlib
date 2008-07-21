@@ -45,9 +45,9 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
  * the opinion of the {@link reference.ReferenceBase reference} can build a taxonomic tree).
- * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.
- * Splitting taxa in "accepted/correct" and "synonyms" makes it easier to handle
- * particular relationship between ("accepted/correct") taxa on the one hand
+ * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.<BR>
+ * Splitting taxa in "accepted/correct" and {@link Synonym "synonyms"} makes it easier to handle
+ * particular relationships between ("accepted/correct") taxa on the one hand
  * and between ("synonym") taxa and ("accepted/correct") taxa on the other.
  * 
  * @author m.doering
@@ -234,7 +234,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
-	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon. If the
+	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon. If
 	 * the target of the synonym relationship does not match with <i>this</i> taxon
 	 * no addition will be carried out.
 	 * 
@@ -1110,7 +1110,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/** 
-	 * Removes the one element(s) from the set of {@link SynonymRelationship synonym relationships}
+	 * Removes the element(s) from the set of {@link SynonymRelationship synonym relationships}
 	 * assigned to <i>this</i> ("accepted/correct") taxon in which the given synonym is involved.
 	 * Due to bidirectionality the same synonym relationships will also be
 	 * removed from the set of synonym relationships assigned to the
