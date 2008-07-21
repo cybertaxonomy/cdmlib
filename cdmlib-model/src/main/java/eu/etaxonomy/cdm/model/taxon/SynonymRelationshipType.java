@@ -67,7 +67,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 
 	/**
-	 * Returns the synonym relationship type "is heterotypic synonym of". This
+	 * Returns the synonym relationship type "is homotypic synonym of". This
 	 * indicates that the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym}
 	 * and the taxon name used as the ("accepted/correct") {@link Taxon taxon} belong
 	 * to the same {@link name.HomotypicalGroup homotypical group}.

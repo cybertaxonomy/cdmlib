@@ -43,8 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa can
- * build a taxonomic tree according to the opinion of the {@link reference.ReferenceBase reference}.
+ * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
+ * the opinion of the {@link reference.ReferenceBase reference} can build a taxonomic tree).
  * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.
  * Splitting taxa in "accepted/correct" and "synonyms" makes it easier to handle
  * particular relationship between ("accepted/correct") taxa on the one hand
@@ -214,7 +214,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	/** 
 	 * Returns the set of all {@link SynonymRelationship synonym relationships}
 	 * in which <i>this</i> ("accepted/correct") taxon is involved. <i>This</i> taxon can only
-	 * be the target of these synonym relationships.
+	 * be the target of these synonym relationships. 
 	 *  
 	 * @see    #addSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
@@ -765,6 +765,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * Returns the set of all {@link Synonym synonyms} of <i>this</i> ("accepted/correct") taxon.
 	 * Each synonym is the source and <i>this</i> taxon is the target of a {@link SynonymRelationship synonym relationship}
 	 * belonging to the {@link #getSynonymRelations() set of synonym relationships} assigned to <i>this</i> taxon.
+	 * For a particular synonym and for a particular ("accepted/correct") taxon
+	 * there can be several synonym relationships (if two or more
+	 * {@link SynonymRelationshipType synonym relationship types} - for instance
+	 * "pro parte" and "is homotypic synonym of" - must be combined). 
 	 *  
 	 * @see    #getSynonymsSortedByType()
 	 * @see    #getSynonymNames()
@@ -1105,9 +1109,21 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return synRel;
 	}
 	
-	/**
-	 * Deletes all synonym relationships between <this>taxon and the given synonym
-	 * @param synonym
+	/** 
+	 * Removes the one element(s) from the set of {@link SynonymRelationship synonym relationships}
+	 * assigned to <i>this</i> ("accepted/correct") taxon in which the given synonym is involved.
+	 * Due to bidirectionality the same synonym relationships will also be
+	 * removed from the set of synonym relationships assigned to the
+	 * {@link Synonym#getSynonymRelations() synonym} involved in the relationship. Furthermore the content of
+	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon attribute} and of the
+	 * {@link SynonymRelationship#getSynonym() synonym attribute} within the synonym relationships
+	 * themselves will be set to "null".
+	 *
+	 * @param  synonym  the synonym involved in the synonym relationship which should be deleted
+	 * @see     		#getSynonymRelations()
+	 * @see     		#addSynonym(Synonym, SynonymRelationshipType)
+	 * @see     		#addSynonym(Synonym, SynonymRelationshipType, ReferenceBase, String)
+	 * @see 			#removeSynonymRelation(SynonymRelationship)
 	 */
 	public void removeSynonym(Synonym synonym){
 		Set<SynonymRelationship> synonymRelationships = new HashSet<SynonymRelationship>();
@@ -1121,7 +1137,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	
 	
-	/* (non-Javadoc)
+	/** 
+	 * Returns an {@link java.lang.Iterable#iterator() iterator} over the set of taxa which
+	 * are {@link #getTaxonomicChildren() taxonomic children} of <i>this</i> taxon.
+	 * 
+	 * @see #getTaxonomicChildren()
 	 * @see java.lang.Iterable#iterator()
 	 */
 	public Iterator<Taxon> iterator() {
@@ -1145,6 +1165,20 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		   public void remove() { throw new UnsupportedOperationException(); }
 	}
 	
+	/**
+	 * Retrieves the ordered list (depending on the date of publication) of
+	 * homotypic {@link Synonym synonyms} (according to the same {@link reference.ReferenceBase reference}
+	 * as for <i>this</i> taxon) under the condition that the {@link name.TaxonNameBase taxon names}
+	 * of these synonyms and the taxon name of <i>this</i> taxon belong to the
+	 * same {@link name.HomotypicalGroup homotypical group}.
+	 * 
+	 * @return		the ordered list of homotypic synonyms
+	 * @see			#getHomotypicSynonymsByHomotypicRelationship()
+	 * @see			#getSynonyms()
+	 * @see			#getHomotypicSynonymyGroups()
+	 * @see			name.HomotypicalGroup
+	 * @see			name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
+	 */
 	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
 		if (this.getHomotypicGroup() == null){
@@ -1154,6 +1188,19 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		}
 	}
 	
+	/**
+	 * Retrieves the ordered list (depending on the date of publication) of
+	 * homotypic {@link Synonym synonyms} (according to the same {@link reference.ReferenceBase reference}
+	 * as for <i>this</i> taxon) under the condition that these synonyms and
+	 * <i>this</i> taxon are involved in {@link SynonymRelationship synonym relationships} with an
+	 * "is homotypic synonym of" {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.
+	 * 
+	 * @return		the ordered list of homotypic synonyms
+	 * @see			#getHomotypicSynonymsByHomotypicGroup()
+	 * @see			#getSynonyms()
+	 * @see			#getHomotypicSynonymyGroups()
+	 * @see			SynonymRelationshipType
+	 */
 	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
 		Set<SynonymRelationship> synonymRelations = this.getSynonymRelations(); 
@@ -1167,9 +1214,17 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * Returns the List of all homotypic groups synonyms of this taxon belongs too.
-	 * This includes the homotypic group of <i>this</i> taxon.
-	 * @return
+	 * Returns the ordered list of all {@link name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
+	 * <i>this</i> taxon belongs to. {@link name.TaxonNameBase Taxon names} of homotypic synonyms
+	 * belong to the same homotypical group as the taxon name of <i>this</i>
+	 * taxon. Taxon names of heterotypic synonyms belong to at least one other
+	 * homotypical group. <BR>
+	 * The list returned is ordered according to the date of publication of the
+	 * first published name within each homotypical group.
+	 * 
+	 * @see			#getHeterotypicSynonymyGroups()
+	 * @see			#getSynonyms()
+	 * @see			name.HomotypicalGroup
 	 */
 	@Transient
 	public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
@@ -1188,6 +1243,23 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * Returns the List of all homotypic groups heterotypic synonyms of this taxon belongs too.
 	 * This does not include the homotypic group of <i>this</i> taxon.
 	 * @return
+	 */
+	/**
+	 * Returns the ordered list of all {@link name.HomotypicalGroup homotypical groups} heterotypic
+	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
+	 * {@link name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least
+	 * one homotypical group which cannot be the homotypical group to which the
+	 * taxon name of <i>this</i> taxon belongs. This method returns the same
+	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
+	 * but the homotypical group to which the taxon name of <i>this</i> taxon
+	 * belongs.<BR>
+	 * The list returned is ordered according to the date of publication of the
+	 * first published name within each homotypical group.
+	 * 
+	 * @see			#getHeterotypicSynonymyGroups()
+	 * @see			#getSynonyms()
+	 * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+	 * @see			name.HomotypicalGroup
 	 */
 	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){

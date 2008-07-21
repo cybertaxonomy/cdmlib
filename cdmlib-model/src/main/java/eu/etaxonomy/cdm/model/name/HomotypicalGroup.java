@@ -221,17 +221,18 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	
 	/**
-	 * Retrieves the ordered list of {@link taxon.Synonym synonyms} (according to a given reference)
-	 * the {@link TaxonNameBase taxon names} of which belong to this homotypical group.
+	 * Retrieves the ordered list (depending on the date of publication) of
+	 * {@link taxon.Synonym synonyms} (according to a given reference)
+	 * the {@link TaxonNameBase taxon names} of which belong to <i>this>/i> homotypical group.
 	 * If other names are part of this group that are not considered synonyms
 	 * according to the respective reference, then they will not be included in
 	 * the result set.
 	 * 
 	 * @param  sec	the reference whose treatment is to be considered
 	 * @return		the ordered list of synonyms
-	 * @see			taxon.Synonym
 	 * @see			TaxonNameBase#getSynonyms()
 	 * @see			TaxonNameBase#getTaxa()
+	 * @see			taxon.Synonym
 	 */
 	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
