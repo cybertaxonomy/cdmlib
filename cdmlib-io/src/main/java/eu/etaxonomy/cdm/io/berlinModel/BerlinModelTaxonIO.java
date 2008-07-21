@@ -46,11 +46,53 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	@Override
 	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
-		logger.warn("Checking for Taxa not yet implemented");
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		logger.warn("Checking for TaxonRelations not yet fully implemented");
+		result &= checkTaxonStatus(bmiConfig);
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 		
 		return result;
+	}
+	
+	private boolean checkTaxonStatus(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strSQL = " SELECT RelPTaxon.RelQualifierFk, RelPTaxon.relPTaxonId, PTaxon.PTNameFk, PTaxon.PTRefFk, PTaxon_1.PTNameFk AS Expr1, PTaxon.RIdentifier, PTaxon_1.RIdentifier AS Expr3, Name.FullNameCache "  +
+				" FROM RelPTaxon " + 
+					" INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " + 
+					" INNER JOIN PTaxon AS PTaxon_1 ON RelPTaxon.PTNameFk2 = PTaxon_1.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon_1.PTRefFk  " + 
+					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
+				" WHERE (dbo.PTaxon.StatusFk = 1) AND ((RelPTaxon.RelQualifierFk = 7) OR (RelPTaxon.RelQualifierFk = 6) OR (RelPTaxon.RelQualifierFk = 2)) ";
+			ResultSet rs = source.getResultSet(strSQL);
+			boolean firstRow = true;
+			int i = 0;
+			while (rs.next()){
+				i++;
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are taxa that have a 'is synonym of' - relationship but having taxon status 'accepted'!");
+					System.out.println("========================================================");
+				}
+				int rIdentifier = rs.getInt("RIdentifier");
+				int nameFk = rs.getInt("PTNameFk");
+				int refFk = rs.getInt("PTRefFk");
+				int relPTaxonId = rs.getInt("relPTaxonId");
+				String taxonName = rs.getString("FullNameCache");
+				
+				System.out.println("RIdentifier:" + rIdentifier + "\n  name: " + nameFk + 
+						"\n  taxonName: " + taxonName + "\n  refId: " + refFk + "\n  RelPTaxonId: " + relPTaxonId );
+				result = firstRow = false;
+			}
+			if (i > 0){
+				System.out.println(" ");
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -110,57 +152,58 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 					}
 				}
 				
-				if (taxonName == null ){
-					logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
-					continue;
-				}else if (reference == null ){
-					logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
-					continue;
-				}else{
-					TaxonBase taxonBase;
-					Synonym synonym;
-					Taxon taxon;
-					try {
-						logger.debug(statusFk);
-						if (statusFk == T_STATUS_ACCEPTED){
-							taxon = Taxon.NewInstance(taxonName, reference);
-							taxonBase = taxon;
-						}else if (statusFk == T_STATUS_SYNONYM){
-							synonym = Synonym.NewInstance(taxonName, reference);
-							taxonBase = synonym;
-						}else{
-							logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
-							continue;
-						}
-						
-						//TODO
+				if(! config.isIgnoreNull()){
+					if (taxonName == null ){
+						logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
+						continue; //next taxon
+					}else if (reference == null ){
+						logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
+						continue; //next taxon
+					}
+				}
+				TaxonBase taxonBase;
+				Synonym synonym;
+				Taxon taxon;
+				try {
+					logger.debug(statusFk);
+					if (statusFk == T_STATUS_ACCEPTED){
+						taxon = Taxon.NewInstance(taxonName, reference);
+						taxonBase = taxon;
+					}else if (statusFk == T_STATUS_SYNONYM){
+						synonym = Synonym.NewInstance(taxonName, reference);
+						taxonBase = synonym;
+					}else{
+						logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
+						continue;
+					}
+					
+					//TODO
 //						dbAttrName = "Detail";
 //						cdmAttrName = "Micro";
 //						ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
-						
-						if (doubtful.equals("a")){
-							taxonBase.setDoubtful(false);
-						}else if(doubtful.equals("d")){
-							taxonBase.setDoubtful(true);
-						}else if(doubtful.equals("i")){
-							//TODO
-							logger.warn("Doubtful = i (inactivated) not yet implemented. Doubtful set to false");
-						}
-						
-						//nameId
-						ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId);
-
-						
+					
+					if (doubtful.equals("a")){
+						taxonBase.setDoubtful(false);
+					}else if(doubtful.equals("d")){
+						taxonBase.setDoubtful(true);
+					}else if(doubtful.equals("i")){
 						//TODO
-						//
-						//Created
-						//Note
-						//ALL
-						
-						taxonMap.put(taxonId, taxonBase);
-					} catch (Exception e) {
-						logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
+						logger.warn("Doubtful = i (inactivated) not yet implemented. Doubtful set to false");
 					}
+					
+					//nameId
+					ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId);
+
+					
+					//TODO
+					//
+					//Created
+					//Note
+					//ALL
+					
+					taxonMap.put(taxonId, taxonBase);
+				} catch (Exception e) {
+					logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
 				}
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);

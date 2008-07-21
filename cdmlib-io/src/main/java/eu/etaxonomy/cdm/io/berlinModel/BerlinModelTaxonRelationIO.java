@@ -52,40 +52,51 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		logger.warn("Checking for TaxonRelations not yet fully implemented");
-		result &= checkTaxonStatus(bmiConfig);
+		result &= checkInActivatedStatus(bmiConfig);
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		
 		return result;
 	}
 	
-	private boolean checkTaxonStatus(BerlinModelImportConfigurator bmiConfig){
+	private boolean checkInActivatedStatus(BerlinModelImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
-			String strQueryPartOfJournal = " SELECT RelPTaxon.RelQualifierFk, RelPTaxon.relPTaxonId, PTaxon.PTNameFk, PTaxon.PTRefFk, PTaxon_1.PTNameFk AS Expr1, PTaxon.RIdentifier, PTaxon_1.RIdentifier AS Expr3, Name.FullNameCache "  +
-				" FROM RelPTaxon " + 
-					" INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " + 
-					" INNER JOIN PTaxon AS PTaxon_1 ON RelPTaxon.PTNameFk2 = PTaxon_1.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon_1.PTRefFk  " + 
-					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
-				" WHERE (dbo.PTaxon.StatusFk = 1) AND ((RelPTaxon.RelQualifierFk = 7) OR (RelPTaxon.RelQualifierFk = 6) OR (RelPTaxon.RelQualifierFk = 2)) ";
-			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			String strSQL = 
+				" SELECT RelPTaxon.RelPTaxonId, RelPTaxon.RelQualifierFk, FromName.FullNameCache AS FromName, RelPTaxon.PTNameFk1 AS FromNameID, "  +
+		    			" Status.Status AS FromStatus, ToName.FullNameCache AS ToName, RelPTaxon.PTNameFk2 AS ToNameId, ToStatus.Status AS ToStatus " + 
+    			" FROM PTaxon AS FromTaxon " + 
+    				" INNER JOIN RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 " + 
+    				" INNER JOIN PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk " + 
+    				" INNER JOIN Name AS ToName ON ToTaxon.PTNameFk = ToName.NameId " + 
+    				" INNER JOIN Name AS FromName ON FromTaxon.PTNameFk = FromName.NameId " + 
+    				" INNER JOIN Status ON FromTaxon.StatusFk = Status.StatusId AND FromTaxon.StatusFk = Status.StatusId " + 
+    				" INNER JOIN Status AS ToStatus ON ToTaxon.StatusFk = ToStatus.StatusId AND ToTaxon.StatusFk = ToStatus.StatusId " +
+				" WHERE (RelPTaxon.RelQualifierFk = - 99)";
+			
+			ResultSet rs = source.getResultSet(strSQL);
 			boolean firstRow = true;
 			int i = 0;
 			while (rs.next()){
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are taxa that have a 'is synonym of' - relationship but having taxon status 'accepted'!");
+					logger.warn("There are TaxonRelationships with status 'inactivated'(-99)!");
 					System.out.println("========================================================");
 				}
-				int rIdentifier = rs.getInt("RIdentifier");
-				int nameFk = rs.getInt("PTNameFk");
-				int refFk = rs.getInt("PTRefFk");
-				int relPTaxonId = rs.getInt("relPTaxonId");
-				String taxonName = rs.getString("FullNameCache");
 				
-				System.out.println("RIdentifier:" + rIdentifier + "\n  name: " + nameFk + 
-						"\n  taxonName: " + taxonName + "\n  refId: " + refFk + "\n  RelPTaxonId: " + relPTaxonId );
+				int relPTaxonId = rs.getInt("RelPTaxonId");
+				String fromName = rs.getString("FromName");
+				int fromNameID = rs.getInt("FromNameID");
+				String fromStatus = rs.getString("FromStatus");
+				
+				String toName = rs.getString("ToName");
+				int toNameId = rs.getInt("ToNameId");
+				String toStatus = rs.getString("ToStatus");
+				
+				System.out.println("RelPTaxonId:" + relPTaxonId + 
+						"\n  FromName: " + fromName + "\n  FromNameID: " + fromNameID + "\n  FromStatus: " + fromStatus +
+						"\n  ToName: " + toName + "\n  ToNameId: " + toNameId + "\n  ToStatus: " + toStatus);
 				result = firstRow = false;
 			}
 			if (i > 0){
@@ -98,6 +109,9 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 			return false;
 		}
 	}
+	
+
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)

@@ -60,6 +60,9 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	//occurrence
 	private boolean doOccurrence = true;
 	
+	//nullValues
+	private boolean ignoreNull = false;
+	
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
 	protected Class<ICdmIO>[] ioClassList; 
@@ -284,7 +287,23 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
 	}
+	
+	/**
+	 * If true, no errors occurs if objects are not found that should exist. This may
+	 * be needed e.g. when only subsets of the data are imported.
+	 * Default value is <cod>false</code>.
+	 * @return the ignoreNull
+	 */
+	public boolean isIgnoreNull() {
+		return ignoreNull;
+	}
 
+	/**
+	 * @param ignoreNull the ignoreNull to set
+	 */
+	public void setIgnoreNull(boolean ignoreNull) {
+		this.ignoreNull = ignoreNull;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getDestination()

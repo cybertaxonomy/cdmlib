@@ -25,6 +25,9 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -106,84 +109,14 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				if (taxonNameBase != null){
 					//PROTOLOGUE
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
-						ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
+						//ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 						//ref = Book.NewInstance();
-						
-						if (ref != null){
-						
-							String mimeTypeTif = "image/tiff";
-							String mimeTypeJpeg = "image/jpeg";
-							String mimeTypePng = "image/png";
-							String suffixTif = "tif";
-							String suffixJpg = "jpg";
-							String suffixPng = "png";
-							String sep = File.separator;
-							Integer size = null;
-							
-							
-							Media media = Media.NewInstance();
-							ImageMetaData imageMetaData = new ImageMetaData();
-							String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
-							String strFolderPath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
-							//tiff
-							String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
-							String fileTif = strFolderPath + "tif" + sep + nameFact + "." + suffixTif;;
-							//if (CdmUtils.urlExists(urlTif, true)){
-							if (imageMetaData.readFrom(new File(strFolderPath))){
-								ImageFile tifImage = ImageFile.NewInstance(urlTif, size, imageMetaData);
-								MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
-								tifRepresentation.addRepresentationPart(tifImage);
-								media.addRepresentation(tifRepresentation);
-							}
-							//jpeg
-							boolean fileExists = true;
-							int jpgCount = 0;
-							while (fileExists){
-								jpgCount++;
-								String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
-								String fileJpeg = strFolderPath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
-								if (imageMetaData.readFrom(new File(fileJpeg))){
-								//if (CdmUtils.urlExists(urlJpeg, true)){
-									ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
-									MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
-									jpgRepresentation.addRepresentationPart(jpgImage);
-									media.addRepresentation(jpgRepresentation);
-								}else{
-									fileExists = false;
-								}
-							}
-							//png
-							String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
-							String filePng = strFolderPath + "png" + sep + nameFact + "." + suffixPng;
-							if (imageMetaData.readFrom(new File(filePng))){
-							//if (CdmUtils.urlExists(urlPng, true)){
-								ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
-								MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
-								pngRepresentation.addRepresentationPart(pngImage);
-								media.addRepresentation(pngRepresentation);
-							}else{
-								fileExists = true;
-								int pngCount = 0;
-								while (fileExists){
-									pngCount++;
-									urlPng = urlPath + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
-									filePng = strFolderPath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
-									if (imageMetaData.readFrom(new File(filePng))){
-									//if (CdmUtils.urlExists(urlPng, true)){
-										ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
-										MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
-										pngRepresentation.addRepresentationPart(pngImage);
-										media.addRepresentation(pngRepresentation);
-									}else{
-										fileExists = false;
-									}
-								}
-							} //end png
-							//all
-							if (media.getRepresentations().size() > 0){
-								ref.addMedia(media);
-							}
-
+						Media media = getMedia(nameFact);
+						if (media.getRepresentations().size() > 0){
+							TaxonNameDescription description = TaxonNameDescription.NewInstance();
+							TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+							protolog.addMedia(media);
+							taxonNameBase.addDescription(description);
 						}//end NAME_FACT_PROTOLOGUE
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
@@ -227,6 +160,89 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return ! config.isDoNameFacts();
+	}
+	
+	
+	private Media getMedia(String nameFact){
+		String mimeTypeTif = "image/tiff";
+		String mimeTypeJpeg = "image/jpeg";
+		String mimeTypePng = "image/png";
+		String suffixTif = "tif";
+		String suffixJpg = "jpg";
+		String suffixPng = "png";
+		String sep = File.separator;
+		Integer size = null;
+		
+		
+		Media media = Media.NewInstance();
+		ImageMetaData imageMetaData = new ImageMetaData();
+		String urlPath = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+		String strFolderPath = sep + sep + "Bgbm11" + sep  + "Edit-WP6" + sep + "protolog" + sep;
+		//tiff
+		String urlTif = urlPath + "tif/" + nameFact + "." + suffixTif;
+		String fileTif = strFolderPath + "tif" + sep + nameFact + "." + suffixTif;;
+		//if (CdmUtils.urlExists(urlTif, true)){
+		if (imageMetaData.readFrom(new File(strFolderPath))){
+			ImageFile tifImage = ImageFile.NewInstance(urlTif, size, imageMetaData);
+			MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
+			tifRepresentation.addRepresentationPart(tifImage);
+			media.addRepresentation(tifRepresentation);
+		}
+		//jpeg
+		boolean fileExists = true;
+		int jpgCount = 0;
+		while (fileExists){
+			jpgCount++;
+			String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
+			String fileJpeg = strFolderPath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
+			if (imageMetaData.readFrom(new File(fileJpeg))){
+			//if (CdmUtils.urlExists(urlJpeg, true)){
+				ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
+				MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
+				jpgRepresentation.addRepresentationPart(jpgImage);
+				media.addRepresentation(jpgRepresentation);
+			}else{
+				fileExists = false;
+			}
+		}
+		//png
+		String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
+		String filePng = strFolderPath + "png" + sep + nameFact + "." + suffixPng;
+		if (imageMetaData.readFrom(new File(filePng))){
+		//if (CdmUtils.urlExists(urlPng, true)){
+			ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
+			MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
+			pngRepresentation.addRepresentationPart(pngImage);
+			media.addRepresentation(pngRepresentation);
+		}else{
+			fileExists = true;
+			int pngCount = 0;
+			while (fileExists){
+				pngCount++;
+				urlPng = urlPath + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
+				filePng = strFolderPath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
+				if (imageMetaData.readFrom(new File(filePng))){
+				//if (CdmUtils.urlExists(urlPng, true)){
+					ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
+					MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
+					pngRepresentation.addRepresentationPart(pngImage);
+					media.addRepresentation(pngRepresentation);
+				}else{
+					fileExists = false;
+				}
+			}
+		} //end png
+		return media;
+	}
+	
+
+	//for testing only
 	public static void main(String[] args) {
 		String mimeTypeTif = "image/tiff";
 		String mimeTypeJpeg = "image/jpeg";
@@ -269,13 +285,6 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				fileExists = false;
 			}
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoNameFacts();
 	}
 
 }

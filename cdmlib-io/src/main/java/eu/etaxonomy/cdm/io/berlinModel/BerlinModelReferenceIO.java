@@ -286,11 +286,6 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					String refAuthorString = rs.getString("refAuthorString");
 					String refYear = rs.getString("refYear");
 					
-					//for debuggin , may be deleted
-					if (refId == 123456){
-						logger.warn("XXXXXXXXXXXXXXXXXXXXXXX FOUND XXXXXXXXXXXXXXXXXX");
-					}
-					
 					String pages = rs.getString("pageString");
 					String issn = rs.getString("issn");
 					String isbn = rs.getString("isbn");
@@ -339,7 +334,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 										}
 										if (inJournal == null){
 											logger.warn("inJournal for " + inRefFkInt + " is null. "+
-											" InReference relation could not be set");;
+											" InReference relation could not be set");
 										}else if (Journal.class.isAssignableFrom(inJournal.getClass())){
 											article.setInJournal((Journal)inJournal);
 											article.setPages(pages);

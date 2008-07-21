@@ -54,6 +54,18 @@ public interface IImportConfigurator {
 	 */
 	public abstract void setCheck(CHECK check);
 
+	/**
+	 * If true, no errors occurs if objects are not found that should exist. This may
+	 * be needed e.g. when only subsets of the data are imported.
+	 * Default value is <cod>false</code>.
+	 * @return the ignoreNull
+	 */
+	public boolean isIgnoreNull();
+	/**
+	 * @param ignoreNull the ignoreNull to set
+	 */
+	public void setIgnoreNull(boolean ignoreNull);
+	
 	public abstract boolean isDoTaxonNames();
 
 	public abstract void setDoTaxonNames(boolean doTaxonNames);

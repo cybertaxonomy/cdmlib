@@ -138,7 +138,6 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		
 		MapWrapper<Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
 		
-		Feature commonNameFeature = Feature.NewInstance("CommonName", "CommonName", null);
 		//for testing only
 		//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		
@@ -217,22 +216,6 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 					textData.setCitation(citation);
 					textData.setCitationMicroReference(details);
 					taxonDescription.addElement(textData);
-					
-					
-					
-//					//FIXME delete, just for testing
-//					//commonNames
-//					String commonNameString;
-//					if (taxon.getName() != null){
-//						commonNameString = "Common " + taxon.getName().getTitleCache(); 
-//					}else{
-//						commonNameString = "Common (null)";
-//					}
-//					Language language = bmiConfig.getFactLanguage();
-//					language = null;
-//					CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
-//					commonName.setFeature(commonNameFeature);
-//					taxonDescription.addElement(commonName);
 					
 					if (categoryFk == FACT_DESCRIPTION){
 						//;

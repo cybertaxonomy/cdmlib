@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -155,10 +156,10 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 							if (nomenclaturalReference == null){
 								nomenclaturalReference = referenceMap.get(nomRefFkInt);
 							}									
-							if (nomenclaturalReference == null){
+							if (nomenclaturalReference == null ){
 								//TODO
-								logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-								" was not found in reference store. Relation was not set!!");
+								if (! config.isIgnoreNull()){logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+									" was not found in reference store. Nomenclatural reference was not set!!");}
 							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
 								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
@@ -183,10 +184,11 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						
 						//authorTeams
 						if (authorMap != null ){
-							nonViralName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId));
-							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId));
-							nonViralName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId));
-							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId));
+							boolean ignoreNull = config.isIgnoreNull();
+							nonViralName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId, ignoreNull));
+							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId, ignoreNull));
+							nonViralName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId, ignoreNull));
+							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId, ignoreNull));
 						}
 						
 						
@@ -197,16 +199,20 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						//publicationYear
 						String authorTeamYear = rs.getString("authorTeamYear");
 						try {
-							Integer publicationYear  = Integer.valueOf(authorTeamYear);
-							zooName.setPublicationYear(publicationYear);
+							if (! "".equals(CdmUtils.Nz(authorTeamYear).trim())){
+								Integer publicationYear  = Integer.valueOf(authorTeamYear);
+								zooName.setPublicationYear(publicationYear);
+							}
 						} catch (NumberFormatException e) {
 							logger.warn("authorTeamYear could not be parsed for taxonName: "+ nameId);
 						}
 						//original publication year
 						String basAuthorTeamYear = rs.getString("basAuthorTeamYear");
 						try {
-							Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear);
-							zooName.setOriginalPublicationYear(OriginalPublicationYear);
+							if (! "".equals(CdmUtils.Nz(basAuthorTeamYear).trim())){
+								Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear);
+								zooName.setOriginalPublicationYear(OriginalPublicationYear);
+							}
 						} catch (NumberFormatException e) {
 							logger.warn("basAuthorTeamYear could not be parsed for taxonName: "+ nameId);
 						}
@@ -268,7 +274,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 
 	}
 	
-	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId){
+	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId, boolean ignoreNull){
 		if (teamIdObject == null){
 			return null;
 		}else {
@@ -276,8 +282,8 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 			TeamOrPersonBase author = authorMap.get(teamId);
 			if (author == null){
 				//TODO
-				logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
-				" was not found in authorTeam store. Relation was not set!!");
+				if (!ignoreNull){ logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
+				" was not found in authorTeam store. Relation was not set!!");}
 				return null;
 			}else{
 				return author;
