@@ -45,6 +45,9 @@ public class BerlinModelImportActivator {
 
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+	
+	//ignore null
+	static final boolean ignoreNull = false;
 
 	//authors
 	static final boolean doAuthors = true;
@@ -77,6 +80,7 @@ public class BerlinModelImportActivator {
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 		
+		bmImportConfigurator.setIgnoreNull(ignoreNull);
 		bmImportConfigurator.setDoAuthors(doAuthors);
 		bmImportConfigurator.setDoReferences(doReferences);
 		bmImportConfigurator.setDoTaxonNames(doTaxonNames);

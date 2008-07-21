@@ -18,13 +18,14 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 
 /**
@@ -42,7 +43,7 @@ public class DipteraActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
@@ -53,8 +54,11 @@ public class DipteraActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN();
 
+	//ignore null
+	static final boolean ignoreNull = true;
+	
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -107,6 +111,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
+		bmImportConfigurator.setIgnoreNull(ignoreNull);
 		bmImportConfigurator.setDoAuthors(doAuthors);
 		bmImportConfigurator.setDoReferences(doReferences);
 		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
@@ -126,13 +131,15 @@ public class DipteraActivator {
 		// invoke import
 		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
-
-		
-		//make feature tree
-		FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
 		CdmApplicationController app = bmImportConfigurator.getCdmAppController();
-		app.getDescriptionService().saveFeatureTree(tree);
-		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
+		logger.info(obj);
+		
+//		//make feature tree
+//		FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
+//		CdmApplicationController app = bmImportConfigurator.getCdmAppController();
+//		app.getDescriptionService().saveFeatureTree(tree);
+//		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 
 }

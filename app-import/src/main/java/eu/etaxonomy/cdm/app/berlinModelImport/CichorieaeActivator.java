@@ -51,16 +51,19 @@ public class CichorieaeActivator {
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
 
+	//ignore null
+	static final boolean ignoreNull = true;
+	
 	//authors
-	static final boolean doAuthors = true;
+	static final boolean doAuthors = false;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
 	static final boolean doTypes = true;
-	static final boolean doNameFacts = false;
+	static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -104,6 +107,7 @@ public class CichorieaeActivator {
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
+		bmImportConfigurator.setIgnoreNull(ignoreNull);
 		bmImportConfigurator.setDoAuthors(doAuthors);
 		bmImportConfigurator.setDoReferences(doReferences);
 		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
