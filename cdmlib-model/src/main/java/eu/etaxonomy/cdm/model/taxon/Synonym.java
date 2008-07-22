@@ -220,16 +220,17 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	@Transient
 	//TODO	should return a Set<SynonymRelationshipType> since there might be more than one relation
 	//		between the synonym and the taxon: see Taxon#removeSynonym(Synonym)
-	public SynonymRelationshipType getRelationType(Taxon taxon){
+	public Set<SynonymRelationshipType> getRelationType(Taxon taxon){
+		Set<SynonymRelationshipType> result = new HashSet<SynonymRelationshipType>();
 		if (taxon == null ){
-			return null;
+			return result;
 		}
-		for (SynonymRelationship rel:getSynonymRelations()){
+		for (SynonymRelationship rel : getSynonymRelations()){
 			Taxon acceptedTaxon = rel.getAcceptedTaxon();
 			if (taxon.equals(acceptedTaxon)){
-				return rel.getType();
+				result.add(rel.getType());
 			}
 		}
-		return null;
+		return result;
 	}
 }

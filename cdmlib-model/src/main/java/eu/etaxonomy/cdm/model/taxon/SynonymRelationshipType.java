@@ -75,15 +75,10 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new synonym relationship type to be created
-	 * @param	symmetric	 the boolean indicating whether the new synonym
-	 * 						 relationship type to be created is symmetric
-	 * @param	transitive	 the boolean indicating whether the new synonym
-	 * 						 relationship type to be created is transitive
 	 * @see 				 #SynonymRelationshipType()
 	 */
-	//TODO	synonym relationship types can be neither symmetric nor transitive!!
-	public SynonymRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
-		super(term, label, labelAbbrev, symmetric, transitive);
+	public SynonymRelationshipType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev, false, false);
 	}
 
 	//********* METHODS **************************************/
