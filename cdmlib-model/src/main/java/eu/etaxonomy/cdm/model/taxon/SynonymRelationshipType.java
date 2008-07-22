@@ -65,9 +65,8 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 
 	/** 
 	 * Class constructor: creates an additional synonym relationship type
-	 * instance with a description, a label, a label abbreviation and the flags
-	 * indicating whether this new synonym relationship type is symmetric and/or
-	 * transitive.
+	 * instance with a description, a label and a label abbreviation. Synonym
+	 * relationships types can be neither symmetric nor transitive.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new synonym relationship type to be created 
