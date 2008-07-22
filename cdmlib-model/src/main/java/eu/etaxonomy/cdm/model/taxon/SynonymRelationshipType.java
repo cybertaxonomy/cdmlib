@@ -19,9 +19,16 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
- * (e.g. homotypic, heterotypic, proparte ...)
+ * The class representing categories of {@link SynonymRelationship synonym relationships}
+ * (like "pro parte synonym of" or "heterotypic synonym of").
+ * <P>
+ * A standard (ordered) list of synonym relationship type instances will be
+ * automatically created as the project starts. But this class allows to extend
+ * this standard list by creating new instances of additional synonym
+ * relationship types if needed. 
  * <P>
  * This class corresponds in part to: <ul>
  * <li> TaxonRelationshipTerm according to the TDWG ontology
@@ -31,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55
- * http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SynonymRelationshipType")
@@ -47,10 +53,34 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	private static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
 
 	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty synonym relationship type instance.
+	 * 
+	 * @see 	#SynonymRelationshipType(String, String, String, boolean, boolean)
+	 */
 	public SynonymRelationshipType() {
 		super();
 	}
 
+	/** 
+	 * Class constructor: creates an additional synonym relationship type
+	 * instance with a description, a label, a label abbreviation and the flags
+	 * indicating whether this new synonym relationship type is symmetric and/or
+	 * transitive.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new synonym relationship type to be created 
+	 * @param	label  		 the string identifying the new synonym relationship
+	 * 						 type to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new synonym relationship type to be created
+	 * @param	symmetric	 the boolean indicating whether the new synonym
+	 * 						 relationship type to be created is symmetric
+	 * @param	transitive	 the boolean indicating whether the new synonym
+	 * 						 relationship type to be created is transitive
+	 * @see 				 #SynonymRelationshipType()
+	 */
 	public SynonymRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(term, label, labelAbbrev, symmetric, transitive);
 	}
