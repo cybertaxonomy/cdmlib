@@ -81,23 +81,49 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * 						 relationship type to be created is transitive
 	 * @see 				 #SynonymRelationshipType()
 	 */
+	//TODO	synonym relationship types can be neither symmetric nor transitive!!
 	public SynonymRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(term, label, labelAbbrev, symmetric, transitive);
 	}
 
+	//********* METHODS **************************************/
 
+	/**
+	 * Returns the synonym relationship type identified through its immutable
+	 * universally unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the synonym relationship type corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final SynonymRelationshipType getByUuid(UUID uuid){
 		return (SynonymRelationshipType) findByUuid(uuid);
 	}
 	
+	/**
+	 * Returns the synonym relationship type "is synonym of". This
+	 * indicates that no further information about the synonymy is known.
+	 */
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return getByUuid(uuidSynonymOf);
 	}
 
+	/**
+	 * Returns the synonym relationship type "is pro parte synonym of". This
+	 * indicates that the {@link name.TaxonNameBase taxon name} used as a
+	 * {@link Synonym synonym} designated originally a real taxon which later has
+	 * been split.
+	 */
 	public static final SynonymRelationshipType PRO_PARTE_SYNONYM_OF(){
 		return getByUuid(uuidProParteSynonymOf);
 	}
 
+	/**
+	 * Returns the synonym relationship type "is partial synonym of". This
+	 * indicates that the {@link name.TaxonNameBase taxon name} used as a
+	 * {@link Synonym synonym} designated originally a real taxon which later has
+	 * been lumped together with another one.
+	 */
 	public static final SynonymRelationshipType PARTIAL_SYNONYM_OF(){
 		return getByUuid(uuidPartialSynonymOf);
 	}

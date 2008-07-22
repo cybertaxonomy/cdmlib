@@ -101,8 +101,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	//********* METHODS **************************************/
 
 	/**
-	 * Returns the name relationship type identified through its immutable universally
-	 * unique identifier (UUID).
+	 * Returns the name relationship type identified through its immutable
+	 * universally unique identifier (UUID).
 	 * 
 	 * @param	uuid	the universally unique identifier
 	 * @return  		the name relationship type corresponding to the given
