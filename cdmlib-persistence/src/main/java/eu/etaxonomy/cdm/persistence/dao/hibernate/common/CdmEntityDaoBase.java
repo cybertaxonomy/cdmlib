@@ -91,7 +91,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	public T findByUuid(UUID uuid) throws DataAccessException{
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
-		crit.add(Restrictions.eq("strUuid", uuid.toString()));
+		crit.add(Restrictions.eq("uuid", uuid));
 		crit.addOrder(Order.desc("created"));
 		List<T> results = crit.list();
 		if (results.isEmpty()){
