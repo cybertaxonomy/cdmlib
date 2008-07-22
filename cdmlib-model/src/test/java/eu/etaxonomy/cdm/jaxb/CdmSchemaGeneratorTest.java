@@ -22,11 +22,13 @@ public class CdmSchemaGeneratorTest {
 	
 /* ******************** TESTS ***********************************************************/
 	
+	@Ignore //for uuid
 	@Test
 	public void testCdmSchemaGeneratorInit() {
 		Assert.assertNotNull(cdmSchemaGenerator);
 	}
 	
+	@Ignore //for uuid
 	@Test
 	// buffers the schema files
 	public void testCreateOutput() throws JAXBException, IOException, SAXException {

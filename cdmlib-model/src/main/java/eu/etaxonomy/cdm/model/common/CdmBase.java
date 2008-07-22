@@ -32,7 +32,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 
@@ -62,7 +64,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private int id;
-    private UUID uuid;
+    
+	private UUID uuid;
 	private Calendar created;
     private Person createdBy;
 
@@ -128,25 +131,45 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		propertyChangeSupport.firePropertyChange(evt);
 	}
 
-	/**
-	 * Method for hibernate only to read the UUID value as a simple string from the object and persist it (e.g. in a database).
-	 * For reading the UUID please use getUuid method
-	 * @return String representation of the UUID
-	 */
-	@XmlAttribute(name = "uuid", required = true)
-	@XmlID
-	@XmlSchemaType(name = "ID")
-	private String getStrUuid() {
-		return this.uuid.toString();
-	}
-	/**
-	 * Method for hibernate only to set the UUID value as a simple string as it was stored in the persistence layer (e.g. a database).
-	 * For setting the UUID please use setUuid method
-	 */
-	private void setStrUuid(String uuid) {
-		this.uuid = UUID.fromString(uuid);
-	}
+//	/**
+//	 * Method for hibernate only to read the UUID value as a simple string from the object and persist it (e.g. in a database).
+//	 * For reading the UUID please use getUuid method
+//	 * @return String representation of the UUID
+//	 */
+//	@XmlAttribute(name = "uuid", required = true)
+//	@XmlID
+//	@XmlSchemaType(name = "ID")
+//	private String getStrUuid() {
+//		return this.uuid.toString();
+//	}
+//	/**
+//	 * Method for hibernate only to set the UUID value as a simple string as it was stored in the persistence layer (e.g. a database).
+//	 * For setting the UUID please use setUuid method
+//	 */
+//	private void setStrUuid(String uuid) {
+//		this.uuid = UUID.fromString(uuid);
+//	}
 	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
+	 */
+    //@XmlTransient
+	//@Transient
+	//@XmlAttribute(name = "uuid", required = true)
+	@XmlID
+	@XmlJavaTypeAdapter(UUIDAdapter.class)
+	@XmlSchemaType(name = "ID")
+	@Type(type="uuidUserType")
+	public UUID getUuid() {
+		return this.uuid;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
+	 */
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
@@ -163,22 +186,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
-	 */
-    @XmlTransient
-	@Transient
-	public UUID getUuid() {
-		return this.uuid;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
-	 */
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
-
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()

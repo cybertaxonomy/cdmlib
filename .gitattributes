@@ -84,6 +84,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilder.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmResourceResolver.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmSchemaGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/LsInputImpl.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/DataSet.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Agent.java -text
