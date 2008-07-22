@@ -29,6 +29,11 @@ import javax.xml.bind.annotation.XmlType;
  * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}. 
  * This includes a {@link TaxonRelationshipType taxon relationship type} (for instance "congruent to" or
  * "misapplied name for").
+ * <P>
+ * This class corresponds in part to: <ul>
+ * <li> Relationship according to the TDWG ontology
+ * <li> TaxonRelationship according to the TCS
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -55,31 +60,77 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	}
 	
 	/**
-	 * Constructor, creates a new TaxonRelationship and adds it to the "to"-Taxon and the "from"-Taxon. 
-	 * @param from Taxon this relationship starts at.
-	 * @param to Taxon this relationship points to.
-	 * @param type The TaxonRelationshipType this relationship represents.
-	 * @param citation This relationship is referenced in this citation
-	 * @param citationMicroReference The microreference (page, figur, ...) of the citation 
+	 * Class constructor: creates a new taxon relationship instance (with the
+	 * given "accepted/correct" {@link Taxon taxa}, the given {@link SynonymRelationshipType synonym relationship type}
+	 * and with the {@link reference.ReferenceBase reference source} on which the relationship
+	 * assertion is based). Moreover the new taxon relationship will be added to
+	 * the respective sets of taxon relationships assigned to both taxa.
+	 * 
+	 * @param from 						the taxon instance to be involved as a source in the new taxon relationship
+	 * @param to						the taxon instance to be involved as a target in the new taxon relationship
+	 * @param type						the taxon relationship type of the new taxon relationship
+	 * @param citation					the reference source for the new taxon relationship
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @see 							common.RelationshipBase#RelationshipBase(IRelated, IRelated, RelationshipTermBase, ReferenceBase, String)
 	 */
 	protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, ReferenceBase citation, String citationMicroReference) {
 		super(from, to, type, citation, citationMicroReference);
 	}
 	
 	
+	/** 
+	 * Returns the {@link Taxon taxon} involved as a source in <i>this</i>
+	 * taxon relationship.
+	 *  
+	 * @see    #getToTaxon()
+	 * @see    Taxon#getRelationsFromThisTaxon()
+	 * @see    common.RelationshipBase#getRelatedFrom()
+	 * @see    common.RelationshipBase#getType()
+	 */
 	@Transient
 	public Taxon getFromTaxon(){
 		return getRelatedFrom();
 	}
+	/** 
+	 * Sets the given {@link Taxon taxon} as a source in <i>this</i> taxon relationship.
+	 * Therefore <i>this</i> taxon relationship will be added to the corresponding
+	 * set of taxon relationships assigned to the given taxon. Furthermore if
+	 * the given taxon replaces an "old" one <i>this</i> taxon relationship will
+	 * be removed from the set of taxon relationships assigned to the "old"
+	 * source taxon.
+	 *  
+	 * @param fromTaxon	the taxon instance to be set as a source in <i>this</i> synonym relationship
+	 * @see    			#getFromTaxon()
+	 */
 	public void setFromTaxon(Taxon fromTaxon){
 		setRelatedFrom(fromTaxon);
 	}
 
+	/** 
+	 * Returns the {@link Taxon taxon} involved as a target in <i>this</i>
+	 * taxon relationship.
+	 *  
+	 * @see    #getFromTaxon()
+	 * @see    Taxon#getRelationsToThisTaxon()
+	 * @see    common.RelationshipBase#getRelatedTo()
+	 * @see    common.RelationshipBase#getType()
+	 */
 	@Transient
 	public Taxon getToTaxon(){
 		return getRelatedTo();
 	}
 
+	/** 
+	 * Sets the given {@link Taxon taxon} as a target in <i>this</i> taxon relationship.
+	 * Therefore <i>this</i> taxon relationship will be added to the corresponding
+	 * set of taxon relationships assigned to the given taxon. Furthermore if
+	 * the given taxon replaces an "old" one <i>this</i> taxon relationship will
+	 * be removed from the set of taxon relationships assigned to the "old"
+	 * target taxon.
+	 *  
+	 * @param toTaxon	the taxon instance to be set as a target in <i>this</i> synonym relationship
+	 * @see    			#getToTaxon()
+	 */
 	public void setToTaxon(Taxon toTaxon){
 		setRelatedTo(toTaxon);
 	}

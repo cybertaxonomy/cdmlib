@@ -79,6 +79,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * synonym relationship. The taxon plays the target role in the relationship.
 	 *  
 	 * @see    #getSynonym()
+	 * @see    Synonym#getAcceptedTaxa()
 	 * @see    common.RelationshipBase#getRelatedTo()
 	 * @see    common.RelationshipBase#getType()
 	 */
@@ -97,6 +98,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 *  
 	 * @param acceptedTaxon	the taxon instance to be set in <i>this</i> synonym relationship
 	 * @see   				#getAcceptedTaxon()
+	 * @see   				Taxon#getSynonymRelations()
 	 */
 	protected void setAcceptedTaxon(Taxon acceptedTaxon){
 		super.setRelatedTo(acceptedTaxon);
@@ -107,6 +109,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * relationship. The synonym plays the source role in the relationship.
 	 *  
 	 * @see    #getAcceptedTaxon()
+	 * @see    Taxon#getSynonyms()
 	 * @see    common.RelationshipBase#getRelatedFrom()
 	 * @see    common.RelationshipBase#getType()
 	 */
@@ -124,6 +127,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 *  
 	 * @param synoynm	the synonym instance to be set in <i>this</i> synonym relationship
 	 * @see    			#getSynonym()
+	 * @see   			Synonym#getSynonymRelations()
 	 */
 	protected void setSynonym(Synonym synoynm){
 		super.setRelatedFrom(synoynm);
