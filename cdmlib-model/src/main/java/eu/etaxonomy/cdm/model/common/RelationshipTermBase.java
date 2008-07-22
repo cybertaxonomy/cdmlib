@@ -1,17 +1,12 @@
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
