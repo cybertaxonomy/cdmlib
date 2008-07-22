@@ -69,7 +69,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	
 
 	/** 
-	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of this
+	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of <i>this</i>
 	 * nomenclatural status.
 	 */
 	@ManyToOne
@@ -87,7 +87,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	/** 
 	 * Returns the nomenclatural code rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code ruling
-	 * the {@link TaxonNameBase#getNomenclaturalCode() taxon name(s)}) of this
+	 * the {@link TaxonNameBase#getNomenclaturalCode() taxon name(s)}) of <i>this</i>
 	 * nomenclatural status. The considered rule gives the reason why the
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
 	 * assigned to the {@link TaxonNameBase taxon name(s)}.

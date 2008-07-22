@@ -66,11 +66,14 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	}
 	
 	/**
-	 * creates a relationship between 2 names and adds this relationship object to the respective name relation sets
-	 * @param toName
-	 * @param fromName
+	 * Creates a relationship between 2 objects and adds it to the respective
+	 * relation sets of both objects.
+	 * 
+	 * @param from
+	 * @param to
 	 * @param type
-	 * @param ruleConsidered
+	 * @param citation
+	 * @param citationMicroReference
 	 */
 	protected RelationshipBase(FROM from, TO to, TYPE type, ReferenceBase citation, String citationMicroReference) {
 		super(citation, citationMicroReference, null);

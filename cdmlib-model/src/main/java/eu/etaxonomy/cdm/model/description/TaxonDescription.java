@@ -21,6 +21,9 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * A description that delimits this taxon.
+ * Equivalent to TCS /DataSet/TaxonConcepts/TaxonConcept/CharacterCircumscription 
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:20

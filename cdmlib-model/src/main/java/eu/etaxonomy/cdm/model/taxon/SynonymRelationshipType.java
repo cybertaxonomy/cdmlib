@@ -22,6 +22,12 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
  * (e.g. homotypic, heterotypic, proparte ...)
+ * <P>
+ * This class corresponds in part to: <ul>
+ * <li> TaxonRelationshipTerm according to the TDWG ontology
+ * <li> RelationshipType according to the TCS
+ * </ul>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:55

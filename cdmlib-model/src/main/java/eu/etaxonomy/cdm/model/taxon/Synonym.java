@@ -189,7 +189,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * belonging to the {@link #getSynonymRelations() set of synonym relationships} assigned to
 	 * <i>this</i> synonym. For a particular synonym there can be more than one
 	 * ("accepted/correct") taxon only if the corresponding
-	 * {@link SynonymRelationshipType synonym relationship type} is "pro parte".
+	 * {@link SynonymRelationshipType synonym relationship type} is "pro parte synonym of".
 	 *  
 	 * @see    #getSynonymRelations()
 	 * @see    #getRelationType(Taxon)

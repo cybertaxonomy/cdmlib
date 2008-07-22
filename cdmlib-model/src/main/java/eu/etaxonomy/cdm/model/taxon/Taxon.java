@@ -768,7 +768,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * For a particular synonym and for a particular ("accepted/correct") taxon
 	 * there can be several synonym relationships (if two or more
 	 * {@link SynonymRelationshipType synonym relationship types} - for instance
-	 * "pro parte" and "is homotypic synonym of" - must be combined). 
+	 * "pro parte synonym of" and "is homotypic synonym of" - must be combined). 
 	 *  
 	 * @see    #getSynonymsSortedByType()
 	 * @see    #getSynonymNames()
