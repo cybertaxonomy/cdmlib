@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -42,6 +44,7 @@ public class UuidGenerator {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+
 
 
 	}
