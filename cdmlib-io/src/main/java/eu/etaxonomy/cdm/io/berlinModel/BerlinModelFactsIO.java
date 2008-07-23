@@ -10,7 +10,6 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_OBSERV
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -130,9 +128,6 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		ITaxonService taxonService = cdmApp.getTaxonService();
-		
-		String dbAttrName;
-		String cdmAttrName;
 		
 		logger.info("start makeFacts ...");
 		

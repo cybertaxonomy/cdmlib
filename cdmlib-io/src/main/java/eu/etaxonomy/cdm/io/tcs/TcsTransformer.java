@@ -50,11 +50,19 @@ public final class TcsTransformer {
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonRank#";
 		String tcsGenus = tcsRoot + "Genus";
 		String tcsSpecies = tcsRoot + "Species";
-//		String tcsGenus = tcsRoot + "Genus";
+		String tcsVariety = tcsRoot + "Variety";
+		String tcsSubVariety = tcsRoot + "Sub-Variety";
+		String tcsForm = tcsRoot + "Form";
+		String tcsSubSpecies = tcsRoot + "Subspecies";
+		
 		
 		if (strRank == null){return null;
 		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
 		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
+		}else if (tcsVariety.equals(strRank)){return Rank.VARIETY();
+		}else if (tcsSubVariety.equals(strRank)){return Rank.SUBVARIETY();
+		}else if (tcsSubSpecies.equals(strRank)){return Rank.SUBSPECIES();
+		}else if (tcsForm.equals(strRank)){return Rank.FORM();
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
