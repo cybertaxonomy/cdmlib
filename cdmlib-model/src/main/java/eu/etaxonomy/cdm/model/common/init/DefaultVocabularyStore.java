@@ -59,7 +59,6 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
-		logger.info("dddd");
 		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
