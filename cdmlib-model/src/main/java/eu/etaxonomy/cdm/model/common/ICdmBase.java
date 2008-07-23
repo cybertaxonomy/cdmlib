@@ -35,7 +35,6 @@ public interface ICdmBase {
 	 */
 	public abstract void setId(int id);
 
-	@Transient
 	public abstract UUID getUuid();
 
 	public abstract void setUuid(UUID uuid);
