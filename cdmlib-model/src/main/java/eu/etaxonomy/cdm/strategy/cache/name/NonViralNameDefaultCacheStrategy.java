@@ -14,6 +14,8 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -254,29 +256,34 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
-	public List<Object> getTaggedName(T nvn) {
+	public List<Object> getTaggedName(T nonViralName) {
 		List<Object> tags = new ArrayList<Object>();
-		tags.add(nvn.getGenusOrUninomial());
-		if (nvn.isSpecies() || nvn.isInfraSpecific()){
-			tags.add(nvn.getSpecificEpithet());			
+		tags.add(nonViralName.getGenusOrUninomial());
+		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
+			tags.add(nonViralName.getSpecificEpithet());			
 		}
-		if (nvn.isInfraSpecific()){
-			tags.add(nvn.getRank());			
-			tags.add(nvn.getInfraSpecificEpithet());			
+		if (nonViralName.isInfraSpecific()){
+			tags.add(nonViralName.getRank());			
+			tags.add(nonViralName.getInfraSpecificEpithet());			
 		}
-		if (nvn.isInfraGeneric()){
+		if (nonViralName.isInfraGeneric()){
 			//TODO choose right strategy or generic approach?
 			// --- strategy 1 --- 
-			tags.add(nvn.getRank());			
-			tags.add(nvn.getInfraGenericEpithet());			
+			tags.add(nonViralName.getRank());			
+			tags.add(nonViralName.getInfraGenericEpithet());			
 			// --- strategy 2 --- 
 //			tags.add('('+nvn.getInfraGenericEpithet()+')');	
 		}
-		Team at = Team.NewInstance();
-		at.setProtectedTitleCache(true);
-		at.setTitleCache(nvn.getAuthorshipCache());
-		tags.add(at);			
-		tags.add(nvn.getNomenclaturalReference());			
+		Team authorTeam = Team.NewInstance();
+		authorTeam.setProtectedTitleCache(true);
+		authorTeam.setTitleCache(nonViralName.getAuthorshipCache());
+		tags.add(authorTeam);
+		if (nonViralName.getNomenclaturalReference() != null){
+			INomenclaturalReference nomenclaturalReference = nonViralName.getNomenclaturalReference();
+			tags.add(nomenclaturalReference);//nonViralName.getNomenclaturalReference().getNomenclaturalCitation(nonViralName.getNomenclaturalMicroReference()));			
+		}else{
+			tags.add("");
+		}
 		return tags;
 	}
 	

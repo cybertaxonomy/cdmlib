@@ -89,8 +89,10 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecies(typeSpecies);
-		this.setTypifiedName(typifiedName);
-		typifiedName.setHomotypicalGroup(typeSpecies.getHomotypicalGroup());
+		typifiedName.addNameTypeDesignation(this);
+		//TODO check if this should be so
+		// seems like it shouldn't be so
+		//typifiedName.setHomotypicalGroup(typeSpecies.getHomotypicalGroup());
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
 		this.isNotDesignated = isNotDesignated;
@@ -114,11 +116,9 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	/**
 	 * @see  #getTypifiedName()
 	 */
-	private void setTypifiedName(TaxonNameBase typifiedName) {
+	@Deprecated // to be used by hibernate only
+	protected void setTypifiedName(TaxonNameBase typifiedName) {
 		this.typifiedName = typifiedName;
-		if (typifiedName != null){
-			typifiedName.getNameTypeDesignations().add(this);
-		}
 	}
 
 

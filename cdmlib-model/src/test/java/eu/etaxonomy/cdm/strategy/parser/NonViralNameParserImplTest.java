@@ -37,15 +37,15 @@ public class NonViralNameParserImplTest {
 	
 	final private String strNameFamily = "Asteraceae";
 	final private String strNameGenus = "Abies Mueller";
-	final private String strNameGenusUnicode = "Abies MÃ¼ller";
+	final private String strNameGenusUnicode = "Abies Müller";
 	final private String strNameAbies1 = "Abies alba";
 	final private String strNameAbiesSub1 = "Abies alba subsp. beta";
 	final private String strNameAbiesAuthor1 = "Abies alba Mueller";
-	final private String strNameAbiesAuthor1Unicode = "Abies alba MÃ¼ller";
+	final private String strNameAbiesAuthor1Unicode = "Abies alba Müller";
 	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Mueller";
 	final private String strNameAbiesBasionymAuthor1Unicode = "Abies alba (Ciardelli) D'MÃ¼ller";
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Doering) D'Mueller ex. de Greuther"; 
-	final private String strNameAbiesBasionymExAuthor1Unicode ="Abies alba (Ciardelli ex DÃ¶ring) D'MÃ¼ller ex. de Greuther"; 
+	final private String strNameAbiesBasionymExAuthor1Unicode ="Abies alba (Ciardelli ex Döring) D'üller ex. de Greuther"; 
 	final private String strNameTeam1 = "Abies alba Mueller & L."; 
 	final private String strNameZoo1 = "Abies alba Mueller & L., 1822";
 	final private String strNameZoo2 = "Abies alba (Mueller, 1822) Ciardelli, 2002";
@@ -138,23 +138,23 @@ public class NonViralNameParserImplTest {
 		NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameAuthor.getSpecificEpithet());
-		assertEquals("MÃ¼ller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Müller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
 		NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-		assertEquals("D'MÃ¼ller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("D'Müller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		BotanicalName basionym = (BotanicalName)nameBasionymAuthor.getBasionym();
 		assertEquals("Ciardelli", basionym.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
 		NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-		assertEquals("D'MÃ¼ller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("D'Müller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
 		BotanicalName basionym2 = (BotanicalName)nameBasionymExAuthor.getBasionym();
 		assertEquals("Ciardelli", basionym2.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("DÃ¶ring", basionym2.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("Döring", basionym2.getExCombinationAuthorTeam().getNomenclaturalTitle());
 	}
 	
 	

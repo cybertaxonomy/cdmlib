@@ -625,6 +625,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
 		this.nameTypeDesignations = nameTypeDesignations;
 	}
+	public void addNameTypeDesignation(NameTypeDesignation nameTypeDesignation) {
+		if (nameTypeDesignation != null){
+			if (nameTypeDesignation.getTypifiedName() != null){
+				nameTypeDesignation.getTypifiedName().getNameTypeDesignations().remove(nameTypeDesignation);
+			}
+			nameTypeDesignation.setTypifiedName(this);
+			this.nameTypeDesignations.add(nameTypeDesignation);
+		}
+	}
 
 	
 	/** 
