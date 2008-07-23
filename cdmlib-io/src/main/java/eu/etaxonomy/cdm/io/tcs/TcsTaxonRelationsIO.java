@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -145,6 +146,12 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 										logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
 									}else{
 										Synonym synonym = (Synonym)fromTaxon;
+										TaxonNameBase synName = synonym.getName();
+										TaxonNameBase accName = taxonTo.getName();
+										if (synName != null && accName != null && synName.isHomotypic(accName)
+													&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
+											synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
+										}
 										taxonTo.addSynonym(synonym, synRelType,  citation, microReference);
 									}
 								}else if (relType instanceof TaxonRelationshipType){

@@ -89,7 +89,7 @@ public class TcsTaxonNameIO  extends CdmIoBase implements ICdmIO {
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNames){
 			
-			if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
 			
 			Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
 

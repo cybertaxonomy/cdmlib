@@ -9,6 +9,10 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -103,6 +107,27 @@ public final class TcsTransformer {
 			return true;
 		}
 		return false;
+	}
+	
+	/** Creates an cdm-Rank by the tcs rank
+	 */
+	public static ReferenceBase pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
+		String tcsRoot = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";
+		String tcsBook = tcsRoot + "Book";
+		String tcsJournal = tcsRoot + "Journal";
+		String tcsWebPage = tcsRoot + "WebPage";
+		String tcsCommunication = tcsRoot + "Communication";
+		String tcsBookSeries = tcsRoot + "BookSeries";
+		
+		
+		if (strPubType == null){return null;
+		}else if (tcsBook.equals(strPubType)){return Book.NewInstance();
+		}else if (tcsJournal.equals(strPubType)){return Journal.NewInstance();
+		}else if (tcsWebPage.equals(strPubType)){return WebPage.NewInstance();
+		}	
+		else {
+			throw new UnknownCdmTypeException("Unknown publication type " + strPubType);
+		}
 	}
 	
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory

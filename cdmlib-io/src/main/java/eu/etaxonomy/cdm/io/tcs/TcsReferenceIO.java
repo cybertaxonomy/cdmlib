@@ -3,19 +3,39 @@
  */
 package eu.etaxonomy.cdm.io.tcs;
 
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.jdom.Attribute;
 import org.jdom.Element;
+import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -129,201 +149,135 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element source = tcsConfig.getSourceRoot();
+		Element root = tcsConfig.getSourceRoot();
+		logger.info("start makeReferences ...");
 		
-		String dbAttrName;
+		String tcsElementName;
+		Namespace tcsNamespace;
 		String cdmAttrName;
+		String value;
 		boolean success = true;
+		IReferenceService referenceService = cdmApp.getReferenceService();
+		
+		
 		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
 		
+		Namespace rdfNamespace = root.getNamespace();
+		String prefix = "tn";
+		Namespace taxonNameNamespace = root.getNamespace(prefix);
+		prefix = "tc";
+		Namespace taxonConceptNamespace = root.getNamespace(prefix);
+		prefix = "tcom";
+		Namespace commonNamespace = root.getNamespace(prefix);
+		prefix = "tpub";
+		Namespace publicationNamespace = root.getNamespace(prefix);
+
 		
-//		logger.info("start makeReferences ...");
-//		IReferenceService referenceService = cdmApp.getReferenceService();
-//		try {
-//			
-//			
-//			
-//			//get data from database
-//			String strQueryBase = 
-//					" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
-//						" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
-//						" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk " +
-//                    " FROM Reference AS InInReference " +
-//                    	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
-//                    	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk " + 
-//					" WHERE (1=1) "; 
-//			//strQueryBase += " AND Reference.refId = 7000000 " ;
-//			String strQueryNoInRef = strQueryBase + 
-//				" AND (Reference.InRefFk is NULL) ";
-//			
-//			String strQuery1InRef = strQueryBase + 
-//				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NULL) ";
-//
-//			String strQuery2InRef = strQueryBase + 
-//				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NULL) ";
-//
-//			String strQueryTesMaxRecursion = strQueryBase + 
-//				" AND (Reference.InRefFk is NOT NULL) AND (InReference.InRefFk is NOT NULL) AND (InInReference.InRefFk is NOT NULL) ";
-//
-//			ResultSet testMaxRecursionResultSet = source.getResultSet(strQueryTesMaxRecursion);
-//			if (testMaxRecursionResultSet.next() == true){
-//				logger.error("Maximum allowed InReference recursions exceeded in Berlin Model. Maximum recursion level is 2.");
-//				return false;
-//			}
-//
-//			if (bmiConfig.getDoReferences() == CONCEPT_REFERENCES){
-//				strQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) ";
-//			}
-//			
-//			List<ResultSet> resultSetList = new ArrayList<ResultSet>();
-//			resultSetList.add(source.getResultSet(strQueryNoInRef));
-//			if (bmiConfig.getDoReferences() == ALL || bmiConfig.getDoReferences() == NOMENCLATURAL){
-//				resultSetList.add(source.getResultSet(strQuery1InRef));
-//				resultSetList.add(source.getResultSet(strQuery2InRef));
-//			}
-//			
-//			
-//			int i = 0;
-//			//for each reference
-//			Iterator<ResultSet> resultSetListIterator =  resultSetList.listIterator();
-//			while (resultSetListIterator.hasNext()){
-//				i = 0;
-//				ResultSet rs = resultSetListIterator.next();
-//				while (rs.next()){
-//					
-//					if ((i++ % modCount) == 0){ logger.info("References handled: " + (i-1));}
-//					
-//					//create TaxonName element
-//					int refId = rs.getInt("refId");
-//					int categoryFk = rs.getInt("refCategoryFk");
-//					Object inRefFk = rs.getObject("inRefFk");
-//					int inRefCategoryFk = rs.getInt("InRefCategoryFk");
-//					
-//					StrictReferenceBase referenceBase;
-//					try {
-//						logger.debug("RefCategoryFk: " + categoryFk);
-//						
-//						if (categoryFk == REF_JOURNAL){
-//							referenceBase = new Journal();
-//						}else if(categoryFk == REF_BOOK){
-//							referenceBase = new Book();
-//						}else if(categoryFk == REF_ARTICLE){
-//							referenceBase = new Article();
-//							if (inRefFk != null){
-//								if (inRefCategoryFk == REF_JOURNAL){
-//									int inRefFkInt = (Integer)inRefFk;
-//									if (referenceStore.containsId(inRefFkInt)){
-//										ReferenceBase inJournal = referenceStore.get(inRefFkInt);
-//										if (Journal.class.isAssignableFrom(inJournal.getClass())){
-//											((Article)referenceBase).setInJournal((Journal)inJournal);
-//										}else{
-//											logger.warn("InJournal is not of type journal but of type " + inJournal.getClass().getSimpleName() +
-//												" Inreference relation could not be set");
-//										}
-//									}else{
-//										logger.error("Journal for Article (refID = " + refId +") could not be found. Inconsistency error. ");
-//										return false;
-//									}
-//								}else{
-//									logger.warn("Wrong inrefCategory for Article (refID = " + refId +"). Type must be 'Journal' but was not (RefCategoryFk=" + inRefCategoryFk + "))." +
-//										" InReference was not added to Article! ");
-//								}
-//							}
-//						}else if(categoryFk == REF_DATABASE){
-//							referenceBase = new Database();
-//						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
-//							if (inRefCategoryFk == REF_BOOK){
-//								referenceBase = new BookSection();
-//								if (inRefFk != null){
-//									int inRefFkInt = (Integer)inRefFk;
-//									if (referenceStore.containsId(inRefFkInt)){
-//										ReferenceBase inBook = referenceStore.get(inRefFkInt);
-//										if (Book.class.isAssignableFrom(inBook.getClass())){
-//											((BookSection)referenceBase).setInBook((Book)inBook);
-//										}else{
-//											logger.warn("InBook is not of type book but of type " + inBook.getClass().getSimpleName() +
-//													" Inreference relation could not be set");
-//										}
-//									}else{
-//										logger.error("Book (refId = " + inRefFkInt + " for part_of_other_title (refID = " + refId +") could not be found in Hashmap. Inconsistency error. ");
-//										return false;
-//									}
-//								}
-//							}else if (inRefCategoryFk == REF_ARTICLE){
-//								//TODO 
-//								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
-//										" This type is not implemented yet. Generic reference created instead") ;
-//								referenceBase = new Generic();
-//							}else if (inRefCategoryFk == REF_JOURNAL){
-//								//TODO 
-//								logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' has inReference of type 'journal'." +
-//										" This is not allowed! Generic reference created instead") ;
-//								referenceBase = new Generic();
-//								referenceBase.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
-//							}else{
-//								logger.warn("InReference type (catFk = " + inRefCategoryFk + ") of part-of-reference not recognized for refId " + refId + "." +
-//									" Create 'Generic' reference instead");
-//								referenceBase = new Generic();
-//							}
-//						}else if(categoryFk == REF_INFORMAL){
-//							if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
-//							referenceBase = new Generic();
-//						}else if(categoryFk == REF_WEBSITE){
-//							if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
-//							referenceBase = new Generic();
-//						}else if(categoryFk == REF_UNKNOWN){
-//							if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
-//							referenceBase = new Generic();
-//						}else{
-//							logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
-//							referenceBase = new Generic();	
-//						}
-//						
-//						dbAttrName = "refCache";
-//						cdmAttrName = "titleCache";
-//						//TODO wohin kommt der refCache
-//						//INomenclaturalReference hat nur getNomenclaturalCitation , müsste es nicht so was wie setAbbrevTitle geben? 
-//						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName);
-//						
-//						dbAttrName = "nomRefCache";
-//						cdmAttrName = "titleCache";
-//						success &= ImportHelper.addStringValue(rs, referenceBase, dbAttrName, cdmAttrName, ImportHelper.NO_OVERWRITE);
-//						
-//						//refId
-//						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);
-//						
-//						//	dbAttrName = "BinomHybFlag";
-//						//	cdmAttrName = "isBinomHybrid";
-//						//	ImportHelper.addBooleanValue(rs, ref, dbAttrName, cdmAttrName);
-//						
-//						//TODO
-//						// all attributes
-//						
-//						if (! referenceStore.containsId(refId)){
-//							referenceStore.put(refId, referenceBase);
-//							referenceMap.put(refId, referenceBase);
-//						}else{
-//							logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
-//						}
-//					} catch (Exception e) {
-//						logger.warn("Reference with id " + refId +  " threw Exception and could not be saved");
-//						e.printStackTrace();
-//						success = false;
-//						return success;
-//					}
-//					
-//				} // end resultSet
-//				//save and store in map
-//				referenceService.saveReferenceAll(referenceStore.objects());
-//			}//end resultSetList	
-//
-//			logger.info("end makeReferences ...");
-//			return success;
-//		} catch (SQLException e) {
-//			logger.error("SQLException:" +  e);
-//			return false;
-//		}
-		return false;
+		
+		tcsElementName = "PublicationCitation";
+		tcsNamespace = publicationNamespace;
+		List<Element> elPublicationCitations = root.getChildren(tcsElementName, tcsNamespace);
+
+		
+		int i = 0;
+		//for each taxonName
+		for (Element elPublicationCitation : elPublicationCitations){
+			
+			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+			
+			Attribute about = elPublicationCitation.getAttribute("about", rdfNamespace);
+
+			//create TaxonName element
+			String strAbout = elPublicationCitation.getAttributeValue("about", rdfNamespace);
+			
+			String pages = 
+			tcsElementName = "publicationType";
+			tcsNamespace = publicationNamespace;
+			String strPubType = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
+			
+			try {
+				ReferenceBase refBase = TcsTransformer.pubTypeStr2PubType(strPubType);
+				
+				//attributes
+				tcsElementName = "publisher";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "genusOrUninomial";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+
+				tcsElementName = "shortTitle";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "title";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+
+				tcsElementName = "title";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "title";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+
+				tcsElementName = "year";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "year";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+
+				//TODO
+				tcsElementName = "year";
+				tcsNamespace = publicationNamespace;
+				Integer year = null;
+				try {
+					value = (String)ImportHelper.getXmlInputValue(elPublicationCitation, tcsElementName, tcsNamespace);
+					year = Integer.valueOf(value);
+					Calendar cal = Calendar.getInstance();
+					//FIXME
+					cal.set(year, 1, 1);
+					if (refBase instanceof StrictReferenceBase){
+						StrictReferenceBase ref = (StrictReferenceBase)refBase;
+						ref.setDatePublished(TimePeriod.NewInstance(cal));
+					}else{
+						logger.warn("year not implemented for ReferenceBase type " +  ((refBase == null) ? "(null)" : refBase.getClass().getSimpleName()));
+					}
+				} catch (RuntimeException e) {
+					logger.warn("year could not be parsed");
+				}
+			
+
+				
+				
+				tcsElementName = "pages";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "pages";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+
+				tcsElementName = "volume";
+				tcsNamespace = publicationNamespace;
+				cdmAttrName = "volume";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+				
+				
+				//Reference
+				//TODO
+				tcsElementName = "parentPublication";
+				tcsNamespace = publicationNamespace;
+				String strParent = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
+				ReferenceBase parent = referenceMap.get(strParent);
+				if (parent != null){
+					logger.warn("parent not yet implemented");
+					//TODO refBase.setParent(parent);
+				}
+				
+				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
+				referenceMap.put(strAbout, refBase);
+				
+			} catch (UnknownCdmTypeException e) {
+				//FIXME
+				logger.warn("Name with id " + strAbout + " has unknown type " + strPubType + " and could not be saved.");
+				success = false; 
+			}
+		}
+		logger.info(i + " names handled");
+		referenceService.saveReferenceAll(referenceMap.objects());
+		logger.info("end makeReferences ...");
+		return success;
 	}
 	
 	/* (non-Javadoc)
