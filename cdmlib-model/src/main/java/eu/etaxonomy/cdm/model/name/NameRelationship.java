@@ -98,7 +98,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the source role
-	 * in this taxon name relationship.
+	 * in <i>this</i> taxon name relationship.
 	 *  
 	 * @see   #getToName()
 	 * @see   common.RelationshipBase#getRelatedFrom()
@@ -116,7 +116,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the target role
-	 * in this taxon name relationship.
+	 * in <i>this</i> taxon name relationship.
 	 *  
 	 * @see   #getFromName()
 	 * @see   common.RelationshipBase#getRelatedTo()

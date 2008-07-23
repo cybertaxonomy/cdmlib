@@ -46,9 +46,9 @@ public class InstitutionType extends DefinedTermBase {
 	/** 
 	 * Class constructor using both term and label strings.
 	 *
-	 * @param  term   the string describing this vocabulary element
+	 * @param  term   the string describing <i>this</i> vocabulary element
 	 * 				  in the default language
-	 * @param  label  the string which identifies this vocabulary element
+	 * @param  label  the string which identifies <i>this</i> vocabulary element
 	 * 				  irrespective of the language
 	 * @see           common.Representation
 	 * @see           common.TermBase#TermBase(String, String)

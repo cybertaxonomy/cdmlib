@@ -165,7 +165,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Class constructor: creates a new taxon name
 	 * only containing its {@link common.Rank rank}.
 	 * 
-	 * @param  rank  the rank to be assigned to this taxon name
+	 * @param  rank  the rank to be assigned to <i>this</i> taxon name
 	 * @see    #TaxonNameBase()
 	 * @see    #TaxonNameBase(HomotypicalGroup)
 	 * @see    #TaxonNameBase(Rank, HomotypicalGroup)
@@ -179,7 +179,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
 	 * 
-	 * @param  homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
 	 * @see    #TaxonNameBase()
 	 * @see    #TaxonNameBase(Rank)
 	 * @see    #TaxonNameBase(Rank, HomotypicalGroup)
@@ -194,8 +194,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
 	 * 
-	 * @param  rank  the rank to be assigned to this taxon name
-	 * @param  homotypicalGroup  the homotypical group to which this taxon name belongs
+	 * @param  rank  the rank to be assigned to <i>this</i> taxon name
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
 	 * @see    #TaxonNameBase()
 	 * @see    #TaxonNameBase(Rank)
 	 * @see    #TaxonNameBase(HomotypicalGroup)
@@ -217,7 +217,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 //	}
 	
 	/**
-	 * Returns the boolean value "false" since the components of this taxon name
+	 * Returns the boolean value "false" since the components of <i>this</i> taxon name
 	 * cannot follow the rules of a corresponding {@link NomenclaturalCode nomenclatural code}
 	 * which is not defined for this class. The nomenclature code depends on
 	 * the concrete name subclass ({@link BacterialName BacterialName},
@@ -233,7 +233,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
-	 * in which this taxon name is involved. A taxon name can be both source
+	 * in which <i>this</i> taxon name is involved. A taxon name can be both source
 	 * in some name relationships or target in some others.
 	 *  
 	 * @see    #getRelationsToThisName()
@@ -250,8 +250,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return rels;
 	}
 	/**
-	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from this taxon name to another taxon name
-	 * and adds it both to the set of {@link #getRelationsFromThisName() relations from this taxon name} and
+	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+	 * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
 	 * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
 	 * 
 	 * @param toName		  the taxon name of the target for this new name relationship
@@ -266,8 +266,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
 	}
 	/**
-	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to this taxon name
-	 * and adds it both to the set of {@link #getRelationsToThisName() relations to this taxon name} and
+	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+	 * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
 	 * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
 	 * 
 	 * @param fromName		  the taxon name of the source for this new name relationship
@@ -283,12 +283,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/**
 	 * Adds an existing {@link NameRelationship name relationship} either to the set of
-	 * {@link #getRelationsToThisName() relations to this taxon name} or to the set of
-	 * {@link #getRelationsFromThisName() relations from this taxon name}. If neither the
-	 * source nor the target of the name relationship match with this taxon name
+	 * {@link #getRelationsToThisName() relations to <i>this</i> taxon name} or to the set of
+	 * {@link #getRelationsFromThisName() relations from <i>this</i> taxon name}. If neither the
+	 * source nor the target of the name relationship match with <i>this</i> taxon name
 	 * no addition will be carried out.
 	 * 
-	 * @param rel  the name relationship to be added to one of this taxon name's name relationships sets
+	 * @param rel  the name relationship to be added to one of <i>this</i> taxon name's name relationships sets
 	 * @see    	   #getNameRelations()
 	 * @see    	   #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    	   #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
@@ -304,7 +304,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Removes one {@link NameRelationship name relationship} from one of both sets of
-	 * {@link #getNameRelations() name relationships} in which this taxon name is involved.
+	 * {@link #getNameRelations() name relationships} in which <i>this</i> taxon name is involved.
 	 * The name relationship will also be removed from one of both sets belonging
 	 * to the second taxon name involved. Furthermore the fromName and toName
 	 * attributes of the name relationship object will be nullified. 
@@ -324,7 +324,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Does exactly the same as the addNameRelationship method provided that
 	 * the given relationship is a name relationship.
 	 * 
-	 * @param relation  the relationship to be added to one of this taxon name's name relationships sets
+	 * @param relation  the relationship to be added to one of <i>this</i> taxon name's name relationships sets
 	 * @see    	   		#addNameRelationship(NameRelationship)
 	 * @see    	   		#getNameRelations()
 	 * @see    	   		NameRelationship
@@ -350,7 +350,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
-	 * in which this taxon name is involved as a source.
+	 * in which <i>this</i> taxon name is involved as a source.
 	 *  
 	 * @see    #getNameRelations()
 	 * @see    #getRelationsToThisName()
@@ -367,7 +367,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
-	 * in which this taxon name is involved as a target.
+	 * in which <i>this</i> taxon name is involved as a target.
 	 *  
 	 * @see    #getNameRelations()
 	 * @see    #getRelationsFromThisName()
@@ -385,7 +385,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of {@link NomenclaturalStatus nomenclatural status} assigned
-	 * to this taxon name according to its corresponding nomenclature code.
+	 * to <i>this</i> taxon name according to its corresponding nomenclature code.
 	 * This includes the {@link NomenclaturalStatusType type} of the nomenclatural status
 	 * and the nomenclatural code rule considered.
 	 *
@@ -405,7 +405,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Adds a new {@link NomenclaturalStatus nomenclatural status}
-	 * to this taxon name's set of nomenclatural status.
+	 * to <i>this</i> taxon name's set of nomenclatural status.
 	 *
 	 * @param  nomStatus  the nomenclatural status to be added
 	 * @see 			  #getStatus()
@@ -414,11 +414,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.status.add(nomStatus);
 	}
 	/** 
-	 * Removes one element from the set of nomenclatural status of this taxon name.
+	 * Removes one element from the set of nomenclatural status of <i>this</i> taxon name.
 	 * Type and ruleConsidered attributes of the nomenclatural status object
 	 * will be nullified.
 	 *
-	 * @param  nomStatus  the nomenclatural status of this taxon name which should be deleted
+	 * @param  nomStatus  the nomenclatural status of <i>this</i> taxon name which should be deleted
 	 * @see     		  #getStatus()
 	 */
 	public void removeStatus(NomenclaturalStatus nomStatus) {
@@ -429,11 +429,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	
 	/**
-	 * Indicates whether this taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
+	 * Indicates whether <i>this</i> taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
 	 * or a {@link NameRelationshipType.REPLACED_SYNONYM() replaced synonym}
 	 * of any other taxon name. Returns "true", if a basionym or a replaced 
-	 * synonym relationship from this taxon name to another taxon name exists,
-	 * false otherwise (also in case this taxon name is the only one in the
+	 * synonym relationship from <i>this</i> taxon name to another taxon name exists,
+	 * false otherwise (also in case <i>this</i> taxon name is the only one in the
 	 * homotypical group).
 	 */
 	@Transient
@@ -449,10 +449,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/**
-	 * Returns the taxon name which is the {@link NameRelationshipType.BASIONYM() basionym} of this taxon name.
+	 * Returns the taxon name which is the {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name.
 	 * The basionym of a taxon name is its epithet-bringing synonym.
 	 * For instance Pinus abies L. was published by Linnaeus and the botanist
-	 * Karsten transferred later this taxon to the genus Picea. Therefore,
+	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
 	 * Pinus abies L. is the basionym of the new combination Picea abies (L.) H. Karst.
 	 */
 	@Transient
@@ -462,10 +462,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return null;
 	}
 	/**
-	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name.
-	 * The basionym relationship will be added to this taxon name
+	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name.
+	 * The basionym relationship will be added to <i>this</i> taxon name
 	 * and to the basionym. The basionym cannot have itself a basionym.
-	 * The homotypical group of this taxon name will be changed the basionyms homotypical group.
+	 * The homotypical group of <i>this</i> taxon name will be changed the basionyms homotypical group.
 	 * @see  #getBasionym()
 	 * @see  #addBasionym(TaxonNameBase, String)
 	 */
@@ -473,11 +473,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		addBasionym(basionym, null);
 	}
 	/**
-	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of this taxon name
+	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name
 	 * and keeps the nomenclatural rule considered for it. The basionym
-	 * relationship will be added to this taxon name and to the basionym.
+	 * relationship will be added to <i>this</i> taxon name and to the basionym.
 	 * The basionym cannot have itself as a basionym.
-	 * The homotypical group of this taxon name will be changed the basionyms homotypical group.
+	 * The homotypical group of <i>this</i> taxon name will be changed the basionyms homotypical group.
 	 * @see  #getBasionym()
 	 * @see  #setBasionym(TaxonNameBase)
 	 */
@@ -499,7 +499,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
-	 * Returns the taxonomic {@link Rank rank} of this taxon name.
+	 * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
 	 *
 	 * @see 	Rank
 	 */
@@ -516,9 +516,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the {@link reference.INomenclaturalReference nomenclatural reference} of this taxon name.
+	 * Returns the {@link reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
 	 * The nomenclatural reference is here meant to be the one publication
-	 * this taxon name was originally published in while fulfilling the formal
+	 * <i>this</i> taxon name was originally published in while fulfilling the formal
 	 * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural codes}.
 	 *
 	 * @see 	reference.INomenclaturalReference
@@ -531,7 +531,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return (INomenclaturalReference) this.nomenclaturalReference;
 	}
 	/**
-	 * Assigns a nomenclatural {@link reference.INomenclaturalReference nomenclatural reference} to this taxon name.
+	 * Assigns a nomenclatural {@link reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
 	 * The corresponding {@link reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
 	 * as it is obviously used for nomenclatural purposes.
 	 *
@@ -542,7 +542,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the appended phrase string assigned to this taxon name.
+	 * Returns the appended phrase string assigned to <i>this</i> taxon name.
 	 * The appended phrase is a non-atomised addition to a name. It is
 	 * not ruled by a nomenclatural code.
 	 */
@@ -558,7 +558,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Returns the details string of the nomenclatural reference assigned
-	 * to this taxon name. The details describe the exact localisation within
+	 * to <i>this</i> taxon name. The details describe the exact localisation within
 	 * the publication used as nomenclature reference. These are mostly
 	 * (implicitly) pages but can also be figures or tables or any other
 	 * element of a publication. A nomenclatural micro reference (details)
@@ -579,7 +579,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
 	 * method was able to parse the taxon name string successfully (false)
 	 * or not (true). The parser itself may also depend on the {@link NomenclaturalCode nomenclatural code}
-	 * governing the construction of this taxon name.
+	 * governing the construction of <i>this</i> taxon name.
 	 *  
 	 * @return  the boolean value of the hasProblem flag
 	 * @see     #getNameCache()
@@ -605,7 +605,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
-	 * to this taxon name the rank of which must be above "species".
+	 * to <i>this</i> taxon name the rank of which must be above "species".
 	 * The name type designations include all the taxon names used to typify
 	 * this name and eventually the rejected or conserved status
 	 * of these designations.
@@ -629,9 +629,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Creates and adds a new {@link NameTypeDesignation name type designation}
-	 * to this taxon name's set of name type designations.
+	 * to <i>this</i> taxon name's set of name type designations.
 	 *
-	 * @param  typeSpecies				the taxon name to be used as type of this taxon name
+	 * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
 	 * @param  citation					the reference for this new designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
@@ -648,10 +648,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/** 
-	 * Removes one element from the set of {@link NameTypeDesignation name type designations} of this taxon name.
+	 * Removes one element from the set of {@link NameTypeDesignation name type designations} of <i>this</i> taxon name.
 	 * The name type designation itself will be nullified.
 	 *
-	 * @param  typeDesignation  the name type designation of this taxon name which should be deleted
+	 * @param  typeDesignation  the name type designation of <i>this</i> taxon name which should be deleted
 	 * @see     		  		#getNameTypeDesignations()
 	 * @see     		  		#removeTypeDesignation(SpecimenTypeDesignation)
 	 */
@@ -663,7 +663,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
-	 * that typify this taxon name.
+	 * that typify <i>this</i> taxon name.
 	 */
 	@ManyToMany
 	@Cascade(CascadeType.SAVE_UPDATE)
@@ -679,8 +679,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
-	 * indirectly to this taxon name through its {@link HomotypicalGroup homotypical group}.
-	 * The rank of this taxon name is generally "species" or below.
+	 * indirectly to <i>this</i> taxon name through its {@link HomotypicalGroup homotypical group}.
+	 * The rank of <i>this</i> taxon name is generally "species" or below.
 	 * The specimen type designations include all the specimens on which
 	 * the typification of this name is based (and which are common to all
 	 * taxon names belonging to the homotypical group) and eventually
@@ -697,9 +697,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
 	 * (using its attributes as parameters) to the set of specimen type designations assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
 	 *
-	 * @param  typeSpecimen				the specimen to be used as a type for this taxon name's homotypical group
+	 * @param  typeSpecimen				the specimen to be used as a type for <i>this</i> taxon name's homotypical group
 	 * @param  status					the specimen type designation status
 	 * @param  citation					the reference for this new specimen type designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
@@ -718,9 +718,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
 	 * to the set of specimen type designations assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
 	 *
-	 * @param  specimenTypeDesignation	the specimen type designation to be added for this taxon name's homotypical group
+	 * @param  specimenTypeDesignation	the specimen type designation to be added for <i>this</i> taxon name's homotypical group
 	 * @see 			  				#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
 	 * @see 			  				HomotypicalGroup#getTypeDesignations()
 	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
@@ -732,7 +732,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	//only to be used for xxx
 	/** 
 	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
 	 *
 	 * @param  SpecimenTypeDesignation  the specimen type designation which should be deleted
 	 * @see     		  				HomotypicalGroup#getTypeDesignations()
@@ -745,7 +745,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which this taxon name belongs.
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
 	 * The specimen type designation itself will be nullified.
 	 *
 	 * @param  typeDesignation  the specimen type designation which should be deleted
@@ -760,7 +760,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Returns the {@link HomotypicalGroup homotypical group} to which
-	 * this taxon name belongs. A homotypical group represents all taxon names
+	 * <i>this</i> taxon name belongs. A homotypical group represents all taxon names
 	 * that share the same type specimens.
 	 *
 	 * @see 	HomotypicalGroup
@@ -788,9 +788,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/** 
 	 * Returns the complete string containing the
 	 * {@link reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
-	 * (including {@link #getNomenclaturalMicroReference() details}) assigned to this taxon name.
+	 * (including {@link #getNomenclaturalMicroReference() details}) assigned to <i>this</i> taxon name.
 	 * 
-	 * @return  the string containing the nomenclatural reference of this taxon name
+	 * @return  the string containing the nomenclatural reference of <i>this</i> taxon name
 	 * @see		reference.INomenclaturalReference#getNomenclaturalCitation()
 	 * @see		#getNomenclaturalReference()
 	 * @see		#getNomenclaturalMicroReference()
@@ -809,10 +809,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/**
 	 * Returns the string containing the publication date (generally only year)
-	 * of the nomenclatural reference for this taxon name, null if there is
+	 * of the nomenclatural reference for <i>this</i> taxon name, null if there is
 	 * no nomenclatural reference.
 	 * 
-	 * @return  the string containing the publication date of this taxon name
+	 * @return  the string containing the publication date of <i>this</i> taxon name
 	 * @see		reference.INomenclaturalReference#getYear()
 	 */
 	@Transient
@@ -825,7 +825,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the set of {@link taxon.TaxonBase taxon bases} that refer to this taxon name.
+	 * Returns the set of {@link taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
 	 * In this context a taxon base means the use of a taxon name by a reference
 	 * either as a taxon ("accepted/correct" name) or as a (junior) synonym.
 	 * A taxon name can be used by several distinct references but only once
@@ -851,7 +851,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Adds a new {@link taxon.TaxonBase taxon base}
-	 * to the set of taxon bases using this taxon name.
+	 * to the set of taxon bases using <i>this</i> taxon name.
 	 *
 	 * @param  taxonBase  the taxon base to be added
 	 * @see 			  #getTaxonBases()
@@ -864,7 +864,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
 	/** 
-	 * Removes one element from the set of {@link taxon.TaxonBase taxon bases} that refer to this taxon name.
+	 * Removes one element from the set of {@link taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
 	 *
 	 * @param  taxonBase	the taxon base which should be removed from the corresponding set
 	 * @see    				#addTaxonBase(TaxonBase)
@@ -900,7 +900,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/**
 	 * Returns the set of {@link taxon.Taxon taxa} ("accepted/correct" names according to any
-	 * reference) that are based on this taxon name. This set is a subset of
+	 * reference) that are based on <i>this</i> taxon name. This set is a subset of
 	 * the set returned by getTaxonBases(). 
 	 * 
 	 * @see	taxon.Taxon
@@ -920,7 +920,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/**
 	 * Returns the set of {@link taxon.Synonym (junior) synonyms} (according to any
-	 * reference) that are based on this taxon name. This set is a subset of
+	 * reference) that are based on <i>this</i> taxon name. This set is a subset of
 	 * the set returned by getTaxonBases(). 
 	 * 
 	 * @see	taxon.Synonym
@@ -943,7 +943,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/**
 	 * Returns the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
-	 * to this taxon name. A taxon name description is a piece of information
+	 * to <i>this</i> taxon name. A taxon name description is a piece of information
 	 * concerning the taxon name like for instance the content of its first
 	 * publication (protolog) or a picture of this publication.
 	 * 
@@ -964,9 +964,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Adds a new {@link description.TaxonNameDescription taxon name description}
-	 * to the set of taxon name descriptions assigned to this taxon name. The
+	 * to the set of taxon name descriptions assigned to <i>this</i> taxon name. The
 	 * content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute} of the
-	 * taxon name description itself will be replaced with this taxon name.
+	 * taxon name description itself will be replaced with <i>this</i> taxon name.
 	 *
 	 * @param  description  the taxon name description to be added
 	 * @see					#getDescriptions()
@@ -979,7 +979,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Removes one element from the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
-	 * to this taxon name. The content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute}
+	 * to <i>this</i> taxon name. The content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute}
 	 * of the description itself will be set to "null".
 	 *
 	 * @param  description  the taxon name description which should be removed
@@ -1001,7 +1001,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 // ***********
 	/**
 	 * Returns the boolean value indicating whether a given taxon name belongs
-	 * to the same {@link HomotypicalGroup homotypical group} as this taxon name (true)
+	 * to the same {@link HomotypicalGroup homotypical group} as <i>this</i> taxon name (true)
 	 * or not (false). Returns "true" only if the homotypical groups of both
 	 * taxon names exist and if they are identical. 
 	 *
@@ -1027,7 +1027,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 //*********  Rank comparison shortcuts   ********************//
 	/**
-	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is higher than the genus rank (true) or not (false).
 	 * Suprageneric non viral names are monomials.
 	 * Returns false if rank is null.
@@ -1045,7 +1045,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isSupraGeneric();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is the genus rank (true) or not (false). Non viral names with
 	 * genus rank are monomials. Returns false if rank is null.
 	 *
@@ -1062,7 +1062,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isGenus();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is higher than the species rank and lower than the
 	 * genus rank (true) or not (false). Infrageneric non viral names are
 	 * binomials. Returns false if rank is null.
@@ -1080,7 +1080,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isInfraGeneric();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is the species rank (true) or not (false). Non viral names
 	 * with species rank are binomials.
 	 * Returns false if rank is null.
@@ -1098,7 +1098,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getRank().isSpecies();
 	}
 	/**
-	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of this
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is lower than the species rank (true) or not (false).
 	 * Infraspecific non viral names are trinomials.
 	 * Returns false if rank is null.
@@ -1119,7 +1119,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/**
 	 * Returns null as the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this taxon name since there is no specific
+	 * the construction of <i>this</i> taxon name since there is no specific
 	 * nomenclatural code defined. The real implementention takes place in the
 	 * subclasses {@link ViralName ViralName}, {@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
@@ -1136,7 +1136,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	/**
-	 * Generates and returns the string with the scientific name of this
+	 * Generates and returns the string with the scientific name of <i>this</i>
 	 * taxon name (only non viral taxon names can be generated from their
 	 * components). This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.

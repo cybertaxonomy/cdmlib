@@ -58,7 +58,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	 * Class constructor: creates a new viral taxon name instance
 	 * only containing its {@link common.Rank rank}.
 	 * 
-	 * @param	rank  the rank to be assigned to this viral taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
 	 */
 	public ViralName(Rank rank) {
@@ -71,7 +71,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	/** 
 	 * Creates a new viral taxon name instance only containing its {@link common.Rank rank}.
 	 * 
-	 * @param	rank  the rank to be assigned to this viral taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	#ViralName(Rank)
 	 */
 	public static ViralName NewInstance(Rank rank){
@@ -79,10 +79,10 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	}
 
 	/**
-	 * Returns the accepted acronym (an assigned abbreviation) string for this
+	 * Returns the accepted acronym (an assigned abbreviation) string for <i>this</i>
 	 * viral taxon name. For instance PCV stays for Peanut Clump Virus.
 	 * 
-	 * @return  the string containing the accepted acronym of this viral taxon name
+	 * @return  the string containing the accepted acronym of <i>this</i> viral taxon name
 	 */
 	public String getAcronym(){
 		return this.acronym;
@@ -95,13 +95,13 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	}
 
 	/**
-	 * Generates and returns the string with the scientific name of this
+	 * Generates and returns the string with the scientific name of <i>this</i>
 	 * viral taxon name. This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
 	 * TaxonNameBase#generateTitle() method.
 	 *
-	 * @return  the string with the composed name of this viral taxon name with authorship (and maybe year)
+	 * @return  the string with the composed name of <i>this</i> viral taxon name with authorship (and maybe year)
 	 * @see  	common.IdentifiableEntity#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	TaxonNameBase#generateTitle()
@@ -113,14 +113,14 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	}
 
 	/**
-	 * Returns the boolean value "true" if the components of this viral taxon name
+	 * Returns the boolean value "true" if the components of <i>this</i> viral taxon name
 	 * follow the rules of the corresponding
 	 * {@link NomenclaturalCode International Code of Virus Classification and Nomenclature},
 	 * "false" otherwise.
 	 * This method overrides and implements the isCodeCompliant method from
 	 * the abstract {@link TaxonNameBase#isCodeCompliant() TaxonNameBase} class.
 	 *  
-	 * @return  the boolean value expressing the compliance of this viral taxon name to its nomenclatural code
+	 * @return  the boolean value expressing the compliance of <i>this</i> viral taxon name to its nomenclatural code
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
@@ -133,7 +133,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this viral taxon name, that is the
+	 * the construction of <i>this</i> viral taxon name, that is the
 	 * International Code of Virus Classification and Nomenclature.
 	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
 	 *
@@ -150,9 +150,9 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
-	 * several strings corresponding to this viral taxon name.
+	 * several strings corresponding to <i>this</i> viral taxon name.
 	 * 
-	 * @return  the cache strategy used for this viral taxon name
+	 * @return  the cache strategy used for <i>this</i> viral taxon name
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */

@@ -79,11 +79,11 @@ public class Address extends VersionableEntity {
 	
 	/** 
 	 * Returns the {@link Contact contact} (of a {@link Person person} or of an {@link Institution institution})
-	 * to which this address belongs.
+	 * to which <i>this</i> address belongs.
 	 * Both kinds of agents cannot have more than one contact, but a contact may include
 	 * several postal addresses. 
 	 *
-	 * @return	the contact this postal address belongs to
+	 * @return	the contact <i>this</i> postal address belongs to
 	 * @see     Contact
 	 */
 	@ManyToOne
@@ -93,15 +93,15 @@ public class Address extends VersionableEntity {
 
 
 	/** 
-	 * Adds this postal address to the set of addresses of a {@link Contact contact}.
+	 * Adds <i>this</i> postal address to the set of addresses of a {@link Contact contact}.
 	 * The same address instance cannot be assigned to different persons
 	 * or institutions (if they do have the same postal address several
-	 * address instances must be created). If this address already belongs to a
+	 * address instances must be created). If <i>this</i> address already belongs to a
 	 * contact this method shifts it from this contact to a new one.
-	 * Therefore this address will be removed from the set of addresses of the old
+	 * Therefore <i>this</i> address will be removed from the set of addresses of the old
 	 * contact and added to the set of the new one. 
 	 *
-	 * @param  newContact  the new contact to which this postal address should belong
+	 * @param  newContact  the new contact to which <i>this</i> postal address should belong
 	 * @see                Contact#addAddress(Address)
 	 * @see                Contact#removeAddress(Address)
 	 */
@@ -111,7 +111,7 @@ public class Address extends VersionableEntity {
 
 	
 	/**
-	 * Returns the {@link WaterbodyOrCountry country} involved in this postal address.
+	 * Returns the {@link WaterbodyOrCountry country} involved in <i>this</i> postal address.
 	 * 
 	 * @return	the country 
 	 */
@@ -128,10 +128,10 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the geophysical {@link Point location} (coordinates) of this postal address.
+	 * Returns the geophysical {@link Point location} (coordinates) of <i>this</i> postal address.
 	 * The location can be useful for instance to visualize the address on a map.
 	 * 
-	 * @return  the point corresponding to this address
+	 * @return  the point corresponding to <i>this</i> address
 	 * @see		eu.etaxonomy.cdm.model.location.Point
 	 */
 	@XmlTransient
@@ -148,7 +148,7 @@ public class Address extends VersionableEntity {
 
 	/**
 	 * Returns a string corresponding to the post office box
-	 * involved in this postal address.
+	 * involved in <i>this</i> postal address.
 	 * 
 	 * @return	the post office box string 
 	 */
@@ -164,7 +164,7 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the street name and number involved in this postal address.
+	 * Returns the street name and number involved in <i>this</i> postal address.
 	 * Street numbers are part of the street string.
 	 * 
 	 * @return	the string composed of street name and number  
@@ -181,7 +181,7 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the post code number involved in this postal address.
+	 * Returns the post code number involved in <i>this</i> postal address.
 	 * 
 	 * @return	the post code number string
 	 */
@@ -197,7 +197,7 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the town (possibly with locality or suburb) involved in this postal address.
+	 * Returns the town (possibly with locality or suburb) involved in <i>this</i> postal address.
 	 * 
 	 * @return  the string representing a town
 	 */
@@ -213,7 +213,7 @@ public class Address extends VersionableEntity {
 	}
 
 	/**
-	 * Returns the region or state involved in this postal address.
+	 * Returns the region or state involved in <i>this</i> postal address.
 	 * 
 	 * @return  the string representing a region or a state
 	 */

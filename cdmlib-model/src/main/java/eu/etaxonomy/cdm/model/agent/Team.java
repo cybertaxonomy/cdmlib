@@ -75,7 +75,7 @@ public class Team extends TeamOrPersonBase {
 	}
 
 	/** 
-	 * Returns the list of {@link Person members} belonging to this team. 
+	 * Returns the list of {@link Person members} belonging to <i>this</i> team. 
 	 * A person may be a member of several distinct teams. 
 	 */
 	@ManyToMany
@@ -90,7 +90,7 @@ public class Team extends TeamOrPersonBase {
 	}
 	
 	/** 
-	 * Adds a new {@link Person person} to this team at the end of the members' list. 
+	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list. 
 	 *
 	 * @param  person  the person who should be added to the other team members
 	 * @see     	   #getTeamMembers()
@@ -101,7 +101,7 @@ public class Team extends TeamOrPersonBase {
 	}
 	
 	/** 
-	 * Adds a new {@link Person person} to this team
+	 * Adds a new {@link Person person} to <i>this</i> team
 	 * at the given index place of the members' list. If the person is already
 	 * a member of the list he will be moved to the given index place. 
 	 * The index must be a positive integer. If the index is bigger than
@@ -123,9 +123,9 @@ public class Team extends TeamOrPersonBase {
 	}
 	
 	/** 
-	 * Removes one person from the list of members of this team.
+	 * Removes one person from the list of members of <i>this</i> team.
 	 *
-	 * @param  person  the person who should be deleted from this team
+	 * @param  person  the person who should be deleted from <i>this</i> team
 	 * @see            #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
@@ -133,14 +133,14 @@ public class Team extends TeamOrPersonBase {
 	}
 
 	/**
-	 * Generates an identification string for this team according to the strategy
+	 * Generates an identification string for <i>this</i> team according to the strategy
 	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
 	 * with the full names of all persons belonging to its (ordered) members' list.
 	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
-	 * @return  a string which identifies this team
+	 * @return  a string which identifies <i>this</i> team
 	 */
 	@Override
 	public String generateTitle() {
@@ -149,7 +149,7 @@ public class Team extends TeamOrPersonBase {
 	
 	
 	/**
-	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for this team.
+	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
 	 * This method overrides {@link TeamOrPersonBase#getNomenclaturalTitle() getNomenclaturalTitle}.
 	 * This string is built with the {@link TeamOrPersonBase#getNomenclaturalTitle() abbreviated names}
 	 * of all persons belonging to its (ordered) members' list if the flag
@@ -160,7 +160,7 @@ public class Team extends TeamOrPersonBase {
 	 * The result might be kept as nomenclatural abbreviation
 	 * by using the {@link #setNomenclaturalTitle(String) setNomenclaturalTitle} method.
 	 * 
-	 * @return  a string which identifies this team for nomenclature
+	 * @return  a string which identifies <i>this</i> team for nomenclature
 	 */
 	@Override
 	@Transient
@@ -175,7 +175,7 @@ public class Team extends TeamOrPersonBase {
 	}
 	
 	/**
-	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to this team
+	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and protects it from overwriting.
 	 * This method overrides {@link TeamOrPersonBase#setNomenclaturalTitle(String) setNomenclaturalTitle}.
 	 * 
@@ -189,7 +189,7 @@ public class Team extends TeamOrPersonBase {
 	}
 
 	/**
-	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to this team
+	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and a protection flag status to this string.
 	 * 
 	 * @see  #getNomenclaturalTitle()

@@ -94,7 +94,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	
 	/** 
-	 * Returns the set of {@link TaxonNameBase taxon names} that belong to this homotypical group.
+	 * Returns the set of {@link TaxonNameBase taxon names} that belong to <i>this</i> homotypical group.
 	 *
 	 * @see	#getTypeDesignations()
 	 */
@@ -110,11 +110,11 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	/** 
 	 * Adds a new {@link TaxonNameBase taxon name} to the set of taxon names that belong
-	 * to this homotypical group and to the corresponding set of each 
+	 * to <i>this</i> homotypical group and to the corresponding set of each 
 	 * {@link SpecimenTypeDesignation#getTypifiedNames() type designation}
-	 * associated with this homotypical group.
+	 * associated with <i>this</i> homotypical group.
 	 *
-	 * @param  typifiedName  the taxon name to be added to this group
+	 * @param  typifiedName  the taxon name to be added to <i>this</i> group
 	 * @see 			  	 #getTypifiedNames()
 	 * @see 			  	 #removeTypifiedName(TaxonNameBase)
 	 */
@@ -126,7 +126,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	/** 
 	 * Removes one element from the set of {@link TaxonNameBase taxon names}
-	 * that belong to this homotypical group.
+	 * that belong to <i>this</i> homotypical group.
 	 *
 	 * @param  taxonBase	the taxon name which should be removed from the corresponding set
 	 * @see    				#addTypifiedName(TaxonNameBase)
@@ -138,10 +138,10 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Merges the typified {@link TaxonNameBase taxon names} from one homotypical group into
-	 * the set of typified taxon names of this homotypical group.
+	 * the set of typified taxon names of <i>this</i> homotypical group.
 	 *  
 	 * @param	homotypicalGroupToMerge the homotypical group the typified names of which
-	 * 									are to be transferred to this homotypical group
+	 * 									are to be transferred to <i>this</i> homotypical group
 	 */
 	public void merge(HomotypicalGroup homotypicalGroupToMerge){
 		if (homotypicalGroupToMerge != null){
@@ -156,7 +156,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} that
-	 * typify this homotypical group including the status of these designations.
+	 * typify <i>this</i> homotypical group including the status of these designations.
 	 *
 	 * @see	#getTypifiedNames()
 	 */
@@ -173,9 +173,9 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}	
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation} to the set
-	 * of specimen type designations assigned to this homotypical group and eventually
+	 * of specimen type designations assigned to <i>this</i> homotypical group and eventually
 	 * (with a boolean parameter) also to the corresponding set of each of the
-	 * {@link TaxonNameBase taxon names} belonging to this homotypical group.
+	 * {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group.
 	 *
 	 * @param  typeDesignation	the specimen type designation to be added
 	 * @param  addToAllNames	the boolean flag indicating whether the addition will also
@@ -199,7 +199,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
 	 * {@link HomotypicalGroup homotypical group} to which this {@link TaxonNameBase taxon name} belongs.
 	 * The same element will be removed from the corresponding set of each of
-	 * the taxon names belonging to this homotypical group. Furthermore the
+	 * the taxon names belonging to <i>this</i> homotypical group. Furthermore the
 	 * homotypical group attribute of the specimen type designation will be
 	 * nullified.
 	 *
@@ -224,7 +224,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * Retrieves the ordered list (depending on the date of publication) of
 	 * {@link taxon.Synonym synonyms} (according to a given reference)
 	 * the {@link TaxonNameBase taxon names} of which belong to <i>this>/i> homotypical group.
-	 * If other names are part of this group that are not considered synonyms
+	 * If other names are part of <i>this</i> group that are not considered synonyms
 	 * according to the respective reference, then they will not be included in
 	 * the result set.
 	 * 

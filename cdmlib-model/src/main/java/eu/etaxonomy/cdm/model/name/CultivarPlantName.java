@@ -63,8 +63,8 @@ public class CultivarPlantName extends BotanicalName {
 	 * The new cultivar taxon name instance will be also added to the set of
 	 * cultivar taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this cultivar taxon name
-	 * @param	homotypicalGroup  the homotypical group to which this cultivar taxon name belongs
+	 * @param	rank  the rank to be assigned to <i>this</i> cultivar taxon name
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> cultivar taxon name belongs
 	 * @see 	#CultivarPlantName()
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
 	 */
@@ -79,7 +79,7 @@ public class CultivarPlantName extends BotanicalName {
 	 * only containing its {@link common.Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @param	rank	the rank to be assigned to this cultivar taxon name
+	 * @param	rank	the rank to be assigned to <i>this</i> cultivar taxon name
 	 * @see 			#CultivarPlantName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
 	 * @see 			eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
@@ -96,8 +96,8 @@ public class CultivarPlantName extends BotanicalName {
 	 * The new cultivar taxon name instance will be also added to the set of
 	 * cultivar taxon names belonging to this homotypical group.
 	 * 
-	 * @param  rank  the rank to be assigned to this cultivar taxon name
-	 * @param  homotypicalGroup  the homotypical group to which this cultivar taxon name belongs
+	 * @param  rank  the rank to be assigned to <i>this</i> cultivar taxon name
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> cultivar taxon name belongs
 	 * @see    #NewInstance(Rank)
 	 * @see    #CultivarPlantName(Rank, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
@@ -107,7 +107,7 @@ public class CultivarPlantName extends BotanicalName {
 	}
 	
 	/** 
-	 * Returns the characteristical cultivar name part string assigned to this
+	 * Returns the characteristical cultivar name part string assigned to <i>this</i>
 	 * cultivar taxon name. In the scientific name "Clematis alpina 'Ruby'" for
 	 * instance this characteristical string is "Ruby". This part of the name is
 	 * governed by the International Code for the Nomenclature of Cultivated
@@ -129,7 +129,7 @@ public class CultivarPlantName extends BotanicalName {
 	
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this cultivar taxon name, that is the
+	 * the construction of <i>this</i> cultivar taxon name, that is the
 	 * International Code of Nomenclature for Cultivated Plants. This method
 	 * overrides the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
 	 *

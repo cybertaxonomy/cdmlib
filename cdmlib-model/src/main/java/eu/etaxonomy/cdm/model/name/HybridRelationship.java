@@ -92,7 +92,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 
 	/** 
 	 * Returns the {@link BotanicalName botanical taxon name} that plays the parent role
-	 * in this hybrid relationship.
+	 * in <i>this</i> hybrid relationship.
 	 *  
 	 * @see   #getHybridName()
 	 * @see   common.RelationshipBase#getRelatedFrom()
@@ -110,7 +110,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 
 	/** 
 	 * Returns the {@link BotanicalName botanical taxon name} that plays the child role
-	 * (the child is actually the hybrid taxon name) in this hybrid relationship.
+	 * (the child is actually the hybrid taxon name) in <i>this</i> hybrid relationship.
 	 *  
 	 * @see   #getParentName()
 	 * @see   common.RelationshipBase#getRelatedTo()
@@ -129,7 +129,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	/** 
 	 * Returns the ICBN rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code) for building
-	 * the string representing the hybrid taxon name within this hybrid
+	 * the string representing the hybrid taxon name within <i>this</i> hybrid
 	 * relationship.
 	 */
 	public String getRuleConsidered(){

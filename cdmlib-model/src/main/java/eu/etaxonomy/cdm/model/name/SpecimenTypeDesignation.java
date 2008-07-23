@@ -138,7 +138,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
-	 * in this specimen type designation.
+	 * in <i>this</i> specimen type designation.
 	 *  
 	 * @see   #getTypeSpecimen()
 	 */
@@ -156,7 +156,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
-	 * in this specimen type designation to typify the {@link HomotypicalGroup homotypical group}.
+	 * in <i>this</i> specimen type designation to typify the {@link HomotypicalGroup homotypical group}.
 	 *  
 	 * @see   #getHomotypicalGroup()
 	 */
@@ -173,9 +173,9 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	}
 
 	/** 
-	 * Returns the {@link TypeDesignationStatus type designation status} for this specimen type
+	 * Returns the {@link TypeDesignationStatus type designation status} for <i>this</i> specimen type
 	 * designation. This status describes which of the possible categories of
-	 * types like "holotype", "neotype", "syntype" or "isotype" applies to this
+	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
 	 * specimen type designation.
 	 */
 	@ManyToOne
@@ -191,7 +191,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the set of {@link TaxonNameBase taxon names} included in the
-	 * {@link HomotypicalGroup homotypical group} typified in this specimen type designation.
+	 * {@link HomotypicalGroup homotypical group} typified in <i>this</i> specimen type designation.
 	 */
 	@ManyToMany
 	public Set<TaxonNameBase> getTypifiedNames() {

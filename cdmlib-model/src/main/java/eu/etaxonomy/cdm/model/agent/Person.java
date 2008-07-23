@@ -90,7 +90,7 @@ public class Person extends TeamOrPersonBase {
 
 	/** 
 	 * Creates a new empty instance for a person whose existence is all what is known.
-	 * This can be a provisional solution until more information about this person
+	 * This can be a provisional solution until more information about <i>this</i> person
 	 * can be gathered, for instance in case a member of a nomenclatural author team
 	 * is not explicitly mentioned. It also includes the cache strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
@@ -144,7 +144,7 @@ public class Person extends TeamOrPersonBase {
 	
 	
 	/** 
-	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to this person. 
+	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person. 
 	 *
 	 * @see     InstitutionalMembership
 	 */
@@ -161,13 +161,13 @@ public class Person extends TeamOrPersonBase {
 	}
 	
 	/** 
-	 * Adds a new {@link InstitutionalMembership membership} of this person in an {@link Institution institution}
+	 * Adds a new {@link InstitutionalMembership membership} of <i>this</i> person in an {@link Institution institution}
 	 * to the set of his institution memberships.
 	 * This method also creates a new institutional membership instance.
 	 *
-	 * @param  institution  the institution this person belongs to
-	 * @param  period       the time period for which this person has been a member of the institution
-	 * @param  department   the string label for the department this person belongs to,
+	 * @param  institution  the institution <i>this</i> person belongs to
+	 * @param  period       the time period for which <i>this</i> person has been a member of the institution
+	 * @param  department   the string label for the department <i>this</i> person belongs to,
 	 * 					    within the institution
 	 * @param  role         the string label for the persons's role within the department or institution
 	 * @see 			    #getInstitutionalMemberships()
@@ -181,11 +181,11 @@ public class Person extends TeamOrPersonBase {
 	}
 	
 	/** 
-	 * Removes one element from the set of institutional memberships of this person.
+	 * Removes one element from the set of institutional memberships of <i>this</i> person.
 	 * Institute and person attributes of the institutional membership object
 	 * will be nullified.
 	 *
-	 * @param  ims  the institutional membership of this person which should be deleted
+	 * @param  ims  the institutional membership of <i>this</i> person which should be deleted
 	 * @see     	#getInstitutionalMemberships()
 	 */
 	public void removeInstitutionalMembership(InstitutionalMembership ims){
@@ -199,7 +199,7 @@ public class Person extends TeamOrPersonBase {
 
 	/** 
 	 * Returns the set of {@link common.Keyword keywords} mostly representing a taxonomic or
-	 * a geographical specialization of this person.
+	 * a geographical specialization of <i>this</i> person.
 	 * Keywords are items of a controlled {@link common.TermVocabulary vocabulary}.
 	 *
 	 * @see 	common.Keyword
@@ -224,7 +224,7 @@ public class Person extends TeamOrPersonBase {
 	}
 	/** 
 	 * Adds a new keyword from the keyword vocabulary to the set of keywords
-	 * describing or circumscribing this person's activities.
+	 * describing or circumscribing <i>this</i> person's activities.
 	 *
 	 * @param  keyword  any keyword 
 	 * @see 			#getKeywords()
@@ -234,7 +234,7 @@ public class Person extends TeamOrPersonBase {
 		this.keywords.add(keyword);
 	}
 	/** 
-	 * Removes one element from the set of keywords for this person.
+	 * Removes one element from the set of keywords for <i>this</i> person.
 	 *
 	 * @param  keyword  the keyword which should be deleted
 	 * @see             #getKeywords()
@@ -246,8 +246,8 @@ public class Person extends TeamOrPersonBase {
 
 
 	/** 
-	 * Returns the {@link Contact contact} of this person.
-	 * The contact contains several ways to approach this person.
+	 * Returns the {@link Contact contact} of <i>this</i> person.
+	 * The contact contains several ways to approach <i>this</i> person.
 	 *
 	 * @see 	Contact
 	 */
@@ -266,7 +266,7 @@ public class Person extends TeamOrPersonBase {
 	
 	/**
 	 * Returns the string representing the prefix (for instance "Prof.&nbsp;Dr.<!-- -->")
-	 * to this person's name.
+	 * to <i>this</i> person's name.
 	 */
 	public String getPrefix(){
 		return this.prefix;
@@ -281,7 +281,7 @@ public class Person extends TeamOrPersonBase {
 
 	/**
 	 * Returns the string representing the given name or forename
-	 * (for instance "John") of this person. 
+	 * (for instance "John") of <i>this</i> person. 
 	 * This is the part of his name which is not shared with other
 	 * family members. Actually it may be just initials (for instance "G. Jr."),
 	 * all forenames in full or a combination of expanded names and initials. 
@@ -299,7 +299,7 @@ public class Person extends TeamOrPersonBase {
 	
 	/**
 	 * Returns the string representing the hereditary name (surname or family name)
-	 * (for instance "Smith") of this person. 
+	 * (for instance "Smith") of <i>this</i> person. 
 	 * This is the part of his name which is common to (all) other
 	 * members of his family, as distinct from the given name or forename. 
 	 */
@@ -316,7 +316,7 @@ public class Person extends TeamOrPersonBase {
 
 	/**
 	 * Returns the string representing the suffix (for instance "Junior")
-	 * of this person's name.
+	 * of <i>this</i> person's name.
 	 */
 	public String getSuffix(){
 		return this.suffix;
@@ -331,7 +331,7 @@ public class Person extends TeamOrPersonBase {
 
 	/** 
 	 * Returns the {@link common.TimePeriod period of time}
-	 * in which this person was alive (life span).
+	 * in which <i>this</i> person was alive (life span).
 	 * The general form is birth date - death date
 	 * (XXXX - YYYY; XXXX - or - YYYY as appropriate),
 	 * but a simple flourished date (fl. XXXX) is also possible
@@ -350,7 +350,7 @@ public class Person extends TeamOrPersonBase {
 	}
 
 	/**
-	 * Generates the "full" name string of this person according to the strategy
+	 * Generates the "full" name string of <i>this</i> person according to the strategy
 	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 * The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
@@ -358,7 +358,7 @@ public class Person extends TeamOrPersonBase {
 	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
-	 * @return  the string with the full name of this person
+	 * @return  the string with the full name of <i>this</i> person
 	 */
 	@Override
 	public String generateTitle() {

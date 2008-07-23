@@ -126,7 +126,7 @@ public class NomenclaturalCode extends DefinedTermBase {
 	
 	/**
 	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
-	 * cultivar plant, bacterial or viral name) instance depending on this
+	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
 	 * nomenclature code only containing the given {@link Rank rank}.
 	 * 
 	 * @param	rank	the rank of the new taxon name instance

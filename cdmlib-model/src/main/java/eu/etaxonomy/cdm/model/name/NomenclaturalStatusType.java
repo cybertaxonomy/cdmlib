@@ -125,9 +125,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 
 	/**
-	 * Returns the boolean value indicating whether this nomenclatural status
+	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "invalid" or a kind of "invalid" (true) or not (false).
-	 * Returns false if this nomenclatural status type is null.
+	 * Returns false if <i>this</i> nomenclatural status type is null.
 	 *
 	 * @see  #isLegitimateType()
 	 * @see  #isIllegitimateType()
@@ -148,9 +148,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Returns the boolean value indicating whether this nomenclatural status
+	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "legitimate" or a kind of "legitimate" (true)
-	 * or not (false). Returns false if this nomenclatural status type is null.
+	 * or not (false). Returns false if <i>this</i> nomenclatural status type is null.
 	 *
 	 * @see  #isInvalidType()
 	 * @see  #isIllegitimateType()
@@ -173,9 +173,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	/**
-	 * Returns the boolean value indicating whether this nomenclatural status
+	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "illegitimate" or a kind of "illegitimate" (true)
-	 * or not (false). Returns false if this nomenclatural status type is null.
+	 * or not (false). Returns false if <i>this</i> nomenclatural status type is null.
 	 *
 	 * @see  #isInvalidType()
 	 * @see  #isLegitimateType()
@@ -345,13 +345,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List, eu.etaxonomy.cdm.model.common.Language)
 	 */
 	/** 
-	 * Fills this nomenclatural status type with contents (uuid, uri, 
+	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
 	 * description text, label and label abbreviation) coming from a csv line.
 	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
 	 * 
 	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
-	 * 						to be used to fill this nomenclatural status type
-	 * @param	lang		the language in which the description text for this
+	 * 						to be used to fill <i>this</i> nomenclatural status type
+	 * @param	lang		the language in which the description text for <i>this</i>
 	 * 						nomenclatural status type is written
 	 * @see					#NomenclaturalStatusType(String, String, String)
 	 * @see					#readCsvLine(List)
@@ -373,13 +373,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
 	 */
 	/** 
-	 * Fills this nomenclatural status type with contents (uuid, uri, 
+	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
 	 * description text, label and label abbreviation) coming from a csv line.
 	 * The implicit language for the description text is "latin".
 	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
 	 * 
 	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
-	 * 						to be used to fill this nomenclatural status type
+	 * 						to be used to fill <i>this</i> nomenclatural status type
 	 * @see					#NomenclaturalStatusType(String, String, String)
 	 * @see					#readCsvLine(List, Language)
 	 * @see					common.DefinedTermBase#readCsvLine(List)

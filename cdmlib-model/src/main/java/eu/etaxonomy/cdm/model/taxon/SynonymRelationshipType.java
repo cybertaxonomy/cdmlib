@@ -57,7 +57,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	/** 
 	 * Class constructor: creates a new empty synonym relationship type instance.
 	 * 
-	 * @see 	#SynonymRelationshipType(String, String, String, boolean, boolean)
+	 * @see 	#SynonymRelationshipType(String, String, String)
 	 */
 	public SynonymRelationshipType() {
 		super();

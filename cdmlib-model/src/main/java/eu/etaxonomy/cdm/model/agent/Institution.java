@@ -86,7 +86,7 @@ public class Institution extends Agent {
 	}
 
 	/** 
-	 * Returns the {@link Contact contact} corresponding to this institution.
+	 * Returns the {@link Contact contact} corresponding to <i>this</i> institution.
 	 * It includes telecommunication data
 	 * and electronic as well as multiple postal addresses.
  	 */
@@ -104,7 +104,7 @@ public class Institution extends Agent {
 
 	/** 
 	 * Returns the set of institution {@link InstitutionType types} (categories)
-	 * used to describe or circumscribe this institution's activities.
+	 * used to describe or circumscribe <i>this</i> institution's activities.
 	 * Institution types are items of a controlled {@link common.TermVocabulary vocabulary}.
 	 *
 	 * @return	the set of institution types
@@ -117,7 +117,7 @@ public class Institution extends Agent {
 	
 	/** 
 	 * Adds a new institutional type (from the corresponding {@link common.TermVocabulary vocabulary})
-	 * to the set of institution types of this institution.
+	 * to the set of institution types of <i>this</i> institution.
 	 *
 	 * @param  t  any type of institution
 	 * @see 	  #getTypes()
@@ -128,7 +128,7 @@ public class Institution extends Agent {
 	}
 	
 	/** 
-	 * Removes one element from the set of institution types for this institution.
+	 * Removes one element from the set of institution types for <i>this</i> institution.
 	 *
 	 * @param  t  the institution type which should be deleted
 	 * @see       #getTypes()

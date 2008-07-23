@@ -78,9 +78,9 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
 	 * @param isRejectedType		the boolean flag indicating whether the competent authorities rejected
-	 * 								this name type designation
+	 * 								<i>this</i> name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
-	 * 								this name type designation
+	 * 								<i>this</i> name type designation
 	 * @param isNotDesignated		see at {@link #isNotDesignated()}
 	 * @see							#NameTypeDesignation()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
@@ -100,7 +100,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
-	 * typified taxon name in this taxon name type designation. The {@link Rank rank}
+	 * typified taxon name in <i>this</i> taxon name type designation. The {@link Rank rank}
 	 * of a taxon name typified by another taxon name must be higher than
 	 * "species aggregate".
 	 *  
@@ -124,7 +124,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
-	 * taxon name type in this taxon name type designation. The {@link Rank rank}
+	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
 	 * of a taxon name type must be "species".
 	 *  
 	 * @see   #getTypifiedName()
@@ -143,7 +143,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the boolean value "true" if the competent authorities decided to
-	 * reject the use of the species taxon name for this taxon name type
+	 * reject the use of the species taxon name for <i>this</i> taxon name type
 	 * designation.
 	 *  
 	 * @see   #isConservedType()
@@ -160,7 +160,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the boolean value "true" if the competent authorities decided to
-	 * conserve the use of the species taxon name for this taxon name type
+	 * conserve the use of the species taxon name for <i>this</i> taxon name type
 	 * designation.
 	 *  
 	 * @see   #isConservedType()
@@ -177,7 +177,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 
 	/** 
 	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name} for
-	 * this taxon name type designation was posterior to the publication of the
+	 * <i>this</i> taxon name type designation was posterior to the publication of the
 	 * typified taxon name. In this case the taxon name type designation should
 	 * have a {@link reference.ReferenceBase reference} that is different to the
 	 * nomenclatural reference of the typified taxon name.
@@ -196,7 +196,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	}
 
 	/** 
-	 * Returns the {@link reference.ReferenceBase reference} used in case this 
+	 * Returns the {@link reference.ReferenceBase reference} used in case <i>this</i> 
 	 * taxon name type designation is a lectotype. This reference is different
 	 * to the nomenclatural reference of the typified taxon name.
 	 *  
@@ -214,7 +214,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	}
 
 	/** 
-	 * Returns the details string of the reference corresponding to this taxon 
+	 * Returns the details string of the reference corresponding to <i>this</i> taxon 
 	 * type designation if it is a lectotype. The details describe the exact
 	 * localisation within the publication used for the lectotype assignation.
 	 * These are mostly (implicitly) pages but can also be figures or tables or

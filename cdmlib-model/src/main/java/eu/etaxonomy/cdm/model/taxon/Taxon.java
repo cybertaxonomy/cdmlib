@@ -736,7 +736,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
 	 * <i>this</i> taxon plays the target role. A misapplied name is a taxon the
 	 * {@link name.TaxonNameBase taxon name} of which has been erroneously used
-	 * by the {@link TaxonBase#getSec() taxon reference} to denominate the same taxonomic group
+	 * by the {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
 	 * as the one meant by <i>this</i> ("accepted/correct") taxon. 
 	 * 
 	 * @see  #getTaxonRelations()

@@ -75,7 +75,7 @@ public class Contact extends VersionableEntity {
 	
 	
 	/** 
-	 * Returns the set of postal {@link Address addresses} belonging to this contact. 
+	 * Returns the set of postal {@link Address addresses} belonging to <i>this</i> contact. 
 	 * A {@link Person person} or an {@link Institution institution} cannot have more than one contact,
 	 * but a contact may include several postal addresses. 
 	 *
@@ -94,7 +94,7 @@ public class Contact extends VersionableEntity {
 		this.addresses = addresses;
 	}
 	/** 
-	 * Adds a new postal {@link Address address} to the set of postal addresses of this contact.
+	 * Adds a new postal {@link Address address} to the set of postal addresses of <i>this</i> contact.
 	 *
 	 * @param  address  the address to be added
 	 * @see     		#getAddresses()
@@ -107,9 +107,9 @@ public class Contact extends VersionableEntity {
 		}
 	}
 	/** 
-	 * Removes one element from the set of postal addresses of this contact.
+	 * Removes one element from the set of postal addresses of <i>this</i> contact.
 	 *
-	 * @param  address  the postal address of this contact which should be deleted
+	 * @param  address  the postal address of <i>this</i> contact which should be deleted
 	 * @see     		#getAddresses()
 	 */
 	public void removeAddress(Address address){
@@ -119,7 +119,7 @@ public class Contact extends VersionableEntity {
 	
 	/**
 	 * Returns the string representing the electronic mail address
-	 * included in this contact.
+	 * included in <i>this</i> contact.
 	 */
 	public String getEmail(){
 		return this.email;
@@ -134,7 +134,7 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * Returns the string representing the "Uniform Resource Locator" (url)
-	 * included in this contact.
+	 * included in <i>this</i> contact.
 	 */
 	public String getUrl(){
 		return this.url;
@@ -149,7 +149,7 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * Returns the string representing the phone number
-	 * included in this contact.
+	 * included in <i>this</i> contact.
 	 */
 	public String getPhone(){
 		return this.phone;
@@ -164,7 +164,7 @@ public class Contact extends VersionableEntity {
 
 	/**
 	 * Returns the string representing the telefax number
-	 * included in this contact.
+	 * included in <i>this</i> contact.
 	 */
 	public String getFax(){
 		return this.fax;

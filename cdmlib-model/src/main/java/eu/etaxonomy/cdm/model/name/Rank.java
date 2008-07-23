@@ -334,8 +334,8 @@ public class Rank extends OrderedTermBase<Rank> {
 
 	
 	/**
-	 * Returns the boolean value indicating whether this rank is higher than 
-	 * the genus rank (true) or not (false). Returns false if this rank is null.
+	 * Returns the boolean value indicating whether <i>this</i> rank is higher than 
+	 * the genus rank (true) or not (false). Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isGenus()
 	 * @see  #isInfraGeneric()
@@ -348,8 +348,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 	
 	/**
-	 * Returns the boolean value indicating whether this rank is the genus rank
-	 * (true) or not (false). Returns false if this rank is null.
+	 * Returns the boolean value indicating whether <i>this</i> rank is the genus rank
+	 * (true) or not (false). Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isInfraGeneric()
@@ -362,9 +362,9 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * Returns the boolean value indicating whether this rank is higher than the
+	 * Returns the boolean value indicating whether <i>this</i> rank is higher than the
 	 * species rank and lower than the genus rank (true) or not (false).
-	 * Returns false if this rank is null.
+	 * Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -377,8 +377,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * Returns the boolean value indicating whether this rank is the species
-	 * rank (true) or not (false). Returns false if this rank is null.
+	 * Returns the boolean value indicating whether <i>this</i> rank is the species
+	 * rank (true) or not (false). Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()
@@ -391,8 +391,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	/**
-	 * Returns the boolean value indicating whether this rank is lower than the
-	 * species rank (true) or not (false). Returns false if this rank is null.
+	 * Returns the boolean value indicating whether <i>this</i> rank is lower than the
+	 * species rank (true) or not (false). Returns false if <i>this</i> rank is null.
 	 *
 	 * @see  #isSupraGeneric()
 	 * @see  #isGenus()

@@ -129,7 +129,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 	/**
 	 * Generates and returns the string with the full scientific name (including
-	 * authorship) of the {@link name.TaxonNameBase taxon name} used in this
+	 * authorship) of the {@link name.TaxonNameBase taxon name} used in <i>this</i>
 	 * (abstract) taxon as well as the title of the {@link reference.ReferenceBase reference} using
 	 * this taxon name. This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
@@ -137,7 +137,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * IdentifiableEntity#generateTitle() method.
 	 *
 	 * @return  the string with the full scientific name of the taxon name
-	 *			and with the title of the reference involved in this (abstract) taxon
+	 *			and with the title of the reference involved in <i>this</i> (abstract) taxon
 	 * @see  	common.IdentifiableEntity#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 */
@@ -158,7 +158,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	/** 
-	 * Returns the {@link name.TaxonNameBase taxon name} used in this (abstract) taxon.
+	 * Returns the {@link name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
 	@ManyToOne
 	@JoinColumn(name="taxonName_fk")
@@ -173,7 +173,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	
 	/** 
 	 * Returns the {@link name.HomotypicalGroup homotypical group} of the
-	 * {@link name.TaxonNameBase taxon name} used in this (abstract) taxon.
+	 * {@link name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
 	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
@@ -185,9 +185,9 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 
 	/**
-	 * Returns the boolean value indicating whether the assignment of this
+	 * Returns the boolean value indicating whether the assignment of <i>this</i>
 	 * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
-	 * (false) or not (true). If this flag is set the use of this (abstract)
+	 * (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
 	 * taxon as an "accepted/correct" name or as a (junior) "synonym" might
 	 * still change in the course of taxonomical working process. 
 	 */
@@ -202,9 +202,9 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 
 	/** 
-	 * Returns the {@link reference.ReferenceBase reference} of this (abstract) taxon.
+	 * Returns the {@link reference.ReferenceBase reference} of <i>this</i> (abstract) taxon.
 	 * This is the reference or the treatment using the {@link name.TaxonNameBase taxon name}
-	 * in this (abstract) taxon.
+	 * in <i>this</i> (abstract) taxon.
 	 */
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
@@ -220,7 +220,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	/**
-	 * Returns the boolean value indicating whether this (abstract) taxon
+	 * Returns the boolean value indicating whether <i>this</i> (abstract) taxon
 	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
 	 * as long as both the {@link name.TaxonNameBase taxon name} and the {@link reference.ReferenceBase reference}
 	 * exist (are not "null").

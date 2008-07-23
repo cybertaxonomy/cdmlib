@@ -102,8 +102,8 @@ public class BotanicalName extends NonViralName {
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this botanical taxon name
-	 * @param	homotypicalGroup  the homotypical group to which this botanical taxon name belongs
+	 * @param	rank  the rank to be assigned to <i>this</i> botanical taxon name
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see 	#BotanicalName()
 	 * @see 	#BotanicalName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
@@ -122,21 +122,21 @@ public class BotanicalName extends NonViralName {
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this botanical taxon name
-	 * @param	genusOrUninomial the string for this botanical taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> botanical taxon name
+	 * @param	genusOrUninomial the string for <i>this</i> botanical taxon name
 	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
 	 * @param	infraGenericEpithet  the string for the first epithet of
-	 * 			this botanical taxon name if its rank is lower than genus
+	 * 			<i>this</i> botanical taxon name if its rank is lower than genus
 	 * 			and higher than species aggregate
 	 * @param	specificEpithet  the string for the first epithet of
-	 * 			this botanical taxon name if its rank is species aggregate or lower
+	 * 			<i>this</i> botanical taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
-	 * 			this botanical taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published this botanical taxon name
-	 * @param	nomenclaturalReference  the nomenclatural reference where this botanical taxon name was published
+	 * 			<i>this</i> botanical taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> botanical taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-	 * @param	homotypicalGroup  the homotypical group to which this botanical taxon name belongs
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see 	#BotanicalName()
 	 * @see 	#BotanicalName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -157,7 +157,7 @@ public class BotanicalName extends NonViralName {
 	 * only containing its {@link common.Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @param	rank	the rank to be assigned to this botanical taxon name
+	 * @param	rank	the rank to be assigned to <i>this</i> botanical taxon name
 	 * @see 			#BotanicalName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -174,8 +174,8 @@ public class BotanicalName extends NonViralName {
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
-	 * @param  rank  the rank to be assigned to this botanical taxon name
-	 * @param  homotypicalGroup  the homotypical group to which this botanical taxon name belongs
+	 * @param  rank  the rank to be assigned to <i>this</i> botanical taxon name
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see    #NewInstance(Rank)
 	 * @see    #NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see    #BotanicalName(Rank, HomotypicalGroup)
@@ -194,21 +194,21 @@ public class BotanicalName extends NonViralName {
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this botanical taxon name
-	 * @param	genusOrUninomial the string for this botanical taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> botanical taxon name
+	 * @param	genusOrUninomial the string for <i>this</i> botanical taxon name
 	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
 	 * @param	infraGenericEpithet  the string for the first epithet of
-	 * 			this botanical taxon name if its rank is lower than genus
+	 * 			<i>this</i> botanical taxon name if its rank is lower than genus
 	 * 			and higher than species aggregate
 	 * @param	specificEpithet  the string for the first epithet of
-	 * 			this botanical taxon name if its rank is species aggregate or lower
+	 * 			<i>this</i> botanical taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
-	 * 			this botanical taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published this botanical taxon name
-	 * @param	nomenclaturalReference  the nomenclatural reference where this botanical taxon name was published
+	 * 			<i>this</i> botanical taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> botanical taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> botanical taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-	 * @param	homotypicalGroup  the homotypical group to which this botanical taxon name belongs
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see 	#NewInstance(Rank)
 	 * @see 	#NewInstance(Rank, HomotypicalGroup)
 	 * @see		#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -283,7 +283,7 @@ public class BotanicalName extends NonViralName {
 	
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which this botanical taxon name is involved. Any botanical taxon name
+	 * in which <i>this</i> botanical taxon name is involved. Any botanical taxon name
 	 * (even itself a hybrid taxon name) can be a parent of another hybrid
 	 * taxon name.
 	 *  
@@ -307,7 +307,7 @@ public class BotanicalName extends NonViralName {
 	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
 	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
 	 * involved in this hybrid relationship. One of both botanical taxon names
-	 * must be this botanical taxon name otherwise no addition will be carried
+	 * must be <i>this</i> botanical taxon name otherwise no addition will be carried
 	 * out. The {@link common.RelationshipBase#getRelatedTo() child botanical taxon name}
 	 * must be a hybrid, which means that one of its four hybrid flags must be set.
 	 * 
@@ -330,7 +330,7 @@ public class BotanicalName extends NonViralName {
 	 * to this taxon. A HybridRelationship may be of type "is first/second parent" or "is male/female parent".
 	 * By invoking this method this object becomes a habrid child of the parent Name.
 	 * 
-	 * @param parentName		  the botanical name of the parent for this new hybrid name relationship
+	 * @param parentName	  the botanical name of the parent for this new hybrid name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
 	 * @see    				  #addHybridChild(BotanicalName, HybridRelationshipType,String )
@@ -364,7 +364,7 @@ public class BotanicalName extends NonViralName {
 	
 	/** 
 	 * Removes one {@link HybridRelationship hybrid relationship} from the set of
-	 * {@link #getHybridRelationships() hybrid relationships} in which this botanical taxon name
+	 * {@link #getHybridRelationships() hybrid relationships} in which <i>this</i> botanical taxon name
 	 * is involved. The hybrid relationship will also be removed from the set
 	 * belonging to the second botanical taxon name involved. 
 	 *
@@ -379,7 +379,7 @@ public class BotanicalName extends NonViralName {
 
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which this botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
+	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
 	 *  
 	 * @see    #getHybridRelationships()
 	 * @see    #getChildRelationships()
@@ -392,7 +392,7 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which this botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
 	 *  
 	 * @see    #getHybridRelationships()
 	 * @see    #getParentRelationships()
@@ -410,7 +410,7 @@ public class BotanicalName extends NonViralName {
 	 * Otherwise this method does the same as the overwritten {@link TaxonNameBase#addRelationship(RelationshipBase) addRelationship}
 	 * method from TaxonNameBase.
 	 * 
-	 * @param relation  the relationship to be added to some of this taxon name's relationships sets
+	 * @param relation  the relationship to be added to some of <i>this</i> taxon name's relationships sets
 	 * @see    	   		#addHybridRelationship(HybridRelationship)
 	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
 	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
@@ -425,7 +425,7 @@ public class BotanicalName extends NonViralName {
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether the name of this
+	 * Returns the boolean value of the flag indicating whether the name of <i>this</i>
 	 * botanical taxon name is a hybrid formula (true) or not (false). A hybrid
 	 * named by a hybrid formula (composed with its parent names by placing the
 	 * multiplication sign between them) does not have an own published name
@@ -450,7 +450,7 @@ public class BotanicalName extends NonViralName {
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether this botanical
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
 	 * taxon name is the name of an intergeneric hybrid (true) or not (false).
 	 * In this case the multiplication sign is placed before the scientific
 	 * name. If this flag is set no other hybrid flags may be set.
@@ -474,7 +474,7 @@ public class BotanicalName extends NonViralName {
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether this botanical
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
 	 * taxon name is the name of an interspecific hybrid (true) or not (false).
 	 * In this case the multiplication sign is placed before the species
 	 * epithet. If this flag is set no other hybrid flags may be set.
@@ -498,10 +498,10 @@ public class BotanicalName extends NonViralName {
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether this botanical
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
 	 * taxon name is the name of an infraspecific hybrid (true) or not (false).
 	 * In this case the term "notho-" (optionally abbreviated "n-") is used as
-	 * a prefix to the term denoting the infraspecific rank of this botanical
+	 * a prefix to the term denoting the infraspecific rank of <i>this</i> botanical
 	 * taxon name. If this flag is set no other hybrid flags may be set.
 	 *  
 	 * @return  the boolean value of the isTrinomHybrid flag
@@ -524,7 +524,7 @@ public class BotanicalName extends NonViralName {
 
 	/**
 	 * Returns the boolean value of the flag indicating whether the specimen
-	 * type of this botanical taxon name for a fungus is asexual (true) or not
+	 * type of <i>this</i> botanical taxon name for a fungus is asexual (true) or not
 	 * (false). This applies only in case of fungi. The Article 59 of the ICBN
 	 * permits mycologists to give asexually reproducing fungi (anamorphs)
 	 * separate names from their sexual states (teleomorphs).
@@ -545,7 +545,7 @@ public class BotanicalName extends NonViralName {
 	
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this botanical taxon name, that is the
+	 * the construction of <i>this</i> botanical taxon name, that is the
 	 * International Code of Botanical Nomenclature. This method overrides
 	 * the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
 	 *

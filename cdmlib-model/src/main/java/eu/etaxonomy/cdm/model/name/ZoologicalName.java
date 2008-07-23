@@ -81,8 +81,8 @@ public class ZoologicalName extends NonViralName {
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this zoological taxon name
-	 * @param	homotypicalGroup  the homotypical group to which this zoological taxon name belongs
+	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see 	#ZoologicalName()
 	 * @see 	#ZoologicalName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy
@@ -102,21 +102,21 @@ public class ZoologicalName extends NonViralName {
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this zoological taxon name
-	 * @param	genusOrUninomial the string for this zoological taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
+	 * @param	genusOrUninomial the string for <i>this</i> zoological taxon name
 	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
 	 * @param	infraGenericEpithet  the string for the first epithet of
-	 * 			this zoological taxon name if its rank is lower than genus
+	 * 			<i>this</i> zoological taxon name if its rank is lower than genus
 	 * 			and higher than species aggregate
 	 * @param	specificEpithet  the string for the first epithet of
-	 * 			this zoological taxon name if its rank is species aggregate or lower
+	 * 			<i>this</i> zoological taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
-	 * 			this zoological taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published this zoological taxon name
-	 * @param	nomenclaturalReference  the nomenclatural reference where this zoological taxon name was published
+	 * 			<i>this</i> zoological taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> zoological taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> zoological taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-	 * @param	homotypicalGroup  the homotypical group to which this zoological taxon name belongs
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see 	#ZoologicalName()
 	 * @see 	#ZoologicalName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -137,7 +137,7 @@ public class ZoologicalName extends NonViralName {
 	 * only containing its {@link common.Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.ZooNameDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @param	rank	the rank to be assigned to this zoological taxon name
+	 * @param	rank	the rank to be assigned to <i>this</i> zoological taxon name
 	 * @see 			#ZoologicalName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -155,8 +155,8 @@ public class ZoologicalName extends NonViralName {
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
 	 * 
-	 * @param  rank  the rank to be assigned to this zoological taxon name
-	 * @param  homotypicalGroup  the homotypical group to which this zoological taxon name belongs
+	 * @param  rank  the rank to be assigned to <i>this</i> zoological taxon name
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see    #NewInstance(Rank)
 	 * @see    #NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see    #ZoologicalName(Rank, HomotypicalGroup)
@@ -175,21 +175,21 @@ public class ZoologicalName extends NonViralName {
 	 * The new zoological taxon name instance will be also added to the set of
 	 * zoological taxon names belonging to this homotypical group.
 	 * 
-	 * @param	rank  the rank to be assigned to this zoological taxon name
-	 * @param	genusOrUninomial the string for this zoological taxon name
+	 * @param	rank  the rank to be assigned to <i>this</i> zoological taxon name
+	 * @param	genusOrUninomial the string for <i>this</i> zoological taxon name
 	 * 			if its rank is genus or higher or for the genus part
 	 * 			if its rank is lower than genus
 	 * @param	infraGenericEpithet  the string for the first epithet of
-	 * 			this zoological taxon name if its rank is lower than genus
+	 * 			<i>this</i> zoological taxon name if its rank is lower than genus
 	 * 			and higher than species aggregate
 	 * @param	specificEpithet  the string for the first epithet of
-	 * 			this zoological taxon name if its rank is species aggregate or lower
+	 * 			<i>this</i> zoological taxon name if its rank is species aggregate or lower
 	 * @param	infraSpecificEpithet  the string for the second epithet of
-	 * 			this zoological taxon name if its rank is lower than species
-	 * @param	combinationAuthorTeam  the author or the team who published this zoological taxon name
-	 * @param	nomenclaturalReference  the nomenclatural reference where this zoological taxon name was published
+	 * 			<i>this</i> zoological taxon name if its rank is lower than species
+	 * @param	combinationAuthorTeam  the author or the team who published <i>this</i> zoological taxon name
+	 * @param	nomenclaturalReference  the nomenclatural reference where <i>this</i> zoological taxon name was published
 	 * @param	nomenclMicroRef  the string with the details for precise location within the nomenclatural reference
-	 * @param	homotypicalGroup  the homotypical group to which this zoological taxon name belongs
+	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> zoological taxon name belongs
 	 * @see 	#NewInstance(Rank)
 	 * @see 	#NewInstance(Rank, HomotypicalGroup)
 	 * @see		#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
@@ -232,7 +232,7 @@ public class ZoologicalName extends NonViralName {
 	
 	/**
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
-	 * the construction of this zoological taxon name, that is the
+	 * the construction of <i>this</i> zoological taxon name, that is the
 	 * International Code of Zoological Nomenclature. This method overrides
 	 * the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
 	 *
@@ -249,9 +249,9 @@ public class ZoologicalName extends NonViralName {
 /* ***************** GETTER / SETTER ***************************/
 	
 	/**
-	 * Returns the breed name string for this animal (zoological taxon name).
+	 * Returns the breed name string for <i>this</i> animal (zoological taxon name).
 	 * 
-	 * @return  the string containing the breed name for this zoological taxon name
+	 * @return  the string containing the breed name for <i>this</i> zoological taxon name
 	 */
 	public String getBreed(){
 		return this.breed;
@@ -264,12 +264,12 @@ public class ZoologicalName extends NonViralName {
 	}
 
 	/**
-	 * Returns the publication year (as an integer) for this zoological taxon
+	 * Returns the publication year (as an integer) for <i>this</i> zoological taxon
 	 * name. If the publicationYear attribute is null and a nomenclatural
 	 * reference exists the year could be computed from the
 	 * {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
 	 * 
-	 * @return  the integer representing the publication year for this zoological taxon name
+	 * @return  the integer representing the publication year for <i>this</i> zoological taxon name
 	 * @see  	#getOriginalPublicationYear()
 	 */
 	public Integer getPublicationYear() {
@@ -284,7 +284,7 @@ public class ZoologicalName extends NonViralName {
 
 	/**
 	 * Returns the publication year (as an integer) of the original validly
-	 * published species epithet for this zoological taxon name. This only
+	 * published species epithet for <i>this</i> zoological taxon name. This only
 	 * applies for zoological taxon names that are no {@link TaxonNameBase#isOriginalCombination() original combinations}.
 	 * If the originalPublicationYear attribute is null the year could be taken
 	 * from the publication year of the corresponding original name (basionym)
@@ -292,7 +292,7 @@ public class ZoologicalName extends NonViralName {
 	 * if it exists.
 	 * 
 	 * @return  the integer representing the publication year of the original
-	 * 			species epithet corresponding to this zoological taxon name
+	 * 			species epithet corresponding to <i>this</i> zoological taxon name
 	 * @see  	#getPublicationYear()
 	 */
 	public Integer getOriginalPublicationYear() {

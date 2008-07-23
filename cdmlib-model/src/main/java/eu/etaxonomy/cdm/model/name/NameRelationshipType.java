@@ -78,7 +78,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/** 
 	 * Class constructor: creates an additional name relationship type
 	 * instance with a description, a label, a label abbreviation and the flags
-	 * indicating whether this new name relationship type is symmetric and/or
+	 * indicating whether <i>this</i> new name relationship type is symmetric and/or
 	 * transitive.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
@@ -116,8 +116,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with this name relationship type should
-	 * be "invalid" (true) or not (false). Returns false if this name
+	 * involved in a name relationship with <i>this</i> name relationship type should
+	 * be "invalid" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
 	 *
 	 * @see  #isLegitimateType()
@@ -140,8 +140,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with this name relationship type should
-	 * be "legitimate" (true) or not (false). Returns false if this name
+	 * involved in a name relationship with <i>this</i> name relationship type should
+	 * be "legitimate" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
 	 *
 	 * @see  #isInvalidType()
@@ -166,8 +166,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
 	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with this name relationship type should
-	 * be "illegitimate" (true) or not (false). Returns false if this name
+	 * involved in a name relationship with <i>this</i> name relationship type should
+	 * be "illegitimate" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
 	 *
 	 * @see  #isInvalidType()
