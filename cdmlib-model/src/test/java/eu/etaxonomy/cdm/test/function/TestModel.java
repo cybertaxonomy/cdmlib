@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -108,15 +110,7 @@ public class TestModel {
 	 */
 	public static void  main(String[] args) {
 		TestModel sc = new TestModel();
-		
-		 DateTime dt = new DateTime();
-		  String monthName = dt.monthOfYear().getAsText();
-		  String frenchShortName = dt.monthOfYear().getAsShortText(Locale.FRENCH);
-		  boolean isLeapYear = dt.year().isLeap();
-		  DateTime rounded = dt.monthOfYear().roundHalfFloorCopy();
-		  
-			System.out.println(rounded + "\nEnd ...");
-		//sc.test();
+		sc.test();
 	}
 
 }
