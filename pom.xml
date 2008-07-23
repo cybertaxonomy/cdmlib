@@ -552,15 +552,14 @@
 				<version>1.7</version>
 			</dependency>
 			
-		    <!-- joda-time perhaps needed in future for JAXB binding -->
-		    <!--
-            <dependency>
-              <groupId>joda-time</groupId>
-              <artifactId>joda-time</artifactId>
-              <version>1.5</version>      
-            </dependency>
-            <dependency>
-              <groupId>joda-time</groupId>
+		    <!-- joda-time -->
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>1.5</version>      
+			</dependency>
+			<dependency>
+			<groupId>joda-time</groupId>
               <artifactId>joda-time-hibernate</artifactId>
               <version>1.0</version>
               <exclusions>
@@ -574,8 +573,7 @@
                 </exclusion>
              </exclusions>
            </dependency>
-         -->
-						
+	
 		  	<!-- ******* XML ******* -->
 			<dependency>
 				<groupId>xml-apis</groupId>
