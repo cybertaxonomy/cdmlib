@@ -11,7 +11,10 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.Calendar;
 
+import org.joda.time.DateTime;
+
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * Data Transfer Object representing derived from the domain object {@link CdmBase}. 
@@ -24,15 +27,15 @@ import eu.etaxonomy.cdm.model.agent.Person;
  */
 public abstract class BaseTO extends BaseSTO{
 	
-	private Calendar created;
+	private DateTime created;
 	private String createdBy;
 	private Calendar updated;
 	private String updatedBy;
 	
-	public Calendar getCreated() {
+	public DateTime getCreated() {
 		return created;
 	}
-	public void setCreated(Calendar created) {
+	public void setCreated(DateTime created) {
 		this.created = created;
 	}
 	public String getCreatedBy() {

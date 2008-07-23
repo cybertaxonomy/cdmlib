@@ -33,7 +33,7 @@ public class NameTO extends BaseTO {
 	private String fullname;
 	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
 
-	private Set<LocalisedTermSTO> status = new HashSet<LocalisedTermSTO>();
+	private List<LocalisedTermSTO> status = new ArrayList<LocalisedTermSTO>();
 	private LocalisedTermSTO rank;
 	private ReferenceTO nomenclaturalReference;
 	
@@ -55,10 +55,10 @@ public class NameTO extends BaseTO {
 	public void setTaggedName(List<TaggedText> taggedName) {
 		this.taggedName = taggedName;
 	}
-	public Set<LocalisedTermSTO> getStatus() {
+	public List<LocalisedTermSTO> getStatus() {
 		return status;
 	}
-	public void setStatus(Set<LocalisedTermSTO> status) {
+	public void setStatus(List<LocalisedTermSTO> status) {
 		this.status = status;
 	}
 	public LocalisedTermSTO getRank() {
@@ -107,6 +107,9 @@ public class NameTO extends BaseTO {
 	}
 	public void addNameToken(TaggedText token){
 		this.taggedName.add(token);
+	}
+	public void addStatus(LocalisedTermSTO sto) {
+		this.status.add(sto);
 	}
 
 }

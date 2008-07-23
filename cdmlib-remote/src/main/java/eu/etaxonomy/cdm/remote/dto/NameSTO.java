@@ -22,7 +22,8 @@ public class NameSTO extends BaseSTO {
 	
 	private String fullname;
 	private IReferenceSTO nomenclaturalReference;
-	private List<TaggedText> taggedName = new ArrayList();
+	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
+	private List<LocalisedTermSTO> status = new ArrayList<LocalisedTermSTO>();
 	
 	public String getFullname() {
 		return fullname;
@@ -45,5 +46,15 @@ public class NameSTO extends BaseSTO {
 	public void addNameToken(TaggedText token){
 		this.taggedName.add(token);
 	}
+	public List<LocalisedTermSTO> getStatus() {
+		return status;
+	}
+	public void setStatus(List<LocalisedTermSTO> status) {
+		this.status = status;
+	}
+	public void addStatus(LocalisedTermSTO sto) {
+		this.status.add(sto);
+	}
+	
 	
 }

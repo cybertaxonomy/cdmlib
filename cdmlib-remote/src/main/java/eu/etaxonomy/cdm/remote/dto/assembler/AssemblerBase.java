@@ -15,11 +15,13 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.IBaseSTO;
+import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 public abstract class AssemblerBase<STO extends BaseSTO, TO extends BaseTO, C extends CdmBase> {
 	
@@ -69,4 +71,5 @@ public abstract class AssemblerBase<STO extends BaseSTO, TO extends BaseTO, C ex
 	 * @return Data Transfer Object
 	 */
 	abstract TO getTO(C cdmObj, Enumeration<Locale> locales);
+
 }

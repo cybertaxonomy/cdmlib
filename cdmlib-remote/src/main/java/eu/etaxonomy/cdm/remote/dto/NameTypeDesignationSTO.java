@@ -9,12 +9,92 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+
+/**
+ * 
+ * @author n.hoffmann
+ * @created 14.07.2008
+ * @version 1.0
+ *
+ */
 public class NameTypeDesignationSTO extends ReferencedEntityBaseSTO {
-	private NameSTO typeSpecies;
+	private static Logger logger = Logger
+	.		getLogger(NameTypeDesignationSTO.class);
+	
+	private NameSTO typeSpeciesName;
+	private NameSTO typifiedName;
+	
+
 	private IdentifiedString status;
 	private boolean isRejectedType;
 	private boolean isConservedType;
-	private Set<SpecimenTypeDesignationSTO> typeSpecimens = new HashSet();
+	
+	/**
+	 * @return the typeSpecies
+	 */
+	public NameSTO getTypeSpeciesName() {
+		return typeSpeciesName;
+	}
+	/**
+	 * @param typeSpecies the typeSpecies to set
+	 */
+	public void setTypeSpeciesName(NameSTO typeSpeciesName) {
+		this.typeSpeciesName = typeSpeciesName;
+	}
+	
+	/**
+	 * @return the typifiedName
+	 */
+	public NameSTO getTypifiedName() {
+		return typifiedName;
+	}
+	/**
+	 * @param typifiedName the typifiedName to set
+	 */
+	public void setTypifiedName(NameSTO typifiedName) {
+		this.typifiedName = typifiedName;
+	}
+	
+	/**
+	 * @return the status
+	 */
+	public IdentifiedString getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(IdentifiedString status) {
+		//this.status = status;
+		logger.warn("Method not implemented yet.");
+	}
+	/**
+	 * @return the isRejectedType
+	 */
+	public boolean isRejectedType() {
+		return isRejectedType;
+	}
+	/**
+	 * @param isRejectedType the isRejectedType to set
+	 */
+	public void setRejectedType(boolean isRejectedType) {
+		this.isRejectedType = isRejectedType;
+	}
+	/**
+	 * @return the isConservedType
+	 */
+	public boolean isConservedType() {
+		return isConservedType;
+	}
+	/**
+	 * @param isConservedType the isConservedType to set
+	 */
+	public void setConservedType(boolean isConservedType) {
+		this.isConservedType = isConservedType;
+	}
 }

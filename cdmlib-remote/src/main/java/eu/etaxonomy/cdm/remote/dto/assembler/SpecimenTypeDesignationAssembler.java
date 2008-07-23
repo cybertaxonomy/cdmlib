@@ -51,8 +51,7 @@ public class SpecimenTypeDesignationAssembler extends AssemblerBase<SpecimenType
 					null)
 			);
 		}else{
-		sto.setStatus(
-				new IdentifiedString(
+			sto.setStatus(new IdentifiedString(
 						status.getLabel(),
 						status.getUuid().toString())
 				);

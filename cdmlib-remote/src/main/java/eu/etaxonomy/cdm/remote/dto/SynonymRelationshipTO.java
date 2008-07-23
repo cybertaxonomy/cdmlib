@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.ArrayList;
+
 
 /**
  * 
@@ -18,7 +20,7 @@ package eu.etaxonomy.cdm.remote.dto;
  */
 public class SynonymRelationshipTO {
 	
-	private LocalisedTermSTO type;
+	private ArrayList<LocalisedTermSTO> type = new ArrayList<LocalisedTermSTO>();
 	private TaxonSTO synoynm;
 	
 	public TaxonSTO getSynoynm() {
@@ -27,11 +29,14 @@ public class SynonymRelationshipTO {
 	public void setSynoynm(TaxonSTO synoynm) {
 		this.synoynm = synoynm;
 	}
-	public LocalisedTermSTO getType() {
+	public ArrayList<LocalisedTermSTO> getTypes() {
 		return type;
 	}
-	public void setType(LocalisedTermSTO type) {
-		this.type = type;
+	public void setType(ArrayList<LocalisedTermSTO> types) {
+		this.type = types;
+	}
+	public void addType(LocalisedTermSTO sto) {
+		type.add(sto);
 	}
 
 }

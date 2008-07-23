@@ -9,19 +9,24 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.remote.dto.LocalisedTermSTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
@@ -35,39 +40,49 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	
 	@Autowired
 	private ReferenceAssembler refAssembler;
+	@Autowired
+	private LocalisedTermAssembler localisedTermAssembler;
 	
-	public NameSTO getSTO(TaxonNameBase tnb, Enumeration<Locale> locales){
-		NameSTO n = null;
-		if (tnb !=null){
-			n = new NameSTO();
-			setVersionableEntity(tnb, n);
-			n.setFullname(tnb.getTitleCache());
-			n.setTaggedName(getTaggedName(tnb));
+	public NameSTO getSTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){
+		NameSTO name = null;
+		if (taxonNameBase !=null){
+			name = new NameSTO();
+			setVersionableEntity(taxonNameBase, name);
+			name.setFullname(taxonNameBase.getTitleCache());
+			name.setTaggedName(getTaggedName(taxonNameBase));
 			//TODO RUDE HACK
-			n.setNomenclaturalReference(refAssembler.getSTO((ReferenceBase)tnb.getNomenclaturalReference(), locales));
+			name.setNomenclaturalReference(refAssembler.getSTO((ReferenceBase)taxonNameBase.getNomenclaturalReference(), locales));
+			
+			
+			for( NomenclaturalStatus status : (Set<NomenclaturalStatus>) taxonNameBase.getStatus()){
+				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, LocalisedTermAssembler.ABBREVIATED_LABEL));
+			}		
 		}
-		return n;
+		return name;
 	}	
-	public NameTO getTO(TaxonNameBase tnb, Enumeration<Locale> locales){		
-		NameTO n = null;
-		if (tnb !=null){
-			n = new NameTO();
-			setVersionableEntity(tnb, n);
-			n.setFullname(tnb.getTitleCache());
-			n.setTaggedName(getTaggedName(tnb));
-			n.setNomenclaturalReference(refAssembler.getTO((ReferenceBase)tnb.getNomenclaturalReference(), locales));
+	public NameTO getTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){		
+		NameTO name = null;
+		if (taxonNameBase !=null){
+			name = new NameTO();
+			setVersionableEntity(taxonNameBase, name);
+			name.setFullname(taxonNameBase.getTitleCache());
+			name.setTaggedName(getTaggedName(taxonNameBase));
+			name.setNomenclaturalReference(refAssembler.getTO((ReferenceBase)taxonNameBase.getNomenclaturalReference(), locales));
+			for( NomenclaturalStatus status : (Set<NomenclaturalStatus>) taxonNameBase.getStatus()){
+				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, LocalisedTermAssembler.ABBREVIATED_LABEL));
+			}
 		}
-		return n;
+		return name;
 	}
-	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> tnb){
+	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		//FIXME rude hack:
-		if(!(tnb instanceof NonViralName)){
+		if(!(taxonNameBase instanceof NonViralName)){
 			return tags;
 		}
-		tnb = (NonViralName)tnb;
+		taxonNameBase = (NonViralName)taxonNameBase;
 		// --- end of rude hack
-		for (Object token : tnb.getCacheStrategy().getTaggedName(tnb)){
+		for (Object token : taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase)){
 			TaggedText tag = new TaggedText();
 			if (String.class.isInstance(token)){
 				tag.setText((String)token);
@@ -78,9 +93,9 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 				tag.setText(r.getAbbreviation());
 				tag.setType(TagEnum.rank);
 			}
-			else if (token !=null && ReferenceBase.class.isAssignableFrom(token.getClass())){
-				ReferenceBase ref = (ReferenceBase)token;
-				tag.setText(ref.getTitleCache());
+			else if (token !=null && INomenclaturalReference.class.isAssignableFrom(token.getClass())){
+				INomenclaturalReference reference = (INomenclaturalReference) token;
+				tag.setText(reference.getNomenclaturalCitation(taxonNameBase.getNomenclaturalMicroReference()));
 				tag.setType(TagEnum.reference);
 			}
 			else if (Date.class.isInstance(token)){

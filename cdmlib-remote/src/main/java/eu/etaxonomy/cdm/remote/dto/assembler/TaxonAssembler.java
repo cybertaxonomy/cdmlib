@@ -9,29 +9,22 @@
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -56,7 +49,10 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	@Autowired
 	private SpecimenTypeDesignationAssembler specimenTypeDesignationAssembler;
 	@Autowired
+	private NameTypeDesignationAssembler nameTypeDesignationAssembler;
+	@Autowired
 	private DescriptionAssembler descriptionAssembler;
+	
 	
 	
 	/* (non-Javadoc)
@@ -90,15 +86,23 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		    	
 		    	Taxon taxon = (Taxon) taxonBase;
 		    	// -- homotypic & heterotypic synonyms
-		    	List<Synonym> syns = taxon.getHomotypicSynonymsByHomotypicGroup();
+		    	List<Synonym> syns = taxon.getHomotypicSynonymsByHomotypicRelationship();
 		    	List<Synonym> synList = new ArrayList<Synonym>();
 		    	for(Synonym synonym : syns) {
 		    		//FIXME remove skip-test hack if "missing synonym type"-bug is fixed 
-		    		if(true || synonym.getRelationType(taxon).equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-		    			synList.add(synonym);
+		    		
+		    		Set<SynonymRelationshipType> synonymRelationshipTypes = synonym.getRelationType(taxon);
+		    		
+		    		for (SynonymRelationshipType synonymRelationshipType : synonymRelationshipTypes){
+			    		if( synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+			    			synList.add(synonym);
+			    		}
 		    		}
 				}
 		    	taxonTO.setTypeDesignations(specimenTypeDesignationAssembler.getSTOs(taxon.getHomotypicGroup().getTypeDesignations(), locales));
+		    	
+		    	taxonTO.setNameTypeDesignations(nameTypeDesignationAssembler.getSTOs(taxon.getName().getNameTypeDesignations(), locales));
+		    	
 		    	taxonTO.setHomotypicSynonyms(getSynonymRelationshipTOs(synList, taxon, locales));
 		    	List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
 		    	List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>(heterotypicGroups.size());
@@ -132,6 +136,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		HomotypicTaxonGroupSTO homotypicTaxonGroupSTO = new HomotypicTaxonGroupSTO();
 		homotypicTaxonGroupSTO.setUuid(homotypicalGroup.getUuid().toString());
 		
+				
 		for(TaxonBase tb : homotypicalGroup.getSynonymsInGroup(taxon.getSec())){
 			homotypicTaxonGroupSTO.getTaxa().add(getSTO(tb, locales));
 		}
@@ -189,18 +194,21 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	}
 	
 	/**
-	 * @param syn
-	 * @param t
+	 * @param synonym
+	 * @param taxon
 	 * @param locales
 	 * @return
 	 */
-	public SynonymRelationshipTO getSynonymRelationshipTO(Synonym syn, Taxon t, Enumeration<Locale> locales){
-		SynonymRelationshipTO sr = new SynonymRelationshipTO();
-		if(syn != null){
-			sr.setSynoynm(getSTO(syn, locales));
-			sr.setType(termAssembler.getSTO(syn.getRelationType(t), locales));
+	public SynonymRelationshipTO getSynonymRelationshipTO(Synonym synonym, Taxon taxon, Enumeration<Locale> locales){
+		SynonymRelationshipTO synonymRelationshipTO = new SynonymRelationshipTO();
+		if(synonym != null){
+			synonymRelationshipTO.setSynoynm(getSTO(synonym, locales));
+			
+			for(TermBase relationType : synonym.getRelationType(taxon)){
+				synonymRelationshipTO.addType(termAssembler.getSTO(relationType, locales));
+			}
 		}
-		return sr;
+		return synonymRelationshipTO;
 	}
 	
 	
@@ -208,17 +216,17 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	 * @param t
 	 * @return
 	 */
-	public TreeNode getTreeNode(Taxon t){
-		TreeNode tn = null;
-		if(t!=null){
-			tn = new TreeNode();
-			setVersionableEntity(t, tn);
-			tn.setFullname(t.getName().getTitleCache());
-			tn.setHasChildren(t.getTaxonomicChildren().size());
-			tn.setTaggedName(nameAssembler.getTaggedName(t.getName()));
-			tn.setSecUuid(t.getSec().getUuid().toString());
+	public TreeNode getTreeNode(Taxon taxon){
+		TreeNode treeNode = null;
+		if(taxon!=null){
+			treeNode = new TreeNode();
+			setVersionableEntity(taxon, treeNode);
+			treeNode.setFullname(taxon.getName().getTitleCache());
+			treeNode.setHasChildren(taxon.getTaxonomicChildren().size());
+			treeNode.setTaggedName(nameAssembler.getTaggedName(taxon.getName()));
+			treeNode.setSecUuid(taxon.getSec().getUuid().toString());
 		}
-		return tn;
+		return treeNode;
 	}
 	public List<TreeNode> getTreeNodeList(Taxon[] taxa){
 		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
