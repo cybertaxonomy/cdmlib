@@ -129,6 +129,25 @@
       <groupId>net.sf.opencsv</groupId>
       <artifactId>opencsv</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>    
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-hibernate</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>ehcache</artifactId>
+          <groupId>ehcache</groupId>
+        </exclusion>
+        <exclusion>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-full</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
     <!-- joda-time perhaps needed in future for JAXB binding -->
     <!--

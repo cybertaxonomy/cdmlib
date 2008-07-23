@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 import javax.persistence.Basic;
@@ -14,6 +13,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 
@@ -42,7 +42,7 @@ public interface ICdmBase {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Basic(fetch = FetchType.LAZY)
-	public abstract Calendar getCreated();
+	public abstract DateTime getCreated();
 
 	/**
 	 * Sets the timestamp this object was created. 
@@ -52,7 +52,7 @@ public interface ICdmBase {
 	 * 
 	 * @param created
 	 */
-	public abstract void setCreated(Calendar created);
+	public abstract void setCreated(DateTime created);
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })

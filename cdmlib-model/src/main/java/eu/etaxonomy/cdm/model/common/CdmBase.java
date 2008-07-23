@@ -34,8 +34,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
+import org.joda.time.DateTime;
 
 
 
@@ -66,7 +68,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	private int id;
     
 	private UUID uuid;
-	private Calendar created;
+	private DateTime created;
     private Person createdBy;
 
 	/**
@@ -75,7 +77,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	 */
 	public CdmBase() {
 		this.uuid = UUID.randomUUID();
-		this.setCreated(Calendar.getInstance());
+		this.setCreated(new DateTime());
 	}
 	
 	/**
@@ -190,18 +192,22 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
 	 */
-	@XmlElement (name = "Created")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Basic(fetch = FetchType.LAZY)
-	public Calendar getCreated() {
+	//@Temporal(TemporalType.TIMESTAMP)  //old
+	//@Basic(fetch = FetchType.LAZY) 	//old
+	@XmlElement (name = "Created", type= String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@Type(type="dateTimeUserType")
+	public DateTime getCreated() {
 		return created;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreated(java.util.Calendar)
 	 */
-	public void setCreated(Calendar created) {
+	public void setCreated(DateTime created) {
 		if (created != null){
-			created.set(Calendar.MILLISECOND, 0);
+			new DateTime();
+			created = created.withMillisOfSecond(0);
+			//created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
 		}
 		this.created = created;
 	}
@@ -318,7 +324,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		//TODO ?
 		result.setId(0);
 		result.setUuid(UUID.randomUUID());
-		result.setCreated(Calendar.getInstance());
+		result.setCreated(new DateTime());
 		result.setCreatedBy(null);
 		
 		//no changes to: -

@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -445,12 +446,12 @@ public class CdmBaseTest extends EntityTestBase{
 	@Test
 	public void testGetCreated() {
 		assertNotNull(cdmBase.getCreated());
-		assertFalse(cdmBase.getCreated().after(Calendar.getInstance() ));
-		Calendar calendar = Calendar.getInstance();
-		cdmBase.setCreated(calendar);
-		assertEquals(0, cdmBase.getCreated().get(Calendar.MILLISECOND ));
-		calendar.set(Calendar.MILLISECOND, 0);
-		assertEquals(calendar, cdmBase.getCreated());
+		assertFalse(cdmBase.getCreated().isAfter(new DateTime()));
+		DateTime dateTime = new DateTime();
+		cdmBase.setCreated(dateTime);
+		assertEquals(0, cdmBase.getCreated().getMillisOfSecond());
+		dateTime = dateTime.withMillisOfSecond(0);
+		assertEquals(dateTime, cdmBase.getCreated());
 	}
 
 	/**
@@ -458,14 +459,14 @@ public class CdmBaseTest extends EntityTestBase{
 	 */
 	@Test
 	public void testSetCreated() {
-		Calendar calendar = Calendar.getInstance();
-		Calendar calendarTrue = (Calendar)calendar.clone();
-		Calendar calendarFalse = (Calendar)calendar.clone();
-		calendarFalse.add(2, 5);
+		DateTime calendar = new DateTime();
+		DateTime calendarTrue = (DateTime)calendar.withMillisOfSecond(23);
+		DateTime calendarFalse = (DateTime)calendar.withMillisOfSecond(23);
+		calendarFalse = calendarFalse.plusMonths(5);
 		cdmBase.setCreated(calendar);
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendarTrue.set(Calendar.MILLISECOND, 0);
-		calendarFalse.set(Calendar.MILLISECOND, 0);
+		calendar = calendar.withMillisOfSecond(0);
+		calendarTrue = calendarTrue.withMillisOfSecond(0);
+		calendarFalse = calendarFalse.withMillisOfSecond(0);
 		assertEquals(calendar, cdmBase.getCreated());
 		assertEquals(calendarTrue, cdmBase.getCreated());
 		assertFalse(calendarFalse.equals(calendar));
