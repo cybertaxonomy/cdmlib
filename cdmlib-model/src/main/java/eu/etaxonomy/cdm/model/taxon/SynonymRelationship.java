@@ -27,9 +27,11 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * The class representing the assignation of a {@link Synonym synonym} to an
  * ("accepted/correct") {@link Taxon taxon}. This includes a {@link SynonymRelationshipType synonym relationship type}
- * (for instance "pro parte synonym of" or "heterotypic synonym of"). Within a
- * synonym relationship the synonym plays the source role and the taxon the
- * target role. Both, synonym and ("accepted/correct") taxon, must have the same
+ * (for instance "heterotypic synonym of"). Within a synonym relationship the
+ * synonym plays the source role and the taxon the target role. Between a
+ * synonym and an ("accepted/correct") taxon there should exist at most one
+ * synonym relationship.<BR>
+ * Both, synonym and ("accepted/correct") taxon, must have the same
  * {@link TaxonBase#getSec() concept reference}.
  * <P>
  * This class corresponds in part to: <ul>
@@ -48,6 +50,38 @@ import javax.xml.bind.annotation.XmlType;
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
+	private boolean isProParte = false;
+	private boolean isPartial = false;
+	
+	
+	
+	/**
+	 * @return the isProParte
+	 */
+	public boolean isProParte() {
+		return isProParte;
+	}
+
+	/**
+	 * @param isProParte the isProParte to set
+	 */
+	public void setProParte(boolean isProParte) {
+		this.isProParte = isProParte;
+	}
+
+	/**
+	 * @return the isPartial
+	 */
+	public boolean isPartial() {
+		return isPartial;
+	}
+
+	/**
+	 * @param isPartial the isPartial to set
+	 */
+	public void setPartial(boolean isPartial) {
+		this.isPartial = isPartial;
+	}
 	
 	//for hibernate, don't use
 	@Deprecated

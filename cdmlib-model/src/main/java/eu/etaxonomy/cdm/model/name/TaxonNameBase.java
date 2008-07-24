@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
- * particular nomenclature code. The scientific taxon name does not depend
+ * particular {@link NomenclaturalCode nomenclature code}. The scientific taxon name does not depend
  * on the use made of it in a publication or a treatment
  * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
  * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}

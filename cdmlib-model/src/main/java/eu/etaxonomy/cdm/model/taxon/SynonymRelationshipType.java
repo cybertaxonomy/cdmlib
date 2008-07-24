@@ -50,38 +50,6 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
 	private static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
 
-	private boolean isProParte = false;
-	private boolean isPartial = false;
-	
-	
-	
-	/**
-	 * @return the isProParte
-	 */
-	public boolean isProParte() {
-		return isProParte;
-	}
-
-	/**
-	 * @param isProParte the isProParte to set
-	 */
-	public void setProParte(boolean isProParte) {
-		this.isProParte = isProParte;
-	}
-
-	/**
-	 * @return the isPartial
-	 */
-	public boolean isPartial() {
-		return isPartial;
-	}
-
-	/**
-	 * @param isPartial the isPartial to set
-	 */
-	public void setPartial(boolean isPartial) {
-		this.isPartial = isPartial;
-	}
 
 	// ************* CONSTRUCTORS *************/	
 	/** 

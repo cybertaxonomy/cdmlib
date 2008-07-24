@@ -33,11 +33,18 @@ import org.hibernate.annotations.Table;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
- * A year() method is required to get the year of publication out of the
- * datePublished field
+ * The upmost (abstract) class for references (citations or information sources).
+ * regardless of any
+ * particular {@link NomenclaturalCode nomenclature code}. The scientific taxon name does not depend
+ * on the use made of it in a publication or a treatment
+ * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
+ * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
+ * or as a {@link taxon.Synonym synonym}.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:47
