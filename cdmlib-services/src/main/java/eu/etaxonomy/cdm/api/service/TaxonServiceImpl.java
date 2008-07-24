@@ -140,7 +140,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 				}
 			}
 			//MISAPPLIED NAMES
-			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIEDNAMEFOR())){
+			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				if (taxonRelation.getFromTaxon() == oldTaxon){
 					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
 					oldTaxon.removeTaxonRelation(taxonRelation);
