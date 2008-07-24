@@ -89,10 +89,12 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	@Override
 	public ReferenceBase getSourceReference() {
 		//TODO
-		logger.warn("getSource Reference not yet implemented");
-		ReferenceBase result = Database.NewInstance();
-		result.setTitleCache("XXX");
-		return result;
+		logger.warn("getSource Reference not yet fully implemented");
+		if (this.sourceReference == null){
+			sourceReference = Database.NewInstance();
+			sourceReference.setTitleCache("XXX");
+		}
+		return sourceReference;
 	}
 
 

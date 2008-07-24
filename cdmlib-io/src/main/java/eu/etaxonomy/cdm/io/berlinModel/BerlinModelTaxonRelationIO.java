@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -169,13 +170,17 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
 					}else if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF){
 						if (taxon1 instanceof Synonym){
-							((Taxon)taxon2).addHomotypicSynonym((Synonym)taxon1, citation, microcitation);
+							Synonym synonym = (Synonym)taxon1;
+							SynonymRelationship synRel = ((Taxon)taxon2).addHomotypicSynonym(synonym, citation, microcitation);
+							addProParteAndPartial(synRel, synonym, bmiConfig);
 						}else{
 							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
 						}
 					}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
 						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
-							((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+							Synonym synonym = (Synonym)taxon1;
+							SynonymRelationship synRel = ((Taxon)taxon2).addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+							addProParteAndPartial(synRel, synonym, bmiConfig);
 						}else{
 							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
 						}
@@ -208,6 +213,15 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 			return false;
 		}
 
+	}
+	
+	private void addProParteAndPartial(SynonymRelationship synRel, Synonym synonym, BerlinModelImportConfigurator bmiConfig){
+		if (bmiConfig.isPartialSynonym(synonym)){
+			synRel.setPartial(true);
+		}
+		if (bmiConfig.isProParteSynonym(synonym)){
+			synRel.setProParte(true);
+		}
 	}
 	
 	/* (non-Javadoc)

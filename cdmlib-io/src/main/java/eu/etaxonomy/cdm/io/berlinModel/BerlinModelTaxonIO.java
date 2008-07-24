@@ -5,6 +5,9 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_ACCEPTED;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SYNONYM;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PRO_PARTE_SYN;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PARTIAL_SYN;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -169,9 +172,15 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 					if (statusFk == T_STATUS_ACCEPTED){
 						taxon = Taxon.NewInstance(taxonName, reference);
 						taxonBase = taxon;
-					}else if (statusFk == T_STATUS_SYNONYM){
+					}else if (statusFk == T_STATUS_SYNONYM || statusFk == T_STATUS_PRO_PARTE_SYN || statusFk == T_STATUS_PARTIAL_SYN){
 						synonym = Synonym.NewInstance(taxonName, reference);
 						taxonBase = synonym;
+						if (statusFk == T_STATUS_PRO_PARTE_SYN){
+							bmiConfig.addProParteSynonym(synonym);
+						}
+						if (statusFk == T_STATUS_PARTIAL_SYN){
+							bmiConfig.addPartialSynonym(synonym);
+						}
 					}else{
 						logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
 						continue;

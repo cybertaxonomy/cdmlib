@@ -120,8 +120,12 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 			xmlElementName = "accordingTo";
 			elementNamespace = taxonConceptNamespace;
 			String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
+			
 			//FIXME
-			Generic sec = Generic.NewInstance();
+			//Generic sec = Generic.NewInstance();
+			ReferenceBase sec = config.getSourceReference(); //FIXME complete nonsense, just workaround for testing
+			//FIXME
+			
 			sec.setTitleCache(strAccordingTo);
 			
 			//FIXME or synonym

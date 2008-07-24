@@ -157,7 +157,12 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 													&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
 											synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
 										}
-										taxonTo.addSynonym(synonym, synRelType,  citation, microReference);
+										if (! relationExists(taxonTo, synonym, synRelType)){
+											taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
+										}else{
+											//TODO citation, microReference
+											//TODO different synRelTypes -> warning
+										}
 									}
 								}else if (relType instanceof TaxonRelationshipType){
 									TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
@@ -194,6 +199,24 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		logger.info("end makeRelTaxa ...");
 		return success;
 
+	}
+	
+	
+	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
+		if (synonym == null){
+			return false;
+		}
+		if (synonym.getRelationType(taxonTo).size() > 0){
+			Set<SynonymRelationshipType> relTypeList = synonym.getRelationType(taxonTo);
+			if (relTypeList.contains(synRelType)){
+				return true;
+			}else{
+				logger.warn("Taxon-Synonym pair has 2 different SynonymRelationships. This is against the rules");
+				return false;
+			}
+		}else{
+			return false;
+		}
 	}
 
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
