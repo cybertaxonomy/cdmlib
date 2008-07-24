@@ -197,7 +197,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlElement (name = "Created", type= String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")
-	public DateTime PT() {
+	public DateTime getCreated() {
 		return created;
 	}
 	/* (non-Javadoc)
