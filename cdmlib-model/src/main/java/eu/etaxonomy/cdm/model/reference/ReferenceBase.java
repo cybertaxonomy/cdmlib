@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -34,16 +33,18 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
- * The upmost (abstract) class for references (citations or information sources).
- * regardless of any
- * particular {@link NomenclaturalCode nomenclature code}. The scientific taxon name does not depend
- * on the use made of it in a publication or a treatment
- * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
- * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
- * or as a {@link taxon.Synonym synonym}.
+ * The upmost (abstract) class for references (information sources).
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> PublicationCitation according to the TDWG ontology
+ * <li> Publication according to the TCS
+ * <li> Reference according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -83,54 +84,113 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	@XmlTransient
 	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
+	/**
+	 * Returns the {@link agent.TeamOrPersonBase author (team)} who created the
+	 * content of <i>this</i> reference.
+	 * 
+	 * @return  the author (team) of <i>this</i> reference
+	 * @see 	agent.TeamOrPersonBase
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TeamOrPersonBase getAuthorTeam(){
 		return this.authorTeam;
 	}
 
+	/**
+	 * @see #getAuthorTeam()
+	 */
 	public void setAuthorTeam(TeamOrPersonBase authorTeam){
 		this.authorTeam = authorTeam;
 	}
 
+	/**
+	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>
+	 * reference. An URI is a string of characters used to identify a resource
+	 * on the Internet.
+	 * 
+	 * @return  the URI of <i>this</i> reference
+	 */
 	public String getUri(){
 		return this.uri;
 	}
+	/**
+	 * @see #getUri()
+	 */
 	public void setUri(String uri){
 		this.uri = uri;
 	}
 
+	/**
+	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This 
+	 * indicates that a {@link TaxonNameBase taxon name} has been originally
+	 * published in <i>this</i> reference following the rules of a
+	 * {@link name.NomenclaturalCode nomenclature code} and is therefoe used for
+	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
+	 * reference is used as a nomenclatural reference for any taxon name.
+	 */
 	public boolean isNomenclaturallyRelevant(){
 		return this.isNomenclaturallyRelevant;
 	}
 
 	/**
-	 * 
-	 * @param isNomenclaturallyRelevant    isNomenclaturallyRelevant
+	 * @see #isNomenclaturallyRelevant()
 	 */
 	public void setNomenclaturallyRelevant(boolean isNomenclaturallyRelevant){
 		this.isNomenclaturallyRelevant = isNomenclaturallyRelevant;
 	}
 
 	/**
-	 * returns a formatted string containing the entire reference citation including
-	 * authors
+	 * Returns a formatted string containing the entire reference citation,
+	 * including authors, corresponding to <i>this</i> reference.
+	 * 
+	 * @see  #generateTitle()
 	 */
 	@Transient
+	// TODO implement 
 	public String getCitation(){
 		return "";
 	}
 	
+	/**
+	 * Returns a string containing the date (mostly only the year) of
+	 * publication / creation of <i>this</i> reference.
+	 */
 	@Transient
 	public abstract String getYear();
 
+	/**
+	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
+	 * method was able to parse the string designating <i>this</i> reference
+	 * successfully (false) or not (true).
+	 *  
+	 * @return  the boolean value of the hasProblem flag
+	 * @see     #getCitation()
+	 */
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
+	/**
+	 * @see  #getHasProblem()
+	 */
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
 	}
 	
+	/**
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
+	 * reference and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited
+	 * IdentifiableEntity#generateTitle() method.
+	 *
+	 * @return  the string identifying <i>this</i> reference
+	 * @see  	#getCitation()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
+	 */
 	@Override
 	public String generateTitle(){
 		if (cacheStrategy == null){
@@ -143,8 +203,13 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	
 //**************************** CLONE *********************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+
+	/** 
+	 * Clones <i>this</i> reference. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> reference by
+	 * modifying only some of the attributes.
+	 * 
+	 * @see media.IdentifyableMediaEntity#clone()
 	 */
 	public Object clone() throws CloneNotSupportedException{
 		ReferenceBase result = (ReferenceBase)super.clone();
