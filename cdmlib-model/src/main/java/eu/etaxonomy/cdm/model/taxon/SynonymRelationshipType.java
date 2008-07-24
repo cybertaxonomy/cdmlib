@@ -47,12 +47,42 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
-	private static final UUID uuidProParteSynonymOf = UUID.fromString("130b752d-2eff-4a62-a132-104ed8d13e5e");
-	private static final UUID uuidPartialSynonymOf = UUID.fromString("8b0d1d34-cc00-47cb-999d-b67f98d1af6e");
 	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
 	private static final UUID uuidHeterotypicSynonymOf = UUID.fromString("4c1e2c59-ca55-41ac-9a82-676894976084");
 
+	private boolean isProParte = false;
+	private boolean isPartial = false;
 	
+	
+	
+	/**
+	 * @return the isProParte
+	 */
+	public boolean isProParte() {
+		return isProParte;
+	}
+
+	/**
+	 * @param isProParte the isProParte to set
+	 */
+	public void setProParte(boolean isProParte) {
+		this.isProParte = isProParte;
+	}
+
+	/**
+	 * @return the isPartial
+	 */
+	public boolean isPartial() {
+		return isPartial;
+	}
+
+	/**
+	 * @param isPartial the isPartial to set
+	 */
+	public void setPartial(boolean isPartial) {
+		this.isPartial = isPartial;
+	}
+
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty synonym relationship type instance.
@@ -108,9 +138,6 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * {@link Synonym synonym} designated originally a real taxon which later has
 	 * been split.
 	 */
-	public static final SynonymRelationshipType PRO_PARTE_SYNONYM_OF(){
-		return getByUuid(uuidProParteSynonymOf);
-	}
 
 	/**
 	 * Returns the synonym relationship type "is partial synonym of". This
@@ -118,9 +145,6 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * {@link Synonym synonym} designated originally a real taxon which later has
 	 * been lumped together with another one.
 	 */
-	public static final SynonymRelationshipType PARTIAL_SYNONYM_OF(){
-		return getByUuid(uuidPartialSynonymOf);
-	}
 
 	/**
 	 * Returns the synonym relationship type "is homotypic synonym of". This

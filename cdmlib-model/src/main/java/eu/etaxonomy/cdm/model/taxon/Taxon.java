@@ -489,7 +489,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    	   					#getRelationsToThisTaxon()
 	 */
 	public void addMisappliedName(Taxon misappliedNameTaxon, ReferenceBase citation, String microcitation) {
-		misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIEDNAMEFOR(), citation, microcitation);
+		misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), citation, microcitation);
 	}
 
 	
@@ -749,7 +749,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
 		for (TaxonRelationship rel: rels){
 			TaxonRelationshipType tt = rel.getType();
-			TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIEDNAMEFOR(); 
+			TaxonRelationshipType incl = TaxonRelationshipType.MISAPPLIED_NAME_FOR(); 
 			if (tt.equals(incl)){
 				taxa.add(rel.getFromTaxon());
 			}

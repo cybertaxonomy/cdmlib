@@ -124,7 +124,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * as the one meant by the target {@link Taxon taxon}.<BR>
 	 * This type is neither symmetric nor transitive.
 	 */
-	public static final TaxonRelationshipType MISAPPLIEDNAMEFOR(){
+	public static final TaxonRelationshipType MISAPPLIED_NAME_FOR(){
 		return (TaxonRelationshipType)findByUuid(uuidMisappliedNameFor);
 	}
 	/**
@@ -132,12 +132,12 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * indicates that the {@link name.TaxonNameBase taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has not been
 	 * {@link name.NomenclaturalStatusType#isInvalidType() validly published} but was intended to denominate
-	 * a real taxon which is the same as the one meant by the target {@link Taxon taxon}.
-	 * Actually a not validly published taxon name is according to the
-	 * nomenclature codes no taxon name at all.<BR>
+	 * a real taxon which is the same as the one meant by the target {@link Taxon taxon}.<BR>
+	 * According to the nomenclature codes a not validly published taxon name is 
+	 * not a taxon name at all.<BR>
 	 * This type is neither symmetric nor transitive.
 	 */
-	public static final TaxonRelationshipType INVALIDDESIGNATIONFOR(){
+	public static final TaxonRelationshipType INVALID_DESIGNATION_FOR(){
 		return (TaxonRelationshipType)findByUuid(uuidInvalidDesignationFor);
 	}
 	/**
@@ -170,7 +170,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * identical.<BR>
 	 * This type is symmetric and transitive.
 	 */
-	public static final TaxonRelationshipType CONGRUENTTO(){
+	public static final TaxonRelationshipType CONGRUENT_TO(){
 		return (TaxonRelationshipType)findByUuid(uuidCongruentTo);
 	}
 	/**
@@ -236,7 +236,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * "is congruent to", "includes" and "overlaps".<BR>
 	 * This type is symmetric but not transitive.
 	 */
-	public static final TaxonRelationshipType DOESNOTEXCLUDE(){
+	public static final TaxonRelationshipType DOES_NOT_EXCLUDE(){
 		return (TaxonRelationshipType)findByUuid(uuidDoesNotExclude);
 	}
 	/**
@@ -251,7 +251,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * "is congruent to", "includes" and "excludes".<BR>
 	 * This type is symmetric but not transitive.
 	 */
-	public static final TaxonRelationshipType DOESNOTOVERLAP(){
+	public static final TaxonRelationshipType DOES_NOT_OVERLAP(){
 		return (TaxonRelationshipType)findByUuid(uuidDoesNotOverlap);
 	}
 	/**
@@ -268,7 +268,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * target taxon. <BR>
 	 * This type is neither symmetric nor transitive.
 	 */
-	public static final TaxonRelationshipType NOTINCLUDEDIN(){
+	public static final TaxonRelationshipType NOT_INCLUDED_IN(){
 		return (TaxonRelationshipType)findByUuid(uuidNotIncludedIn);
 	}
 	/**
@@ -285,9 +285,10 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * "includes", "overlaps" and "excludes".<BR>
 	 * This type is symmetric but not transitive.
 	 */
-	public static final TaxonRelationshipType NOTCONGRUENTTO(){
+	public static final TaxonRelationshipType NOT_CONGRUENT_TO(){
 		return (TaxonRelationshipType)findByUuid(uuidNotCongruentTo);
 	}
 
+	//TODO ohter relationshipTypes
 
 }
