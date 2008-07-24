@@ -48,6 +48,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
+		logger.warn("Creation of homotypic relations is still problematic");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		
@@ -56,19 +57,16 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){ 
-			
+	
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		logger.info("start makeTaxonRelationships ...");
 
 		String xmlElementName;
 		String xmlAttributeName;
 		Namespace elementNamespace;
 		Namespace attributeNamespace;
-		String cdmAttrName;
-		String value;
 		
-		logger.info("start makeTaxonRelationships ...");
-
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
@@ -89,18 +87,25 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
 		int i = 0;
-		//for each taxonName
+		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConcepts){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
 			
 			//TaxonConcept about
 			xmlElementName = "about";
 			elementNamespace = rdfNamespace;
-			String taxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
+			String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
+			
+			TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
+			
+			if (aboutTaxon instanceof Taxon){
+				makeHomotypicSynonymRelations((Taxon)aboutTaxon);
+			}
 			
 			xmlElementName = "hasRelationship";
 			elementNamespace = taxonConceptNamespace;
 			List<Element> elHasRelationships = elTaxonConcept.getChildren(xmlElementName, elementNamespace);
+			
 			
 			for (Element elHasRelationship: elHasRelationships){
 				xmlElementName = "relationship";
@@ -124,7 +129,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 						attributeNamespace = rdfNamespace;
 						String strToTaxon = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
 						TaxonBase toTaxon = taxonMap.get(strToTaxon);
-						TaxonBase fromTaxon = taxonMap.get(taxonAbout);
+						TaxonBase fromTaxon = aboutTaxon;
 						if (toTaxon != null && fromTaxon != null){
 							//reverse
 							if (isReverse == true ){
@@ -172,7 +177,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 								logger.warn("toTaxon (" + strToTaxon + ") could  not be found in taxonMap. Relationship was not added to CDM");
 							}
 							if (fromTaxon == null){
-								logger.warn("fromTaxon (" + taxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
+								logger.warn("fromTaxon (" + strTaxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
 							}
 						}
 					} catch (UnknownCdmTypeException e) {
@@ -189,6 +194,27 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		logger.info("end makeRelTaxa ...");
 		return success;
 
+	}
+
+	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
+		if (true)return false;
+		TaxonNameBase aboutName = aboutTaxon.getName();
+		if (aboutName != null){
+			Set<TaxonNameBase> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
+			for (TaxonNameBase typifiedName : typifiedNames){
+				//TODO check if name is part of this tcs file
+				if (typifiedName.equals(aboutName)){
+					continue;
+				}
+				Set<Synonym> syns = typifiedName.getSynonyms();
+				for(Synonym syn:syns){
+					aboutTaxon.addSynonym(syn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+				}
+			}
+			
+			
+		}
+		return true;
 	}
 	
 	/* (non-Javadoc)

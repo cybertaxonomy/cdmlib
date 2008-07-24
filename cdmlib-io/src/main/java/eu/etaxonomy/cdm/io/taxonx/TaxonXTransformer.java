@@ -150,16 +150,16 @@ public final class TaxonXTransformer {
 		}else if (isParentTaxonOf.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
 		
 		//concept relationships
-		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOESNOTOVERLAP(); 
+		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
 		}else if (excludes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.EXCLUDES(); 
 		}else if (includes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.INCLUDES(); 
-		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENTTO(); 
-		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOTCONGRUENTTO(); 
-		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOTINCLUDEDIN(); 
+		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENT_TO(); 
+		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
+		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
 		}else if (overlaps.equals(tcsRelationshipCategory)){return TaxonRelationshipType.OVERLAPS(); 
 		//reverse concept relationships
 		}else if (isIncludedIn.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.INCLUDES();
-		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOTINCLUDEDIN(); 
+		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOT_INCLUDED_IN(); 
 		
 	//TODO	
 //		}else if (hasVernacular.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 

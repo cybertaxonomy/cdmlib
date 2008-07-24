@@ -119,6 +119,27 @@ public final class TcsTransformer {
 		String tcsCommunication = tcsRoot + "Communication";
 		String tcsBookSeries = tcsRoot + "BookSeries";
 		
+//		Artwork	An Artwork type publication.
+//		AudiovisualMaterial	A Audiovisual Material type publication.
+//		BookSection	A Book Section type publication.
+//		BookSeries	A Book Series type publication.
+//		Commentary	A Commentary type publication.
+//		Communication	A Communication type publication.
+//		ComputerProgram	A Computer Program type publication.
+//		ConferenceProceedings	A Conference Proceedings type publication.
+//		Determination	A Determination type publication.
+//		EditedBook	A Edited Book type publication.
+//		Generic	A generic publication.
+//		Journal	A Journal type publication.
+//		JournalArticle	A Journal Article type publication.
+//		MagazineArticle	A Magazine Article type publication.
+//		Map	A Map type publication.
+//		NewspaperArticle	A Newspaper Article type publication.
+//		Patent	A Patent type publication.
+//		Report	A Report type publication.
+//		SubReference	A Sub-Reference type publication.
+//		Thesis	A Thesis type publication.
+
 		
 		if (strPubType == null){return null;
 		}else if (tcsBook.equals(strPubType)){return Book.NewInstance();
@@ -170,16 +191,16 @@ public final class TcsTransformer {
 		}else if (isParentTaxonOf.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
 		
 		//concept relationships
-		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOESNOTOVERLAP(); 
+		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
 		}else if (excludes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.EXCLUDES(); 
 		}else if (includes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.INCLUDES(); 
-		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENTTO(); 
-		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOTCONGRUENTTO(); 
-		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOTINCLUDEDIN(); 
+		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENT_TO(); 
+		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
+		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
 		}else if (overlaps.equals(tcsRelationshipCategory)){return TaxonRelationshipType.OVERLAPS(); 
 		//reverse concept relationships
 		}else if (isIncludedIn.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.INCLUDES();
-		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOTINCLUDEDIN(); 
+		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOT_INCLUDED_IN(); 
 		
 	//TODO	
 //		}else if (hasVernacular.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
