@@ -52,36 +52,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 
 	private boolean isProParte = false;
 	private boolean isPartial = false;
-	
-	
-	
-	/**
-	 * @return the isProParte
-	 */
-	public boolean isProParte() {
-		return isProParte;
-	}
 
-	/**
-	 * @param isProParte the isProParte to set
-	 */
-	public void setProParte(boolean isProParte) {
-		this.isProParte = isProParte;
-	}
-
-	/**
-	 * @return the isPartial
-	 */
-	public boolean isPartial() {
-		return isPartial;
-	}
-
-	/**
-	 * @param isPartial the isPartial to set
-	 */
-	public void setPartial(boolean isPartial) {
-		this.isPartial = isPartial;
-	}
 	
 	//for hibernate, don't use
 	@Deprecated
@@ -106,6 +77,47 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 */
 	protected SynonymRelationship(Synonym synonym, Taxon taxon, SynonymRelationshipType type, ReferenceBase citation, String citationMicroReference) {
 		super(synonym, taxon, type, citation, citationMicroReference);
+	}
+	
+
+	/**
+	 * Returns "true" if the ProParte flag is set. This indicates that, within
+	 * <i>this</i> synonym relationship, the {@link name.TaxonNameBase taxon name} used as a
+	 * {@link Synonym synonym} designated originally a real taxon which later has
+	 * been split. In this case the synonym is therefore the synonym of at least
+	 * two different ("accepted/correct") {@link Taxon taxa} and at least one
+	 * more synonym relationship with the same synonym should exist.
+	 */
+	public boolean isProParte() {
+		return isProParte;
+	}
+
+	/**
+	 * @see #isProParte()
+	 */
+	public void setProParte(boolean isProParte) {
+		this.isProParte = isProParte;
+	}
+
+	/**
+	 * Returns "true" if the ProParte flag is set. This indicates that, within
+	 * <i>this</i> synonym relationship, the {@link name.TaxonNameBase taxon name} used as a
+	 * {@link Synonym synonym} designated originally a real taxon which later has
+	 * been lumped together with another one. In this case the
+	 * ("accepted/correct") {@link Taxon taxon} has therefore at least
+	 * two different synonyms (for the two lumped real taxa) and at least one
+	 * more synonym relationship with the same ("accepted/correct") taxon should
+	 * exist.
+	 */
+	public boolean isPartial() {
+		return isPartial;
+	}
+
+	/**
+	 * @see #isPartial()
+	 */
+	public void setPartial(boolean isPartial) {
+		this.isPartial = isPartial;
 	}
 	
 	/** 

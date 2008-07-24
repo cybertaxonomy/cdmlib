@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * The class representing categories of {@link SynonymRelationship synonym relationships}
- * (like "pro parte synonym of" or "heterotypic synonym of").
+ * (like "heterotypic synonym of").
  * <P>
  * A standard (ordered) list of synonym relationship type instances will be
  * automatically created as the project starts. But this class allows to extend
@@ -99,20 +99,6 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return getByUuid(uuidSynonymOf);
 	}
-
-	/**
-	 * Returns the synonym relationship type "is pro parte synonym of". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} used as a
-	 * {@link Synonym synonym} designated originally a real taxon which later has
-	 * been split.
-	 */
-
-	/**
-	 * Returns the synonym relationship type "is partial synonym of". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} used as a
-	 * {@link Synonym synonym} designated originally a real taxon which later has
-	 * been lumped together with another one.
-	 */
 
 	/**
 	 * Returns the synonym relationship type "is homotypic synonym of". This
