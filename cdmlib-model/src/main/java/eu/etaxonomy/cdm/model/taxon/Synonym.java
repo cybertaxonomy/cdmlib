@@ -187,13 +187,13 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * {@link SynonymRelationship synonym relationships} as <i>this</i> synonym.
 	 * Each taxon is the target and <i>this</i> synonym is the source of a {@link SynonymRelationship synonym relationship}
 	 * belonging to the {@link #getSynonymRelations() set of synonym relationships} assigned to
-	 * <i>this</i> synonym. For a particular synonym there can be more than one
-	 * ("accepted/correct") taxon only if the corresponding
-	 * {@link SynonymRelationshipType synonym relationship type} is "pro parte synonym of".
+	 * <i>this</i> synonym. For a particular synonym there are more than one
+	 * ("accepted/correct") taxon only if the {@link SynonymRelationship#isProParte() "is pro parte" flag}
+	 * of the corresponding {@link SynonymRelationship synonym relationships} is set.
 	 *  
 	 * @see    #getSynonymRelations()
 	 * @see    #getRelationType(Taxon)
-	 * @see    SynonymRelationshipType#PRO_PARTE_SYNONYM_OF()
+	 * @see    SynonymRelationship#isProParte()
 	 */
 	@Transient
 	public Set<Taxon> getAcceptedTaxa() {
@@ -205,7 +205,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	}
 
 	/** 
-	 * Returns set of {@link SynonymRelationshipType synonym relationship types} of the
+	 * Returns the {@link SynonymRelationshipType synonym relationship type} of the
 	 * {@link SynonymRelationship synonym relationships} where the {@link SynonymRelationship#getSynonym() synonym}
 	 * is <i>this</i> synonym and the {@link SynonymRelationship#getAcceptedTaxon() taxon}
 	 * is the given one. "Null" is returned if the given taxon is "null" or if
@@ -218,17 +218,15 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    		#getAcceptedTaxa()
 	 */
 	@Transient
-	//TODO	should return a Set<SynonymRelationshipType> since there might be more than one relation
-	//		between the synonym and the taxon: see Taxon#removeSynonym(Synonym)
-	public Set<SynonymRelationshipType> getRelationType(Taxon taxon){
-		Set<SynonymRelationshipType> result = new HashSet<SynonymRelationshipType>();
+	public SynonymRelationshipType getRelationType(Taxon taxon){
+		SynonymRelationshipType result = null;
 		if (taxon == null ){
 			return result;
 		}
 		for (SynonymRelationship rel : getSynonymRelations()){
 			Taxon acceptedTaxon = rel.getAcceptedTaxon();
 			if (taxon.equals(acceptedTaxon)){
-				result.add(rel.getType());
+				result = (rel.getType());
 			}
 		}
 		return result;
