@@ -3,12 +3,9 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.Locale;
 import java.util.UUID;
+
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.Person;
