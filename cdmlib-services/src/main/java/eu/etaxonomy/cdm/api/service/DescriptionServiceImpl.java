@@ -47,7 +47,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 * 
 	 */
 	public DescriptionServiceImpl() {
-		logger.info("Load DescriptionService Bean");
+		logger.debug("Load DescriptionService Bean");
 	}
 
 	/* (non-Javadoc)

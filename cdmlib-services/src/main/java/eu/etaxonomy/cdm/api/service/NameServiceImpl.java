@@ -45,7 +45,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 
 	public NameServiceImpl(){
-		logger.info("Load NameService Bean");
+		logger.debug("Load NameService Bean");
 	}
 
 	public List getNamesByName(String name){
