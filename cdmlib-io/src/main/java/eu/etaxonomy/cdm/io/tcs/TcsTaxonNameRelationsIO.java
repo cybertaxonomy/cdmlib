@@ -91,7 +91,7 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 			
 			for (Element elBasionym: elBasionymList){
 				nameRelCount++;
-				logger.info("BASIONYM "+  nameRelCount);
+				logger.debug("BASIONYM "+  nameRelCount);
 				tcsElementName = "resource";
 				tcsNamespace = rdfNamespace;
 				Attribute attrResource = elBasionym.getAttribute(tcsElementName, tcsNamespace);

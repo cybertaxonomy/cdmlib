@@ -91,7 +91,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Names handled: " + (i-1));}
 				
 				//create TaxonName element
 				int nameId = rs.getInt("nameId");
@@ -200,7 +200,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						String authorTeamYear = rs.getString("authorTeamYear");
 						try {
 							if (! "".equals(CdmUtils.Nz(authorTeamYear).trim())){
-								Integer publicationYear  = Integer.valueOf(authorTeamYear);
+								Integer publicationYear  = Integer.valueOf(authorTeamYear.trim());
 								zooName.setPublicationYear(publicationYear);
 							}
 						} catch (NumberFormatException e) {
@@ -210,7 +210,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						String basAuthorTeamYear = rs.getString("basAuthorTeamYear");
 						try {
 							if (! "".equals(CdmUtils.Nz(basAuthorTeamYear).trim())){
-								Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear);
+								Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear.trim());
 								zooName.setOriginalPublicationYear(OriginalPublicationYear);
 							}
 						} catch (NumberFormatException e) {

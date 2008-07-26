@@ -122,11 +122,8 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 			String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
 			
 			//FIXME
-			//Generic sec = Generic.NewInstance();
-			ReferenceBase sec = config.getSourceReference(); //FIXME complete nonsense, just workaround for testing
-			//FIXME
-			
-			sec.setTitleCache(strAccordingTo);
+			String secId = "pub_999999";
+			ReferenceBase sec = referenceMap.get(secId);
 			
 			//FIXME or synonym
 			TaxonBase taxonBase;

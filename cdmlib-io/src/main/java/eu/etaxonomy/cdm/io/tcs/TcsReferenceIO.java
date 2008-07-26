@@ -13,25 +13,19 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.FACULTATIVE;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
@@ -145,10 +139,13 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
+//		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
+//		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
+		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
-		Element source = tcsConfig.getSourceRoot();
 		Element root = tcsConfig.getSourceRoot();
 		logger.info("start makeReferences ...");
 		
@@ -160,7 +157,6 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		
 		
-		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
 		
 		Namespace rdfNamespace = root.getNamespace();
@@ -179,79 +175,53 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 		tcsNamespace = publicationNamespace;
 		List<Element> elPublicationCitations = root.getChildren(tcsElementName, tcsNamespace);
 
+		int nomRefCount = 0;
+		int biblioRefsCount = 0;
 		
 		int i = 0;
 		//for each taxonName
 		for (Element elPublicationCitation : elPublicationCitations){
 			
-			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
+			if ((++i % modCount) == 0){ logger.info("references handled: " + (i-1));}
 			
 			Attribute about = elPublicationCitation.getAttribute("about", rdfNamespace);
 
 			//create TaxonName element
 			String strAbout = elPublicationCitation.getAttributeValue("about", rdfNamespace);
 			
-			String pages = 
 			tcsElementName = "publicationType";
 			tcsNamespace = publicationNamespace;
 			String strPubType = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 			
 			try {
-				ReferenceBase refBase = TcsTransformer.pubTypeStr2PubType(strPubType);
-				
+				StrictReferenceBase ref = TcsTransformer.pubTypeStr2PubType(strPubType);
+				if (ref==null){
+					ref = Generic.NewInstance();
+				}
 				//attributes
 				tcsElementName = "publisher";
 				tcsNamespace = publicationNamespace;
-				cdmAttrName = "genusOrUninomial";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
-
-				tcsElementName = "shortTitle";
-				tcsNamespace = publicationNamespace;
-				cdmAttrName = "title";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
-
-				tcsElementName = "title";
-				tcsNamespace = publicationNamespace;
-				cdmAttrName = "title";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+				cdmAttrName = "publisher";
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
+						tcsNamespace, cdmAttrName, FACULTATIVE);
 
 				tcsElementName = "year";
 				tcsNamespace = publicationNamespace;
-				cdmAttrName = "year";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
-
-				//TODO
-				tcsElementName = "year";
-				tcsNamespace = publicationNamespace;
-				Integer year = null;
-				try {
-					value = (String)ImportHelper.getXmlInputValue(elPublicationCitation, tcsElementName, tcsNamespace);
-					year = Integer.valueOf(value);
-					Calendar cal = Calendar.getInstance();
-					//FIXME
-					cal.set(year, 1, 1);
-					if (refBase instanceof StrictReferenceBase){
-						StrictReferenceBase ref = (StrictReferenceBase)refBase;
-						ref.setDatePublished(TimePeriod.NewInstance(cal));
-					}else{
-						logger.warn("year not implemented for ReferenceBase type " +  ((refBase == null) ? "(null)" : refBase.getClass().getSimpleName()));
-					}
-				} catch (RuntimeException e) {
-					logger.warn("year could not be parsed");
-				}
-			
-
-				
+				String strYear = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
+				TimePeriod datePublished = ImportHelper.getDatePublished(strYear);
+				ref.setDatePublished(datePublished);
 				
 				tcsElementName = "pages";
 				tcsNamespace = publicationNamespace;
 				cdmAttrName = "pages";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
+						tcsNamespace, cdmAttrName, FACULTATIVE);
 
 				tcsElementName = "volume";
 				tcsNamespace = publicationNamespace;
 				cdmAttrName = "volume";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, refBase, tcsElementName, tcsNamespace, cdmAttrName);
+				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
+						tcsNamespace, cdmAttrName, FACULTATIVE);
 				
 				
 				//Reference
@@ -264,9 +234,39 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 					logger.warn("parent not yet implemented");
 					//TODO refBase.setParent(parent);
 				}
+
+				
+				//FIXME
+				//nomRef and reference
+				tcsElementName = "shortTitle";
+				tcsNamespace = publicationNamespace;
+				String strShortTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
+				if (! CdmUtils.Nz(strShortTitle).trim().equals("")){
+					ref.setTitle(strShortTitle);
+					nomRefMap.put(strAbout, ref);
+					nomRefCount++;
+				}
+				tcsElementName = "title";
+				tcsNamespace = publicationNamespace;
+				String strTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
+				tcsNamespace = publicationNamespace;
+				if (! CdmUtils.Nz(strTitle).trim().equals("")){
+					//TODO
+					StrictReferenceBase biblioRef = (StrictReferenceBase)ref.clone();
+					biblioRef.setTitle(strTitle);
+					referenceMap.put(strAbout, biblioRef);
+					biblioRefsCount++;
+				}
+				
+//				
+//				if (! referenceStore.containsId(strAbout)){
+//					referenceStore.put(strAbout, refBase);
+//				}
+
+
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
-				referenceMap.put(strAbout, refBase);
+				referenceMap.put(strAbout, ref);
 				
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
@@ -274,8 +274,25 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 				success = false; 
 			}
 		}
-		logger.info(i + " names handled");
+		
+		//change conceptRef uuid
+		ReferenceBase sec = referenceMap.get(config.getSourceSecId());
+		if (sec == null){
+			sec = nomRefMap.get(config.getSourceSecId());	
+		}
+		if (sec != null){
+			sec.setUuid(config.getSecUuid());
+			logger.info("concept reference uuid changed to: " + config.getSecUuid());
+		}
+		
+		
+		//save and store in map
+		logger.info("Save nomenclatural references (" + nomRefCount + ")");
+		referenceService.saveReferenceAll(nomRefMap.objects());
+		logger.info("Save bibliographical references (" + biblioRefsCount +")");
 		referenceService.saveReferenceAll(referenceMap.objects());
+		
+		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");
 		return success;
 	}

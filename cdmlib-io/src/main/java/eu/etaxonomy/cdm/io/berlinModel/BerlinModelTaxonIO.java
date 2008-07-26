@@ -50,7 +50,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		logger.warn("Checking for TaxonRelations not yet fully implemented");
+		logger.warn("Checking for Taxa not yet fully implemented");
 		result &= checkTaxonStatus(bmiConfig);
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		
@@ -132,7 +132,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("PTaxa handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("PTaxa handled: " + (i-1));}
 				
 				//create TaxonName element
 				int taxonId = rs.getInt("RIdentifier");

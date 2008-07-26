@@ -71,7 +71,7 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	
 	//uuid of concept reference
 	private UUID  secUuid = UUID.randomUUID();
-	private int sourceSecId = -1;
+	private Object sourceSecId = -1;
 	
 	private Object source;
 	protected ReferenceBase sourceReference;
@@ -420,14 +420,14 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/**
 	 * @return the sourceSecId
 	 */
-	public int getSourceSecId() {
+	public Object getSourceSecId() {
 		return sourceSecId;
 	}
 
 	/**
 	 * @param sourceSecId the sourceSecId to set
 	 */
-	public void setSourceSecId(int sourceSecId) {
+	public void setSourceSecId(Object sourceSecId) {
 		this.sourceSecId = sourceSecId;
 	}
 	

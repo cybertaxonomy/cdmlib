@@ -83,7 +83,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("FactCategories handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("FactCategories handled: " + (i-1));}
 				
 				int factCategoryId = rs.getInt("factCategoryId");
 				String factCategory = rs.getString("factCategory");

@@ -92,7 +92,7 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("NomStatus handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("NomStatus handled: " + (i-1));}
 				
 				int nomStatusRelId = rs.getInt("RIdentifier");
 				int nomStatusFk = rs.getInt("NomStatusFk");

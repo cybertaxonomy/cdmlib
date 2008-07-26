@@ -78,8 +78,6 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		
 		logger.info("start makeTypes ...");
 		
-		boolean delete = bmiConfig.isDeleteAll();
-
 		try {
 			//get data from database
 			String strQuery = 
@@ -93,7 +91,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("Types handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Types handled: " + (i-1));}
 				
 				int typeDesignationId = rs.getInt("typeDesignationId");
 				int nameId = rs.getInt("nameFk");

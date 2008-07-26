@@ -81,7 +81,7 @@ public class MapWrapper<T extends CdmBase> {
 		return result;
 	}
 	
-	public boolean containsId(Integer id){
+	public boolean containsId(Object id){
 		return internalMap.containsKey(id);
 	}
 	

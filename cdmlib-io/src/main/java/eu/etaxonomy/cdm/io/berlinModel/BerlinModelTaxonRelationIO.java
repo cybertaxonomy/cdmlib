@@ -148,7 +148,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("RelPTaxa handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
 				
 				int relPTaxonId = rs.getInt("RelPTaxonId");
 				int taxon1Id = rs.getInt("taxon1Id");
@@ -206,7 +206,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 			logger.info("Taxa to save: " + taxonStore.size());
 			taxonService.saveTaxonAll(taxonStore);
 			
-			logger.info("end makeRelTaxa ...");
+			logger.info("end makeTaxonRelationships ...");
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

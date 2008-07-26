@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -163,5 +165,10 @@ public interface IImportConfigurator {
 	 * @return
 	 */
 	public CdmApplicationController getCdmAppController();
+	
+	public Object getSourceSecId();
+
+	public UUID getSecUuid();
+	public void setSecUuid(UUID secUuid);
 	
 }

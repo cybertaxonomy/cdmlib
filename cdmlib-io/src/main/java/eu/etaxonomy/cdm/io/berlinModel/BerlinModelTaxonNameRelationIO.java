@@ -94,7 +94,7 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("RelName handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelName handled: " + (i-1));}
 				
 				int relNameId = rs.getInt("RelNameId");
 				int name1Id = rs.getInt("name1Id");
@@ -186,7 +186,7 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 			logger.info("TaxonName to save: " + nameStore.size());
 			nameService.saveTaxonNameAll(nameStore);
 			
-			logger.info("end makeRelName ...");
+			logger.info("end makeNameRelationships ...");
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

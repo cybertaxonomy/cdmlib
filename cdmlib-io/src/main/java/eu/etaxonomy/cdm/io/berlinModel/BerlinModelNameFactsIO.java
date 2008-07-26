@@ -94,7 +94,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			//for each reference
 			while (rs.next() && i < border){
 				
-				if ((i++ % modCount) == 0){ logger.info("NameFacts handled: " + (i-1));}
+				if ((i++ % modCount) == 0  && i!= 1 ){ logger.info("NameFacts handled: " + (i-1));}
 				
 				int nameFactId = rs.getInt("nameFactId");
 				int nameId = rs.getInt("nameId");

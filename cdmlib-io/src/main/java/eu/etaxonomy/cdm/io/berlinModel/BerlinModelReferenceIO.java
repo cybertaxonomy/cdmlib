@@ -18,7 +18,6 @@ import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMEN
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +70,13 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		result &= checkArticlesWithoutJournal(bmiConfig);
 		result &= checkPartOfJournal(bmiConfig);
+		result &= checkPartOfUnresolved(bmiConfig);
+		result &= checkPartOfPartOf(bmiConfig);
+		result &= checkPartOfArticle(bmiConfig);
+		
+		
+		if (result == false ){System.out.println("========================================================");}
+		
 		
 		return result;
 	}
@@ -155,19 +161,20 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 	}
 	
-	private static boolean checkXXX(BerlinModelImportConfigurator bmiConfig){
+	
+	private static boolean checkPartOfUnresolved(BerlinModelImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
 			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
 			" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
-						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 9) ";
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 10) ";
 			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
 			boolean firstRow = true;
 			while (rs.next()){
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are part-of-references that have a Journal as in-reference!");
+					logger.warn("There are part-of-references that have an 'unresolved' in-reference!");
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
@@ -187,6 +194,111 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						"\n  inRefTitle: " + inRefTitle );
 				result = firstRow = false;
 			}
+			if (result == false){
+				System.out.println("\nChoose a specific type from the following reference types: \n" +
+						"  1) Article \n  2) Book \n  3) BookSection \n  4) CdDvd \n  5) ConferenceProceeding \n  6) Database\n" + 
+						"  7) Generic \n  7) InProceedings \n  8) Journal \n  9) Map \n 10) Patent \n 11) PersonalCommunication\n" +
+						" 12) PrintSeries \n 13) Proceedings \n 14) Report \n 15) Thesis \n 16) WebPage");
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private static boolean checkPartOfPartOf(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle, InRef.InRefFk as InInRefId, InInRef.Title as inInRefTitle, InInRef.RefCategoryFk as inInRefCategory " + 
+						" FROM Reference " +
+							" INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId " + 
+							" INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId " + 
+							" INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+							" INNER JOIN Reference AS InInRef ON InRef.InRefFk = InInRef.RefId " + 
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 2) ";
+			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are part-of-references that are part of an other 'part-of' reference!\n" + 
+							"         This is invalid or ambigous. Please try to determine the reference types more detailed ");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("RefId");
+				int categoryFk = rs.getInt("RefCategoryFk");
+				String cat = rs.getString("RefCategoryAbbrev");
+				int inRefFk = rs.getInt("InRefId");
+				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				String inRefCat = rs.getString("InRefCat");
+				String refCache = rs.getString("RefCache");
+				String nomRefCache = rs.getString("nomRefCache");
+				String title = rs.getString("title");
+				String inRefTitle = rs.getString("InRefTitle");
+				int inInRefId = rs.getInt("InInRefId");
+				String inInRefTitle = rs.getString("inInRefTitle");
+				int inInRefCategory = rs.getInt("inInRefCategory");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
+						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
+						"\n  inRefTitle: " + inRefTitle + "\n  inInRefId: " + inInRefId + "\n  inInRefTitle: " + inInRefTitle +
+						"\n  inInRefCategory: " + inInRefCategory );
+				result = firstRow = false;
+			}
+			if (result == false){
+				System.out.println("\nChoose a specific type from the following reference types: \n" +
+						"  1) BookSection - Book - PrintSeries \n" +
+						"  2) InProceedings - pProceedings  - PrintSeries");
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
+	private static boolean checkPartOfArticle(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev as nomTitleAbbrev, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle, InRef.nomTitleAbbrev AS inRefnomTitleAbbrev, InRef.refCache AS inRefCache, InRef.nomRefCache AS inRefnomRefCache " + 
+			" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
+						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 1) ";
+			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are part-of-references that have an article as in-reference!");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("RefId");
+				int categoryFk = rs.getInt("RefCategoryFk");
+				String cat = rs.getString("RefCategoryAbbrev");
+				int inRefFk = rs.getInt("InRefId");
+				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				String inRefCat = rs.getString("InRefCat");
+				String refCache = rs.getString("RefCache");
+				String nomRefCache = rs.getString("nomRefCache");
+				String title = rs.getString("title");
+				String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+				String inRefTitle = rs.getString("InRefTitle");
+				String inRefnomTitleAbbrev = rs.getString("inRefnomTitleAbbrev");
+				String inRefnomRefCache = rs.getString("inRefnomRefCache");
+				String inRefCache = rs.getString("inRefCache");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + "\n  titleAbbrev: " + nomTitleAbbrev + 
+						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
+						"\n  inRefTitle: " + inRefTitle + "\n  inRefTitleAbbrev: " + inRefnomTitleAbbrev +
+						"\n  inRefnomRefCache: " + inRefnomRefCache + "\n  inRefCache: " + inRefCache 
+						);
+				result = firstRow = false;
+			}
 			
 			return result;
 		} catch (SQLException e) {
@@ -198,10 +310,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	@Override
 	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
-			
+		
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 				
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
@@ -262,28 +374,20 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			//for each resultsetlist
 			while (resultSetListIterator.hasNext()){
 				int i = 0;
-				int nomRefCount = 0;
-				int biblioRefsCount = 0;
+				Integer nomRefCount = 0;
+				Integer biblioRefsCount = 0;
 				
 				ResultSet rs = resultSetListIterator.next();
 				//for each resultset
 				while (rs.next()){
 					
-					if ((i++ % modCount) == 0){ logger.info("References handled: " + (i-1) + " in round " + j);}
+					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round " + j);}
 					
 					//create TaxonName element
 					int refId = rs.getInt("refId");
 					int categoryFk = rs.getInt("refCategoryFk");
-					boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 					Object inRefFk = rs.getObject("inRefFk");
 					int inRefCategoryFk = rs.getInt("InRefCategoryFk");
-					String nomRefCache = rs.getString("nomRefCache");
-					String refCache = rs.getString("refCache");
-					String title = rs.getString("title");
-					String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
-					int nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
-					TeamOrPersonBase nomAuthor = authorMap.get(nomAuthorTeamFk);
-					String refAuthorString = rs.getString("refAuthorString");
 					String refYear = rs.getString("refYear");
 					
 					String pages = rs.getString("pageString");
@@ -444,50 +548,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						
 						
 						//TODO
-						referenceBase.setDatePublished(getDatePublished(refYear)); 
+						referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 						
-						boolean hasNomRef = false;
-						//is Nomenclatural Reference
-						if ( (! CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (! CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
-							referenceBase.setTitle(nomTitleAbbrev);
-							TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, true);
-							referenceBase.setAuthorTeam(author);
-							//referenceBase.setNomenclaturallyRelevant(true);
-							if (isPreliminary){
-								referenceBase.setTitleCache(nomRefCache);
-							}
-							if (! nomRefStore.containsId(refId)){
-								if (referenceBase == null){
-									logger.warn("refBase is null");
-								}
-								nomRefStore.put(refId, referenceBase);
-							}else{
-								logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
-							}
-							nomRefMap.put(refId, referenceBase);
-							hasNomRef = true;
-							nomRefCount++;
-						}
-						//is bibliographical Reference
-						if ((! CdmUtils.Nz(refCache).equals("") && isPreliminary) || (! CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
-							if (hasNomRef){
-								referenceBase = (StrictReferenceBase)referenceBase.clone();
-							}
-							referenceBase.setTitle(title);
-							TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, false);
-							referenceBase.setAuthorTeam(author);
-							referenceBase.setNomenclaturallyRelevant(false);
-							if (isPreliminary){
-								referenceBase.setTitleCache(refCache);
-							}
-							if (! referenceStore.containsId(refId)){
-								referenceStore.put(refId, referenceBase);
-							}else{
-								logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
-							}
-							referenceMap.put(refId, referenceBase);
-							biblioRefsCount++;
-						}
+						success &= makeNomAndBiblioReference(rs, refId, referenceBase, nomRefCount, biblioRefsCount, 
+								referenceStore, nomRefStore, authorMap, nomRefMap, referenceMap );
 
 					} catch (Exception e) {
 						logger.warn("Reference with id " + refId +  " threw Exception and could not be saved");
@@ -523,6 +587,74 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 	}
 	
+	private boolean makeNomAndBiblioReference(ResultSet rs, 
+				int refId, 
+				StrictReferenceBase referenceBase,  
+				Integer nomRefCount, 
+				Integer biblioRefsCount,
+				MapWrapper<ReferenceBase> referenceStore, 
+				MapWrapper<ReferenceBase> nomRefStore, 
+				MapWrapper<TeamOrPersonBase> authorMap,
+				MapWrapper<ReferenceBase> nomRefMap,
+				MapWrapper<ReferenceBase> referenceMap
+				) throws SQLException{
+		
+		String refCache = rs.getString("refCache");
+		String nomRefCache = rs.getString("nomRefCache");
+		String title = rs.getString("title");
+		String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+		boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
+		String refAuthorString = rs.getString("refAuthorString");
+		int nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
+		TeamOrPersonBase nomAuthor = authorMap.get(nomAuthorTeamFk);
+		
+		boolean hasNomRef = false;
+		//is Nomenclatural Reference
+		if ( (! CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (! CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
+			referenceBase.setTitle(nomTitleAbbrev);
+			TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, true);
+			referenceBase.setAuthorTeam(author);
+			//referenceBase.setNomenclaturallyRelevant(true);
+			if (isPreliminary){
+				referenceBase.setTitleCache(nomRefCache);
+			}
+			if (! nomRefStore.containsId(refId)){
+				if (referenceBase == null){
+					logger.warn("refBase is null");
+				}
+				nomRefStore.put(refId, referenceBase);
+			}else{
+				logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
+			}
+			nomRefMap.put(refId, referenceBase);
+			hasNomRef = true;
+			nomRefCount++;
+		}
+		//is bibliographical Reference
+		if ((! CdmUtils.Nz(refCache).equals("") && isPreliminary) || (! CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
+			if (hasNomRef){
+				referenceBase = (StrictReferenceBase)referenceBase.clone();
+			}
+			referenceBase.setTitle(title);
+			TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, false);
+			referenceBase.setAuthorTeam(author);
+			referenceBase.setNomenclaturallyRelevant(false);
+			if (isPreliminary){
+				referenceBase.setTitleCache(refCache);
+			}
+			if (! referenceStore.containsId(refId)){
+				referenceStore.put(refId, referenceBase);
+			}else{
+				logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
+			}
+			referenceMap.put(refId, referenceBase);
+			biblioRefsCount++;
+		}
+		return true;
+		
+	}
+	
+	
 	private static TeamOrPersonBase getAuthorTeam(String authorString, TeamOrPersonBase nomAuthor, boolean preferNomeclaturalAuthor){
 		TeamOrPersonBase result;
 		if (preferNomeclaturalAuthor){
@@ -552,50 +684,15 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		}
 		return result;
 	}
+
 	
-	private static TimePeriod getDatePublished(String refYear){
-		//FIXME until now only quick and dirty and wrong
-		if (refYear == null){
-			return null;
-		}
-		String[] years = refYear.split("-");
-		Calendar calStart = null;
-		Calendar calEnd = null;
-		
-		if (years.length > 2 || years.length <= 0){
-			logger.warn("XXX");
-		}else {
-			calStart = getCalendar(years[0]);
-			if (years.length >= 2){
-				calEnd = getCalendar(years[1]);
-			}
-		}
-		TimePeriod result = TimePeriod.NewInstance(calStart, calEnd);
-		return result;
-	}
-	
-	private static Calendar getCalendar(String strYear){
-		//FIXME until now only quick and dirty and wrong
-		Calendar cal = Calendar.getInstance();
-		cal.set(9999, Calendar.DECEMBER, 30, 0, 0, 0);
-		if (CdmUtils.isNumeric(strYear)){
-			try {
-				Integer year = Integer.valueOf(strYear.trim());
-				if (year > 1750 && year < 2030){
-					cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
-				}
-			} catch (NumberFormatException e) {
-				logger.debug("Not a Integer format in getCalendar()");
-			}
-		}
-		return cal;
-	}
+
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		TimePeriod timePeriod = getDatePublished("1756 - 1783");
+		TimePeriod timePeriod = ImportHelper.getDatePublished("1756 - 1783");
 		System.out.println(timePeriod.getYear());
 	}
 	

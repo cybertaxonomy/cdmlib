@@ -100,7 +100,7 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
 				
 				int occurrenceId = rs.getInt("occId");
 				int taxonId = rs.getInt("taxonId");

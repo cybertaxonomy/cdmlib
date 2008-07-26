@@ -78,7 +78,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		try{
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0){ logger.info("Authors handled: " + (i-1));}
+				if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info("Authors handled: " + (i-1));}
 				
 				//create Agent element
 				int teamId = rs.getInt("AuthorTeamId");
@@ -112,7 +112,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		logger.info(i + " authors handled");
 		agentService.saveAgentAll(teamMap.objects());
 
-		logger.info("end makeTaxonNames ...");
+		logger.info("end make authors ...");
 		return success;
 	}
 	
