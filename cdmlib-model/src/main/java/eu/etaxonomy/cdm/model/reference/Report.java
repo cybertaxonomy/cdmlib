@@ -10,13 +10,14 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import eu.etaxonomy.cdm.model.agent.Institution;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.agent.Institution;
 
 /**
  * publisher is "institution" in BibTex ???
@@ -29,6 +30,18 @@ public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);
 	private Institution institution;
 
+	public static Report NewInstance(){
+		Report result = new Report();
+		return result;
+	}
+	
+	public static Report NewInstance(Institution institution){
+		Report result = NewInstance();
+		result.setInstitution(institution);
+		return result;
+	}
+	
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitution(){

@@ -21,9 +21,20 @@ import org.apache.log4j.Logger;
  */
 @Entity
 public class PrintSeries extends PublicationBase implements Cloneable {
-	static Logger logger = Logger.getLogger(PrintSeries.class);
+	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	private String series;
 
+	public static PrintSeries NewInstance(){
+		PrintSeries result = new PrintSeries();
+		return result;
+	}
+	
+	public static PrintSeries NewInstance(String series){
+		PrintSeries result = NewInstance();
+		result.setSeries(series);
+		return result;
+	}
+	
 	public String getSeries(){
 		return this.series;
 	}

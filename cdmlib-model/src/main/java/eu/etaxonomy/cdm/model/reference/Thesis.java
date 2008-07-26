@@ -10,13 +10,14 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import eu.etaxonomy.cdm.model.agent.Institution;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.agent.Institution;
 
 /**
  * @author m.doering
@@ -25,9 +26,20 @@ import javax.persistence.*;
  */
 @Entity
 public class Thesis extends PublicationBase {
-	static Logger logger = Logger.getLogger(Thesis.class);
+	private static final Logger logger = Logger.getLogger(Thesis.class);
 	private Institution school;
 
+	public static Thesis NewInstance(){
+		Thesis result = new Thesis();
+		return result;
+	}
+	
+	public static Thesis NewInstance(Institution school){
+		Thesis result = NewInstance();
+		result.setSchool(school);
+		return result;
+	}
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getSchool(){

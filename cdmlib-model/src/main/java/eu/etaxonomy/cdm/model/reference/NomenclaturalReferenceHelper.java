@@ -13,11 +13,8 @@ import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
  * @author a.mueller

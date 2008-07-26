@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -22,8 +21,13 @@ import javax.persistence.*;
  */
 @Entity
 public class Patent extends StrictReferenceBase {
-	static Logger logger = Logger.getLogger(Patent.class);
-
+	private static final Logger logger = Logger.getLogger(Patent.class);
+	
+	public static Patent NewInstance(){
+		Patent result = new Patent();
+		return result;
+	}
+	
 	@Override
 	public String generateTitle(){
 		return "";

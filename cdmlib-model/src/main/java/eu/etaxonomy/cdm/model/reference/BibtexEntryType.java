@@ -10,15 +10,11 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
  * Bibtex bibliography entries are split by types
@@ -28,15 +24,23 @@ import javax.persistence.*;
  */
 @Entity
 public class BibtexEntryType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(BibtexEntryType.class);
+	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
 
-	public BibtexEntryType() {
+	public static BibtexEntryType NewInstance(){
+		return new BibtexEntryType();
+	}
+	
+
+	public static BibtexEntryType NewInstance(String term, String label, String labelAbbrev){
+		return new BibtexEntryType(term, label, labelAbbrev);
+	}
+	
+	protected BibtexEntryType() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public BibtexEntryType(String term, String label, String labelAbbrev) {
+	protected BibtexEntryType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 

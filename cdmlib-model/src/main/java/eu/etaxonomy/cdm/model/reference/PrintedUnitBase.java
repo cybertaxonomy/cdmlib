@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-import javax.persistence.*;
 
 /**
  * @author m.doering
@@ -29,6 +29,7 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	private String volume;
 	private String pages;
 	private PrintSeries inSeries;
+	private String series;
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -79,8 +80,24 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	public void setPages(String pages){
 		this.pages = pages;
 	}
+	
+
+	/**
+	 * @return the series
+	 */
+	public String getSeries() {
+		return series;
+	}
+
+	/**
+	 * @param series the series to set
+	 */
+	public void setSeries(String series) {
+		this.series = series;
+	}
 
 //*********** CLONE **********************************/	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()

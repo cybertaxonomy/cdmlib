@@ -21,8 +21,13 @@ import org.apache.log4j.Logger;
  */
 @Entity
 public class CdDvd extends PublicationBase implements Cloneable{
-	static Logger logger = Logger.getLogger(CdDvd.class);
+	private static final Logger logger = Logger.getLogger(CdDvd.class);
 
+	public static CdDvd NewInstance(){
+		CdDvd result = new CdDvd();
+		return result;
+	}
+	
 	@Override
 	public String generateTitle(){
 		return "";

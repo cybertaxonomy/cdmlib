@@ -19,9 +19,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * @author m.doering

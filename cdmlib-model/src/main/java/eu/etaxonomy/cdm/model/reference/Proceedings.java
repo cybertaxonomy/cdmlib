@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -22,9 +21,24 @@ import javax.persistence.*;
  */
 @Entity
 public class Proceedings extends PrintedUnitBase {
-	static Logger logger = Logger.getLogger(Proceedings.class);
+	private static final Logger logger = Logger.getLogger(Proceedings.class);
+	
 	//The conference sponsor
 	private String organization;
+	
+	
+	public static Proceedings NewInstance(){
+		Proceedings result = new Proceedings();
+		return result;
+	}
+	
+	public static Proceedings NewInstance(String organization){
+		Proceedings result = NewInstance();
+		result.setOrganization(organization);
+		return result;
+	}
+	
+
 
 	public String getOrganization(){
 		return this.organization;

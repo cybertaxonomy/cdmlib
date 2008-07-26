@@ -30,7 +30,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
-	static Logger logger = Logger.getLogger(BibtexReference.class);
+	private static final Logger logger = Logger.getLogger(BibtexReference.class);
+	
 	private BibtexEntryType type;
 	//The journal or magazine the work was published in
 	private String journal;

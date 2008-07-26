@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * @author m.doering
@@ -22,8 +21,14 @@ import javax.persistence.*;
  */
 @Entity
 public class ConferenceProceedings extends StrictReferenceBase {
-	static Logger logger = Logger.getLogger(ConferenceProceedings.class);
+	private static final Logger logger = Logger.getLogger(ConferenceProceedings.class);
 
+
+	public static ConferenceProceedings NewInstance(){
+		ConferenceProceedings result = new ConferenceProceedings();
+		return result;
+	}
+	
 	@Override
 	public String generateTitle(){
 		return "";

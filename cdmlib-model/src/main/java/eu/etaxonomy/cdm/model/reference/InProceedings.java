@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-import javax.persistence.*;
 
 /**
  * @author m.doering
@@ -24,9 +24,21 @@ import javax.persistence.*;
  */
 @Entity
 public class InProceedings extends SectionBase {
-	static Logger logger = Logger.getLogger(InProceedings.class);
+	private static final Logger logger = Logger.getLogger(InProceedings.class);
 	private Proceedings inProceedings;
 
+	public static InProceedings NewInstance(){
+		InProceedings result = new InProceedings();
+		return result;
+	}
+	
+	public static InProceedings NewInstance(Proceedings inProceedings){
+		InProceedings result = NewInstance();
+		result.setInProceedings(inProceedings);
+		return result;
+	}
+	
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Proceedings getInProceedings(){
