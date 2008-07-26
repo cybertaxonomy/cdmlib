@@ -16,10 +16,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+import eu.etaxonomy.cdm.model.reference.Generic;
 
 /**
  * @author a.mueller
@@ -37,7 +38,7 @@ public class TcsImportActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
-	static final int sourceSecId = 7800000;
+	static final String sourceSecId = "pub_999999";
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -45,23 +46,25 @@ public class TcsImportActivator {
 	//authors
 	static final boolean doAuthors = false;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
-	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
+	//static final boolean doTypes = true;
+	//static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	
+
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ tcsSource.toString() + ") ...");
+		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
 		//make BerlinModel Source
 		String source = tcsSource;
@@ -77,8 +80,8 @@ public class TcsImportActivator {
 		tcsImportConfigurator.setDoTaxonNames(doTaxonNames);
 		tcsImportConfigurator.setDoRelNames(doRelNames);
 		//tcsImportConfigurator.setDoNameStatus(doNameStatus);
-		tcsImportConfigurator.setDoTypes(doTypes);
-		tcsImportConfigurator.setDoNameFacts(doNameFacts);
+		//tcsImportConfigurator.setDoTypes(doTypes);
+		//tcsImportConfigurator.setDoNameFacts(doNameFacts);
 		
 		tcsImportConfigurator.setDoTaxa(doTaxa);
 		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);

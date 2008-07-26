@@ -39,6 +39,13 @@ public class TcsSources {
 		return sourceUrl;
 		
 	}
+
+	public static String arecaceae_pub(){
+		//		Monocots rdf
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
+		return sourceUrl;
+		
+	}
 	
 	public static String arecaceae_short(){
 		//		Monocots rdf
