@@ -45,7 +45,7 @@ public class CichorieaeActivator {
 	static final int sourceSecId = 7800000;
 	
 	//check - import
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	static final CHECK check = CHECK.CHECK_ONLY;
 
 
 	//NomeclaturalCode
@@ -53,11 +53,12 @@ public class CichorieaeActivator {
 
 	//ignore null
 	static final boolean ignoreNull = true;
-	
+
+// **************** ALL *********************	
 	//authors
-	static final boolean doAuthors = false;
+	static final boolean doAuthors = true;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
@@ -70,13 +71,15 @@ public class CichorieaeActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false;
+
 	
+//// **************** SELECTED *********************
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 //	//names
-//	static final boolean doTaxonNames = false;
+//	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
@@ -85,10 +88,8 @@ public class CichorieaeActivator {
 //	//taxa
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
-	
-	
 	
 	/**
 	 * @param args
