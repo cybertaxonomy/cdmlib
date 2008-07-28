@@ -17,4 +17,7 @@ public class CdmBooleanMapper extends CdmIOMapperBase {
 		super(dbAttributString, cdmAttributeString);
 	}
 
+	public Class getTypeClass(){
+		return Boolean.class;
+	}
 }

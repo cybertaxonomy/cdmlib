@@ -7,16 +7,23 @@ package eu.etaxonomy.cdm.io.berlinModel;
  * @author a.mueller
  *
  */
-public class CdmIOMapperBase {
+public abstract class CdmIOMapperBase {
 
-	private Object dbValue;
-	private Object cdmValue;
+	private String dbValue;
+	private String cdmValue;
 
 	protected CdmIOMapperBase(String dbAttributString, String cdmAttributeString){
 		this.dbValue = dbAttributString;
 		this.cdmValue = cdmAttributeString;
 	}
 	
+	public String getSourceAttribute(){
+		return dbValue;
+	}
 
-
+	public String getDestinationAttribute(){
+		return cdmValue;
+	}
+	
+	public abstract Class getTypeClass();
 }

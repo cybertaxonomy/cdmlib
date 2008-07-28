@@ -59,8 +59,6 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
 			
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
@@ -83,6 +81,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
                     	" Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk" +
                     " WHERE (1=1) ";
+					//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 			
 			ResultSet rs = source.getResultSet(strQuery) ;
@@ -91,7 +90,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 			//for each reference
 			while (rs.next()){
 				
-				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Names handled: " + (i-1));}
+				if ((i++ % modCount) == 0 && i != 1 ){ logger.info("Names handled: " + (i-1));}
 				
 				//create TaxonName element
 				int nameId = rs.getInt("nameId");
@@ -100,7 +99,6 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				Object exAuthorFk = rs.getObject("ExAuthorTeamFk");
 				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
-				Object nomRefFk = rs.getObject("NomRefFk");
 				
 				try {
 					if (logger.isDebugEnabled()){logger.debug(rankId);}
@@ -147,31 +145,11 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					cdmAttrName = "nomenclaturalMicroReference";
 					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 
-					
-					//nomenclatural Reference
-					if (referenceMap != null){
-						if (nomRefFk != null){
-							int nomRefFkInt = (Integer)nomRefFk;
-							ReferenceBase nomenclaturalReference = nomRefMap.get(nomRefFkInt);
-							if (nomenclaturalReference == null){
-								nomenclaturalReference = referenceMap.get(nomRefFkInt);
-							}									
-							if (nomenclaturalReference == null ){
-								//TODO
-								if (! config.isIgnoreNull()){logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-									" was not found in reference store. Nomenclatural reference was not set!!");}
-							}else if (! INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
-								logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-								" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomenclaturalReference.getClass()+ ")");
-							}else{
-								nomenclaturalReference.setNomenclaturallyRelevant(true);
-								taxonNameBase.setNomenclaturalReference((INomenclaturalReference)nomenclaturalReference);
-							}
-						}
-					}
+					//nomRef
+					success &= makeNomenclaturalReference(bmiConfig, taxonNameBase, nameId, rs, stores);
 
 					//created, notes
-					doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId);
+					success &= doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId);
 					
 					//Marker
 					boolean flag = true;
@@ -190,57 +168,18 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 							nonViralName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId, ignoreNull));
 							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId, ignoreNull));
 						}
-						
-						
 					}//nonviralName
 
+					//zoologicalName
 					if (taxonNameBase instanceof ZoologicalName){
 						ZoologicalName zooName = (ZoologicalName)taxonNameBase;
-						//publicationYear
-						String authorTeamYear = rs.getString("authorTeamYear");
-						try {
-							if (! "".equals(CdmUtils.Nz(authorTeamYear).trim())){
-								Integer publicationYear  = Integer.valueOf(authorTeamYear.trim());
-								zooName.setPublicationYear(publicationYear);
-							}
-						} catch (NumberFormatException e) {
-							logger.warn("authorTeamYear could not be parsed for taxonName: "+ nameId);
-						}
-						//original publication year
-						String basAuthorTeamYear = rs.getString("basAuthorTeamYear");
-						try {
-							if (! "".equals(CdmUtils.Nz(basAuthorTeamYear).trim())){
-								Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear.trim());
-								zooName.setOriginalPublicationYear(OriginalPublicationYear);
-							}
-						} catch (NumberFormatException e) {
-							logger.warn("basAuthorTeamYear could not be parsed for taxonName: "+ nameId);
-						}
+						makeZoologialName(rs, zooName, nameId);
+					}
+					//botanicalName  
+					else if (taxonNameBase instanceof BotanicalName){
+						BotanicalName botName = (BotanicalName)taxonNameBase;
+						success &= makeBotanicalNamePart(rs, botName) ;
 						
-					}else if (taxonNameBase instanceof BotanicalName){
-						BotanicalName botanicalName = (BotanicalName)taxonNameBase;
-
-						dbAttrName = "HybridFormulaFlag";
-						cdmAttrName = "isHybridFormula";
-						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
-
-						dbAttrName = "MonomHybFlag";
-						cdmAttrName = "isMonomHybrid";
-						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
-
-						dbAttrName = "BinomHybFlag";
-						cdmAttrName = "isBinomHybrid";
-						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
-
-						dbAttrName = "TrinomHybFlag";
-						cdmAttrName = "isTrinomHybrid";
-						success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
-
-						if (taxonNameBase instanceof CultivarPlantName){
-							//TODO
-							//CultivarGroupName
-							//CultivarName
-						}	
 					}
 					
 					
@@ -274,6 +213,108 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 
 	}
 	
+	private boolean makeZoologialName(ResultSet rs, ZoologicalName zooName, int nameId) 
+					throws SQLException{
+		boolean success = true;
+		//publicationYear
+		String authorTeamYear = rs.getString("authorTeamYear");
+		try {
+			if (! "".equals(CdmUtils.Nz(authorTeamYear).trim())){
+				Integer publicationYear  = Integer.valueOf(authorTeamYear.trim());
+				zooName.setPublicationYear(publicationYear);
+			}
+		} catch (NumberFormatException e) {
+			logger.warn("authorTeamYear could not be parsed for taxonName: "+ nameId);
+		}
+		//original publication year
+		String basAuthorTeamYear = rs.getString("basAuthorTeamYear");
+		try {
+			if (! "".equals(CdmUtils.Nz(basAuthorTeamYear).trim())){
+				Integer OriginalPublicationYear  = Integer.valueOf(basAuthorTeamYear.trim());
+				zooName.setOriginalPublicationYear(OriginalPublicationYear);
+			}
+		} catch (NumberFormatException e) {
+			logger.warn("basAuthorTeamYear could not be parsed for taxonName: "+ nameId);
+		}
+		return success;
+	}
+	
+	private boolean makeBotanicalNamePart(ResultSet rs, BotanicalName botanicalName){
+		boolean success = true;
+		String dbAttrName;
+		String cdmAttrName;
+		
+		dbAttrName = "HybridFormulaFlag";
+		cdmAttrName = "isHybridFormula";
+		success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+
+		dbAttrName = "MonomHybFlag";
+		cdmAttrName = "isMonomHybrid";
+		success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+
+		dbAttrName = "BinomHybFlag";
+		cdmAttrName = "isBinomHybrid";
+		success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+
+		dbAttrName = "TrinomHybFlag";
+		cdmAttrName = "isTrinomHybrid";
+		success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
+
+		if (botanicalName instanceof CultivarPlantName){
+			//TODO
+			//CultivarGroupName
+			//CultivarName
+		}
+		return success;
+	}
+	
+	
+	private boolean makeNomenclaturalReference(IImportConfigurator config, TaxonNameBase taxonNameBase, 
+					int nameId, ResultSet rs, Map<String, MapWrapper<? extends CdmBase>> stores) 
+					throws SQLException{
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase> refDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REF_DETAIL_STORE);
+		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_DETAIL_STORE);
+		
+		Object nomRefFk = rs.getObject("NomRefFk");
+		int nomRefDetailFk = rs.getInt("NomRefDetailFk");
+		boolean refDetailPrelim = rs.getBoolean("RefDetailPrelim");
+		
+		boolean success = true;
+		//nomenclatural Reference
+		if (referenceMap != null){
+			if (nomRefFk != null){
+				int nomRefFkInt = (Integer)nomRefFk;
+				
+				//get nomRef
+				ReferenceBase nomReference = nomRefDetailMap.get(nomRefDetailFk);
+				if (nomReference == null){
+					nomReference = refDetailMap.get(nomRefDetailFk);
+				}	
+				if (nomReference == null){
+					nomReference = nomRefMap.get(nomRefFkInt);
+				}if (nomReference == null){
+					nomReference = referenceMap.get(nomRefFkInt);
+				}									
+				
+				//setNomRef
+				if (nomReference == null ){
+					//TODO
+					if (! config.isIgnoreNull()){logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+						" was not found in reference store. Nomenclatural reference was not set!!");}
+				}else if (! INomenclaturalReference.class.isAssignableFrom(nomReference.getClass())){
+					logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+					" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomReference.getClass()+ ")");
+				}else{
+					nomReference.setNomenclaturallyRelevant(true);
+					taxonNameBase.setNomenclaturalReference((INomenclaturalReference)nomReference);
+				}
+			}
+		}
+		return success;
+	}
+	
 	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId, boolean ignoreNull){
 		if (teamIdObject == null){
 			return null;
@@ -297,5 +338,40 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoTaxonNames();
 	}
+	
+//	new CdmStringMapper("nameId", "nameId"),
+//	new CdmStringMapper("rankFk", "rankFk"),
+//	new CdmStringMapper("nameCache", "nameCache"),
+//	new CdmStringMapper("unnamedNamePhrase", "unnamedNamePhrase"),
+//	new CdmStringMapper("fullNameCache", "fullNameCache"),
+//	new CdmStringMapper("preliminaryFlag", "preliminaryFlag"),
+//	new CdmStringMapper("supragenericName", "supragenericName"),
+//	new CdmStringMapper("genus", "genus"),
+//	new CdmStringMapper("genusSubdivisionEpi", "genusSubdivisionEpi"),
+//	new CdmStringMapper("speciesEpi", "speciesEpi"),
+//	new CdmStringMapper("infraSpeciesEpi", "infraSpeciesEpi"),
+//	new CdmStringMapper("authorTeamFk", "authorTeamFk"),
+//	new CdmStringMapper("exAuthorTeamFk", "exAuthorTeamFk"),
+//	new CdmStringMapper("basAuthorTeamFk", "basAuthorTeamFk"),
+//	new CdmStringMapper("exBasAuthorTeamFk", "exBasAuthorTeamFk"),
+//	new CdmStringMapper("hybridFormulaFlag", "hybridFormulaFlag"),
+//	new CdmStringMapper("monomHybFlag", "monomHybFlag"),
+//	new CdmStringMapper("binomHybFlag", "binomHybFlag"),
+//	new CdmStringMapper("trinomHybFlag", "trinomHybFlag"),
+//	new CdmStringMapper("cultivarGroupName", "cultivarGroupName"),
+//	new CdmStringMapper("cultivarName", "cultivarName"),
+//	new CdmStringMapper("nomRefFk", "nomRefFk"),
+//	new CdmStringMapper("nomRefDetailFk", "nomRefDetailFk"),
+//	new CdmStringMapper("nameSourceRefFk", "nameSourceRefFk"),
+//	new CdmStringMapper("source_Acc", "source_Acc"),
+//	new CdmStringMapper("created_When", "created_When"),
+//	new CdmStringMapper("created_Who", "created_Who"),
+//	new CdmStringMapper("notes", "notes"),
+//	new CdmStringMapper("parsingComments", "parsingComments"),
+//	new CdmStringMapper("oldNomRefFk", "oldNomRefFk"),
+//	new CdmStringMapper("oldNomRefDetailFk", "oldNomRefDetailFk"),
+//	new CdmStringMapper("updated_Who", "updated_Who"),
+//	new CdmStringMapper("orthoProjection", "orthoProjection"),
+
 	
 }

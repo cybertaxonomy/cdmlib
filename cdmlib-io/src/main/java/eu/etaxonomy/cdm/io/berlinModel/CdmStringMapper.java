@@ -16,5 +16,9 @@ public class CdmStringMapper extends CdmIOMapperBase {
 	public CdmStringMapper(String dbAttributString, String cdmAttributeString) {
 		super(dbAttributString, cdmAttributeString);
 	}
+	
+	public Class getTypeClass(){
+		return String.class;
+	}
 
 }

@@ -26,6 +26,8 @@ public interface ICdmIO<T extends IImportConfigurator> {
 	final String AUTHOR_STORE = "author";
 	final String REFERENCE_STORE = "reference";
 	final String NOMREF_STORE = "nomRef";
+	final String REF_DETAIL_STORE = "refDetail";
+	final String NOMREF_DETAIL_STORE = "nomRefDetail";
 	final String TAXONNAME_STORE = "taxonName";
 	final String TAXON_STORE = "taxon";
 	final String FEATURE_STORE = "feature";

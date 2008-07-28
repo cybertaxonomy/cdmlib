@@ -14,8 +14,11 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -131,14 +134,32 @@ public class ImportHelper {
 		} catch (NoSuchMethodException e) {
 			if (obligat){
 				logger.error("NoSuchMethod: " + e.getMessage());
+				return false;
 			}else{
-				if (logger.isDebugEnabled()){ logger.debug("NoSuchMethod: " + e.getMessage());}	
+				if (logger.isDebugEnabled()){ logger.debug("NoSuchMethod: " + e.getMessage());}
+				return true;
 			}
-			
+		}
+	}
+	
+	public static boolean addAnnotationFromResultSet(ResultSet rs, String attributeName, AnnotatableEntity cdmBase, Language language){
+		try {
+			String value = rs.getString(attributeName);
+			if (CdmUtils.Nz(value).equals("")){
+				String strAnnotation = attributeName + ": " + value;
+				Annotation annoatation = Annotation.NewInstance(strAnnotation, language);
+				cdmBase.addAnnotation(annoatation);
+
+			}
+			return true;
+		} catch (SQLException e) {
+			logger.warn(e);
+			e.printStackTrace();
 			return false;
 		}
-
 	}
+	
+	
 	
 	public static Object getXmlInputValue(Element root, String xmlElementName, Namespace namespace){
 		Object result = null; 
@@ -160,7 +181,7 @@ public class ImportHelper {
 		Calendar calEnd = null;
 		
 		if (years.length > 2 || years.length <= 0){
-			logger.warn("XXX");
+			logger.warn("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX getDatePublished");
 		}else {
 			calStart = getCalendar(years[0]);
 			if (years.length >= 2){

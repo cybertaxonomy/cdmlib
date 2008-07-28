@@ -46,6 +46,8 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		stores.put(ICdmIO.AUTHOR_STORE, new MapWrapper<TeamOrPersonBase>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
+		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
+		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 	}
