@@ -38,7 +38,11 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
- * The upmost (abstract) class for references (information sources).
+ * The upmost (abstract) class for references (information sources). Its two
+ * direct subclasses {@link StrictReferenceBase StrictReferenceBase} and {@link BibtexReference BibtexReference}
+ * allow either on the one side to handle different kind of references with their
+ * peculiarities or on the other side to follow the flat BibTeX format
+ * (see "http://en.wikipedia.org/wiki/BibTeX").
  * <P>
  * This class corresponds to: <ul>
  * <li> PublicationCitation according to the TDWG ontology
@@ -210,6 +214,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * modifying only some of the attributes.
 	 * 
 	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	public Object clone() throws CloneNotSupportedException{
 		ReferenceBase result = (ReferenceBase)super.clone();

@@ -84,11 +84,11 @@ public class BotanicalName extends NonViralName {
 	//needed by hibernate
 	/** 
 	 * Class constructor: creates a new botanical taxon name instance
-	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #BotanicalName(Rank, HomotypicalGroup)
 	 * @see #BotanicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	protected BotanicalName(){
 		super();
@@ -98,7 +98,7 @@ public class BotanicalName extends NonViralName {
 	 * Class constructor: creates a new botanical taxon name instance
 	 * only containing its {@link common.Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and
-	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
@@ -106,7 +106,7 @@ public class BotanicalName extends NonViralName {
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see 	#BotanicalName()
 	 * @see 	#BotanicalName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	protected BotanicalName(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super(rank, homotypicalGroup);
@@ -118,7 +118,7 @@ public class BotanicalName extends NonViralName {
 	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
-	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
@@ -140,9 +140,9 @@ public class BotanicalName extends NonViralName {
 	 * @see 	#BotanicalName()
 	 * @see 	#BotanicalName(Rank, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.IIdentifiableEntityCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	protected BotanicalName(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		super(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
@@ -155,13 +155,13 @@ public class BotanicalName extends NonViralName {
 	/** 
 	 * Creates a new botanical taxon name instance
 	 * only containing its {@link common.Rank rank} and
-	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank	the rank to be assigned to <i>this</i> botanical taxon name
 	 * @see 			#BotanicalName(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, HomotypicalGroup)
 	 * @see 			#NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see 			eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
+	 * @see 			eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	public static BotanicalName NewInstance(Rank rank){
 		return new BotanicalName(rank, null);
@@ -170,7 +170,7 @@ public class BotanicalName extends NonViralName {
 	 * Creates a new botanical taxon name instance
 	 * only containing its {@link common.Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and 
- 	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+ 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
@@ -179,7 +179,7 @@ public class BotanicalName extends NonViralName {
 	 * @see    #NewInstance(Rank)
 	 * @see    #NewInstance(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see    #BotanicalName(Rank, HomotypicalGroup)
-	 * @see    eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	public static BotanicalName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
 		return new BotanicalName(rank, homotypicalGroup);
@@ -190,7 +190,7 @@ public class BotanicalName extends NonViralName {
 	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
 	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
-	 * the {@link eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy default cache strategy}.
+	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
 	 * 
@@ -212,7 +212,7 @@ public class BotanicalName extends NonViralName {
 	 * @see 	#NewInstance(Rank)
 	 * @see 	#NewInstance(Rank, HomotypicalGroup)
 	 * @see		#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.BotanicNameDefaultCacheStrategy
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	public static  BotanicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
 		return new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);

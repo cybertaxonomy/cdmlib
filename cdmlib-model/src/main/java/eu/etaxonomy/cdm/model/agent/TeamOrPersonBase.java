@@ -17,12 +17,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
 
 /**
  * The abstract class for such {@link Agent agents} ({@link Person persons} or {@link Team teams}) who might also be used
- * for nomenclatural authorship.
+ * for authorship of {@link reference.ReferenceBase references} or of {@link name.TaxonNameBase taxon names}.
  * 
  * @author a.mueller
  * @version 1.0

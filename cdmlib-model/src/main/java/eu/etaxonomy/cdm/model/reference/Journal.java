@@ -12,11 +12,15 @@ package eu.etaxonomy.cdm.model.reference;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 
 import javax.persistence.*;
 
 /**
+ * This class represents journals. A journal is a regular {@link PublicationBase publication}
+ * containing several {@link Article articles}.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
