@@ -143,7 +143,8 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * Returns the string representing the series (for instance for books or
-	 * within journals) in which <i>this</i> generic reference was published.<BR>
+	 * within journals) - and series part - in which <i>this</i> generic reference
+	 * was published.<BR>
 	 * If there is a series then the generic reference must be some
 	 * kind of {@link PrintedUnitBase physical printed unit} or an {@link Article article}.
 	 * 

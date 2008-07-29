@@ -15,6 +15,10 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 /**
+/**
+ * This class represents collections of {@link PrintedUnitBase printed published references} which
+ * are grouped according to topic or any other feature. 
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:45
