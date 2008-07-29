@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 /**
  * This class represents published maps from which information can be derived.
+ * A map is a visual representation of an area.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "Map".
@@ -38,19 +39,22 @@ public class Map extends PublicationBase {
 	
 
 	/**
-	 * Generates and returns an empty string as title since for maps
-	 * no standard information exist on which a title can be build.<BR>
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> map, a string that identifies <i>this</i>
+	 * map and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
 	 * This method overrides the generic and inherited
 	 * ReferenceBase#generateTitle() method.
 	 *
-	 * @return  the empty string
+	 * @return  the string identifying <i>this</i> map
 	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
+		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
 		return "";
 	}
 

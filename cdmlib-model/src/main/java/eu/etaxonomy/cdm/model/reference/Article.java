@@ -24,10 +24,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 
 
 /**
- * This class represents articles in a {@link Journal journal}. An article is a complete
- * document written by an {@link TeamOrPersonBase author (team)} which is
- * published among other articles within a particular volume / number of
- * a journal.
+ * This class represents articles in a {@link Journal journal}. An article is an independent
+ * piece of prose written by an {@link TeamOrPersonBase author (team)} which is published among
+ * other articles within a particular issue of a journal.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
  * terms (from PublicationTypeTerm): <ul>
@@ -52,9 +51,9 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/** 
 	 * Class constructor: creates a new empty article instance
-	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy
+	 * @see strategy.cache.reference.ArticleDefaultCacheStrategy
 	 */
 	protected Article(){
 		super();
@@ -84,7 +83,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @param	articleTitle	the string representing the title of <i>this</i>
 	 * 							article
 	 * @param	pages			the string representing the pages in the journal
-	 * 							volume / number where <i>this</i> article can be found  
+	 * 							issue where <i>this</i> article can be found  
 	 * @param	series			the string representing the series (within the
 	 * 							journal) in which <i>this</i> article has been 
 	 * 							published
@@ -166,7 +165,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * Returns the string representing the page(s) where the content of
-	 * <i>this</i> article is located within the journal volume / number.
+	 * <i>this</i> article is located within the journal issue.
 	 * 
 	 * @return  the string with the pages corresponding to <i>this</i> article
 	 */

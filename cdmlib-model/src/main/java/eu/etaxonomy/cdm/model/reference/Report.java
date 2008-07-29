@@ -20,7 +20,14 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.agent.Institution;
 
 /**
- * publisher is "institution" in BibTex ???
+ * This class represents reports. A report is a document characterized by 
+ * information reflective of inquiry or investigation. Reports often address
+ * questions posed by individuals in government or science and are generally
+ * elaborated within an {@link agent.Institution institution}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "Report".
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:49
@@ -30,11 +37,23 @@ public class Report extends PublicationBase {
 	static Logger logger = Logger.getLogger(Report.class);
 	private Institution institution;
 
+	/** 
+	 * Creates a new empty report instance
+	 * 
+	 * @see #NewInstance(Institution)
+	 */
 	public static Report NewInstance(){
 		Report result = new Report();
 		return result;
 	}
 	
+	/** 
+	 * Creates a new report instance with the given {@link agent.Institution institution}.
+	 * 
+	 * @param	institution		the institution where <i>this</i> report has
+	 * 							been elaborated
+	 * @see 					#NewInstance()
+	 */
 	public static Report NewInstance(Institution institution){
 		Report result = NewInstance();
 		result.setInstitution(institution);
@@ -42,17 +61,42 @@ public class Report extends PublicationBase {
 	}
 	
 	
+	/**
+	 * Returns the {@link agent.Institution institution} in which <i>this</i>
+	 * report has been elaborated.
+	 * 
+	 * @return  the institution
+	 * @see 	agent.Institution
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitution(){
 		return this.institution;
 	}
+	/**
+	 * @see #getInstitution()
+	 */
 	public void setInstitution(Institution institution){
 		this.institution = institution;
 	}
 
+	/**
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> report, a string that identifies <i>this</i>
+	 * report and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited
+	 * ReferenceBase#generateTitle() method.
+	 *
+	 * @return  the string identifying <i>this</i> report
+	 * @see  	ReferenceBase#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
+	 */
 	@Override
 	public String generateTitle(){
+		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
 		return "";
 	}
 

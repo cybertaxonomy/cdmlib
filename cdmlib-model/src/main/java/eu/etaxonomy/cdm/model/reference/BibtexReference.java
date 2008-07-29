@@ -23,6 +23,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 
 /**
+ * publisher for Report is "institution" in BibTex ???
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:12

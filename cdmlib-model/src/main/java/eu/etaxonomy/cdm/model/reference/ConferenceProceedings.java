@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 /**
- * This class represents conference proceedings. A conference proceeding is a
+ * This class represents conference proceedings. A conference proceedings is a
  * document containing contributions made during a conference which takes place
  * only once.
  * <P>
@@ -33,7 +33,7 @@ public class ConferenceProceedings extends StrictReferenceBase {
 
 
 	/** 
-	 * Creates a new empty conference proceeding instance.
+	 * Creates a new empty conference proceedings instance.
 	 */
 	public static ConferenceProceedings NewInstance(){
 		ConferenceProceedings result = new ConferenceProceedings();
@@ -41,19 +41,22 @@ public class ConferenceProceedings extends StrictReferenceBase {
 	}
 	
 	/**
-	 * Generates and returns an empty string as title since for conference
-	 * proceedings no standard information exist on which a title can be build.<BR>
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
+	 * conference proceedings and returns it. This string may be stored in the
+	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
 	 * This method overrides the generic and inherited
 	 * ReferenceBase#generateTitle() method.
 	 *
-	 * @return  the empty string
+	 * @return  the string identifying <i>this</i> conference proceedings
 	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
+		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
 		return "";
 	}
 

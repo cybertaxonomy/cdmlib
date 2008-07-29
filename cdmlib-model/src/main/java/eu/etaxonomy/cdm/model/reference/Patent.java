@@ -14,9 +14,16 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+
 /**
- * This class represents patents. A patent is a document containing the legal
- * registration of a new technology and therefore enforcing legal rights.
+ * This class represents patents. A patent is a document containing the set of
+ * exclusive rights granted by a state to an inventor or his assignee for a
+ * fixed period of time in exchange for a disclosure of an invention.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "Patent".
  *  
  * @author m.doering
  * @version 1.0
@@ -26,25 +33,31 @@ import org.apache.log4j.Logger;
 public class Patent extends StrictReferenceBase {
 	private static final Logger logger = Logger.getLogger(Patent.class);
 	
+	/** 
+	 * Creates a new empty patent instance
+	 */
 	public static Patent NewInstance(){
 		Patent result = new Patent();
 		return result;
 	}
 	
 	/**
-	 * Generates and returns an empty string as title since for patents no
-	 * standard information exist on which a title can be build.<BR>
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> patent, a string that identifies <i>this</i>
+	 * patent and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
 	 * This method overrides the generic and inherited
 	 * ReferenceBase#generateTitle() method.
 	 *
-	 * @return  the empty string
+	 * @return  the string identifying <i>this</i> patent
 	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
+		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
 		return "";
 	}
 

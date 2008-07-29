@@ -15,8 +15,9 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 /**
- * This class represents electronic publications the support of which are Cds or
- * Dvds. This class applies for Cds or Dvds as a whole but not for parts of it.
+ * This class represents electronic publications the support of which are Cds 
+ * (Compact Discs) or Dvds (Digital Versatile Discs). This class applies for Cds
+ * or Dvds as a whole but not for parts of it.
  * 
  * @author m.doering
  * @version 1.0
@@ -27,19 +28,22 @@ public class CdDvd extends PublicationBase implements Cloneable{
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
 	/**
-	 * Generates and returns an empty string as title since for Cds or for Dvds
-	 * no standard information exist on which a title can be build.<BR>
+	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * assigned to <i>this</i> Cd or Dvd, a string that identifies <i>this</i>
+	 * Cd or Dvd and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
 	 * This method overrides the generic and inherited
 	 * ReferenceBase#generateTitle() method.
 	 *
-	 * @return  the empty string
+	 * @return  the string identifying <i>this</i> Cd or Dvd
 	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
+		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
 		return "";
 	}
 
