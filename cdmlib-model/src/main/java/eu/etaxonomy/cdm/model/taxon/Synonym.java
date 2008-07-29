@@ -205,7 +205,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	}
 
 	/** 
-	 * Returns the {@link SynonymRelationshipType synonym relationship type} of the
+	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the
 	 * {@link SynonymRelationship synonym relationships} where the {@link SynonymRelationship#getSynonym() synonym}
 	 * is <i>this</i> synonym and the {@link SynonymRelationship#getAcceptedTaxon() taxon}
 	 * is the given one. "Null" is returned if the given taxon is "null" or if
@@ -218,15 +218,15 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    		#getAcceptedTaxa()
 	 */
 	@Transient
-	public SynonymRelationshipType getRelationType(Taxon taxon){
-		SynonymRelationshipType result = null;
+	public Set<SynonymRelationshipType> getRelationType(Taxon taxon){
+		Set<SynonymRelationshipType> result = new HashSet<SynonymRelationshipType>();
 		if (taxon == null ){
 			return result;
 		}
 		for (SynonymRelationship rel : getSynonymRelations()){
 			Taxon acceptedTaxon = rel.getAcceptedTaxon();
 			if (taxon.equals(acceptedTaxon)){
-				result = (rel.getType());
+				result.add(rel.getType());
 			}
 		}
 		return result;
