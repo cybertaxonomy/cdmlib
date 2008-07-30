@@ -78,7 +78,7 @@ public class RestController extends AbstractController
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
 					UUID taxonUuid = getUuid(uuid);
-					ftree = "ae9615b8-bc60-4ed0-ad96-897f9226d568";
+					String ftree = "ae9615b8-bc60-4ed0-ad96-897f9226d568";
 					logger.warn("TODO hardcoded FeatureTreeUUID");
 					UUID featureTreeUuid = getUuid(ftree);
 					
