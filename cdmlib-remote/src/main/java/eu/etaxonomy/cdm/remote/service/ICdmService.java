@@ -80,7 +80,7 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public TaxonTO getTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	public TaxonTO getTaxon(UUID taxonUuid, UUID featureTreeUuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	/**
 	 * @param uuid

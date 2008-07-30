@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -34,7 +35,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -69,6 +73,10 @@ public class CdmServiceImpl implements ICdmService {
 	private ITaxonNameDao nameDAO;
 	@Autowired
 	private IReferenceDao refDAO;
+	@Autowired
+	private IDescriptionDao descriptionDAO;
+	@Autowired
+	private IFeatureTreeDao featureTreeDAO;
 	
 	private final int MAXRESULTS = 500;
 	
@@ -125,12 +133,19 @@ public class CdmServiceImpl implements ICdmService {
 		return n;
 	}
 	
-	public TaxonTO getTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
-		TaxonBase tb = taxonDAO.findByUuid(uuid);
+	public TaxonTO getTaxon(UUID taxonUuid, UUID featureTreeUuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
+		TaxonBase tb = taxonDAO.findByUuid(taxonUuid);
 		if (tb==null){
-			throw new CdmObjectNonExisting(uuid.toString(), TaxonBase.class);
+			throw new CdmObjectNonExisting(taxonUuid.toString(), TaxonBase.class);
 		}
-		TaxonTO t = taxonAssembler.getTO(tb, locales);
+		FeatureTree featureTree = null;
+		if (featureTreeUuid != null){
+			featureTree = featureTreeDAO.findByUuid(featureTreeUuid);
+			if (featureTree == null){
+				throw new CdmObjectNonExisting(featureTreeUuid.toString(), FeatureTree.class);
+			}
+		}
+		TaxonTO t = taxonAssembler.getTO(tb, featureTree, locales);
 		return t;
 	}
 	
