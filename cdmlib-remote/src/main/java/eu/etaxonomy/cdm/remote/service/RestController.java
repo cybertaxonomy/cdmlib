@@ -9,14 +9,19 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,18 +29,13 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
-import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
-import eu.etaxonomy.cdm.remote.dto.TreeNode;
-import eu.etaxonomy.cdm.remote.view.XmlView;
-import eu.etaxonomy.cdm.remote.service.Utils;
 
 
 /**
@@ -77,7 +77,13 @@ public class RestController extends AbstractController
 					NameTO n = service.getName( getUuid(uuid), locales);
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
-					TaxonTO t = service.getTaxon(getUuid(uuid), locales);
+					UUID taxonUuid = getUuid(uuid);
+					ftree = "ae9615b8-bc60-4ed0-ad96-897f9226d568";
+					logger.warn("TODO hardcoded FeatureTreeUUID");
+					UUID featureTreeUuid = getUuid(ftree);
+					
+					TaxonTO t = service.getTaxon(taxonUuid, null, locales);
+					//TaxonTO t = service.getTaxon(taxonUuid, featureTreeUuid, locales);
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
 					ReferenceTO r = service.getReference(getUuid(uuid), locales);
