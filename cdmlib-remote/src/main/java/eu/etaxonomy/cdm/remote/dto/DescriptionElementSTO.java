@@ -25,7 +25,7 @@ public class DescriptionElementSTO extends BaseSTO {
 	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 	private String description;
 	private String language;
-	
+	private ReferenceSTO reference;
 	
 	public LocalisedTermSTO getType() {
 		return type;
@@ -54,8 +54,10 @@ public class DescriptionElementSTO extends BaseSTO {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-	
-	
-	
-	
+	public ReferenceSTO getReference() {
+		return reference;
+	}
+	public void setReference(ReferenceSTO reference) {
+		this.reference = reference;
+	}	
 }

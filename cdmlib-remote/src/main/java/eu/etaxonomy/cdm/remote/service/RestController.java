@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,8 +29,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -78,12 +78,15 @@ public class RestController extends AbstractController
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
 					UUID taxonUuid = getUuid(uuid);
-					String ftree = "ae9615b8-bc60-4ed0-ad96-897f9226d568";
-					logger.warn("TODO hardcoded FeatureTreeUUID");
-					UUID featureTreeUuid = getUuid(ftree);
 					
-					TaxonTO t = service.getTaxon(taxonUuid, null, locales);
-					//TaxonTO t = service.getTaxon(taxonUuid, featureTreeUuid, locales);
+					String ftree = this.getStringPara("ftree", req);
+					
+					UUID featureTreeUuid = null;
+					if(ftree != null){
+						featureTreeUuid = getUuid(ftree);
+					}
+					
+					TaxonTO t = service.getTaxon(taxonUuid, featureTreeUuid, locales);
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
 					ReferenceTO r = service.getReference(getUuid(uuid), locales);
@@ -100,7 +103,7 @@ public class RestController extends AbstractController
 					mv.addObject(n);
 				}else if(dto.equalsIgnoreCase("taxon")){
 					if(op.equalsIgnoreCase("acceptedfor")){
-						List<TaxonSTO> t = service.getAcceptedTaxon(getUuid(uuid), locales);
+						Hashtable<String, List<TaxonSTO>> t = service.getAcceptedTaxa(uuids, locales);
 						mv.addObject(t);
 					} else {
 						List<TaxonSTO> t = service.getSimpleTaxa(uuids, locales);
@@ -133,6 +136,13 @@ public class RestController extends AbstractController
 //				if(matchMode == null){
 //				}
 				
+				
+				List<String> secundum = getListPara("sec",req);
+				logger.info("Sec: " + secundum);
+				
+				String featureTree = getStringPara("feature", req); 
+				logger.info("FeatureTree: " + featureTree);
+				
 				Boolean onlyAccepted = getBoolPara("onlyAccepted",req);
 				if (onlyAccepted==null){
 					onlyAccepted=false;
@@ -141,10 +151,13 @@ public class RestController extends AbstractController
 				if (page==null){
 					page=1;
 				};
+				
+				
 				Integer pagesize = getIntPara("pagesize",req);
 				if (pagesize==null){
 					pagesize=25;
-				};
+				}; 
+				
 				//
 				// search for taxa
 				Object obj = service.findTaxa(q, u, higherTaxa, matchMode, onlyAccepted, page, pagesize, locales);
@@ -169,14 +182,6 @@ public class RestController extends AbstractController
 					results = service.getRootTaxa(u);
 				}
 				mv.addObject( (List)results );
-			}else if(action.equalsIgnoreCase("insert")){
-				// insert test data.
-				//
-				// TODO: THIS OPERATION IS FOR TESTING ONLY AND SHOULD BE REMOVED !!!
-				//
-				Taxon t = TaxonGenerator.getTestTaxon();
-				service.saveTaxon(t);
-				mv.addObject("status", "Test data inserted");
 			}else{
 				// nothing matches
 				mv.addObject("status", "Controller does not know this operation");
@@ -248,6 +253,16 @@ public class RestController extends AbstractController
 			result = req.getParameter(parameterName);
 		}
 		return result;
+	}
+	private List<String> getListPara(String parameterName, HttpServletRequest req){
+		ArrayList<String> list = new ArrayList<String>();
+		String[] map = req.getParameterValues(parameterName);
+		if(map != null){
+			for(String param : map){
+				list.add(param);
+			}	
+		}
+		return list;
 	}
 	private String getNonNullPara(String parameterName, HttpServletRequest req){
 		String val = getStringPara(parameterName, req);

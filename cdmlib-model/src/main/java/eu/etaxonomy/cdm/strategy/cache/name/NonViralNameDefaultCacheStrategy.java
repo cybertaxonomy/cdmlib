@@ -39,7 +39,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	protected String NameAuthorSeperator = " ";
 	protected String BasionymStart = "(";
 	protected String BasionymEnd = ")";
-	protected String ExAuthorSeperator = " ex. ";
+	protected String ExAuthorSeperator = " ex ";
 	protected CharSequence BasionymAuthorCombinationAuthorSeperator = " ";
 	
 	public  UUID getUuid(){
@@ -158,6 +158,14 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			if (author != null){
 				authorPart = CdmUtils.Nz(author.getNomenclaturalTitle());
 			}
+			INomenclaturalAuthor basAuthor = nonViralName.getBasionymAuthorTeam();
+			String basAuthorPart = "";
+			if (basAuthor != null){
+				basAuthorPart = CdmUtils.Nz(basAuthor.getNomenclaturalTitle());
+			}
+			if (! "".equals(basAuthorPart)){
+				authorPart = "("+ basAuthorPart +")" + authorPart;
+			}
 			String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
 			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesPart});
 			result = result.trim().replace("null", "");
@@ -244,9 +252,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
 		}
 		if (exAuthorString.length() > 0 ){
-			exAuthorString = ExAuthorSeperator + exAuthorString;
+			exAuthorString = exAuthorString + ExAuthorSeperator;
 		}
-		result = authorString + exAuthorString;
+		result = exAuthorString + authorString;
 		return result;
  
 	}

@@ -143,7 +143,7 @@ public class ZoologicalNameCacheStrategyTest {
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
 		
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
-		assertEquals(subSpeciesNameString + " (" + basAuthorString + " ex. " + exBasAuthorString + ", " + originalPublicationYear +")" +  " " + authorString + " ex. " + exAuthorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
+		assertEquals(subSpeciesNameString + " (" + exBasAuthorString + " ex " + basAuthorString  + ", " + originalPublicationYear +")" +  " " + exAuthorString + " ex " + authorString + ", " + publicationYear, strategy.getTitleCache(subSpeciesName));
 		
 		//Autonym TODO are there autonyms in zoology?
 		subSpeciesName.setInfraSpecificEpithet("alba");
@@ -166,15 +166,15 @@ public class ZoologicalNameCacheStrategyTest {
 		assertEquals(authorString + ", " + publicationYear, strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExCombinationAuthorTeam(exAuthor);
-		assertEquals(authorString + " ex. " + exAuthorString + ", " + publicationYear , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals( exAuthorString + " ex " + authorString + ", " + publicationYear , strategy.getAuthorshipCache(subSpeciesName));
 		
 		subSpeciesName.setBasionymAuthorTeam(basAuthor);
-		assertEquals("(" + basAuthorString + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
 		subSpeciesName.setOriginalPublicationYear(originalPublicationYear);
-		assertEquals("(" + basAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + basAuthorString  + ", " + originalPublicationYear  + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear  , strategy.getAuthorshipCache(subSpeciesName));
 
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
-		assertEquals("(" + basAuthorString + " ex. " + exBasAuthorString  + ", " + originalPublicationYear  + ")" +  " " + authorString + " ex. " + exAuthorString  + ", " + publicationYear   , strategy.getAuthorshipCache(subSpeciesName));
+		assertEquals("(" + exBasAuthorString + " ex " +  basAuthorString + ", " + originalPublicationYear  + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear   , strategy.getAuthorshipCache(subSpeciesName));
 		
 		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
 	}

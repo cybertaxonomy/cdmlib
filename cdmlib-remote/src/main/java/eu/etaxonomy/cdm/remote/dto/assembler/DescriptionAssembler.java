@@ -31,11 +31,11 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.DescriptionElementSTO;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
-import eu.etaxonomy.cdm.remote.dto.FeatureNodeTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 
@@ -54,6 +54,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 	private IDefinedTermDao languageDao;
 	@Autowired
 	private LocalisedTermAssembler localisedTermAssembler;
+	@Autowired
+	private ReferenceAssembler referenceAssembler;
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
@@ -78,7 +80,10 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		for(DescriptionElementBase descriptionElementBase :  descriptionBase.getElements()){
 			to.addElement(getDescriptionElementSTO(descriptionElementBase, locales));
 		}
-		//TODO implement sources and scopes
+		for(ReferenceBase source : descriptionBase.getDescriptionSources()){
+			to.addSource(referenceAssembler.getSTO(source, locales));
+		}
+		//TODO add describedSpecimenOrObservations
 		return to;
 	}
 	
@@ -102,9 +107,11 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 	public FeatureTreeTO getTO(FeatureTree featureTree, Set<TaxonDescription> descriptions,
 			Enumeration<Locale> locales) {
 		FeatureTreeTO to = new FeatureTreeTO();
-		List<DescriptionTO> descriptionsTOs = new ArrayList<DescriptionTO>();  
+		List<DescriptionTO> descriptionTOs = new ArrayList<DescriptionTO>();  
 		
-		if (!featureTree.isDescriptionSeperated()){
+		
+		if(!featureTree.isDescriptionSeparated()){
+	
 			TaxonDescription superDescription = TaxonDescription.NewInstance();
 			//put all descriptionElements in superDescription and make it invisible
 			for(TaxonDescription description: descriptions){
@@ -114,16 +121,18 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 			}
 			DescriptionTO descriptionTO = getDescriptionTO(superDescription, featureTree, locales);
 			descriptionTO.setVisible(false);
-			descriptionsTOs.add(descriptionTO);
+			descriptionTOs.add(descriptionTO);
 		}else{
 			for (TaxonDescription description: descriptions){
-				descriptionsTOs.add(getDescriptionTO(description, featureTree, locales)); 
+				descriptionTOs.add(getDescriptionTO(description, featureTree, locales)); 
 			}
 		}
-		to.setDescriptions(descriptionsTOs);
 		to.setUuid(featureTree.getUuid().toString());
 		to.setCreated(featureTree.getCreated());
 		//TODO etc.
+		
+		
+		to.setDescriptions(descriptionTOs);
 		
 		return to;
 	}
@@ -156,6 +165,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		FeatureTO featureTO = new FeatureTO();
 		Set<DescriptionElementSTO> elementList = getDescriptionElements(elementListMap, node.getFeature(), locales);
 		featureTO.setDescriptionElements(elementList);
+		featureTO.setType(localisedTermAssembler.getSTO(node.getFeature(), locales));
+		 
 		return featureTO;
 	}
 	
@@ -198,6 +209,10 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 
 		DescriptionElementSTO sto = new DescriptionElementSTO();
 		sto.setUuid(descriptionElementBase.getUuid().toString());
+		// reference
+		if(descriptionElementBase.getCitation() != null){
+			sto.setReference(referenceAssembler.getSTO(descriptionElementBase.getCitation(), locales));
+		}
 		
 		if(descriptionElementBase.getType() != null){
 			Feature type = descriptionElementBase.getType();
@@ -207,7 +222,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		for(Media media : descriptionElementBase.getMedia()){
 			sto.addMedia(mediaAssembler.getSTO(media, locales));			
 		}
-		// TextData specific
+
+			// TextData specific
 		if(descriptionElementBase instanceof TextData){
 			TextData textdata = (TextData)descriptionElementBase;
 			//TODO extract method for finding text by preferred languages

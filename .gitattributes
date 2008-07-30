@@ -516,6 +516,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/ICdmService.java -te
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/RestController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/DateTimeJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/JsonView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text

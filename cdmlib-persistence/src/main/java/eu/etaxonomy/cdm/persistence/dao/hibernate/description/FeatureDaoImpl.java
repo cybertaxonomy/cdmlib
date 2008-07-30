@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -24,5 +27,9 @@ public class FeatureDaoImpl extends CdmEntityDaoBase<Feature> implements IFeatur
 	public FeatureDaoImpl() {
 		super(Feature.class); 
 	}
-
+	
+	public List<Feature> list() {
+		Criteria crit = getSession().createCriteria(type); 
+		return crit.list(); 
+	}
 }

@@ -28,6 +28,7 @@ public class FeatureTO extends BaseTO{
 	
 	Set<DescriptionElementSTO> descriptionElements;
 	List<FeatureTO> children;
+	private LocalisedTermSTO type;
 
 	/**
 	 * @return the descriptionElements
@@ -63,6 +64,20 @@ public class FeatureTO extends BaseTO{
 	 */
 	public void addChild(FeatureTO child) {
 		this.children.add(child);
+	}
+
+	/**
+	 * @return the type
+	 */
+	public LocalisedTermSTO getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(LocalisedTermSTO type) {
+		this.type = type;
 	}	
 
 }

@@ -28,7 +28,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 	
 	protected String beforeYear = ". ";
 	protected String beforeMicroReference = ": ";
-	protected String afterYear = ".";
+	protected String afterYear = "";
 	protected String afterAuthor = ", ";
 
 	

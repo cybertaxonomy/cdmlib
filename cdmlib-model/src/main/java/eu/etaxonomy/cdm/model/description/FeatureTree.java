@@ -10,14 +10,19 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.TermBase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
-
-import javax.persistence.*;
+import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
  * Feature type trees arrange feature types (characters). They may also be used to
@@ -32,20 +37,20 @@ public class FeatureTree extends TermBase {
 	static Logger logger = Logger.getLogger(FeatureTree.class);
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	private FeatureNode root;
-	private boolean isDescriptionSeperated = false;
+	private boolean isDescriptionSeparated = false;
 	
 	/**
 	 * @return the isDescriptionSeperated
 	 */
-	public boolean isDescriptionSeperated() {
-		return isDescriptionSeperated;
+	public boolean isDescriptionSeparated() {
+		return isDescriptionSeparated;
 	}
 
 	/**
 	 * @param isDescriptionSeperated the isDescriptionSeperated to set
 	 */
-	public void setDescriptionSeperated(boolean isDescriptionSeperated) {
-		this.isDescriptionSeperated = isDescriptionSeperated;
+	public void setDescriptionSeparated(boolean isDescriptionSeperated) {
+		this.isDescriptionSeparated = isDescriptionSeperated;
 	}
 
 	public static FeatureTree NewInstance(){
@@ -57,8 +62,19 @@ public class FeatureTree extends TermBase {
 		result.setUuid(uuid);
 		return result;
 	}
-
 	
+	public static FeatureTree NewInstance(List<Feature> featureList){
+		FeatureTree result =  new FeatureTree();
+		FeatureNode root = result.getRoot();
+		
+		for (Feature feature : featureList){
+			FeatureNode child = FeatureNode.NewInstance(feature);
+			root.addChild(child);	
+		}
+		
+		return result;
+	}
+		
 	protected FeatureTree() {
 		super();
 		root = FeatureNode.NewInstance();

@@ -74,9 +74,4 @@ public class CdmServiceImplTest {
 		logger.warn("Not yet implemented");
 	}
 	
-	@Test
-	public void testSaveTaxon(){
-		Taxon t = TaxonGenerator.getTestTaxon();
-		service.saveTaxon(t);
-	}
 }

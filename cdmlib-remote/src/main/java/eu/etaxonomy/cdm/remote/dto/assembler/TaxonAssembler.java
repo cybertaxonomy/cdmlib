@@ -21,8 +21,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -118,13 +118,12 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		    	taxonTO.setTaxonRelations(getTaxonRelationshipTOs(taxon.getTaxonRelations(), taxon, matchTypes, locales));
 		    	
 		    	// -- descriptive data
-		    	//TODO in work
-		    	if (featureTree == null){
+		    	/*if (featureTree == null){
 		    		taxonTO.setDescriptions(descriptionAssembler.getTOs(taxon.getDescriptions(), locales));
-		    	}else{
+		    	}else{*/
 		    		FeatureTreeTO featureTreeTO = descriptionAssembler.getTO(featureTree, taxon.getDescriptions(), locales);
 		    		taxonTO.setFeatureTree(featureTreeTO);
-		    	}
+		    	//}
 		    	//TODO: add more mappings
 			}
 		}

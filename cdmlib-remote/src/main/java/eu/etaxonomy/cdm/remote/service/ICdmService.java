@@ -10,14 +10,12 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
@@ -140,12 +138,7 @@ public interface ICdmService {
 	 *         therefore we return a List
 	 * @throws CdmObjectNonExisting 
 	 */
-	/**
-	 * @param uuid
-	 * @return
-	 * @throws CdmObjectNonExisting
-	 */
-	public List<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	public Hashtable<String, List<TaxonSTO>> getAcceptedTaxa(Set<UUID> uuids, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 	/**
 	 * Find taxa matching the query defined by the given parameters.
@@ -210,11 +203,5 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting for non existing reference UUIDs
 	 */
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting;
-
-	/**
-	 * For testing only. To be removed soon!
-	 * @param t
-	 */
-	public void saveTaxon(Taxon t);
 
 }

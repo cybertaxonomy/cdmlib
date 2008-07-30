@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Simple Transfer Object version of {@link NameTO}
@@ -22,8 +24,8 @@ public class NameSTO extends BaseSTO {
 	
 	private String fullname;
 	private IReferenceSTO nomenclaturalReference;
-	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
-	private List<LocalisedTermSTO> status = new ArrayList<LocalisedTermSTO>();
+	private List<TaggedText> taggedName = new ArrayList();
+	private Set<LocalisedTermSTO> status = new HashSet<LocalisedTermSTO>();
 	
 	public String getFullname() {
 		return fullname;
@@ -46,14 +48,14 @@ public class NameSTO extends BaseSTO {
 	public void addNameToken(TaggedText token){
 		this.taggedName.add(token);
 	}
-	public List<LocalisedTermSTO> getStatus() {
+	public Set<LocalisedTermSTO> getStatus() {
 		return status;
 	}
-	public void setStatus(List<LocalisedTermSTO> status) {
+	public void setStatus(Set<LocalisedTermSTO> status) {
 		this.status = status;
 	}
-	public void addStatus(LocalisedTermSTO sto) {
-		this.status.add(sto);
+	public void addStatus(LocalisedTermSTO status) {
+		this.status.add(status);
 	}
 	
 	

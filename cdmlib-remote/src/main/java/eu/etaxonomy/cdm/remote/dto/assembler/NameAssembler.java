@@ -26,11 +26,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.remote.dto.LocalisedTermSTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
+import eu.etaxonomy.cdm.remote.dto.assembler.LocalisedTermAssembler.TermType;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
@@ -43,37 +43,51 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	@Autowired
 	private LocalisedTermAssembler localisedTermAssembler;
 	
-	public NameSTO getSTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){
-		NameSTO name = null;
-		if (taxonNameBase !=null){
-			name = new NameSTO();
-			setVersionableEntity(taxonNameBase, name);
-			name.setFullname(taxonNameBase.getTitleCache());
-			name.setTaggedName(getTaggedName(taxonNameBase));
-			//TODO RUDE HACK
-			name.setNomenclaturalReference(refAssembler.getSTO((ReferenceBase)taxonNameBase.getNomenclaturalReference(), locales));
-			
-			
-			for( NomenclaturalStatus status : (Set<NomenclaturalStatus>) taxonNameBase.getStatus()){
-				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, LocalisedTermAssembler.ABBREVIATED_LABEL));
-			}		
-		}
-		return name;
-	}	
-	public NameTO getTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){		
-		NameTO name = null;
-		if (taxonNameBase !=null){
-			name = new NameTO();
-			setVersionableEntity(taxonNameBase, name);
-			name.setFullname(taxonNameBase.getTitleCache());
-			name.setTaggedName(getTaggedName(taxonNameBase));
-			name.setNomenclaturalReference(refAssembler.getTO((ReferenceBase)taxonNameBase.getNomenclaturalReference(), locales));
-			for( NomenclaturalStatus status : (Set<NomenclaturalStatus>) taxonNameBase.getStatus()){
-				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, LocalisedTermAssembler.ABBREVIATED_LABEL));
+	public NameSTO getSTO(TaxonNameBase tnb, Enumeration<Locale> locales){
+		NameSTO n = null;
+		if (tnb !=null){
+			n = new NameSTO();
+			setVersionableEntity(tnb, n);
+			n.setFullname(tnb.getTitleCache());
+			n.setTaggedName(getTaggedName(tnb));
+			ReferenceBase nomRef = (ReferenceBase)tnb.getNomenclaturalReference();
+			if(nomRef != null) {
+				n.setNomenclaturalReference(refAssembler.getSTO(nomRef, true, tnb.getNomenclaturalMicroReference(), locales));				
+			}
+			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)tnb.getStatus()) {
+				locales = prependLocale(locales, new Locale("la"));
+				n.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
 			}
 		}
-		return name;
+		return n;
 	}
+	private Enumeration<Locale> prependLocale(Enumeration<Locale> locales,
+			Locale firstLocale) {
+		List<Locale> localeList = Collections.list(locales);
+		localeList.add(0, firstLocale);
+		locales = Collections.enumeration(localeList);
+		return locales;
+	}	
+	public NameTO getTO(TaxonNameBase tnb, Enumeration<Locale> locales){		
+		NameTO n = null;
+		if (tnb !=null){
+			n = new NameTO();
+			setVersionableEntity(tnb, n);
+			n.setFullname(tnb.getTitleCache());
+			n.setTaggedName(getTaggedName(tnb));
+			ReferenceBase nomRef = (ReferenceBase)tnb.getNomenclaturalReference();
+			if(nomRef != null) {
+				n.setNomenclaturalReference(refAssembler.getTO(nomRef, true ,tnb.getNomenclaturalMicroReference(), locales));
+			}
+			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)tnb.getStatus()) {
+				locales = prependLocale(locales, new Locale("la"));
+				n.addStatus(localisedTermAssembler.getSTO(status.getType(), locales));
+			}
+		}
+		return n;
+	}
+	
+	
 	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		//FIXME rude hack:
@@ -82,6 +96,10 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		}
 		taxonNameBase = (NonViralName)taxonNameBase;
 		// --- end of rude hack
+		//FIXME infrageneric epithets are not jet handled!
+		//   - infraGenericEpithet	"Cicerbita"	
+        //   - infraSpecificEpithet	null	
+
 		for (Object token : taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase)){
 			TaggedText tag = new TaggedText();
 			if (String.class.isInstance(token)){
@@ -93,9 +111,9 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 				tag.setText(r.getAbbreviation());
 				tag.setType(TagEnum.rank);
 			}
-			else if (token !=null && INomenclaturalReference.class.isAssignableFrom(token.getClass())){
-				INomenclaturalReference reference = (INomenclaturalReference) token;
-				tag.setText(reference.getNomenclaturalCitation(taxonNameBase.getNomenclaturalMicroReference()));
+			else if (token !=null && ReferenceBase.class.isAssignableFrom(token.getClass())){
+				ReferenceBase reference = (ReferenceBase) token;
+				tag.setText(reference.getTitleCache());
 				tag.setType(TagEnum.reference);
 			}
 			else if (Date.class.isInstance(token)){

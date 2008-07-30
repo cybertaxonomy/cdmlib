@@ -9,36 +9,30 @@
 package eu.etaxonomy.cdm.remote.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.MatchMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -54,7 +48,6 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
-import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
@@ -77,6 +70,9 @@ public class CdmServiceImpl implements ICdmService {
 	private IDescriptionDao descriptionDAO;
 	@Autowired
 	private IFeatureTreeDao featureTreeDAO;
+	@Autowired
+	private IFeatureDao featureDao;
+	
 	
 	private final int MAXRESULTS = 500;
 	
@@ -144,6 +140,9 @@ public class CdmServiceImpl implements ICdmService {
 			if (featureTree == null){
 				throw new CdmObjectNonExisting(featureTreeUuid.toString(), FeatureTree.class);
 			}
+		}else{
+			logger.info("No featureTree at this point. Building default tree with all available features.");
+			featureTree = FeatureTree.NewInstance(featureDao.list());
 		}
 		TaxonTO t = taxonAssembler.getTO(tb, featureTree, locales);
 		return t;
@@ -179,22 +178,30 @@ public class CdmServiceImpl implements ICdmService {
 		return rs;
 	}
 
-	public List<TaxonSTO> getAcceptedTaxon(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting {
-		List<TaxonSTO> stoList = new ArrayList<TaxonSTO>();
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#getAcceptedTaxon(java.util.Set, java.util.Enumeration)
+	 */
+	public Hashtable<String, List<TaxonSTO>> getAcceptedTaxa(Set<UUID> uuids, Enumeration<Locale> locales) throws CdmObjectNonExisting {
 		
-		TaxonBase tb = getCdmTaxonBase(uuid);
-		if (tb.getClass().equals(Taxon.class)){
-			TaxonSTO t = taxonAssembler.getSTO(tb, locales);
-			stoList.add(t);
-		}else{
-			Synonym s = (Synonym)tb;
-			Set<Taxon> taxa = s.getAcceptedTaxa();
-			for (Taxon tx: taxa){
-				TaxonSTO t = taxonAssembler.getSTO(tx, locales);
+		Hashtable<String, List<TaxonSTO>> stoTable = new Hashtable<String, List<TaxonSTO>>();
+		for (UUID uuid : uuids) {
+			List<TaxonSTO> stoList = new ArrayList<TaxonSTO>();
+			TaxonBase tb = getCdmTaxonBase(uuid);
+			
+			if (tb.getClass().equals(Taxon.class)){
+				TaxonSTO t = taxonAssembler.getSTO(tb, locales);
 				stoList.add(t);
+			}else{ 
+				Synonym s = (Synonym)tb;
+				Set<Taxon> taxa = s.getAcceptedTaxa();
+				for (Taxon tx: taxa){
+					TaxonSTO t = taxonAssembler.getSTO(tx, locales);
+					stoList.add(t);
+				}
 			}
+			stoTable.put(uuid.toString(), stoList);
 		}
-		return stoList;
+		return stoTable;
 	}
 
 	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting {
