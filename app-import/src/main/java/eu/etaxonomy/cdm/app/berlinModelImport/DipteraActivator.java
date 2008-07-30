@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
@@ -137,10 +138,10 @@ public class DipteraActivator {
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
 			
-	//		//make feature tree
-	//		FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
-	//		CdmApplicationController app = bmImportConfigurator.getCdmAppController();
-	//		app.getDescriptionService().saveFeatureTree(tree);
+			//make feature tree
+			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
+			app = bmImportConfigurator.getCdmAppController();
+			app.getDescriptionService().saveFeatureTree(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
