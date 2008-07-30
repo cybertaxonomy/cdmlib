@@ -51,7 +51,7 @@ public class TreeNode extends BaseSTO {
 	/**
 	 * A atomised version of the fullname of this taxons scientific name 
 	 */
-	private List<TaggedText> taggedName = new ArrayList();
+	private List<TaggedText> taggedName = new ArrayList<TaggedText>();
 
 	public String getSecUuid() {
 		return secUuid;
