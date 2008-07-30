@@ -107,7 +107,7 @@ public class MediaMetaData {
 
         } catch (IOException e) {
         	try {if(in != null) in.close();} catch (IOException e1) {/* IGNORE */}
-            logger.error("Could not read "+ imageFile.getPath() + "; reason:"+e.getMessage());
+            logger.warn("Could not read "+ imageFile.getPath() + "; reason:"+e.getMessage());
         }
         return null;
 	}
