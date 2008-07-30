@@ -10,13 +10,11 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-
-import javax.persistence.*;
 
 /**
  * This class represents journals. A journal is a periodical {@link PublicationBase publication}
@@ -93,8 +91,9 @@ public class Journal extends PublicationBase implements Cloneable {
 	 */
 	@Override
 	public String generateTitle(){
-		//TODO implement
-		return "";
+		//FIXME implement
+		//only dummy
+		return this.getTitle();
 	}
 	
 	

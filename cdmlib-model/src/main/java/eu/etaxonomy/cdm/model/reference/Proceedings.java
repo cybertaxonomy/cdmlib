@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * @created 08-Nov-2007 13:06:45
  */
 @Entity
-public class Proceedings extends PrintedUnitBase {
+public class Proceedings extends PrintedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Proceedings.class);
 	
 	//The conference sponsor
@@ -49,7 +49,17 @@ public class Proceedings extends PrintedUnitBase {
 
 	@Override
 	public String generateTitle(){
-		return "";
+		logger.warn("generateTitle not yet fully implemented");
+		return this.getTitle();
 	}
+	
+	
+	//*********** CLONE **********************************/	
+			
+		public Proceedings clone(){
+			Proceedings result = (Proceedings)super.clone();
+			//no changes to: organization
+			return result;
+		}
 
 }

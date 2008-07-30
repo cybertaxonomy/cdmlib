@@ -14,9 +14,6 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 /**
  * This class represents a database used as an information source. A database is
  * a structured collection of records or data.
@@ -56,7 +53,9 @@ public class Database extends PublicationBase implements Cloneable {
 	@Override
 	public String generateTitle(){
 		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
-		return "";
+		//FIXME implement
+		//only dummy
+		return this.getTitle();
 	}
 	
 	

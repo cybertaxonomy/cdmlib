@@ -10,16 +10,18 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.location.Continent;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlType;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * Individual property of observed phenomena able to be described or measured.
@@ -188,6 +190,9 @@ public class Feature extends DefinedTermBase {
 	private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
 	private static final UUID uuidProtolog = UUID.fromString("7f1fd111-fc52-49f0-9e75-d0097f576b2d");
 	private static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
+	private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
+	private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
+	private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -252,7 +257,19 @@ public class Feature extends DefinedTermBase {
 	public static final Feature COMMON_NAME(){
 		return getByUuid(uuidCommonName);
 	}
+	
+	public static final Feature PHENOLOGY(){
+		return getByUuid(uuidPhenology);
+	}
 
+	
+	public static final Feature OCCURRENCE(){
+		return getByUuid(uuidOccurrence);
+	}
+	
+	public static final Feature CITATION(){
+		return getByUuid(uuidCitation);
+	}
 	
 	/**
 	 * special kind of OrganismInteraction
