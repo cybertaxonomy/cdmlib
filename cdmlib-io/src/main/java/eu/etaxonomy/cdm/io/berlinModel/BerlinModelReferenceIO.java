@@ -11,16 +11,20 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PRINT_SERIES;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_CONFERENCE_PROCEEDINGS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL_VOLUME;
+
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,8 +40,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
-import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -53,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.WebPage;
@@ -368,7 +371,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						if (categoryFk == REF_JOURNAL){
 							referenceBase = makeJournal(valueMap);
 						}else if(categoryFk == REF_BOOK){
-							referenceBase = makeBook(valueMap);
+							referenceBase = makeBook(valueMap, referenceStore, nomRefStore);
 						}else if(categoryFk == REF_DATABASE){
 							referenceBase = makeDatabase(valueMap);
 						}else if(categoryFk == REF_INFORMAL){
@@ -377,16 +380,21 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 							referenceBase = makeWebSite(valueMap);
 						}else if(categoryFk == REF_UNKNOWN){
 							referenceBase = makeUnknown(valueMap);
+						}else if(categoryFk == REF_PRINT_SERIES){
+							referenceBase = makePrintSeries(valueMap);
+						}else if(categoryFk == REF_CONFERENCE_PROCEEDINGS){
+							referenceBase = makeProceedings(valueMap);
 						}else if(categoryFk == REF_ARTICLE){
 							referenceBase = makeArticle(valueMap, referenceStore, nomRefStore);
+						}else if(categoryFk == REF_JOURNAL_VOLUME){
+							referenceBase = makeJournalVolume(valueMap);
 						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
 							referenceBase = makePartOfOtherTitle(valueMap, referenceStore, nomRefStore);
 						}else{
 							logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
 							referenceBase = Generic.NewInstance();
 						}
-						
-						
+										
 						
 						String refYear = (String)valueMap.get("refYear".toLowerCase());
 						
@@ -656,9 +664,11 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		return journal;
 	}
 	
-	private StrictReferenceBase makeBook(Map<String, Object> valueMap){
+	private StrictReferenceBase makeBook(Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Book'");}
 		Book book = Book.NewInstance();
+		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
+		
 		//Set bookAttributes = new String[]{"edition", "isbn", "pages","publicationTown","publisher","volume"};
 		
 		Set<String> omitAttributes = new HashSet<String>();
@@ -667,7 +677,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		
 		makeStandardMapper(valueMap, book, omitAttributes);
 		
-		//Series
+		//Series (as String)
 		PrintSeries printSeries = null;
 		if (valueMap.get(attrSeries) != null){
 			String series = (String)valueMap.get("title".toLowerCase());
@@ -679,10 +689,63 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			//TODO only one for ref and nomRef
 			logger.warn("Implementation of printSeries is preliminary");
 		}
-		book.setInSeries(printSeries);
+		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
+		//Series (as Reference)
+		if (inRefFk != null){
+			int inRefFkInt = (Integer)inRefFk;
+			if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
+				ReferenceBase inSeries = nomRefStore.get(inRefFkInt);
+				if (inSeries == null){
+					inSeries = referenceStore.get(inRefFkInt);
+					logger.info("inSeries (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
+					nomRefStore.put(inRefFkInt, inSeries);
+				}
+				if (inSeries == null){
+					logger.warn("inSeries for " + inRefFkInt + " is null. "+
+					" InReference relation could not be set");;
+				}else if (PrintSeries.class.isAssignableFrom(inSeries.getClass())){
+					book.setInSeries((PrintSeries)inSeries);
+					//TODO
+				}else{
+					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getClass().getSimpleName() +
+							" Inreference relation could not be set");
+				}
+			}else{
+				logger.error("PrintSeries (refId = " + inRefFkInt + ") for book (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
+				//success = false;
+			}
+		}
+		if (book.getInSeries() != null && printSeries != null){
+			logger.warn("Book has series string and inSeries reference. Can not take both. Series string neglected");
+		}else{
+			book.setInSeries(printSeries);
+		}
 		book.setEditor(null);
 		return book;
 		
+	}
+	
+	private StrictReferenceBase makePrintSeries(Map<String, Object> valueMap){
+		if (logger.isDebugEnabled()){logger.debug("RefType 'PrintSeries'");}
+		PrintSeries printSeries = PrintSeries.NewInstance();
+		makeStandardMapper(valueMap, printSeries, null);
+		return printSeries;
+	}
+	
+	private StrictReferenceBase makeProceedings(Map<String, Object> valueMap){
+		if (logger.isDebugEnabled()){logger.debug("RefType 'Proceedings'");}
+		Proceedings proceedings = Proceedings.NewInstance();
+		makeStandardMapper(valueMap, proceedings, null);	
+		return proceedings;
+	}
+	
+	private StrictReferenceBase makeJournalVolume(Map<String, Object> valueMap){
+		if (logger.isDebugEnabled()){logger.debug("RefType 'JournalVolume'");}
+		//Proceedings proceedings = Proceedings.NewInstance();
+		Generic journalVolume = Generic.NewInstance();
+		makeStandardMapper(valueMap, journalVolume, null);	
+		logger.warn("Journal volumes not yet implemented. Generic created instead but with errors");
+		return journalVolume;
 	}
 	
 	private boolean makeStandardMapper(Map<String, Object> valueMap, StrictReferenceBase ref){

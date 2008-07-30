@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -87,18 +88,24 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				
 				int factCategoryId = rs.getInt("factCategoryId");
 				String factCategory = rs.getString("factCategory");
-
-				Feature feature = Feature.NewInstance(factCategory, factCategory, null);
-				feature.setSupportsTextData(true);
 				
+				Feature feature;
+				try {
+					feature = BerlinModelTransformer.factCategory2Feature(factCategoryId);
+				} catch (UnknownCdmTypeException e) {
+					logger.warn("New Feature");
+					feature = Feature.NewInstance(factCategory, factCategory, null);
+					feature.setSupportsTextData(true);
+					//TODO
+//					MaxFactNumber	int	Checked
+//					ExtensionTableName	varchar(100)	Checked
+//					Description	nvarchar(1000)	Checked
+//					locExtensionFormName	nvarchar(80)	Checked
+//					RankRestrictionFk	int	Checked
+				}
+								
 			//	featureMap.put(factCategoryId, feature);
 				result.put(factCategoryId, feature);
-				//TODO
-//				MaxFactNumber	int	Checked
-//				ExtensionTableName	varchar(100)	Checked
-//				Description	nvarchar(1000)	Checked
-//				locExtensionFormName	nvarchar(80)	Checked
-//				RankRestrictionFk	int	Checked
 	
 			}
 			Collection col = result.getAllValues();

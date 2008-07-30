@@ -339,6 +339,8 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 		return ! config.isDoTaxonNames();
 	}
 	
+	
+//FOR FUTURE USE , DONT DELETE	
 //	new CdmStringMapper("nameId", "nameId"),
 //	new CdmStringMapper("rankFk", "rankFk"),
 //	new CdmStringMapper("nameCache", "nameCache"),

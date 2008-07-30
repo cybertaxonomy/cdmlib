@@ -119,6 +119,9 @@ public class ImportHelper {
 			Method cdmMethod = cdmBase.getClass().getMethod(methodName, clazz);
 			cdmMethod.invoke(cdmBase, sourceValue);
 			return true;
+		} catch (NullPointerException e) {
+			logger.error("NullPointerException: " + e.getMessage());
+			return false;
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException: " + e.getMessage());
 			return false;

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
@@ -21,6 +22,10 @@ public final class BerlinModelTransformer {
 	public static int REF_CD = 8;
 	public static int REF_JOURNAL = 9;
 	public static int REF_UNKNOWN = 10;
+	public static int REF_PRINT_SERIES = 55;
+	public static int REF_CONFERENCE_PROCEEDINGS = 56;
+	public static int REF_JOURNAL_VOLUME = 57;
+	
 
 	
 	//NameStatus
@@ -134,6 +139,22 @@ public final class BerlinModelTransformer {
 			case 12: return HybridRelationshipType.MALE_PARENT();
 			default: {
 				throw new UnknownCdmTypeException("Unknown HybridRelationshipType (id=" + Integer.valueOf(relNameId).toString() + ")");
+			}
+		}
+	}
+	
+	//TypeDesignation
+	public static Feature factCategory2Feature (int factCategoryId)  throws UnknownCdmTypeException{
+		switch (factCategoryId){
+			case 0: return null;
+			case 1: return Feature.DESCRIPTION();
+			case 4: return Feature.ECOLOGY();
+			case 5: return Feature.PHENOLOGY();
+			case 12: return Feature.COMMON_NAME();
+			case 13: return Feature.OCCURRENCE();
+			case 99: return Feature.CITATION();
+			default: {
+				throw new UnknownCdmTypeException("Unknown FactCategory (id=" + Integer.valueOf(factCategoryId).toString() + ")");
 			}
 		}
 	}
