@@ -8,7 +8,9 @@
  */
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class DescriptionTO extends BaseTO {
@@ -16,7 +18,9 @@ public class DescriptionTO extends BaseTO {
 	// general bits from DescriptionBase
 	private Set<ReferenceSTO> sources = new HashSet<ReferenceSTO>();
 	private Set<DescriptionElementSTO> elements = new HashSet<DescriptionElementSTO>();
-
+	private List<FeatureTO> features = new ArrayList<FeatureTO>();
+	private boolean visible = true; 
+	
 	// -- TaxonDescription specific --
 	private TaxonSTO taxon;
 	//    scopes & geoscopes
@@ -25,7 +29,20 @@ public class DescriptionTO extends BaseTO {
 	// -- SpecimenDescription specific --
 	private Set<SpecimenSTO> specimensOrObersvations = new HashSet<SpecimenSTO>();
 
-
+// ******************** METHODS *********************************/
+	/**
+	 * @return the visible
+	 */
+	public boolean isVisible() {
+		return visible;
+	}
+	/**
+	 * @param visible the visible to set
+	 */
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
 	public TaxonSTO getTaxon() {
 		return taxon;
 	}
@@ -53,16 +70,20 @@ public class DescriptionTO extends BaseTO {
 		this.sources.add(source);
 	}
 	
-	public Set<DescriptionElementSTO> getElements() {
-		return elements;
-	}
-	public void setElements(Set<DescriptionElementSTO> elements) {
-		this.elements = elements;
-	}
-	public void addElement(DescriptionElementSTO element){
-		this.elements.add(element);
-	}
+//************** FEATURE *************************************/
 
+	public List<FeatureTO> getFeatures() {
+		return features;
+	}
+	public void setElements(List<FeatureTO> features) {
+		this.features = features;
+	}
+	public void addFeature(FeatureTO feature){
+		this.features.add(feature);
+	}
+	
+//**************** SPECIMEN/OBSERVATION *********************/
+	
 	public Set<SpecimenSTO> getSpecimensOrObersvations() {
 		return specimensOrObersvations;
 	}
@@ -73,5 +94,17 @@ public class DescriptionTO extends BaseTO {
 		this.specimensOrObersvations.add(specimenOrObersvation);
 	}
 	
+//************** OLD ********************************************/
+	
+	public Set<DescriptionElementSTO> getElements() {
+		return elements;
+	}
+	public void setElements(Set<DescriptionElementSTO> elements) {
+		this.elements = elements;
+	}
+	public void addElement(DescriptionElementSTO element){
+		this.elements.add(element);
+	}
 
+	
 }

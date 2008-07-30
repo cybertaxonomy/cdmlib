@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 // select * from TaxonBase where titlecache LIKE '%peren%';
 
@@ -47,7 +47,7 @@ public class TaxonTO extends BaseTO{
 	// other
 	private List<TaxonRelationshipTO> taxonRelations = new ArrayList<TaxonRelationshipTO>();
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
-	
+	private FeatureTreeTO featureTree;
 	
 	public NameSTO getName() {
 		return name;
@@ -105,6 +105,12 @@ public class TaxonTO extends BaseTO{
 	}
 	public void setDescriptions(Set<DescriptionTO> descriptions) {
 		this.descriptions = descriptions;
+	}
+	public FeatureTreeTO getFeatureTree() {
+		return featureTree;
+	}
+	public void setFeatureTree(FeatureTreeTO featureTree) {
+		this.featureTree = featureTree;
 	}
 	
 }

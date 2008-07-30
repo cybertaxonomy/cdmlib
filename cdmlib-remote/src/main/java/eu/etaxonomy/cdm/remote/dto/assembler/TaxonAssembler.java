@@ -226,7 +226,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 			tn = new TreeNode();
 			setVersionableEntity(t, tn);
 			tn.setFullname(t.getName().getTitleCache());
-			tn.setHasChildren(t.getTaxonomicChildren().size());
+			tn.setHasChildren(t.getTaxonomicChildrenCount());
 			tn.setTaggedName(nameAssembler.getTaggedName(t.getName()));
 			tn.setSecUuid(t.getSec().getUuid().toString());
 		}

@@ -468,6 +468,9 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/BaseTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionElementSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DescriptionTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/DistributionSTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureNodeTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureTO.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/FeatureTreeTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/HomotypicTaxonGroupSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IBaseSTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/IReferenceSTO.java -text
