@@ -112,7 +112,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 
 	/**
-	 * Returns the journal in which <i>this</i> article has been published.
+	 * Returns the {@link Journal journal} in which <i>this</i> article has been published.
 	 * 
 	 * @return  the journal
 	 * @see 	Journal

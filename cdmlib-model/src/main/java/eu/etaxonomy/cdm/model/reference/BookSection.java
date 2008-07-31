@@ -22,6 +22,12 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 
 /**
+ * This class represents isolated sections (parts, chapters or
+ * papers) within a {@link Book book}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "BookSection".
+ *   
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:14
@@ -32,12 +38,44 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	private Book inBook;
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
+	
+	/** 
+	 * Class constructor: creates a new empty book instance only containing the
+	 * {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * 
+	 * @see strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 */
+	protected BookSection(){
+		super();
+		this.cacheStrategy = BookSectionDefaultCacheStrategy.NewInstance();
+	}
+	
 
+	/** 
+	 * Creates a new empty book section instance only containing the
+	 * {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * 
+	 * @see #NewInstance(Book, TeamOrPersonBase, String, String)
+	 * @see strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 */
 	public static BookSection NewInstance(){
 		BookSection result = new BookSection();
 		return result;
 	}
 	
+	/** 
+	 * Creates a new book section instance with its given book, title, pages and
+	 * author (team) and its {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * 
+	 * @param	inBook			the book <i>this</i> book section belongs to
+	 * @param	author			the team or person who wrote <i>this</i> book section
+	 * @param	sectionTitle	the string representing the title of <i>this</i>
+	 * 							book section
+	 * @param	pages			the string representing the pages in the book
+	 * 							where <i>this</i> book section can be found  
+	 * @see 					#NewInstance()
+	 * @see 					strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 */
 	public static BookSection NewInstance(Book inBook, TeamOrPersonBase author, String sectionTitle, String pages ){
 		BookSection result = new BookSection();
 		result.setInBook(inBook);
@@ -47,13 +85,12 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 		return result;
 	}
 	
-	protected BookSection(){
-		super();
-		this.cacheStrategy = BookSectionDefaultCacheStrategy.NewInstance();
-	}
 	
-	
-	
+	/**
+	 * Returns the {@link Book book} <i>this</i> book section belongs to.
+	 * 
+	 * @return  the book containing <i>this</i> book section
+	 * @see 	Book
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Book getInBook(){
@@ -61,8 +98,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	}
 
 	/**
-	 * 
-	 * @param inBook    inBook
+	 * @see #getInBook()
 	 */
 	public void setInBook(Book inBook){
 		this.inBook = inBook;
