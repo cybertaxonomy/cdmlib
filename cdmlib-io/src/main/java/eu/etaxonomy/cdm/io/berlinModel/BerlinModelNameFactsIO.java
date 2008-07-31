@@ -43,8 +43,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
-	private int modCount = 500000;
-
+	private int modCount = 50;
+	private int maxCount = 2000;
+	
 	public BerlinModelNameFactsIO(){
 		super();
 	}
@@ -90,9 +91,8 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
-			int border = 500000;
 			//for each reference
-			while (rs.next() && i < border){
+			while (rs.next() && i < maxCount){
 				
 				if ((i++ % modCount) == 0  && i!= 1 ){ logger.info("NameFacts handled: " + (i-1));}
 				
@@ -116,6 +116,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 							TaxonNameDescription description = TaxonNameDescription.NewInstance();
 							TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
 							protolog.addMedia(media);
+							description.addElement(protolog);
 							taxonNameBase.addDescription(description);
 						}//end NAME_FACT_PROTOLOGUE
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
@@ -147,7 +148,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				}
 				//put
 			}
-			logger.warn("ONLY " + border + " NAMEFACTS imported !!!" );
+			if (i >= maxCount - 1){ logger.warn("ONLY " + maxCount + " NAMEFACTS imported !!!" );};
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
@@ -189,7 +190,8 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		String fileTif = strFolderPath + "tif" + sep + nameFact + "." + suffixTif;;
 		//if (CdmUtils.urlExists(urlTif, true)){
 		File file = new File(fileTif);
-		if (file.exists() && imageMetaData.readFrom(file)){ 
+		if (file.exists()){ 
+			imageMetaData.readFrom(file);
 			ImageFile tifImage = ImageFile.NewInstance(urlTif, size, imageMetaData);
 			MediaRepresentation tifRepresentation = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
 			tifRepresentation.addRepresentationPart(tifImage);
@@ -203,8 +205,9 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			String urlJpeg = urlPath + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
 			String fileJpeg = strFolderPath + "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg;
 			file = new File(fileJpeg);
-			if (file.exists() && imageMetaData.readFrom(file) ){
-			//if (CdmUtils.urlExists(urlJpeg, true)){
+			if (file.exists()){ 
+				imageMetaData.readFrom(file);
+				//if (CdmUtils.urlExists(urlJpeg, true)){
 				ImageFile jpgImage = ImageFile.NewInstance(urlJpeg, size, imageMetaData);
 				MediaRepresentation jpgRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixJpg);
 				jpgRepresentation.addRepresentationPart(jpgImage);
@@ -217,8 +220,9 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		String urlPng = urlPath + "png/" + nameFact + "." + suffixPng;
 		String filePng = strFolderPath + "png" + sep + nameFact + "." + suffixPng;
 		file = new File(filePng);
-		if (file.exists() && imageMetaData.readFrom(file) ){
+		if (file.exists()){ 
 		//if (CdmUtils.urlExists(urlPng, true)){
+			imageMetaData.readFrom(file);
 			ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
 			MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
 			pngRepresentation.addRepresentationPart(pngImage);
@@ -231,18 +235,30 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				urlPng = urlPath + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
 				filePng = strFolderPath + "png" + sep + nameFact + "00" + pngCount + "." + suffixPng;
 				file = new File(filePng);
-				if (file.exists() && imageMetaData.readFrom(file) ){
+				if (file.exists()){ 
 				//if (CdmUtils.urlExists(urlPng, true)){
-					ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
-					MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypeJpeg, suffixPng);
-					pngRepresentation.addRepresentationPart(pngImage);
-					media.addRepresentation(pngRepresentation);
+					handleFile(media, urlPng, file, imageMetaData, size, mimeTypePng, suffixPng);
+//					imageMetaData.readFrom(file);
+//					ImageFile pngImage = ImageFile.NewInstance(urlPng, size, imageMetaData);
+//					MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
+//					pngRepresentation.addRepresentationPart(pngImage);
+//					media.addRepresentation(pngRepresentation);
 				}else{
 					fileExists = false;
 				}
 			}
 		} //end png
 		return media;
+	}
+	
+	private boolean handleFile(Media media, String url, File file,ImageMetaData imageMetaData, Integer size, String mimeType, String suffix){
+		//if (CdmUtils.urlExists(urlPng, true)){
+		imageMetaData.readFrom(file);
+		ImageFile pngImage = ImageFile.NewInstance(url, size, imageMetaData);
+		MediaRepresentation pngRepresentation = MediaRepresentation.NewInstance(mimeType, suffix);
+		pngRepresentation.addRepresentationPart(pngImage);
+		media.addRepresentation(pngRepresentation);
+		return true;
 	}
 	
 
