@@ -22,8 +22,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 
 /**
- * This class represents isolated sections (parts, chapters or
- * papers) within a {@link Book book}.
+ * This class represents isolated sections (parts or chapters) within a {@link Book book}.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "BookSection".
@@ -91,6 +90,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * 
 	 * @return  the book containing <i>this</i> book section
 	 * @see 	Book
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Book getInBook(){
