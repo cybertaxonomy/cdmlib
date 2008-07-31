@@ -105,16 +105,33 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
+	/**
+	 * Returns a formatted string containing the entire reference citation,
+	 * including authors, title, book authors, book title, pages, corresponding to <i>this</i>
+	 * book section.<BR>
+	 * This method overrides the generic and inherited
+	 * StrictReferenceBase#getCitation() method.
+	 * 
+	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	/**
+	 * Returns a formatted string containing the entire citation used for
+	 * nomenclatural purposes based on <i>this</i> book section - including
+	 * (abbreviated) book title, book authors, book section title but not its
+	 * authors - and on the given details.
+	 * 
+	 * @param  microReference	the string with the details (generally pages)
+	 * 							within t<i>this</i> book section
+	 * @return					the formatted string representing the
+	 * 							nomenclatural citation
+	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -122,8 +139,19 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	/**
+	 * Generates, according to the {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}
+	 * assigned to <i>this</i> book section, a string that identifies <i>this</i>
+	 * book section and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited
+	 * ReferenceBase#generateTitle() method.
+	 *
+	 * @return  the string identifying <i>this</i> book section
+	 * @see  	#getCitation()
+	 * @see  	NomenclaturalReferenceHelper#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -132,8 +160,15 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	
 //*********** CLONE **********************************/	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.SectionBase#clone()
+	/** 
+	 * Clones <i>this</i> book section. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> book
+	 * section by modifying only some of the attributes.<BR>
+	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * 
+	 * @see StrictReferenceBase#clone()
+	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	public BookSection clone(){
 		BookSection result = (BookSection)super.clone();

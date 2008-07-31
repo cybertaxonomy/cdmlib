@@ -295,7 +295,18 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	/**
 	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that contributed to
 	 * the publication of <i>this</i> non viral taxon name as generally stated by
-	 * the {@link #getCombinationAuthorTeam() combination author (team)} itself.
+	 * the {@link #getCombinationAuthorTeam() combination author (team)} itself.<BR>
+	 * An ex-author(-team) is an author(-team) to whom a taxon name was ascribed
+	 * although it is not the author(-team) of a valid publication (for instance
+	 * without the validating description or diagnosis in case of a name for a
+	 * new taxon). The name of this ascribed authorship, followed by "ex", may
+	 * be inserted before the name(s) of the publishing author(s) of the validly
+	 * published name:<BR>
+	 * <i>Lilium tianschanicum</i> was described by Grubov (1977) as a new species and
+	 * its name was ascribed to Ivanova; since there is no indication that
+	 * Ivanova provided the validating description, the name may be cited as
+	 * <i>Lilium tianschanicum</i> N. A. Ivanova ex Grubov or <i>Lilium tianschanicum</i> Grubov.
+	 * <P>
 	 * The presence of an author (team) of <i>this</i> non viral taxon name is a
 	 * condition for the existence of an ex author (team) for <i>this</i> same name. 
 	 * 
@@ -352,6 +363,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * 
 	 * @return  the nomenclatural ex basionym author (team) of <i>this</i> non viral taxon name
 	 * @see 	#getBasionymAuthorTeam()
+	 * @see 	#getExCombinationAuthorTeam()
 	 * @see 	#getCombinationAuthorTeam()
 	 * @see 	agent.INomenclaturalAuthor
 	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()

@@ -134,9 +134,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 		return nomRefBase.getCitation();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
-	 */
 	/**
 	 * Returns a formatted string containing the entire citation used for
 	 * nomenclatural purposes based on <i>this</i> book - including
@@ -156,9 +153,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
-	 */
 	/**
 	 * Generates, according to the {@link strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}
 	 * assigned to <i>this</i> book, a string that identifies <i>this</i>

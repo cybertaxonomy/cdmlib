@@ -105,7 +105,6 @@ public class DataSet {
     @XmlElementWrapper(name = "References")
     @XmlElements({
     	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
-    	@XmlElement(name = "ConferenceProceedings", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = ConferenceProceedings.class),
     	@XmlElement(name = "Generic", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Generic.class),
     	@XmlElement(name = "Patent", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Patent.class),
     	@XmlElement(name = "PersonalCommunication", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = PersonalCommunication.class),
