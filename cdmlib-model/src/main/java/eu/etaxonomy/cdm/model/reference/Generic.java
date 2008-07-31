@@ -204,9 +204,12 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 
 	/**
 	 * Returns a formatted string containing the entire reference citation,
-	 * including authors, corresponding to <i>this</i> generic reference.
+	 * including authors, corresponding to <i>this</i> generic reference.<BR>
+	 * This method overrides the generic and inherited
+	 * StrictReferenceBase#getCitation() method.
 	 * 
 	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
@@ -216,7 +219,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	/**
 	 * Returns a formatted string containing the entire citation used for
 	 * nomenclatural purposes based on <i>this</i> generic reference - including
-	 * (abbreviated) title and (abbreviated) author string - and on the given
+	 * (abbreviated) title but not authors - and on the given
 	 * details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
@@ -224,6 +227,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {

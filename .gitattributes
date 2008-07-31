@@ -243,7 +243,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BibtexReference.java
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Book.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BookSection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/CdDvd.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ConferenceProceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Database.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Generic.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/INomenclaturalReference.java -text

@@ -174,7 +174,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	}
 
 	/**
-	 * @see #getVolume()
+	 * @see #getPages()
 	 */
 	public void setPages(String pages){
 		this.pages = pages;
@@ -184,9 +184,12 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	/**
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, title, journal, pages, corresponding to <i>this</i>
-	 * article.
+	 * article.<BR>
+	 * This method overrides the generic and inherited
+	 * StrictReferenceBase#getCitation() method.
 	 * 
 	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
@@ -196,7 +199,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	/**
 	 * Returns a formatted string containing the entire citation used for
 	 * nomenclatural purposes based on <i>this</i> article - including
-	 * (abbreviated) title of the journal and (abbreviated) author string -
+	 * (abbreviated) title of the journal but not authors -
 	 * and on the given details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
@@ -204,6 +207,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {

@@ -16,6 +16,12 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
+ * This (abstract) class represents isolated sections (parts, chapters or
+ * papers) within a {@link PrintedUnitBase printed unit}.
+ * <P>
+ * This class corresponds, according to the TDWG ontology, to the publication type
+ * term (from PublicationTypeTerm): "SubReference".
+ *   
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:51
@@ -25,18 +31,29 @@ public abstract class SectionBase extends StrictReferenceBase {
 	static Logger logger = Logger.getLogger(SectionBase.class);
 	private String pages;
 
+	/**
+	 * Returns the string representing the page(s) where the content of
+	 * <i>this</i> section is located within the journal issue.
+	 * 
+	 * @return  the string with the pages corresponding to <i>this</i> article
+	 */
 	public String getPages(){
 		return this.pages;
 	}
 
 	/**
-	 * 
-	 * @param pages    pages
+	 * @see #getPages()
 	 */
 	public void setPages(String pages){
 		this.pages = pages;
 	}
 
+	/**
+	 * Returns the {@link PrintedUnitBase printed unit} to which <i>this</i> section
+	 * belongs.
+	 * 
+	 * @return  the printed unit containing <i>this</i> section
+	 */
 	@Transient
 	public PrintedUnitBase getPrintedUnit(){
 		logger.warn("Not yet implemented");
@@ -46,12 +63,19 @@ public abstract class SectionBase extends StrictReferenceBase {
 //*********** CLONE **********************************/	
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#clone()
+	/** 
+	 * Clones <i>this</i> section. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> section
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * 
+	 * @see StrictReferenceBase#clone()
+	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	public Object clone(){
 		SectionBase result = (SectionBase)super.clone();
-		//no changes to: setPages
+		//no changes to: pages
 		return result;
 	}
 }
