@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -153,9 +154,13 @@ public class CdmUtils {
 	
 	static public boolean urlExists(String strUrl, boolean withWarning){
 		try {
-			URL url = new URL(strUrl);
-			url.getContent();
-			return true;
+		     HttpURLConnection.setFollowRedirects(false);
+		      // note : you may also need
+		      //        HttpURLConnection.setInstanceFollowRedirects(false)
+		      HttpURLConnection con =
+		         (HttpURLConnection) new URL(strUrl).openConnection();
+		      con.setRequestMethod("HEAD");
+		      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 		} catch (MalformedURLException e) {
 			if (withWarning) {
 				logger.warn(e);

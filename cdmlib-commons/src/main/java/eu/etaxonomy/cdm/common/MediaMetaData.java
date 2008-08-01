@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -80,15 +81,29 @@ public class MediaMetaData {
             if (!ii.check()) {
                 // ImageInfo can not handle TIFF, ...
                 // use Java AWT/ImageIO installation of the
+//            	
+//            	FIXME
+//            	the above comment got truncated so i am posting 
+//            	what I found out. Tiff-Images can only be read if an 
+//            	extension to ImageIO is installed. The Extension comes as 
+//            	JAI-IMAGEIO, which is part the JavaAdvancedImage-API and also 
+//            	platform dependant. Maybe include the in our own maven repo
+//            	https://jai-imageio.dev.java.net/binary-builds.html
+//            	linux version comes with jar files which are platform independant 
+//            	but you loose native acceleration
+//            	
+            	
                 ii = null;
-            	BufferedImage bim = ImageIO.read(in);
-            	if(bim == null)
-            		throw new IOException("Cannot read "+imageFile);
-            	imageMetaData.width = bim.getWidth();
-            	imageMetaData.height = bim.getHeight();
-            	imageMetaData.bitPerPixel = bim.getColorModel().getPixelSize();
+    			BufferedImage bImage = ImageIO.read(imageFile);
+            	if(bImage == null){
+            		in.close();
+            		throw new IOException(" No ImageReader for image type. Is jai-imageio installed?");
+            	}
+            	imageMetaData.width = bImage.getWidth();
+            	imageMetaData.height = bImage.getHeight();
+            	imageMetaData.bitPerPixel = bImage.getColorModel().getPixelSize();
             	imageMetaData.mimeType = "?";
-            	imageMetaData.formatName = String.valueOf(bim.getType());
+            	imageMetaData.formatName = String.valueOf(bImage.getType());
             	
             } else {
                 // ImageInfo can analyze:
@@ -96,6 +111,8 @@ public class MediaMetaData {
                 // PPM
                 // and PSD
             	imageMetaData.formatName = ii.getFormatName();
+            	
+            	
             	imageMetaData.mimeType = ii.getMimeType();
             	imageMetaData.width = ii.getWidth();
             	imageMetaData.height = ii.getHeight();

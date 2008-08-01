@@ -1,21 +1,17 @@
  package eu.etaxonomy.cdm.io.berlinModel;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
-import eu.etaxonomy.cdm.io.tcs.TcsReferenceIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonNameIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonNameRelationsIO;
-import eu.etaxonomy.cdm.io.tcs.TcsTaxonRelationsIO;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -30,6 +26,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
+	
+	private URL mediaUrl;
+	private File mediaPath;
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -107,6 +106,46 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	
 	protected boolean isPartialSynonym(Synonym synonym){
 		return this.partialSynonyms.contains(synonym);
+	}
+
+	/**
+	 * @return the mediaUrl
+	 */
+	public URL getMediaUrl() {
+		return mediaUrl;
+	}
+
+	/**
+	 * @param mediaUrl the mediaUrl to set
+	 */
+	public void setMediaUrl(URL mediaUrl) {
+		this.mediaUrl = mediaUrl;
+	}
+
+	/**
+	 * @return the mediaPath
+	 */
+	public File getMediaPath() {
+		return mediaPath;
+	}
+
+	/**
+	 * @param mediaPath the mediaPath to set
+	 */
+	public void setMediaPath(File mediaPath) {
+		this.mediaPath = mediaPath;
+	}
+	
+	public void setMediaPath(String mediaPathString){
+		this.mediaPath = new File(mediaPathString);
+	}
+
+	public void setMediaUrl(String mediaUrlString) {
+		try {
+			this.mediaUrl = new URL(mediaUrlString);
+		} catch (MalformedURLException e) {
+			logger.error("Could not set mediaUrl because it was malformed: " + mediaUrlString);
+		}
 	}
 	
 }
