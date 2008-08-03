@@ -51,7 +51,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private String number;
 	private String pages;
 	private String annote;
-	//The name(s) of the editor(s)
 	private String editor;
 	//The institution that was involved in the publishing, but not necessarily the publisher
 	private String institution;
@@ -270,7 +269,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	}
 
 	/**
-	 * Returns the string representing,if applicable, either the number of <i>this</i>
+	 * Returns the string representing, if applicable, either the number of <i>this</i>
 	 * BibTeX reference if it is a {@link BibtexEntryType#TECHREPORT() "TECHREPORT" (report)}
 	 * or of the journal in which <i>this</i> BibTeX reference was published if
 	 * it is an {@link BibtexEntryType#ARTICLE() "ARTICLE"}. Most publications have a "volume", but no "number".<BR>
@@ -310,11 +309,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	}
 
 	/**
-	 * Returns the string representing a (not typical) annotation for annotated bibliography styles
-	 * of <i>this</i> BibTeX reference.
+	 * Returns the string representing a (not typical) annotation for annotated
+	 * bibliography styles to be applied to <i>this</i> BibTeX reference.
 	 * 
-	 * @return  the string with the pages corresponding to <i>this</i> BibTeX
-	 * 			reference
+	 * @return  the string with the annotation for annotated bibliography styles
 	 */
 	public String getAnnote(){
 		return this.annote;
@@ -327,6 +325,15 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.annote = annote;
 	}
 
+	/**
+	 * Returns the string representing the name(s) of the editor(s) of <i>this</i>
+	 * BibTeX reference.<BR>
+	 * The returned "editor" attribute corresponds to the {@link PrintedUnitBase#getEditor() "editor"} attribute
+	 * of PrintedUnitBase.
+	 * 
+	 * @return  the string identifying the editor of <i>this</i>
+	 * 			BibTeX reference
+	 */
 	public String getEditor(){
 		return this.editor;
 	}
