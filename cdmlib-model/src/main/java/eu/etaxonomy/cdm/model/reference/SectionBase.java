@@ -33,9 +33,9 @@ public abstract class SectionBase extends StrictReferenceBase {
 
 	/**
 	 * Returns the string representing the page(s) where the content of
-	 * <i>this</i> section is located within the journal issue.
+	 * <i>this</i> section is located within the {@link PrintedUnitBase printed unit}.
 	 * 
-	 * @return  the string with the pages corresponding to <i>this</i> article
+	 * @return  the string with the pages corresponding to <i>this</i> section
 	 */
 	public String getPages(){
 		return this.pages;
