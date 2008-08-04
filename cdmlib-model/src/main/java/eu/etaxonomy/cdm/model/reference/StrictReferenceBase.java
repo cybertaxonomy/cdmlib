@@ -58,7 +58,9 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	
 
 	/**
-	 * Returns a string representing the title of <i>this</i> reference.
+	 * Returns a string representing the title of <i>this</i> reference. If a
+	 * reference has different titles (for instance abbreviated and not
+	 * abbreviated) then for each title a new instance must be created.
 	 * 
 	 * @return  the title string of <i>this</i> reference
 	 * @see 	#getCitation()

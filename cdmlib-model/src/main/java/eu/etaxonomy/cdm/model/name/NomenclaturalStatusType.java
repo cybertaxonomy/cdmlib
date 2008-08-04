@@ -93,7 +93,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/** 
 	 * Class constructor: creates an additional nomenclatural status type
-	 * instance with a description, a label and a label abbreviation.
+	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label
+	 * and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new nomenclatural status type to be created 

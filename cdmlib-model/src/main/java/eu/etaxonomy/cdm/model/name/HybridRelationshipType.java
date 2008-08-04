@@ -62,9 +62,9 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 	/** 
 	 * Class constructor: creates an additional hybrid relationship type
-	 * instance with a description, a label, a label abbreviation and the flags
-	 * indicating whether <i>this</i> new hybrid relationship type is symmetric and/or
-	 * transitive.
+	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label,
+	 * a label abbreviation and the flags indicating whether this new hybrid
+	 * relationship type is symmetric and/or transitive.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new hybrid relationship type to be created 

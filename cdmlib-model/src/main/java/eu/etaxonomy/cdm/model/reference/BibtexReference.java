@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
  * used instead of {@link StrictReferenceBase StrictReferenceBase} depending on the data
  * to be imported in the CDM.
  * 
- * publisher for Report is "institution" in BibTex ???
+ * @see BibtexEntryType
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:12
@@ -52,27 +52,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private String pages;
 	private String annote;
 	private String editor;
-	//The institution that was involved in the publishing, but not necessarily the publisher
 	private String institution;
-	//The school where the thesis was written
 	private String school;
-	//The conference sponsor
 	private String organization;
-	//The publisher's name
 	private String publisher;
-	//Publisher's address (usually just the city, but can be the full address for lesser-known publishers)
 	private String address;
-	//How it was published, if the publishing method is nonstandard
 	private String howpublished;
-	//The type of tech-report, for example, "Research Note"
 	private String reportType;
-	//The month of publication (or, if unpublished, the month of creation)
 	private String month;
-	//The year of publication (or, if unpublished, the year of creation)
 	private String year;
-	//A specification of an electronic publication, often a preprint or a technical report
 	private String eprint;
-	//Miscellaneous extra information
 	private String note;
 	private BibtexReference crossref;
 
@@ -345,6 +334,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.editor = editor;
 	}
 
+	/**
+	 * Returns the string representing the name of the institution that was
+	 * involved in the publishing of <i>this</i> BibTeX reference or the name of
+	 * its publisher, if it is a {@link BibtexEntryType#TECHREPORT() "TECHREPORT" (report)}.<BR>
+	 * The returned "institution" attribute corresponds to the {@link Report#getInstitution() "institution"}
+	 * attribute of Report or to its inherited {@link PublicationBase#getPublisher() "publisher"} attribute.
+	 * 
+	 * @return  the string identifying the institution assigned to <i>this</i>
+	 * 			BibTeX reference
+	 */
 	public String getInstitution(){
 		return this.institution;
 	}
@@ -356,6 +355,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.institution = institution;
 	}
 
+	/**
+	 * Returns the string representing the name of the school where <i>this</i> BibTeX
+	 * reference (a {@link BibtexEntryType#MASTERTHESIS() "MASTERTHESIS"} or a
+	 * {@link BibtexEntryType#PHDTHESIS() "PHDTHESIS"}) was written.<BR>
+	 * The returned "school" attribute corresponds to the {@link Thesis#getSchool() "school"}
+	 * attribute of Thesis.
+	 * 
+	 * @return  the string identifying the school where <i>this</i> BibTeX 
+	 * 			reference was written
+	 */
 	public String getSchool(){
 		return this.school;
 	}
@@ -367,6 +376,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.school = school;
 	}
 
+	/**
+	 * Returns the string representing the name of the organization responsible for the
+	 * conference in the context of which <i>this</i> BibTeX reference ({@link BibtexEntryType#PROCEEDINGS() "PROCEEDINGS"},
+	 * {@link BibtexEntryType#INPROCEEDINGS() "INPROCEEDINGS"} or a {@link BibtexEntryType#CONFERENCE() "CONFERENCE"})
+	 * has been printed.<BR>
+	 * The returned "organization" attribute corresponds to the {@link Proceedings#getOrganization() "organization"}
+	 * attribute of Proceedings.
+	 * 
+	 * @return  the string with the responsible organization of the conference
+	 */
 	public String getOrganization(){
 		return this.organization;
 	}
@@ -378,6 +397,15 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.organization = organization;
 	}
 
+	/**
+	 * Returns the string representing the name of the publisher of <i>this</i>
+	 * BibTeX reference.<BR>
+	 * The returned "publisher" attribute corresponds to the {@link PublicationBase#getPublisher() "publisher"} attribute
+	 * of PublicationBase.
+	 * 
+	 * @return  the string identifying the publisher of <i>this</i>
+	 * 			BibTeX reference
+	 */
 	public String getPublisher(){
 		return this.publisher;
 	}
@@ -389,6 +417,15 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.publisher = publisher;
 	}
 
+	/**
+	 * Returns the string representing the address of the publisher of <i>this</i>
+	 * BibTeX reference (usually just the city, but can be the full address for
+	 * lesser-known publishers).<BR>
+	 * The returned "address" attribute corresponds to the {@link PublicationBase#getPlacePublished() "placePublished"} attribute
+	 * of PublicationBase.
+	 * 
+	 * @return  the string with the publisher's address
+	 */
 	public String getAddress(){
 		return this.address;
 	}
@@ -400,6 +437,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.address = address;
 	}
 
+	/**
+	 * Returns the string describing how <i>this</i> BibTeX reference was
+	 * published, if the publishing method was nonstandard. This can apply to
+	 * the entry types {@link BibtexEntryType#BOOKLET() "BOOKLET"} or {@link BibtexEntryType#MISC() "MISC"}.<BR>
+	 * The returned "howpublished" attribute might correspond to one of the
+	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
+	 * of PublicationBase.
+	 * 
+	 * @return  the string describing the publishing method
+	 */
 	public String getHowpublished(){
 		return this.howpublished;
 	}
@@ -411,6 +458,15 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.howpublished = howpublished;
 	}
 
+	/**
+	 * Returns the string describing the kind of technical report (for instance
+	 * "Research Note") <i>this</i> BibTeX reference ({@link BibtexEntryType#TECHREPORT() "TECHREPORT"}) is.<BR>
+	 * The returned "reportType" attribute might correspond to one of the
+	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
+	 * of Report.
+	 * 
+	 * @return  the string describing the kind of technical report
+	 */
 	public String getReportType(){
 		return this.reportType;
 	}
@@ -422,6 +478,14 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.reportType = type;
 	}
 
+	/**
+	 * Returns the string with the month of publication (or, if unpublished,
+	 * the month of creation) of <i>this</i> BibTeX reference.<BR>
+	 * The returned "month" attribute corresponds partially to the {@link StrictReferenceBase#getDatePublished() "datePublished"}
+	 * attribute of StrictReferenceBase.
+	 * 
+	 * @return  the string with the month of publication
+	 */
 	public String getMonth(){
 		return this.month;
 	}
@@ -433,6 +497,14 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.month = month;
 	}
 
+	/**
+	 * Returns the string with the year of publication (or, if unpublished,
+	 * the year of creation) of <i>this</i> BibTeX reference.<BR>
+	 * The returned "year" attribute corresponds partially to the {@link StrictReferenceBase#getDatePublished() "datePublished"}
+	 * attribute of StrictReferenceBase.
+	 * 
+	 * @return  the string with the year of publication
+	 */
 	public String getYear(){
 		return this.year;
 	}
@@ -444,6 +516,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.year = year;
 	}
 
+	//A specification of an electronic publication, often a preprint or a technical report
+	/**
+	 * Returns the string specifying <i>this</i> BibTeX reference as an electronic
+	 * publication (often a preprint or a technical report).<BR>
+	 * The returned "eprint" attribute might correspond to one of the
+	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
+	 * of StrictReferenceBase.
+	 * 
+	 * @return  the string specifying <i>this</i> electronic BibTeX reference
+	 */
 	public String getEprint(){
 		return this.eprint;
 	}
@@ -455,6 +537,14 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.eprint = eprint;
 	}
 
+	/**
+	 * Returns the string with miscellaneous extra information for <i>this</i> BibTeX
+	 * reference.<BR>
+	 * The returned "note" attribute corresponds to one of the {@link common.AnnotatableEntity#getAnnotations()() annotations}
+	 * of StrictReferenceBase.
+	 * 
+	 * @return  the string with extra information for <i>this</i> BibTeX reference
+	 */
 	public String getNote(){
 		return this.note;
 	}
@@ -466,6 +556,13 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.note = note;
 	}
 
+	/**
+	 * Returns the {@link BibtexEntryType entry type} of <i>this</i> BibTeX reference.
+	 * BibTeX references are split by types which correspond to subclasses of
+	 * {@link StrictReferenceBase StrictReferenceBase}.
+	 * 
+	 * @return  the BibTeX entry type of <i>this</i> BibTeX reference
+	 */
 	@ManyToOne
 	public BibtexEntryType getType() {
 		return type;
@@ -479,16 +576,29 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
+	/**
+	 * Returns a formatted string containing the entire reference citation,
+	 * including authors and other elements corresponding to <i>this</i> BibTeX
+	 * reference.
+	 * 
+	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 */
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	/**
+	 * Returns a formatted string containing the entire citation used for
+	 * nomenclatural purposes based on <i>this</i> BibTeX reference - including
+	 * (abbreviated) title  but not authors - and on the given details.
+	 * 
+	 * @param  microReference	the string with the details (generally pages)
+	 * 							within t<i>this</i> BibTeX reference
+	 * @return					the formatted string representing the
+	 * 							nomenclatural citation
+	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -496,10 +606,20 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
+	/**
+	 * Generates, according to the {@link strategy.cache.reference.BibtexDefaultCacheStrategy default cache strategy}
+	 * assigned to <i>this</i> BibTeX reference, a string that identifies <i>this</i>
+	 * BibTeX reference and returns it. This string may be stored in the
+	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited
+	 * ReferenceBase#generateTitle() method.
+	 *
+	 * @return  the string identifying <i>this</i> BibTeX reference
+	 * @see  	#getCitation()
+	 * @see  	NomenclaturalReferenceHelper#generateTitle()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
 	}

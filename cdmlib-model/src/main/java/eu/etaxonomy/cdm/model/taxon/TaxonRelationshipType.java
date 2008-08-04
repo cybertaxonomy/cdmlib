@@ -68,9 +68,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/** 
 	 * Class constructor: creates an additional taxon relationship type
-	 * instance with a description, a label, a label abbreviation and the flags
-	 * indicating whether this new taxon relationship type is symmetric and/or
-	 * transitive.
+	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label,
+	 * a label abbreviation and the flags indicating whether this new taxon
+	 * relationship type is symmetric and/or transitive.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new taxon relationship type to be created 
