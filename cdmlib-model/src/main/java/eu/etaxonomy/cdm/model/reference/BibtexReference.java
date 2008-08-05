@@ -594,7 +594,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * (abbreviated) title  but not authors - and on the given details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
-	 * 							within t<i>this</i> BibTeX reference
+	 * 							within <i>this</i> BibTeX reference
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
