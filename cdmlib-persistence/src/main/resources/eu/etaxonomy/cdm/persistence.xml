@@ -161,7 +161,6 @@
             <value>eu.etaxonomy.cdm.model.reference.Book</value>
             <value>eu.etaxonomy.cdm.model.reference.BookSection</value>
             <value>eu.etaxonomy.cdm.model.reference.CdDvd</value>
-            <value>eu.etaxonomy.cdm.model.reference.ConferenceProceedings</value>
             <value>eu.etaxonomy.cdm.model.reference.Database</value>
             <value>eu.etaxonomy.cdm.model.reference.Generic</value>
             <value>eu.etaxonomy.cdm.model.reference.INomenclaturalReference</value>
