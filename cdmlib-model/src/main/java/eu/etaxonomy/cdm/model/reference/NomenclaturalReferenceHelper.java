@@ -82,6 +82,7 @@ class NomenclaturalReferenceHelper {
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see 					name.TaxonNameBase#getNomenclaturalReference()
 	 * @see 					strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
 	@Transient

@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.agent;
 /** 
 * Interface providing methods for nomenclatural authorship. 
 * 
-* 
 * @author a.mueller
 * @version 1.0
 * @created 17-APR-2008
@@ -26,7 +25,7 @@ public interface INomenclaturalAuthor {
 
 	
 	/**
-	 * @see TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle);
 

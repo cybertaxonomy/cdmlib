@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
 /**
+* Interface providing methods for nomenclatural references. 
+* 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
@@ -27,16 +29,25 @@ public interface INomenclaturalReference<T extends ReferenceBase> extends IIdent
 	
 	/**
 	 * Returns a formatted string containing the reference citation excluding
-	 * authors but including the details as used in a taxon name.
+	 * authors but including the details as used in a {@link name.TaxonNameBase taxon name}.
 	 * 
 	 * @see	name.TaxonNameBase
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String  microReference);
 
+	/**
+	 * Returns a string representation for the year of publication / creation
+	 * of a reference.
+	 */
 	@Transient
 	public String getYear();
 
+	/**
+	 * Returns the boolean value indicating whether the used parser 
+	 * method was able to parse the string designating the reference
+	 * successfully (false) or not (true).
+	 */
 	public boolean getHasProblem();
 	
 }
