@@ -32,9 +32,7 @@ import org.hibernate.annotations.Table;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
@@ -216,6 +214,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		ReferenceBase result = (ReferenceBase)super.clone();
 		//no changes to: authorTeam, hasProblem, nomenclaturallyRelevant, uri

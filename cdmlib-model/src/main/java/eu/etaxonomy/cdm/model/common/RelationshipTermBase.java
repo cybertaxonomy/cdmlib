@@ -126,10 +126,11 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		return this.getInverseRepresentation(lang).getDescription();
 	}
 	
+	@Override
 	public ILoadableTerm readCsvLine(List csvLine) {
 		RelationshipTermBase result;
 		// read UUID, URI, english label+description
-		List<String> csvLineString = (List<String>)csvLine;
+		List<String> csvLineString = csvLine;
 		result = (RelationshipTermBase)super.readCsvLine(csvLineString);
 		// inverse label + 2 booleans
 		String inverseText = csvLineString.get(5).trim();
@@ -141,6 +142,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		return result;
 	}
 	
+	@Override
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[8];
 		line[0] = getUuid().toString();

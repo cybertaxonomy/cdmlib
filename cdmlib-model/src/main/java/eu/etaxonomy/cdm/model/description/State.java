@@ -11,11 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-
 import org.apache.log4j.Logger;
 
-import java.util.*;
 import javax.persistence.*;
 
 /**

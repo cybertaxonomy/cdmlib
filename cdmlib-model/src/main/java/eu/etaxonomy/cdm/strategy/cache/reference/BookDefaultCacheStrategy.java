@@ -52,6 +52,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 	}
 
 
+	@Override
 	public String getNomRefTitleWithoutYearAndAuthor(T nomenclaturalReference){
 		if (nomenclaturalReference == null){
 			return null;

@@ -73,6 +73,7 @@ public abstract class SectionBase extends StrictReferenceBase {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone(){
 		SectionBase result = (SectionBase)super.clone();
 		//no changes to: pages

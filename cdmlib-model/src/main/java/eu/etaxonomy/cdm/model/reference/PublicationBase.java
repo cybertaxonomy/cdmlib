@@ -77,6 +77,7 @@ public abstract class PublicationBase extends StrictReferenceBase {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone(){
 		PublicationBase result = (PublicationBase)super.clone();
 		//no changes to: placePublished, publisher

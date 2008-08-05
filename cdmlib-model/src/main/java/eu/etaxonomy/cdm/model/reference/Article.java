@@ -191,6 +191,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Override
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -247,6 +248,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Article clone(){
 		Article result = (Article)super.clone();
 		//no changes to: inJournal, pages, series, volume

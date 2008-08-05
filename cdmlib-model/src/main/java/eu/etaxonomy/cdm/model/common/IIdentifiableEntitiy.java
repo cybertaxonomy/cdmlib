@@ -10,8 +10,6 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
-import org.apache.log4j.Logger;
-
 public interface IIdentifiableEntitiy<T extends IdentifiableEntity> {
 
 	public abstract String getLsid();

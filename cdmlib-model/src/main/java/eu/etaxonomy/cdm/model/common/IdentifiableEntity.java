@@ -266,13 +266,14 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableEntity result = (IdentifiableEntity)super.clone();
 		
 		//Extensions
 		Set<Extension> newExtensions = getNewExtensionSet();
 		for (Extension extension : this.extensions ){
-			Extension newExtension = (Extension)extension.clone(this);
+			Extension newExtension = extension.clone(this);
 			newExtensions.add(newExtension);
 		}
 		result.setExtensions(newExtensions);
@@ -280,7 +281,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		//OriginalSources
 		Set<OriginalSource> newOriginalSources = getNewOriginalSourcesSet();
 		for (OriginalSource originalSource : this.sources){
-			OriginalSource newSource = (OriginalSource)originalSource.clone(this);
+			OriginalSource newSource = originalSource.clone(this);
 			newOriginalSources.add(newSource);	
 		}
 		result.setSources(newOriginalSources);

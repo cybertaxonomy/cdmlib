@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-
 import org.apache.log4j.Logger;
 
 import java.util.*;

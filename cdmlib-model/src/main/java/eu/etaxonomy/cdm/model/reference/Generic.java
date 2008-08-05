@@ -15,9 +15,6 @@ import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 
 /**
@@ -211,6 +208,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Override
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -270,6 +268,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Generic clone(){
 		Generic result = (Generic)super.clone();
 		//no changes to: editor, pages, placePublished,publisher, series, volume

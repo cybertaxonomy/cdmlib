@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 
 /**
@@ -505,6 +504,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * 
 	 * @return  the string with the year of publication
 	 */
+	@Override
 	public String getYear(){
 		return this.year;
 	}
@@ -583,6 +583,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * 
 	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 */
+	@Override
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -620,6 +621,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  	common.IdentifiableEntity#getTitleCache()
 	 * @see  	common.IdentifiableEntity#generateTitle()
 	 */
+	@Override
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
 	}

@@ -9,11 +9,8 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
 import org.apache.log4j.Logger;
 
 

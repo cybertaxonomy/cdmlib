@@ -62,6 +62,7 @@ public class Patent extends StrictReferenceBase implements Cloneable {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public Patent clone(){
 		Patent result = (Patent)super.clone();
 		//no changes to: -

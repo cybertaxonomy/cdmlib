@@ -180,6 +180,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		this.citationMicroReference = citationMicroReference;
 	}
 
+	@Override
 	public String generateTitle(){
 		return "";
 	}

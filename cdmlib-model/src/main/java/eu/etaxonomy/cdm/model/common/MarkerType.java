@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-
 import java.util.*;
 
 import javax.persistence.*;

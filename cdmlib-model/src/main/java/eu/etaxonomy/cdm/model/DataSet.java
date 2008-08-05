@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -309,7 +307,7 @@ public class DataSet {
     public Collection<TaxonBase> getTaxonBases() {
     	
         // FIXME: This is a dirty trick.
-    	Object obj = (Object)taxa;
+    	Object obj = taxa;
     	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
         return taxonBases;
     }

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 		private Object lastPropValue;
 
 		public void propertyChange(PropertyChangeEvent e){
-		logger.debug("Property [" + (String)e.getPropertyName() 
+		logger.debug("Property [" + e.getPropertyName() 
 				+ "] changed from " + e.getOldValue() 
 				+ " to " + e.getNewValue());
 		lastPropValue = e.getNewValue() == null ? null : e.getNewValue();

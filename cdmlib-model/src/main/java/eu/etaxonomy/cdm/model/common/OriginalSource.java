@@ -10,13 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.hibernate.annotations.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
 
 /**
  * Other names/labels/titles (abreviated or not) for the same object (person,
@@ -105,6 +102,7 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		OriginalSource result = (OriginalSource)super.clone();
 		

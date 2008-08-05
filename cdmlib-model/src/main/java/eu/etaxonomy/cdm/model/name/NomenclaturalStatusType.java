@@ -360,7 +360,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine_, Language lang) {
-		List<String> csvLine = (List<String>) csvLine_;
+		List<String> csvLine = csvLine_;
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
 		String label = csvLine.get(2).trim();

@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 
 /**
  * The class representing types (categories) of {@link BibtexReference BibTeX references}

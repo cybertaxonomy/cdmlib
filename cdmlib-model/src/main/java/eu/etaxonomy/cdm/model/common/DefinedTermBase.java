@@ -18,8 +18,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
 import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-
 import java.lang.reflect.Field;
 import java.util.*;
 

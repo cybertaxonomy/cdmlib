@@ -64,6 +64,7 @@ public class PersonalCommunication extends StrictReferenceBase implements Clonea
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public PersonalCommunication clone(){
 		PersonalCommunication result = (PersonalCommunication)super.clone();
 		//no changes to: -

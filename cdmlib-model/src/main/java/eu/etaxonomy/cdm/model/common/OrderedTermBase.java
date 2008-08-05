@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.persistence.*;
 
@@ -148,6 +147,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		}
 	}
 	
+	@Override
 	public boolean equals(Object o){
 		if (! OrderedTermBase.class.isAssignableFrom(o.getClass())){
 			return false;

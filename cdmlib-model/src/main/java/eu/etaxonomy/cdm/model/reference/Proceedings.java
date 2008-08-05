@@ -110,6 +110,7 @@ public class Proceedings extends PrintedUnitBase implements Cloneable {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+		@Override
 		public Proceedings clone(){
 			Proceedings result = (Proceedings)super.clone();
 			//no changes to: organization

@@ -104,6 +104,7 @@ public class Thesis extends PublicationBase implements Cloneable{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public Thesis clone(){
 		Thesis result = (Thesis)super.clone();
 		//no changes to: institution

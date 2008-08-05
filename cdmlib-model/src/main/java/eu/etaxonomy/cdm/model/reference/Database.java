@@ -71,6 +71,7 @@ public class Database extends PublicationBase implements Cloneable {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Database clone(){
 		Database result = (Database)super.clone();
 		//no changes to: -

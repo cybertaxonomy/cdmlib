@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;

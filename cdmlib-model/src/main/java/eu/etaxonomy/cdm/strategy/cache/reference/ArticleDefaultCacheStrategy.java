@@ -51,6 +51,7 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 		super();
 	}
 
+	@Override
 	protected String getNomRefTitleWithoutYearAndAuthor(T article){
 		if (article == null){
 			return null;

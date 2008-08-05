@@ -59,6 +59,7 @@ public class CdDvd extends PublicationBase implements Cloneable{
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public CdDvd clone(){
 		CdDvd result = (CdDvd)super.clone();
 		//no changes to: -

@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -101,6 +100,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		ReferencedEntityBase result = (ReferencedEntityBase)super.clone();
 		

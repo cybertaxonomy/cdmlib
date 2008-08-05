@@ -70,6 +70,7 @@ public class Extension extends VersionableEntity implements Cloneable {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Extension result = (Extension)super.clone();	
 		//no changes to: type, value

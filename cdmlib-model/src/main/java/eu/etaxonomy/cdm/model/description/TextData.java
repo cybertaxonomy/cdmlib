@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import java.util.HashMap;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -20,8 +19,6 @@ import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CollectionOfElements;
-
 import javax.persistence.*;
 
 /**

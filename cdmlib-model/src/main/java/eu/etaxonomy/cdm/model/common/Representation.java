@@ -100,6 +100,7 @@ public class Representation extends LanguageStringBase {
 	}
 	
 	
+	@Override
 	public String toString(){
 		// we dont need the language returned too, do we? 
 		return getLabel();

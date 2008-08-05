@@ -415,6 +415,7 @@ public class BotanicalName extends NonViralName {
 	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
 	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
 	 */
+	@Override
 	@Deprecated  //To be used by RelationshipBase only
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof HybridRelationship){

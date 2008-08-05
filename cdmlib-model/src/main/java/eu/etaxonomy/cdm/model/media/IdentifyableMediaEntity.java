@@ -11,9 +11,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 @MappedSuperclass
 public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
@@ -51,6 +49,7 @@ public abstract class IdentifyableMediaEntity extends IdentifiableEntity impleme
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifyableMediaEntity result = (IdentifyableMediaEntity)super.clone();
 		//Media

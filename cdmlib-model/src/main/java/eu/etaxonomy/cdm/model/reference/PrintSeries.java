@@ -64,6 +64,7 @@ public class PrintSeries extends PublicationBase implements Cloneable {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public PrintSeries clone(){
 		PrintSeries result = (PrintSeries)super.clone();
 		//no changes to: series

@@ -95,6 +95,7 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	 * 
 	 * @see  #getTitle()
 	 */
+	@Override
 	@Transient
 	// TODO implement 
 	public String getCitation(){
@@ -106,6 +107,7 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	 * of <i>this</i> reference. The string is obtained by transformation of
 	 * the {@link #getDatePublished() datePublished} attribute.
 	 */
+	@Override
 	@Transient
 	public String getYear(){
 		if (this.getDatePublished() == null){
@@ -128,6 +130,7 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() {
 		try {
 			StrictReferenceBase result = (StrictReferenceBase)super.clone();

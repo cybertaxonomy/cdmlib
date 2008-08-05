@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
  /**

@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -42,6 +41,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	protected String ExAuthorSeperator = " ex ";
 	protected CharSequence BasionymAuthorCombinationAuthorSeperator = " ";
 	
+	@Override
 	public  UUID getUuid(){
 		return uuid;
 	}

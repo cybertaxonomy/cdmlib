@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * The class representing categories of {@link SynonymRelationship synonym relationships}

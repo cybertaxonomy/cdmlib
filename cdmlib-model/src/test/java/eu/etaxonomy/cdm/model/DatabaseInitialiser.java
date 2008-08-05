@@ -56,7 +56,7 @@ public class DatabaseInitialiser {
 
 	public static void main(String[] args) {
 		DatabaseInitialiser dbInit = new DatabaseInitialiser();
-		dbInit.insertTaxon("Abies alba");
-		dbInit.insertTaxon("Polygala vulgaris");
+		DatabaseInitialiser.insertTaxon("Abies alba");
+		DatabaseInitialiser.insertTaxon("Polygala vulgaris");
 	}
 }

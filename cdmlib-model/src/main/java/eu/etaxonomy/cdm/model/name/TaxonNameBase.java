@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -530,7 +529,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@Target(ReferenceBase.class)
 	public INomenclaturalReference getNomenclaturalReference(){
-		return (INomenclaturalReference) this.nomenclaturalReference;
+		return this.nomenclaturalReference;
 	}
 	/**
 	 * Assigns a nomenclatural {@link reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.

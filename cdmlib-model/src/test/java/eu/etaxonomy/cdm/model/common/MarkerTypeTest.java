@@ -20,8 +20,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.name.Rank;
-
 /**
  * @author a.mueller
  * @created 23.04.2008

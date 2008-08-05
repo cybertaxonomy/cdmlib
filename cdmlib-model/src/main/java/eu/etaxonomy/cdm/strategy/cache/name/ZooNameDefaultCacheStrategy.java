@@ -5,9 +5,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
@@ -17,6 +15,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 
 	protected String AuthorYearSeperator = ", ";
 	
+	@Override
 	public UUID getUuid(){
 		return uuid;
 	}

@@ -52,6 +52,7 @@ public class GenericDefaultCacheStrategy <T extends Generic> extends NomRefDefau
 		super();
 	}
 	
+	@Override
 	protected String getNomRefTitleWithoutYearAndAuthor(T genericReference){
 		if (genericReference == null){
 			return null;

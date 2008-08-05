@@ -15,7 +15,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -41,7 +40,7 @@ public class CdmBaseTest extends EntityTestBase{
 
 	static public class TestCdmBaseClass extends CdmBase{
 		public String testString = "testStringXsdfjlksj";
-		public float testFloat = (float)1.43446E-5f;
+		public float testFloat = 1.43446E-5f;
 		public boolean testBoolean = false;
 	}
 	
@@ -318,7 +317,7 @@ public class CdmBaseTest extends EntityTestBase{
 		
 		//Test
 		float oldValue = testCdm.testFloat;
-		float newValue = (float)1.40239846E-4f;
+		float newValue = 1.40239846E-4f;
 		assertFalse(oldValue == newValue);
 		testCdm.firePropertyChange(prop, oldValue, newValue);
 		assertTrue(listener.isChanged());
@@ -460,8 +459,8 @@ public class CdmBaseTest extends EntityTestBase{
 	@Test
 	public void testSetCreated() {
 		DateTime calendar = new DateTime();
-		DateTime calendarTrue = (DateTime)calendar.withMillisOfSecond(23);
-		DateTime calendarFalse = (DateTime)calendar.withMillisOfSecond(23);
+		DateTime calendarTrue = calendar.withMillisOfSecond(23);
+		DateTime calendarFalse = calendar.withMillisOfSecond(23);
 		calendarFalse = calendarFalse.plusMonths(5);
 		cdmBase.setCreated(calendar);
 		calendar = calendar.withMillisOfSecond(0);

@@ -13,8 +13,6 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.SortedSet;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;

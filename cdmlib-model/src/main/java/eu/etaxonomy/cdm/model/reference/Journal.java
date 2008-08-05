@@ -109,6 +109,7 @@ public class Journal extends PublicationBase implements Cloneable {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Journal clone(){
 		return (Journal)super.clone();
 	}

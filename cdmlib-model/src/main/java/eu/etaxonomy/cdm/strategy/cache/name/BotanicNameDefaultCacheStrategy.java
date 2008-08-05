@@ -18,6 +18,7 @@ public class BotanicNameDefaultCacheStrategy<T extends BotanicalName> extends No
 	
 	final static UUID uuid = UUID.fromString("1cdda0d1-d5bc-480f-bf08-40a510a2f223");
 	
+	@Override
 	public  UUID getUuid(){
 		return uuid;
 	}

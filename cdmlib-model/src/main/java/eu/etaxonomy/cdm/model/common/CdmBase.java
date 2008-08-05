@@ -301,6 +301,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		CdmBase result = (CdmBase)super.clone();
 		

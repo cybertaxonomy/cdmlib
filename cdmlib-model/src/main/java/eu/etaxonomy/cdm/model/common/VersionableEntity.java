@@ -190,6 +190,7 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	 * The createdWhen is set to the current date.
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		VersionableEntity result = (VersionableEntity)super.clone();
 		

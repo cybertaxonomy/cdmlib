@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.test.function;
 import java.util.Calendar;
 import java.util.Set;
 
-import javax.activation.MimeType;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Agent;

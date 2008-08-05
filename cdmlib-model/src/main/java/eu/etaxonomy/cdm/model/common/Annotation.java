@@ -141,6 +141,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Annotation result = (Annotation)super.clone();
 		//no changes to: type, flag

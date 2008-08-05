@@ -23,7 +23,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.test.suite.CdmTestSuite;
 
 /**
  * @author AM
@@ -72,7 +71,7 @@ public class DefaultVocabularyStoreTest {
 	@Test
 	public void testDEFAULT_LANGUAGE() {
 		UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		assertEquals(uuidEnglish, defaultVocabularyStore.DEFAULT_LANGUAGE().getUuid());
+		assertEquals(uuidEnglish, DefaultVocabularyStore.DEFAULT_LANGUAGE().getUuid());
 	}
 
 	/**

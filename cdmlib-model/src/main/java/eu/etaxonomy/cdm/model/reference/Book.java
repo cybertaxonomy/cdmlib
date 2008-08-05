@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 
 /**
@@ -129,6 +128,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Override
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -185,6 +185,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Book clone(){
 		Book result = (Book)super.clone();
 		//no changes to: edition, isbn

@@ -20,8 +20,6 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.filter.Filter;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;

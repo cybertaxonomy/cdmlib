@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 
@@ -130,6 +129,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	}
 	
 	
+	@Override
 	public String generateTitle(){
 		return "";
 	}

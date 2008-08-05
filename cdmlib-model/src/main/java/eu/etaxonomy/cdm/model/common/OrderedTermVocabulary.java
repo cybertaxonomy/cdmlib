@@ -149,7 +149,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		if (sortedTerms.size() == 0){
 			lowestOrderIndex = 0;
 		}else{
-			Object first = (T)sortedTerms.first();
+			Object first = sortedTerms.first();
 			lowestOrderIndex = ((T)first).orderIndex;
 		}
 		term.orderIndex = lowestOrderIndex + 1;

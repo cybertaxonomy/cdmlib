@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
 
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 

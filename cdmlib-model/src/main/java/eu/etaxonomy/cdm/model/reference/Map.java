@@ -62,6 +62,7 @@ public class Map extends PublicationBase implements Cloneable {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public Map clone(){
 		Map result = (Map)super.clone();
 		//no changes to: -

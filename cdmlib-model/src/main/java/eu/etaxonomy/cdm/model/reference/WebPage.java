@@ -73,6 +73,7 @@ public class WebPage extends PublicationBase implements Cloneable {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public WebPage clone(){
 		WebPage result = (WebPage)super.clone();
 		//no changes to: -

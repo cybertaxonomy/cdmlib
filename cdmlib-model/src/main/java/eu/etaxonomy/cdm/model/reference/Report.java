@@ -105,6 +105,7 @@ public class Report extends PublicationBase implements Cloneable {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
 	 */
+	@Override
 	public Report clone(){
 		Report result = (Report)super.clone();
 		//no changes to: institution

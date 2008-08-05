@@ -55,6 +55,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
+	@Override
 	public String getTokenizedNomenclaturalTitel(T bookSection) {
 		if (bookSection.getInBook() == null){
 			return null;
@@ -69,6 +70,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
+	@Override
 	public String getTitleCache(T bookSection) {
 		if (bookSection.getInBook() == null){
 			return null;

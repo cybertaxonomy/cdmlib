@@ -17,8 +17,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-
 /**
  * This class represents isolated parts (usually papers or abstracts) within
  * {@link Proceedings conference proceedings}.

@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.media.Rights;
-
 import java.util.*;
 
 import javax.persistence.*;
@@ -97,13 +95,14 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException{
 		AnnotatableEntity result = (AnnotatableEntity)super.clone();
 		
 		//Annotations
 		Set<Annotation> newAnnotations = getNewAnnotationSet();
 		for (Annotation annotation : this.annotations ){
-			Annotation newExtension = (Annotation)annotation.clone(this);
+			Annotation newExtension = annotation.clone(this);
 			newAnnotations.add(newExtension);
 		}
 		result.setAnnotations(newAnnotations);
@@ -112,7 +111,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 		//Markers
 		Set<Marker> newMarkers = getNewMarkerSet();
 		for (Marker marker : this.markers ){
-			Marker newMarker = (Marker)marker.clone(this);
+			Marker newMarker = marker.clone(this);
 			newMarkers.add(newMarker);
 		}
 		result.setMarkers(newMarkers);

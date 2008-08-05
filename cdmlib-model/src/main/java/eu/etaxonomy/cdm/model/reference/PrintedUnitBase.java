@@ -141,6 +141,7 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone(){
 		PrintedUnitBase result = (PrintedUnitBase)super.clone();
 		//no changes to: editor, inSeries, pages, volume, seriesPart

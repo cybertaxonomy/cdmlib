@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.jaxb;
 
-import java.util.UUID;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.apache.log4j.Logger;

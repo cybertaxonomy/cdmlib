@@ -47,7 +47,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return null;
 	}
 	public static final TermVocabulary getUUID(UUID uuid){
-		return (TermVocabulary)findByUuid(uuid);
+		return findByUuid(uuid);
 	}
 	public static final TermVocabulary LANGUAGE(){
 		return getUUID(uuidLanguage);

@@ -18,8 +18,6 @@ import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.reference.Generic;
-
 /**
  * @author m.doering
  * @version 1.0
@@ -112,6 +110,7 @@ public class TimePeriod implements Cloneable{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public TimePeriod clone()  {
 		try {
 			TimePeriod result = (TimePeriod)super.clone();

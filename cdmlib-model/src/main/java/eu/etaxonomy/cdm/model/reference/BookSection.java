@@ -115,6 +115,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see  NomenclaturalReferenceHelper#getCitation()
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Override
 	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -170,6 +171,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public BookSection clone(){
 		BookSection result = (BookSection)super.clone();
 		//no changes to: inBook

@@ -1,26 +1,18 @@
 package eu.etaxonomy.cdm.jaxb;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.model.DataSet;
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 
 /*
 Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet) 
