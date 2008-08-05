@@ -39,6 +39,12 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
  * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
  * The year itself is an information obtained from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
+ * <P>
+ * This class corresponds partially to: <ul>
+ * <li> TaxonName according to the TDWG ontology
+ * <li> ScientificName and CanonicalName according to the TCS
+ * <li> ScientificName according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

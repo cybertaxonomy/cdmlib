@@ -22,6 +22,9 @@ import javax.xml.bind.annotation.XmlType;
  * The taxon name class for cultivars (cultivated plants). The only possible
  * {@link common.Rank ranks} for cultivars are CULTIVAR, GREX, CONVAR, CULTIVAR_GROUP,
  * GRAFT_CHIMAERA or DENOMINATION_CLASS.
+ * <P>
+ * This class corresponds partially to: NameBotanical according to the
+ * ABCD schema.
  * 
  * @author m.doering
  * @version 1.0

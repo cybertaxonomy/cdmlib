@@ -62,6 +62,12 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
  * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
  * or as a {@link taxon.Synonym synonym}.
+ * <P>
+ * This class corresponds partially to: <ul>
+ * <li> TaxonName according to the TDWG ontology
+ * <li> ScientificName and CanonicalName according to the TCS
+ * <li> ScientificName according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

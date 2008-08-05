@@ -27,7 +27,9 @@ import javax.xml.bind.annotation.XmlType;
  * Classification has no influence on the names of viral taxon names and no
  * viral taxon must be taxonomically included in another viral taxon with
  * higher rank. For examples see ICTVdb:
- * http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm
+ * "http://www.ncbi.nlm.nih.gov/ICTVdb/Ictv/vn_indxA.htm"
+ * <P>
+ * This class corresponds to: NameViral according to the ABCD schema.
  * 
  * @author m.doering
  * @version 1.0

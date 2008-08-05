@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -22,7 +26,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * http://rs.tdwg.org/ontology/voc/TaxonName#NomencalturalTypeTypeTerm
+ * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}.
+ * The different status indicate whether the {@link occurrence.Specimen specimens} used as types
+ * in a designation are duplicates, replacements, related specimens etc. 
+ * <P>
+ * A standard (ordered) list of type designation status instances will be
+ * automatically created as the project starts. But this class allows to extend
+ * this standard list by creating new instances of additional type designation
+ * status if needed. 
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> NomencalturalTypeTypeTerm according to the TDWG ontology
+ * <li> NomenclaturalTypeStatusOfUnitsEnum according to the TCS
+ * </ul>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:07:00

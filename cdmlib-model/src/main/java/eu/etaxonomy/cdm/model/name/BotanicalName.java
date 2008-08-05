@@ -36,6 +36,8 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * The taxon name class for plants and fungi.
+ * <P>
+ * This class corresponds to: NameBotanical according to the ABCD schema.
  * 
  * @author m.doering
  * @version 1.0

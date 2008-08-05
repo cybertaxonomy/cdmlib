@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * The taxon name class for animals.
+ * <P>
+ * This class corresponds to: NameZoological according to the ABCD schema.
  * 
  * @author m.doering
  * @version 1.0

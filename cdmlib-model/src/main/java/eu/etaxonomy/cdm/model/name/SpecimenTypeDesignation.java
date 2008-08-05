@@ -39,6 +39,12 @@ import javax.xml.bind.annotation.XmlType;
  * "species" rank a ({@link NameTypeDesignation name type designation}).
  * Moreover each typification by a specimen (or by a figure) has a {@link TypeDesignationStatus status}
  * like "holotype" or "isotype".
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> NomenclaturalType according to the TDWG ontology
+ * <li> Typification (partially) according to the TCS
+ * <li> NomenclaturalTypeDesignation according to the ABCD schema
+ * </ul>
  * 
  * @see		NameTypeDesignation
  * @author	m.doering

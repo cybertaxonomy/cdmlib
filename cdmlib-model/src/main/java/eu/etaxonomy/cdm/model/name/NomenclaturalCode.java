@@ -30,7 +30,8 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * <P>
  * This class corresponds to: <ul>
  * <li> NomenclaturalCodeTerm according to the TDWG ontology
- * <li> NomenclaturalCodesEnum  according to the TCS
+ * <li> NomenclaturalCodesEnum according to the TCS
+ * <li> CodeOfNomenclatureEnum according to the ABCD schema
  * </ul>
  * 
  * @author a.mueller
