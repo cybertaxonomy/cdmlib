@@ -3,26 +3,32 @@
  */
 package eu.etaxonomy.cdm.io.tcs;
 
-import java.util.Calendar;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
+import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.jdom.Text;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import static eu.etaxonomy.cdm.io.common.ImportHelper.FACULTATIVE;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -35,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
+public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
 
 	private static int modCount = 1000;
@@ -48,7 +54,7 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		result &= checkArticlesWithoutJournal(config);
-		result &= checkPartOfJournal(config);
+		//result &= checkPartOfJournal(config);
 		
 		return result;
 	}
@@ -56,34 +62,8 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 	private static boolean checkArticlesWithoutJournal(IImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
-//			Source source = bmiConfig.getSource();
-//			String strQueryArticlesWithoutJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
-//						" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
-//						" WHERE (Reference.RefCategoryFk = 1) AND (InRef.RefCategoryFk <> 9) ";
-//			ResultSet resulSetarticlesWithoutJournal = source.getResultSet(strQueryArticlesWithoutJournal);
-//			boolean firstRow = true;
-//			while (resulSetarticlesWithoutJournal.next()){
-//				if (firstRow){
-//					System.out.println("========================================================");
-//					logger.warn("There are Articles with wrong inRef type!");
-//					System.out.println("========================================================");
-//				}
-//				int refId = resulSetarticlesWithoutJournal.getInt("RefId");
-//				int categoryFk = resulSetarticlesWithoutJournal.getInt("RefCategoryFk");
-//				String cat = resulSetarticlesWithoutJournal.getString("RefCategoryAbbrev");
-//				int inRefFk = resulSetarticlesWithoutJournal.getInt("InRefId");
-//				int inRefCategoryFk = resulSetarticlesWithoutJournal.getInt("InRefCatFk");
-//				String inRefCat = resulSetarticlesWithoutJournal.getString("InRefCat");
-//				String refCache = resulSetarticlesWithoutJournal.getString("RefCache");
-//				String nomRefCache = resulSetarticlesWithoutJournal.getString("nomRefCache");
-//				String title = resulSetarticlesWithoutJournal.getString("title");
-//				String inRefTitle = resulSetarticlesWithoutJournal.getString("InRefTitle");
-//				
-//				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
-//						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
-//						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
-//						"\n  inRefTitle: " + inRefTitle );
-//				result = firstRow = false;
+			//TODO
+			//				result = firstRow = false;
 //			}
 //			
 			return result;
@@ -93,46 +73,111 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 		}
 	}
 	
-	private boolean checkPartOfJournal(IImportConfigurator bmiConfig){
-		try {
-			boolean result = true;
-//			Source source = bmiConfig.getSource();
-//			String strQueryPartOfJournal = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle " + 
-//			" FROM Reference INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId INNER JOIN RefCategory AS InRefCategory ON InRef.RefCategoryFk = InRefCategory.RefCategoryId " +
-//						" WHERE (Reference.RefCategoryFk = 2) AND (InRef.RefCategoryFk = 9) ";
-//			ResultSet rs = source.getResultSet(strQueryPartOfJournal);
-//			boolean firstRow = true;
-//			while (rs.next()){
-//				if (firstRow){
-//					System.out.println("========================================================");
-//					logger.warn("There are part-of-references that have a Journal as in-reference!");
-//					System.out.println("========================================================");
-//				}
-//				int refId = rs.getInt("RefId");
-//				int categoryFk = rs.getInt("RefCategoryFk");
-//				String cat = rs.getString("RefCategoryAbbrev");
-//				int inRefFk = rs.getInt("InRefId");
-//				int inRefCategoryFk = rs.getInt("InRefCatFk");
-//				String inRefCat = rs.getString("InRefCat");
-//				String refCache = rs.getString("RefCache");
-//				String nomRefCache = rs.getString("nomRefCache");
-//				String title = rs.getString("title");
-//				String inRefTitle = rs.getString("InRefTitle");
-//				
-//				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
-//						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + "\n  title: " + title + 
-//						"\n  inRefFk: " + inRefFk + "\n  inRefCategory: " + inRefCat + 
-//						"\n  inRefTitle: " + inRefTitle );
-//				result = firstRow = false;
-//			}
-//			
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+	
+	protected static CdIoXmlMapperBase[] classMappers = new CdIoXmlMapperBase[]{
+		//new CdmTextElementMapper("edition", "edition"),
+		new CdmTextElementMapper("volume", "volume"),
+		new CdmTextElementMapper("placePublished", "placePublished"),
+		new CdmTextElementMapper("publisher", "publisher"),
+		//new CdmTextElementMapper("isbn", "isbn"),
+		new CdmTextElementMapper("pages", "pages"),
+		//new CdmTextElementMapper("series", "series"),
+		//new CdmTextElementMapper("issn", "issn"),
+		//new CdmTextElementMapper("url", "uri")
+	};
+	
+//	protected static String[] operationalAttributes = new String[]{
+//		"refId", "refCache", "nomRefCache", "preliminaryFlag", "inRefFk", "title", "nomTitleAbbrev",
+//		"refAuthorString", "nomAuthorTeamFk",
+//		"refCategoryFk", "thesisFlag", "informalRefCategory", "idInSource"
+//	};
+	
+//	protected static String[] createdAndNotesAttributes = new String[]{
+//			"created_When", "updated_When", "created_Who", "updated_Who", "notes"
+//	};
+	
+	protected static CdIoXmlMapperBase[] unclearMappers = new CdIoXmlMapperBase[]{
+		new CdmUnclearMapper("year")
+		, new CdmUnclearMapper("title")
+		, new CdmUnclearMapper("shortTitle")
+		, new CdmUnclearMapper("publicationType")
+		, new CdmUnclearMapper("parentPublication")
+		, new CdmUnclearMapper("authorship")
+		
+	};
+
+
+	
+	private boolean makeStandardMapper(Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+		if (omitAttributes == null){
+			omitAttributes = new HashSet<String>();
 		}
+		boolean result = true;	
+		for (CdIoXmlMapperBase mapper : classMappers){
+			Object value = getValue(mapper, parentElement);
+			//write to destination
+			if (value != null){
+				String destinationAttribute = mapper.getDestinationAttribute();
+				if (! omitAttributes.contains(destinationAttribute)){
+					result &= ImportHelper.addValue(value, ref, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
+				}
+			}
+		}
+		return true;
 	}
 	
+//	private boolean checkAdditionalContents(Element parentElement ){
+//		List<Content> additionalContentList = new ArrayList<Content>();
+//		List<Content> contentList = parentElement.getContent();
+//		for(Content content: contentList){
+//			boolean contentExists = false;
+//			if (content instanceof Element){
+//				Element elementContent = (Element)content;
+//				for (CdIoXmlMapperBase mapper : classMappers){
+//					if (mapper.mapsSource(content, parentElement)){
+//						contentExists = true;
+//						break;
+//					}
+//				}
+//				for (CdIoXmlMapperBase mapper : unclearMappers){
+//					if (mapper.mapsSource(content, parentElement)){
+//						contentExists = true;
+//						break;
+//					}
+//				}
+//				
+//			}else if (content instanceof Text){
+//				//empty Text
+//				if (((Text)content).getTextNormalize().equals("")){
+//					contentExists = true;
+//				}else{
+//					//
+//				}
+//			}
+//			
+//			if (contentExists == false){
+//				additionalContentList.add(content);
+//			}
+//		}
+//		for (Content additionalContent : additionalContentList){
+//			logger.warn("Additional content: " +  additionalContent);
+//		}
+//		return (additionalContentList.size() == 0);
+//	}
+	
+	private Object getValue(CdIoXmlMapperBase mapper, Element parentElement){
+		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
+		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
+		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
+		if (child == null){
+			return null;
+		}
+		if (child.getContentSize() > 1){
+			logger.warn("Element is not String");
+		}
+		Object value = child.getTextTrim();
+		return value;
+	}
 	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
@@ -198,31 +243,24 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 				if (ref==null){
 					ref = Generic.NewInstance();
 				}
-				//attributes
-				tcsElementName = "publisher";
+				
+				Set<String> omitAttributes = null;
+				makeStandardMapper(elPublicationCitation, ref, omitAttributes);
+				
+				
+				tcsElementName = "authorship";
 				tcsNamespace = publicationNamespace;
-				cdmAttrName = "publisher";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
-						tcsNamespace, cdmAttrName, FACULTATIVE);
-
+				String strAuthorship = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
+				//TODO
+				TeamOrPersonBase authorTeam = Team.NewInstance();
+				authorTeam.setTitleCache(strAuthorship);
+				ref.setAuthorTeam(authorTeam);
+				
 				tcsElementName = "year";
 				tcsNamespace = publicationNamespace;
 				String strYear = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				TimePeriod datePublished = ImportHelper.getDatePublished(strYear);
 				ref.setDatePublished(datePublished);
-				
-				tcsElementName = "pages";
-				tcsNamespace = publicationNamespace;
-				cdmAttrName = "pages";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
-						tcsNamespace, cdmAttrName, FACULTATIVE);
-
-				tcsElementName = "volume";
-				tcsNamespace = publicationNamespace;
-				cdmAttrName = "volume";
-				success &= ImportHelper.addXmlStringValue(elPublicationCitation, ref, tcsElementName, 
-						tcsNamespace, cdmAttrName, FACULTATIVE);
-				
 				
 				//Reference
 				//TODO
@@ -263,7 +301,7 @@ public class TcsReferenceIO extends CdmIoBase implements ICdmIO {
 //					referenceStore.put(strAbout, refBase);
 //				}
 
-
+				checkAdditionalContents(elPublicationCitation, classMappers, unclearMappers);
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
 				referenceMap.put(strAbout, ref);

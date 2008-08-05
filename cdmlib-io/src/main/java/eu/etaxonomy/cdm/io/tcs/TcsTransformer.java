@@ -11,6 +11,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.WebPage;
@@ -146,6 +148,8 @@ public final class TcsTransformer {
 		}else if (tcsBook.equals(strPubType)){return Book.NewInstance();
 		}else if (tcsJournal.equals(strPubType)){return Journal.NewInstance();
 		}else if (tcsWebPage.equals(strPubType)){return WebPage.NewInstance();
+		}else if (tcsCommunication.equals(strPubType)){return PersonalCommunication.NewInstance();
+		}else if (tcsBookSeries.equals(strPubType)){return PrintSeries.NewInstance();
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown publication type " + strPubType);

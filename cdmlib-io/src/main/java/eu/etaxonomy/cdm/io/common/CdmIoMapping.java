@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.io.common;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
 
 /**
  * @author a.mueller
@@ -24,14 +25,14 @@ import org.apache.log4j.Logger;
 public class CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
 	
-	List<CdmIOMapperBase> mapperList = new ArrayList<CdmIOMapperBase>();
+	List<CdmIoMapperBase> mapperList = new ArrayList<CdmIoMapperBase>();
 	Set<String> sourceAttributes = new HashSet<String>();
 	Set<String> destinationAttributes = new HashSet<String>();
 	List<String> sourceAttributeList = new ArrayList<String>();
 	List<String> destinationAttributeList = new ArrayList<String>();
 	
 	
-	public void addMapper(CdmIOMapperBase mapper){
+	public void addMapper(CdmIoMapperBase mapper){
 		mapperList.add(mapper);
 		sourceAttributes.add(mapper.getSourceAttribute());
 		sourceAttributeList.add(mapper.getSourceAttribute());

@@ -3,11 +3,13 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+
 /**
  * @author a.mueller
  *
  */
-public class CdmBooleanMapper extends CdmIOMapperBase {
+public class CdmBooleanMapper extends CdmIoMapperBase {
 
 	/**
 	 * @param dbAttributString

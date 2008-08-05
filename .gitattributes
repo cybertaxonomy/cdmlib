@@ -50,11 +50,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonRelation
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTypesIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmIOMapperBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmIoMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
@@ -66,7 +66,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdIoXmlMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmTextElementMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmUnclearMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsReferenceIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameIO.java -text

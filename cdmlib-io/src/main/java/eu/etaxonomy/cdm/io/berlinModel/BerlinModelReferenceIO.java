@@ -37,6 +37,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -74,7 +76,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	}
 	
 	
-	protected static CdmIOMapperBase[] classMappers = new CdmIOMapperBase[]{
+	protected static CdmIoMapperBase[] classMappers = new CdmIoMapperBase[]{
 		new CdmStringMapper("edition", "edition"),
 		new CdmStringMapper("volume", "volume"),
 		new CdmStringMapper("publicationTown", "placePublished"),
@@ -148,7 +150,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		result.addAll(Arrays.asList(createdAndNotesAttributes));
 		result.addAll(Arrays.asList(operationalAttributes));
 		CdmIoMapping mapping = new CdmIoMapping();
-		for (CdmIOMapperBase mapper : classMappers){
+		for (CdmIoMapperBase mapper : classMappers){
 			mapping.addMapper(mapper);
 		}
 		result.addAll(mapping.getSourceAttributes());
@@ -758,7 +760,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdmIOMapperBase mapper : classMappers){
+		for (CdmIoMapperBase mapper : classMappers){
 			String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
 			Object value = valueMap.get(sourceAttribute);
 			if (value != null){
