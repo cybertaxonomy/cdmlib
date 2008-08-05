@@ -14,9 +14,6 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 /**
  * This class represents patents. A patent is a document containing the set of
  * exclusive rights granted by a state to an inventor or his assignee for a
@@ -30,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @created 08-Nov-2007 13:06:42
  */
 @Entity
-public class Patent extends StrictReferenceBase {
+public class Patent extends StrictReferenceBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Patent.class);
 	
 	/** 
@@ -58,7 +55,17 @@ public class Patent extends StrictReferenceBase {
 	@Override
 	public String generateTitle(){
 		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
+		logger.warn("generate Title not yet implemented");
 		return "";
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public Patent clone(){
+		Patent result = (Patent)super.clone();
+		//no changes to: -
+		return result;
 	}
 
 }

@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * @created 08-Nov-2007 13:06:33
  */
 @Entity
-public class Map extends PublicationBase {
+public class Map extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Map.class);
 
 	/** 
@@ -55,7 +55,17 @@ public class Map extends PublicationBase {
 	@Override
 	public String generateTitle(){
 		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
+		logger.warn("generate Title not yet implemented");
 		return "";
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public Map clone(){
+		Map result = (Map)super.clone();
+		//no changes to: -
+		return result;
 	}
 
 }

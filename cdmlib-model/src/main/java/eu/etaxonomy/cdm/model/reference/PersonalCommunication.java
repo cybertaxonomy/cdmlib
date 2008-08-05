@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * @created 08-Nov-2007 13:06:43
  */
 @Entity
-public class PersonalCommunication extends StrictReferenceBase {
+public class PersonalCommunication extends StrictReferenceBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PersonalCommunication.class);
 
 
@@ -61,4 +61,12 @@ public class PersonalCommunication extends StrictReferenceBase {
 		return "";
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public PersonalCommunication clone(){
+		PersonalCommunication result = (PersonalCommunication)super.clone();
+		//no changes to: -
+		return result;
+	}
 }

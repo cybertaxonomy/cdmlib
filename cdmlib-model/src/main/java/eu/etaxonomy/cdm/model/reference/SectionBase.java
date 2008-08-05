@@ -10,10 +10,10 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import org.apache.log4j.Logger;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
-import java.util.*;
-import javax.persistence.*;
+import org.apache.log4j.Logger;
 
 /**
  * This (abstract) class represents isolated sections (parts, chapters or

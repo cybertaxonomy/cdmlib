@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
  * @created 08-Nov-2007 13:06:49
  */
 @Entity
-public class Report extends PublicationBase {
+public class Report extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Report.class);
 	private Institution institution;
 
@@ -94,10 +94,22 @@ public class Report extends PublicationBase {
 	 * @see  	common.IdentifiableEntity#generateTitle()
 	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
+	
 	@Override
 	public String generateTitle(){
 		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
+		logger.warn("generate Title not yet implemented");
 		return "";
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	 */
+	public Report clone(){
+		Report result = (Report)super.clone();
+		//no changes to: institution
+		return result;
+	}
+
 
 }
