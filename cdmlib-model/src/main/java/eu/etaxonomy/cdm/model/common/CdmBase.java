@@ -5,19 +5,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Calendar;
 import java.util.UUID;
 
-import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,17 +22,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
-import org.joda.time.DateTime;
 
 
 
@@ -133,35 +127,24 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		propertyChangeSupport.firePropertyChange(evt);
 	}
 
-//	/**
-//	 * Method for hibernate only to read the UUID value as a simple string from the object and persist it (e.g. in a database).
-//	 * For reading the UUID please use getUuid method
-//	 * @return String representation of the UUID
-//	 */
-//	@XmlAttribute(name = "uuid", required = true)
-//	@XmlID
-//	@XmlSchemaType(name = "ID")
-//	private String getStrUuid() {
-//		return this.uuid.toString();
-//	}
-//	/**
-//	 * Method for hibernate only to set the UUID value as a simple string as it was stored in the persistence layer (e.g. a database).
-//	 * For setting the UUID please use setUuid method
-//	 */
-//	private void setStrUuid(String uuid) {
-//		this.uuid = UUID.fromString(uuid);
-//	}
-	
-
+	/**
+	 * Method for JAXB only to obtain the UUID value as a String instance.
+	 * For all other purposes please use the getUuid method.
+	 * @return String representation of the UUID
+	 */
+	@XmlAttribute(name = "uuid", required = true)
+    @XmlJavaTypeAdapter(UUIDAdapter.class)
+    @XmlID
+	@XmlSchemaType(name = "ID")
+	@Transient
+	private String getStrUuid() {
+		return this.uuid.toString();
+	}
+		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
 	 */
-    //@XmlTransient
-	//@Transient
-	//@XmlAttribute(name = "uuid", required = true)
-	@XmlID
-	@XmlJavaTypeAdapter(UUIDAdapter.class)
-	@XmlSchemaType(name = "ID")
+    @XmlTransient
 	@Type(type="uuidUserType")
 	public UUID getUuid() {
 		return this.uuid;

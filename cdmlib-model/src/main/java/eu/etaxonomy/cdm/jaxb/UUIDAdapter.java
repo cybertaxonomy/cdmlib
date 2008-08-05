@@ -22,21 +22,21 @@ import org.apache.log4j.Logger;
  */
 
 
-public class UUIDAdapter extends XmlAdapter<String, UUID> {
+public class UUIDAdapter extends XmlAdapter<String, String> {
 	private static final Logger logger = Logger.getLogger(UUIDAdapter.class);
 	
-	public static String UUID_URN_PREFIX = "urn:uuid:";
+	public static String UUID_URN_PREFIX = "urn-uuid-";
 
 	@Override
-	public String marshal(UUID uuid) throws Exception {
-		return UUIDAdapter.UUID_URN_PREFIX + uuid.toString();
+	public String marshal(String uuidStr) throws Exception {
+		return UUIDAdapter.UUID_URN_PREFIX + uuidStr;
 	}
 
 	@Override
-	public UUID unmarshal(String string) throws Exception {
+	public String unmarshal(String string) throws Exception {
 		if(string.startsWith(UUIDAdapter.UUID_URN_PREFIX)) {
 			String uuidPart = string.substring(UUIDAdapter.UUID_URN_PREFIX.length());
-			return UUID.fromString(uuidPart);
+			return uuidPart;
 		} else {
 			throw new Exception("uuid attribute should start with " + UUIDAdapter.UUID_URN_PREFIX);
 		}

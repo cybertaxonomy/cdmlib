@@ -76,16 +76,22 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	// all related synonyms
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// all taxa relations with rel.fromTaxon==this
 	@XmlElementWrapper(name = "RelationsFromThisTaxon")
 	@XmlElement(name = "FromThisTaxonRelationship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
 	// all taxa relations with rel.toTaxon==this
 	@XmlElementWrapper(name = "RelationsToThisTaxon")
 	@XmlElement(name = "ToThisTaxonRelationship")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter

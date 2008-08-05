@@ -34,7 +34,7 @@ public class CdmDocumentBuilderTest {
 	
 /* ******************** TESTS ***********************************************************/
 	
-	@Ignore //for uuid
+//	@Ignore //for uuid
 	@Test
 	public void testCdmDocumentBuilderInit() {
 		Assert.assertNotNull(cdmDocumentBuilder);
@@ -59,13 +59,13 @@ public class CdmDocumentBuilderTest {
 //		cdmDocumentBuilder.write(dataSet, new FileWriter(filename));
 //	}
 
-	@Ignore //for uuid
+//	@Ignore //for uuid
 	@Test
 	public void testMarshal() throws Exception {
 		cdmDocumentBuilder.marshal(dataSet, new FileWriter(marshOut));
 	}
 	
-	@Ignore //for uuid
+//	@Ignore //for uuid
 	@Test
 	public void testUnmarshal() throws Exception {
 		DataSet newDataSet = new DataSet();

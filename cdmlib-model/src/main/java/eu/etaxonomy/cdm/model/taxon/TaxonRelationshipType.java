@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import java.util.UUID;
@@ -39,6 +40,7 @@ import java.util.UUID;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationshipType")
+@XmlRootElement(name = "TaxonRelationshipType")
 @Entity
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	

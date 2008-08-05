@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -153,15 +154,15 @@ public class DataSet {
 
     public DataSet () {
 
-//    	this.agents = new 
-//    	this.agentData = new 
+//    	this.agents
+//    	this.agentData
 //      this.terms   	
 //      this.references    	
 //    	this.taxonomicNames
 //    	this.taxa
-        this.synonyms = new HashSet<Synonym>();
-    	this.relationships = new HashSet<RelationshipBase>();
-    	this.homotypicalGroups = new HashSet<HomotypicalGroup>();
+//      this.synonyms = new HashSet<Synonym>();
+//    	this.relationships = new HashSet<RelationshipBase>();
+//    	this.homotypicalGroups = new HashSet<HomotypicalGroup>();
     }
 
     /**

@@ -8,6 +8,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.CascadeType;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+@XmlRootElement(name = "RelationshipTermBase")
 @MappedSuperclass
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);

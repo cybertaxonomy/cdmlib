@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -36,9 +37,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipBase", propOrder = {
-//	"relatedFrom",
-//	"relatedTo",
-//  "type"
+	"relatedFrom",
+	"relatedTo",
+    "type"
 })
 @XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
@@ -46,19 +47,19 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
 
-	@XmlTransient
-	//@XmlAnyElement
-	//@XmlElement(name = "RelatedFrom", type = Taxon.class)
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "RelatedFrom", type = Taxon.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private FROM relatedFrom;
 
-	@XmlTransient
-	//@XmlAnyElement
+	@XmlElement(name = "RelatedTo", type = Taxon.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private TO relatedTo;
 
-	@XmlTransient
-	//@XmlElement(name = "RelationshipType")
+	@XmlElement(name = "RelationshipType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private TYPE type;
 
 	protected RelationshipBase(){
