@@ -23,7 +23,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.model.DataSet;
 
 /**
  * @author a.babadshanjan

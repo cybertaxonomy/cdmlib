@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.model.DataSet;
 
 /*
 Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet) 

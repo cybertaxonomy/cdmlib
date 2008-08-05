@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.DataSet;
 import eu.etaxonomy.cdm.model.DataSetTest;
 
 public class CdmDocumentBuilderTest {
