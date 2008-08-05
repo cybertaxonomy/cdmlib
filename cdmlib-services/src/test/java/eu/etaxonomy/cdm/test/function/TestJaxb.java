@@ -26,11 +26,13 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -225,6 +227,10 @@ public class TestJaxb {
     		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
     		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
     		dataSet.setTaxa(taxa);
+    		
+    		dataSet.setSynonyms(new HashSet<Synonym>());
+    		dataSet.setRelationships(new HashSet<RelationshipBase>());
+    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
     	} catch (Exception e) {
     		logger.info("error setting root data");
