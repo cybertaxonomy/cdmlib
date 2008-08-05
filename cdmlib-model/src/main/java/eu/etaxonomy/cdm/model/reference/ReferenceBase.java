@@ -129,7 +129,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This 
 	 * indicates that a {@link TaxonNameBase taxon name} has been originally
 	 * published in <i>this</i> reference following the rules of a
-	 * {@link name.NomenclaturalCode nomenclature code} and is therefoe used for
+	 * {@link name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
 	 * reference is used as a nomenclatural reference for any taxon name.
 	 */

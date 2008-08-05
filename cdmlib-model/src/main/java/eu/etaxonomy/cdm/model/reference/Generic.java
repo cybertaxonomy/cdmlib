@@ -223,7 +223,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
-	 * 							within t<i>this</i> generic reference
+	 * 							within <i>this</i> generic reference
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)

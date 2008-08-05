@@ -141,7 +141,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
-	 * 							within t<i>this</i> book
+	 * 							within <i>this</i> book
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)

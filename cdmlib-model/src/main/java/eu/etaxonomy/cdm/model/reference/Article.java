@@ -199,11 +199,11 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	/**
 	 * Returns a formatted string containing the entire citation used for
 	 * nomenclatural purposes based on <i>this</i> article - including
-	 * (abbreviated) title of the journal but not authors -
+	 * (abbreviated) title of the journal but not authors of the article -
 	 * and on the given details.
 	 * 
 	 * @param  microReference	the string with the details (generally pages)
-	 * 							within t<i>this</i> generic reference
+	 * 							within the journal
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
 	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)

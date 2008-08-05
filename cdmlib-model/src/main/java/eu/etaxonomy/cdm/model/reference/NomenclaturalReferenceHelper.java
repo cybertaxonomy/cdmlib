@@ -14,9 +14,13 @@ import javax.persistence.Transient;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
+ * This class provides several functionalities for {@link ReferenceBase references} that
+ * are used for {@link name.TaxonNameBase#getNomenclaturalReference() nomenclatural} purposes.
+ * 
  * @author a.mueller
  * @created 28.06.2008
  * @version 1.0
@@ -27,6 +31,16 @@ class NomenclaturalReferenceHelper {
 	private ReferenceBase nomenclaturalReference; 
 	//private IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy; 
 	
+	/** 
+	 * Creates a new nomenclatural reference helper instance with the given
+	 * {@link INomenclaturalReference nomenclatural} {@link ReferenceBase reference}.
+	 * 
+	 * @param	nomRef	the reference used for nomenclatural purposes
+	 * @see 			ReferenceBase
+	 * @see 			INomenclaturalReference
+	 * @see 			name.TaxonNameBase#getNomenclaturalReference()
+	 * @see 			strategy.cache.reference.INomenclaturalReferenceCacheStrategy
+	 */
 	protected static NomenclaturalReferenceHelper NewInstance(INomenclaturalReference<ReferenceBase> nomRef){
 		NomenclaturalReferenceHelper result = new NomenclaturalReferenceHelper();
 		result.nomenclaturalReference = (ReferenceBase)nomRef;
@@ -38,8 +52,14 @@ class NomenclaturalReferenceHelper {
 		return (INomenclaturalReferenceCacheStrategy)nomenclaturalReference.cacheStrategy;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.StrictReferenceBase#getCitation()
+	/**
+	 * Returns a formatted string containing the entire reference citation,
+	 * including authors and other elements corresponding to the  {@link ReferenceBase reference}
+	 * assigned to <i>this</i> nomenclatural reference helper.<BR>
+	 * The returned string is build according to the corresponding
+	 * {@link INomenclaturalReferenceCacheStrategy cache strategy}.
+	 * 
+	 * @see  strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
 	@Transient
 	public String getCitation(){
@@ -48,8 +68,21 @@ class NomenclaturalReferenceHelper {
 		return getCacheStrategy().getTitleCache(nomenclaturalReference);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	/**
+	 * Returns a formatted string containing the entire citation used for
+	 * nomenclatural purposes based on the {@link ReferenceBase reference} assigned to
+	 * <i>this</i> nomenclatural reference helper - including
+	 * (abbreviated) title  but not authors - and on the given details.<BR>
+	 * The returned string is build according to the corresponding
+	 * {@link INomenclaturalReferenceCacheStrategy cache strategy}.
+	 * 
+	 * @param  microReference	the string with the details (generally pages)
+	 * 							corresponding to the nomenclatural reference of
+	 * 							<i>this</i> nomenclatural reference helper
+	 * @return					the formatted string representing the
+	 * 							nomenclatural citation
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see 					strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -67,6 +100,17 @@ class NomenclaturalReferenceHelper {
 	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
 	 */
 	@Transient
+	/**
+	 * Generates, according to the {@link INomenclaturalReferenceCacheStrategy cache strategy}
+	 * assigned to the {@link ReferenceBase reference} of <i>this</i> nomenclatural reference helper,
+	 * a string that identifies this reference and returns it. This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute of the reference.
+	 *
+	 * @return  the string identifying the reference of <i>this</i> nomenclatural reference helper
+	 * @see  	#getCitation()
+	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	common.IdentifiableEntity#generateTitle()
+	 */
 	public String generateTitle(){
 		return getCacheStrategy().getTitleCache(nomenclaturalReference);
 	}
