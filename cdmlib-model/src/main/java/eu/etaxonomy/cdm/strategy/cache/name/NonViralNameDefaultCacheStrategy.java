@@ -305,6 +305,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim();
 			result = result.trim().replace("null", "-");
 			//result += " (rankless)";
+			result = addAppendedPhrase(result, nonViralName);
 			return result;			
 		}
 	
@@ -312,6 +313,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		protected String getGenusOrUninomialNameCache(NonViralName nonViralName){
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
 		
@@ -319,6 +321,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			result += " (" + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet()) + ")").trim().replace("null", "");
+			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
 
@@ -327,6 +330,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
 		
@@ -339,6 +343,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			}
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim().replace("null", "");
+			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
 		
@@ -353,6 +358,19 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				return true;
 			}else{
 				return false;
+			}
+		}
+		
+		protected String addAppendedPhrase(String resultString, NonViralName nonViralName){
+			String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
+			if (resultString == null){
+				return appendedPhrase;
+			}else if(appendedPhrase == null || "".equals(appendedPhrase.trim())) {
+				return resultString;
+			}else if ("".equals(resultString)){
+				return resultString + appendedPhrase;
+			}else {
+				return resultString + " " + appendedPhrase;
 			}
 		}
 	
