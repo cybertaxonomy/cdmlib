@@ -16,9 +16,9 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
-/**
-* Interface providing methods for nomenclatural references. 
-* 
+ /**
+ * Interface providing methods for nomenclatural references. 
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
