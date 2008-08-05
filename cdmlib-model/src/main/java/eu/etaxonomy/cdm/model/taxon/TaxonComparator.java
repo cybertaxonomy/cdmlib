@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
 /**
- * This class makes available a method to compare the publication dates of two
- * {@link TaxonBase taxa}.
+ * This class makes available a method to compare two {@link TaxonBase taxa} by
+ * comparing the publication dates of the corresponding {@link name.TaxonNameBase taxon names}.
  * 
  * @author a.mueller
  * @created 11.06.2008

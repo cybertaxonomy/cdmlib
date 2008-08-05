@@ -26,7 +26,12 @@ import javax.xml.bind.annotation.XmlType;
  * of the hybrid flags set. The hybrid relationship includes a {@link HybridRelationshipType hybrid relationship type}
  * (for instance "first parent" or "female parent") and the article of the ICBN
  * on which the hybrid taxon name relies.
- 
+ * <P>
+ * This class corresponds partially to: <ul>
+ * <li> Relationship according to the TDWG ontology
+ * <li> TaxonRelationship according to the TCS
+ * </ul>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:26

@@ -24,7 +24,12 @@ import javax.xml.bind.annotation.XmlType;
  * This includes a {@link NameRelationshipType name relationship type} (for instance "later homonym" or
  * "orthographic variant") and the article of the corresponding nomenclatural
  * code on which the assignation of the relationship type is based.
- 
+ * <P>
+ * This class corresponds partially to: <ul>
+ * <li> Relationship according to the TDWG ontology
+ * <li> TaxonRelationship according to the TCS
+ * </ul>
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:37
