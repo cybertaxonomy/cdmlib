@@ -11,6 +11,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivato
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/AccountStore.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsSources.java -text
