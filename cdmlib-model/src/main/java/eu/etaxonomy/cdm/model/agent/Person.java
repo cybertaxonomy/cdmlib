@@ -28,16 +28,20 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A representation of a human being, living or dead.
+ * This class represents human beings, living or dead.<BR>
  * It includes name parts, {@link Contact contact} details, {@link InstitutionalMembership institutional membership},
  * and other possible information such as life {@link common.TimePeriod time period},
  * taxonomic and/or geographical {@link common.Keyword specialization}.
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
- * is to be used.
+ * is to be used.<BR>
  * For other alternative (string-)names {@link common.OriginalSource OriginalSource} instances must be created
  * and the inherited attribute {@link common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
- * <p>
- * See also the <a href="http://rs.tdwg.org/ontology/voc/Person.rdf">TDWG Ontology</a>
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> Person according to the TDWG ontology
+ * <li> AgentName (partially) according to the TCS
+ * <li> Person (PersonName partially) according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

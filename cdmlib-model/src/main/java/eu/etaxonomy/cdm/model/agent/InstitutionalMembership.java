@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Allows to hold one {@link Institution institution} to which a {@link Person person} is affiliated.
- * It includes {@link common.TimePeriod time period} of membership and role of the person
- * in this institution. In case one person belongs to several institutions
- * the corresponding number of instances of InstitutionalMembership
+ * This class allows to hold one {@link Institution institution} to which a {@link Person person}
+ * is affiliated. It includes {@link common.TimePeriod time period} of membership and role of
+ * the person in this institution. In case one person belongs to several
+ * institutions a corresponding number of instances of InstitutionalMembership
  * have to be created.  
  * 
  * @author m.doering

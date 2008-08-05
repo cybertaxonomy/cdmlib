@@ -24,10 +24,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A public or private institution.
+ * This class represents public or private institutions.
  * It includes name, contact details and institution type.
- * <p>
- * See also the <a href="http://rs.tdwg.org/ontology/voc/Institution.rdf">TDWG Ontology</a>
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> Institution according to the TDWG ontology
+ * <li> Institution according to the TCS
+ * <li> Organisation (Institution) according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

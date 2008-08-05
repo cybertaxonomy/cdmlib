@@ -25,11 +25,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Information on how to approach a {@link Person person} or an {@link Institution institution}.
- * It includes telecommunication data
- * and electronic as well as multiple postal addresses.
- * <p>
- * See also the <a href="http://rs.tdwg.org/ontology/voc/ContactDetails#ContactDetails">TDWG Ontology</a>
+ * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
+ * It includes telecommunication data and electronic as well as
+ * multiple postal addresses.
+* <P>
+ * This class corresponds to: <ul>
+ * <li> ContactDetails according to the TDWG ontology
+ * <li> Contact (partially) according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

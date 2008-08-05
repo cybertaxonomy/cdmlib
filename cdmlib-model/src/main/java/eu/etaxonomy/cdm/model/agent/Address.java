@@ -26,9 +26,13 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 /**
- * Representation of an atomized postal address.
- * <p>
- * See also the <a href="http://rs.tdwg.org/ontology/voc/ContactDetails#Address">TDWG Ontology</a>
+ * This class represents atomized postal addresses.
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> Address according to the TDWG ontology
+ * <li> Address according to the TCS
+ * <li> Address according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

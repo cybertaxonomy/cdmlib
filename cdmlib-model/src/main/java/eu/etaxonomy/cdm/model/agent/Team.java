@@ -23,13 +23,19 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A team exists for itself or is built with the list of (distinct) persons
- * who belong to it.
+ * This class represents teams of {@link Person persons}. A team exists either for itself
+ * or is built with the list of (distinct) persons who belong to it.
  * In the first case the inherited attribute {@link common.IdentifiableEntity#getTitleCache() titleCache} is to be used.
  * In the second case at least all abbreviated names
  * (the inherited attributes {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle})
  * or all full names (the strings returned by Person.generateTitle)
  * of the persons must exist. A team is a {@link java.util.List list} of persons.
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> Team according to the TDWG ontology
+ * <li> AgentNames (partially) according to the TCS
+ * <li> MicroAgent (partially) according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
