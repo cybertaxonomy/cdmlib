@@ -36,27 +36,6 @@ public class Database extends PublicationBase implements Cloneable {
 		return new Database();
 	}
 	
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> database, a string that identifies <i>this</i>
-	 * database and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> database
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-	@Override
-	public String generateTitle(){
-		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
-		//FIXME implement
-		//only dummy
-		return this.getTitle();
-	}
 	
 	
 //*********** CLONE **********************************/	

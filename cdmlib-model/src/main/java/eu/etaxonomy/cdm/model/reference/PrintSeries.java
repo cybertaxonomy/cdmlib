@@ -53,11 +53,6 @@ public class PrintSeries extends PublicationBase implements Cloneable {
 	public void setSeries(String series){
 		this.series = series;
 	}
-
-	@Override
-	public String generateTitle(){
-		return "";
-	}
 	
 //*********** CLONE **********************************/	
 	

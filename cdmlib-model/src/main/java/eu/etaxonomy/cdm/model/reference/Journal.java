@@ -75,27 +75,6 @@ public class Journal extends PublicationBase implements Cloneable {
 		this.issn = issn;
 	}
 
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.JournalDefaultCacheStrategy default cache strategy}
-	 * assigned to <i>this</i> journal, a string that identifies <i>this</i>
-	 * journal and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> journal
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 */
-	@Override
-	public String generateTitle(){
-		//FIXME implement
-		//only dummy
-		return this.getTitle();
-	}
-	
 	
 //*********** CLONE **********************************/	
 	

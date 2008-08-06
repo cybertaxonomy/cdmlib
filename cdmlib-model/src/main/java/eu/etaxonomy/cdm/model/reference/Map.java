@@ -33,31 +33,10 @@ public class Map extends PublicationBase implements Cloneable {
 	 * Creates a new empty map instance.
 	 */
 	public static Map NewInstance(){
-	Map result = new Map();
-	return result;
+		Map result = new Map();
+		return result;
 	}
 	
-
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> map, a string that identifies <i>this</i>
-	 * map and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> map
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-	@Override
-	public String generateTitle(){
-		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
-		logger.warn("generate Title not yet implemented");
-		return "";
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()

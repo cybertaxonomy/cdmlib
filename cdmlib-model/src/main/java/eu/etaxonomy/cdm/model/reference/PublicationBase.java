@@ -73,24 +73,6 @@ public abstract class PublicationBase extends StrictReferenceBase {
 		this.placePublished = placePublished;
 	}
 	
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
-	 * publication base and returns it. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> conference proceedings
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-	@Override
-	public String generateTitle(){
-		return this.cacheStrategy.getTitleCache(this);
-	}
 	
 //*********** CLONE **********************************/	
 

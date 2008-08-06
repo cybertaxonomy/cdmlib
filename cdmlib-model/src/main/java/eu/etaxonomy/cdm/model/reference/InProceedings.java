@@ -78,23 +78,4 @@ public class InProceedings extends SectionBase {
 		this.inProceedings = inProceedings;
 	}
 
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> "in proceedings", a string that identifies <i>this</i>
-	 * "in proceedings" and returns it. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> "in proceedings"
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 }

@@ -58,8 +58,7 @@ public class WebPage extends PublicationBase implements Cloneable {
 	 */
 	@Override
 	public String generateTitle(){
-		//TODO is this method really needed or is ReferenceBase#generateTitle() enough?
-		return "";
+		return this.cacheStrategy.getTitleCache(this);
 	}
 //*********** CLONE **********************************/	
 	

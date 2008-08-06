@@ -14,6 +14,9 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.PublicationBaseDefaultCacheStrategy;
+
 /**
  * This class represents conference proceedings. Proceedings are a
  * collection of academic papers that are published in the context of an
@@ -58,7 +61,10 @@ public class Proceedings extends PrintedUnitBase implements Cloneable {
 		return result;
 	}
 	
-
+	protected Proceedings(){
+		super();
+	}
+	
 
 	/**
 	 * Returns the string representing the organization responsible for the
@@ -77,26 +83,6 @@ public class Proceedings extends PrintedUnitBase implements Cloneable {
 		this.organization = organization;
 	}
 
-	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
-	 * conference proceedings and returns it. This string may be stored in the
-	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
-	 *
-	 * @return  the string identifying <i>this</i> conference proceedings
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-	@Override
-	public String generateTitle(){
-		logger.warn("generateTitle not yet fully implemented");
-		return this.getTitle();
-	}
-	
 	
 	//*********** CLONE **********************************/	
 			
