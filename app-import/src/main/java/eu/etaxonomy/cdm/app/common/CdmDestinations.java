@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.app.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;

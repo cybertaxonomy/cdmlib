@@ -9,7 +9,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/DipteraActivator
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/common/AccountStore.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TaxonXImportActivator.java -text
