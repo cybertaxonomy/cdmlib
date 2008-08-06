@@ -129,7 +129,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 
 	/**
 	 * Method for JAXB only to obtain the UUID value as a String instance.
-	 * For all other purposes please use the getUuid method.
+	 * For getting the UUID please use the getUuid method.
 	 * @return String representation of the UUID
 	 */
 	@XmlAttribute(name = "uuid", required = true)
@@ -141,6 +141,15 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		return this.uuid.toString();
 	}
 		
+	/**
+	 * Method for JAXB only to set the UUID value as a String instance.
+	 * For setting the UUID please use setUuid method.
+	 */
+	@Transient
+	private void setStrUuid(String uuid) {
+		this.uuid = UUID.fromString(uuid);
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
 	 */

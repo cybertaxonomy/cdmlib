@@ -87,7 +87,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	}
 	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	protected FROM getRelatedFrom() {
 		return relatedFrom;
@@ -97,7 +97,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	}
 
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	protected TO getRelatedTo() {
 		return relatedTo;
