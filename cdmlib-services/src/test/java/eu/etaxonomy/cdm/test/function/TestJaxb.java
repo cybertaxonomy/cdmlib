@@ -459,9 +459,9 @@ public class TestJaxb {
 		
 		// taxonomic children
 		
-		rootT.addTaxonomicChild(child1, sec, "p.998");
-		rootT.addTaxonomicChild(child2, sec, "p.987");
-		child2.addTaxonomicChild(child21, sec, "p.1002");
+		rootT.addTaxonomicChild(child1, sec, "p.1010");
+		rootT.addTaxonomicChild(child2, sec, "p.1020");
+		child2.addTaxonomicChild(child21, sec, "p.2000");
 				
 		taxa.add(rootT);
 		taxa.add(freeT);
