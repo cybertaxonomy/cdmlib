@@ -26,6 +26,7 @@ public class NameSTO extends BaseSTO {
 	private IReferenceSTO nomenclaturalReference;
 	private List<TaggedText> taggedName = new ArrayList();
 	private Set<LocalisedTermSTO> status = new HashSet<LocalisedTermSTO>();
+	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	
 	public String getFullname() {
 		return fullname;
@@ -57,6 +58,14 @@ public class NameSTO extends BaseSTO {
 	public void addStatus(LocalisedTermSTO status) {
 		this.status.add(status);
 	}
-	
+	public void setDescriptions(Set<DescriptionTO> descriptions){
+		this.descriptions = descriptions;
+	}
+	public void addDescription(DescriptionTO description) {
+		this.descriptions.add(description);
+	}
+	public Set<DescriptionTO> getDescriptions(){
+		return this.descriptions;
+	}
 	
 }

@@ -236,10 +236,12 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				}
 			}
 			// HACK:
+			if(textdata.getMultilanguageText().keySet().iterator().hasNext()){
 			Language language = textdata.getMultilanguageText().keySet().iterator().next();
-			String text = textdata.getMultilanguageText().get(language).getText();
-			sto.setLanguage(language.getLabel());
-			sto.setDescription(text);
+				String text = textdata.getMultilanguageText().get(language).getText();
+				sto.setLanguage(language.getLabel());
+				sto.setDescription(text);
+			}
 		}
 		return sto;
 	}

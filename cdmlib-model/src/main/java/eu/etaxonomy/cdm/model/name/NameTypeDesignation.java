@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.name;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -52,6 +56,11 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	private boolean isNotDesignated;
 	private TaxonNameBase typeSpecies;
 	private TaxonNameBase typifiedName;
+	
+	@XmlElement(name = "HomotypicalGroup")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	private HomotypicalGroup homotypicalGroup;
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -100,6 +109,24 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 		
 	//********* METHODS **************************************/
 
+
+	/** 
+	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
+	 * in <i>this</i> name type designation.
+	 *  
+	 * @see   #getTypeSpecies()
+	 */
+	@ManyToOne
+	public HomotypicalGroup getHomotypicalGroup() {
+		return homotypicalGroup;
+	}
+	/**
+	 * @see  #getHomotypicalGroup()
+	 */
+	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
+		this.homotypicalGroup = newHomotypicalGroup;		
+	}
+	
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
 	 * typified taxon name in <i>this</i> taxon name type designation. The {@link Rank rank}

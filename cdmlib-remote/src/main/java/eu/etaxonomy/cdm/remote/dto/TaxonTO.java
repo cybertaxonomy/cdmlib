@@ -70,7 +70,7 @@ public class TaxonTO extends BaseTO{
 	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
 		return typeDesignations;
 	}
-	public void setTypeDesignations(
+	public void setSpecimenTypeDesignations(
 			List<SpecimenTypeDesignationSTO> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}

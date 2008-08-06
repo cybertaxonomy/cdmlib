@@ -707,7 +707,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 */
 	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignationsOfHomotypicalGroup() {
-		return this.getHomotypicalGroup().getTypeDesignations();
+		return this.getHomotypicalGroup().getSpecimenTypeDesignations();
 	}
 	
 	/** 
@@ -720,14 +720,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  citation					the reference for this new specimen type designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name used in the reference to assert this designation
-	 * @see 			  				HomotypicalGroup#getTypeDesignations()
+	 * @see 			  				HomotypicalGroup#getSpecimenTypeDesignations()
 	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
 	 * @see 			  				TypeDesignationStatus
 	 */
 	public void addSpecimenTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean addToAllNames) {
 		SpecimenTypeDesignation specimenTypeDesignation = 
 			SpecimenTypeDesignation.NewInstance(typeSpecimen, status, citation, citationMicroReference, originalNameString);
-		this.getHomotypicalGroup().addTypeDesignation(specimenTypeDesignation, addToAllNames);
+		this.getHomotypicalGroup().addSpecimenTypeDesignation(specimenTypeDesignation, addToAllNames);
 	}
 
 	//only to be used for xxx
@@ -738,7 +738,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 *
 	 * @param  specimenTypeDesignation	the specimen type designation to be added for <i>this</i> taxon name's homotypical group
 	 * @see 			  				#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
-	 * @see 			  				HomotypicalGroup#getTypeDesignations()
+	 * @see 			  				HomotypicalGroup#getSpecimenTypeDesignations()
 	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
 	 */
 	protected void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
@@ -751,7 +751,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
 	 *
 	 * @param  SpecimenTypeDesignation  the specimen type designation which should be deleted
-	 * @see     		  				HomotypicalGroup#getTypeDesignations()
+	 * @see     		  				HomotypicalGroup#getSpecimenTypeDesignations()
 	 * @see     		  				#removeTypeDesignation(SpecimenTypeDesignation)
 	 * @see     		  				#removeNameTypeDesignation(NameTypeDesignation)
 	 */
@@ -765,13 +765,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * The specimen type designation itself will be nullified.
 	 *
 	 * @param  typeDesignation  the specimen type designation which should be deleted
-	 * @see     		  		HomotypicalGroup#getTypeDesignations()
+	 * @see     		  		HomotypicalGroup#getSpecimenTypeDesignations()
 	 * @see     		  		#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
 	 * @see     		  		#removeNameTypeDesignation(NameTypeDesignation)
 	 */
 	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
 		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
-		this.homotypicalGroup.removeTypeDesignation(typeDesignation);
+		this.homotypicalGroup.removeSpecimenTypeDesignation(typeDesignation);
 	}
 
 	/** 

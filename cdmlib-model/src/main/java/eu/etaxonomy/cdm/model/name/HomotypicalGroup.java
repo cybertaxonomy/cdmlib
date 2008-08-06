@@ -62,12 +62,16 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
-	protected Set<TaxonNameBase> typifiedNames = new HashSet();
+	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
-    @XmlElementWrapper(name = "TypeDesignations")
-    @XmlElement(name = "TypeDesignation")
-	protected Set<SpecimenTypeDesignation> typeDesignations = new HashSet();
+    @XmlElementWrapper(name = "SpecimenTypeDesignations")
+    @XmlElement(name = "SpecimenTypeDesignation")
+	protected Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
+    @XmlElementWrapper(name = "NameTypeDesignations")
+    @XmlElement(name = "NameTypeDesignation")
+	protected Set<NameTypeDesignation> nameTypeDesignations = new HashSet<NameTypeDesignation>();
+    
 	/** 
 	 * Class constructor: creates a new homotypical group instance with an
 	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of
@@ -93,7 +97,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	/** 
 	 * Returns the set of {@link TaxonNameBase taxon names} that belong to <i>this</i> homotypical group.
 	 *
-	 * @see	#getTypeDesignations()
+	 * @see	#getSpecimenTypeDesignations()
 	 */
 	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	public Set<TaxonNameBase> getTypifiedNames() {
@@ -159,14 +163,14 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<SpecimenTypeDesignation> getTypeDesignations() {
-		return typeDesignations;
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+		return specimenTypeDesignations;
 	}
 	/** 
-	 * @see #getTypeDesignations()
+	 * @see #getSpecimenTypeDesignations()
 	 */
-	protected void setTypeDesignations(Set<SpecimenTypeDesignation> typeDesignations) {
-		this.typeDesignations = typeDesignations;
+	protected void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
+		this.specimenTypeDesignations = specimenTypeDesignations;
 	}	
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation} to the set
@@ -174,21 +178,21 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * (with a boolean parameter) also to the corresponding set of each of the
 	 * {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group.
 	 *
-	 * @param  typeDesignation	the specimen type designation to be added
+	 * @param  specimenTypeDesignation	the specimen type designation to be added
 	 * @param  addToAllNames	the boolean flag indicating whether the addition will also
 	 * 							carried out for each taxon name
 	 * 
 	 * @see 			  		TaxonNameBase#getSpecimenTypeDesignations()
 	 * @see 			  		SpecimenTypeDesignation
 	 */
-	public void addTypeDesignation(SpecimenTypeDesignation typeDesignation, boolean addToAllNames) {
-		if (typeDesignation != null){
-			typeDesignation.setHomotypicalGroup(this);
-			typeDesignations.add(typeDesignation);
+	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation, boolean addToAllNames) {
+		if (specimenTypeDesignation != null){
+			specimenTypeDesignation.setHomotypicalGroup(this);
+			specimenTypeDesignations.add(specimenTypeDesignation);
 		}
 		if (addToAllNames){
 			for (TaxonNameBase taxonNameBase : this.typifiedNames){
-				taxonNameBase.addSpecimenTypeDesignation(typeDesignation);
+				taxonNameBase.addSpecimenTypeDesignation(specimenTypeDesignation);
 			}
 		}
 	}	
@@ -200,22 +204,88 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * homotypical group attribute of the specimen type designation will be
 	 * nullified.
 	 *
-	 * @param  typeDesignation  the specimen type designation which should be deleted
-	 * @see     		  		#getTypeDesignations()
-	 * @see    					#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @param  specimenTypeDesignation  the specimen type designation which should be deleted
+	 * @see     		  		#getSpecimenTypeDesignations()
+	 * @see    					#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 	 * @see     		  		TaxonNameBase#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
 	 * @see     		  		SpecimenTypeDesignation#getHomotypicalGroup()
 	 */
-	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
-		if (typeDesignation != null){
-			typeDesignation.setHomotypicalGroup(null);
-			typeDesignations.remove(typeDesignation);
+	public void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
+		if (specimenTypeDesignation != null){
+			specimenTypeDesignation.setHomotypicalGroup(null);
+			specimenTypeDesignations.remove(specimenTypeDesignation);
 		}
 		for (TaxonNameBase taxonNameBase : this.typifiedNames){
-			taxonNameBase.removeSpecimenTypeDesignation(typeDesignation);
+			taxonNameBase.removeSpecimenTypeDesignation(specimenTypeDesignation);
 		}
 	}	
 
+	
+	/** 
+	 * Returns the set of {@link NameTypeDesignation name type designations} that
+	 * typify <i>this</i> homotypical group including the status of these designations.
+	 *
+	 * @see	#getTypifiedNames()
+	 */
+	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<NameTypeDesignation> getNameTypeDesignations() {
+		return nameTypeDesignations;
+	}
+	/** 
+	 * @see #getNameTypeDesignations()
+	 */
+	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
+		this.nameTypeDesignations = nameTypeDesignations;
+	}	
+	/** 
+	 * Adds a new {@link NameTypeDesignation name type designation} to the set
+	 * of name type designations assigned to <i>this</i> homotypical group and eventually
+	 * (with a boolean parameter) also to the corresponding set of each of the
+	 * {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group.
+	 *
+	 * @param  nameTypeDesignation	the name type designation to be added
+	 * @param  addToAllNames	the boolean flag indicating whether the addition will also
+	 * 							carried out for each taxon name
+	 * 
+	 * @see 			  		TaxonNameBase#getNameTypeDesignations()
+	 * @see 			  		NameTypeDesignation
+	 */
+	public void addNameTypeDesignation(NameTypeDesignation nameTypeDesignation, boolean addToAllNames) {
+		if (nameTypeDesignation != null){
+			nameTypeDesignation.setHomotypicalGroup(this);
+			nameTypeDesignations.add(nameTypeDesignation);
+		}
+		if (addToAllNames){
+			for (TaxonNameBase taxonNameBase : this.typifiedNames){
+				taxonNameBase.addNameTypeDesignation(nameTypeDesignation);
+			}
+		}
+	}	
+	/** 
+	 * Removes one element from the set of {@link NameTypeDesignation name type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which this {@link TaxonNameBase taxon name} belongs.
+	 * The same element will be removed from the corresponding set of each of
+	 * the taxon names belonging to <i>this</i> homotypical group. Furthermore the
+	 * homotypical group attribute of the name type designation will be
+	 * nullified.
+	 *
+	 * @param  nameTypeDesignation  the name type designation which should be deleted
+	 * @see     		  		#getNameTypeDesignations()
+	 * @see    					#addNameTypeDesignation(NameTypeDesignation, boolean)
+	 * @see     		  		TaxonNameBase#removeNameTypeDesignation(NameTypeDesignation)
+	 * @see     		  		NameTypeDesignation#getHomotypicalGroup()
+	 */
+	public void removeNameTypeDesignation(NameTypeDesignation nameTypeDesignation) {
+		if (nameTypeDesignation != null){
+			nameTypeDesignation.setHomotypicalGroup(null);
+			nameTypeDesignations.remove(nameTypeDesignation);
+		}
+		for (TaxonNameBase taxonNameBase : this.typifiedNames){
+			taxonNameBase.removeNameTypeDesignation(nameTypeDesignation);
+		}
+	}	
+	
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
@@ -242,7 +312,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 				}
 			}
 		}
-		//TODO test
 		Collections.sort(result, new TaxonComparator());
 		return result;
 	}

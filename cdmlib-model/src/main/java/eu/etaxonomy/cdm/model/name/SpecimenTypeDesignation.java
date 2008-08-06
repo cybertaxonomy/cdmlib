@@ -61,7 +61,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	
-	static Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
+	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 	
 	@XmlElement(name = "HomotypicalGroup")
 	@XmlIDREF
@@ -97,7 +97,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	 * (including its {@link reference.ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation) and adds it to the corresponding 
-	 * {@link HomotypicalGroup#getTypeDesignations() specimen type designation set} of the
+	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
 	 * {@link HomotypicalGroup homotypical group}.
 	 * 
 	 * @param specimen				the derived unit (specimen or figure) used as type
@@ -106,7 +106,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
 	 * @see							#SpecimenTypeDesignation()
-	 * @see							HomotypicalGroup#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 	 * @see							occurrence.DerivedUnitBase
 	 */
 	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
@@ -121,7 +121,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	 * (including its {@link reference.ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation) and adds it to the corresponding 
-	 * {@link HomotypicalGroup#getTypeDesignations() specimen type designation set} of the
+	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
 	 * {@link HomotypicalGroup homotypical group}.
 	 * 
 	 * @param specimen				the derived unit (specimen or figure) used as type
@@ -130,7 +130,7 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
 	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
-	 * @see							HomotypicalGroup#addTypeDesignation(SpecimenTypeDesignation, boolean)
+	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 	 * @see							occurrence.DerivedUnitBase
 	 */
 	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,

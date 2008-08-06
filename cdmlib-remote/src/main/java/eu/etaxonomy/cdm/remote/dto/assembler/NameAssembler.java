@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -20,12 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
@@ -42,24 +44,27 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	private ReferenceAssembler refAssembler;
 	@Autowired
 	private LocalisedTermAssembler localisedTermAssembler;
+	@Autowired
+	private DescriptionAssembler descriptionAssembler;
 	
-	public NameSTO getSTO(TaxonNameBase tnb, Enumeration<Locale> locales){
-		NameSTO n = null;
-		if (tnb !=null){
-			n = new NameSTO();
-			setVersionableEntity(tnb, n);
-			n.setFullname(tnb.getTitleCache());
-			n.setTaggedName(getTaggedName(tnb));
-			ReferenceBase nomRef = (ReferenceBase)tnb.getNomenclaturalReference();
+	public NameSTO getSTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){
+		NameSTO name = null; 
+		if (taxonNameBase !=null){
+			name = new NameSTO();
+			setVersionableEntity(taxonNameBase, name);
+			name.setFullname(taxonNameBase.getTitleCache());
+			name.setTaggedName(getTaggedName(taxonNameBase));
+			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
-				n.setNomenclaturalReference(refAssembler.getSTO(nomRef, true, tnb.getNomenclaturalMicroReference(), locales));				
+				name.setNomenclaturalReference(refAssembler.getSTO(nomRef, true, taxonNameBase.getNomenclaturalMicroReference(), locales));				
 			}
-			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)tnb.getStatus()) {
+			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
-				n.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
+				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
 			}
+			name.setDescriptions(this.getDescriptions(taxonNameBase, locales));		
 		}
-		return n;
+		return name;
 	}
 	private Enumeration<Locale> prependLocale(Enumeration<Locale> locales,
 			Locale firstLocale) {
@@ -85,6 +90,16 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			}
 		}
 		return n;
+	}
+	
+	public Set<DescriptionTO> getDescriptions(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase, Enumeration<Locale> locales){
+		Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
+
+		for(TaxonNameDescription nameDescription : (Set<TaxonNameDescription>)taxonNameBase.getDescriptions()){
+			descriptions.add(descriptionAssembler.getTO(nameDescription, locales));
+		}
+		
+		return descriptions;
 	}
 	
 	
