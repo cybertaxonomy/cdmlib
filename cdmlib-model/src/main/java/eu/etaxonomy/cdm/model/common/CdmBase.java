@@ -184,8 +184,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
 	 */
-	//@Temporal(TemporalType.TIMESTAMP)  //old
-	//@Basic(fetch = FetchType.LAZY) 	//old
 	@XmlElement (name = "Created", type= String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")

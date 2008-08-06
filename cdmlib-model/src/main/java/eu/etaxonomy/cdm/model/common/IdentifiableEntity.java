@@ -127,7 +127,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
 	 */
-	@Column(length=254)
+	@Column(length=255)
 	@Deprecated //for hibernate use only
 	protected String getPersistentTitleCache(){
 		return getTitleCache();
@@ -144,7 +144,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	 */
 	public void setTitleCache(String titleCache, boolean protectCache){
 		//TODO truncation of title cache
-		if (titleCache != null && titleCache.length() > 252){
+		if (titleCache != null && titleCache.length() > 254){
 			logger.warn("Truncation of title cache: " + this.toString() + "/" + titleCache);
 			titleCache = titleCache.substring(0, 249) + "...";
 		}
@@ -296,6 +296,11 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 		//result.setProtectedTitleCache(protectedTitleCache);  //must be after setTitleCache
 		
 		//no changes to: lsid, titleCache, protectedTitleCache
+		
+		//empty titleCache
+		if (! protectedTitleCache){
+			titleCache = null;
+		}
 		return result;
 	}
 	
