@@ -37,7 +37,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8";
+        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false";
     }  
     
     public MySQLDatabaseType() {
