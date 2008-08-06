@@ -192,35 +192,11 @@ public class CdmDestinations {
 	 */
 	private static ICdmDataSource makeDestination(String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
 		//establish connection
-		AccountStore accounts = new AccountStore();
-		String strServer = "cdm-server";
-		boolean doStore = false;
-		try {
-			if (pwd == null){
-				pwd = accounts.getPassword(strServer, cdmServer, cdmUserName);
-				if(pwd == null){
-					doStore = true;
-					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(cdmUserName) + ": ");
-				} else {
-					logger.info("using stored password for "+CdmUtils.Nz(cdmUserName));
-				}
-			}
-			//TODO not MySQL
-			ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
-			// on success store userName, pwd in property file
-			if(doStore){
-				accounts.setPassword(strServer, cdmServer, cdmUserName, pwd);
-				logger.info("password stored in "+accounts.accountsFile);
-			}
-			return destination;
-		} catch (Exception e) {
-			if(doStore){
-				accounts.removePassword(strServer, cdmServer, cdmUserName);
-				logger.info("password removed from "+accounts.accountsFile);
-			}
-			logger.error(e);
-			return null;
-		}
+		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
+		//TODO not MySQL
+		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+		return destination;
+
 	}
 
 }
