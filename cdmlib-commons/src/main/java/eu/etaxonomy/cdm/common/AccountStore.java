@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+
 public class AccountStore {
 	private static Logger logger = Logger.getLogger(AccountStore.class);
 	
@@ -93,6 +94,35 @@ public class AccountStore {
 		Properties accounts = loadAccounts();
 		accounts.remove(key);
 		saveAccounts(accounts);
+	}
+	
+	public static String readOrStorePassword(String dbms, String strServer, String userName, String pwd){
+		AccountStore accounts = new AccountStore();
+		boolean doStore = false;
+		try {
+			if (pwd == null){
+				pwd = accounts.getPassword(dbms, strServer, userName);
+				if(pwd == null){
+					doStore = true;
+					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
+				} else {
+					logger.info("using stored password for  "+CdmUtils.Nz(userName));
+				}
+			}
+			// on success store userName, pwd in property file
+			if(doStore){
+				accounts.setPassword(dbms, strServer, userName, pwd);
+				logger.info("password stored in " + accounts.getAccountsFileName());
+			}
+		} catch (Exception e) {
+			if(doStore){
+				accounts.removePassword(dbms, strServer, userName);
+				logger.info("password removed from " + accounts.getAccountsFileName());
+			}
+			logger.error(e);
+			return null;
+		}
+		return pwd;
 	}
 	
 	public static void main(String[] args) {
