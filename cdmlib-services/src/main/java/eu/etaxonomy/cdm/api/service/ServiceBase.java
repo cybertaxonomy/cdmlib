@@ -64,18 +64,24 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		Map<UUID, T> resultMap = new HashMap<UUID, T>();
 		Iterator<T> iterator = cdmObjCollection.iterator();
 		int i = 0;
-		while(iterator.hasNext()){
-			if ( ( (i % 5000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
-			T cdmObj = iterator.next();
-			UUID uuid = saveCdmObject(cdmObj);
-			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
-			resultMap.put(uuid, cdmObj);
-			i++;
-			if ( (i % flushAfterNo) == 0){
-				logger.debug("flush");
-				dao.flush();
+			while(iterator.hasNext()){
+				if ( ( (i % 5000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
+				T cdmObj = iterator.next();
+				UUID uuid = saveCdmObject(cdmObj);
+				if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+				resultMap.put(uuid, cdmObj);
+				i++;
+				if ( (i % flushAfterNo) == 0){
+					try{
+									logger.debug("flush");
+					dao.flush();
+					}catch(Exception e){
+						logger.error("UUUIIIII");
+						e.printStackTrace();
+					}
+				}
 			}
-		}
+
 		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
 		return resultMap;
 	}
