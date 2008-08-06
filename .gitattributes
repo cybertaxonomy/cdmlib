@@ -20,6 +20,7 @@ app-import/src/main/resources/log4j.properties -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AccountStore.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/MediaMetaData.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text
