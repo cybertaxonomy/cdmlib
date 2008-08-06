@@ -307,8 +307,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
                     " FROM Reference AS InInReference " +
                     	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
                     	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk " + 
-					" WHERE (1=1) "; 
-			//strQueryBase += " AND Reference.refId = 7000000 " ;
+					" WHERE (1=1)  "; 
+				//strQueryBase += " AND Reference.refId = 1933 " ; //7000000
 			String strQueryNoInRef = strQueryBase + 
 				" AND (Reference.InRefFk is NULL) ";
 			
