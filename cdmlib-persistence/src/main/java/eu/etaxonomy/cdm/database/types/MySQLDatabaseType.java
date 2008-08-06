@@ -32,19 +32,17 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     
     
     //hibernate dialect
-    private String hibernateDialect = "MySQLDialect";
-
+    //private String hibernateDialect = "MySQLInnoDBUtf8Dialect";
+    private String hibernateDialect = "MySQL5MyISAMUtf8Dialect";
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
+        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8";
+        //return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
     }  
     
     public MySQLDatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
-
-
-
 
 }
