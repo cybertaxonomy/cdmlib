@@ -184,36 +184,10 @@ public class ViennaActivator {
 	 */
 	private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd ){
 		//establish connection
-		Source source = null;
-		AccountStore accounts = new AccountStore();
-		boolean doStore = false;
-		try {
-			source = new Source(dbms, strServer, strDB);
-			source.setPort(port);
-			
-			if (pwd == null){
-				pwd = accounts.getPassword(dbms, strServer, userName);
-				if(pwd == null){
-					doStore = true;
-					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
-				} else {
-					logger.info("using stored password for  "+CdmUtils.Nz(userName));
-				}
-			}
-			source.setUserAndPwd(userName, pwd);
-			// on success store userName, pwd in property file
-			if(doStore){
-				accounts.setPassword(dbms, strServer, userName, pwd);
-				//logger.info("password stored in "+accounts.accountsFile);
-			}
-		} catch (Exception e) {
-			if(doStore){
-				accounts.removePassword(dbms, strServer, userName);
-				//logger.info("password removed from "+accounts.accountsFile);
-			}
-			logger.error(e);
-		}
-		// write pwd to account store
+		pwd = AccountStore.readOrStorePassword(dbms, strServer, userName, pwd);
+		Source source = new Source(dbms, strServer, strDB);
+		source.setPort(port);
+		source.setUserAndPwd(userName, pwd);
 		return source;
 	}
 }
