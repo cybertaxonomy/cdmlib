@@ -546,7 +546,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		else if (this.equals(Rank.VARIETY()) ){return "var.";}
 		else if (this.equals(Rank.CONVAR()) ){return "convar.";}
 		else if (this.equals(Rank.SUBVARIETY()) ){return "subvar.";}
-		else if (this.equals(Rank.FORM()) ){return "var.";}
+		else if (this.equals(Rank.FORM()) ){return "f.";}
 		else if (this.equals(Rank.SPECIALFORM()) ){return "f.spec.";}
 		else if (this.equals(Rank.INFRAGENERICTAXON()) ){return "t.infgen.";}
 		else if (this.equals(Rank.INFRASPECIFICTAXON()) ){return "t.infr.";}
