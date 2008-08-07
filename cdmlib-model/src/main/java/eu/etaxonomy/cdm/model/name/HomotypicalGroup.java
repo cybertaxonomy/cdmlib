@@ -54,7 +54,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HomotypicalGroup", propOrder = {
     "typifiedNames",
-    "typeDesignations"
+    "specimenTypeDesignations",
+    "nameTypeDesignations"
 })
 @Entity
 public class HomotypicalGroup extends AnnotatableEntity {
