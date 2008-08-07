@@ -284,6 +284,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 					nomRefMap.put(strAbout, ref);
 					nomRefCount++;
 				}
+				
 				tcsElementName = "title";
 				tcsNamespace = publicationNamespace;
 				String strTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
@@ -295,16 +296,10 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 					referenceMap.put(strAbout, biblioRef);
 					biblioRefsCount++;
 				}
-				
-//				
-//				if (! referenceStore.containsId(strAbout)){
-//					referenceStore.put(strAbout, refBase);
-//				}
 
 				checkAdditionalContents(elPublicationCitation, classMappers, unclearMappers);
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
-				referenceMap.put(strAbout, ref);
 				
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
