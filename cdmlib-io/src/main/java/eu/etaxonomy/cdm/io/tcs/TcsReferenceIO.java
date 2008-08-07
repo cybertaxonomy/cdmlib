@@ -74,7 +74,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 	}
 	
 	
-	protected static CdIoXmlMapperBase[] classMappers = new CdIoXmlMapperBase[]{
+	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
 		//new CdmTextElementMapper("edition", "edition"),
 		new CdmTextElementMapper("volume", "volume"),
 		new CdmTextElementMapper("placePublished", "placePublished"),
@@ -86,23 +86,21 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		//new CdmTextElementMapper("url", "uri")
 	};
 	
-//	protected static String[] operationalAttributes = new String[]{
-//		"refId", "refCache", "nomRefCache", "preliminaryFlag", "inRefFk", "title", "nomTitleAbbrev",
-//		"refAuthorString", "nomAuthorTeamFk",
-//		"refCategoryFk", "thesisFlag", "informalRefCategory", "idInSource"
-//	};
-	
-//	protected static String[] createdAndNotesAttributes = new String[]{
-//			"created_When", "updated_When", "created_Who", "updated_Who", "notes"
-//	};
-	
-	protected static CdIoXmlMapperBase[] unclearMappers = new CdIoXmlMapperBase[]{
+	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
 		new CdmUnclearMapper("year")
 		, new CdmUnclearMapper("title")
 		, new CdmUnclearMapper("shortTitle")
 		, new CdmUnclearMapper("publicationType")
 		, new CdmUnclearMapper("parentPublication")
 		, new CdmUnclearMapper("authorship")
+		
+	};
+	
+//	protected static String[] createdAndNotesAttributes = new String[]{
+//			"created_When", "updated_When", "created_Who", "updated_Who", "notes"
+//	};
+	
+	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
 		
 	};
 
@@ -113,7 +111,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdIoXmlMapperBase mapper : classMappers){
+		for (CdmIoXmlMapperBase mapper : standardMappers){
 			Object value = getValue(mapper, parentElement);
 			//write to destination
 			if (value != null){
@@ -126,46 +124,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		return true;
 	}
 	
-//	private boolean checkAdditionalContents(Element parentElement ){
-//		List<Content> additionalContentList = new ArrayList<Content>();
-//		List<Content> contentList = parentElement.getContent();
-//		for(Content content: contentList){
-//			boolean contentExists = false;
-//			if (content instanceof Element){
-//				Element elementContent = (Element)content;
-//				for (CdIoXmlMapperBase mapper : classMappers){
-//					if (mapper.mapsSource(content, parentElement)){
-//						contentExists = true;
-//						break;
-//					}
-//				}
-//				for (CdIoXmlMapperBase mapper : unclearMappers){
-//					if (mapper.mapsSource(content, parentElement)){
-//						contentExists = true;
-//						break;
-//					}
-//				}
-//				
-//			}else if (content instanceof Text){
-//				//empty Text
-//				if (((Text)content).getTextNormalize().equals("")){
-//					contentExists = true;
-//				}else{
-//					//
-//				}
-//			}
-//			
-//			if (contentExists == false){
-//				additionalContentList.add(content);
-//			}
-//		}
-//		for (Content additionalContent : additionalContentList){
-//			logger.warn("Additional content: " +  additionalContent);
-//		}
-//		return (additionalContentList.size() == 0);
-//	}
-	
-	private Object getValue(CdIoXmlMapperBase mapper, Element parentElement){
+	private Object getValue(CdmIoXmlMapperBase mapper, Element parentElement){
 		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
 		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
@@ -297,7 +256,8 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 					biblioRefsCount++;
 				}
 
-				checkAdditionalContents(elPublicationCitation, classMappers, unclearMappers);
+				checkAdditionalContents(elPublicationCitation, standardMappers, operationalMappers, unclearMappers);
+
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
 				
