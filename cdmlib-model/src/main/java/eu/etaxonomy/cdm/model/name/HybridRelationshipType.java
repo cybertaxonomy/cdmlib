@@ -57,7 +57,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	/** 
 	 * Class constructor: creates a new empty hybrid relationship type instance.
 	 * 
-	 * @see 	#HybridRelationshipType(String, String, String, boolean, boolean)
+	 * @see 	#HybridRelationshipType(String, String, String)
 	 */
 	public HybridRelationshipType() {
 		super();
@@ -74,14 +74,10 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new hybrid relationship type to be created
-	 * @param	symmetric	 the boolean indicating whether the new hybrid
-	 * 						 relationship type to be created is symmetric
-	 * @param	transitive	 the boolean indicating whether the new hybrid
-	 * 						 relationship type to be created is transitive
 	 * @see 				 #HybridRelationshipType()
 	 */
-	public HybridRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
-		super(term, label, labelAbbrev, symmetric, transitive);
+	public HybridRelationshipType(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev, false, false);
 	}
 
 
