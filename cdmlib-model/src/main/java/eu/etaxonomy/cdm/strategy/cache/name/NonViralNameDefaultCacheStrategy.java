@@ -292,6 +292,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}else{
 			tags.add("");
 		}
+		if(! "".equals(nonViralName.getAppendedPhrase())){
+			tags.add(nonViralName.getAppendedPhrase());
+		}
+		
 		return tags;
 	}
 	

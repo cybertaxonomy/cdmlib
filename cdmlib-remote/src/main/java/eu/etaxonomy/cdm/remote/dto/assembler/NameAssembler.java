@@ -114,8 +114,11 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		//FIXME infrageneric epithets are not jet handled!
 		//   - infraGenericEpithet	"Cicerbita"	
         //   - infraSpecificEpithet	null	
+		//	 - appended phrases are not handled
 
-		for (Object token : taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase)){
+		List<Object> taggedName = taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase);
+		
+		for (Object token : taggedName){
 			TaggedText tag = new TaggedText();
 			if (String.class.isInstance(token)){
 				tag.setText((String)token);

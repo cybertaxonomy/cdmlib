@@ -117,6 +117,7 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 * @see   #getTypeSpecies()
 	 */
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
 	}
@@ -229,6 +230,8 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 *  
 	 * @see   #isLectoType()
 	 */
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getLectoTypeReference() {
 		return lectoTypeReference;
 	}
