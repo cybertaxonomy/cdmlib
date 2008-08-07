@@ -14,29 +14,28 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 /**
  * @author a.mueller
  * @version 1.0
- * @created 05-Aug-2008 22:06:45
+ * @created 08-Aug-2008 22:06:45
  */
-public class PublicationBaseDefaultCacheStrategy <T extends PublicationBase> implements IReferenceBaseCacheStrategy<T> {
-	private static final Logger logger = Logger.getLogger(PublicationBaseDefaultCacheStrategy.class);
+public class StrictReferenceBaseDefaultCacheStrategy <T extends StrictReferenceBase> implements IReferenceBaseCacheStrategy<T> {
+	private static final Logger logger = Logger.getLogger(StrictReferenceBaseDefaultCacheStrategy.class);
 	
 
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static PublicationBaseDefaultCacheStrategy NewInstance(){
-		return new PublicationBaseDefaultCacheStrategy();
+	public static StrictReferenceBaseDefaultCacheStrategy NewInstance(){
+		return new StrictReferenceBaseDefaultCacheStrategy<StrictReferenceBase>();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	private PublicationBaseDefaultCacheStrategy(){
+	private StrictReferenceBaseDefaultCacheStrategy(){
 		super();
 	}
 	
@@ -57,12 +56,12 @@ public class PublicationBaseDefaultCacheStrategy <T extends PublicationBase> imp
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
-	public String getTitleCache(T publicationBase) {
+	public String getTitleCache(T strictReferenceBase) {
 		String result = "";
-		if (publicationBase == null){
+		if (strictReferenceBase == null){
 			return null;
 		}
-		String titel = CdmUtils.Nz(publicationBase.getTitle()).trim();
+		String titel = CdmUtils.Nz(strictReferenceBase.getTitle()).trim();
 		//titelAbbrev
 		String titelAbbrevPart = "";
 		if (!"".equals(titel)){
@@ -73,8 +72,8 @@ public class PublicationBaseDefaultCacheStrategy <T extends PublicationBase> imp
 			result = result.substring(0, result.length()-1);
 		}
 		
-		result = addYear(result, publicationBase);
-		TeamOrPersonBase team = publicationBase.getAuthorTeam();
+		result = addYear(result, strictReferenceBase);
+		TeamOrPersonBase team = strictReferenceBase.getAuthorTeam();
 		String author = CdmUtils.Nz(team == null ? "" : team.getTitleCache());
 		if (! author.equals("")){
 			result = author + afterAuthor + result;
