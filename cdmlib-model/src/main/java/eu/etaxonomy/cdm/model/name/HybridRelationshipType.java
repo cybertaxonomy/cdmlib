@@ -99,6 +99,8 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * Returns the "first parent" hybrid relationship type. The elements of the
 	 * {@link BotanicalName botanical taxon name} used as "first parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 * 
+	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType FIRST_PARENT(){
 		return getbyUuid(uuidFirstParent);
@@ -108,6 +110,8 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * Returns the "second parent" hybrid relationship type. The elements of the
 	 * {@link BotanicalName botanical taxon name} used as "second parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 * 
+	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType SECOND_PARENT(){
 		return getbyUuid(uuidSecondParent);
@@ -116,7 +120,11 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	/**
 	 * Returns the "female parent" hybrid relationship type. The taxon the name
 	 * of which plays the female parent role is the genetic mother of the taxon
-	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name}).
+	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name})
+	 * For nomenclature purposes a "female parent" is also a "first parent".
+	 * 
+	 * @see	#MALE_PARENT()
+	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType FEMALE_PARENT(){
 		return getbyUuid(uuidFemaleParent);
@@ -126,6 +134,10 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * Returns the "male parent" hybrid relationship type. The taxon the name
 	 * of which plays the male parent role is the genetic father of the taxon
 	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name}).
+	 * For nomenclature purposes a "male parent" is also a "second parent".
+	 * 
+	 * @see	#MALE_PARENT()
+	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType MALE_PARENT(){
 		return getbyUuid(uuidMaleParent);

@@ -277,6 +277,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getByUuid(uuidCombinationInvalid);
 	}
 
+// noch nicht publiziert (in Bearbeitung)
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getByUuid(uuidProvisional);
 	}

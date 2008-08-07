@@ -21,8 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  * Represents an element of a controlled {@link common.TermVocabulary vocabulary} for different kinds of institutions.
  * Each {@link common.DefinedTermBase element} belongs to one vocabulary.
  * <p>
- * See also the <a href="http://rs.tdwg.org/ontology/voc/InstitutionType">TDWG Ontology</a>
- * 
+ * This class corresponds to: InstitutionTypeTerm according to the TDWG ontology.
  * 
  * @author m.doering
  * @version 1.0

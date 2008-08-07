@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
- * The class representing the categories of taxon name relationships between
+ * The class representing the categories of {@link NameRelationship taxon name relationships} taxon name relationships between
  * two {@link TaxonNameBase taxon names}. These name relationship types are
  * based on the concrete {@link NomenclaturalCode nomenclatural code} governing
  * the taxon names involved in the name relationship or on decisions taken by
@@ -189,13 +189,30 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 	
+	/**
+	 * Returns the "orthographic variant" name relationship type. The first
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is an 
+	 * orthographic variant of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
+	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
+	 * must be almost identical (so one usually does not differentiate them).<BR>
+	 * For instance <i>Angelica silvestris</i> L. is an orthographic variant of
+	 * <i>Angelica sylvestris</i> L.
+	 */
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
 		  return getByUuid(uuidOrthographicVariant);
 	}
 	/**
-	 * Returns the "later homonym" name relationship type. The two {@link TaxonNameBase taxon names}
+	 * Returns the "later homonym" name relationship type. The first
+	 * {@link TaxonNameBase taxon name} involved in such a relationship should
+	 * have been published after the second taxon name. The two {@link TaxonNameBase taxon names}
 	 * involved in such a relationship must belong to different
-	 * {@link HomotypicalGroup homotypical groups}.
+	 * {@link HomotypicalGroup homotypical groups}, have in general different
+	 * {@link NonViralName#getAuthorshipCache() authorship} and their name parts (excluding infraspecific
+	 * {@link Rank ranks}) must be (almost) identical, so one could be mistaken for
+	 * the other one.<BR>
+	 * For instance <i>Astragalus rhizanthus</i> Boiss. is a later homonym of
+	 * <i>Astragalus rhizanthus</i> Royle.
 	 */
 	public static final NameRelationshipType LATER_HOMONYM(){
 	  return getByUuid(uuidLaterHomonym);
@@ -205,20 +222,76 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is
 	 * treated as an homonym although it has been published before the second
 	 * taxon name. The two taxon names involved must belong to different
-	 * {@link HomotypicalGroup homotypical groups}.
+	 * {@link HomotypicalGroup homotypical groups} and their name parts (excluding
+	 * {@link Rank#isInfraSpecific() infraspecific ranks} and {@link NonViralName#getAuthorshipCache() authorship}) must be
+	 * almost identical (so one could be mistaken for the other).
+	 * 
+	 * @see	#LATER_HOMONYM()
 	 */
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
 	  return getByUuid(uuidTreatedAsLaterHomonym);
 	}
+	/**
+	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
+	 * involved in such a relationship are family names. The first one is a
+	 * classical name long in use, in some cases, even before 1753 and is considered as
+	 * {@link NomenclaturalStatusType#VALID() valid} although it does not follow the rules for
+	 * family names (see Article 18 of the ICBN). An alternative name is
+	 * typified by the type of the name it is alternative to (so both must
+	 * belong to the same {@link HomotypicalGroup homotypical group}).<BR>
+	 * For instance <i>Cruciferae</i> Adans is an alternative name to
+	 * <i>Brassicaceae</i> Lindl.
+	 */
 	public static final NameRelationshipType ALTERNATIVE_NAME(){
 	  return getByUuid(uuidAlternativeName);
 	}
+	/**
+	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name} 
+	 * involved in such a relationship is the "basionym" of the second taxon
+	 * name. Both taxon names belong to the same {@link HomotypicalGroup homotypical group}).
+	 * The basionym is the epithet-bringing taxon name (first taxon name 
+	 * ever validly published given to the same {@link Rank#isInfraGeneric() infrageneric}
+	 * taxon, the epithet of which is the same as in the second taxon name 
+	 * originated through a reclassification).<BR>
+	 * According to the ICBN the author of the basionym must be mentioned in the
+	 * later taxon name (by placing it in parentheses before the authority of
+	 * the new combination). For instance <i>Pinus abies</i> L. is the basionym of
+	 * <i>Picea abies</i> (L.) Karst.
+	 */
 	public static final NameRelationshipType BASIONYM(){
 	  return getByUuid(uuidBasionym);
 	}
+	/**
+	 * Returns the "replaced synonym" name relationship type. The first 
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
+	 * "replaced synonym" of the second taxon name. Both taxon names belong to
+	 * the same {@link HomotypicalGroup homotypical group}). The replaced synonym is the
+	 * first taxon name ever validly published given to the same
+	 * {@link Rank#isInfraGeneric() infrageneric} taxon that is either itself a
+	 * "later homonym" or the epithet of which could not be used in the new
+	 * taxon name originated through a reclassification. A new epithet must be
+	 * proposed if the use of the original epithet leads to an already existing
+	 * taxon name (for another taxon) or in botany to autonyms (since the ICBN
+	 * does not allow such names where epithet and genus name are the same).<BR>
+	 * For instance <i>Spartium biflorum</i> Desf. is the replaced synonym of
+	 * of <i>Cytisus fontanesii</i> Spach because at the time of reclassification
+	 * a taxon name <i>Cytisus biflorum</i> had been already published by L'Hér.
+	 * 
+	 * @see #BASIONYM()
+	 * @see #LATER_HOMONYM()
+	 */
 	public static final NameRelationshipType REPLACED_SYNONYM(){
 	  return getByUuid(uuidReplacedSynonym);
 	}
+	/**
+	 * Returns the "conserved against" name relationship type. Both {@link TaxonNameBase taxon names}
+	 * involved in such a relationship belong to the same {@link HomotypicalGroup homotypical group}).
+	 * Nomenclature authorities decided, regardless of the general
+	 * nomenclatural rules, to handle the first one as the {@link NomenclaturalStatusType#isLegitimateType() legitimate}
+	 * one and the second taxon name as {@link NomenclaturalStatusType#ILLEGITIMATE() illegitimate}.<BR>
+	 * For instance <i>Cephaloziella</i> (Spruce) Schiffn. is conserved against
+	 * <i>Dichiton</i> Mont.
+	 */
 	public static final NameRelationshipType CONSERVED_AGAINST(){
 	  return getByUuid(uuidConservedAgainst);
 	}
@@ -242,6 +315,22 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
 	  return getByUuid(uuidLaterValidatedByName);
 	}
+	/**
+	 * Returns the "blocking name" name relationship type. The first 
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
+	 * "blocking name" for the second taxon name. Both taxon names belong to
+	 * different {@link HomotypicalGroup homotypical groups}). The blocking taxon name is the
+	 * {@link Rank#isInfraGeneric() infrageneric} taxon name, already published at the time of
+	 * reclassification, which makes illegitim (because of homonymy) the use of
+	 * the epithet in the second taxon name originated through a reclassification.
+	 * Therefore a "replaced synonym" name relationship arises.<BR>
+	 * For instance  <i>Cytisus biflorum</i> L'Hér. is the blocking name for
+	 * <i>Cytisus fontanesii</i> Spach when reclassifying <i>Spartium biflorum</i> Desf.
+	 * from <i>Spartium</i> to <i>Cytisus</i>.
+	 * 
+	 * @see #REPLACED_SYNONYM()
+	 * @see #LATER_HOMONYM()
+	 */
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
 	  return getByUuid(uuidBlockingNameFor);
 	}
