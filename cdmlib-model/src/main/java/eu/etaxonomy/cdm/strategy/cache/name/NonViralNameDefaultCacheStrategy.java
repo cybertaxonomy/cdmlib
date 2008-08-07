@@ -270,10 +270,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
 			tags.add(nonViralName.getSpecificEpithet());			
 		}
-		if (nonViralName.isInfraSpecific()){
+		
+		// No autonym 
+		if (nonViralName.isInfraSpecific() && ! nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
 			tags.add(nonViralName.getRank());			
 			tags.add(nonViralName.getInfraSpecificEpithet());			
 		}
+		
 		if (nonViralName.isInfraGeneric()){
 			//TODO choose right strategy or generic approach?
 			// --- strategy 1 --- 
@@ -286,6 +289,13 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		authorTeam.setProtectedTitleCache(true);
 		authorTeam.setTitleCache(nonViralName.getAuthorshipCache());
 		tags.add(authorTeam);
+		
+		// Name is an autonym. Rank and infraspecific eitheton follow the author
+		if (nonViralName.isInfraSpecific() && nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
+			tags.add(nonViralName.getRank());			
+			tags.add(nonViralName.getInfraSpecificEpithet());			
+		}
+		
 		if (nonViralName.getNomenclaturalReference() != null){
 			INomenclaturalReference nomenclaturalReference = nonViralName.getNomenclaturalReference();
 			tags.add(nomenclaturalReference);//nonViralName.getNomenclaturalReference().getNomenclaturalCitation(nonViralName.getNomenclaturalMicroReference()));			
