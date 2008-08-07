@@ -86,7 +86,8 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	/** 
 	 * Class constructor: creates a new empty specimen type designation.
 	 * 
-	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
+	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, 
+	 * ReferenceBase, String, String)
 	 */
 	protected SpecimenTypeDesignation(){
 		
@@ -94,22 +95,29 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	
 	/**
 	 * Class constructor: creates a new specimen type designation instance
-	 * (including its {@link reference.ReferenceBase reference source} and eventually
-	 * the taxon name string originally used by this reference when establishing
-	 * the former designation) and adds it to the corresponding 
-	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
-	 * {@link HomotypicalGroup homotypical group}.
+	 * (including its {@link reference.ReferenceBase reference source} and 
+	 * eventually the taxon name string originally used by this reference when 
+	 * establishing the former designation) and adds it to the corresponding 
+	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type 
+	 * designation set} of the {@link HomotypicalGroup homotypical group}.
 	 * 
-	 * @param specimen				the derived unit (specimen or figure) used as type
+	 * @param specimen				the derived unit (specimen or figure) used 
+	 * 								as type
 	 * @param status				the type designation status 
 	 * @param citation				the reference source for the new designation
-	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing 
+	 * 								the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the 
+	 * 								reference source for the new designation
 	 * @see							#SpecimenTypeDesignation()
 	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 	 * @see							occurrence.DerivedUnitBase
 	 */
-	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString) {
+	protected SpecimenTypeDesignation(DerivedUnitBase specimen, 
+										TypeDesignationStatus status, 
+										ReferenceBase citation, 
+										String citationMicroReference, 
+										String originalNameString) {
 		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
