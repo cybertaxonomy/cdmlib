@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
@@ -46,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase extends ReferenceBase{
 	
-	static Logger logger = Logger.getLogger(StrictReferenceBase.class);
+	private static final Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	
 	//Title of the reference
 	@XmlElement(name ="Title" )
@@ -56,7 +58,12 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	@XmlElement(name ="DatePublished" )
 	private TimePeriod datePublished;
 	
-
+	protected StrictReferenceBase(){
+		super();
+		this.cacheStrategy = StrictReferenceBaseDefaultCacheStrategy.NewInstance();
+	}
+	
+	
 	/**
 	 * Returns a string representing the title of <i>this</i> reference. If a
 	 * reference has different titles (for instance abbreviated and not

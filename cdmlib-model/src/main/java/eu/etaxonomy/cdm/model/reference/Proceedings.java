@@ -14,9 +14,6 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.PublicationBaseDefaultCacheStrategy;
-
 /**
  * This class represents conference proceedings. Proceedings are a
  * collection of academic papers that are published in the context of an

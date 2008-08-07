@@ -9,11 +9,9 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.strategy.cache.reference.PublicationBaseDefaultCacheStrategy;
-
-import javax.persistence.*;
 
 /**
  * This (abstract) class represents all different kind of published {@link StrictReferenceBase references}
@@ -32,7 +30,6 @@ public abstract class PublicationBase extends StrictReferenceBase {
 
 	public PublicationBase(){
 		super();
-		this.cacheStrategy = PublicationBaseDefaultCacheStrategy.NewInstance();
 	}
 
 	
