@@ -19,15 +19,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The class representing the categories of parent relationships between a
- * {@link BotanicalName botanical taxon name} used as a parent of a hybrid taxon
+ * The class representing the categories of {@link HybridRelationship hybrid relationships}
+ * between a {@link BotanicalName botanical taxon name} used as a parent of a hybrid taxon
  * name and the hybrid taxon name itself. Hybrids and their parents are always
  * plants. The relationships are to be understood as 'is .... of'. 
  * <P>
  * A standard (ordered) list of hybrid relationship type instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional hybrid
- * relationship types if needed. 
+ * relationship types if needed. Hybrid relationship types are neither symmetric
+ * nor transitive.
+
  * <P>
  * This class corresponds partially to: <ul>
  * <li> TaxonRelationshipTerm according to the TDWG ontology
@@ -97,18 +99,38 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 		return (HybridRelationshipType) findByUuid(uuid);
 	}
 
+	/**
+	 * Returns the "first parent" hybrid relationship type. The elements of the
+	 * {@link BotanicalName botanical taxon name} used as "first parent" affect the
+	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 */
 	public static final HybridRelationshipType FIRST_PARENT(){
 		return getbyUuid(uuidFirstParent);
 	}
 
+	/**
+	 * Returns the "second parent" hybrid relationship type. The elements of the
+	 * {@link BotanicalName botanical taxon name} used as "second parent" affect the
+	 * taxon name string of the hybrid (see Appendix I of the ICBN).
+	 */
 	public static final HybridRelationshipType SECOND_PARENT(){
 		return getbyUuid(uuidSecondParent);
 	}
 
+	/**
+	 * Returns the "female parent" hybrid relationship type. The taxon the name
+	 * of which plays the female parent role is the genetic mother of the taxon
+	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name}).
+	 */
 	public static final HybridRelationshipType FEMALE_PARENT(){
 		return getbyUuid(uuidFemaleParent);
 	}
 
+	/**
+	 * Returns the "male parent" hybrid relationship type. The taxon the name
+	 * of which plays the male parent role is the genetic father of the taxon
+	 * which is the hybrid (and has the hybrid {@link BotanicalName botanical taxon name}).
+	 */
 	public static final HybridRelationshipType MALE_PARENT(){
 		return getbyUuid(uuidMaleParent);
 	}
