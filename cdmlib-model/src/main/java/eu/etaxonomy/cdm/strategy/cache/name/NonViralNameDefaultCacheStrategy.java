@@ -296,12 +296,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			tags.add(nonViralName.getInfraSpecificEpithet());			
 		}
 		
-		if (nonViralName.getNomenclaturalReference() != null){
-			INomenclaturalReference nomenclaturalReference = nonViralName.getNomenclaturalReference();
-			tags.add(nomenclaturalReference);//nonViralName.getNomenclaturalReference().getNomenclaturalCitation(nonViralName.getNomenclaturalMicroReference()));			
-		}else{
-			tags.add("");
-		}
 		if(! "".equals(nonViralName.getAppendedPhrase())){
 			tags.add(nonViralName.getAppendedPhrase());
 		}

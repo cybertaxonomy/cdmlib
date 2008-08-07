@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
@@ -21,6 +22,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
 	private String afterBookAuthor = " - ";
+	private String afterNomRefBookAuthor = ", ";
 	private String inBook = "in ";
 	private String blank = " ";
 	
@@ -61,6 +63,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 			return null;
 		}
 		String result = bookSection.getInBook().getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		result = getBookAuthorPart(bookSection.getInBook(), afterNomRefBookAuthor) + result;
 		//TODO beforeMicroReference should be the bookstrategy one's
 		result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 		result = "in " +  result;
@@ -85,6 +88,18 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 			result = title + blank + result;
 		}
 		
+		return result;
+	}
+	
+	private String getBookAuthorPart(Book book, String seperator){
+		if (book == null){
+			return "";
+		}
+		TeamOrPersonBase team = book.getAuthorTeam();
+		String result = CdmUtils.Nz( team == null ? "" : team.getTitleCache());
+		if (! result.trim().equals("")){
+			result = result + seperator;	
+		}
 		return result;
 	}
 

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -114,7 +115,6 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		//FIXME infrageneric epithets are not jet handled!
 		//   - infraGenericEpithet	"Cicerbita"	
         //   - infraSpecificEpithet	null	
-		//	 - appended phrases are not handled
 
 		List<Object> taggedName = taxonNameBase.getCacheStrategy().getTaggedName(taxonNameBase);
 		
@@ -128,11 +128,6 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 				Rank r = (Rank)token;
 				tag.setText(r.getAbbreviation());
 				tag.setType(TagEnum.rank);
-			}
-			else if (token !=null && ReferenceBase.class.isAssignableFrom(token.getClass())){
-				ReferenceBase reference = (ReferenceBase) token;
-				tag.setText(reference.getTitleCache());
-				tag.setType(TagEnum.reference);
 			}
 			else if (Date.class.isInstance(token)){
 				Date d = (Date)token;
