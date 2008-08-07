@@ -12,16 +12,15 @@ import org.jdom.Namespace;
  * @author a.mueller
  *
  */
-public class CdmUnclearMapper extends CdIoXmlMapperBase {
+public class CdmUnclearMapper extends CdmIoXmlMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmUnclearMapper.class);
 	
-	private Namespace sourceNamespace;
 	
 	/**
 	 * @param dbValue
 	 * @param cdmValue
 	 */
-	public CdmUnclearMapper(String sourceElementString,Namespace sourceNamespace) {
+	public CdmUnclearMapper(String sourceElementString, Namespace sourceNamespace) {
 		super(sourceElementString, null);
 		this.sourceNamespace = sourceNamespace;
 	}
@@ -44,6 +43,10 @@ public class CdmUnclearMapper extends CdIoXmlMapperBase {
 	
 	public boolean mapsSource(Content content, Element parentElement){
 		return super.mapsSource(content, parentElement);
+	}
+	
+	public String toString(){
+		return this.getSourceElement();
 	}
 
 

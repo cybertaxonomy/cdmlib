@@ -66,7 +66,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdIoXmlMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmIoXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmTextElementMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmUnclearMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsImportConfigurator.java -text

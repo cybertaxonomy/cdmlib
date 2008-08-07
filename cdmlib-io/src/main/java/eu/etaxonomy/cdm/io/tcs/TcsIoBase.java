@@ -13,6 +13,8 @@ import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +26,8 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 
 /**
  * @author a.mueller
@@ -38,14 +38,17 @@ public abstract class TcsIoBase  extends CdmIoBase {
 	private static final Logger logger = Logger.getLogger(TcsIoBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
-
+	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
+	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
+	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
+	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	
-	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdIoXmlMapperBase[] classMappers){
+	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmIoXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdIoXmlMapperBase mapper : classMappers){
+		for (CdmIoXmlMapperBase mapper : classMappers){
 			Object value = getValue(mapper, parentElement);
 			//write to destination
 			if (value != null){
@@ -59,8 +62,8 @@ public abstract class TcsIoBase  extends CdmIoBase {
 	}
 	
 	
-	private Object getValue(CdIoXmlMapperBase mapper, Element parentElement){
-		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
+	private Object getValue(CdmIoXmlMapperBase mapper, Element parentElement){
+		String sourceAttribute = mapper.getSourceAttribute();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
 		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
 		if (child == null){
@@ -75,20 +78,20 @@ public abstract class TcsIoBase  extends CdmIoBase {
 
 
 	
-	protected boolean checkAdditionalContents(Element parentElement, CdIoXmlMapperBase[] classMappers, CdIoXmlMapperBase[] unclearMappers){
+	protected boolean checkAdditionalContents(Element parentElement, CdmIoXmlMapperBase[] classMappers, CdmIoXmlMapperBase[] operationalMappers, CdmIoXmlMapperBase[] unclearMappers){
 		List<Content> additionalContentList = new ArrayList<Content>();
 		List<Content> contentList = parentElement.getContent();
+		List<CdmIoXmlMapperBase> mapperList = new ArrayList<CdmIoXmlMapperBase>();
+		
+		mapperList.addAll(Arrays.asList(classMappers));
+		mapperList.addAll(Arrays.asList(operationalMappers));
+		mapperList.addAll(Arrays.asList(unclearMappers));
+		
 		for(Content content: contentList){
 			boolean contentExists = false;
 			if (content instanceof Element){
 				Element elementContent = (Element)content;
-				for (CdIoXmlMapperBase mapper : classMappers){
-					if (mapper.mapsSource(content, parentElement)){
-						contentExists = true;
-						break;
-					}
-				}
-				for (CdIoXmlMapperBase mapper : unclearMappers){
+				for (CdmIoXmlMapperBase mapper : mapperList){
 					if (mapper.mapsSource(content, parentElement)){
 						contentExists = true;
 						break;

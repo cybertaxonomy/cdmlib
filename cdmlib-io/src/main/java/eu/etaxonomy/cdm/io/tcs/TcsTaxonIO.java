@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
+public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
 
 	private static int modCount = 30000;
@@ -62,6 +63,30 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 		
 		return result;
 	}
+	
+	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
+//		new CdmTextElementMapper("genusPart", "genusOrUninomial")
+	
+	};
+
+	
+	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
+		 new CdmUnclearMapper("hasName")
+		,new CdmUnclearMapper("hasName")
+		, new CdmUnclearMapper("accordingTo")
+		, new CdmUnclearMapper("hasRelationship")
+		, new CdmUnclearMapper("taxonStatus")
+		, new CdmUnclearMapper("code", nsTgeo)	
+	};
+	
+	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
+		new CdmUnclearMapper("primary")
+		
+		, new CdmUnclearMapper("TaxonName", nsTn)	
+		, new CdmUnclearMapper("TaxonStatus")	
+	};
+	
+	
 	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
@@ -144,11 +169,11 @@ public class TcsTaxonIO  extends CdmIoBase implements ICdmIO {
 				taxonBase = taxon;
 			}
 			
-			//primary
-//			xmlElementName = "primary";
-//			elementNamespace = taxonConceptNamespace;
-//			cdmAttrName = "isPrimary";
-//			Boolean primary = ImportHelper.addXmlBooleanValue(elTaxonConcept, taxon, xmlElementName, elementNamespace, cdmAttrName);
+			Set<String> omitAttributes = null;
+			makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
+
+			
+			checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
 			
 			taxonMap.put(taxonAbout, taxonBase);
 			

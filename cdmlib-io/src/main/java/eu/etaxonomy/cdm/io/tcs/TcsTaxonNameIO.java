@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.io.tcs;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +7,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
-import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.Text;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -34,7 +30,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -58,25 +53,29 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 		return result;
 	}
 	
-	protected static CdIoXmlMapperBase[] classMappers = new CdIoXmlMapperBase[]{
+	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
 		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 		, new CdmTextElementMapper("specificEpithet", "specificEpithet")
 		, new CdmTextElementMapper("infraspecificEpithet", "infraSpecificEpithet")
-		, new CdmTextElementMapper("infragenericEpithet", "infragenericEpithet")
+		, new CdmTextElementMapper("infragenericEpithet", "infraGenericEpithet")
 		, new CdmTextElementMapper("microReference", nsTcom, "nomenclaturalMicroReference")		
 	};
 
-	
-	protected static CdIoXmlMapperBase[] unclearMappers = new CdIoXmlMapperBase[]{
+	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
 		new CdmUnclearMapper("basionymAuthorship")
 		, new CdmUnclearMapper("combinationAuthorship")
 		, new CdmUnclearMapper("hasAnnotation")
 		, new CdmUnclearMapper("rank")
-		, new CdmUnclearMapper("rankString")
 		, new CdmUnclearMapper("nomenclaturalCode")
 		, new CdmUnclearMapper("publishedIn", nsTcom)
-		, new CdmUnclearMapper("nameComplete")
 		, new CdmUnclearMapper("year")
+	};
+	
+	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
+		new CdmUnclearMapper("authorship")
+		, new CdmUnclearMapper("rankString")
+		, new CdmUnclearMapper("nameComplete")
+		, new CdmUnclearMapper("hasBasionym")
 	};
 	
 	@Override
@@ -128,29 +127,8 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 				NomenclaturalCode nomCode = TcsTransformer.nomCodeString2NomCode(strNomenclaturalCode);
 				TaxonNameBase nameBase = nomCode.getNewTaxonNameInstance(rank);
 				
-//				//Epethita
-//				tcsElementName = "genusPart";
-//				tcsNamespace = taxonNameNamespace;
-//				cdmAttrName = "genusOrUninomial";
-//				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
-//
-//				tcsElementName = "specificEpithet";
-//				tcsNamespace = taxonNameNamespace;
-//				cdmAttrName = "specificEpithet";
-//				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
-//
-//				tcsElementName = "infraspecificEpithet";
-//				tcsNamespace = taxonNameNamespace;
-//				cdmAttrName = "infraSpecificEpithet";
-//				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
-//				
-//				tcsElementName = "infragenericEpithet";
-//				tcsNamespace = taxonNameNamespace;
-//				cdmAttrName = "infraGenericEpithet";
-//				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
-				
 				Set<String> omitAttributes = null;
-				makeStandardMapper(elTaxonName, nameBase, omitAttributes, classMappers);
+				makeStandardMapper(elTaxonName, nameBase, omitAttributes, standardMappers);
 				
 				//Reference
 				//TODO
@@ -177,15 +155,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 						logger.warn("year could not be parsed");
 					}
 				}
-				
-				
-				
-//				//microReference
-//				tcsElementName = "microReference";
-//				tcsNamespace = commonNamespace;
-//				cdmAttrName = "nomenclaturalMicroReference";
-//				success &= ImportHelper.addXmlStringValue(elTaxonName, nameBase, tcsElementName, tcsNamespace, cdmAttrName);
-				
+						
 				//Status
 				tcsNamespace = taxonNameNamespace;
 				Element elAnnotation = elTaxonName.getChild("hasAnnotation", tcsNamespace);
@@ -235,7 +205,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 						
 				}
 				
-				checkAdditionalContents(elTaxonName, classMappers, unclearMappers);
+				checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
 				
 				//nameId
 				//TODO

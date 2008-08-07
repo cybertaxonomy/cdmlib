@@ -12,10 +12,8 @@ import org.jdom.Namespace;
  * @author a.mueller
  *
  */
-public class CdmTextElementMapper extends CdIoXmlMapperBase {
+public class CdmTextElementMapper extends CdmIoXmlMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmTextElementMapper.class);
-	
-	private Namespace sourceNamespace;
 	
 	/**
 	 * @param dbValue

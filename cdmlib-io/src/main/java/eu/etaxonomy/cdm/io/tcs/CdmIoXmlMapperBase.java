@@ -14,10 +14,10 @@ import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
  * @author a.mueller
  *
  */
-public abstract class CdIoXmlMapperBase extends CdmIoMapperBase {
-	private static final Logger logger = Logger.getLogger(CdIoXmlMapperBase.class);
+public abstract class CdmIoXmlMapperBase extends CdmIoMapperBase {
+	private static final Logger logger = Logger.getLogger(CdmIoXmlMapperBase.class);
 	
-	private Namespace sourceNamespace;
+	protected Namespace sourceNamespace;
 
 	
 	/**
@@ -25,7 +25,7 @@ public abstract class CdIoXmlMapperBase extends CdmIoMapperBase {
 	 * @param sourceNamespace
 	 * @param cdmAttributeString
 	 */
-	protected CdIoXmlMapperBase(String sourceElementString,Namespace sourceNamespace, String cdmAttributeString){
+	protected CdmIoXmlMapperBase(String sourceElementString,Namespace sourceNamespace, String cdmAttributeString){
 		super(sourceElementString, cdmAttributeString);
 		
 	}
@@ -36,7 +36,7 @@ public abstract class CdIoXmlMapperBase extends CdmIoMapperBase {
 	 * @param sourceElementString
 	 * @param cdmAttributeString
 	 */
-	protected CdIoXmlMapperBase(String sourceElementString, String cdmAttributeString){
+	protected CdmIoXmlMapperBase(String sourceElementString, String cdmAttributeString){
 		super(sourceElementString, cdmAttributeString);
 		
 	}
@@ -93,4 +93,8 @@ public abstract class CdIoXmlMapperBase extends CdmIoMapperBase {
 		return true;
 	}
 
+	public String toString(){
+		//TODO
+		return this.getSourceElement();
+	}	
 }
