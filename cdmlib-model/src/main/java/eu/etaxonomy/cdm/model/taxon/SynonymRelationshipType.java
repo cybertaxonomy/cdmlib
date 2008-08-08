@@ -94,7 +94,8 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	
 	/**
 	 * Returns the synonym relationship type "is synonym of". This
-	 * indicates that no further information about the synonymy is known.
+	 * indicates that it is not known whether both {@link name.TaxonNameBase taxon names}
+	 * involved in such a relationship belong or not to the same {@link name.HomotypicalGroup homotypical group}.
 	 */
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return getByUuid(uuidSynonymOf);

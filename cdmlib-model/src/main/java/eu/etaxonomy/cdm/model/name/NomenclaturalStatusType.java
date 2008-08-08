@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  * "conserved" or "novum") to qualify the use of a particular taxon name string
  * depending on its {@link reference.INomenclaturalReference nomenclatural reference} (original publication),
  * on its {@link NomenclaturalCode nomenclatural code} and on possible decisions of the corresponding
- * nomenclature authorities.
+ * competent authorities.
  * <P>
  * A standard (ordered) list of nomenclatural status type instances will be
  * automatically created as the project starts. But this class allows to extend

@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -26,7 +27,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}.
+ * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
+ * for an {@link HomotypicalGroup homotypical group} as a whole. In the present
+ * Common Data Model (CDM) specimen typifications of a taxon name are
+ * represented by typifications of the homotypical group to which this
+ * {@link TaxonNameBase taxon name} belongs. Therefore the specimen typification
+ * of an homotypical group is nothing else as the specimen typification of the
+ * {@link Rank#SPECIES() species} or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name}
+ * which is also {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+ * in case of reclassifications, within the homotypical group. This taxon name
+ * will be here refered as "type-bringing" taxon name. 
+ * <P>
  * The different status indicate whether the {@link occurrence.Specimen specimens} used as types
  * in a designation are duplicates, replacements, related specimens etc. 
  * <P>
@@ -68,80 +79,250 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
 
 	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty type designation status instance.
+	 * 
+	 * @see 	#TypeDesignationStatus(String, String, String)
+	 */
 	public TypeDesignationStatus() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	/** 
+	 * Class constructor: creates an additional type designation status instance
+	 * with a description (in the {@link common.Language#DEFAULT() default language}), a label
+	 * and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new type designation status to be created 
+	 * @param	label  		 the string identifying the new type designation
+	 * 						 status to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new type designation status to be created
+	 * @see 				 #TypeDesignationStatus()
+	 */
 	public TypeDesignationStatus(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
-	
+	//********* METHODS **************************************/
+
+	/**
+	 * Returns the type designation status identified through its immutable
+	 * universally unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the type designation status corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final TypeDesignationStatus getByUuid(UUID uuid){
 		return (TypeDesignationStatus) findByUuid(uuid);
 	}
 	
+	/**
+	 * Returns the "holotype" designation status. A holotype of an
+	 * {@link HomotypicalGroup homotypical group} is the one {@link occurrence.DerivedUnitBase specimen or illustration}
+	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorTeam() author} of the
+	 * "type-bringing" {@link TaxonNameBase taxon name}. The "type-bringing" taxon name is the 
+	 * {@link Rank#SPECIES() species} or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name}
+	 * which is also {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group.
+	 */
 	public static final TypeDesignationStatus HOLOTYPE(){
 		return getByUuid(uuidHolotype);
 	}
 
+	/**
+	 * Returns the "lectotype" designation status. A lectotype is a
+	 * {@link occurrence.DerivedUnitBase specimen or illustration} designated as the nomenclatural type,
+	 * when no holotype was indicated at the time of publication of the
+	 * "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * holotype is found to belong to more than one {@link HomotypicalGroup homotypical group},
+	 * or as long as it is missing. The "type-bringing" taxon name is the 
+	 * {@link Rank#SPECIES() species} or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name}
+	 * which is also {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group.
+	 * 
+	 * @see	#HOLOTYPE()
+	 */
 	public static final TypeDesignationStatus LECTOTYPE(){
 		return getByUuid(uuidLectotype);
 	}
 
+	/**
+	 * Returns the "neotype" designation status. A neotype is a
+	 * {@link occurrence.DerivedUnitBase specimen or illustration} selected to serve as nomenclatural type
+	 * as long as all of the material on which the "type-bringing" {@link TaxonNameBase taxon name} was based
+	 * is missing. The "type-bringing" taxon name is the  {@link Rank#SPECIES() species} or
+	 * {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name} which is also
+	 * {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group. 
+	 * 
+	 * @see	#HOLOTYPE()
+	 */
 	public static final TypeDesignationStatus NEOTYPE(){
 		return getByUuid(uuidNeotype);
 	}
 
+	/**
+	 * Returns the "epitype" designation status. An epitype is a
+	 * {@link occurrence.DerivedUnitBase specimen or illustration} selected to serve as an interpretative type
+	 * when the holotype, lectotype or previously designated neotype, or all
+	 * original material associated with the {@link NomenclaturalStatusType#VALID() validly} published "type-bringing"
+	 * {@link TaxonNameBase taxon name}, is demonstrably ambiguous and cannot be critically
+	 * identified for purposes of the precise application of the taxon name.
+	 * When an epitype is designated, the holotype, lectotype or neotype that
+	 * the epitype supports must be explicitly cited. The "type-bringing" taxon 
+	 * name is the {@link Rank#SPECIES() species} or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name}
+	 * which is also {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group.
+	 *
+	 * 
+	 * @see	#HOLOTYPE()
+	 * @see	#LECTOTYPE()
+	 * @see	#NEOTYPE()
+	 */
 	public static final TypeDesignationStatus EPITYPE(){
 		return getByUuid(uuidEpitype);
 	}
 
-	public static final TypeDesignationStatus ISOLECTOTYPE(){
-		return getByUuid(uuidIsolectotype);
-	}
-
-	public static final TypeDesignationStatus ISONEOTYPE(){
-		return getByUuid(uuidIsoneotype);
-	}
-
+	/**
+	 * Returns the "isotype" designation status. An isotype is any duplicate of
+	 * the holotype; it is always a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#HOLOTYPE()
+	 */
 	public static final TypeDesignationStatus ISOTYPE(){
 		return getByUuid(uuidIsotype);
 	}
 
-	public static final TypeDesignationStatus PARANEOTYPE(){
-		return getByUuid(uuidParaneotype);
-	}
-
-	public static final TypeDesignationStatus PARATYPE(){
-		return getByUuid(uuidParatype);
-	}
-
-	public static final TypeDesignationStatus SECOND_STEP_LECTOTYPE(){
-		return getByUuid(uuidSecondStepLectotype);
-	}
-
-	public static final TypeDesignationStatus SECOND_STEP_NEOTYPE(){
-		return getByUuid(uuidSecondStepNeotype);
-	}
-
+	/**
+	 * Returns the "syntype" designation status. A syntype is any one of two or
+	 * more {@link occurrence.Specimen specimens} cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the
+	 * "type-bringing" {@link TaxonNameBase taxon name} when no holotype was designated,
+	 * or any one of two or more specimens simultaneously designated as types.
+	 * The "type-bringing" taxon name is the  {@link Rank#SPECIES() species} or
+	 * {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name} which is also
+	 * {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group. 
+	 * 
+	 * @see	#HOLOTYPE()
+	 */
 	public static final TypeDesignationStatus SYNTYPE(){
 		return getByUuid(uuidSyntype);
 	}
 
+	/**
+	 * Returns the "paratype" designation status. A paratype is a {@link occurrence.Specimen specimen}
+	 * cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the "type-bringing"
+	 * {@link TaxonNameBase taxon name} that is neither the holotype nor an isotype,
+	 * nor one of the syntypes if two or more specimens were simultaneously
+	 * designated as types.  The "type-bringing" taxon name is the {@link Rank#SPECIES() species}
+	 * or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name} which is also
+	 * {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * in case of reclassifications, within the homotypical group.
+	 * 
+	 * @see	#HOLOTYPE()
+	 * @see	#ISOTYPE()
+	 * @see	#SYNTYPE()
+	 */
+	public static final TypeDesignationStatus PARATYPE(){
+		return getByUuid(uuidParatype);
+	}
+
+	/**
+	 * Returns the "isolectotype" designation status. An isotype is any
+	 * duplicate of the lectotype; it is always a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#LECTOTYPE()
+	 */
+	public static final TypeDesignationStatus ISOLECTOTYPE(){
+		return getByUuid(uuidIsolectotype);
+	}
+
+	/**
+	 * Returns the "isoneotype" designation status. An isoneotype is any
+	 * duplicate of the neotype; it is always a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#NEOTYPE()
+	 */
+	public static final TypeDesignationStatus ISONEOTYPE(){
+		return getByUuid(uuidIsoneotype);
+	}
+	/**
+	 * Returns the "paraneotype" designation status. A paraneotype is a {@link occurrence.Specimen specimen},
+	 * cited when selecting a neotype, other than the neotype itself. Also
+	 * called "neoparatype" in zoology.
+	 * 
+	 * @see	#NEOTYPE()
+	 */
+	public static final TypeDesignationStatus PARANEOTYPE(){
+		return getByUuid(uuidParaneotype);
+	}
+
+	/**
+	 * Returns the "second step lectotype" designation status. A second step
+	 * lectotype is a {@link occurrence.DerivedUnitBase specimen or illustration}, designated as lectotype
+	 * in order to substitute another already existing lectotype.
+	 * 
+	 * @see	#LECTOTYPE()
+	 */
+	public static final TypeDesignationStatus SECOND_STEP_LECTOTYPE(){
+		return getByUuid(uuidSecondStepLectotype);
+	}
+
+	/**
+	 * Returns the "second step neotype" designation status. A second step
+	 * neotype is a {@link occurrence.DerivedUnitBase specimen or illustration}, designated as neotype
+	 * in order to substitute another already existing neotype.
+	 * 
+	 * @see	#LECTOTYPE()
+	 */
+	public static final TypeDesignationStatus SECOND_STEP_NEOTYPE(){
+		return getByUuid(uuidSecondStepNeotype);
+	}
+
+	/**
+	 * Returns the "paralectotype" designation status. A paralectotype is a
+	 * {@link occurrence.Specimen specimen}, cited when designating a lectotype, other than
+	 * the lectotype itself. Also called "lectoparatype" in zoology.
+	 * 
+	 * @see	#LECTOTYPE()
+	 */
 	public static final TypeDesignationStatus PARALECTOTYPE(){
 		return getByUuid(uuidParalectotype);
 	}
 
+	/**
+	 * Returns the "isoepitype" designation status. An isoepitype is any
+	 * duplicate of the epitype; it is always a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#EPITYPE()
+	 */
 	public static final TypeDesignationStatus ISOEPITYPE(){
 		return getByUuid(uuidIsoepitype);
 	}
 
+	/**
+	 * Returns the "iconotype" designation status. An iconotype is a holotype or
+	 * a lectotype that is a {@link occurrence.DerivedUnitBase drawing} and not a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#HOLOTYPE()
+	 * @see	#LECTOTYPE()
+	 */
 	public static final TypeDesignationStatus ICONOTYPE(){
 		return getByUuid(uuidIconotype);
 	}
 
+	/**
+	 * Returns the "iconotype" designation status. An iconotype is a holotype or
+	 * a lectotype that is a {@link occurrence.DerivedUnitBase photograph} and not a {@link occurrence.Specimen specimen}.
+	 * 
+	 * @see	#HOLOTYPE()
+	 * @see	#LECTOTYPE()
+	 */
 	public static final TypeDesignationStatus PHOTOTYPE(){
 		return getByUuid(uuidPhototype);
 	}
