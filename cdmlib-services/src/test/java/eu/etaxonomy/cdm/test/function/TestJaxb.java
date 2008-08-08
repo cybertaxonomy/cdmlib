@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -51,8 +52,9 @@ public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
-	private static final String serializeFromDb = "cdm_test_jaxb";
-	private static final String deserializeToDb = "cdm_test_anahit";
+	//private static final String serializeFromDb = "cdm_test_jaxb";
+	private static final String serializeFromDb = "cdm_test_anahit";
+	private static final String deserializeToDb = "cdm_test_jaxb2";
 	private String server = "192.168.2.10";
 	private String username = "edit";
 	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
@@ -67,13 +69,13 @@ public class TestJaxb {
     public void testInitDb(String dbname) {
     	
 		logger.info("Initializing DB " + "dbname");
-
+		
 		CdmApplicationController appCtr = null;
-    	
 		try {
-			String password = CdmUtils.readInputLine("Password: ");
+			String pwd = AccountStore.readOrStorePassword(dbname, server, username, null);
+			
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, pwd);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 		} catch (DataSourceNotFoundException e) {
@@ -190,11 +192,11 @@ public class TestJaxb {
 		CdmApplicationController appCtr = null;
 
     	try {
-    		String password = CdmUtils.readInputLine("Password: ");
+    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+    		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
     		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-
 
     	} catch (DataSourceNotFoundException e) {
     		logger.error("datasource error");
@@ -244,6 +246,7 @@ public class TestJaxb {
 
     	} catch (Exception e) {
     		logger.error("marshalling error");
+    		e.printStackTrace();
     	} 
     	appCtr.commitTransaction(txStatus);
     	appCtr.close();
@@ -258,7 +261,8 @@ public class TestJaxb {
 		CdmApplicationController appCtr = null;
 
 		try {
-			String password = CdmUtils.readInputLine("Password: ");
+    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+			
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
@@ -309,10 +313,10 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		testInitDb(serializeFromDb);
-		testSerialize(serializeFromDb, marshOutOne);
+		//testInitDb(serializeFromDb);
+	    testSerialize(serializeFromDb, marshOutOne);
 		testDeserialize(deserializeToDb, marshOutOne);
-		testSerialize(deserializeToDb, marshOutTwo);
+		//testSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
