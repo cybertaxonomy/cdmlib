@@ -12,6 +12,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -37,15 +42,41 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:26
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Generic", propOrder = {
+		"series",
+		"volume",
+		"pages",
+		"editor",
+		"publisher",
+		"placePublished",
+		"nomRefBase"
+})
+@XmlRootElement(name = "Generic")
 @Entity
 public class Generic extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
+	
 	static Logger logger = Logger.getLogger(Generic.class);
+	
+    @XmlElement(name = "Publisher")
 	private String publisher;
+	
+    @XmlElement(name = "PlacePublished")
 	private String placePublished;
+	
+    @XmlElement(name = "Editor")
 	private String editor;
+	
+    @XmlElement(name = "series")
 	private String series;
+	
+    @XmlElement(name = "Volume")
 	private String volume;
+	
+    @XmlElement(name = "Pages")
 	private String pages;
+	
+    @XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	

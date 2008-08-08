@@ -12,6 +12,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -27,13 +32,33 @@ import org.hibernate.annotations.CascadeType;
  * @version 1.0
  * @created 08-Nov-2007 13:06:45
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PrintedUnitBase", propOrder = {
+		"editor",	
+		"volume",
+		"pages",
+		"inSeries",
+		"seriesPart"
+})
+@XmlRootElement(name = "PrintedUnitBase")
 @Entity
 public abstract class PrintedUnitBase extends PublicationBase {
+	
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
+	
+    @XmlElement(name = "Editor")
 	private String editor;
+	
+    @XmlElement(name = "Volume")
 	private String volume;
+	
+    @XmlElement(name = "Pages")
 	private String pages;
+	
+    @XmlElement(name = "InSeries")
 	private PrintSeries inSeries;
+	
+    @XmlElement(name = "SeriesPart")
 	private String seriesPart;
 
 	/**

@@ -13,6 +13,13 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -39,13 +46,33 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:10
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Article", propOrder = {
+		"series",
+		"volume",
+		"pages",
+		"inJournal",
+		"nomRefBase"
+})
+@XmlRootElement(name = "Article")
 @Entity
 public class Article extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
+	
 	static Logger logger = Logger.getLogger(Article.class);
+	
+    @XmlElement(name = "Series")
 	private String series;
+	
+    @XmlElement(name = "Volume")
 	private String volume;
+	
+    @XmlElement(name = "Pages")
 	private String pages;
+	
+    @XmlElement(name = "InJournal")
 	private Journal inJournal;
+	
+    @XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 

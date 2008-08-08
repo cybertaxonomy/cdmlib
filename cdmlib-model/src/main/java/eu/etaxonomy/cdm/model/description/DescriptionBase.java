@@ -19,6 +19,8 @@ import javax.persistence.InheritanceType;
 
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -40,10 +42,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionBase extends IdentifiableEntity {
+	
 	private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 	
+	@XmlElementWrapper(name = "DescribedSpecimenOrObservations")
+	@XmlElement(name = "DescribedSpecimenOrObservation")
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
+	
+	@XmlElementWrapper(name = "DescriptionSources")
+	@XmlElement(name = "DescriptionSource")
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
+	
+	@XmlElementWrapper(name = "DescriptionElements")
+	@XmlElement(name = "DescriptionElement")
 	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
 	/**

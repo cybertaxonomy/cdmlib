@@ -19,6 +19,13 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A description that delimits this taxon.
@@ -28,11 +35,26 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:20
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TaxonDescription", propOrder = {
+    "scopes",
+    "geoScopes"
+})
+@XmlRootElement(name = "TaxonDescription")
 @Entity
 public class TaxonDescription extends DescriptionBase {
+	
 	static Logger logger = Logger.getLogger(TaxonDescription.class);
+
+	@XmlElementWrapper(name = "Scopes")
+	@XmlElement(name = "Scope")
 	private Set<Scope> scopes = new HashSet<Scope>();
+	
+	@XmlElementWrapper( name = "GeoScopes")
+	@XmlElement( name = "GeoScope")
 	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+	
+	@XmlTransient
 	private Taxon taxon;
 
 	public static TaxonDescription NewInstance(){

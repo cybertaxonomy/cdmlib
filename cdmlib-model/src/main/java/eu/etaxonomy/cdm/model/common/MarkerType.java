@@ -15,6 +15,9 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Marker types similar to dynamically defined attributes. These  content types
@@ -23,6 +26,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:33
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MarkerType")
 @Entity
 public class MarkerType extends DefinedTermBase {
 	public static final Logger logger = Logger.getLogger(MarkerType.class);

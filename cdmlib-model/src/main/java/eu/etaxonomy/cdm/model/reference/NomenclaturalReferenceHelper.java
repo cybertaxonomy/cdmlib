@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.apache.log4j.Logger;
 
@@ -26,7 +29,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  */
 class NomenclaturalReferenceHelper {
 	private static final Logger logger = Logger.getLogger(NomenclaturalReferenceHelper.class);
-	
+
+	@XmlElement(name = "nomenclaturalReference")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private ReferenceBase nomenclaturalReference; 
 	//private IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy; 
 	

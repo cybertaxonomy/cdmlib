@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
     "isbn",
     "nomRefBase"
 })
+@XmlRootElement(name = "Book")
 @Entity
 public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
 	
@@ -52,7 +54,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
     @XmlElement(name = "ISBN")
 	private String isbn;
 	
-    @XmlElement(name = "NomRefBase")
+    @XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 
