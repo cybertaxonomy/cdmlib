@@ -38,9 +38,11 @@ public class NameTO extends BaseTO {
 	private ReferenceTO nomenclaturalReference;
 	
 	private NameTO basionym;
-	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 
+	private List<NameRelationshipTO> nameRelations = new ArrayList<NameRelationshipTO>();
+	
+	
 	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
 	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
 	public String getFullname() {
@@ -82,10 +84,10 @@ public class NameTO extends BaseTO {
 	public void setBasionym(NameTO basionym) {
 		this.basionym = basionym;
 	}
-	public Set<NameRelationshipTO> getNameRelations() {
+	public List<NameRelationshipTO> getNameRelations() {
 		return nameRelations;
 	}
-	public void setNameRelations(Set<NameRelationshipTO> nameRelations) {
+	public void setNameRelations(List<NameRelationshipTO> nameRelations) {
 		this.nameRelations = nameRelations;
 	}
 	public Set<NameTO> getNewCombinations() {

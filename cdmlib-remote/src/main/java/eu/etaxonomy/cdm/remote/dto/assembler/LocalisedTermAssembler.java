@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
@@ -49,11 +49,11 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
-	LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales) {
+	public LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales) {
 		return getSTO(term, locales, TermType.LABEL);
 	}
 	
-	LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales, TermType termtype ) {
+	public LocalisedTermSTO getSTO(TermBase term, Enumeration<Locale> locales, TermType termtype ) {
 		LocalisedTermSTO sto = new LocalisedTermSTO();
 		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 		Representation r = term.getPreferredRepresentation(languages);
@@ -69,6 +69,16 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 			break;
 		}
 		sto.setLanguage(r.getLanguage().toString());
+		return sto;
+	}
+	
+	public LocalisedTermSTO getSTO(RelationshipTermBase term, Enumeration<Locale> locales, boolean inverseRepresenation) {
+		LocalisedTermSTO sto = new LocalisedTermSTO();
+		
+		//Representation r = term.getRepresentation(null);
+		sto.setTerm(inverseRepresenation ? term.getInverseLabel() : term.getLabel());
+		
+		
 		return sto;
 	}
 

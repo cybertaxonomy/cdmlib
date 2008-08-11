@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class TaxonTO extends BaseTO{
 
-	private NameSTO name;
+	private NameTO name;
 	/**
 	 * The concept reference
 	 */
@@ -46,13 +46,14 @@ public class TaxonTO extends BaseTO{
 	private List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>();
 	// other
 	private List<TaxonRelationshipTO> taxonRelations = new ArrayList<TaxonRelationshipTO>();
+	
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	private FeatureTreeTO featureTree;
 	
-	public NameSTO getName() {
+	public NameTO getName() {
 		return name;
 	}
-	public void setName(NameSTO name) {
+	public void setName(NameTO name) {
 		this.name = name;
 	}
 	public ReferenceTO getSec() {
@@ -111,6 +112,5 @@ public class TaxonTO extends BaseTO{
 	}
 	public void setFeatureTree(FeatureTreeTO featureTree) {
 		this.featureTree = featureTree;
-	}
-	
+	}	
 }

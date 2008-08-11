@@ -27,6 +27,7 @@ public class NameSTO extends BaseSTO {
 	private List<TaggedText> taggedName = new ArrayList();
 	private Set<LocalisedTermSTO> status = new HashSet<LocalisedTermSTO>();
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
+	private List<NameRelationshipTO> nameRelations = new ArrayList<NameRelationshipTO>();
 	
 	public String getFullname() {
 		return fullname;
@@ -66,6 +67,19 @@ public class NameSTO extends BaseSTO {
 	}
 	public Set<DescriptionTO> getDescriptions(){
 		return this.descriptions;
+	}
+	
+	/**
+	 * @return the nameRelationship
+	 */
+	public List<NameRelationshipTO> getNameRelations() {
+		return nameRelations;
+	}
+	/**
+	 * @param nameRelationship the nameRelationship to set
+	 */
+	public void setNameRelations(List<NameRelationshipTO> nameRelationship) {
+		this.nameRelations = nameRelationship;
 	}
 	
 }

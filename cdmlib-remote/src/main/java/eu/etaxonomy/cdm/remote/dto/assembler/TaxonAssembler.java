@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.HomotypicTaxonGroupSTO;
 import eu.etaxonomy.cdm.remote.dto.SynonymRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonRelationshipTO;
+import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
@@ -89,7 +92,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		if(taxonBase!=null){
 			taxonTO = new TaxonTO();
 			setVersionableEntity(taxonBase, taxonTO);
-			taxonTO.setName(nameAssembler.getSTO(taxonBase.getName(), locales));
+			taxonTO.setName(nameAssembler.getTO(taxonBase.getName(), locales));
 			taxonTO.setSec(refAssembler.getTO(taxonBase.getSec(), locales));
 			taxonTO.setAccepted((taxonBase instanceof Taxon));
 		    if(taxonBase instanceof Taxon){
@@ -121,6 +124,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 				matchTypes.add(TaxonRelationshipType.MISAPPLIED_NAME_FOR());
 				matchTypes.add(TaxonRelationshipType.INVALID_DESIGNATION_FOR());
 		    	taxonTO.setTaxonRelations(getTaxonRelationshipTOs(taxon.getTaxonRelations(), taxon, matchTypes, locales));
+		    	
 		    	
 		    	// -- descriptive data
 		    	/*if (featureTree == null){
@@ -190,6 +194,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		return taxonRelationshipTOs;
 	}
 	
+	
 	/**
 	 * @param syn
 	 * @param t
@@ -222,6 +227,8 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		}
 		return synonymRelationshipTO;
 	}
+	
+
 	
 	
 	/**

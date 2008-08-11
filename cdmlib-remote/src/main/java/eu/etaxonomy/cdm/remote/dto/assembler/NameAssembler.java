@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
+import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
@@ -64,6 +66,9 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
 			}
 			name.setDescriptions(this.getDescriptions(taxonNameBase, locales));		
+			
+			//name.setNameRelations(getNameRelationshipTOs(taxonNameBase.getNameRelations(), locales));
+	    	
 		}
 		return name;
 	}
@@ -74,23 +79,25 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		locales = Collections.enumeration(localeList);
 		return locales;
 	}	
-	public NameTO getTO(TaxonNameBase tnb, Enumeration<Locale> locales){		
-		NameTO n = null;
-		if (tnb !=null){
-			n = new NameTO();
-			setVersionableEntity(tnb, n);
-			n.setFullname(tnb.getTitleCache());
-			n.setTaggedName(getTaggedName(tnb));
-			ReferenceBase nomRef = (ReferenceBase)tnb.getNomenclaturalReference();
+	public NameTO getTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){		
+		NameTO name = null;
+		if (taxonNameBase !=null){
+			name = new NameTO();
+			setVersionableEntity(taxonNameBase, name);
+			name.setFullname(taxonNameBase.getTitleCache());
+			name.setTaggedName(getTaggedName(taxonNameBase));
+			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
-				n.setNomenclaturalReference(refAssembler.getTO(nomRef, true ,tnb.getNomenclaturalMicroReference(), locales));
+				name.setNomenclaturalReference(refAssembler.getTO(nomRef, true ,taxonNameBase.getNomenclaturalMicroReference(), locales));
 			}
-			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)tnb.getStatus()) {
+			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
-				n.addStatus(localisedTermAssembler.getSTO(status.getType(), locales));
+				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales));
 			}
+			name.setNameRelations(getNameRelationshipTOs(taxonNameBase.getNameRelations(), locales));
+	    	
 		}
-		return n;
+		return name;
 	}
 	
 	public Set<DescriptionTO> getDescriptions(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase, Enumeration<Locale> locales){
@@ -101,6 +108,41 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		}
 		
 		return descriptions;
+	}
+	
+	/**
+	 * 
+	 * @param nameRelationships
+	 * @param locales
+	 * @return
+	 */
+	public List<NameRelationshipTO> getNameRelationshipTOs(Set<NameRelationship> nameRelationships, Enumeration<Locale> locales){
+		List<NameRelationshipTO>  nameRelationshipTOs = new ArrayList<NameRelationshipTO>(nameRelationships.size());
+
+		for(NameRelationship nameRelationship : nameRelationships){
+			nameRelationshipTOs.add(getNameRelationshipTO(nameRelationship, locales));
+		}
+		
+		return nameRelationshipTOs;
+	}
+	
+	/**
+	 * 
+	 * @param <NameRelationshipTO>
+	 * @param taxonNameBase
+	 * @param locales
+	 * @return
+	 */
+	public NameRelationshipTO getNameRelationshipTO(NameRelationship nameRelation, Enumeration<Locale> locales){
+		NameRelationshipTO nameRelationshipTO = new NameRelationshipTO();
+		
+		nameRelationshipTO.setName(getSTO(nameRelation.getFromName(), locales));
+		
+		nameRelationshipTO.setType(localisedTermAssembler.getSTO(nameRelation.getType(), locales, true));
+		
+		nameRelationshipTO.setRuleConsidered(nameRelation.getRuleConsidered());
+		
+		return nameRelationshipTO;
 	}
 	
 	

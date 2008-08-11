@@ -27,5 +27,49 @@ public class NameRelationshipTO extends ReferencedEntityBaseSTO {
 
 	// basic data on the referenced Name object:
 	private NameSTO name;
+
+	/**
+	 * @return the type
+	 */
+	public LocalisedTermSTO getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(LocalisedTermSTO type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the ruleConsidered
+	 */
+	public String getRuleConsidered() {
+		return ruleConsidered;
+	}
+
+	/**
+	 * @param ruleConsidered the ruleConsidered to set
+	 */
+	public void setRuleConsidered(String ruleConsidered) {
+		this.ruleConsidered = ruleConsidered;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public NameSTO getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(NameSTO name) {
+		this.name = name;
+	}
+	
+	
 	
 }
