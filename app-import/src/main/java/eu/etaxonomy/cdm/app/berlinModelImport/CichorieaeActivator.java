@@ -46,7 +46,8 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_niels2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final int sourceSecId = 7800000;
 	
@@ -54,17 +55,18 @@ public class CichorieaeActivator {
 	static final Object[] featureKeyList = new Integer[]{5,10,11,12}; 	
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
-	static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	static final File mediaPath = new File("//Bgbm11/Volumes/protolog/protolog/");
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-
 
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
 
 	//ignore null
 	static final boolean ignoreNull = true;
+
 
 // **************** ALL *********************	
 	//authors
@@ -85,7 +87,8 @@ public class CichorieaeActivator {
 	static final boolean doOccurences = false;
 
 	
-//  **************** SELECTED *********************
+// **************** SELECTED *********************
+
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
