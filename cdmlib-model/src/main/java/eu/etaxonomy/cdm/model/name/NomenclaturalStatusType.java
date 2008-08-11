@@ -31,12 +31,15 @@ import javax.xml.bind.annotation.XmlType;
  * "conserved" or "novum") to qualify the use of a particular taxon name string
  * depending on its {@link reference.INomenclaturalReference nomenclatural reference} (original publication),
  * on its {@link NomenclaturalCode nomenclatural code} and on possible decisions of the corresponding
- * competent authorities.
+ * competent authorities. Unfortunately the ICBN and the ICZN use sometimes
+ * different words for the same meaning or the same word for different meanings
+ * (for instance "valid" and "legitimate").
  * <P>
  * A standard (ordered) list of nomenclatural status type instances will be
  * automatically created as the project starts. But this class allows to extend
  * this standard list by creating new instances of additional nomenclatural
- * status types if needed. 
+ * status types if needed. The present standard list follows the ICBN
+ * terminology.
  * <P>
  * This class corresponds more or less to: <ul>
  * <li> NomenclaturalNoteTypeTerm according to the TDWG ontology
@@ -102,9 +105,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * 						 type to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new nomenclatural status type to be created
-	 * @see 	#NomenclaturalStatusType()
-	 * @see 	#readCsvLine(List, Language)
-	 * @see 	#readCsvLine(List)
+	 * @see 				 #NomenclaturalStatusType()
+	 * @see 				 #readCsvLine(List, Language)
+	 * @see 				 #readCsvLine(List)
 	 */
 	public NomenclaturalStatusType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
@@ -127,10 +130,20 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
-	 * type is itself "invalid" or a kind of "invalid" (true) or not (false).
-	 * Returns false if <i>this</i> nomenclatural status type is null.
+	 * type is itself "invalid" or a kind of "invalid" (true) or not (false) - 
+	 * this corresponds to "not available" for {@link ZoologicalName zoological names} -.
+	 * Returns false if <i>this</i> nomenclatural status type is null. The use
+	 * of "invalid" {@link TaxonNameBase taxon names} should be avoided.<BR>
+	 * A taxon name is "invalid" if it is not "valid"; this means that
+	 * the taxon name:<ul>
+	 * <li>has not been effectively published or
+	 * <li>has a form which does not comply with the rules of the
+	 * 	   {@link NomenclaturalCode nomenclature code} or
+	 * <li>is not accompanied by a description or diagnosis or by a reference to
+	 * 	   such a previously published description or diagnosis
+	 * </ul>
 	 *
-	 * @see  #isLegitimateType()
+	 * @see  #VALID()
 	 * @see  #isIllegitimateType()
 	 * @see  common.DefinedTermBase#getKindOf()
 	 */
@@ -151,7 +164,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "legitimate" or a kind of "legitimate" (true)
-	 * or not (false). Returns false if <i>this</i> nomenclatural status type is null.
+	 * or not (false). - this corresponds to "valid" for {@link ZoologicalName zoological names} -.
+	 * Returns false if <i>this</i> nomenclatural status type is null.<BR>
+	 * A "valid" ("available") {@link TaxonNameBase taxon name}, unless "rejected",
+	 * is "legitimate" if it was not "superfluous" when published
+	 * or has been later "conserved".<BR>
 	 *
 	 * @see  #isInvalidType()
 	 * @see  #isIllegitimateType()
@@ -176,10 +193,17 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
 	 * type is itself "illegitimate" or a kind of "illegitimate" (true)
-	 * or not (false). Returns false if <i>this</i> nomenclatural status type is null.
+	 * or not (false) - this corresponds to "invalid" for {@link ZoologicalName zoological names} -.
+	 * Returns false if <i>this</i> nomenclatural status type is null.<BR>
+	 * A "valid" ("available") {@link TaxonNameBase taxon name}, unless "conserved" or
+	 * "sanctioned", is "illegitimate" if it was "superfluous" when published
+	 * or has been later "rejected".
 	 *
+	 * @see  #VALID()
 	 * @see  #isInvalidType()
-	 * @see  #isLegitimateType()
+	 * @see  #ILLEGITIMATE()
+	 * @see  #CONSERVED()
+	 * @see  #SANCTIONED()
 	 * @see  common.DefinedTermBase#getKindOf()
 	 */
 	@Transient
@@ -197,100 +221,396 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+	/**
+	 * Returns the nomenclatural status type "ambiguous". A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "ambiguous" if it has been used so long
+	 * by different authors in different senses (other than the originally
+	 * intended) that it has become a persistent cause of error and confusion.<BR>
+	 * An "ambiguous" taxon name is treated as if "rejected" and is therefore
+	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #VALID()
+	 * @see  #REJECTED()
+	 * @see  #isIllegitimateType()
+	 */
 	public static final NomenclaturalStatusType AMBIGUOUS(){
 		return getByUuid(uuidAmbiguous);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "doubtful" (dubious). A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "doubtful" if its
+	 * application is uncertain; the confusion being derived from an incomplete
+	 * or confusing description.<BR>
+	 * A "doubtful" taxon name is treated as if "rejected" and is therefore
+	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #VALID()
+	 * @see  #REJECTED()
+	 * @see  #isIllegitimateType()
+	 */
 	public static final NomenclaturalStatusType DOUBTFUL(){
 		return getByUuid(uuidDoubtful);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "confusum". A "valid" ("available")
+	 * {@link TaxonNameBase taxon name}, is "confusum" if it has been widely
+	 * and persistently used for a taxon or taxa not including its type.<BR>
+	 * A "confusum" taxon name is treated as if "rejected" and is therefore
+	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #VALID()
+	 * @see  #REJECTED()
+	 * @see  #isIllegitimateType()
+	 */
 	public static final NomenclaturalStatusType CONFUSUM(){
 		return getByUuid(uuidConfusum);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "illegitimate" ("invalid" for
+	 * {@link ZoologicalName zoological names}). A "valid" ("available")
+	 * {@link TaxonNameBase taxon name}, unless "conserved" or "sanctioned", is "illegitimate"
+	 * if it was "superfluous" when published or has been later "rejected".<BR>
+	 *
+	 * @see  #VALID()
+	 * @see  #SUPERFLUOUS()
+	 * @see  #REJECTED()
+	 */
 	public static final NomenclaturalStatusType ILLEGITIMATE(){
 		return getByUuid(uuidIllegitimate);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "superfluous". A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "superfluous" if, when published,
+	 * the taxon to which it was applied, as circumscribed by its {@link NonViralName#getCombinationAuthorTeam() author},
+	 * definitely included the type of a name which ought to have been adopted,
+	 * or of which the epithet ought to have been adopted, under the rules of
+	 * the {@link NomenclaturalCode nomenclature code}, and if it has not been later declared
+	 * "conserved" or "sanctioned" by the competent authorities.<BR>
+	 * A "superfluous" taxon name is therefore also "illegitimate" ("invalid" for
+	 * {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #VALID()
+	 * @see  #CONSERVED()
+	 * @see  #SANCTIONED()
+	 * @see  #isIllegitimateType()
+	 */
 	public static final NomenclaturalStatusType SUPERFLUOUS(){
 		return getByUuid(uuidSuperfluous);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "rejected". A "valid" ("available")
+	 * {@link TaxonNameBase taxon name}, is "rejected" if, even though by the strict
+	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially
+	 * of the principle of priority, it should be "legitimate" ("valid" for
+	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
+	 * it as "illegitimate".<BR>
+	 * A "rejected" taxon name is therefore also "illegitimate" ("invalid" for
+	 * zoological names). A "rejected" taxon name is always rejected in favour
+	 * of a "conserved" taxon name.
+	 *
+	 * @see  #VALID()
+	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimateType()
+	 * @see  #CONSERVED()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType REJECTED(){
 		return getByUuid(uuidRejected);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "utique rejected". A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "utique rejected" if it is rejected
+	 * outright (without being rejected in favour of a "conserved" taxon name).<BR>
+	 * An "utique rejected" taxon name is therefore also "illegitimate"
+	 * ("invalid" for zoological names).
+	 *
+	 * @see  #REJECTED()
+	 * @see  #VALID()
+	 * @see  #isIllegitimateType()
+	 * @see  #CONSERVED()
+	 */
 	public static final NomenclaturalStatusType UTIQUE_REJECTED(){
 		return getByUuid(uuidUtiqueRejected);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "proposed to be conserved". A
+	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be conserved"
+	 * if, even though by the strict application of the rules of
+	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
+	 * it is "illegitimate" ("invalid" for {@link ZoologicalName zoological names}),
+	 * it has been submitted to competent authorities in order to decide whether
+	 * it should be handled as "legitimate".<BR>
+	 * A "proposed to be conserved" taxon name is therefore still "illegitimate"
+	 * ("invalid" for zoological names).
+	 *
+	 * @see  #VALID()
+	 * @see  #isIllegitimateType()
+	 * @see  #isLegitimateType()
+	 * @see  #CONSERVED()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType CONSERVED_PROP(){
 		return getByUuid(uuidConservedProp);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "proposed to be conserved
+	 * (orthography)". A {@link TaxonNameBase taxon name}, is "proposed to be conserved
+	 * (orthography)" if, even though originally published with another
+	 * spelling, it has been submitted to competent authorities in order to
+	 * decide whether the proposed alternative spelling should be "conserved".<BR>
+	 * A "proposed to be conserved (orthography)" taxon name is therefore still
+	 * "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isIllegitimateType()
+	 * @see  #CONSERVED_PROP()
+	 * @see  #CONSERVED()
+	 * @see  NameRelationshipType#ORTHOGRAPHIC_VARIANT()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED_PROP(){
 		return getByUuid(uuidOrthographyConservedProp);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "legitimate" ("valid" for
+	 * {@link ZoologicalName zoological names}). A "valid" ("available")
+	 * {@link TaxonNameBase taxon name}, unless "rejected", is "legitimate" if it was not
+	 * "superfluous" when published or has been later "conserved".<BR>
+	 *
+	 * @see  #VALID()
+	 * @see  #SUPERFLUOUS()
+	 * @see  #CONSERVED()
+	 */
 	public static final NomenclaturalStatusType LEGITIMATE(){
 		return getByUuid(uuidLegitimate);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "alternative". A family
+	 * {@link BotanicalName botanical name} is "alternative" if it is a classical name
+	 * long in use, in some cases even before 1753, and is considered as
+	 * {@link NomenclaturalStatusType#VALID() "valid"} although it does not follow the rules for
+	 * family names (see Article 18 of the ICBN).<BR>
+	 * An "alternative" taxon name is treated as if "conserved" and is therefore
+	 * also "legitimate".
+	 *
+	 * @see  #VALID()
+	 * @see  #CONSERVED()
+	 * @see  #isLegitimateType()
+	 * @see  NameRelationshipType#ALTERNATIVE_NAME()
+	 */
 	public static final NomenclaturalStatusType ALTERNATIVE(){
 		return getByUuid(uuidAlternative);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "novum". A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "novum" if it has been created
+	 * in order either to replace an earlier name that is "illegitimate" or to
+	 * avoid the building of a "later homonym".<BR>
+	 * A "novum" taxon name is therefore also "legitimate" ("valid" for
+	 * {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #VALID()
+	 * @see  #isIllegitimateType()
+	 * @see  NameRelationshipType#REPLACED_SYNONYM()
+	 * @see  NameRelationshipType#BLOCKING_NAME_FOR()
+	 */
 	public static final NomenclaturalStatusType NOVUM(){
 		return getByUuid(uuidNovum);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "proposed to be utique rejected". A
+	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be utique rejected"
+	 * if, even though by the strict application of the rules of
+	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
+	 * it is "legitimate" ("valid" for {@link ZoologicalName zoological names}),
+	 * it has been submitted to competent authorities in order to decide whether
+	 * it should be handled as "illegitimate" (without to be rejected in favour
+	 * of a "conserved" taxon name).<BR>
+	 * A "proposed to be utique rejected" taxon name is therefore still "legitimate"
+	 * ("valid" for zoological names).
+	 *
+	 * @see  #VALID()
+	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimateType()
+	 * @see  #REJECTED()
+	 * @see  #REJECTED_PROP()
+	 */
 	public static final NomenclaturalStatusType UTIQUE_REJECTED_PROP(){
 		return getByUuid(uuidUtiqueRejectedProp);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "conserved (orthography)". A
+	 * {@link TaxonNameBase taxon name}, is "conserved (orthography)" if competent authorities
+	 * decided to conserve a different spelling to the one published originally.<BR>
+	 * A "conserved (orthography)" taxon name is "conserved" and hence
+	 * "legitimate" ("valid" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isLegitimateType()
+	 * @see  #CONSERVED()
+	 * @see  #ORTHOGRAPHY_CONSERVED_PROP()
+	 * @see  NameRelationshipType#ORTHOGRAPHIC_VARIANT()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED(){
 		return getByUuid(uuidOrthographyConserved);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "proposed to be rejected". A
+	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be rejected"
+	 * if, even though by the strict application of the rules of
+	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
+	 * it should be "legitimate" ("valid" for {@link ZoologicalName zoological names}),
+	 * it has been submitted to competent authorities in order to decide whether
+	 * it should be handled as "illegitimate".<BR>
+	 * A "proposed to be rejected" taxon name is therefore still "legitimate"
+	 * ("valid" for zoological names). A "proposed to be rejected" taxon name is always
+	 * to be rejected in favour of a "proposed to be conserved" taxon name.
+	 *
+	 * @see  #VALID()
+	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimateType()
+	 * @see  #REJECTED()
+	 * @see  #CONSERVED_PROP()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType REJECTED_PROP(){
 		return getByUuid(uuidRejectedProp);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "conserved". A "valid"
+	 * ("available") {@link TaxonNameBase taxon name}, is "conserved" if, even though by the strict
+	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially of
+	 * the principle of priority, it should be "illegitimate" ("invalid" for
+	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
+	 * it as "legitimate".<BR>
+	 * A "conserved" taxon name is therefore also "legitimate" ("valid" for
+	 * zoological names).
+	 *
+	 * @see  #VALID()
+	 * @see  #isIllegitimateType()
+	 * @see  #isLegitimateType()
+	 * @see  NameRelationshipType#CONSERVED_AGAINST()
+	 */
 	public static final NomenclaturalStatusType CONSERVED(){
 		return getByUuid(uuidConserved);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "sanctioned". {@link BotanicalName Botanical names}
+	 * for fungi are "sanctioned" if they were published in the opera mentioned
+	 * in Article 13.1d of the {@link NomenclaturalCode#ICBN() ICBN}.<BR>
+	 * A "sanctioned" taxon name is treated as if "conserved" and is therefore
+	 * also "legitimate".
+	 *
+	 * @see  #VALID()
+	 * @see  #CONSERVED()
+	 * @see  #isLegitimateType()
+	 */
 	public static final NomenclaturalStatusType SANCTIONED(){
 		return getByUuid(uuidSanctioned);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "invalid" (this corresponds to 
+	 * "not available" for {@link ZoologicalName zoological names}). The use of "invalid"
+	 * {@link TaxonNameBase taxon names} should be avoided.<BR>
+	 * A taxon name is "invalid" if it is not "valid"; this means that
+	 * the taxon name:<ul>
+	 * <li>has not been effectively published or
+	 * <li>has a form which does not comply with the rules of the
+	 * 	   {@link NomenclaturalCode nomenclature code} or
+	 * <li>is not accompanied by a description or diagnosis or by a reference to
+	 * 	   such a previously published description or diagnosis
+	 * </ul>
+	 *
+	 * @see  #VALID()
+	 * @see  #isInvalidType()
+	 * @see  #ILLEGITIMATE()
+	 */
 	public static final NomenclaturalStatusType INVALID(){
 		return getByUuid(uuidInvalid);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "nudum". A {@link TaxonNameBase taxon name} is "nudum"
+	 * if its publication is not accompanied by a description or diagnosis or
+	 * by a reference to such a previously published description or diagnosis.<BR>
+	 * A "nudum" taxon name is therefore also "invalid" ("not available" for
+	 * {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isInvalidType()
+	 */
 	public static final NomenclaturalStatusType NUDUM(){
 		return getByUuid(uuidNudum);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "invalid combination". A
+	 * {@link TaxonNameBase bi- or trinomial} is an "invalid combination" if its
+	 * {@link NonViralName#getCombinationAuthorTeam() author} did not definitely associate the final
+	 * epithet with the name of the genus or species, or with its abbreviation.<BR>
+	 * An "invalid combination" taxon name is therefore also "invalid"
+	 * ("not available" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isInvalidType()
+	 */
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
 		return getByUuid(uuidCombinationInvalid);
 	}
 
-// noch nicht publiziert (in Bearbeitung)
+	/**
+	 * Returns the nomenclatural status type "provisional". A {@link TaxonNameBase taxon name} is
+	 * "provisional" if it has not been yet effectively published.<BR>
+	 * A "provisional" taxon name is therefore also "invalid"
+	 * ("not available" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isInvalidType()
+	 */
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getByUuid(uuidProvisional);
 	}
 
+	/**
+	 * Returns the nomenclatural status type "valid" (this corresponds to 
+	 * "available" for {@link ZoologicalName zoological names}).<BR>
+	 * A {@link TaxonNameBase taxon name} is "valid" if it:<ul>
+	 * <li>has been effectively published and
+	 * <li>has a form which complies with the rules of the
+	 * 	   {@link NomenclaturalCode nomenclature code} and
+	 * <li>is accompanied by a description or diagnosis or by a reference to
+	 * 	   such a previously published description or diagnosis
+	 * </ul>
+	 *
+	 * @see  #INVALID()
+	 * @see  #LEGITIMATE()
+	 */
 	public static final NomenclaturalStatusType VALID(){
 		return getByUuid(uuidValid);
 	}
 
 	/**
 	 * Returns the nomenclatural status type "subnudum". This type is not
-	 * covered by nomenclature codes. It appears sometimes in literature and
-	 * represents the opinion of the author who considers the name to be
+	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears sometimes in literature and
+	 * represents the opinion of the author who considers the {@link TaxonNameBase taxon name} to be
 	 * unusable for an unambiguous taxonomic use.
+	 * 
+	 * @see  #AMBIGUOUS()
+	 * @see  #CONFUSUM()
+	 * 
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getByUuid(uuidSubnudum);
@@ -299,11 +619,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/**
 	 * Returns the nomenclatural status type "opus utique oppressum". This type
 	 * relates to article 32.7 (old ICBN) and article 32.9 as well as App. 6
-	 * (new ICBN). This is a reference list of botanical opera, in which all
-	 * names (or names of a certain rank) are oppressed. Such a name has the
-	 * status "invalid" but in contrary to "nomen rejicendum" not a single name
+	 * (new {@link NomenclaturalCode#ICBN() ICBN}). This is a reference list of botanical opera, in which all
+	 * {@link BotanicalName taxon names} (or names of a certain rank) are oppressed. Such a name has the
+	 * status "invalid" but in contrary to "rejected" not a single name
 	 * is rejected by the commission but an opus with regard to the validity of
-	 * the names occurring in it.
+	 * all taxon names occurring in it.<BR>
+	 * An "opus utique oppressum" taxon name is therefore also "invalid"
+	 * ("not available" for {@link ZoologicalName zoological names}).
+	 *
+	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getByUuid(uuidOpusUtiqueOppr);

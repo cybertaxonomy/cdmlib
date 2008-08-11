@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * The class representing categories of {@link SynonymRelationship synonym relationships}
@@ -102,20 +103,21 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 
 	/**
-	 * Returns the synonym relationship type "is homotypic synonym of". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym}
-	 * and the taxon name used as the ("accepted/correct") {@link Taxon taxon} belong
-	 * to the same {@link name.HomotypicalGroup homotypical group}.
+	 * Returns the synonym relationship type "is homotypic synonym of"
+	 * ("is nomenclatural synonym of" in zoology). This indicates that the
+	 * {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
+	 * ("accepted/correct") {@link Taxon taxon} belong to the same {@link name.HomotypicalGroup homotypical group}.
 	 */
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHomotypicSynonymOf);
 	}
 
 	/**
-	 * Returns the synonym relationship type "is heterotypic synonym of". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym}
-	 * and the taxon name used as the ("accepted/correct") {@link Taxon taxon} do not
-	 * belong to the same {@link name.HomotypicalGroup homotypical group}.
+	 * Returns the synonym relationship type "is heterotypic synonym of"
+	 * ("is taxonomic synonym of" in zoology). This indicates that the
+	 * {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
+	 * ("accepted/correct") {@link Taxon taxon} do not belong to the same
+	 * {@link name.HomotypicalGroup homotypical group}.
 	 */
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHeterotypicSynonymOf);
