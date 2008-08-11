@@ -139,7 +139,8 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 							lectoReference = citation;
 							microReferenceBase = microcitation;
 						}
-						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, lectoReference, microReferenceBase, isNotDesignated);
+						//TODO addToAllNames true or false?
+						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, lectoReference, microReferenceBase, isNotDesignated, false);
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 						String rule = null;  //TODO
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;

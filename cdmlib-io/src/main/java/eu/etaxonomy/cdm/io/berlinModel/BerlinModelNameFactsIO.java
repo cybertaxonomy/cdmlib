@@ -173,6 +173,10 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	
 	
 	private Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
+		if (mediaUrl == null){
+			logger.warn("Media Url should not be null");
+			return null;
+		}
 		String mimeTypeTif = "image/tiff";
 		String mimeTypeJpeg = "image/jpeg";
 		String mimeTypePng = "image/png";
