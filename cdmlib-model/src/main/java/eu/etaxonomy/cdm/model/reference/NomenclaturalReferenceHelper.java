@@ -122,6 +122,7 @@ class NomenclaturalReferenceHelper {
 	}
 	
 	//
+	@Transient
 	private String getTokenizedFullNomenclaturalTitel() {
 		if (getCacheStrategy() == null || ! (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy) ){
 			logger.warn("cacheStrategy == null of not instanceOf INomenclaturalReferenceCacheStrategy");

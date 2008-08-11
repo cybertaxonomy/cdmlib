@@ -111,13 +111,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     @XmlAttribute
 	private boolean hasProblem = false;
 	
-    @XmlElementWrapper(name = "NameTypeDesignations")
-    @XmlElement(name = "NameTypeDesignation")
-    protected Set<NameTypeDesignation> nameTypeDesignations  = new HashSet<NameTypeDesignation>();
-	
-    @XmlElementWrapper(name = "SpecimenTypeDesignations")
-    @XmlElement(name = "SpecimenTypeDesignation")
-	private Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
+    @XmlElementWrapper(name = "TypeDesignations")
+    @XmlElement(name = "TypeDesignation")
+	private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
     // List homotypical groups here in TaxonomicNames or separately?
     // FIXME: Stack overflow if listed here.
@@ -609,89 +605,46 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return getHasProblem();
 	}
 
+	
+	
+//*********************** TYPE DESIGNATION *********************************************//	
+	
 
+	
 	/** 
-	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
-	 * to <i>this</i> taxon name the rank of which must be above "species".
-	 * The name type designations include all the taxon names used to typify
-	 * this name and eventually the rejected or conserved status
-	 * of these designations.
-	 *
+	 * Returns the set of {@link TypeDesignationBase type designations} assigned
+	 * to <i>this</i> taxon name.
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
-	@OneToMany
+	@ManyToMany
 	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	@Cascade(CascadeType.SAVE_UPDATE)
-	public Set<NameTypeDesignation> getNameTypeDesignations() {
-		return nameTypeDesignations;
+	public Set<TypeDesignationBase> getTypeDesignations() {
+		return typeDesignations;
 	}
+	
 	/** 
 	 * @see     #getNameTypeDesignations()
 	 */
-	protected void setNameTypeDesignations(Set<NameTypeDesignation> nameTypeDesignations) {
-		this.nameTypeDesignations = nameTypeDesignations;
+	private void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
+		this.typeDesignations = typeDesignations;
 	}
-	public void addNameTypeDesignation(NameTypeDesignation nameTypeDesignation) {
-		if (nameTypeDesignation != null){
-			if (nameTypeDesignation.getTypifiedName() != null){
-				nameTypeDesignation.getTypifiedName().getNameTypeDesignations().remove(nameTypeDesignation);
-			}
-			nameTypeDesignation.setTypifiedName(this);
-			this.nameTypeDesignations.add(nameTypeDesignation);
-		}
-	}
-
 	
 	/** 
-	 * Creates and adds a new {@link NameTypeDesignation name type designation}
-	 * to <i>this</i> taxon name's set of name type designations.
+	 * Removes one element from the set of {@link TypeDesignationBase type designations} assigned to the
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
+	 * The type designation itself will be nullified.
 	 *
-	 * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
-	 * @param  citation					the reference for this new designation
-	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
-	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
-	 * @param  isRejectedType			the boolean status for rejected
-	 * @param  isConservedType			the boolean status for conserved
-	 * @param  isLectoType				the boolean status for isLectotype
-	 * @param  lectoCitation		the reference for the lectotype
-	 * @param  lectoMicroCitation	the String for the micro citation of a lectotype
-	 * @see 			  				#getNameTypeDesignations()
-	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
+	 * @param  typeDesignation  the type designation which should be deleted
+	 * @see     #removeSpecimenTypeDesignation(SpecimenTypeDesignation)
+	 * @see     #removeNameTypeDesignation(NameTypeDesignation)
 	 */
-	public void addNameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isLectoType, ReferenceBase lectoCitation, String lectoMicroCitation, boolean isNotDesignated) {
-		NameTypeDesignation td = new NameTypeDesignation(this, typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isNotDesignated);
+	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
+		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
+		this.typeDesignations.remove(typeDesignation);
 	}
 	
-	/** 
-	 * Removes one element from the set of {@link NameTypeDesignation name type designations} of <i>this</i> taxon name.
-	 * The name type designation itself will be nullified.
-	 *
-	 * @param  typeDesignation  the name type designation of <i>this</i> taxon name which should be deleted
-	 * @see     		  		#getNameTypeDesignations()
-	 * @see     		  		#removeTypeDesignation(SpecimenTypeDesignation)
-	 */
-	public void removeNameTypeDesignation(NameTypeDesignation typeDesignation) {
-		//TODO
-		logger.warn("not yet fully implemented: nullify the name type designation itself?");
-		this.nameTypeDesignations.remove(typeDesignation);
-	}
-	
-	/** 
-	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
-	 * that typify <i>this</i> taxon name.
-	 */
-	@ManyToMany
-	@Cascade(CascadeType.SAVE_UPDATE)
-	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
-		return specimenTypeDesignations;
-	}
-	/** 
-	 * @see #getSpecimenTypeDesignations()
-	 */
-	protected void setSpecimenTypeDesignations(Set<SpecimenTypeDesignation> specimenTypeDesignations) {
-		this.specimenTypeDesignations = specimenTypeDesignations;
-	}
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
@@ -710,6 +663,80 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return this.getHomotypicalGroup().getSpecimenTypeDesignations();
 	}
 	
+//*********************** NAME TYPE DESIGNATION *********************************************//	
+	
+	/** 
+	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
+	 * to <i>this</i> taxon name the rank of which must be above "species".
+	 * The name type designations include all the taxon names used to typify
+	 * this name and eventually the rejected or conserved status
+	 * of these designations.
+	 *
+	 * @see     NameTypeDesignation
+	 * @see     SpecimenTypeDesignation
+	 */
+	@Transient
+	public Set<NameTypeDesignation> getNameTypeDesignations() {
+		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
+		for (TypeDesignationBase typeDesignation : this.typeDesignations){
+			if (typeDesignation instanceof NameTypeDesignation){
+				result.add((NameTypeDesignation)typeDesignation);
+			}
+		}
+		return result;
+	}
+	
+	/** 
+	 * Creates and adds a new {@link NameTypeDesignation name type designation}
+	 * to <i>this</i> taxon name's set of name type designations.
+	 *
+	 * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
+	 * @param  citation					the reference for this new designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
+	 * @param  isRejectedType			the boolean status for rejected
+	 * @param  isConservedType			the boolean status for conserved
+	 * @param  isLectoType				the boolean status for isLectotype
+	 * @param  lectoCitation		the reference for the lectotype
+	 * @param  lectoMicroCitation	the String for the micro citation of a lectotype
+	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all names of the homotypical
+	 * 								group this taxon name belongs to
+	 * @see 			  				#getNameTypeDesignations()
+	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
+	 */
+	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
+				ReferenceBase citation, 
+				String citationMicroReference, 
+				String originalNameString, 
+				boolean isRejectedType, 
+				boolean isConservedType, 
+				boolean isLectoType, 
+				ReferenceBase lectoCitation, 
+				String lectoMicroCitation, 
+				boolean isNotDesignated, 
+				boolean addToAllHomotypicNames) {
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, lectoCitation, lectoMicroCitation, originalNameString, isRejectedType, isConservedType, isNotDesignated);
+		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
+	}
+	
+//*********************** SPECIMEN TYPE DESIGNATION *********************************************//	
+	
+	/** 
+	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
+	 * that typify <i>this</i> taxon name.
+	 */
+	@Transient
+	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
+		for (TypeDesignationBase typeDesignation : this.typeDesignations){
+			if (typeDesignation instanceof SpecimenTypeDesignation){
+				result.add((SpecimenTypeDesignation)typeDesignation);
+			}
+		}
+		return result;
+	}
+
+	
 	/** 
 	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
 	 * (using its attributes as parameters) to the set of specimen type designations assigned to the
@@ -720,60 +747,47 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  citation					the reference for this new specimen type designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all names of the homotypical
+	 * 								group this taxon name belongs to
 	 * @see 			  				HomotypicalGroup#getSpecimenTypeDesignations()
 	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
 	 * @see 			  				TypeDesignationStatus
 	 */
-	public void addSpecimenTypeDesignation(Specimen typeSpecimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, String originalNameString, boolean addToAllNames) {
-		SpecimenTypeDesignation specimenTypeDesignation = 
-			SpecimenTypeDesignation.NewInstance(typeSpecimen, status, citation, citationMicroReference, originalNameString);
-		this.getHomotypicalGroup().addSpecimenTypeDesignation(specimenTypeDesignation, addToAllNames);
-	}
-
-	//only to be used for xxx
-	/** 
-	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
-	 * to the set of specimen type designations assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
-	 *
-	 * @param  specimenTypeDesignation	the specimen type designation to be added for <i>this</i> taxon name's homotypical group
-	 * @see 			  				#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
-	 * @see 			  				HomotypicalGroup#getSpecimenTypeDesignations()
-	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
-	 */
-	protected void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
-		this.specimenTypeDesignations.add(specimenTypeDesignation);
+	public void addSpecimenTypeDesignation(Specimen typeSpecimen, 
+				TypeDesignationStatus status, 
+				ReferenceBase citation, 
+				String citationMicroReference, 
+				ReferenceBase lectoTypeReference, 
+				String lectoTypeMicroReference, 
+				String originalNameString, 
+				boolean addToAllHomotypicNames) {
+		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, lectoTypeReference, lectoTypeMicroReference, originalNameString);
+		addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
 	}
 	
-	//only to be used for xxx
-	/** 
-	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
-	 *
-	 * @param  SpecimenTypeDesignation  the specimen type designation which should be deleted
-	 * @see     		  				HomotypicalGroup#getSpecimenTypeDesignations()
-	 * @see     		  				#removeTypeDesignation(SpecimenTypeDesignation)
-	 * @see     		  				#removeNameTypeDesignation(NameTypeDesignation)
-	 */
-	protected void removeSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation) {
-		this.specimenTypeDesignations.remove(specimenTypeDesignation);
+	private boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){
+		//at them moment typeDesignations are not persisted with the homotypical group
+		//so explicit adding to the homotypical group is not necessary.
+		if (typeDesignation != null){
+			this.typeDesignations.add(typeDesignation);
+			typeDesignation.addTypifiedName(this);
+			
+			if (addToAllNames){
+				for (TaxonNameBase taxonName : this.getHomotypicalGroup().getTypifiedNames()){
+					if (taxonName != this){
+						taxonName.addTypeDesignation(typeDesignation, false);
+					}
+				}
+			}
+		}
+		return true;
 	}
+	
 
-	/** 
-	 * Removes one element from the set of {@link SpecimenTypeDesignation specimen type designations} assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
-	 * The specimen type designation itself will be nullified.
-	 *
-	 * @param  typeDesignation  the specimen type designation which should be deleted
-	 * @see     		  		HomotypicalGroup#getSpecimenTypeDesignations()
-	 * @see     		  		#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
-	 * @see     		  		#removeNameTypeDesignation(NameTypeDesignation)
-	 */
-	public void removeTypeDesignation(SpecimenTypeDesignation typeDesignation) {
-		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
-		this.homotypicalGroup.removeSpecimenTypeDesignation(typeDesignation);
-	}
+	
+//*********************** HOMOTYPICAL GROUP *********************************************//	
 
+	
 	/** 
 	 * Returns the {@link HomotypicalGroup homotypical group} to which
 	 * <i>this</i> taxon name belongs. A homotypical group represents all taxon names
@@ -791,6 +805,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.homotypicalGroup = newHomotypicalGroup;		
 	}
 
+// *************************************************************************//
+	
 	/** 
 	 * @see #getNomenclaturalReference()
 	 */

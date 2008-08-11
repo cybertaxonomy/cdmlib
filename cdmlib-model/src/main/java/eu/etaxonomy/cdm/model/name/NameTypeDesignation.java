@@ -10,10 +10,15 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -46,21 +51,20 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @XmlType(name="NameTypeDesignation")
 @Entity
-public class NameTypeDesignation extends ReferencedEntityBase {
+public class NameTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	private boolean isRejectedType;
 	private boolean isConservedType;
 	private boolean isLectoType;
-	private ReferenceBase lectoTypeReference;
-	private String lectoTypeMicroReference;
 	private boolean isNotDesignated;
 	private TaxonNameBase typeSpecies;
-	private TaxonNameBase typifiedName;
 	
-	@XmlElement(name = "HomotypicalGroup")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	private HomotypicalGroup homotypicalGroup;
+//	@XmlElement(name = "HomotypicalGroup")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
+//	private HomotypicalGroup homotypicalGroup;
+	
+	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -94,60 +98,16 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 * @see							#NameTypeDesignation()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
 	 */
-	protected NameTypeDesignation(TaxonNameBase typifiedName, TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
-		super(citation, citationMicroReference, originalNameString);
+	protected NameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
+			ReferenceBase lectoTypeReference, String lectoTypeMicroReference, String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
+		super(citation, citationMicroReference, lectoTypeReference, lectoTypeMicroReference, originalNameString);
 		this.setTypeSpecies(typeSpecies);
-		typifiedName.addNameTypeDesignation(this);
-		//TODO check if this should be so
-		// seems like it shouldn't be so
-		//typifiedName.setHomotypicalGroup(typeSpecies.getHomotypicalGroup());
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
 		this.isNotDesignated = isNotDesignated;
 	}
 		
 	//********* METHODS **************************************/
-
-
-	/** 
-	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
-	 * in <i>this</i> name type designation.
-	 *  
-	 * @see   #getTypeSpecies()
-	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public HomotypicalGroup getHomotypicalGroup() {
-		return homotypicalGroup;
-	}
-	/**
-	 * @see  #getHomotypicalGroup()
-	 */
-	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
-		this.homotypicalGroup = newHomotypicalGroup;		
-	}
-	
-	/** 
-	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
-	 * typified taxon name in <i>this</i> taxon name type designation. The {@link Rank rank}
-	 * of a taxon name typified by another taxon name must be higher than
-	 * "species aggregate".
-	 *  
-	 * @see   #getTypeSpecies()
-	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public TaxonNameBase getTypifiedName() {
-		return typifiedName;
-	}
-	/**
-	 * @see  #getTypifiedName()
-	 */
-	@Deprecated // to be used by hibernate only
-	protected void setTypifiedName(TaxonNameBase typifiedName) {
-		this.typifiedName = typifiedName;
-	}
 
 
 	/** 
@@ -212,6 +172,9 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 *  
 	 * @see   #getLectoTypeReference()
 	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
+	 */
 	public boolean isLectoType() {
 		return isLectoType;
 	}
@@ -221,47 +184,6 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	 */
 	public void setLectoType(boolean isLectoType) {
 		this.isLectoType = isLectoType;
-	}
-
-	/** 
-	 * Returns the {@link reference.ReferenceBase reference} used in case <i>this</i> 
-	 * taxon name type designation is a lectotype. This reference is different
-	 * to the nomenclatural reference of the typified taxon name.
-	 *  
-	 * @see   #isLectoType()
-	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public ReferenceBase getLectoTypeReference() {
-		return lectoTypeReference;
-	}
-
-	/**
-	 * @see   #getLectoTypeReference()
-	 */
-	public void setLectoTypeReference(ReferenceBase lectoTypeReference) {
-		this.lectoTypeReference = lectoTypeReference;
-	}
-
-	/** 
-	 * Returns the details string of the reference corresponding to <i>this</i> taxon 
-	 * type designation if it is a lectotype. The details describe the exact
-	 * localisation within the publication used for the lectotype assignation.
-	 * These are mostly (implicitly) pages but can also be figures or tables or
-	 * any other element of a publication. A lectotype micro reference (details)
-	 * requires the existence of a lectotype reference.
-	 * 
-	 * @see   #getLectoTypeReference()
-	 */
-	public String getLectoTypeMicroReference() {
-		return lectoTypeMicroReference;
-	}
-
-	/**
-	 * @see   #getLectoTypeMicroReference()
-	 */
-	public void setLectoTypeMicroReference(String lectoTypeMicroReference) {
-		this.lectoTypeMicroReference = lectoTypeMicroReference;
 	}
 
 	/**
@@ -283,9 +205,5 @@ public class NameTypeDesignation extends ReferencedEntityBase {
 	public void setNotDesignated(boolean isNotDesignated) {
 		this.isNotDesignated = isNotDesignated;
 	}
-	
-	
-	
-	
 
 }

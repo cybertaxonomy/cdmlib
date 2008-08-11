@@ -11,20 +11,18 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
-import org.apache.log4j.Logger;
+import java.util.UUID;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -87,8 +85,20 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 */
 	public TypeDesignationStatus() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+
+	@Transient
+	public boolean isLectotyp(){
+		if (this.equals(LECTOTYPE()) ||
+				this.equals(ISOLECTOTYPE()) ||
+				this.equals(SECOND_STEP_LECTOTYPE()) ||
+				this.equals(PARALECTOTYPE()) ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 
 	/** 
 	 * Class constructor: creates an additional type designation status instance

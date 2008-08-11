@@ -59,14 +59,9 @@ import javax.xml.bind.annotation.XmlType;
     "typifiedNames"
 })
 @Entity
-public class SpecimenTypeDesignation extends ReferencedEntityBase {
+public class SpecimenTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
-	
-	@XmlElement(name = "HomotypicalGroup")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	private HomotypicalGroup homotypicalGroup;
 	
 	@XmlElement(name = "TypeSpecimen")
 //	@XmlIDREF
@@ -76,11 +71,32 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	@XmlElement(name = "TypeStatus")
 	private TypeDesignationStatus typeStatus;
 	
-	@XmlElementWrapper(name = "TypifiedNames")
-	@XmlElement(name = "TypifiedName")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
+
+	
+
+//	/**
+//	 * Creates a new specimen type designation instance
+//	 * (including its {@link reference.ReferenceBase reference source} and eventually
+//	 * the taxon name string originally used by this reference when establishing
+//	 * the former designation) and adds it to the corresponding 
+//	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
+//	 * {@link HomotypicalGroup homotypical group}.
+//	 * 
+//	 * @param specimen				the derived unit (specimen or figure) used as type
+//	 * @param status				the type designation status 
+//	 * @param citation				the reference source for the new designation
+//	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+//	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+//	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
+//	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
+//	 * @see							occurrence.DerivedUnitBase
+//	 */
+//	protected static SpecimenTypeDesignation NewInstance2(DerivedUnitBase specimen, TypeDesignationStatus status,
+//			ReferenceBase citation, String citationMicroReference, String originalNameString){
+//		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
+//		return specTypeDesig;
+//	}
+	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -113,59 +129,18 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
 	 * @see							occurrence.DerivedUnitBase
 	 */
-	protected SpecimenTypeDesignation(DerivedUnitBase specimen, 
-										TypeDesignationStatus status, 
-										ReferenceBase citation, 
-										String citationMicroReference, 
-										String originalNameString) {
-		super(citation, citationMicroReference, originalNameString);
+	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
+			ReferenceBase lectoTypeReference, String lectoTypeMicroReference, String originalNameString) {
+		super(citation, citationMicroReference, lectoTypeReference, lectoTypeMicroReference, originalNameString);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}
 	
 
-	/**
-	 * Creates a new specimen type designation instance
-	 * (including its {@link reference.ReferenceBase reference source} and eventually
-	 * the taxon name string originally used by this reference when establishing
-	 * the former designation) and adds it to the corresponding 
-	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type designation set} of the
-	 * {@link HomotypicalGroup homotypical group}.
-	 * 
-	 * @param specimen				the derived unit (specimen or figure) used as type
-	 * @param status				the type designation status 
-	 * @param citation				the reference source for the new designation
-	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
-	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, ReferenceBase, String, String)
-	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
-	 * @see							occurrence.DerivedUnitBase
-	 */
-	public static SpecimenTypeDesignation NewInstance(DerivedUnitBase specimen, TypeDesignationStatus status,
-			ReferenceBase citation, String citationMicroReference, String originalNameString){
-		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
-		return specTypeDesig;
-	}
 	
 	
 	//********* METHODS **************************************/
 
-	/** 
-	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
-	 * in <i>this</i> specimen type designation.
-	 *  
-	 * @see   #getTypeSpecimen()
-	 */
-	@ManyToOne
-	public HomotypicalGroup getHomotypicalGroup() {
-		return homotypicalGroup;
-	}
-	/**
-	 * @see  #getHomotypicalGroup()
-	 */
-	public void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
-		this.homotypicalGroup = newHomotypicalGroup;		
-	}
 
 
 	/** 
@@ -203,22 +178,12 @@ public class SpecimenTypeDesignation extends ReferencedEntityBase {
 		this.typeStatus = typeStatus;
 	}
 
-	/** 
-	 * Returns the set of {@link TaxonNameBase taxon names} included in the
-	 * {@link HomotypicalGroup homotypical group} typified in <i>this</i> specimen type designation.
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
 	 */
-	@ManyToMany
-	public Set<TaxonNameBase> getTypifiedNames() {
-		return typifiedNames;
-	}
-
-	/**
-	 * @see  #getTypifiedNames()
-	 */
-	public void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
-		this.typifiedNames = typifiedNames;
+	@Transient
+	public boolean isLectoType() {
+		return typeStatus.isLectotyp();
 	}
 	
-	
-
 }
