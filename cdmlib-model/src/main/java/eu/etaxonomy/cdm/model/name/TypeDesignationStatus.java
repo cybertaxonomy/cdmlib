@@ -87,19 +87,6 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 		super();
 	}
 
-	@Transient
-	public boolean isLectotyp(){
-		if (this.equals(LECTOTYPE()) ||
-				this.equals(ISOLECTOTYPE()) ||
-				this.equals(SECOND_STEP_LECTOTYPE()) ||
-				this.equals(PARALECTOTYPE()) ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-
 	/** 
 	 * Class constructor: creates an additional type designation status instance
 	 * with a description (in the {@link common.Language#DEFAULT() default language}), a label
@@ -129,6 +116,33 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 */
 	public static final TypeDesignationStatus getByUuid(UUID uuid){
 		return (TypeDesignationStatus) findByUuid(uuid);
+	}
+	
+
+	/**
+	 * Returns the boolean value indicating whether <i>this</i> type designation
+	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
+	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
+	 * A lectotype is a {@link occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * nomenclatural type, when no holotype was indicated at the time of
+	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * holotype is found to belong to more than one {@link HomotypicalGroup homotypical group},
+	 * or as long as it is missing.
+	 *
+	 * @see  #LECTOTYPE()
+	 * @see  #HOLOTYPE()
+	 * @see  common.DefinedTermBase#getKindOf()
+	 */
+	@Transient
+	public boolean isLectotyp(){
+		if (this.equals(LECTOTYPE()) ||
+				this.equals(ISOLECTOTYPE()) ||
+				this.equals(SECOND_STEP_LECTOTYPE()) ||
+				this.equals(PARALECTOTYPE()) ){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	/**

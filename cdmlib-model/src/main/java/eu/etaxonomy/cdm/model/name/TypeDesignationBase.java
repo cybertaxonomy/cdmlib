@@ -32,6 +32,15 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
+ * The (abstract) class representing a typification of an {@link HomotypicalGroup homotypical group}.
+ * This allows to define a type designation only once for the homotypical group
+ * as a whole instead of defining a type designation for each one of the taxon
+ * names subsumed under one homotypical group.<BR>
+ * All {@link TaxonNameBase taxon names} which have a {@link Rank rank} "species aggregate" or lower
+ * can only be typified by specimens (a {@link SpecimenTypeDesignation specimen type designation}), but taxon
+ * names with a higher rank might be typified by an other taxon name with
+ * "species" rank (a {@link NameTypeDesignation name type designation}).
+ * 
  * @author a.mueller
  * @created 07.08.2008
  * @version 1.0

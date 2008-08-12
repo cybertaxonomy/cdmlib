@@ -31,18 +31,19 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * The class representing a typification of a {@link TaxonNameBase taxon name} with
- * a {@link Rank rank} above "species aggregate" by a species taxon name. A type of a
- * genus name or of any subdivision of a genus can only be a species name.
- * A type of a family name or of any subdivision of a family is a genus name 
- * (and resolving it: a species name typifying this genus).
- * Moreover the designation of a particular species name as a type for a
- * suprageneric taxon name might be nomenclaturally rejected or conserved.
+ * The class representing a typification of the {@link TaxonNameBase taxon names}, belonging
+ * to an {@link HomotypicalGroup homotypical group}, with a {@link Rank rank} above "species aggregate"
+ * by a species taxon name of the same homotypical group.<BR>
+ * According to nomenclature a type of a genus name or of any subdivision of a
+ * genus can only be a species name. A type of a family name or of any
+ * subdivision of a family is a genus name (and resolving it: a species name 
+ * typifying this genus).<BR>
+ * Moreover the designation of a particular species name as a type for an
+ * homotypical group name might be nomenclaturally rejected or conserved.
  * Depending on the date of publication, the same typification could be rejected
  * according to one reference and later be conserved according to another
  * reference, but a name type designation cannot be simultaneously rejected and
- * conserved. Both names, the typified name and the species name used in
- * the name type designation, must belong to the same {@link HomotypicalGroup homotypical group}.
+ * conserved.
  * 
  * @see		SpecimenTypeDesignation
  * @author	m.doering
@@ -70,7 +71,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	/** 
 	 * Class constructor: creates a new empty name type designation.
 	 * 
-	 * @see	#NameTypeDesignation(TaxonNameBase, TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 * @see	#NameTypeDesignation(TaxonNameBase, ReferenceBase, String, ReferenceBase, String, String, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation() {
 		super();
@@ -151,7 +152,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * conserve the use of the species taxon name for <i>this</i> taxon name type
 	 * designation.
 	 *  
-	 * @see   #isConservedType()
+	 * @see   #isRejectedType()
 	 */
 	public boolean isConservedType(){
 		return this.isConservedType;

@@ -34,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * only once for the homotypical group instead of defining a type designation
  * for each one of the taxon names subsumed under one homotypical group.
  * All {@link TaxonNameBase taxon names} which have a {@link Rank rank}
- * "species aggregate" or lower can only be typified by specimens, but taxon
- * names with a higher rank might be typified by an other taxon name with
- * "species" rank a ({@link NameTypeDesignation name type designation}).
+ * "species aggregate" or lower can only be typified by specimens.
  * Moreover each typification by a specimen (or by a figure) has a {@link TypeDesignationStatus status}
  * like "holotype" or "isotype".
  * <P>
@@ -180,6 +178,18 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
+	 */
+	/**
+	 * Returns the boolean value indicating whether <i>this</i> specimen type
+	 * designation has a "lectotype" status (true) or not (false).<BR>
+	 * A lectotype is a {@link occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * nomenclatural type, when no holotype was indicated at the time of
+	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * holotype is found to belong to more than one {@link HomotypicalGroup homotypical group},
+	 * or as long as it is missing.
+	 *
+	 * @see  TypeDesignationStatus#isLectotype()
+	 * @see  TypeDesignationStatus#HOLOTYPE()
 	 */
 	@Transient
 	public boolean isLectoType() {

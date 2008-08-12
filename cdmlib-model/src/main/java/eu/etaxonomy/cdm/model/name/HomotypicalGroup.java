@@ -155,6 +155,14 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	
 	
+	/** 
+	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} that
+	 * typify <i>this</i> homotypical group including the status of these designations.
+	 *
+	 * @see	#getTypifiedNames()
+	 * @see	#getNameTypeDesignations()
+	 * @see	#getTypeDesignations()
+	 */
 	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
@@ -164,6 +172,14 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		return result;
 	}
 	
+	/** 
+	 * Returns the set of {@link NameTypeDesignation name type designations} that
+	 * typify <i>this</i> homotypical group including the status of these designations.
+	 *
+	 * @see	#getTypifiedNames()
+	 * @see	#getSpecimenTypeDesignations()
+	 * @see	#getTypeDesignations()
+	 */
 	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations(){
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
@@ -174,6 +190,15 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 	
 	
+	/** 
+	 * Returns the set of all {@link ITypeDesignation type designations} that
+	 * typify <i>this</i> homotypical group (this includes
+	 * {@link NameTypeDesignation name type designations} and {@link SpecimenTypeDesignation specimen type designations}).
+	 *
+	 * @see	#getTypifiedNames()
+	 * @see	#getNameTypeDesignations()
+	 * @see	#getSpecimenTypeDesignations()
+	 */
 	@Transient
 	public Set<ITypeDesignation> getTypeDesignations(){
 		Set<ITypeDesignation> result = new HashSet<ITypeDesignation>();
