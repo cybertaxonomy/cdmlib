@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -44,16 +45,14 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
 @Component
 public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	
-	@Autowired
+	@Autowired 
 	private NameAssembler nameAssembler;
 	@Autowired
 	private ReferenceAssembler refAssembler;
 	@Autowired
 	private LocalisedTermAssembler termAssembler;
 	@Autowired
-	private SpecimenTypeDesignationAssembler specimenTypeDesignationAssembler;
-	@Autowired
-	private NameTypeDesignationAssembler nameTypeDesignationAssembler;
+	private TypeDesignationAssembler typeDesignationAssembler;
 	@Autowired
 	private DescriptionAssembler descriptionAssembler;
 	
@@ -107,9 +106,9 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		    			synList.add(synonym);
 		    		}
 				}
-		    	taxonTO.setSpecimenTypeDesignations(specimenTypeDesignationAssembler.getSTOs(taxon.getHomotypicGroup().getSpecimenTypeDesignations(), locales));
+		    	taxonTO.setTypeDesignations(typeDesignationAssembler.getSTOs(taxon.getHomotypicGroup().getTypeDesignations(), locales));
 		    	
-		    	taxonTO.setNameTypeDesignations(nameTypeDesignationAssembler.getSTOs(taxon.getName().getNameTypeDesignations(), locales));
+		    	//taxonTO.setNameTypeDesignations(typeDesignationAssembler.getSTOs(taxon.getName().getNameTypeDesignations(), locales));
 		    	
 		    	taxonTO.setHomotypicSynonyms(getSynonymRelationshipTOs(synList, taxon, locales));
 		    	List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
@@ -136,7 +135,7 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		    	//TODO: add more mappings
 			}
 		}
-		return taxonTO;
+		return taxonTO; 
 	}
 	
 	/**
@@ -152,11 +151,13 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		for(TaxonBase tb : homotypicalGroup.getSynonymsInGroup(taxon.getSec())){
 			homotypicTaxonGroupSTO.getTaxa().add(getSTO(tb, locales));
 		}
-		homotypicTaxonGroupSTO.getSpecimenTypeDesignations().addAll(specimenTypeDesignationAssembler.getSTOs(homotypicalGroup.getSpecimenTypeDesignations(), locales));
+		
+		
+		
+		homotypicTaxonGroupSTO.getTypeDesignations().addAll(typeDesignationAssembler.getSTOs(homotypicalGroup.getTypeDesignations(), locales));
 		//TODO
-		homotypicTaxonGroupSTO.getNameTypeDesignations().addAll(nameTypeDesignationAssembler.getSTOs(homotypicalGroup.getNameTypeDesignations(), locales));
-		//taxonTO.setNameTypeDesignations(nameTypeDesignationAssembler.getSTOs(taxon.getName().getNameTypeDesignations(), locales));
-    	
+		//homotypicTaxonGroupSTO.getTypeDesignations().addAll(typeDesignationAssembler.getSTOs(homotypicalGroup.getNameTypeDesignations(), locales));
+		    
 		return homotypicTaxonGroupSTO;
 	}
 

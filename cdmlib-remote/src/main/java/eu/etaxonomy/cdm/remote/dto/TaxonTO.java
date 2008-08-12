@@ -39,8 +39,7 @@ public class TaxonTO extends BaseTO{
 	private boolean isAccepted;
 
 	// homotypic data
-	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
-	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
+	private List<TypeDesignationSTO> typeDesignations = new ArrayList<TypeDesignationSTO>();
 	private List<SynonymRelationshipTO> homotypicSynonyms = new ArrayList<SynonymRelationshipTO>();
 	// heterotypic data
 	private List<HomotypicTaxonGroupSTO> heterotypicSynonymyGroups = new ArrayList<HomotypicTaxonGroupSTO>();
@@ -68,20 +67,14 @@ public class TaxonTO extends BaseTO{
 	public void setAccepted(boolean isAccepted) {
 		this.isAccepted = isAccepted;
 	}
-	public List<SpecimenTypeDesignationSTO> getTypeDesignations() {
+	public List<TypeDesignationSTO> getTypeDesignations() {
 		return typeDesignations;
 	}
-	public void setSpecimenTypeDesignations(
-			List<SpecimenTypeDesignationSTO> typeDesignations) {
+	public void setTypeDesignations(
+			List<TypeDesignationSTO> typeDesignations) {
 		this.typeDesignations = typeDesignations;
 	}
-	public List<NameTypeDesignationSTO> getNameTypeDesignations() {
-		return nameTypeDesignations;
-	}
-	public void setNameTypeDesignations(
-			List<NameTypeDesignationSTO> nameTypeDesignations) {
-		this.nameTypeDesignations = nameTypeDesignations;
-	}
+
 	public List<SynonymRelationshipTO> getHomotypicSynonyms() {
 		return homotypicSynonyms;
 	}

@@ -46,7 +46,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
 	private int modCount = 50;
-	private int maxCount = 2000;
+	private int maxCount = 20;
 	
 	public BerlinModelNameFactsIO(){
 		super();

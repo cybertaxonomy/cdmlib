@@ -119,6 +119,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 						boolean addToAllNames = true;
 						String originalNameString = null;
 						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
+												
 						typeMap.put(typeDesignationId, specimen);
 						taxonNameStore.add(taxonNameBase);
 						

@@ -9,23 +9,10 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 
-public class SpecimenTypeDesignationSTO extends TypeDesignationSTO {
-	private SpecimenSTO typeSpecimen;
+public class TypeDesignationSTO extends ReferencedEntityBaseSTO {
 	private IdentifiedString status;
 
-	/**
-	 * @return
-	 */
-	public SpecimenSTO getTypeSpecimen() {
-		return typeSpecimen;
-	}
 
-	/**
-	 * @param typeSpecimen
-	 */
-	public void setTypeSpecimen(SpecimenSTO typeSpecimen) {
-		this.typeSpecimen = typeSpecimen;
-	}
 
 	/**
 	 * @return

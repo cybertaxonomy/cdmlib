@@ -20,9 +20,7 @@ import java.util.List;
 public class HomotypicTaxonGroupSTO extends BaseSTO{
 
 	private List<TaxonSTO> taxa = new ArrayList();
-	private List<SpecimenTypeDesignationSTO> specimenTypeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
-	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
-	
+	private List<TypeDesignationSTO> typeDesignations = new ArrayList<TypeDesignationSTO>();
 	
 	public List<TaxonSTO> getTaxa() {
 		return taxa;
@@ -30,19 +28,13 @@ public class HomotypicTaxonGroupSTO extends BaseSTO{
 	public void setTaxa(List<TaxonSTO> taxa) {
 		this.taxa = taxa;
 	}
-	public List<SpecimenTypeDesignationSTO> getSpecimenTypeDesignations() {
-		return specimenTypeDesignations;
+
+	public List<TypeDesignationSTO> getTypeDesignations() {
+		return typeDesignations;
 	}
-	public void setSpecimenTypeDesignations(
-			List<SpecimenTypeDesignationSTO> typeDesignations) {
-		this.specimenTypeDesignations = typeDesignations;
-	}
-	public List<NameTypeDesignationSTO> getNameTypeDesignations() {
-		return nameTypeDesignations;
-	}
-	public void setNameTypeDesignations(
-			List<NameTypeDesignationSTO> nameTypeDesignations) {
-		this.nameTypeDesignations = nameTypeDesignations;
+	public void setTypeDesignations(
+			List<TypeDesignationSTO> typeDesignations) {
+		this.typeDesignations = typeDesignations;
 	}
 	
 }

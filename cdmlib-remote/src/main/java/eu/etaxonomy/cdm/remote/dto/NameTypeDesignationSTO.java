@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -22,12 +20,12 @@ import org.apache.log4j.Logger;
  * @version 1.0
  *
  */
-public class NameTypeDesignationSTO extends ReferencedEntityBaseSTO {
+public class NameTypeDesignationSTO extends TypeDesignationSTO {
 	private static Logger logger = Logger
 	.		getLogger(NameTypeDesignationSTO.class);
 	
 	private NameSTO typeSpeciesName;
-	private NameSTO typifiedName;
+	private ArrayList<NameSTO> typifiedNames = new ArrayList<NameSTO>();
 	
 
 	private IdentifiedString status;
@@ -50,14 +48,21 @@ public class NameTypeDesignationSTO extends ReferencedEntityBaseSTO {
 	/**
 	 * @return the typifiedName
 	 */
-	public NameSTO getTypifiedName() {
-		return typifiedName;
+	public ArrayList<NameSTO> getTypifiedName() {
+		return typifiedNames;
 	}
 	/**
 	 * @param typifiedName the typifiedName to set
 	 */
 	public void setTypifiedName(NameSTO typifiedName) {
-		this.typifiedName = typifiedName;
+		this.typifiedNames.add(typifiedName);
+	}
+	
+	/**
+	 * @param typifiedName the typifiedName to set
+	 */
+	public void addTypifiedName(NameSTO typifiedName) {
+		this.typifiedNames.add(typifiedName);
 	}
 	
 	/**

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.remote.dto.SpecimenSTO;
  */
 @Component
 public class SpecimenAssembler extends AssemblerBase<SpecimenSTO, BaseTO, DerivedUnitBase> {
-	private static Logger logger = Logger.getLogger(SpecimenTypeDesignationAssembler.class);
+	private static Logger logger = Logger.getLogger(SpecimenAssembler.class);
 	
 	@Autowired
 	private MediaAssembler mediaAssembler;
