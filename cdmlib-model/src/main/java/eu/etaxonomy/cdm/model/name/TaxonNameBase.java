@@ -169,9 +169,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * only containing its {@link common.Rank rank}.
 	 * 
 	 * @param  rank  the rank to be assigned to <i>this</i> taxon name
-	 * @see    #TaxonNameBase()
-	 * @see    #TaxonNameBase(HomotypicalGroup)
-	 * @see    #TaxonNameBase(Rank, HomotypicalGroup)
+	 * @see    		 #TaxonNameBase()
+	 * @see    		 #TaxonNameBase(HomotypicalGroup)
+	 * @see    		 #TaxonNameBase(Rank, HomotypicalGroup)
 	 */
 	public TaxonNameBase(Rank rank) {
 		this(rank, null);
@@ -183,9 +183,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * belonging to this homotypical group.
 	 * 
 	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
-	 * @see    #TaxonNameBase()
-	 * @see    #TaxonNameBase(Rank)
-	 * @see    #TaxonNameBase(Rank, HomotypicalGroup)
+	 * @see    					 #TaxonNameBase()
+	 * @see    					 #TaxonNameBase(Rank)
+	 * @see    					 #TaxonNameBase(Rank, HomotypicalGroup)
 	 */
 	public TaxonNameBase(HomotypicalGroup homotypicalGroup) {
 		this(null, homotypicalGroup);
@@ -197,11 +197,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
 	 * 
-	 * @param  rank  the rank to be assigned to <i>this</i> taxon name
+	 * @param  rank  			 the rank to be assigned to <i>this</i> taxon name
 	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> taxon name belongs
-	 * @see    #TaxonNameBase()
-	 * @see    #TaxonNameBase(Rank)
-	 * @see    #TaxonNameBase(HomotypicalGroup)
+	 * @see    					 #TaxonNameBase()
+	 * @see    					 #TaxonNameBase(Rank)
+	 * @see    					 #TaxonNameBase(HomotypicalGroup)
 	 */
 	public TaxonNameBase(Rank rank, HomotypicalGroup homotypicalGroup) {
 		super();
@@ -313,7 +313,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * attributes of the name relationship object will be nullified. 
 	 *
 	 * @param  nameRelation  the name relationship which should be deleted from one of both sets
-	 * @see    #getNameRelations()
+	 * @see    				 #getNameRelations()
 	 */
 	public void removeNameRelationship(NameRelationship nameRelation) {
 		//TODO to be implemented?
@@ -632,13 +632,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/** 
-	 * Removes one element from the set of {@link TypeDesignationBase type designations} assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
-	 * The type designation itself will be nullified.
+	 * Removes one element from the set of {@link TypeDesignationBase type designations} assigned to
+	 * <i>this</i> taxon name. The type designation itself will be nullified.
 	 *
 	 * @param  typeDesignation  the type designation which should be deleted
-	 * @see     #removeSpecimenTypeDesignation(SpecimenTypeDesignation)
-	 * @see     #removeNameTypeDesignation(NameTypeDesignation)
+	 * @see     				#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
+	 * @see     				#removeNameTypeDesignation(NameTypeDesignation)
 	 */
 	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
 		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
@@ -648,15 +647,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
-	 * indirectly to <i>this</i> taxon name through its {@link HomotypicalGroup homotypical group}.
-	 * The rank of <i>this</i> taxon name is generally "species" or below.
-	 * The specimen type designations include all the specimens on which
-	 * the typification of this name is based (and which are common to all
-	 * taxon names belonging to the homotypical group) and eventually
-	 * the status of these designations.
+	 * to <i>this</i> taxon name. The {@link Rank rank} of <i>this</i> taxon name is generally
+	 * "species" or below. The specimen type designations include all the
+	 * specimens on which the typification of this name is based (which are
+	 * exclusivly used to typify taxon names belonging to the same
+	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name
+	 * belongs) and eventually the status of these designations.
 	 *
 	 * @see     SpecimenTypeDesignation
 	 * @see     NameTypeDesignation
+	 * @see     HomotypicalGroup
 	 */
 	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignationsOfHomotypicalGroup() {
@@ -694,15 +694,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  citation					the reference for this new designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
-	 * @param  isRejectedType			the boolean status for rejected
-	 * @param  isConservedType			the boolean status for conserved
-	 * @param  isLectoType				the boolean status for isLectotype
-	 * @param  lectoCitation		the reference for the lectotype
-	 * @param  lectoMicroCitation	the String for the micro citation of a lectotype
-	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all names of the homotypical
-	 * 								group this taxon name belongs to
+	 * @param  isRejectedType			the boolean status for a rejected name type designation
+	 * @param  isConservedType			the boolean status for a conserved name type designation
+	 * @param  isLectoType				the boolean status for a lectotype name type designation
+	 * @param  isNotDesignated			the boolean status for a not designated name type designation 
+	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all
+	 * 									names of the homotypical group this taxon name belongs to
 	 * @see 			  				#getNameTypeDesignations()
 	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
+	 * @see 			  				NameTypeDesignation
 	 */
 	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
 				ReferenceBase citation, 

@@ -151,10 +151,13 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * Returns the "holotype" designation status. A holotype of an
 	 * {@link HomotypicalGroup homotypical group} is the one {@link occurrence.DerivedUnitBase specimen or illustration}
 	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorTeam() author} of the
-	 * "type-bringing" {@link TaxonNameBase taxon name}. The "type-bringing" taxon name is the 
-	 * {@link Rank#SPECIES() species} or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name}
-	 * which is also {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
+	 * "type-bringing" {@link TaxonNameBase taxon name} (or by the author of a later validated
+	 * "invalid" taxon name). The "type-bringing" taxon name is the {@link Rank#SPECIES() species}
+	 * or {@link Rank#isInfraSpecific() infraspecific} {@link TaxonNameBase taxon name} which is also
+	 * {@link NameRelationshipType#BASIONYM() basionym} or {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym},
 	 * in case of reclassifications, within the homotypical group.
+	 * 
+	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
 	 */
 	public static final TypeDesignationStatus HOLOTYPE(){
 		return getByUuid(uuidHolotype);

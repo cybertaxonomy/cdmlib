@@ -37,17 +37,27 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
 /**
- * The homotypical group class represents a set of {@link TaxonNameBase taxon names} all sharing
- * the same type specimens. It can also include names with a {@link common.Rank rank} higher
- * than "species aggregate" like genera or families which usually are typified by
- * a taxon name that finally (a name type designation can also point to another
- * taxon name) points to a species name, which in turn is typified by a (set of)
- * physical type specimen(s). This class allows to define a
- * {@link SpecimenTypeDesignation specimen type designation} only once
- * for the homotypical group instead of defining a type designation for each one
- * of the taxon names subsumed under one homotypical group.
+ * The homotypical group class represents a set of {@link TaxonNameBase taxon names} associated
+ * on the base of their typifications. Taxon names belonging to an homotypical
+ * group and the taxon names or {@link occurrence.DerivedUnitBase specimens} used as types
+ * for their {@link TypeDesignationBase type designations} have the following properties: <ul>
+ * <li>	A taxon name belongs exactly to one homotypical group
+ * <li>	A type specimen or a type name can be used as a type only for taxon
+ * 		names belonging to the same homotypical group<BR>
+ * 		- therefore an homotypical group circumscribes a set of types<BR>
+ * 		- each taxon name shares a subset of these types<BR>
+ * 		- each type is used by a subset of these taxon names
+ * 			within the homotypical group
+ * <li>	Names that share at least one common type must belong to the same
+ * 		homotypical group
+ * <li>	Names that share the same basionym or replaced synonym must belong to
+ * 		the same homotypical group
+ * </ul>
  * 
- * @author m.doering
+ * @see		TypeDesignationBase
+ * @see		NameTypeDesignation
+ * @see		SpecimenTypeDesignation
+ * @author  m.doering
  * @version 1.0
  * @created 08-Nov-2007
  */
@@ -65,8 +75,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	    
 	/** 
 	 * Class constructor: creates a new homotypical group instance with an
-	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of
-	 * {@link SpecimenTypeDesignation specimen type designations}.
+	 * empty set of typified {@link TaxonNameBase taxon names}.
 	 */
 	public HomotypicalGroup() {
 		super();
@@ -74,8 +83,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	/** 
 	 * Creates a new homotypical group instance with an empty set of typified
-	 * {@link TaxonNameBase taxon names} and an empty set of
-	 * {@link SpecimenTypeDesignation specimen type designations}.
+	 * {@link TaxonNameBase taxon names}.
 	 * 
 	 * @see #HomotypicalGroup()
 	 */
@@ -101,9 +109,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	/** 
 	 * Adds a new {@link TaxonNameBase taxon name} to the set of taxon names that belong
-	 * to <i>this</i> homotypical group and to the corresponding set of each 
-	 * {@link SpecimenTypeDesignation#getTypifiedNames() type designation}
-	 * associated with <i>this</i> homotypical group.
+	 * to <i>this</i> homotypical group.
 	 *
 	 * @param  typifiedName  the taxon name to be added to <i>this</i> group
 	 * @see 			  	 #getTypifiedNames()
@@ -147,11 +153,13 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} that
-	 * typify <i>this</i> homotypical group including the status of these designations.
+	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * including the status of these designations.
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getNameTypeDesignations()
 	 * @see	#getTypeDesignations()
+	 * @see	TaxonNameBase#getSpecimenTypeDesignations()
 	 */
 	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
@@ -164,11 +172,13 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	/** 
 	 * Returns the set of {@link NameTypeDesignation name type designations} that
-	 * typify <i>this</i> homotypical group including the status of these designations.
+	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * including the status of these designations.
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getSpecimenTypeDesignations()
 	 * @see	#getTypeDesignations()
+	 * @see	TaxonNameBase#getNameTypeDesignations()
 	 */
 	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations(){
@@ -181,13 +191,15 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	
 	
 	/** 
-	 * Returns the set of all {@link ITypeDesignation type designations} that
-	 * typify <i>this</i> homotypical group (this includes
-	 * {@link NameTypeDesignation name type designations} and {@link SpecimenTypeDesignation specimen type designations}).
+	 * Returns the set of all {@link TypeDesignationBase type designations} that
+	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
+	 * (this includes {@link NameTypeDesignation name type designations} and
+	 * {@link SpecimenTypeDesignation specimen type designations}).
 	 *
 	 * @see	#getTypifiedNames()
 	 * @see	#getNameTypeDesignations()
 	 * @see	#getSpecimenTypeDesignations()
+	 * @see	TaxonNameBase#getTypeDesignations()
 	 */
 	@Transient
 	public Set<ITypeDesignation> getTypeDesignations(){
