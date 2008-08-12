@@ -145,6 +145,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 			return false;
 		}
 	}
+
 	
 	/**
 	 * Returns the "holotype" designation status. A holotype of an
