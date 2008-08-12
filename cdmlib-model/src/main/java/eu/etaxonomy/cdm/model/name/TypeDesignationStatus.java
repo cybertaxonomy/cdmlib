@@ -87,18 +87,6 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 		super();
 	}
 
-	@Transient
-	public boolean isLectotype(){
-		if (this.equals(LECTOTYPE()) ||
-				this.equals(ISOLECTOTYPE()) ||
-				this.equals(SECOND_STEP_LECTOTYPE()) ||
-				this.equals(PARALECTOTYPE()) ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
 
 	/** 
 	 * Class constructor: creates an additional type designation status instance
@@ -147,7 +135,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see  common.DefinedTermBase#getKindOf()
 	 */
 	@Transient
-	public boolean isLectotyp(){
+	public boolean isLectotype(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||
 				this.equals(SECOND_STEP_LECTOTYPE()) ||
