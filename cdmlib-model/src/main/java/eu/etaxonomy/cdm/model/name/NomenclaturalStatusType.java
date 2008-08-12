@@ -51,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "NomenclaturalStatusType")
 @Entity
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);

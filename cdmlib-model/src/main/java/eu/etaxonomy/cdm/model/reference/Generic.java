@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -49,8 +50,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 		"pages",
 		"editor",
 		"publisher",
-		"placePublished",
-		"nomRefBase"
+		"placePublished"
+//		"nomRefBase"
 })
 @XmlRootElement(name = "Generic")
 @Entity
@@ -76,7 +77,8 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
     @XmlElement(name = "Pages")
 	private String pages;
 	
-    @XmlElement(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    //@XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	

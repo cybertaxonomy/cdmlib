@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -51,8 +52,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 		"series",
 		"volume",
 		"pages",
-		"inJournal",
-		"nomRefBase"
+		"inJournal"
+//		"nomRefBase"
 })
 @XmlRootElement(name = "Article")
 @Entity
@@ -72,7 +73,8 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
     @XmlElement(name = "InJournal")
 	private Journal inJournal;
 	
-    @XmlElement(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    //@XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 

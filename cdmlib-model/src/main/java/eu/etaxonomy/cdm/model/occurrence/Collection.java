@@ -20,22 +20,54 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Collection", propOrder = {
+	"name",
+    "code",
+    "codeStandard",
+    "townOrLocation",
+    "institute",
+    "superCollection"
+})
+@XmlRootElement(name = "Collection")
 @Entity
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public class Collection extends IdentifyableMediaEntity{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
+	@XmlElement(name = "Code")
 	private String code;
+	
+	@XmlElement(name = "CodeStandard")
 	private String codeStandard;
+	
+	@XmlElement(name = "Name")
 	private String name;
+	
+	@XmlElement(name = "TownOrLocation")
 	private String townOrLocation;
+	
+	@XmlElement(name = "Institution")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Institution institute;
+	
+	@XmlElement(name = "SuperCollection")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Collection superCollection;
 	
 	

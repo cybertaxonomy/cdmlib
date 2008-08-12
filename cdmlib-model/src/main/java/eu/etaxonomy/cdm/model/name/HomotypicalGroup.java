@@ -53,9 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HomotypicalGroup", propOrder = {
-    "typifiedNames",
-    "specimenTypeDesignations",
-    "nameTypeDesignations"
+    "typifiedNames"
 })
 @Entity
 public class HomotypicalGroup extends AnnotatableEntity {
@@ -64,15 +62,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
 	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
-	
-//    @XmlElementWrapper(name = "SpecimenTypeDesignations")
-//    @XmlElement(name = "SpecimenTypeDesignation")
-//	protected Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
-//
-//    @XmlElementWrapper(name = "NameTypeDesignations")
-//    @XmlElement(name = "NameTypeDesignation")
-//	protected Set<NameTypeDesignation> nameTypeDesignations = new HashSet<NameTypeDesignation>();
-    
+	    
 	/** 
 	 * Class constructor: creates a new homotypical group instance with an
 	 * empty set of typified {@link TaxonNameBase taxon names} and an empty set of

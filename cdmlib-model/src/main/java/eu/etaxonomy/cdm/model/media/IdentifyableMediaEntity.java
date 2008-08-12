@@ -6,6 +6,14 @@ import java.util.Set;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -13,10 +21,20 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "IdentifyableMediaEntity", propOrder = {
+    "media"
+})
+@XmlRootElement(name = "IdentifyableMediaEntity")
 @MappedSuperclass
 public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
+
 	static Logger logger = Logger.getLogger(IdentifyableMediaEntity.class);
 
+    @XmlElementWrapper(name = "Media")
+    @XmlElement(name = "Medium")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<Media> media = getNewMediaSet();
 	
 	

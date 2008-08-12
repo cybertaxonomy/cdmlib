@@ -11,6 +11,13 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A specimen is regarded as derived from an field observation, 
@@ -20,10 +27,18 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:52
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Specimen", propOrder = {
+		"preservation"
+})
+@XmlRootElement(name = "Specimen")
 @Entity
 public class Specimen extends DerivedUnitBase {
 	static Logger logger = Logger.getLogger(Specimen.class);
 	
+	@XmlElement(name = "Preservation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private PreservationMethod preservation;
 	
 	/**

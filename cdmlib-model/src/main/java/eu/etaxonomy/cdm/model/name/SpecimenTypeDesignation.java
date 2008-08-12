@@ -62,11 +62,13 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 	
 	@XmlElement(name = "TypeSpecimen")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private DerivedUnitBase typeSpecimen;
 	
 	@XmlElement(name = "TypeStatus")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private TypeDesignationStatus typeStatus;
 	
 

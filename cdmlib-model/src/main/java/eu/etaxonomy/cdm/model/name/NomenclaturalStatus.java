@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:39
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "NomenclaturalStatus", propOrder = {
     "ruleConsidered",
     "type"
 })

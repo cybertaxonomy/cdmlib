@@ -18,16 +18,34 @@ import org.apache.log4j.Logger;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:22
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DnaSample", propOrder = {
+    "bankNumber",
+    "sequences"
+})
+@XmlRootElement(name = "DnaSample")
 @Entity
 public class DnaSample extends Specimen {
+	
 	static Logger logger = Logger.getLogger(DnaSample.class);
+	
+	@XmlElement(name = "BankNumber")
 	private String bankNumber;
+	
+	@XmlElementWrapper(name = "Sequences")
+	@XmlElement(name = "sequence")
 	private Set<Sequence> sequences = new HashSet();
 
 	@OneToMany

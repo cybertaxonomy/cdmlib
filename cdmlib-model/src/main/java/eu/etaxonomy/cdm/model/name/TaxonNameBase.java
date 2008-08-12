@@ -77,11 +77,10 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @XmlType(name = "TaxonNameBase", propOrder = {
     "appendedPhrase",
     "nomenclaturalMicroReference",
-    "nomenclaturalReference",
+//    "nomenclaturalReference",
     "rank",
     "homotypicalGroup",
-    "nameTypeDesignations",
-    "specimenTypeDesignations",
+    "typeDesignations",
     "relationsFromThisName",
     "relationsToThisName",
     "status",
@@ -148,7 +147,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	private Rank rank;
 
 //  FIXME: This must be an IDREF to the corresponding nomenclatural reference.
-    @XmlAnyElement
+    @XmlTransient
+//    @XmlAnyElement
 	private INomenclaturalReference nomenclaturalReference;
 
 	static Method methodTaxonBaseSetName;

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 class NomenclaturalReferenceHelper {
 	private static final Logger logger = Logger.getLogger(NomenclaturalReferenceHelper.class);
 
-	@XmlElement(name = "nomenclaturalReference")
+	@XmlElement(name = "NomenclaturalReference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	private ReferenceBase nomenclaturalReference; 

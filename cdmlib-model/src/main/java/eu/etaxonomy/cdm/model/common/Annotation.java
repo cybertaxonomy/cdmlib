@@ -29,8 +29,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Annotation", propOrder = {
-    "",
-    ""
+    "commentator",
+    "annotatedObj",
+    "linkbackUrl"
 })
 @Entity
 public class Annotation extends LanguageStringBase implements Cloneable {

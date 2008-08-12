@@ -13,6 +13,14 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -31,10 +39,24 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
  * @version 1.0
  * @created 08-Nov-2007 13:06:14
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BookSection", propOrder = {
+    "inBook"
+//    "nomRefBase"
+})
+@XmlRootElement(name = "BookSection")
 @Entity
 public class BookSection extends SectionBase implements INomenclaturalReference, Cloneable {
+	
 	private static final Logger logger = Logger.getLogger(BookSection.class);
+	
+    @XmlElement(name = "BookSection")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Book inBook;
+	
+    @XmlTransient
+    //@XmlElement(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	

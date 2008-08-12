@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -96,9 +97,10 @@ public class DataSet {
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
         @XmlElement(name = "Keyword", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Keyword.class),
+    	@XmlElement(name = "Language", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Language.class),
         @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class)
     })
-    protected List<TermBase> terms;
+    protected List<? extends TermBase> terms;
 
     @XmlElementWrapper(name = "References")
     @XmlElements({
@@ -220,7 +222,7 @@ public class DataSet {
      *     
      */
     
-    public List<TermBase> getTerms() {
+    public List<? extends TermBase> getTerms() {
         return terms;
     }
 
@@ -232,7 +234,7 @@ public class DataSet {
      *     {@link List<TermBase> }
      *     
      */
-    public void setTerms(List<TermBase> value) {
+    public void setTerms(List<? extends TermBase> value) {
         this.terms = value;
     }
 

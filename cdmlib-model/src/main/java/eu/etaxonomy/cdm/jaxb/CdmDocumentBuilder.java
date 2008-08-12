@@ -43,6 +43,7 @@ public class CdmDocumentBuilder {
 //		Schema cdmSchema = schemaFactory.newSchema(sources);
 					
 		jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class});
+		log.debug(jaxbContext.toString());
 
 	}
 	
@@ -50,7 +51,13 @@ public class CdmDocumentBuilder {
 		
 		Marshaller marshaller;
 		marshaller = jaxbContext.createMarshaller();
+		
+		// For test purposes insert newlines to make the XML output readable
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		// UTF-8 encoding delivers error when unmarshalling
+		//marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
 		
 		// validate with explicit schema
 		//marshaller.setSchema(cdmSchema);
@@ -64,6 +71,10 @@ public class CdmDocumentBuilder {
 		Unmarshaller unmarshaller;
 		unmarshaller = jaxbContext.createUnmarshaller();
 		
+		// DefaultValidationEventHandler implementation is part of the API and convenient for trouble-shooting.
+		// It prints errors to System.out.
+		//unmarshaller.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+
 		dataSet = (DataSet) unmarshaller.unmarshal(file);
 		return dataSet;
 		

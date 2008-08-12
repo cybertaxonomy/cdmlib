@@ -25,6 +25,14 @@ import org.hibernate.annotations.Table;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * type figures are observations with at least a figure object in media
@@ -32,20 +40,46 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:41
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SpecimenOrObservationBase", propOrder = {
+    "",
+    "",
+    "",
+    ""
+})
+@XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
+	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
+	@XmlElementWrapper(name = "Descriptions")
+	@XmlElement(name = "Description")
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
+	
+	@XmlElementWrapper(name = "Determinations")
+	@XmlElement(name = "Determination")
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
+	
+	@XmlElement(name = "Sex")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Sex sex;
+	
+	@XmlElement(name = "Scope")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Stage lifeStage;
+	
+	@XmlElement(name = "IndividualCount")
 	private Integer individualCount;
+	
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	private MultilanguageSet description;
+	
 	// events that created derivedUnits from this unit
 	private Set<DerivationEvent> derivationEvents = new HashSet();
 

@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
  * @created 08-Nov-2007 13:06:38
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "NameRelationshipType")
 @Entity
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
