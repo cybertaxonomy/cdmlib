@@ -193,7 +193,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 */
 	@Transient
 	public boolean isLectoType() {
-		return typeStatus.isLectotyp();
+		return typeStatus.isLectotype();
 	}
 	
 }
