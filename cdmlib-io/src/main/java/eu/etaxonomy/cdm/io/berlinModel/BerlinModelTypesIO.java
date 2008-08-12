@@ -113,14 +113,12 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 					try{
 						TypeDesignationStatus typeDesignationStatus = BerlinModelTransformer.typeStatusId2TypeStatus(typeStatusFk);
 						ReferenceBase citation = referenceMap.get(refFk);
-						ReferenceBase lectoCitation = citation;
-						String lectoRefDetail = refDetail;
 						
 						Specimen specimen = Specimen.NewInstance();
 						specimen.setTitleCache(typePhrase);
 						boolean addToAllNames = true;
 						String originalNameString = null;
-						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, lectoCitation, lectoRefDetail, originalNameString, addToAllNames);
+						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
 						typeMap.put(typeDesignationId, specimen);
 						taxonNameStore.add(taxonNameBase);
 						
