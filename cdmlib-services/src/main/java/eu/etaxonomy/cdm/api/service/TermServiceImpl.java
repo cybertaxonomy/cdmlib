@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,6 +60,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		return DefinedTermBase.findByUuid(uuid);  
 	}
 	
+	public List<DefinedTermBase> getAllDefinedTerms(int limit, int start){
+		return dao.list(limit, start);
+	}
+
 	@Transactional(readOnly = false)
 	public UUID saveTerm(DefinedTermBase termBase) {
 		return super.saveCdmObject(termBase);

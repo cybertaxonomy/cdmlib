@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.test.function;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -26,9 +27,12 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -46,6 +50,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl;
 
 
 public class TestJaxb {
@@ -207,6 +213,7 @@ public class TestJaxb {
     	TransactionStatus txStatus = appCtr.startTransaction();
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
+    	List<DefinedTermBase> terms = null;
 
     	// get data from DB
 
@@ -226,8 +233,17 @@ public class TestJaxb {
 
     	try {
     		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
+    		//dataSet.setAgents(appCtr.getAgentService().getAllAgents(10000, 0));
+    		
+    		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(2000, 0));
+    		//dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(10, 0));
+
     		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
+    		//dataSet.setReferences(appCtr.getReferenceService().getAllReferences(12000, 0));
+    		
     		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
+    		//dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10000, 0));
+    		
     		dataSet.setTaxa(taxa);
     		
     		dataSet.setSynonyms(new HashSet<Synonym>());

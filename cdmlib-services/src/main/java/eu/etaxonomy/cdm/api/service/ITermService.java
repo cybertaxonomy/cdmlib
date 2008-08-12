@@ -26,6 +26,13 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 	public abstract DefinedTermBase getTermByUuid(UUID uuid);
 
+	/**
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+	public abstract List<DefinedTermBase> getAllDefinedTerms(int limit, int start);
+
 	public abstract TermVocabulary getVocabulary(UUID vocabularyUuid);
 	
 	public abstract Set<TermVocabulary> listVocabularies(Class termClass);
