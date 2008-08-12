@@ -128,8 +128,8 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * @see							occurrence.DerivedUnitBase
 	 */
 	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
-			ReferenceBase lectoTypeReference, String lectoTypeMicroReference, String originalNameString) {
-		super(citation, citationMicroReference, lectoTypeReference, lectoTypeMicroReference, originalNameString);
+			String originalNameString) {
+		super(citation, citationMicroReference, originalNameString);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}

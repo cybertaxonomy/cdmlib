@@ -51,9 +51,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public abstract class TypeDesignationBase extends ReferencedEntityBase implements ITypeDesignation {
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
-	private ReferenceBase lectoTypeReference;
-	private String lectoTypeMicroReference;
-	
+
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
 	@XmlIDREF
@@ -71,10 +69,8 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 		super();
 	}
 	
-	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference,ReferenceBase lectoTypeReference, String lectoTypeMicroReference, String originalNameString){
+	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString){
 		super(citation, citationMicroReference, originalNameString);
-		this.lectoTypeReference = lectoTypeReference;
-		this.lectoTypeMicroReference = lectoTypeMicroReference;
 	}
 	
 	
@@ -115,35 +111,5 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 		this.typifiedNames.add(taxonName);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getLectoTypeReference()
-	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public ReferenceBase getLectoTypeReference() {
-		return lectoTypeReference;
-	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#setLectoTypeReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
-	 */
-	public void setLectoTypeReference(ReferenceBase lectoTypeReference) {
-		this.lectoTypeReference = lectoTypeReference;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getLectoTypeMicroReference()
-	 */
-	public String getLectoTypeMicroReference() {
-		return lectoTypeMicroReference;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#setLectoTypeMicroReference(java.lang.String)
-	 */
-	public void setLectoTypeMicroReference(String lectoTypeMicroReference) {
-		this.lectoTypeMicroReference = lectoTypeMicroReference;
-	}
 }

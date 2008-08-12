@@ -711,11 +711,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 				boolean isRejectedType, 
 				boolean isConservedType, 
 				boolean isLectoType, 
-				ReferenceBase lectoCitation, 
-				String lectoMicroCitation, 
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
-		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, lectoCitation, lectoMicroCitation, originalNameString, isRejectedType, isConservedType, isNotDesignated);
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isNotDesignated);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	
@@ -757,11 +755,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 				TypeDesignationStatus status, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
-				ReferenceBase lectoTypeReference, 
-				String lectoTypeMicroReference, 
 				String originalNameString, 
 				boolean addToAllHomotypicNames) {
-		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, lectoTypeReference, lectoTypeMicroReference, originalNameString);
+		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString);
 		addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
 	}
 	

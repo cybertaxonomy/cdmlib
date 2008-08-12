@@ -37,41 +37,4 @@ public interface ITypeDesignation {
 	 */
 	public Set<TaxonNameBase> getTypifiedNames();
 
-//	/**
-//	 * @see   #getTypifiedNames()
-//	 */
-//	public void setTypifiedNames(Set<TaxonNameBase> typifiedNames); 
-
-	
-	/** 
-	 * Returns the details string of the reference corresponding to <i>this</i> taxon 
-	 * type designation if it is a lectotype. The details describe the exact
-	 * localisation within the publication used for the lectotype assignation.
-	 * These are mostly (implicitly) pages but can also be figures or tables or
-	 * any other element of a publication. A lectotype micro reference (details)
-	 * requires the existence of a lectotype reference.
-	 * 
-	 * @see   #getLectoTypeReference()
-	 */
-	public String getLectoTypeMicroReference();
-	
-	/**
-	 * @see   #getLectoTypeMicroReference()
-	 */
-	public void setLectoTypeMicroReference(String lectoTypeMicroReference);
-
-	/** 
-	 * Returns the {@link reference.ReferenceBase reference} used in case <i>this</i> 
-	 * taxon type designation is a lectotype. This reference is different
-	 * to the nomenclatural reference of the typified taxon name.
-	 *  
-	 * @see   #isLectoType()
-	 */
-	public ReferenceBase getLectoTypeReference();
-	
-	/**
-	 * @see   #getLectoTypeReference()
-	 */
-	public void setLectoTypeReference(ReferenceBase lectoTypeReference);
-	
 }
