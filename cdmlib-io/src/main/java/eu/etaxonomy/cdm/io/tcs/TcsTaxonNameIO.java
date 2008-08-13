@@ -144,15 +144,17 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 					tcsElementName = "year";
 					tcsNamespace = taxonNameNamespace;
 					Integer year = null;
-					try {
-						value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
-						year = Integer.valueOf(value);
-						Calendar cal = Calendar.getInstance();
-						//FIXME
-						cal.set(year, 1, 1);
-						nomRef.setDatePublished(TimePeriod.NewInstance(cal));
-					} catch (RuntimeException e) {
-						logger.warn("year could not be parsed");
+					value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
+					if (value != null){
+						try {
+							year = Integer.valueOf(value);
+							Calendar cal = Calendar.getInstance();
+							//FIXME
+							cal.set(year, 1, 1);
+							nomRef.setDatePublished(TimePeriod.NewInstance(cal));
+						} catch (RuntimeException e) {
+							logger.warn("year could not be parsed");
+						}
 					}
 				}
 						
