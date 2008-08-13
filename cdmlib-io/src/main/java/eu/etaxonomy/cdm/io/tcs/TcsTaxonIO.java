@@ -80,6 +80,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 	
 	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
 		new CdmUnclearMapper("primary")
+		, new CdmUnclearMapper("note", nsTcom)	
 		, new CdmUnclearMapper("taxonStatus", nsTpalm)
 		
 		, new CdmUnclearMapper("TaxonName", nsTn)	
@@ -129,7 +130,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		int i = 0;
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConcepts){
-			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
+			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
 			
 			//
 			String taxonAbout = elTaxonConcept.getAttributeValue("about", rdfNamespace);
