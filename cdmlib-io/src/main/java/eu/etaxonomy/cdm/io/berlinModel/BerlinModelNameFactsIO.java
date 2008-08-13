@@ -113,14 +113,18 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 					if (category.equalsIgnoreCase(NAME_FACT_PROTOLOGUE)){
 						//ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 						//ref = Book.NewInstance();
-						Media media = getMedia(nameFact, bmiConfig.getMediaUrl(), bmiConfig.getMediaPath());
-						if (media.getRepresentations().size() > 0){
-							TaxonNameDescription description = TaxonNameDescription.NewInstance();
-							TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
-							protolog.addMedia(media);
-							description.addElement(protolog);
-							taxonNameBase.addDescription(description);
-						}//end NAME_FACT_PROTOLOGUE
+						try{
+							Media media = getMedia(nameFact, bmiConfig.getMediaUrl(), bmiConfig.getMediaPath());
+							if (media.getRepresentations().size() > 0){
+								TaxonNameDescription description = TaxonNameDescription.NewInstance();
+								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
+								protolog.addMedia(media);
+								description.addElement(protolog);
+								taxonNameBase.addDescription(description);
+							}//end NAME_FACT_PROTOLOGUE
+						}catch(NullPointerException e){
+							logger.warn("MediaUrl and/or MediaPath not set. Could not get protologue.");
+						}						
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
 							String prefix = "Also published in: ";
