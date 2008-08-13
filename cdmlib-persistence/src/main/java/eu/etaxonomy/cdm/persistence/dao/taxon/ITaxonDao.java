@@ -46,6 +46,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch,  Boolean onlyWithChildren);
 
 	/**
+	 * TODO necessary? 
 	 * @param pagesize max maximum number of returned taxa
 	 * @param page page to start, with 0 being first page 
 	 * @return
