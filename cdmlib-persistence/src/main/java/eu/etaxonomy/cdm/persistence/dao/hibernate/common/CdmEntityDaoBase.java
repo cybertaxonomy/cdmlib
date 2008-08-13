@@ -18,6 +18,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -106,6 +108,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			return false;
 		}
 		return true;
+	}
+	
+	public int count() {
+		return count(type);
+	}
+	
+	public int count(Class type) {
+		Session session = getSession();
+		Criteria crit = session.createCriteria(type);
+		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		Integer nbrRows = (Integer) crit.uniqueResult();
+		return nbrRows.intValue();
 	}
 
 	public List<T> list(int limit, int start) {

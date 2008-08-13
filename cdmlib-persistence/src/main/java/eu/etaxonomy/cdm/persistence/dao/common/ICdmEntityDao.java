@@ -83,6 +83,10 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 */
 	public Boolean exists(UUID uuid) throws DataAccessException;
 	
+	public int count();
+
+	public int count(Class clazz);
+
 	/**
 	 * 
 	 */
