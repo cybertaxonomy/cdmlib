@@ -47,6 +47,11 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 	protected T getCdmObjectByUuid(UUID uuid){
 		return dao.findByUuid(uuid);
 	}
+	
+
+	public int count(Class<T> clazz) {
+		return dao.count(clazz);
+	}
 
 	@Transactional(readOnly = false)
 	protected UUID saveCdmObject(T cdmObj){

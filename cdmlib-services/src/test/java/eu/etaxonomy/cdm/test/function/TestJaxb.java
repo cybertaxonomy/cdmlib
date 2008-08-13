@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -232,17 +234,26 @@ public class TestJaxb {
     	}
 
     	try {
-    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(10, 0));
-    		//dataSet.setAgents(appCtr.getAgentService().getAllAgents(10000, 0));
     		
-    		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(2000, 0));
-    		//dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(10, 0));
+    		int nbrRows;
+    		
+    		nbrRows = appCtr.getAgentService().count(Agent.class);
+    		logger.info("# Agents: " + nbrRows);
+    		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(nbrRows, 0));
+    		
+    		nbrRows = appCtr.getTermService().count(DefinedTermBase.class);
+    		logger.info("# DefinedTermBase: " + nbrRows);
+    		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(nbrRows, 0));
 
-    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(10, 0));
-    		//dataSet.setReferences(appCtr.getReferenceService().getAllReferences(12000, 0));
+    		nbrRows = appCtr.getReferenceService().count(ReferenceBase.class);
+    		logger.info("# ReferenceBase: " + nbrRows);
+    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(nbrRows, 0));
     		
-    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10, 0));
-    		//dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(10000, 0));
+    		nbrRows = appCtr.getNameService().count(TaxonNameBase.class);
+    		logger.info("# TaxonNameBase: " + nbrRows);
+    		//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(nbrRows, 0));
     		
     		dataSet.setTaxa(taxa);
     		
@@ -331,7 +342,7 @@ public class TestJaxb {
 		
 		//testInitDb(serializeFromDb);
 	    testSerialize(serializeFromDb, marshOutOne);
-		testDeserialize(deserializeToDb, marshOutOne);
+		//testDeserialize(deserializeToDb, marshOutOne);
 		//testSerialize(deserializeToDb, marshOutTwo);
 		}
 	

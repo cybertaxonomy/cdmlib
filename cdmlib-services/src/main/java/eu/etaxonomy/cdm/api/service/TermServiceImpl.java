@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 @Service
 @Transactional(readOnly = true)
