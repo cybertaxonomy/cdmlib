@@ -61,9 +61,12 @@ public final class TcsTransformer {
 		String tcsSubVariety = tcsRoot + "Sub-Variety";
 		String tcsForm = tcsRoot + "Form";
 		String tcsSubSpecies = tcsRoot + "Subspecies";
+		String tcsFamily = tcsRoot + "Family";
+		
 		
 		
 		if (strRank == null){return null;
+		}else if (tcsFamily.equals(strRank)){return Rank.FAMILY();
 		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
 		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
 		}else if (tcsVariety.equals(strRank)){return Rank.VARIETY();

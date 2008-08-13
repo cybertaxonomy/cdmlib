@@ -75,15 +75,15 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		,new CdmUnclearMapper("hasName")
 		, new CdmUnclearMapper("accordingTo")
 		, new CdmUnclearMapper("hasRelationship")
-		, new CdmUnclearMapper("taxonStatus")
 		, new CdmUnclearMapper("code", nsTgeo)	
 	};
 	
 	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
 		new CdmUnclearMapper("primary")
+		, new CdmUnclearMapper("taxonStatus", nsTpalm)
 		
 		, new CdmUnclearMapper("TaxonName", nsTn)	
-		, new CdmUnclearMapper("TaxonStatus")	
+		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
 	};
 	
 	
@@ -94,6 +94,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		
 		String xmlElementName;
 		String xmlAttributeName;
@@ -144,11 +145,21 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			//accordingTo
 			xmlElementName = "accordingTo";
 			elementNamespace = taxonConceptNamespace;
-			String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
+			xmlAttributeName = "resource";
+			attributeNamespace = rdfNamespace;
+			//String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
+			String strAccordingTo = XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
 			
-			//FIXME
-			String secId = "pub_999999";
-			ReferenceBase sec = referenceMap.get(secId);
+			
+//			//FIXME
+//			String secId = "pub_999999";
+			ReferenceBase sec = referenceMap.get(strAccordingTo);
+			if (sec == null){
+				sec = nomRefMap.get(strAccordingTo);
+			}
+			if (sec == null){
+				logger.warn("sec could not be found in referenceMap for secId: " + strAccordingTo);
+			}
 			
 			//FIXME or synonym
 			TaxonBase taxonBase;

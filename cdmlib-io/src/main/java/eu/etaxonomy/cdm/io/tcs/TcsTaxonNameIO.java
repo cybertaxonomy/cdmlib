@@ -76,6 +76,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 		, new CdmUnclearMapper("rankString")
 		, new CdmUnclearMapper("nameComplete")
 		, new CdmUnclearMapper("hasBasionym")
+		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
 	};
 	
 	@Override

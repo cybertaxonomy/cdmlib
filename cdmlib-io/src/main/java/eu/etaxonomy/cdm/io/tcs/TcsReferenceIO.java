@@ -164,11 +164,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
 		
 		Namespace rdfNamespace = root.getNamespace();
-		String prefix = "tn";
-		Namespace taxonNameNamespace = root.getNamespace(prefix);
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
+		String prefix = "tcom";
 		Namespace commonNamespace = root.getNamespace(prefix);
 		prefix = "tpub";
 		Namespace publicationNamespace = root.getNamespace(prefix);

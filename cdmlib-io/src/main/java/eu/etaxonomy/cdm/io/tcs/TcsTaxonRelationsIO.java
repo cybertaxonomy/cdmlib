@@ -167,7 +167,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 								}else if (relType instanceof TaxonRelationshipType){
 									TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
 									if (! (fromTaxon instanceof Taxon )){
-										logger.warn("TaxonBase fromTaxon is not of Type 'Taxon'. Relationship is not added.");
+										logger.warn("TaxonBase fromTaxon " + strTaxonAbout + "is not of Type 'Taxon'. Relationship is not added.");
 									}else{
 										Taxon taxonFrom = (Taxon)fromTaxon;
 										taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
@@ -179,7 +179,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 							}
 						}else{
 							if (toTaxon == null){
-								logger.warn("toTaxon (" + strToTaxon + ") could  not be found in taxonMap. Relationship was not added to CDM");
+								logger.warn("toTaxon (" + strToTaxon + ") could  not be found in taxonMap. Relationship of type " + strRelCategory + " was not added to CDM");
 							}
 							if (fromTaxon == null){
 								logger.warn("fromTaxon (" + strTaxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
