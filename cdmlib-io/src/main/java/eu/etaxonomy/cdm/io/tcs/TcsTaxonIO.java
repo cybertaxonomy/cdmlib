@@ -159,7 +159,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 				sec = nomRefMap.get(strAccordingTo);
 			}
 			if (sec == null){
-				logger.warn("sec could not be found in referenceMap for secId: " + strAccordingTo);
+				logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
 			}
 			
 			//FIXME or synonym
