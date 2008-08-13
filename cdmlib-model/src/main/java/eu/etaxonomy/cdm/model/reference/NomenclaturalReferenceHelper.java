@@ -92,6 +92,9 @@ class NomenclaturalReferenceHelper {
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
+		if (nomenclaturalReference.isProtectedTitleCache()){
+			return nomenclaturalReference.getTitleCache();
+		}
 		String result = getTokenizedFullNomenclaturalTitel();
 		microReference = CdmUtils.Nz(microReference);
 		if (! "".equals(microReference)){
