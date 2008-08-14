@@ -124,6 +124,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 	
+	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
+		Criteria crit = getSession().createCriteria(Synonym.class);
+		crit.createCriteria("dtype").add(Restrictions.eq("DTYPE", "Synonym"));
+		List<Synonym> results = crit.list();
+		// TODO add limit & start criteria
+		return results;
+	}
+
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		//getSession().update(taxonBase); doesn't work with lazy collections

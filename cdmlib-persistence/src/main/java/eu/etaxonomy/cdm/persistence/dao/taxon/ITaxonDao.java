@@ -14,6 +14,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -54,6 +55,13 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page);
 	
 	
+	/**
+	 * @param limit
+	 * @param start 
+	 * @return
+	 */
+	public List<Synonym> getAllSynonyms(Integer limit, Integer start);
+
 	/**
 	 * Find taxa by searching for @{link NameBase}
 	 * @param queryString
