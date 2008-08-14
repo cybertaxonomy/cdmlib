@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.remote.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.TextData;
 
 /**
  * DescriptionElementSTO is used to represent {@linkplain QuantitativeData}, {@linkplain CategoricalData}, {@linkplain TextData} or {@linkplain CommonTaxonName}
@@ -21,18 +23,12 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
  */
 public class DescriptionElementSTO extends BaseSTO {
 		
-	private LocalisedTermSTO type;
 	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 	private String description;
 	private String language;
 	private ReferenceSTO reference;
+	private LocalisedTermSTO areaTerm;
 	
-	public LocalisedTermSTO getType() {
-		return type;
-	}
-	public void setType(LocalisedTermSTO type) {
-		this.type = type;
-	}
 	public Set<MediaSTO> getMedia() {
 		return media;
 	}
@@ -59,5 +55,11 @@ public class DescriptionElementSTO extends BaseSTO {
 	}
 	public void setReference(ReferenceSTO reference) {
 		this.reference = reference;
+	}
+	public void setArea(LocalisedTermSTO area) {
+		this.areaTerm = area;
+	}
+	public LocalisedTermSTO getArea() {
+		return areaTerm;
 	}	
 }

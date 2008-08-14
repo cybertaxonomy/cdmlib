@@ -45,14 +45,15 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 	private SpecimenAssembler specimenAssembler;
 	@Autowired
 	private NameAssembler nameAssembler;
+	@Autowired
+	private ReferenceAssembler referenceAssembler;
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
-	 */
+	
 	public SpecimenTypeDesignationSTO getSTO(SpecimenTypeDesignation typeDesignation, Enumeration<Locale> locales) {
 		SpecimenTypeDesignationSTO sto = new SpecimenTypeDesignationSTO();
 		sto.setUuid(typeDesignation.getUuid().toString());
 		TypeDesignationStatus status = typeDesignation.getTypeStatus();
+		
 		if (status == null){
 			sto.setStatus(new IdentifiedString(
 					null,
@@ -63,11 +64,19 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 						status.getLabel(),
 						status.getUuid().toString())
 				);
+			// append reference only if there is a status
+			sto.setReference(referenceAssembler.getSTO(typeDesignation.getCitation(), false, typeDesignation.getCitationMicroReference(), locales));
 		}
 		sto.setTypeSpecimen(specimenAssembler.getSTO(typeDesignation.getTypeSpecimen(), locales));
 		return sto;
 	}
 	
+	/**
+	 * 
+	 * @param typeDesignation
+	 * @param locales
+	 * @return
+	 */
 	public NameTypeDesignationSTO getSTO(NameTypeDesignation typeDesignation
 			, Enumeration<Locale> locales) 
 	{
@@ -85,7 +94,6 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 		return sto;
 	}
 	
-	
 	/**
 	 * @param specimenTypeDesignations
 	 * @param locales
@@ -100,8 +108,6 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 		return stoList;
 	}
 	
-
-
 	/** 
 	 * Method inherited from {@link AssemblerBase} but not implemented since no SpecimenTypeDesignationTO class exists.
 	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
@@ -111,7 +117,10 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.dto.assembler.AssemblerBase#getSTO(eu.etaxonomy.cdm.model.common.CdmBase, java.util.Enumeration)
+	 */
 	@Override
 	TypeDesignationSTO getSTO(TypeDesignationBase typeDesignation,
 			Enumeration<Locale> locales) {

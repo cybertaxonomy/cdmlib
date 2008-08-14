@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -184,6 +185,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 	private Map<Feature, List<DescriptionElementBase>> getElementListMap(DescriptionBase description){
 		Map<Feature, List<DescriptionElementBase>> result = new HashMap<Feature, List<DescriptionElementBase>>();
 		for (DescriptionElementBase descriptionElement : description.getElements()){
+			
 			Feature elementFeature = descriptionElement.getFeature();
 			List<DescriptionElementBase> elementList = result.get(elementFeature);
 			if (elementList == null){
@@ -214,16 +216,12 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 			sto.setReference(referenceAssembler.getSTO(descriptionElementBase.getCitation(), locales));
 		}
 		
-		if(descriptionElementBase.getType() != null){
-			Feature type = descriptionElementBase.getType();
-			sto.setType(localisedTermAssembler.getSTO(type, locales));
-		}
 		// media
 		for(Media media : descriptionElementBase.getMedia()){
 			sto.addMedia(mediaAssembler.getSTO(media, locales));			
 		}
 
-			// TextData specific
+		// TextData specific
 		if(descriptionElementBase instanceof TextData){
 			TextData textdata = (TextData)descriptionElementBase;
 			//TODO extract method for finding text by preferred languages
@@ -243,6 +241,14 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				sto.setDescription(text);
 			}
 		}
+		// Distribution specific
+		if(descriptionElementBase instanceof Distribution){
+			Distribution distribution = (Distribution) descriptionElementBase;
+			
+			sto.setArea(localisedTermAssembler.getSTO(distribution.getArea(), locales));
+			
+		}
+		
 		return sto;
 	}
 

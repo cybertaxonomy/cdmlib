@@ -8,10 +8,14 @@
  */
 package eu.etaxonomy.cdm.remote.dto;
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 
 public class SpecimenTypeDesignationSTO extends TypeDesignationSTO {
 	private SpecimenSTO typeSpecimen;
 	private IdentifiedString status;
+	
+	private ReferenceSTO reference;
 
 	/**
 	 * @return
@@ -39,6 +43,14 @@ public class SpecimenTypeDesignationSTO extends TypeDesignationSTO {
 	 */
 	public void setStatus(IdentifiedString status) {
 		this.status = status;
+	}
+
+	public void setReference(ReferenceSTO reference) {
+		this.reference = reference;
+	}
+
+	public ReferenceSTO getReference() {
+		return reference;
 	}
 
 }
