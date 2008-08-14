@@ -167,7 +167,7 @@ public class DataSet {
 	
     @XmlElementWrapper(name = "Synonyms")
     @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected Set<Synonym> synonyms;
+    protected List<Synonym> synonyms;
 
     @XmlElementWrapper(name = "Relationships")
     @XmlElements({
@@ -360,6 +360,16 @@ public class DataSet {
     }
 
     /**
+     * Adds the taxon in value to the taxa property list.
+     * 
+     * @param value
+     *     
+     */
+    public void addTaxon(Taxon value) {
+    		this.taxa.add(value);
+    }
+
+    /**
      * Adds the taxa in value to the taxa property list.
      * 
      * @param value
@@ -381,7 +391,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public Set<Synonym> getSynonyms() {
+    public List<Synonym> getSynonyms() {
         return synonyms;
     }
 
@@ -393,8 +403,18 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public void setSynonyms(Set<Synonym> value) {
+    public void setSynonyms(List<Synonym> value) {
         this.synonyms = value;
+    }
+    
+    /**
+     * Adds the synonym in value to the taxa property list.
+     * 
+     * @param value
+     *     
+     */
+    public void addSynonym(Synonym value) {
+    		this.synonyms.add(value);
     }
     
     /**

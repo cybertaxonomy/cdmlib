@@ -43,7 +43,7 @@ public class DataSetTest {
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
     private List<Taxon> taxa;
-    private Set<Synonym> synonyms;
+    private List<Synonym> synonyms;
     private List<AnnotatableEntity> homotypicalGroups;
 	private Set<TaxonRelationship> taxonRelationships;
 	private Set<RelationshipBase> relationshipBases;
@@ -71,7 +71,7 @@ public class DataSetTest {
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
-		synonyms = new HashSet<Synonym>();
+		synonyms = new ArrayList<Synonym>();
     	taxonRelationships = new HashSet();
 		
 		StrictReferenceBase citRef, sec;
