@@ -22,8 +22,7 @@ import org.apache.log4j.Logger;
 public class AccountStore {
 	private static Logger logger = Logger.getLogger(AccountStore.class);
 	
-	// getting the home directory is platform dependent.
-	final static String userprofile = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getenv("HOME");
+	final static String userprofile = System.getProperty("user.home"); 
 	
 	public final static File accountsFile = new File(userprofile + File.separator + ".cdmLibrary" + File.separator + ".dbaccounts.properties");
 	
