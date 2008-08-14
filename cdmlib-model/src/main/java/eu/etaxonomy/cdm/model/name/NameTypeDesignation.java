@@ -56,7 +56,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	private boolean isConservedType;
 	private boolean isLectoType;
 	private boolean isNotDesignated;
-	private TaxonNameBase typeSpecies;
+	private TaxonNameBase typeName;
 	
 //	@XmlElement(name = "HomotypicalGroup")
 //	@XmlIDREF
@@ -81,7 +81,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
-	 * @param typeSpecies			the taxon name used as a type 
+	 * @param typeName			the taxon name used as a type 
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
@@ -95,10 +95,10 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see							#isNotDesignated()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
-	protected NameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
+	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString);
-		this.setTypeSpecies(typeSpecies);
+		this.setTypeName(typeName);
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
 		this.isNotDesignated = isNotDesignated;
@@ -116,14 +116,14 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public TaxonNameBase getTypeSpecies(){
-		return this.typeSpecies;
+	public TaxonNameBase getTypeName(){
+		return this.typeName;
 	}
 	/**
-	 * @see  #getTypeSpecies()
+	 * @see  #getTypeName()
 	 */
-	private void setTypeSpecies(TaxonNameBase typeSpecies){
-		this.typeSpecies = typeSpecies;
+	private void setTypeName(TaxonNameBase typeName){
+		this.typeName = typeName;
 	}
 
 	/** 
