@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -37,6 +38,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** delete a taxon and return its UUID**/
 	public abstract UUID removeTaxon(TaxonBase taxon);
 	
+	/**
+	 * Computes all taxon bases.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+	public abstract List<Synonym> getAllSynonyms(int limit, int start);
+	
+	/**
+	 * Computes all taxon bases.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+	
+	public abstract List<TaxonBase> getAllTaxa(int limit, int start);
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to

@@ -46,7 +46,6 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		this.dao = dao;
 		this.taxonDao = dao;
 	}
-	
 
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
@@ -69,8 +68,6 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return saveCdmObjectAll(taxonCollection);
 	}
 
-	
-
 	@Transactional(readOnly = false)
 	public UUID removeTaxon(TaxonBase taxon) {
 		return super.removeCdmObject(taxon);
@@ -80,6 +77,14 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return taxonDao.getTaxaByName(name, sec);
 	}
 
+	public List<TaxonBase> getAllTaxa(int limit, int start){
+		return taxonDao.list(limit, start);
+	}
+
+	public List<Synonym> getAllSynonyms(int limit, int start) {
+		return taxonDao.getAllSynonyms(limit, start);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */

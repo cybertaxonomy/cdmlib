@@ -59,6 +59,9 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl;
 public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
+	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
+	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
 	//private static final String serializeFromDb = "cdm_test_jaxb";
 	private static final String serializeFromDb = "cdm_test_anahit";
@@ -103,8 +106,86 @@ public class TestJaxb {
 
     }
 
+    private void setFlatData (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
+    	
+	int agentRows = numberOfRows;
+	int definedTermBaseRows = numberOfRows;
+	int referenceBaseRows = numberOfRows;
+	int taxonNameBaseRows = numberOfRows;
+	
+	if (agentRows <= 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
+	logger.info("# Agents: " + agentRows);
+	//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
+	dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
+	
+	if (definedTermBaseRows <= 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+	logger.info("# DefinedTermBase: " + definedTermBaseRows);
+	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+
+	if (referenceBaseRows <= 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
+	logger.info("# ReferenceBase: " + referenceBaseRows);
+	dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
+	
+	if (taxonNameBaseRows <= 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
+	logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+	//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
+	dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
+	
+    }
+	
     
-    public void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
+    private void setAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
+    	
+    	int agentRows = numberOfRows;
+    	int definedTermBaseRows = numberOfRows;
+    	int referenceBaseRows = numberOfRows;
+    	int taxonNameBaseRows = numberOfRows;
+    	int taxonBaseRows = numberOfRows;
+    	
+    	if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
+    	logger.info("# Agents: " + agentRows);
+    	//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
+    	dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
+    	
+    	if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+    	logger.info("# DefinedTermBase: " + definedTermBaseRows);
+    	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+
+    	if (referenceBaseRows == 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
+    	logger.info("# ReferenceBase: " + referenceBaseRows);
+    	dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
+    	
+    	if (taxonNameBaseRows == 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
+    	logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+    	//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
+    	dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
+    	
+    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+    	logger.info("# TaxonBase: " + taxonBaseRows);
+		dataSet.setTaxa(new ArrayList<Taxon>());
+		dataSet.setSynonyms(new ArrayList<Synonym>());
+    	List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxa(taxonBaseRows, 0);
+    	for (TaxonBase taxonBase : tb) {
+    		if (taxonBase instanceof Taxon) {
+				dataSet.addTaxon((Taxon)taxonBase);
+			} else if (taxonBase instanceof Synonym) {
+				dataSet.addSynonym((Synonym)taxonBase);
+			} else {
+	    		logger.error("entry of wrong type: " + taxonBase.toString());
+			}
+    	}
+    	
+        // TODO: 
+    	// retrieve taxa and synonyms separately
+    	// need correct count for taxa and synonyms
+//    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+//    	logger.info("# Synonym: " + taxonBaseRows);
+//		dataSet.setSynonyms(new ArrayList<Synonym>());
+//    	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
+
+    }
+
+    private void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
 
     	// The following collections store data of a particular horizontal level, 
     	// such as all synonyms, relationships, and children of all taxa of this level.
@@ -113,8 +194,12 @@ public class TestJaxb {
     	Set<Synonym> synonyms_ = new HashSet();
     	Set<TaxonRelationship> taxonRelationships_ = new HashSet();
     	Set<SynonymRelationship> synonymRelationships_ = new HashSet();
+    	// TODO: Count number of taxa etc. to restrict number of retrieved objects
+    	int numberOfTaxa = 0;
 
     	for (Taxon taxon: taxonCollection) {
+    		
+    		numberOfTaxa++;
 
     		try {
     			
@@ -193,7 +278,8 @@ public class TestJaxb {
     }
     
     
-    public void testSerialize(String dbname, String filename) {
+    // traverse the taxonomic tree to retrieve taxa, synonyms and relationships
+    public void doSerialize(String dbname, String filename) {
     	
 		logger.info("Serializing DB " + dbname + " to file " + filename);
 
@@ -222,42 +308,14 @@ public class TestJaxb {
     	try {
     		logger.info("Load data from DB ...");
 
-    		// get root taxa 
-
-    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
+    		setFlatData(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
+    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
     		// CdmFetch options not yet implemented
     		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
-
-    	} catch (Exception e) {
-    		logger.info("error while fetching root taxa");
-    	}
-
-    	try {
-    		
-    		int nbrRows;
-    		
-    		nbrRows = appCtr.getAgentService().count(Agent.class);
-    		logger.info("# Agents: " + nbrRows);
-    		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(nbrRows, 0));
-    		
-    		nbrRows = appCtr.getTermService().count(DefinedTermBase.class);
-    		logger.info("# DefinedTermBase: " + nbrRows);
-    		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(nbrRows, 0));
-
-    		nbrRows = appCtr.getReferenceService().count(ReferenceBase.class);
-    		logger.info("# ReferenceBase: " + nbrRows);
-    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(nbrRows, 0));
-    		
-    		nbrRows = appCtr.getNameService().count(TaxonNameBase.class);
-    		logger.info("# TaxonNameBase: " + nbrRows);
-    		//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
-    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(nbrRows, 0));
-    		
     		dataSet.setTaxa(taxa);
     		
-    		dataSet.setSynonyms(new HashSet<Synonym>());
+    		dataSet.setSynonyms(new ArrayList<Synonym>());
     		dataSet.setRelationships(new HashSet<RelationshipBase>());
     		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
@@ -265,8 +323,64 @@ public class TestJaxb {
     		logger.info("error setting root data");
     	}
 
-    	traverse(taxa, dataSet);
+        // traverse the taxonomic tree
     	
+    	if (NUMBER_ROWS_TO_RETRIEVE <= 0) { traverse(taxa, dataSet); }
+    	
+		logger.info("all data retrieved");
+		
+    	try {
+    		cdmDocumentBuilder = new CdmDocumentBuilder();
+    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(filename));
+
+    		logger.info("XML file written");
+    		
+    	} catch (Exception e) {
+    		logger.error("marshalling error");
+    		e.printStackTrace();
+    	} 
+    	appCtr.commitTransaction(txStatus);
+    	appCtr.close();
+    	
+    }
+    
+
+    // get all data directly from the DAOs, including taxa, synonyms, and relationships
+    public void doSerializeFlat(String dbname, String filename) {
+    	
+		logger.info("Serializing DB " + dbname + " to file " + filename);
+
+		CdmApplicationController appCtr = null;
+
+    	try {
+    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+    		
+    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
+    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+
+    	} catch (DataSourceNotFoundException e) {
+    		logger.error("datasource error");
+    	} catch (TermNotFoundException e) {
+    		logger.error("defined terms not found");
+    	}
+    	
+    	TransactionStatus txStatus = appCtr.startTransaction();
+    	DataSet dataSet = new DataSet();
+    	List<Taxon> taxa = null;
+    	List<DefinedTermBase> terms = null;
+
+    	// get data from DB
+
+    	try {
+    		logger.info("Load data from DB ...");
+
+    		setAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
+    		
+    	} catch (Exception e) {
+    		logger.info("error setting data");
+    	}
+
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
     		cdmDocumentBuilder.marshal(dataSet, new FileWriter(filename));
@@ -281,7 +395,7 @@ public class TestJaxb {
     }
     
 
-	public void testDeserialize(String dbname, String filename) {
+	public void doDeserialize(String dbname, String filename) {
 		
 		logger.info("Deserializing file " + filename + " to DB " + dbname);
 
@@ -341,9 +455,13 @@ public class TestJaxb {
 	private void test(){
 		
 		//testInitDb(serializeFromDb);
-	    testSerialize(serializeFromDb, marshOutOne);
-		//testDeserialize(deserializeToDb, marshOutOne);
-		//testSerialize(deserializeToDb, marshOutTwo);
+		
+	    doSerialize(serializeFromDb, marshOutOne);
+	    //doSerializeFlat(serializeFromDb, marshOutOne);
+	    
+		//doDeserialize(deserializeToDb, marshOutOne);
+	    
+		//doSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
@@ -369,7 +487,7 @@ public class TestJaxb {
 	    List<ReferenceBase> references;
 	    List<TaxonNameBase> taxonomicNames;
 	    List<Taxon> taxa;
-	    Set<Synonym> synonyms;
+	    List<Synonym> synonyms;
 	    List<AnnotatableEntity> homotypicalGroups;
 
 	    agents = new ArrayList<Agent>();
@@ -378,7 +496,7 @@ public class TestJaxb {
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
-		synonyms = new HashSet<Synonym>();
+		synonyms = new ArrayList<Synonym>();
 		
 		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
