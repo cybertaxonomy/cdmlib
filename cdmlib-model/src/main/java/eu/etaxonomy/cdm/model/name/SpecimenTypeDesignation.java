@@ -29,14 +29,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The class representing a typification of an {@link HomotypicalGroup homotypical group} by a
- * {@link occurrence.DerivedUnitBase specimen or a figure}. This allows to define a specimen type designation
- * only once for the homotypical group instead of defining a type designation
- * for each one of the taxon names subsumed under one homotypical group.
- * All {@link TaxonNameBase taxon names} which have a {@link Rank rank}
- * "species aggregate" or lower can only be typified by specimens.
- * Moreover each typification by a specimen (or by a figure) has a {@link TypeDesignationStatus status}
- * like "holotype" or "isotype".
+ * The class representing a typification of a {@link TaxonNameBase taxon name} by a
+ * {@link occurrence.DerivedUnitBase specimen or a figure}. All {@link TaxonNameBase taxon names}
+ * which have a {@link Rank rank} "species aggregate" or lower can only be typified
+ * by specimens. Moreover each typification by a specimen (or by a figure) has a
+ * {@link TypeDesignationStatus status} like "holotype" or "isotype".
  * <P>
  * This class corresponds to: <ul>
  * <li> NomenclaturalType according to the TDWG ontology
@@ -44,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
  * <li> NomenclaturalTypeDesignation according to the ABCD schema
  * </ul>
  * 
+ * @see		TypeDesignationBase
  * @see		NameTypeDesignation
  * @author	m.doering
  * @version 1.0
@@ -113,9 +111,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * Class constructor: creates a new specimen type designation instance
 	 * (including its {@link reference.ReferenceBase reference source} and 
 	 * eventually the taxon name string originally used by this reference when 
-	 * establishing the former designation) and adds it to the corresponding 
-	 * {@link HomotypicalGroup#getSpecimenTypeDesignations() specimen type 
-	 * designation set} of the {@link HomotypicalGroup homotypical group}.
+	 * establishing the former designation).
 	 * 
 	 * @param specimen				the derived unit (specimen or figure) used 
 	 * 								as type
@@ -145,7 +141,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 
 	/** 
 	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
-	 * in <i>this</i> specimen type designation to typify the {@link HomotypicalGroup homotypical group}.
+	 * in <i>this</i> specimen type designation to typify the {@link TaxonNameBase taxon name}.
 	 *  
 	 * @see   #getHomotypicalGroup()
 	 */
@@ -187,7 +183,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * A lectotype is a {@link occurrence.DerivedUnitBase specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
 	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
-	 * holotype is found to belong to more than one {@link HomotypicalGroup homotypical group},
+	 * holotype is found to belong to more than one {@link TaxonNameBase taxon name},
 	 * or as long as it is missing.
 	 *
 	 * @see  TypeDesignationStatus#isLectotype()

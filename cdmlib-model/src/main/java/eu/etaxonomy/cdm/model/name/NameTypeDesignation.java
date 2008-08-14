@@ -31,20 +31,18 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * The class representing a typification of the {@link TaxonNameBase taxon names}, belonging
- * to an {@link HomotypicalGroup homotypical group}, with a {@link Rank rank} above "species aggregate"
- * by a species taxon name of the same homotypical group.<BR>
+ * The class representing a typification of a {@link TaxonNameBase taxon name} with a {@link Rank rank}
+ * above "species aggregate" by another taxon name.<BR>
  * According to nomenclature a type of a genus name or of any subdivision of a
  * genus can only be a species name. A type of a family name or of any
- * subdivision of a family is a genus name (and resolving it: a species name 
- * typifying this genus).<BR>
- * Moreover the designation of a particular species name as a type for an
- * homotypical group name might be nomenclaturally rejected or conserved.
- * Depending on the date of publication, the same typification could be rejected
- * according to one reference and later be conserved according to another
- * reference, but a name type designation cannot be simultaneously rejected and
- * conserved.
+ * subdivision of a family is a genus name.<BR>
+ * Moreover the designation of a particular taxon name as a type might be
+ * nomenclaturally rejected or conserved. Depending on the date of publication,
+ * the same typification could be rejected according to one reference and later
+ * be conserved according to another reference, but a name type designation
+ * cannot be simultaneously rejected and conserved.
  * 
+ * @see		TypeDesignationBase
  * @see		SpecimenTypeDesignation
  * @author	m.doering
  * @version 1.0
@@ -81,13 +79,9 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * Class constructor: creates a new name type designation instance
 	 * (including its {@link reference.ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
-	 * the former designation) and adds it to the corresponding 
-	 * {@link TaxonNameBase#getNameTypeDesignations() name type designation set} of the typified name.
-	 * The typified name will be added to the {@link HomotypicalGroup homotypical group} to which
-	 * the species taxon name used for the typification belongs. 
+	 * the former designation).
 	 * 
-	 * @param typifiedName			the suprageneric taxon name to be typified
-	 * @param typeSpecies			the species taxon name typifying the suprageneric taxon name 
+	 * @param typeSpecies			the taxon name used as a type 
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
@@ -95,9 +89,11 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * 								<i>this</i> name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
 	 * 								<i>this</i> name type designation
-	 * @param isNotDesignated		see at {@link #isNotDesignated()}
+	 * @param isNotDesignated		the boolean flag indicating whether there is no reference at all for 
+	 * 								<i>this</i> name type designation
 	 * @see							#NameTypeDesignation()
-	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 * @see							#isNotDesignated()
+	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeSpecies, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
@@ -114,7 +110,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
 	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
-	 * of a taxon name type must be "species".
+	 * of the taxon name type must be "species".
 	 *  
 	 * @see   #getTypifiedName()
 	 */
@@ -132,8 +128,8 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 
 	/** 
 	 * Returns the boolean value "true" if the competent authorities decided to
-	 * reject the use of the species taxon name for <i>this</i> taxon name type
-	 * designation.
+	 * reject the use of the species taxon name as the type for <i>this</i> taxon
+	 * name type designation.
 	 *  
 	 * @see   #isConservedType()
 	 */
@@ -149,8 +145,8 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 
 	/** 
 	 * Returns the boolean value "true" if the competent authorities decided to
-	 * conserve the use of the species taxon name for <i>this</i> taxon name type
-	 * designation.
+	 * conserve the use of the species taxon name as the type for <i>this</i> taxon
+	 * name type designation.
 	 *  
 	 * @see   #isRejectedType()
 	 */
@@ -165,11 +161,11 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	}
 
 	/** 
-	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name} for
-	 * <i>this</i> taxon name type designation was posterior to the publication of the
-	 * typified taxon name. In this case the taxon name type designation should
-	 * have a {@link reference.ReferenceBase reference} that is different to the
-	 * nomenclatural reference of the typified taxon name.
+	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name}
+	 * as the type for <i>this</i> taxon name type designation was posterior to the
+	 * publication of the typified taxon name. In this case the taxon name type
+	 * designation should have a {@link reference.ReferenceBase reference} that is different to the
+	 * {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *  
 	 * @see   #getLectoTypeReference()
 	 */
@@ -188,13 +184,17 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	}
 
 	/**
-	 * Returns the boolean value "true" if a name type does not exist.
-	 * Two cases must be differentiated: <BR><ul> 
-	 * <li> a) it is unknown whether a name type exists and <BR>
-	 * <li> b) it is known that no name type exists <BR>
+	 * Returns the boolean value "true" if it is known that a name type does not
+	 * exist and therefore the {@link TaxonNameBase taxon name} to which <i>this</i>
+	 * taxon name type designation is assigned must still be typified. Two
+	 * cases must be differentiated: <BR><ul> 
+	 * <li> a) it is unknown whether a name type exists and 
+	 * <li> b) it is known that no name type exists
 	 *  </ul>
-	 * If b) is true there should be a NameTypeDesignation with the flag
-	 * isNotDesignated set. The typeSpecies should then be "null".
+	 * If a) is true there should be no NameTypeDesignation instance at all
+	 * assigned to the "typified" taxon name.<BR>
+	 * If b) is true there should be a NameTypeDesignation instance with the
+	 * flag isNotDesignated set. The typeSpecies should then be "null".
 	 */
 	public boolean isNotDesignated() {
 		return isNotDesignated;

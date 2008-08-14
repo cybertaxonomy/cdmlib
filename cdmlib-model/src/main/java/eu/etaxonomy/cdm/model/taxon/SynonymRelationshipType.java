@@ -94,9 +94,13 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 	
 	/**
-	 * Returns the synonym relationship type "is synonym of". This
-	 * indicates that it is not known whether both {@link name.TaxonNameBase taxon names}
-	 * involved in such a relationship belong or not to the same {@link name.HomotypicalGroup homotypical group}.
+	 * Returns the synonym relationship type "is synonym of". This indicates
+	 * that the reference asserting the {@link SynonymRelationship synonym relationship} does not know
+	 * whether both {@link name.TaxonNameBase taxon names} involved are typified by the same type or
+	 * not.
+	 * 
+	 * @see		#HOMOTYPIC_SYNONYM_OF()
+	 * @see		#HETEROTYPIC_SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType SYNONYM_OF(){
 		return getByUuid(uuidSynonymOf);
@@ -105,8 +109,13 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	/**
 	 * Returns the synonym relationship type "is homotypic synonym of"
 	 * ("is nomenclatural synonym of" in zoology). This indicates that the
-	 * {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
-	 * ("accepted/correct") {@link Taxon taxon} belong to the same {@link name.HomotypicalGroup homotypical group}.
+	 * the reference asserting the {@link SynonymRelationship synonym relationship} holds that
+	 * the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
+	 * ("accepted/correct") {@link Taxon taxon} are typified by the same type.
+	 * In this case they should belong to the same {@link name.HomotypicalGroup homotypical group}.
+	 * 
+	 * @see		#HETEROTYPIC_SYNONYM_OF()
+	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHomotypicSynonymOf);
@@ -115,9 +124,13 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	/**
 	 * Returns the synonym relationship type "is heterotypic synonym of"
 	 * ("is taxonomic synonym of" in zoology). This indicates that the
-	 * {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
-	 * ("accepted/correct") {@link Taxon taxon} do not belong to the same
-	 * {@link name.HomotypicalGroup homotypical group}.
+	 * the reference asserting the {@link SynonymRelationship synonym relationship} holds that
+	 * the {@link name.TaxonNameBase taxon name} used as a {@link Synonym synonym} and the taxon name used as the
+	 * ("accepted/correct") {@link Taxon taxon} are not typified by the same type.
+	 * In this case they should not belong to the same {@link name.HomotypicalGroup homotypical group}.
+	 * 
+	 * @see		#HOMOTYPIC_SYNONYM_OF()
+	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
 		return getByUuid(uuidHeterotypicSynonymOf);

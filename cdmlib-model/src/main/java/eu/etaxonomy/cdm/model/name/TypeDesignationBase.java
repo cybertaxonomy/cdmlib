@@ -32,16 +32,16 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * The (abstract) class representing a typification of an {@link HomotypicalGroup homotypical group}.
- * This allows to define a type designation only once for the homotypical group
- * as a whole instead of defining a type designation for each one of the taxon
- * names subsumed under one homotypical group.<BR>
- * All {@link TaxonNameBase taxon names} which have a {@link Rank rank} "species aggregate" or lower
+ * The (abstract) class representing a typification of a {@link TaxonNameBase taxon name}.<BR>
+ * All taxon names which have a {@link Rank rank} "species aggregate" or lower
  * can only be typified by specimens (a {@link SpecimenTypeDesignation specimen type designation}), but taxon
  * names with a higher rank might be typified by an other taxon name with
- * "species" rank (a {@link NameTypeDesignation name type designation}).
+ * rank "species" or "genus" (a {@link NameTypeDesignation name type designation}).
  * 
- * @author a.mueller
+ * @see		TaxonNameBase
+ * @see		NameTypeDesignation
+ * @see		SpecimenTypeDesignation
+ * @author  a.mueller
  * @created 07.08.2008
  * @version 1.0
  */
@@ -64,11 +64,28 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	private HomotypicalGroup homotypicalGroup;
 
 // **************** CONSTRUCTOR *************************************/
-	
+
+	/** 
+	 * Class constructor: creates a new empty type designation.
+	 * 
+	 * @see	#TypeDesignationBase(ReferenceBase, String, String))
+	 */
 	protected TypeDesignationBase(){
 		super();
 	}
 	
+	/**
+	 * Class constructor: creates a new type designation
+	 * (including its {@link reference.ReferenceBase reference source} and eventually
+	 * the taxon name string originally used by this reference when establishing
+	 * the former designation).
+	 * 
+	 * @param citation				the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @see							#TypeDesignationBase()
+	 * @see							TaxonNameBase#getTypeDesignations()
+	 */
 	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString){
 		super(citation, citationMicroReference, originalNameString);
 	}
@@ -79,6 +96,12 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getHomotypicalGroup()
+	 */
+	/** 
+	 * Returns the {@link HomotypicalGroup homotypical group} to which all (in <i>this</i>
+	 * type designation) typified {@link TaxonNameBase taxon names} belong.
+	 *  
+	 * @see   #getTypeSpecimen()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -93,6 +116,10 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getTypifiedNames()
+	 */
+	/** 
+	 * Returns the set of {@link TaxonNameBase taxon names} typified in <i>this</i>
+	 * type designation.
 	 */
 	@ManyToMany
 	@Cascade({CascadeType.SAVE_UPDATE})

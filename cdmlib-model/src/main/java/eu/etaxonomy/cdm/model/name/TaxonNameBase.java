@@ -669,7 +669,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Returns the set of {@link NameTypeDesignation name type designations} assigned
 	 * to <i>this</i> taxon name the rank of which must be above "species".
 	 * The name type designations include all the taxon names used to typify
-	 * this name and eventually the rejected or conserved status
+	 * <i>this</i> taxon name and eventually the rejected or conserved status
 	 * of these designations.
 	 *
 	 * @see     NameTypeDesignation
@@ -697,12 +697,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  isRejectedType			the boolean status for a rejected name type designation
 	 * @param  isConservedType			the boolean status for a conserved name type designation
 	 * @param  isLectoType				the boolean status for a lectotype name type designation
-	 * @param  isNotDesignated			the boolean status for a not designated name type designation 
-	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all
-	 * 									names of the homotypical group this taxon name belongs to
+	 * @param  isNotDesignated			the boolean status for a name type designation without name type
+	 * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
+	 * 									added to all taxon names of the homotypical group this taxon name belongs to
 	 * @see 			  				#getNameTypeDesignations()
-	 * @see 			  				#addTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String)
 	 * @see 			  				NameTypeDesignation
+	 * @see 			  				NameTypeDesignation#isNotDesignated()
 	 */
 	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
 				ReferenceBase citation, 
@@ -736,20 +736,20 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	
 	/** 
-	 * Adds a new {@link SpecimenTypeDesignation specimen type designation}
-	 * (using its attributes as parameters) to the set of specimen type designations assigned to the
-	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name belongs.
+	 * Creates and adds a new {@link SpecimenTypeDesignation specimen type designation}
+	 * to <i>this</i> taxon name's set of specimen type designations.
 	 *
-	 * @param  typeSpecimen				the specimen to be used as a type for <i>this</i> taxon name's homotypical group
+	 * @param  typeSpecimen				the specimen to be used as a type for <i>this</i> taxon name
 	 * @param  status					the specimen type designation status
 	 * @param  citation					the reference for this new specimen type designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name used in the reference to assert this designation
-	 * @param  addToAllHomotypicNames	boolean, if true the name type designation is added to all names of the homotypical
-	 * 								group this taxon name belongs to
-	 * @see 			  				HomotypicalGroup#getSpecimenTypeDesignations()
-	 * @see 			  				#addTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean)
+	 * @param  addToAllHomotypicNames	the boolean indicating whether the specimen type designation should be
+	 * 									added to all taxon names of the homotypical group the typified
+	 * 									taxon name belongs to
+	 * @see 			  				#getSpecimenTypeDesignations()
 	 * @see 			  				TypeDesignationStatus
+	 * @see 			  				SpecimenTypeDesignation
 	 */
 	public void addSpecimenTypeDesignation(Specimen typeSpecimen, 
 				TypeDesignationStatus status, 
@@ -787,7 +787,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	/** 
 	 * Returns the {@link HomotypicalGroup homotypical group} to which
 	 * <i>this</i> taxon name belongs. A homotypical group represents all taxon names
-	 * that share the same type specimens.
+	 * that share the same types.
 	 *
 	 * @see 	HomotypicalGroup
 	 */

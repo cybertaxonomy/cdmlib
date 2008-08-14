@@ -38,9 +38,13 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * The homotypical group class represents a set of {@link TaxonNameBase taxon names} associated
- * on the base of their typifications. Taxon names belonging to an homotypical
- * group and the taxon names or {@link occurrence.DerivedUnitBase specimens} used as types
- * for their {@link TypeDesignationBase type designations} have the following properties: <ul>
+ * on the base of their typifications. Since it can be asserted that two taxon
+ * names are typified by the same type without mentioning the type itself, even
+ * taxon names without explicit {@link TypeDesignationBase type designation} can belong
+ * to an homotypical group.<BR>
+ * Taxon names belonging to an homotypical group and the taxon names or
+ * {@link occurrence.DerivedUnitBase specimens} used as types for their
+ * {@link TypeDesignationBase type designations} have the following properties: <ul>
  * <li>	A taxon name belongs exactly to one homotypical group
  * <li>	A type specimen or a type name can be used as a type only for taxon
  * 		names belonging to the same homotypical group<BR>
@@ -193,7 +197,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	/** 
 	 * Returns the set of all {@link TypeDesignationBase type designations} that
 	 * typify the {@link TaxonNameBase taxon names} belonging to <i>this</i> homotypical group
-	 * (this includes {@link NameTypeDesignation name type designations} and
+	 * (this includes either {@link NameTypeDesignation name type designations} or
 	 * {@link SpecimenTypeDesignation specimen type designations}).
 	 *
 	 * @see	#getTypifiedNames()
