@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -47,12 +48,11 @@ import javax.xml.bind.annotation.XmlType;
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
  */
+@XmlRootElement(name = "SpecimenTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignation", propOrder = {
-    "homotypicalGroup",
     "typeSpecimen",
-    "typeStatus",
-    "typifiedNames"
+    "typeStatus"
 })
 @Entity
 public class SpecimenTypeDesignation extends TypeDesignationBase implements ITypeDesignation {

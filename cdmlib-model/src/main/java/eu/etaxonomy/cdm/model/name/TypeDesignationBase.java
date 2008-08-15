@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -46,6 +47,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @XmlRootElement(name = "TypeDesignationBase")
+@XmlType(name = "TypeDesignationBase", propOrder = {
+    "typifiedNames",
+    "homotypicalGroup"
+})
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase extends ReferencedEntityBase implements ITypeDesignation {

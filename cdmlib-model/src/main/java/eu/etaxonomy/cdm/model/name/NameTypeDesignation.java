@@ -17,9 +17,12 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -48,14 +51,35 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:38
  */
-@XmlType(name="NameTypeDesignation")
+@XmlRootElement(name = "NameTypeDesignation")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "NameTypeDesignation", propOrder = {
+    "isRejectedType",
+    "isConservedType",
+    "isLectoType",
+    "isNotDesignated",
+    "typeName"
+})
 @Entity
 public class NameTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
+	
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
+	
+	@XmlElement(name = "IsRejectedType")
 	private boolean isRejectedType;
+	
+	@XmlElement(name = "IsConservedType")
 	private boolean isConservedType;
+	
+	@XmlElement(name = "IsLectoType")
 	private boolean isLectoType;
+	
+	@XmlElement(name = "IsNotDesignated")
 	private boolean isNotDesignated;
+	
+	@XmlElement(name = "TypeName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private TaxonNameBase typeName;
 	
 //	@XmlElement(name = "HomotypicalGroup")

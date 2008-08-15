@@ -112,10 +112,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElement(name = "TypeDesignation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
-    // List homotypical groups here in TaxonomicNames or separately?
-    // FIXME: Stack overflow if listed here.
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
