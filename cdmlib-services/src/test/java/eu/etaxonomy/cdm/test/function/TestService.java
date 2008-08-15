@@ -185,6 +185,20 @@ public class TestService {
 		
 	}
 
+	public void testTransientRank(){
+		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
+		TaxonNameBase taxonName = BotanicalName.NewInstance(transientRank);
+		ReferenceBase ref = Journal.NewInstance();
+		Taxon taxon = Taxon.NewInstance(taxonName, ref);
+		
+		logger.info("Save taxon ...");
+		UUID uuidTaxon1 = taxonService.saveTaxon(taxon);
+		logger.info("  UUID: " + uuidTaxon1);
+
+	}
+
+	
+	
 	public void regenerateTaxonTitleCache(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		taxonService.generateTitleCache();
@@ -198,15 +212,19 @@ public class TestService {
 		//testDeleteTaxa();
 		//testDeleteRelationship();
 		//regenerateTaxonTitleCache();
-		testVocabularyLists();
+//		testVocabularyLists();
+		testTransientRank();
 		System.out.println("\nEnd ...");
 	}
+	
+	private static Rank transientRank = Rank.SPECIES();
 	
 	private void init(){
 		try {
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			//appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("defaultMySql") , dbSchemaValidation);
 			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
+			
 			
 			TaxonNameBase name = NonViralName.NewInstance(null);
 			name.setTitleCache("Abies alba");
