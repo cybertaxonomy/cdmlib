@@ -23,6 +23,9 @@
     <property name="namingStrategy">
     	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
     </property>
+    <property name="entityInterceptor">
+    	<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateInterceptor" />
+    </property>
     <property name="annotatedPackages">
         <list>
             <value>eu.etaxonomy.cdm.model.common</value>

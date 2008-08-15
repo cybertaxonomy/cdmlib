@@ -32,10 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  * @author a.mueller
  *
  */
-/**
- * @author AM
- *
- */
+
 @Component
 public class VocabularyStoreImpl implements IVocabularyStore {
 	private static Logger logger = Logger.getLogger(VocabularyStoreImpl.class);
@@ -58,11 +55,14 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	@Autowired
 	public IDefinedTermDao termDao;
 	
+	
+	
 	/**
 	 * 
 	 */
 	public VocabularyStoreImpl() {
 		super();
+		staticInitialized = false;
 	}
 
 
@@ -151,7 +151,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 
 	public boolean initialize(){
 		boolean result = true;
-		if (! initialized){
+		if (! isInitialized()){
 			logger.info("inititialize VocabularyStoreImpl ...");
 			try {
 				logger.debug("setVocabularyStore ...");
@@ -163,7 +163,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 					termDao.saveOrUpdate(DEFAULT_LANGUAGE);
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 					definedTermsMap.put(DEFAULT_LANGUAGE.getUuid(), DEFAULT_LANGUAGE);
-					initialized = true;
+					setInitialized(true);
 					TermLoader termLoader = new TermLoader(this);
 					//termLoader.setVocabularyStore(this);
 					result = result && termLoader.makeDefaultTermsInserted(this);
@@ -171,13 +171,13 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 					definedTermsMap = new HashMap<UUID, ILoadableTerm>();
 					definedTermsMap.put(defaultLanguage.getUuid(), defaultLanguage);
 				}
-				initialized = true;
+				setInitialized(true);
 				result = result &&  loadProgrammaticallyNeededTerms();
-				initialized = result;
+				setInitialized(result);
 				logger.info("inititialize VocabularyStoreImpl end ...");				
 			} catch (Exception e) {
 				logger.error("loadBasicTerms: Error ocurred when initializing and loading terms: " + e.getMessage());
-				initialized = false;
+				setInitialized(false);
 				return false;
 			}
 
@@ -193,6 +193,31 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 			saveOrUpdate(defTerm);
 		}
 		return true;
+	}
+
+	
+	
+	private void setInitialized(boolean initialized) {
+		this.initialized = initialized;
+		staticInitialized = initialized;
+		staticVocabularyStore = this;
+	}
+
+	//FIXME preliminary to work around circular dependency of autowired VocabularyStoreImpl - DaoBase- SessionFactory - CdmHibernateInterceptor -VocabularyStoreImpl
+	private static boolean staticInitialized;
+	private static VocabularyStoreImpl staticVocabularyStore;
+	
+	//FIXME
+	public static VocabularyStoreImpl getCurrentVocabularyStore(){
+		return staticVocabularyStore;
+	}
+	
+	/**
+	 * @return the initialized
+	 */
+	public static boolean isInitialized() {
+		return staticInitialized;
+		//return initialized;
 	}
 
 }
