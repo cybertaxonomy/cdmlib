@@ -41,6 +41,10 @@ public class TdwgArea {
 			initMap();
 		}
 		UUID uuid = map.get(tdwgLabel);
+		if (uuid == null){
+			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
+			return null;
+		}
 		return (NamedArea)DefinedTermBase.findByUuid(uuid);
 	}
 
