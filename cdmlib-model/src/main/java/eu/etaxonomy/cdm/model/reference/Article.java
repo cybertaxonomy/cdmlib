@@ -16,9 +16,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import sun.management.resources.agent;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
@@ -58,8 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 @XmlRootElement(name = "Article")
 @Entity
 public class Article extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
-	
-	static Logger logger = Logger.getLogger(Article.class);
+	private static final Logger logger = Logger.getLogger(Article.class);
 	
     @XmlElement(name = "Series")
 	private String series;
