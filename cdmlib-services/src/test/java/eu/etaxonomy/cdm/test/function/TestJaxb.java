@@ -63,8 +63,8 @@ public class TestJaxb {
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
-	//private static final String serializeFromDb = "cdm_test_jaxb";
-	private static final String serializeFromDb = "cdm_test_anahit";
+	private static final String serializeFromDb = "cdm_test_jaxb";
+	//private static final String serializeFromDb = "cdm_test_anahit";
 	private static final String deserializeToDb = "cdm_test_jaxb2";
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -79,7 +79,7 @@ public class TestJaxb {
 
     public void testInitDb(String dbname) {
     	
-		logger.info("Initializing DB " + "dbname");
+		logger.info("Initializing DB " + dbname);
 		
 		CdmApplicationController appCtr = null;
 		try {
@@ -118,9 +118,10 @@ public class TestJaxb {
 	//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
 	dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
 	
-	if (definedTermBaseRows <= 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
-	logger.info("# DefinedTermBase: " + definedTermBaseRows);
-	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+//  FIXME: Unmarshalling error with preloaded terms
+//	if (definedTermBaseRows <= 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+//	logger.info("# DefinedTermBase: " + definedTermBaseRows);
+//	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
 
 	if (referenceBaseRows <= 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
 	logger.info("# ReferenceBase: " + referenceBaseRows);
@@ -345,7 +346,7 @@ public class TestJaxb {
     }
     
 
-    // get all data directly from the DAOs, including taxa, synonyms, and relationships
+    // get all data directly from the services, including taxa, synonyms, and relationships
     public void doSerializeFlat(String dbname, String filename) {
     	
 		logger.info("Serializing DB " + dbname + " to file " + filename);
@@ -454,14 +455,14 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		//testInitDb(serializeFromDb);
+		testInitDb(serializeFromDb);
 		
 	    doSerialize(serializeFromDb, marshOutOne);
 	    //doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		//doDeserialize(deserializeToDb, marshOutOne);
+		doDeserialize(deserializeToDb, marshOutOne);
 	    
-		//doSerialize(deserializeToDb, marshOutTwo);
+		doSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
