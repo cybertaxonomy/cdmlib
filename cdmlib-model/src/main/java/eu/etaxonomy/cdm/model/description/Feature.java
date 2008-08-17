@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -193,6 +194,9 @@ public class Feature extends DefinedTermBase {
 	private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
 	private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
 	private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
+	private static final UUID uuidAdditionalPublication = UUID.fromString("cb2eab09-6d9d-4e43-8ad2-873f23400930");
+	
+	
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -269,6 +273,10 @@ public class Feature extends DefinedTermBase {
 	
 	public static final Feature CITATION(){
 		return getByUuid(uuidCitation);
+	}
+	
+	public static final Feature ADDITIONAL_PUBLICATION(){
+		return getByUuid(uuidAdditionalPublication);
 	}
 	
 	/**
