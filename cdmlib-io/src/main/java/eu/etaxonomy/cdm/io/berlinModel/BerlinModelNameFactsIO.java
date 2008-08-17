@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -127,9 +128,15 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 						}						
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
-							String prefix = "Also published in: ";
-							Annotation annotation = Annotation.NewDefaultLanguageInstance(nameFact);
-							taxonNameBase.addAnnotation(annotation);
+							
+							
+							TaxonNameDescription description = TaxonNameDescription.NewInstance();
+							TextData additionalPublication = TextData.NewInstance(Feature.ADDITIONAL_PUBLICATION());
+							//TODO language
+							Language language = Language.DEFAULT();
+							additionalPublication.putText(nameFact, language);
+							description.addElement(additionalPublication);
+							taxonNameBase.addDescription(description);
 						}
 					}else {
 						//TODO
