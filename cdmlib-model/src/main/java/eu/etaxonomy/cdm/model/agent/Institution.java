@@ -72,8 +72,7 @@ public class Institution extends Agent {
 	private Contact contact;
 
 	/**
-	 * Factory method
-	 * @return
+	 * Creates a new empty institution instance.
 	 */
 	public static Institution NewInstance(){
 		return new Institution();
@@ -81,7 +80,7 @@ public class Institution extends Agent {
 	
 	
 	/** 
-	 * Class constructor
+	 * Class constructor.
 	 */
 	public Institution() {
 		super();
@@ -107,7 +106,7 @@ public class Institution extends Agent {
 	/** 
 	 * Returns the set of institution {@link InstitutionType types} (categories)
 	 * used to describe or circumscribe <i>this</i> institution's activities.
-	 * Institution types are items of a controlled {@link TermVocabulary vocabulary}.
+	 * Institution types are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
 	 *
 	 * @return	the set of institution types
 	 * @see     InstitutionType
@@ -118,7 +117,7 @@ public class Institution extends Agent {
 	}
 	
 	/** 
-	 * Adds a new institutional type (from the corresponding {@link TermVocabulary vocabulary})
+	 * Adds a new institutional type (from the corresponding {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary})
 	 * to the set of institution types of <i>this</i> institution.
 	 *
 	 * @param  t  any type of institution
@@ -199,9 +198,9 @@ public class Institution extends Agent {
 	 * Generates the identification string for this institution.
 	 * The string is based on its name and code as well as on the name and code of
 	 * its parent institution, if existing.
-	 * This method overrides {@link IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
+	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
+	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
 	 * @return  the identification string
 	 */

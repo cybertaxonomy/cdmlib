@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * This class represents teams of {@link Person persons}. A team exists either for itself
  * or is built with the list of (distinct) persons who belong to it.
- * In the first case the inherited attribute {@link IdentifiableEntity#getTitleCache() titleCache} is to be used.
+ * In the first case the inherited attribute {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} is to be used.
  * In the second case at least all abbreviated names
  * (the inherited attributes {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle})
  * or all full names (the strings returned by Person.generateTitle)
@@ -63,8 +63,7 @@ public class Team extends TeamOrPersonBase {
 	
 	
 	/** 
-	 * Creates a new team without any concrete {@link Person members}.
-	 * This method calls the {@link #Team()constructor}.
+	 * Creates a new team instance without any concrete {@link Person members}.
 	 */
 	static public Team NewInstance(){
 		return new Team();
@@ -141,9 +140,9 @@ public class Team extends TeamOrPersonBase {
 	 * Generates an identification string for <i>this</i> team according to the strategy
 	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}. This string is built
 	 * with the full names of all persons belonging to its (ordered) members' list.
-	 * This method overrides {@link IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
+	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
+	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
 	 * @return  a string which identifies <i>this</i> team
 	 */

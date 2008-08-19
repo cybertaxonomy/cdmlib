@@ -34,8 +34,8 @@ import javax.xml.bind.annotation.XmlType;
  * taxonomic and/or geographical {@link Keyword specialization}.
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
- * For other alternative (string-)names {@link OriginalSource OriginalSource} instances must be created
- * and the inherited attribute {@link ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
+ * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.common.OriginalSource OriginalSource} instances must be created
+ * and the inherited attribute {@link eu.etaxonomy.cdm.model.common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
  * <P>
  * This class corresponds to: <ul>
  * <li> Person according to the TDWG ontology
@@ -106,9 +106,9 @@ public class Person extends TeamOrPersonBase {
 	/** 
 	 * Creates a new instance for a person for whom an "identification" string
 	 * is all what is known. This string is generally a short or a complete name.
-	 * As this string is kept in the {@link IdentifiableEntity#getTitleCache() titleCache}
+	 * As this string is kept in the {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache}
 	 * attribute and should not be overwritten by the {@link #generateTitle() generateTitle} method
-	 * the {@link IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
+	 * the {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
 	 */
 	public static Person NewTitledInstance(String titleCache){
 		Person result = new Person();
@@ -202,9 +202,9 @@ public class Person extends TeamOrPersonBase {
 
 
 	/** 
-	 * Returns the set of {@link Keyword keywords} mostly representing a taxonomic or
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.common.Keyword keywords} mostly representing a taxonomic or
 	 * a geographical specialization of <i>this</i> person.
-	 * Keywords are items of a controlled {@link TermVocabulary vocabulary}.
+	 * Keywords are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
 	 *
 	 * @see 	Keyword
 	 */
@@ -232,7 +232,7 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @param  keyword  any keyword 
 	 * @see 			#getKeywords()
-	 * @see 			Keyword
+	 * @see 			eu.etaxonomy.cdm.model.common.Keyword
 	 */
 	public void addKeyword(Keyword keyword){
 		this.keywords.add(keyword);
@@ -334,14 +334,14 @@ public class Person extends TeamOrPersonBase {
 
 
 	/** 
-	 * Returns the {@link common.TimePeriod period of time}
+	 * Returns the {@link eu.etaxonomy.cdm.model.common.TimePeriod period of time}
 	 * in which <i>this</i> person was alive (life span).
 	 * The general form is birth date - death date
 	 * (XXXX - YYYY; XXXX - or - YYYY as appropriate),
 	 * but a simple flourished date (fl. XXXX) is also possible
 	 * if that is all what is known.
 	 *
-	 * @see  common.TimePeriod
+	 * @see  eu.etaxonomy.cdm.model.common.TimePeriod
 	 */
 	public TimePeriod getLifespan(){
 		return this.lifespan;
@@ -357,10 +357,10 @@ public class Person extends TeamOrPersonBase {
 	 * Generates the "full" name string of <i>this</i> person according to the strategy
 	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 * The used attributes are:
-	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
-	 * This method overrides {@link IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+	 * {@link #getPrefix() prefix}, {@link #getFirstname() firstname}, {@link #getLastname() lastname} and {@link #getSuffix() suffix}.
+	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
+	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
+	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
 	 * @return  the string with the full name of <i>this</i> person
 	 */

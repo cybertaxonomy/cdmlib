@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
 /**
  * The abstract class for such {@link Agent agents} ({@link Person persons} or {@link Team teams}) who might also be used
- * for authorship of {@link ReferenceBase references} or of {@link TaxonNameBase taxon names}.
+ * for authorship of {@link eu.etaxonomy.cdm.model.reference.ReferenceBase references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
  * 
  * @author a.mueller
  * @version 1.0

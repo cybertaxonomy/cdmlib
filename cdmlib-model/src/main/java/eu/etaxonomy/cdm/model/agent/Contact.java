@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
- * It includes telecommunication data and electronic as well as
+ * It includes telecommunication data and an electronic as well as
  * multiple postal addresses.
 * <P>
  * This class corresponds to: <ul>

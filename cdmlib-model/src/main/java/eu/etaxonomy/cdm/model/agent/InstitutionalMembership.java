@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class allows to hold one {@link Institution institution} to which a {@link Person person}
- * is affiliated. It includes {@link TimePeriod time period} of membership and role of
+ * is affiliated. It includes {@link eu.etaxonomy.cdm.model.common.TimePeriod time period} of membership and role of
  * the person in this institution. In case one person belongs to several
  * institutions a corresponding number of instances of InstitutionalMembership
  * have to be created.  

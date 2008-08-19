@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Represents an element of a controlled {@link TermVocabulary vocabulary} for different kinds of institutions.
+ * Represents an element of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary} for different kinds of institutions.
  * Each {@link DefinedTermBase element} belongs to one vocabulary.
  * <p>
  * This class corresponds to: InstitutionTypeTerm according to the TDWG ontology.
@@ -45,7 +45,7 @@ public class InstitutionType extends DefinedTermBase {
 	}
 
 	/** 
-	 * Class constructor using a description (in the {@link Language#DEFAULT() default language}),
+	 * Class constructor using a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
 	 *
 	 * @param	term   		 the string describing this new vocabulary element
@@ -53,8 +53,8 @@ public class InstitutionType extends DefinedTermBase {
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) this
 	 * 						 new vocabulary element
 	 * @see           		 #InstitutionType()
-	 * @see           		 common.Representation
-	 * @see           		 common.TermBase#TermBase(String, String, String)
+	 * @see           		 eu.etaxonomy.cdm.model.common.Representation
+	 * @see           		 eu.etaxonomy.cdm.model.common.TermBase#TermBase(String, String, String)
 	 */
 	public InstitutionType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
