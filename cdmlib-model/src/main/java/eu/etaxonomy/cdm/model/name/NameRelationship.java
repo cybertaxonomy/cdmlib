@@ -80,7 +80,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	
 	/**
 	 * Class constructor: creates a new name relationship instance including
-	 * its {@link reference.ReferenceBase reference source} and adds it to the respective 
+	 * its {@link  eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and adds it to the respective 
 	 *{@link TaxonNameBase#getNameRelations() taxon name relation sets} of both involved names.
 	 * 
 	 * @param toName				the taxon name to be set as target for the new name relationship
@@ -106,7 +106,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * in <i>this</i> taxon name relationship.
 	 *  
 	 * @see   #getToName()
-	 * @see   common.RelationshipBase#getRelatedFrom()
+	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
 	public TaxonNameBase getFromName(){
@@ -124,7 +124,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * in <i>this</i> taxon name relationship.
 	 *  
 	 * @see   #getFromName()
-	 * @see   common.RelationshipBase#getRelatedTo()
+	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
 	public TaxonNameBase getToName(){
@@ -140,7 +140,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	/** 
 	 * Returns the nomenclatural code rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code ruling
-	 * the  taxon name(s) of this nomenclatural status.
+	 * the  taxon name(s) of this nomenclatural status).
 	 * The considered rule gives the reason why the
 	 * {@link NomenclaturalStatusType nomenclatural status type} has been
 	 * assigned to the {@link TaxonNameBase taxon name(s)}.

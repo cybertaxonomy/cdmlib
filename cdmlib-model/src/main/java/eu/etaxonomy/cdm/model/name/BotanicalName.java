@@ -98,7 +98,7 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Class constructor: creates a new botanical taxon name instance
-	 * only containing its {@link common.Rank rank},
+	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
@@ -116,10 +116,10 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Class constructor: creates a new botanical taxon name instance
-	 * containing its {@link common.Rank rank},
+	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
-	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
-	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
+	 * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
+	 * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
@@ -156,7 +156,7 @@ public class BotanicalName extends NonViralName {
 	
 	/** 
 	 * Creates a new botanical taxon name instance
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank	the rank to be assigned to <i>this</i> botanical taxon name
@@ -170,7 +170,7 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Creates a new botanical taxon name instance
-	 * only containing its {@link common.Rank rank},
+	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
@@ -188,10 +188,10 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Creates a new botanical taxon name instance
-	 * containing its {@link common.Rank rank},
+	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
-	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
-	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
+	 * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
+	 * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new botanical taxon name instance will be also added to the set of
 	 * botanical taxon names belonging to this homotypical group.
@@ -213,7 +213,7 @@ public class BotanicalName extends NonViralName {
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> botanical taxon name belongs
 	 * @see 	#NewInstance(Rank)
 	 * @see 	#NewInstance(Rank, HomotypicalGroup)
-	 * @see		#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see		ZoologicalName#ZoologicalName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy
 	 */
 	public static  BotanicalName NewInstance(Rank rank, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, TeamOrPersonBase combinationAuthorTeam, INomenclaturalReference nomenclaturalReference, String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
@@ -224,7 +224,8 @@ public class BotanicalName extends NonViralName {
 	 * Returns a botanical taxon name based on parsing a string representing
 	 * all elements (according to the ICBN) of a botanical taxon name (where
 	 * the scientific name is an uninomial) including authorship but without
-	 * nomenclatural reference.
+	 * nomenclatural reference. If the {@link Rank rank} is not "Genus" it should be
+	 * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
 	 * 
 	 * @param	fullNameString  the string to be parsed 
 	 * @return					the new botanical taxon name
@@ -254,8 +255,9 @@ public class BotanicalName extends NonViralName {
 	 * Returns a botanical taxon name based on parsing a string representing
 	 * all elements (according to the ICBN) of a botanical taxon name (where
 	 * the scientific name is an uninomial) including authorship and
-	 * nomenclatural reference. Eventually a new {@link reference.INomenclaturalReference nomenclatural reference}
-	 * instance will also be created.
+	 * nomenclatural reference. Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
+	 * instance will also be created. If the {@link Rank rank} is not "Genus" it should be
+	 * set afterwards with the {@link TaxonNameBase#setRank(Rank) setRank} methode.
 	 * 
 	 * @param	fullNameAndReferenceString  the string to be parsed 
 	 * @return								the new botanical taxon name
@@ -269,10 +271,11 @@ public class BotanicalName extends NonViralName {
 	 * all elements (according to the ICBN) of a botanical taxon name including
 	 * authorship and nomenclatural reference. The parsing result depends on
 	 * the given rank of the botanical taxon name to be created.
-	 * Eventually a new {@link reference.INomenclaturalReference nomenclatural reference}
+	 * Eventually a new {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference}
 	 * instance will also be created.
 	 * 
 	 * @param	fullNameAndReferenceString  the string to be parsed 
+	 * @param   rank						the rank of the taxon name
 	 * @return								the new botanical taxon name
 	 */
 	public static BotanicalName PARSED_REFERENCE(String fullNameAndReferenceString, Rank rank){
@@ -310,7 +313,7 @@ public class BotanicalName extends NonViralName {
 	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
 	 * involved in this hybrid relationship. One of both botanical taxon names
 	 * must be <i>this</i> botanical taxon name otherwise no addition will be carried
-	 * out. The {@link common.RelationshipBase#getRelatedTo() child botanical taxon name}
+	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child botanical taxon name}
 	 * must be a hybrid, which means that one of its four hybrid flags must be set.
 	 * 
 	 * @param relationship  the hybrid relationship to be added
@@ -329,17 +332,19 @@ public class BotanicalName extends NonViralName {
 	
 	/**
 	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
-	 * to this taxon. A HybridRelationship may be of type "is first/second parent" or "is male/female parent".
-	 * By invoking this method this object becomes a habrid child of the parent Name.
+	 * to <i>this</i> botanical name. A HybridRelationship may be of type
+	 * "is first/second parent" or "is male/female parent". By invoking this
+	 * method <i>this</i> botanical name becomes a hybrid child of the parent
+	 * botanical name.
 	 * 
 	 * @param parentName	  the botanical name of the parent for this new hybrid name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
 	 * @see    				  #addHybridChild(BotanicalName, HybridRelationshipType,String )
-//	 * @see    				  #getRelationsToThisName()
-//	 * @see    				  #getNameRelations()
-//	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-//	 * @see    				  #addNameRelationship(NameRelationship)
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addHybridParent(BotanicalName parentName, HybridRelationshipType type, String ruleConsidered){
 		HybridRelationship rel = new HybridRelationship(this, parentName, type, ruleConsidered);
@@ -347,17 +352,19 @@ public class BotanicalName extends NonViralName {
 	
 	/**
 	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
-	 * to this taxon. A HybridRelationship may be of type "is first/second parent" or "is male/female parent".
-	 * By invoking this method this object becomes a hybrid parent of the parent Name.
+	 * to <i>this</i> botanical name. A HybridRelationship may be of type
+	 * "is first/second parent" or "is male/female parent". By invoking this
+	 * method <i>this</i> botanical name becomes a parent of the hybrid child
+	 * botanical name.
 	 * 
 	 * @param childName		  the botanical name of the child for this new hybrid name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
 	 * @see    				  #addHybridParent(BotanicalName, HybridRelationshipType,String )
-//	 * @see    				  #getRelationsToThisName()
-//	 * @see    				  #getNameRelations()
-//	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
-//	 * @see    				  #addNameRelationship(NameRelationship)
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addHybridChild(BotanicalName childName, HybridRelationshipType type, String ruleConsidered){
 		HybridRelationship rel = new HybridRelationship(childName, this, type, ruleConsidered);
@@ -550,7 +557,7 @@ public class BotanicalName extends NonViralName {
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> botanical taxon name, that is the
 	 * International Code of Botanical Nomenclature. This method overrides
-	 * the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
+	 * the getNomeclaturalCode method from {@link NonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for plants
 	 * @see  	NonViralName#isCodeCompliant()

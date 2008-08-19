@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * The taxon name class for cultivars (cultivated plants). The only possible
- * {@link common.Rank ranks} for cultivars are CULTIVAR, GREX, CONVAR, CULTIVAR_GROUP,
+ * {@link Rank ranks} for cultivars are CULTIVAR, GREX, CONVAR, CULTIVAR_GROUP,
  * GRAFT_CHIMAERA or DENOMINATION_CLASS.
  * <P>
  * This class corresponds partially to: NameBotanical according to the
@@ -57,7 +57,7 @@ public class CultivarPlantName extends BotanicalName {
 
 	/** 
 	 * Class constructor: creates a new cultivar taxon name instance
-	 * only containing its {@link common.Rank rank},
+	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new cultivar taxon name instance will be also added to the set of
@@ -76,7 +76,7 @@ public class CultivarPlantName extends BotanicalName {
 	
 	/** 
 	 * Creates a new cultivar taxon name instance
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link Rank rank} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	rank	the rank to be assigned to <i>this</i> cultivar taxon name
@@ -90,7 +90,7 @@ public class CultivarPlantName extends BotanicalName {
 
 	/** 
 	 * Creates a new cultivar taxon name instance
-	 * only containing its {@link common.Rank rank},
+	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and 
  	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy default cache strategy}.
 	 * The new cultivar taxon name instance will be also added to the set of

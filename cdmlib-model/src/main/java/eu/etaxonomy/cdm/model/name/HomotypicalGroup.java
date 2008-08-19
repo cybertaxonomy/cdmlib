@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * taxon names without explicit {@link TypeDesignationBase type designation} can belong
  * to an homotypical group.<BR>
  * Taxon names belonging to an homotypical group and the taxon names or
- * {@link occurrence.DerivedUnitBase specimens} used as types for their
+ * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimens} used as types for their
  * {@link TypeDesignationBase type designations} have the following properties: <ul>
  * <li>	A taxon name belongs exactly to one homotypical group
  * <li>	A type specimen or a type name can be used as a type only for taxon
@@ -349,7 +349,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
 	 * {@link taxon.Synonym synonyms} (according to a given reference)
-	 * the {@link TaxonNameBase taxon names} of which belong to <i>this>/i> homotypical group.
+	 * the {@link TaxonNameBase taxon names} of which belong to <i>this</i> homotypical group.
 	 * If other names are part of <i>this</i> group that are not considered synonyms
 	 * according to the respective reference, then they will not be included in
 	 * the result set.

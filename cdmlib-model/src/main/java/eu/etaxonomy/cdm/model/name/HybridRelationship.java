@@ -76,7 +76,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	
 	/**
 	 * Class constructor: creates a new hybrid relationship instance including
-	 * its {@link reference.ReferenceBase reference source} and adds it to the respective 
+	 * its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and adds it to the respective 
 	 *{@link BotanicalName#getHybridRelationships() botanical taxon name relation sets} of both involved names.
 	 * 
 	 * @param toName				the taxon name to be set as target for the new hybrid relationship
@@ -100,7 +100,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * in <i>this</i> hybrid relationship.
 	 *  
 	 * @see   #getHybridName()
-	 * @see   common.RelationshipBase#getRelatedFrom()
+	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
 	public BotanicalName getParentName(){
@@ -118,7 +118,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * (the child is actually the hybrid taxon name) in <i>this</i> hybrid relationship.
 	 *  
 	 * @see   #getParentName()
-	 * @see   common.RelationshipBase#getRelatedTo()
+	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
 	public BotanicalName getHybridName(){
@@ -134,8 +134,8 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	/** 
 	 * Returns the ICBN rule considered (that is the
 	 * article/note/recommendation in the nomenclatural code) for building
-	 * the string representing the hybrid taxon name within <i>this</i> hybrid
-	 * relationship.
+	 * the string representing the (child) hybrid {@link BotanicalName taxon name}
+	 * within <i>this</i> hybrid relationship.
 	 */
 	public String getRuleConsidered(){
 		return this.ruleConsidered;
