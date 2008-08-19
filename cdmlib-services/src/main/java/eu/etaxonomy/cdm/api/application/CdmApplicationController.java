@@ -289,6 +289,16 @@ public class CdmApplicationController {
 		return txStatus;
 	}
 	
+	public TransactionStatus startTransaction(Boolean readOnly) {
+		PlatformTransactionManager txManager = configuration.getTransactionManager();
+		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+		defaultTxDef.setReadOnly(readOnly);
+		TransactionDefinition txDef = defaultTxDef;
+		
+		TransactionStatus txStatus = txManager.getTransaction(txDef);
+		return txStatus;
+	}
+
 	public void commitTransaction(TransactionStatus txStatus){
 		PlatformTransactionManager txManager = configuration.getTransactionManager();
 		txManager.commit(txStatus);

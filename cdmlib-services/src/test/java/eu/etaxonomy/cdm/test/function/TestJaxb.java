@@ -1,7 +1,9 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,12 +61,17 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl;
 public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
+	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	
+	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
+	 *  as many rows as specified for agents, references, etc. 
+	 *  Only root taxa and no synonyms and relationships are retrieved. */
 	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
-	private static final String serializeFromDb = "cdm_test_jaxb";
-	//private static final String serializeFromDb = "cdm_test_anahit";
+	//private static final String serializeFromDb = "cdm_test_jaxb";
+	private static final String serializeFromDb = "cdm_test_anahit";
 	private static final String deserializeToDb = "cdm_test_jaxb2";
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -118,10 +125,9 @@ public class TestJaxb {
 	//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
 	dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
 	
-//  FIXME: Unmarshalling error with preloaded terms
-//	if (definedTermBaseRows <= 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
-//	logger.info("# DefinedTermBase: " + definedTermBaseRows);
-//	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+	if (definedTermBaseRows <= 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+	logger.info("# DefinedTermBase: " + definedTermBaseRows);
+	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
 
 	if (referenceBaseRows <= 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
 	logger.info("# ReferenceBase: " + referenceBaseRows);
@@ -299,7 +305,8 @@ public class TestJaxb {
     		logger.error("defined terms not found");
     	}
     	
-    	TransactionStatus txStatus = appCtr.startTransaction();
+    	//TransactionStatus txStatus = appCtr.startTransaction();
+    	TransactionStatus txStatus = appCtr.startTransaction(true);
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
     	List<DefinedTermBase> terms = null;
@@ -332,7 +339,11 @@ public class TestJaxb {
 		
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(filename));
+    		FileWriter writer = new FileWriter(filename);
+    		logger.info("Output Stream Encoding: " + writer.getEncoding());
+    		cdmDocumentBuilder.marshal(dataSet, writer);
+
+    		// TODO: Split into one file per data set member to see whether performance improves?
 
     		logger.info("XML file written");
     		
@@ -384,7 +395,9 @@ public class TestJaxb {
 
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		cdmDocumentBuilder.marshal(dataSet, new FileWriter(filename));
+    		FileWriter writer = new FileWriter(filename);
+    		logger.info("Output Stream Encoding: " + writer.getEncoding());
+    		cdmDocumentBuilder.marshal(dataSet, writer);
 
     	} catch (Exception e) {
     		logger.error("marshalling error");
@@ -455,9 +468,11 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		testInitDb(serializeFromDb);
+		//testInitDb(serializeFromDb);
 		
 	    doSerialize(serializeFromDb, marshOutOne);
+		
+		//For tests to retrieve all data via services rather than traversing the tree.
 	    //doSerializeFlat(serializeFromDb, marshOutOne);
 	    
 		doDeserialize(deserializeToDb, marshOutOne);
