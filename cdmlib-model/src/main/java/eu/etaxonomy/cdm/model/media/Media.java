@@ -22,6 +22,8 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * @author m.doering
@@ -31,16 +33,29 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends AnnotatableEntity {
+	
 	private static final Logger logger = Logger.getLogger(Media.class);
 
+	@XmlElement(name = "Title")
 	private MultilanguageSet title = new MultilanguageSet();
+	
 	//creation date of the media (not of the record)
+	@XmlElement(name = "MediaCreated")
 	private Calendar mediaCreated;
+	
+	@XmlElement(name = "Description")
 	private MultilanguageSet description = new MultilanguageSet();
-	//A single medium such as a picture can have multiple representations in files. Common are multiple resolutions or file
-	//formats for images for example
+	
+	//A single medium such as a picture can have multiple representations in files. 
+	//Common are multiple resolutions or file formats for images for example
+	@XmlElementWrapper(name = "MediaRepresentations")
+	@XmlElement(name = "MediaRepresentation")
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
+	
+	@XmlElementWrapper(name = "Rights")
+	@XmlElement(name = "Right")
 	private Set<Rights> rights = new HashSet<Rights>();
+	
 	private Agent artist;
 
 	/**

@@ -86,6 +86,7 @@ cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilder.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmMarshallerListener.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmResourceResolver.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmSchemaGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DataSet.java -text

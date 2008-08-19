@@ -18,6 +18,9 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * metadata for an external file such as images, phylogenetic trees, or audio
@@ -29,12 +32,22 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class MediaRepresentation extends VersionableEntity {
+	
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
+	
 	//http://www.iana.org/assignments/media-types
+	@XmlElement(name = "MimeType")
 	private String mimeType;
+	
 	//the file suffix (e.g. jpg, tif, mov)
+	@XmlElement(name = "Suffix")
 	private String suffix;
+	
+	@XmlTransient
 	private Media media;
+	
+	@XmlElementWrapper(name = "MediaRepresentationParts")
+	@XmlElement(name = "MediaRepresentationPart")
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
 	
 	

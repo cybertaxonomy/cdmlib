@@ -47,6 +47,25 @@ public class CdmDocumentBuilder {
 
 	}
 	
+	public void marshal(Object object, Writer writer) throws JAXBException {
+		
+		Marshaller marshaller;
+		marshaller = jaxbContext.createMarshaller();
+		
+		// For test purposes insert newlines to make the XML output readable
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		// UTF-8 encoding delivers error when unmarshalling
+		//marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
+		
+		// validate with explicit schema
+		//marshaller.setSchema(cdmSchema);
+		
+		marshaller.marshal(object, writer);
+		
+	}
+
 	public void marshal(DataSet dataSet, Writer writer) throws JAXBException {
 		
 		Marshaller marshaller;
@@ -58,6 +77,9 @@ public class CdmDocumentBuilder {
 		// UTF-8 encoding delivers error when unmarshalling
 		//marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
+		
+		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
+		marshaller.setListener(marshallerListener);
 		
 		// validate with explicit schema
 		//marshaller.setSchema(cdmSchema);

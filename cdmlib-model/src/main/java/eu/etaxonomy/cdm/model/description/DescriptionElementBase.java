@@ -25,6 +25,11 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The upmost (abstract) class for a description element of a specimen
@@ -37,6 +42,13 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DescriptionElementBase", propOrder = {
+	    "feature",
+	    "modifiers",
+	    "modifyingText",
+	    "media"
+})
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
@@ -53,9 +65,18 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 	
 	//type, category of information. In structured descriptions characters
+	@XmlElement(name = "Feature")
 	private Feature feature;
+	
+	@XmlElementWrapper(name = "Modifiers")
+	@XmlElement(name = "Modifier")
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
+	
+	@XmlElement(name = "ModifyingText")
 	private MultilanguageSet modifyingText;
+	
+	@XmlElementWrapper(name = "Media")
+	@XmlElement(name = "Medium")
 	private Set<Media> media = new HashSet<Media>();
 
 

@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.description;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -28,10 +32,14 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @version 1.0
  * @created 08-Jul-2008
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TaxonNameDescription", propOrder = {
+})
 @Entity
 public class TaxonNameDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(TaxonNameDescription.class);
 	
+	@XmlTransient
 	private TaxonNameBase taxonName;
 
 

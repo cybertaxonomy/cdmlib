@@ -19,9 +19,12 @@ import javax.persistence.InheritanceType;
 
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -43,6 +46,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 08-Nov-2007 13:06:24
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DescriptionBase", propOrder = {
+    "describedSpecimenOrObservations",
+    "descriptionSources",
+    "descriptionElements"
+})
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionBase extends IdentifiableEntity {

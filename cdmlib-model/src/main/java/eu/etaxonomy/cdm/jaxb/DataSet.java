@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
@@ -118,6 +119,7 @@ public class DataSet {
         @XmlElement(name = "Keyword", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Keyword.class),
     	@XmlElement(name = "Language", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Language.class),
     	@XmlElement(name = "MarkerType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = MarkerType.class),
+    	@XmlElement(name = "NamedArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = NamedArea.class),
     	@XmlElement(name = "NamedAreaLevel", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = NamedAreaLevel.class),
     	@XmlElement(name = "NamedAreaType", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = NamedAreaType.class),
     	@XmlElement(name = "NameRelationshipType", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameRelationshipType.class),
@@ -329,7 +331,7 @@ public class DataSet {
     public Collection<TaxonBase> getTaxonBases() {
     	
     	Object obj = taxa;
-        // FIXME: This is a dirty trick.
+        // FIXME: This is a dirty trick. Replace by getTaxonBases_().
     	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
         return taxonBases;
     }
@@ -338,11 +340,15 @@ public class DataSet {
     	
     	Collection<TaxonBase> taxonBases = new HashSet<TaxonBase>();
     	
-    	for (Taxon taxon: taxa) {
-    		taxonBases.add(taxon);
+    	if (taxa != null) {
+    		for (Taxon taxon: taxa) {
+    			taxonBases.add(taxon);
+    		}
     	}
-    	for (Synonym synonym: synonyms) {
-    		taxonBases.add(synonym);
+    	if (synonyms != null) {
+    		for (Synonym synonym: synonyms) {
+    			taxonBases.add(synonym);
+    		}
     	}
         return taxonBases;
     }
