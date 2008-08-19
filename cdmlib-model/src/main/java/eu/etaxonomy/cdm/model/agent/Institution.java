@@ -107,7 +107,7 @@ public class Institution extends Agent {
 	/** 
 	 * Returns the set of institution {@link InstitutionType types} (categories)
 	 * used to describe or circumscribe <i>this</i> institution's activities.
-	 * Institution types are items of a controlled {@link common.TermVocabulary vocabulary}.
+	 * Institution types are items of a controlled {@link TermVocabulary vocabulary}.
 	 *
 	 * @return	the set of institution types
 	 * @see     InstitutionType
@@ -118,7 +118,7 @@ public class Institution extends Agent {
 	}
 	
 	/** 
-	 * Adds a new institutional type (from the corresponding {@link common.TermVocabulary vocabulary})
+	 * Adds a new institutional type (from the corresponding {@link TermVocabulary vocabulary})
 	 * to the set of institution types of <i>this</i> institution.
 	 *
 	 * @param  t  any type of institution
@@ -195,17 +195,17 @@ public class Institution extends Agent {
 		this.name = name;
 	}
 
-	@Override
 	/**
 	 * Generates the identification string for this institution.
 	 * The string is based on its name and code as well as on the name and code of
 	 * its parent institution, if existing.
-	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+	 * This method overrides {@link IdentifiableEntity#generateTitle() generateTitle}.
+	 * The result might be kept as {@link IdentifiableEntity#setTitleCache(String) titleCache} if the
+	 * flag {@link IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
 	 * @return  the identification string
 	 */
+	@Override
 	public String generateTitle(){
 		return "";
 	}

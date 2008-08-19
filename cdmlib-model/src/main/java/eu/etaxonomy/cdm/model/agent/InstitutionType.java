@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Represents an element of a controlled {@link common.TermVocabulary vocabulary} for different kinds of institutions.
- * Each {@link common.DefinedTermBase element} belongs to one vocabulary.
+ * Represents an element of a controlled {@link TermVocabulary vocabulary} for different kinds of institutions.
+ * Each {@link DefinedTermBase element} belongs to one vocabulary.
  * <p>
  * This class corresponds to: InstitutionTypeTerm according to the TDWG ontology.
  * 
@@ -45,7 +45,7 @@ public class InstitutionType extends DefinedTermBase {
 	}
 
 	/** 
-	 * Class constructor using a description (in the {@link common.Language#DEFAULT() default language}),
+	 * Class constructor using a description (in the {@link Language#DEFAULT() default language}),
 	 * a label and a label abbreviation.
 	 *
 	 * @param	term   		 the string describing this new vocabulary element

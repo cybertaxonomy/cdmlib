@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class allows to hold one {@link Institution institution} to which a {@link Person person}
- * is affiliated. It includes {@link common.TimePeriod time period} of membership and role of
+ * is affiliated. It includes {@link TimePeriod time period} of membership and role of
  * the person in this institution. In case one person belongs to several
  * institutions a corresponding number of instances of InstitutionalMembership
  * have to be created.  
@@ -109,7 +109,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 	
 	/** 
-	 * Returns the {@link Person person} involved in this institutional membership.
+	 * Returns the {@link Person person} involved in <i>this</i> institutional membership.
 	 *
 	 * @see  Person#institutionalMemberships
 	 * @see  Person#addInstitutionalMembership(Institution, TimePeriod, String, String)
@@ -118,11 +118,11 @@ public class InstitutionalMembership extends VersionableEntity {
 		return person;
 	}
 	/** 
-	 * Assigns a new {@link Person person} (replacing the actual one) to this institutional membership.
+	 * Assigns a new {@link Person person} (replacing the actual one) to <i>this</i> institutional membership.
 	 * This method also updates both sets of institutions
 	 * the two persons (the new one and the substituted one) belong to. 
 	 *
-	 * @param  newPerson  the new person to be included in this institutional membership
+	 * @param  newPerson  the new person to be included in <i>this</i> institutional membership
 	 * @see               #getPerson()
 	 * @see               Person#removeInstitutionalMembership(InstitutionalMembership)
 	 */
@@ -132,7 +132,7 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	
 	/** 
-	 * Returns the {@link Institution institution} corresponding to this institutional membership.
+	 * Returns the {@link Institution institution} corresponding to <i>this</i> institutional membership.
 	 */
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
@@ -140,7 +140,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 	/** 
 	 * Assigns an new institution (replacing the actual one)
-	 * to this institutional membership.
+	 * to <i>this</i> institutional membership.
 	 *
 	 * @param  newInstitute  the new institution
 	 * @see	   				 #getInstitute()
@@ -150,8 +150,8 @@ public class InstitutionalMembership extends VersionableEntity {
 	}
 
 	/** 
-	 * Returns the {@link common.TimePeriod time period} during which
-	 * the {@link Person person} involved in this institutional membership belonged
+	 * Returns the {@link TimePeriod time period} during which
+	 * the {@link Person person} involved in <i>this</i> institutional membership belonged
 	 * to the {@link Institution institution} also involved in it.
 	 */
 	public TimePeriod getPeriod(){
@@ -167,7 +167,7 @@ public class InstitutionalMembership extends VersionableEntity {
 
 	/**
 	 * Returns the string representing the name of the department (within
-	 * the {@link Institution institution} involved in this institutional membership) to which
+	 * the {@link Institution institution} involved in <i>this</i> institutional membership) to which
 	 * the {@link Person person} belongs.
 	 */
 	public String getDepartment(){
@@ -184,7 +184,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	/**
 	 * Returns the string representing the role played by the {@link Person person} within
 	 * the {@link Institution institution} (or within the department) involved
-	 * in this institutional membership.
+	 * in <i>this</i> institutional membership.
 	 */
 	public String getRole(){
 		return this.role;

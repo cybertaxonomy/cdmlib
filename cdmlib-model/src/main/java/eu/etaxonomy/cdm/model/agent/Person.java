@@ -30,12 +30,12 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * This class represents human beings, living or dead.<BR>
  * It includes name parts, {@link Contact contact} details, {@link InstitutionalMembership institutional membership},
- * and other possible information such as life {@link common.TimePeriod time period},
- * taxonomic and/or geographical {@link common.Keyword specialization}.
+ * and other possible information such as life {@link TimePeriod time period},
+ * taxonomic and/or geographical {@link Keyword specialization}.
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
- * For other alternative (string-)names {@link common.OriginalSource OriginalSource} instances must be created
- * and the inherited attribute {@link common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
+ * For other alternative (string-)names {@link OriginalSource OriginalSource} instances must be created
+ * and the inherited attribute {@link ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
  * <P>
  * This class corresponds to: <ul>
  * <li> Person according to the TDWG ontology
@@ -106,9 +106,9 @@ public class Person extends TeamOrPersonBase {
 	/** 
 	 * Creates a new instance for a person for whom an "identification" string
 	 * is all what is known. This string is generally a short or a complete name.
-	 * As this string is kept in the {@link common.IdentifiableEntity#getTitleCache() titleCache}
+	 * As this string is kept in the {@link IdentifiableEntity#getTitleCache() titleCache}
 	 * attribute and should not be overwritten by the {@link #generateTitle() generateTitle} method
-	 * the {@link common.IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
+	 * the {@link IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
 	 */
 	public static Person NewTitledInstance(String titleCache){
 		Person result = new Person();
@@ -202,11 +202,11 @@ public class Person extends TeamOrPersonBase {
 
 
 	/** 
-	 * Returns the set of {@link common.Keyword keywords} mostly representing a taxonomic or
+	 * Returns the set of {@link Keyword keywords} mostly representing a taxonomic or
 	 * a geographical specialization of <i>this</i> person.
-	 * Keywords are items of a controlled {@link common.TermVocabulary vocabulary}.
+	 * Keywords are items of a controlled {@link TermVocabulary vocabulary}.
 	 *
-	 * @see 	common.Keyword
+	 * @see 	Keyword
 	 */
 	@ManyToMany(fetch=FetchType.LAZY,
 	        targetEntity=eu.etaxonomy.cdm.model.common.Keyword.class
@@ -232,7 +232,7 @@ public class Person extends TeamOrPersonBase {
 	 *
 	 * @param  keyword  any keyword 
 	 * @see 			#getKeywords()
-	 * @see 			common.Keyword
+	 * @see 			Keyword
 	 */
 	public void addKeyword(Keyword keyword){
 		this.keywords.add(keyword);
@@ -287,7 +287,7 @@ public class Person extends TeamOrPersonBase {
 	 * Returns the string representing the given name or forename
 	 * (for instance "John") of <i>this</i> person. 
 	 * This is the part of his name which is not shared with other
-	 * family members. Actually it may be just initials (for instance "G. Jr."),
+	 * family members. Actually it may be just initials (for instance "G.&nbsp;Jr."),
 	 * all forenames in full or a combination of expanded names and initials. 
 	 */
 	public String getFirstname(){
@@ -358,9 +358,9 @@ public class Person extends TeamOrPersonBase {
 	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
 	 * The used attributes are:
 	 * {@link #prefix prefix}, {@link #firstname firstname}, {@link #lastname lastname} and {@link #suffix suffix}.
-	 * This method overrides {@link common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+	 * This method overrides {@link IdentifiableEntity#generateTitle() generateTitle}.
+	 * The result might be kept as {@link IdentifiableEntity#setTitleCache(String) titleCache} if the
+	 * flag {@link IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
 	 * 
 	 * @return  the string with the full name of <i>this</i> person
 	 */
