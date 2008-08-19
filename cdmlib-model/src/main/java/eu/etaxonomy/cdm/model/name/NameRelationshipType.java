@@ -23,12 +23,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
- * The class representing the categories of {@link NameRelationship taxon name relationships} taxon name relationships between
+ * The class representing the categories of {@link NameRelationship taxon name relationships} between
  * two {@link TaxonNameBase taxon names}. These name relationship types are
  * based on the concrete {@link NomenclaturalCode nomenclatural code} governing
  * the taxon names involved in the name relationship or on decisions taken by
  * the competent authorities; they do not depend on the use made of these
- * taxon names in a particular reference or on a particular taxonomic treatment.
+ * taxon names in a particular reference or in a particular taxonomic treatment.
  * Most relationships are to be understood as 'is .... of': for instance 
  * <i>Linum radiola</i> L. is a replaced synonym of <i>Radiola linoides</i> Roth or
  * <i>Astragalus rhizanthus</i> Boiss. is a later homonym of
@@ -115,7 +115,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
 	 * involved in a name relationship with <i>this</i> name relationship type should
 	 * be "invalid" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
@@ -123,7 +123,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  #isLegitimateType()
 	 * @see  #isIllegitimateType()
 	 * @see  NomenclaturalStatusType#isInvalidType()
-	 * @see  common.RelationshipBase#getRelatedFrom()
+	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
 	public boolean isInvalidType(){
@@ -139,7 +139,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
 	 * involved in a name relationship with <i>this</i> name relationship type should
 	 * be "legitimate" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
@@ -147,7 +147,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  #isInvalidType()
 	 * @see  #isIllegitimateType()
 	 * @see  NomenclaturalStatusType#isLegitimateType()
-	 * @see  common.RelationshipBase#getRelatedFrom()
+	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
 	public boolean isLegitimateType(){
@@ -165,7 +165,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	// TODO this method should be moved to consistency proof classes
 	/**
 	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link common.RelationshipBase#getRelatedFrom() first taxon name}
+	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
 	 * involved in a name relationship with <i>this</i> name relationship type should
 	 * be "illegitimate" (true) or not (false). Returns false if <i>this</i> name
 	 * relationship status type is null.
@@ -173,7 +173,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  #isInvalidType()
 	 * @see  #isLegitimateType()
 	 * @see  NomenclaturalStatusType#isIllegitimateType()
-	 * @see  common.RelationshipBase#getRelatedFrom()
+	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
 	public boolean isIllegitimateType(){
@@ -280,7 +280,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * Returns the "replaced synonym" name relationship type. The first 
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is the
 	 * "replaced synonym" of the second taxon name. Both taxon names belong to
-	 * the same {@link HomotypicalGroup homotypical group}). The replaced synonym is the
+	 * the same {@link HomotypicalGroup homotypical group}. The replaced synonym is the
 	 * first taxon name ever validly published given to the same
 	 * {@link Rank#isInfraGeneric() infrageneric} taxon that is either itself a
 	 * "later homonym" or the epithet of which could not be used in the new
@@ -303,7 +303,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	/**
 	 * Returns the "conserved against" name relationship type. Both {@link TaxonNameBase taxon names}
-	 * involved in such a relationship belong to the same {@link HomotypicalGroup homotypical group}).
+	 * involved in such a relationship belong to the same {@link HomotypicalGroup homotypical group}.
 	 * Competent authorities decided, regardless of the general
 	 * nomenclatural rules, to handle the first one as the "legitimate"
 	 * one and the second taxon name as "illegitimate" (this corresponds to

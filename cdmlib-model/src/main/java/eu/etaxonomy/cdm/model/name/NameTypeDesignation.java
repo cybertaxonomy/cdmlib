@@ -101,11 +101,11 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 
 	/**
 	 * Class constructor: creates a new name type designation instance
-	 * (including its {@link reference.ReferenceBase reference source} and eventually
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
-	 * @param typeName			the taxon name used as a type 
+	 * @param typeName				the taxon name used as a type 
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
@@ -188,7 +188,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name}
 	 * as the type for <i>this</i> taxon name type designation was posterior to the
 	 * publication of the typified taxon name. In this case the taxon name type
-	 * designation should have a {@link reference.ReferenceBase reference} that is different to the
+	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} that is different to the
 	 * {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *  
 	 * @see   #getLectoTypeReference()
@@ -218,7 +218,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * If a) is true there should be no NameTypeDesignation instance at all
 	 * assigned to the "typified" taxon name.<BR>
 	 * If b) is true there should be a NameTypeDesignation instance with the
-	 * flag isNotDesignated set. The typeSpecies should then be "null".
+	 * flag isNotDesignated set. The typeName should then be "null".
 	 */
 	public boolean isNotDesignated() {
 		return isNotDesignated;

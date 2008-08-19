@@ -60,8 +60,9 @@ public class NomenclaturalCode extends DefinedTermBase {
 	}
 	
 	/** 
-	 * Class constructor: creates an additional rank instance with a description
-	 * (in the {@link common.Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * Class constructor: creates an additional nomenclature code instance with
+	 * a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and
+	 * a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new nomenclature code to be created 
