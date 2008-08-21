@@ -79,6 +79,7 @@ public class CdmDocumentBuilder {
 		// It prints errors to System.out.
 		//unmarshaller.setEventHandler(new DefaultValidationEventHandler());
 
+		logger.info("Start unmarshalling");
 		dataSet = (DataSet) unmarshaller.unmarshal(file);
 		return dataSet;
 		
