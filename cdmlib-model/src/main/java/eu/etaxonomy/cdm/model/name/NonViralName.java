@@ -36,8 +36,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
  * from basionym relationship. The scientific name including author strings and
- * maybe year can be stored as a string in the inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
- * The year itself is an information obtained from the {@link reference.INomenclaturalReference#getYear() nomenclatural reference}.
+ * maybe year can be stored as a string in the inherited {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+ * The year itself is an information obtained from the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear() nomenclatural reference}.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * <P>
  * This class corresponds partially to: <ul>
@@ -128,7 +128,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #NonViralName(Rank, HomotypicalGroup)
-	 * @see #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -140,7 +140,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 	/** 
 	 * Class constructor: creates a new non viral taxon name instance
-	 * only containing its {@link common.Rank rank},
+	 * only containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
@@ -161,10 +161,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 	/** 
 	 * Class constructor: creates a new non viral taxon name instance
-	 * containing its {@link common.Rank rank},
+	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
-	 * its scientific name components, its {@link agent.TeamOrPersonBase author(team)},
-	 * its {@link reference.INomenclaturalReference nomenclatural reference} and
+	 * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
+	 * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * non viral taxon names belonging to this homotypical group.
@@ -213,7 +213,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see    #NewInstance(Rank, HomotypicalGroup)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -235,7 +235,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see    #NewInstance(Rank)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -278,12 +278,12 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	
 
 	/**
-	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that published <i>this</i> non viral
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that published <i>this</i> non viral
 	 * taxon name.
 	 * 
 	 * @return  the nomenclatural author (team) of <i>this</i> non viral taxon name
-	 * @see 	agent.INomenclaturalAuthor
-	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -299,7 +299,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that contributed to
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that contributed to
 	 * the publication of <i>this</i> non viral taxon name as generally stated by
 	 * the {@link #getCombinationAuthorTeam() combination author (team)} itself.<BR>
 	 * An ex-author(-team) is an author(-team) to whom a taxon name was ascribed
@@ -318,8 +318,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * 
 	 * @return  the nomenclatural ex author (team) of <i>this</i> non viral taxon name
 	 * @see 	#getCombinationAuthorTeam()
-	 * @see 	agent.INomenclaturalAuthor
-	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -335,15 +335,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that published the original combination
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that published the original combination
 	 * on which <i>this</i> non viral taxon name is nomenclaturally based. Such an
 	 * author (team) can only exist if <i>this</i> non viral taxon name is a new
 	 * combination due to a taxonomical revision.
 	 * 
 	 * @return  the nomenclatural basionym author (team) of <i>this</i> non viral taxon name
 	 * @see 	#getCombinationAuthorTeam()
-	 * @see 	agent.INomenclaturalAuthor
-	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -359,10 +359,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * Returns the {@link agent.INomenclaturalAuthor author (team)} that contributed to
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that contributed to
 	 * the publication of the original combination <i>this</i> non viral taxon name is
 	 * based on. This should have been generally stated by
-	 * the {@link #getCombinationAuthorTeam() basionym author (team)} itself.
+	 * the {@link #getBasionymAuthorTeam() basionym author (team)} itself.
 	 * The presence of a basionym author (team) of <i>this</i> non viral taxon name is a
 	 * condition for the existence of an ex basionym author (team)
 	 * for <i>this</i> same name. 
@@ -371,8 +371,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @see 	#getBasionymAuthorTeam()
 	 * @see 	#getExCombinationAuthorTeam()
 	 * @see 	#getCombinationAuthorTeam()
-	 * @see 	agent.INomenclaturalAuthor
-	 * @see 	agent.TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
+	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -471,13 +471,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * the strategy defined in
 	 *  {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy INonViralNameCacheStrategy}.
 	 * This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
 	 * TaxonNameBase#generateTitle() method.
 	 *
 	 * @return  the string with the composed name of <i>this</i> non viral taxon name with authorship (and maybe year)
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	TaxonNameBase#generateTitle()
 	 */
 	@Override
@@ -648,7 +648,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * subclasses {@link BacterialName BacterialName},
 	 * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
 	 * {@link ZoologicalName ZoologicalName}.
-	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
 	 *
 	 * @return  null
 	 * @see  	#isCodeCompliant()

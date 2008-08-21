@@ -121,7 +121,7 @@ public class Rank extends OrderedTermBase<Rank> {
 
 	/** 
 	 * Class constructor: creates an additional rank instance with a description
-	 * (in the {@link common.Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new rank to be created 
@@ -404,11 +404,15 @@ public class Rank extends OrderedTermBase<Rank> {
 		return (this.isLower(Rank.SPECIES()));
 	}
 
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
 	/**
-	 * NOT YET COMPLETE !!
-	 * @param strRank
-	 * @return Rank
-	 * @throws UnknownCdmTypeException
+	 * Returns the rank identified through a name (abbreviated or not).
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	strRank	the string identifying the rank
+	 * @return  		the rank
 	 */
 	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank)
@@ -421,9 +425,15 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 	
 	
-	/** TODO
-	 * preliminary implementation for BotanicalNameParser
-	 *  * not yet complete
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the rank identified through an abbreviated name.
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	abbrev	the string for the name abbreviation
+	 * @return  		the rank
 	 */
 	@Transient
 	public static Rank getRankByAbbreviation(String abbrev) throws UnknownCdmTypeException{
@@ -471,9 +481,15 @@ public class Rank extends OrderedTermBase<Rank> {
 		}
 	}
 	
-	/** TODO
-	 * preliminary implementation for BotanicalNameParser
-	 * not yet complete
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the rank identified through a name.
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	rankName	the string for the name of the rank
+	 * @return  			the rank
 	 */
 	@Transient
 	public static Rank getRankByName(String rankName)
@@ -528,6 +544,13 @@ public class Rank extends OrderedTermBase<Rank> {
 	
 	//TODO
 	//dummy implementation for BerlinModelImport
+	// not yet complete
+	/**
+	 * Returns the abbreviated rank name for <i>this</i> rank according to the
+	 * Berlin Model. Preliminary implementation for BerlinModelImport.
+	 * 
+	 * @return	the abbreviation string for <i>this</i> rank
+	 */
 	@Transient
 	public String getAbbreviation(){
 		if (this.equals(Rank.ORDER()) ){return "ordo";}

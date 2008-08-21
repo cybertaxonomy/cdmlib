@@ -59,9 +59,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * The upmost (abstract) class for scientific taxon names regardless of any
  * particular {@link NomenclaturalCode nomenclature code}. The scientific taxon name does not depend
  * on the use made of it in a publication or a treatment
- * ({@link taxon.TaxonBase taxon concept respectively potential taxon})
- * as an {@link taxon.Taxon "accepted" respectively "correct" (taxon) name}
- * or as a {@link taxon.Synonym synonym}.
+ * ({@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon concept respectively potential taxon})
+ * as an {@link eu.etaxonomy.cdm.model.taxon.Taxon "accepted" respectively "correct" (taxon) name}
+ * or as a {@link eu.etaxonomy.cdm.model.taxon.Synonym synonym}.
  * <P>
  * This class corresponds partially to: <ul>
  * <li> TaxonName according to the TDWG ontology
@@ -166,7 +166,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Class constructor: creates a new taxon name
-	 * only containing its {@link common.Rank rank}.
+	 * only containing its {@link Rank rank}.
 	 * 
 	 * @param  rank  the rank to be assigned to <i>this</i> taxon name
 	 * @see    		 #TaxonNameBase()
@@ -192,7 +192,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	/** 
 	 * Class constructor: creates a new taxon name
-	 * only containing its {@link common.Rank rank} and
+	 * only containing its {@link Rank rank} and
 	 * its {@link HomotypicalGroup homotypical group}.
 	 * The new taxon name will be also added to the set of taxon names
 	 * belonging to this homotypical group.
@@ -331,7 +331,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    	   		#addNameRelationship(NameRelationship)
 	 * @see    	   		#getNameRelations()
 	 * @see    	   		NameRelationship
-	 * @see    	   		common.RelationshipBase
+	 * @see    	   		eu.etaxonomy.cdm.model.common.RelationshipBase
 	 */
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof NameRelationship){
@@ -432,10 +432,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	
 	/**
-	 * Indicates whether <i>this</i> taxon name is a {@link NameRelationshipType.BASIONYM() basionym}
-	 * or a {@link NameRelationshipType.REPLACED_SYNONYM() replaced synonym}
+	 * Indicates whether <i>this</i> taxon name is a {@link NameRelationshipType#BASIONYM() basionym}
+	 * or a {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym}
 	 * of any other taxon name. Returns "true", if a basionym or a replaced 
-	 * synonym relationship from <i>this</i> taxon name to another taxon name exists,
+	 * synonym {@link NameRelationship relationship} from <i>this</i> taxon name to another taxon name exists,
 	 * false otherwise (also in case <i>this</i> taxon name is the only one in the
 	 * homotypical group).
 	 */
@@ -452,11 +452,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/**
-	 * Returns the taxon name which is the {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name.
+	 * Returns the taxon name which is the {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
 	 * The basionym of a taxon name is its epithet-bringing synonym.
-	 * For instance Pinus abies L. was published by Linnaeus and the botanist
+	 * For instance <i>Pinus abies</i> L. was published by Linnaeus and the botanist
 	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
-	 * Pinus abies L. is the basionym of the new combination Picea abies (L.) H. Karst.
+	 * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
 	 */
 	@Transient
 	public T getBasionym(){
@@ -465,24 +465,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return null;
 	}
 	/**
-	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name.
-	 * The basionym relationship will be added to <i>this</i> taxon name
+	 * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
+	 * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
 	 * and to the basionym. The basionym cannot have itself a basionym.
-	 * The homotypical group of <i>this</i> taxon name will be changed the basionyms homotypical group.
-	 * @see  #getBasionym()
-	 * @see  #addBasionym(TaxonNameBase, String)
+	 * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
+	 * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
+	 * 
+	 * @param  basionym		the taxon name to be set as the basionym of <i>this</i> taxon name
+	 * @see  				#getBasionym()
+	 * @see  				#addBasionym(TaxonNameBase, String)
 	 */
 	public void addBasionym(T basionym){
 		addBasionym(basionym, null);
 	}
 	/**
-	 * Assigns another taxon name as {@link NameRelationshipType.BASIONYM() basionym} of <i>this</i> taxon name
+	 * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
 	 * and keeps the nomenclatural rule considered for it. The basionym
-	 * relationship will be added to <i>this</i> taxon name and to the basionym.
-	 * The basionym cannot have itself as a basionym.
-	 * The homotypical group of <i>this</i> taxon name will be changed the basionyms homotypical group.
-	 * @see  #getBasionym()
-	 * @see  #setBasionym(TaxonNameBase)
+	 * {@link NameRelationship relationship} will be added to <i>this</i> taxon name and to the basionym.
+	 * The basionym cannot have itself a basionym.
+	 * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the basionym
+	 * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
+	 * 
+	 * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
+	 * @param  ruleConsidered	the string identifying the nomenclatural rule
+	 * @see  					#getBasionym()
+	 * @see  					#addBasionym(TaxonNameBase)
 	 */
 	public void addBasionym(T basionym, String ruleConsidered){
 		if (basionym != null){
@@ -490,6 +497,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		}
 	}
 	
+	/** 
+	 * Removes the {@link NameRelationshipType#BASIONYM() basionym} {@link NameRelationship relationship} from the set of
+	 * {@link #getRelationsToThisName() name relationships to} <i>this</i> taxon name. The same relationhip will be
+	 * removed from the set of {@link #getRelationsFromThisName() name relationships from} the taxon name
+	 * previously used as basionym.
+	 *
+	 * @see   #getBasionym()
+	 * @see   #addBasionym(TaxonNameBase)
+	 */
 	public void removeBasionym(){
 		//TODO implement
 		logger.warn("not yet implemented");
@@ -497,8 +513,20 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 
 
+	/**
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
+	 * several strings corresponding to <i>this</i> taxon name
+	 * (in particular taxon name caches and author strings).
+	 * 
+	 * @return  the cache strategy used for <i>this</i> taxon name
+	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+	 */
 	@Transient
 	public abstract S getCacheStrategy();
+	/** 
+	 * @see 	#getCacheStrategy()
+	 */
 	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
@@ -519,13 +547,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the {@link reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
+	 * Returns the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} of <i>this</i> taxon name.
 	 * The nomenclatural reference is here meant to be the one publication
 	 * <i>this</i> taxon name was originally published in while fulfilling the formal
 	 * requirements as specified by the corresponding {@link NomenclaturalCode nomenclatural code}.
 	 *
-	 * @see 	reference.INomenclaturalReference
-	 * @see 	reference.ReferenceBase
+	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
+	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -534,8 +562,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return this.nomenclaturalReference;
 	}
 	/**
-	 * Assigns a nomenclatural {@link reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
-	 * The corresponding {@link reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
+	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
+	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
 	 * as it is obviously used for nomenclatural purposes.
 	 *
 	 * @see  #getNomenclaturalReference()
@@ -560,7 +588,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the details string of the nomenclatural reference assigned
+	 * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
 	 * to <i>this</i> taxon name. The details describe the exact localisation within
 	 * the publication used as nomenclature reference. These are mostly
 	 * (implicitly) pages but can also be figures or tables or any other
@@ -585,7 +613,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * governing the construction of <i>this</i> taxon name.
 	 *  
 	 * @return  the boolean value of the hasProblem flag
-	 * @see     #getNameCache()
 	 */
 	public boolean getHasProblem(){
 		return this.hasProblem;
@@ -636,8 +663,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * <i>this</i> taxon name. The type designation itself will be nullified.
 	 *
 	 * @param  typeDesignation  the type designation which should be deleted
-	 * @see     				#removeSpecimenTypeDesignation(SpecimenTypeDesignation)
-	 * @see     				#removeNameTypeDesignation(NameTypeDesignation)
 	 */
 	public void removeTypeDesignation(TypeDesignationBase typeDesignation) {
 		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
@@ -650,7 +675,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * to <i>this</i> taxon name. The {@link Rank rank} of <i>this</i> taxon name is generally
 	 * "species" or below. The specimen type designations include all the
 	 * specimens on which the typification of this name is based (which are
-	 * exclusivly used to typify taxon names belonging to the same
+	 * exclusively used to typify taxon names belonging to the same
 	 * {@link HomotypicalGroup homotypical group} to which <i>this</i> taxon name
 	 * belongs) and eventually the status of these designations.
 	 *
@@ -688,7 +713,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Creates and adds a new {@link NameTypeDesignation name type designation}
-	 * to <i>this</i> taxon name's set of name type designations.
+	 * to <i>this</i> taxon name's set of type designations.
 	 *
 	 * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
 	 * @param  citation					the reference for this new designation
@@ -737,7 +762,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	/** 
 	 * Creates and adds a new {@link SpecimenTypeDesignation specimen type designation}
-	 * to <i>this</i> taxon name's set of specimen type designations.
+	 * to <i>this</i> taxon name's set of type designations.
 	 *
 	 * @param  typeSpecimen				the specimen to be used as a type for <i>this</i> taxon name
 	 * @param  status					the specimen type designation status
@@ -815,11 +840,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/** 
 	 * Returns the complete string containing the
-	 * {@link reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
-	 * (including {@link #getNomenclaturalMicroReference() details}) assigned to <i>this</i> taxon name.
+	 * {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
+	 * and the {@link #getNomenclaturalMicroReference() details} assigned to <i>this</i> taxon name.
 	 * 
 	 * @return  the string containing the nomenclatural reference of <i>this</i> taxon name
-	 * @see		reference.INomenclaturalReference#getNomenclaturalCitation()
+	 * @see		eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation()
 	 * @see		#getNomenclaturalReference()
 	 * @see		#getNomenclaturalMicroReference()
 	 */
@@ -829,6 +854,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		return null;
 	}
 
+	/** 
+	 * Not yet implemented
+	 */
 	@Transient
 	public String[] getProblems(){
 		logger.warn("getProblems not yet implemented");
@@ -837,11 +865,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	/**
 	 * Returns the string containing the publication date (generally only year)
-	 * of the nomenclatural reference for <i>this</i> taxon name, null if there is
+	 * of the {@link #getNomenclaturalReference() nomenclatural reference} for <i>this</i> taxon name, null if there is
 	 * no nomenclatural reference.
 	 * 
 	 * @return  the string containing the publication date of <i>this</i> taxon name
-	 * @see		reference.INomenclaturalReference#getYear()
+	 * @see		eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear()
 	 */
 	@Transient
 	public String getReferenceYear(){
@@ -853,13 +881,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 
 	/** 
-	 * Returns the set of {@link taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
 	 * In this context a taxon base means the use of a taxon name by a reference
-	 * either as a taxon ("accepted/correct" name) or as a (junior) synonym.
-	 * A taxon name can be used by several distinct references but only once
+	 * either as a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon} ("accepted/correct" name) or
+	 * as a (junior) {@link eu.etaxonomy.cdm.model.taxon.Synonym synonym}.
+	 * A taxon name can be used by several distinct {@link eu.etaxonomy.cdm.model.reference.ReferenceBase references} but only once
 	 * within a taxonomic treatment (identified by one reference).
 	 *
-	 * @see taxon.TaxonBase
 	 * @see	#getTaxa()
 	 * @see	#getSynonyms()
 	 */
@@ -878,7 +906,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		}
 	}
 	/** 
-	 * Adds a new {@link taxon.TaxonBase taxon base}
+	 * Adds a new {@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon base}
 	 * to the set of taxon bases using <i>this</i> taxon name.
 	 *
 	 * @param  taxonBase  the taxon base to be added
@@ -892,9 +920,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
 	/** 
-	 * Removes one element from the set of {@link taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
+	 * Removes one element from the set of {@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
 	 *
 	 * @param  taxonBase	the taxon base which should be removed from the corresponding set
+	 * @see    				#getTaxonBases()
 	 * @see    				#addTaxonBase(TaxonBase)
 	 */
 	public void removeTaxonBase(TaxonBase taxonBase){
@@ -927,11 +956,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	
 	/**
-	 * Returns the set of {@link taxon.Taxon taxa} ("accepted/correct" names according to any
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.taxon.Taxon taxa} ("accepted/correct" names according to any
 	 * reference) that are based on <i>this</i> taxon name. This set is a subset of
 	 * the set returned by getTaxonBases(). 
 	 * 
-	 * @see	taxon.Taxon
+	 * @see	eu.etaxonomy.cdm.model.taxon.Taxon
 	 * @see	#getTaxonBases()
 	 * @see	#getSynonyms()
 	 */
@@ -947,11 +976,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	}
 	
 	/**
-	 * Returns the set of {@link taxon.Synonym (junior) synonyms} (according to any
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.taxon.Synonym (junior) synonyms} (according to any
 	 * reference) that are based on <i>this</i> taxon name. This set is a subset of
 	 * the set returned by getTaxonBases(). 
 	 * 
-	 * @see	taxon.Synonym
+	 * @see	eu.etaxonomy.cdm.model.taxon.Synonym
 	 * @see	#getTaxonBases()
 	 * @see	#getTaxa()
 	 */
@@ -970,14 +999,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 // *********** DESCRIPTIONS *************************************	
 
 	/**
-	 * Returns the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription taxon name descriptions} assigned
 	 * to <i>this</i> taxon name. A taxon name description is a piece of information
 	 * concerning the taxon name like for instance the content of its first
 	 * publication (protolog) or a picture of this publication.
 	 * 
 	 * @see	#addDescription(TaxonNameDescription)
 	 * @see	#removeDescription(TaxonNameDescription)
-	 * @see	description.TaxonNameDescription
+	 * @see	eu.etaxonomy.cdm.model.description.TaxonNameDescription
 	 */
 	@OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -991,9 +1020,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.descriptions = descriptions;
 	}
 	/** 
-	 * Adds a new {@link description.TaxonNameDescription taxon name description}
+	 * Adds a new {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription taxon name description}
 	 * to the set of taxon name descriptions assigned to <i>this</i> taxon name. The
-	 * content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute} of the
+	 * content of the {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName() taxonName attribute} of the
 	 * taxon name description itself will be replaced with <i>this</i> taxon name.
 	 *
 	 * @param  description  the taxon name description to be added
@@ -1006,14 +1035,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		descriptions.add(description);
 	}
 	/** 
-	 * Removes one element from the set of {@link description.TaxonNameDescription taxon name descriptions} assigned
-	 * to <i>this</i> taxon name. The content of the {@link description.TaxonNameDescription#getTaxonName() taxonName attribute}
+	 * Removes one element from the set of {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription taxon name descriptions} assigned
+	 * to <i>this</i> taxon name. The content of the {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName() taxonName attribute}
 	 * of the description itself will be set to "null".
 	 *
 	 * @param  description  the taxon name description which should be removed
 	 * @see     		  	#getDescriptions()
 	 * @see     		  	#addDescription(TaxonNameDescription)
-	 * @see 			  	description.TaxonNameDescription#getTaxonName()
+	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName()
 	 */
 	public void removeDescription(TaxonNameDescription description) {
 		initMethods();
@@ -1167,13 +1196,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Generates and returns the string with the scientific name of <i>this</i>
 	 * taxon name (only non viral taxon names can be generated from their
 	 * components). This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#generateTitle() method.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() method} from
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
 	 *
 	 * @return  the string with the composed name of this non viral taxon name with authorship (and maybe year)
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
 	public String generateTitle() {

@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * The class representing categories of nomenclatural status (like "invalid",
  * "conserved" or "novum") to qualify the use of a particular taxon name string
- * depending on its {@link reference.INomenclaturalReference nomenclatural reference} (original publication),
+ * depending on its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} (original publication),
  * on its {@link NomenclaturalCode nomenclatural code} and on possible decisions of the corresponding
  * competent authorities. Unfortunately the ICBN and the ICZN use sometimes
  * different words for the same meaning or the same word for different meanings
@@ -96,7 +96,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/** 
 	 * Class constructor: creates an additional nomenclatural status type
-	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label
+	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label
 	 * and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
@@ -145,7 +145,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #isIllegitimateType()
-	 * @see  common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isInvalidType(){
@@ -172,7 +172,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #isInvalidType()
 	 * @see  #isIllegitimateType()
-	 * @see  common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isLegitimateType(){
@@ -204,7 +204,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #ILLEGITIMATE()
 	 * @see  #CONSERVED()
 	 * @see  #SANCTIONED()
-	 * @see  common.DefinedTermBase#getKindOf()
+	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
 	@Transient
 	public boolean isIllegitimateType(){
@@ -223,11 +223,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "ambiguous" if it has been used so long
+	 * ("available") {@link TaxonNameBase taxon name} is "ambiguous" if it has been used so long
 	 * by different authors in different senses (other than the originally
 	 * intended) that it has become a persistent cause of error and confusion.<BR>
 	 * An "ambiguous" taxon name is treated as if "rejected" and is therefore
-	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 * also "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
@@ -239,7 +239,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "doubtful" (dubious). A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "doubtful" if its
+	 * ("available") {@link TaxonNameBase taxon name} is "doubtful" if its
 	 * application is uncertain; the confusion being derived from an incomplete
 	 * or confusing description.<BR>
 	 * A "doubtful" taxon name is treated as if "rejected" and is therefore
@@ -255,10 +255,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "confusum". A "valid" ("available")
-	 * {@link TaxonNameBase taxon name}, is "confusum" if it has been widely
+	 * {@link TaxonNameBase taxon name} is "confusum" if it has been widely
 	 * and persistently used for a taxon or taxa not including its type.<BR>
 	 * A "confusum" taxon name is treated as if "rejected" and is therefore
-	 * also "illegitimate" (("invalid" for {@link ZoologicalName zoological names}).
+	 * also "illegitimate" ("invalid" for {@link ZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
@@ -284,7 +284,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "superfluous". A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "superfluous" if, when published,
+	 * ("available") {@link TaxonNameBase taxon name} is "superfluous" if, when published,
 	 * the taxon to which it was applied, as circumscribed by its {@link NonViralName#getCombinationAuthorTeam() author},
 	 * definitely included the type of a name which ought to have been adopted,
 	 * or of which the epithet ought to have been adopted, under the rules of
@@ -304,7 +304,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "rejected". A "valid" ("available")
-	 * {@link TaxonNameBase taxon name}, is "rejected" if, even though by the strict
+	 * {@link TaxonNameBase taxon name} is "rejected" if, even though by the strict
 	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially
 	 * of the principle of priority, it should be "legitimate" ("valid" for
 	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
@@ -325,7 +325,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "utique rejected". A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "utique rejected" if it is rejected
+	 * ("available") {@link TaxonNameBase taxon name} is "utique rejected" if it is rejected
 	 * outright (without being rejected in favour of a "conserved" taxon name).<BR>
 	 * An "utique rejected" taxon name is therefore also "illegitimate"
 	 * ("invalid" for zoological names).
@@ -341,7 +341,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "proposed to be conserved". A
-	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be conserved"
+	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be conserved"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
 	 * it is "illegitimate" ("invalid" for {@link ZoologicalName zoological names}),
@@ -362,7 +362,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "proposed to be conserved
-	 * (orthography)". A {@link TaxonNameBase taxon name}, is "proposed to be conserved
+	 * (orthography)". A {@link TaxonNameBase taxon name} is "proposed to be conserved
 	 * (orthography)" if, even though originally published with another
 	 * spelling, it has been submitted to competent authorities in order to
 	 * decide whether the proposed alternative spelling should be "conserved".<BR>
@@ -413,7 +413,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "novum". A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "novum" if it has been created
+	 * ("available") {@link TaxonNameBase taxon name} is "novum" if it has been created
 	 * in order either to replace an earlier name that is "illegitimate" or to
 	 * avoid the building of a "later homonym".<BR>
 	 * A "novum" taxon name is therefore also "legitimate" ("valid" for
@@ -430,7 +430,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "proposed to be utique rejected". A
-	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be utique rejected"
+	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be utique rejected"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
 	 * it is "legitimate" ("valid" for {@link ZoologicalName zoological names}),
@@ -452,7 +452,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "conserved (orthography)". A
-	 * {@link TaxonNameBase taxon name}, is "conserved (orthography)" if competent authorities
+	 * {@link TaxonNameBase taxon name} is "conserved (orthography)" if competent authorities
 	 * decided to conserve a different spelling to the one published originally.<BR>
 	 * A "conserved (orthography)" taxon name is "conserved" and hence
 	 * "legitimate" ("valid" for {@link ZoologicalName zoological names}).
@@ -469,7 +469,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "proposed to be rejected". A
-	 * "valid" ("available") {@link TaxonNameBase taxon name}, is "proposed to be rejected"
+	 * "valid" ("available") {@link TaxonNameBase taxon name} is "proposed to be rejected"
 	 * if, even though by the strict application of the rules of
 	 * the {@link NomenclaturalCode nomenclature code}, and especially of the principle of priority,
 	 * it should be "legitimate" ("valid" for {@link ZoologicalName zoological names}),
@@ -492,7 +492,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "conserved". A "valid"
-	 * ("available") {@link TaxonNameBase taxon name}, is "conserved" if, even though by the strict
+	 * ("available") {@link TaxonNameBase taxon name} is "conserved" if, even though by the strict
 	 * application of the rules of the {@link NomenclaturalCode nomenclature code}, and especially of
 	 * the principle of priority, it should be "illegitimate" ("invalid" for
 	 * {@link ZoologicalName zoological names}), competent authorities decided to handle
@@ -638,9 +638,16 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 //	orth. var.: orthographic variant
 //	pro syn.: pro synonymo
 
-	/** TODO
-	 * preliminary implementation for BotanicalNameParser
-	 *  * not yet complete
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the nomenclatural status type identified through its label
+	 * abbreviation. Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	statusAbbreviation	the label abbreviation
+	 * @return  					the nomenclatural status type
+	 * 					
 	 */
 	@Transient
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation) throws UnknownCdmTypeException{
@@ -673,7 +680,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	/** 
 	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
 	 * description text, label and label abbreviation) coming from a csv line.
-	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
+	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.common.DefinedTermBase DefinedTermBase}.
 	 * 
 	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
 	 * 						to be used to fill <i>this</i> nomenclatural status type
@@ -681,7 +688,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * 						nomenclatural status type is written
 	 * @see					#NomenclaturalStatusType(String, String, String)
 	 * @see					#readCsvLine(List)
-	 * @see					common.DefinedTermBase#readCsvLine(List, Language)
+	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List, Language)
 	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine_, Language lang) {
@@ -702,13 +709,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
 	 * description text, label and label abbreviation) coming from a csv line.
 	 * The implicit language for the description text is "latin".
-	 * This method overrides the method of {@link common.DefinedTermBase DefinedTermBase}.
+	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.common.DefinedTermBase DefinedTermBase}.
 	 * 
-	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
+	 * @param	csvLine 	the (ordered) list of substrings from a csv string
 	 * 						to be used to fill <i>this</i> nomenclatural status type
 	 * @see					#NomenclaturalStatusType(String, String, String)
 	 * @see					#readCsvLine(List, Language)
-	 * @see					common.DefinedTermBase#readCsvLine(List)
+	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
 	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine) {   //TODO should be List<String> but makes error for some strange reason

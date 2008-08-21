@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * The (abstract) class representing a typification of a {@link TaxonNameBase taxon name}.<BR>
+ * The (abstract) class representing a typification of one or several {@link TaxonNameBase taxon names}.<BR>
  * All taxon names which have a {@link Rank rank} "species aggregate" or lower
  * can only be typified by specimens (a {@link SpecimenTypeDesignation specimen type designation}), but taxon
  * names with a higher rank might be typified by an other taxon name with
@@ -73,7 +73,7 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	/** 
 	 * Class constructor: creates a new empty type designation.
 	 * 
-	 * @see	#TypeDesignationBase(ReferenceBase, String, String))
+	 * @see	#TypeDesignationBase(ReferenceBase, String, String)
 	 */
 	protected TypeDesignationBase(){
 		super();
@@ -106,7 +106,7 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 * Returns the {@link HomotypicalGroup homotypical group} to which all (in <i>this</i>
 	 * type designation) typified {@link TaxonNameBase taxon names} belong.
 	 *  
-	 * @see   #getTypeSpecimen()
+	 * @see   #getTypifiedNames()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -124,7 +124,8 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 */
 	/** 
 	 * Returns the set of {@link TaxonNameBase taxon names} typified in <i>this</i>
-	 * type designation.
+	 * type designation. This is a subset of the taxon names belonging to the
+	 * corresponding {@link #getHomotypicalGroup() homotypical group}.
 	 */
 	@ManyToMany
 	@Cascade({CascadeType.SAVE_UPDATE})

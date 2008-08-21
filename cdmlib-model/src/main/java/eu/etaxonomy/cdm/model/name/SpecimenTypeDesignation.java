@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * The class representing a typification of a {@link TaxonNameBase taxon name} by a
- * {@link occurrence.DerivedUnitBase specimen or a figure}. All {@link TaxonNameBase taxon names}
+ * The class representing a typification of one or several {@link TaxonNameBase taxon names} by a
+ * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or a figure}. All {@link TaxonNameBase taxon names}
  * which have a {@link Rank rank} "species aggregate" or lower can only be typified
  * by specimens. Moreover each typification by a specimen (or by a figure) has a
  * {@link TypeDesignationStatus status} like "holotype" or "isotype".
@@ -109,7 +109,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	
 	/**
 	 * Class constructor: creates a new specimen type designation instance
-	 * (including its {@link reference.ReferenceBase reference source} and 
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and 
 	 * eventually the taxon name string originally used by this reference when 
 	 * establishing the former designation).
 	 * 
@@ -122,8 +122,8 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * @param originalNameString	the taxon name string used originally in the 
 	 * 								reference source for the new designation
 	 * @see							#SpecimenTypeDesignation()
-	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
-	 * @see							occurrence.DerivedUnitBase
+	 * @see							TaxonNameBase#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
+	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
 	 */
 	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
 			String originalNameString) {
@@ -180,10 +180,10 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> specimen type
 	 * designation has a "lectotype" status (true) or not (false).<BR>
-	 * A lectotype is a {@link occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
 	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
-	 * holotype is found to belong to more than one {@link TaxonNameBase taxon name},
+	 * holotype is found to belong to more than one taxon name,
 	 * or as long as it is missing.
 	 *
 	 * @see  TypeDesignationStatus#isLectotype()

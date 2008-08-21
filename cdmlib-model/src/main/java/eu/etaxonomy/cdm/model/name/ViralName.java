@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * The taxon name class for viral taxa. The scientific name will be stored
  * as a string (consisting eventually of several words even combined also with
- * non alphabetical characters) in the inherited {@link common.IdentifiableEntity#setTitleCache(String) titleCache} attribute.
+ * non alphabetical characters) in the inherited {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} attribute.
  * Classification has no influence on the names of viral taxon names and no
  * viral taxon must be taxonomically included in another viral taxon with
  * higher rank. For examples see ICTVdb:
@@ -54,7 +54,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new viral taxon name instance
-	 * only containing its {@link common.Rank rank}.
+	 * only containing its {@link Rank rank}.
 	 * 
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	TaxonNameBase#TaxonNameBase(Rank)
@@ -67,7 +67,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	//********* METHODS **************************************/
 
 	/** 
-	 * Creates a new viral taxon name instance only containing its {@link common.Rank rank}.
+	 * Creates a new viral taxon name instance only containing its {@link Rank rank}.
 	 * 
 	 * @param	rank  the rank to be assigned to <i>this</i> viral taxon name
 	 * @see 	#ViralName(Rank)
@@ -95,13 +95,13 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	/**
 	 * Generates and returns the string with the scientific name of <i>this</i>
 	 * viral taxon name. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
 	 * This method overrides the generic and inherited
-	 * TaxonNameBase#generateTitle() method.
+	 * method from {@link TaxonNameBase TaxonNameBase} .
 	 *
 	 * @return  the string with the composed name of <i>this</i> viral taxon name with authorship (and maybe year)
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	TaxonNameBase#generateTitle()
 	 */
 	@Override
@@ -133,11 +133,12 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> viral taxon name, that is the
 	 * International Code of Virus Classification and Nomenclature.
-	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase#getNomeclaturalCode() TaxonNameBase}.
+	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
 	 *
 	 * @return  the nomenclatural code for viruses
 	 * @see  	#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
+	 * @see  	TaxonNameBase#getNomenclaturalCode()
 	 */
 	@Transient
 	@Override

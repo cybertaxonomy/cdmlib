@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  * {@link TaxonNameBase taxon name}. This includes a {@link NomenclaturalStatusType nomenclatural status type}
  * (for instance "invalid", "novum" or "conserved") and eventually the article
  * of the corresponding {@link NomenclaturalCode nomenclatural code} this status assignation is based on.
- * One nomenclatural status type can be assigned to several taxon names.
+ * One nomenclatural status can be assigned to several taxon names.
  * 
  * @author m.doering
  * @version 1.0

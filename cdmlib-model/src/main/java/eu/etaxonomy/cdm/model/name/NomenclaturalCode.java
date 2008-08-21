@@ -70,7 +70,7 @@ public class NomenclaturalCode extends DefinedTermBase {
 	 * 						 to be created
 	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
 	 * 						 new nomenclature code to be created
-	 * @see 	#NomenclaturalCode()
+	 * @see 				 #NomenclaturalCode()
 	 */
 	public NomenclaturalCode(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);

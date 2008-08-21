@@ -43,7 +43,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * nomenclaturally rejected or conserved. Depending on the date of publication,
  * the same typification could be rejected according to one reference and later
  * be conserved according to another reference, but a name type designation
- * cannot be simultaneously rejected and conserved.
+ * cannot be simultaneously rejected and conserved.<BR>
+ * Name type designations are treated as {@link TypeDesignationBase type designations}
+ * and not as {@link NameRelationship name relationships}.
  * 
  * @see		TypeDesignationBase
  * @see		SpecimenTypeDesignation
