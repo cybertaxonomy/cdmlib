@@ -18,8 +18,11 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -40,6 +43,7 @@ public class DataSetTest {
 	private List<Agent> agents;
     private List<VersionableEntity> agentData;
     private List<TermBase> terms;
+    private List<TermVocabulary> termVocabularies;
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
     private List<Taxon> taxa;
@@ -68,6 +72,7 @@ public class DataSetTest {
 		agents = new ArrayList<Agent>();
 		agentData = new ArrayList<VersionableEntity>();
 		terms = new ArrayList<TermBase>();
+		termVocabularies = new ArrayList<TermVocabulary>();
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();
@@ -89,7 +94,13 @@ public class DataSetTest {
 		TimePeriod period = new TimePeriod(birth, death);
 		linne.setLifespan(period);
 
-		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
+		Language lang = Language.ENGLISH();
+		TermVocabulary termvoc = new TermVocabulary();
+		lang.setVocabulary(termvoc);
+		Keyword keyword = Keyword.NewInstance("plantarum", lang.getLabel(), "");
+		Representation rep = keyword.getRepresentation(lang);
+		rep.setLanguage(lang);
+		
 		linne.addKeyword(keyword);
 
 		Institution institute = Institution.NewInstance();
@@ -136,8 +147,11 @@ public class DataSetTest {
 		terms.add(rankSpecies);
 		terms.add(rankSubspecies);
 		terms.add(rankGenus);
+		terms.add(lang);
 		
 		terms.add(keyword);
+		
+		termVocabularies.add(termvoc);
 		
         // taxonomic names
 		
@@ -229,6 +243,7 @@ public class DataSetTest {
 		dataSet.setAgents(agents);
 		dataSet.setAgentData(agentData);
 		dataSet.setTerms(terms);
+		dataSet.setTermVocabularies(termVocabularies);
 		dataSet.setReferences(references);
 		dataSet.setTaxonomicNames(taxonomicNames);
 		dataSet.setTaxa(taxa);
@@ -245,6 +260,7 @@ public class DataSetTest {
 		dataSet.setAgents(agents);
 		dataSet.setAgentData(agentData);
 		dataSet.setTerms(terms);
+		dataSet.setTermVocabularies(termVocabularies);
 		dataSet.setReferences(references);
 		dataSet.setTaxonomicNames(taxonomicNames);
 		dataSet.setTaxa(taxa);

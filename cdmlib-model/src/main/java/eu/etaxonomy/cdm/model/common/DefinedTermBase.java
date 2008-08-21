@@ -81,7 +81,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlSchemaType(name = "IDREF")
 	private Set<Media> media = new HashSet<Media>();
 	
-	@XmlElement(name = "Vocabulary")
+	@XmlElement(name = "TermVocabulary")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	protected TermVocabulary<T> vocabulary;

@@ -8,20 +8,20 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.xml.sax.SAXException;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 
+import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /*
 Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet) 
-Binds it to XML schemas found in /src/main/resources/schema/cdm (cdm.xsd, common.xsd, name.xsd).
-There is a bit of magic with a resource resolver in eu.etaxonomy.cdm.jaxb
-which allows to package the schemas into a jar file.
 */
+//Binds it to XML schemas found in /src/main/resources/schema/cdm (cdm.xsd, common.xsd, name.xsd).
+//There is a bit of magic with a resource resolver in eu.etaxonomy.cdm.jaxb
+//which allows to package the schemas into a jar file.
 public class CdmDocumentBuilder {
 	
-	private static Log log = LogFactory.getLog(CdmDocumentBuilder.class);
+	private static final Logger logger = Logger.getLogger(CdmDocumentBuilder.class);
 	
 	private JAXBContext jaxbContext;
 	
@@ -43,29 +43,10 @@ public class CdmDocumentBuilder {
 //		Schema cdmSchema = schemaFactory.newSchema(sources);
 					
 		jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class});
-		log.debug(jaxbContext.toString());
+		logger.debug(jaxbContext.toString());
 
 	}
 	
-	public void marshal(Object object, Writer writer) throws JAXBException {
-		
-		Marshaller marshaller;
-		marshaller = jaxbContext.createMarshaller();
-		
-		// For test purposes insert newlines to make the XML output readable
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		
-		// UTF-8 encoding delivers error when unmarshalling
-		//marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
-		
-		// validate with explicit schema
-		//marshaller.setSchema(cdmSchema);
-		
-		marshaller.marshal(object, writer);
-		
-	}
-
 	public void marshal(DataSet dataSet, Writer writer) throws JAXBException {
 		
 		Marshaller marshaller;
@@ -74,9 +55,7 @@ public class CdmDocumentBuilder {
 		// For test purposes insert newlines to make the XML output readable
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		
-		// UTF-8 encoding delivers error when unmarshalling
-		//marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		marshaller.setListener(marshallerListener);
@@ -84,6 +63,9 @@ public class CdmDocumentBuilder {
 		// validate with explicit schema
 		//marshaller.setSchema(cdmSchema);
 		
+		marshaller.setEventHandler(new DefaultValidationEventHandler());
+
+		logger.info("Start marshalling");
 		marshaller.marshal(dataSet, writer);
 		
 	}
@@ -95,16 +77,12 @@ public class CdmDocumentBuilder {
 		
 		// DefaultValidationEventHandler implementation is part of the API and convenient for trouble-shooting.
 		// It prints errors to System.out.
-		//unmarshaller.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+		//unmarshaller.setEventHandler(new DefaultValidationEventHandler());
 
 		dataSet = (DataSet) unmarshaller.unmarshal(file);
 		return dataSet;
 		
 	}
-
-//	public void write(DataSet dataSet, Writer writer) throws JAXBException {
-//		marshaller.marshal(dataSet, writer);
-//	}
 
 //  can only be used with JAXB 2.1
 //	public void writeFile(DataSet dataSet, File file) throws JAXBException {

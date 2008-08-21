@@ -20,11 +20,13 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.Continent;
@@ -77,6 +79,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 		"agents",
 		"agentData",
 	    "terms",
+	    "termVocabularies",
 	    "references",
 	    "taxonomicNames",
 	    "taxa",
@@ -133,6 +136,10 @@ public class DataSet {
     	@XmlElement(name = "WaterbodyOrCountry", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = WaterbodyOrCountry.class)
     })
     protected List<? extends TermBase> terms;
+
+    @XmlElementWrapper(name = "TermVocabularies")
+    @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    protected List<TermVocabulary> termVocabularies;
 
     @XmlElementWrapper(name = "References")
     @XmlElements({
@@ -261,11 +268,36 @@ public class DataSet {
     }
 
     /**
+     * Gets the value of the term vocabularies property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<TermVocabulary> }
+     *     
+     */
+    
+    public List<TermVocabulary> getTermVocabularies() {
+        return termVocabularies;
+    }
+
+    /**
+     * Sets the value of the term vocabularies property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<TermVocabulary> }
+     *     
+     */
+    public void setTermVocabularies(List<TermVocabulary> value) {
+        this.termVocabularies = value;
+    }
+
+    /**
      * Gets the value of the taxonomicNames property.
      * 
      * @return
      *     possible object is
-     *     {@link List<NonViralName> }
+     *     {@link List<axonNameBase> }
      *     
      */
     public List<TaxonNameBase> getTaxonomicNames() {
@@ -277,7 +309,7 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<NonViralName> }
+     *     {@link List<TaxonNameBase> }
      *     
      */
     public void setTaxonomicNames(List<TaxonNameBase> value) {
@@ -289,7 +321,7 @@ public class DataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<NonViralName> }
+     *     {@link List<ReferenceBase> }
      *     
      */
     public List<ReferenceBase> getReferences() {
@@ -301,7 +333,7 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<NonViralName> }
+     *     {@link List<ReferenceBase> }
      *     
      */
     public void setReferences(List<ReferenceBase> value) {

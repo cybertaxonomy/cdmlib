@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author m.doering
@@ -29,7 +30,8 @@ import javax.persistence.*;
 @Entity
 public class TextData extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(TextData.class);
-	
+
+	@XmlTransient
 	private Map<Language, LanguageString> multilanguageStringMap;
 	private TextFormat format;
 	

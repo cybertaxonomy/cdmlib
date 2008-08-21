@@ -17,6 +17,12 @@ import org.hibernate.annotations.Type;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -26,6 +32,14 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TermVocabulary", propOrder = {
+    "",
+    "",
+    "",
+    ""
+})
+@XmlRootElement(name = "TermVocabulary")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
@@ -56,10 +70,15 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Further vocs can be setup through our own ontology.
+	@XmlElement(name = "TermSourceURI")
 	private String termSourceUri;
+	
+	@XmlElement(name = "TermClass")
 	protected Class termClass;
 
 	//TODO Changed
+	@XmlElementWrapper(name = "Terms")
+	@XmlElement(name = "Term")
 	public Set<T> terms = getNewTermSet();
 	
 	//to be overriden by subclasses, e.g. OrderedTermVocabulary
