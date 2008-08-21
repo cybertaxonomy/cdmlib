@@ -281,16 +281,15 @@ public class CdmApplicationController {
 		sf.getCurrentSession().flush();
 	}
 	
-	public TransactionStatus startTransaction(){
-		PlatformTransactionManager txManager = configuration.getTransactionManager();
-		TransactionDefinition txDef = new DefaultTransactionDefinition();
+	public TransactionStatus startTransaction() {
 		
-		TransactionStatus txStatus = txManager.getTransaction(txDef);
-		return txStatus;
+		return startTransaction(false);
 	}
 	
 	public TransactionStatus startTransaction(Boolean readOnly) {
+		
 		PlatformTransactionManager txManager = configuration.getTransactionManager();
+		
 		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
 		defaultTxDef.setReadOnly(readOnly);
 		TransactionDefinition txDef = defaultTxDef;

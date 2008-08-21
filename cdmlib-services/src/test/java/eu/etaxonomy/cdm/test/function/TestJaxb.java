@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -28,14 +28,11 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -43,7 +40,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -54,14 +50,23 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DefinedTermDaoImpl;
 
 
 public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
+	//private static final String serializeFromDb = "cdm_test_jaxb";
+	private static final String serializeFromDb = "cdm_test_anahit";
+	
+	private static final String deserializeToDb = "cdm_test_jaxb2";
+	//private static final String deserializeToDb = "cdm_test_anahit2";
+	
+	private String server = "192.168.2.10";
+	private String username = "edit";
+	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
+	private String marshOutTwo = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_roundtrip.xml");
+
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	
@@ -70,21 +75,18 @@ public class TestJaxb {
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
 	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
-	//private static final String serializeFromDb = "cdm_test_jaxb";
-	private static final String serializeFromDb = "cdm_test_anahit";
-	private static final String deserializeToDb = "cdm_test_jaxb2";
-	private String server = "192.168.2.10";
-	private String username = "edit";
-	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
-	private String marshOutTwo = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_roundtrip.xml");
-	//private String test = new String( System.getProperty("user.home") + File.separator + "cdm_test.xml");
-
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
     public TestJaxb() {	
     }
 
-    public void testInitDb(String dbname) {
+    public void initDb(String dbname) {
+    	
+    	CdmApplicationController appCtr = initPreloadedDb(dbname);
+    	loadTestData(dbname, appCtr);
+    }
+    
+    public CdmApplicationController initPreloadedDb(String dbname) {
     	
 		logger.info("Initializing DB " + dbname);
 		
@@ -101,16 +103,23 @@ public class TestJaxb {
 		} catch (TermNotFoundException e) {
 			logger.error("defined terms not found");
 		}
+		
+		return appCtr;
+    }
 
+    public void loadTestData(String dbname, CdmApplicationController appCtr) {
+    	
+		logger.info("Loading test data into " + dbname);
+		
 		DataSet dataSet = buildDataSet();
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
+		logger.info("Initializing DB " + dbname + " with test data");
 		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
-
     }
 
     private void setFlatData (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
@@ -210,7 +219,7 @@ public class TestJaxb {
 
     		try {
     			
-    			logger.info("taxon: " + taxon.toString());
+    			logger.debug("taxon: " + taxon.toString());
     			
     			// get the synonyms and synonym relationships
     			if (taxon.hasSynonyms() == true) {
@@ -219,12 +228,12 @@ public class TestJaxb {
     				Set<SynonymRelationship> synonymRelationships = taxon.getSynonymRelations();
 
     				for (Synonym synonym: synonyms) {
-    					logger.info("synonym: " + synonym.toString());
+    					logger.debug("synonym: " + synonym.toString());
     					synonyms_.add(synonym);
     				}
 
     				for (SynonymRelationship synonymRelationship: synonymRelationships) {
-    					logger.info("synonym relationship: " + synonymRelationship.toString());
+    					logger.debug("synonym relationship: " + synonymRelationship.toString());
     					synonymRelationships_.add(synonymRelationship);
     				}
 
@@ -238,20 +247,20 @@ public class TestJaxb {
     				Set<TaxonRelationship> taxonRelationships = taxon.getTaxonRelations();
 
     				for (TaxonRelationship taxonRelationship: taxonRelationships) {
-    					logger.info("taxon relationship: " + taxonRelationship.toString());
+    					logger.debug("taxon relationship: " + taxonRelationship.toString());
     					taxonRelationships_.add(taxonRelationship);
     				}
     			}
 
     			// get the children
-    			logger.info("# children: " + taxon.getTaxonomicChildrenCount());
+    			logger.debug("# children: " + taxon.getTaxonomicChildrenCount());
     			if (taxon.hasTaxonomicChildren() == true) {
 
     				Set<Taxon> children = taxon.getTaxonomicChildren();
 
     				for (Taxon child: children) {
     					children_.add(child);
-    					logger.info("child: "+ child.toString());
+    					logger.debug("child: "+ child.toString());
     				}
     			}
     		} catch (Exception e) {
@@ -305,7 +314,6 @@ public class TestJaxb {
     		logger.error("defined terms not found");
     	}
     	
-    	//TransactionStatus txStatus = appCtr.startTransaction();
     	TransactionStatus txStatus = appCtr.startTransaction(true);
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
@@ -314,7 +322,7 @@ public class TestJaxb {
     	// get data from DB
 
     	try {
-    		logger.info("Load data from DB ...");
+    		logger.info("Load data from DB: " + dbname);
 
     		setFlatData(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
@@ -328,24 +336,27 @@ public class TestJaxb {
     		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
     	} catch (Exception e) {
-    		logger.info("error setting root data");
+    		logger.error("error setting root data");
     	}
 
         // traverse the taxonomic tree
     	
     	if (NUMBER_ROWS_TO_RETRIEVE <= 0) { traverse(taxa, dataSet); }
     	
-		logger.info("all data retrieved");
+		logger.info("All data retrieved");
 		
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		FileWriter writer = new FileWriter(filename);
-    		logger.info("Output Stream Encoding: " + writer.getEncoding());
-    		cdmDocumentBuilder.marshal(dataSet, writer);
+    		logger.info("DocumentBuilder created");
+    		
+    		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF8"), true);
 
+    		cdmDocumentBuilder.marshal(dataSet, writer);
+    		
     		// TODO: Split into one file per data set member to see whether performance improves?
 
     		logger.info("XML file written");
+    		logger.info("Filename is: " + filename);
     		
     	} catch (Exception e) {
     		logger.error("marshalling error");
@@ -468,7 +479,11 @@ public class TestJaxb {
 	
 	private void test(){
 		
-		//testInitDb(serializeFromDb);
+		//Loads terms and some test data to DB.
+		//initDb(serializeFromDb);
+		
+		//Loads terms to DB.
+		//initPreloadedDb(serializeFromDb);
 		
 	    doSerialize(serializeFromDb, marshOutOne);
 		
@@ -477,7 +492,7 @@ public class TestJaxb {
 	    
 		doDeserialize(deserializeToDb, marshOutOne);
 	    
-		doSerialize(deserializeToDb, marshOutTwo);
+		//doSerialize(deserializeToDb, marshOutTwo);
 		}
 	
 	/**
