@@ -445,6 +445,7 @@ public class TestJaxb {
 		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
+			logger.info("Unmarshalling file: " + filename);
 			dataSet = cdmDocumentBuilder.unmarshal(dataSet, new File(filename));
 
 		} catch (Exception e) {
@@ -455,23 +456,30 @@ public class TestJaxb {
 		// save data in DB
 		
 		Collection<TaxonBase> taxonBases;
+		List<Agent> agents;
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		logger.info("Saving data to DB: " + dbname);
 		
 		// Currently it's sufficient to save the taxa only since all other data
 		// related to the taxa, such as synonyms, are automatically saved as well.
 		
 //		if ((agents = dataSet.getAgents()) != null) {
-//		appCtr.getAgentService().saveAgentAll(agents);
+//			logger.info("Saving agents");
+//			appCtr.getAgentService().saveAgentAll(agents);
 //		}
 		
 		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
 		// Need to get the taxa and the synonyms here.
 		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
-		appCtr.getTaxonService().saveTaxonAll(taxonBases);
+			logger.info("Saving taxon bases");
+			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 
+		logger.info("All data saved");
+		
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
 
@@ -485,7 +493,7 @@ public class TestJaxb {
 		//Loads terms to DB.
 		//initPreloadedDb(serializeFromDb);
 		
-	    doSerialize(serializeFromDb, marshOutOne);
+	    //doSerialize(serializeFromDb, marshOutOne);
 		
 		//For tests to retrieve all data via services rather than traversing the tree.
 	    //doSerializeFlat(serializeFromDb, marshOutOne);
