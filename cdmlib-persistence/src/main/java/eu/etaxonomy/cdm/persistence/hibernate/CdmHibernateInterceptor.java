@@ -100,13 +100,13 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 					if (term.getId() != 0){
 						continue;
 					}else{
-						System.out.println(" " + singleState.getClass());
+						//System.out.println(" " + singleState.getClass());
 						UUID uuid = term.getUuid();
 						DefinedTermBase storedTermBase = VocabularyStoreImpl.getCurrentVocabularyStore().getTermByUuid(uuid);
 						if (storedTermBase == null){
 							logger.warn("DefinedTermBase with uuid "+ uuid +" could not be found in vocabulary store. Term stays transient.");
 						}else if (uuid.equals(storedTermBase.getUuid())){
-							logger.info("Changed transient term");
+							logger.debug("Changed transient term");
 							state[i] = storedTermBase;
 							result = true;
 						}else{
