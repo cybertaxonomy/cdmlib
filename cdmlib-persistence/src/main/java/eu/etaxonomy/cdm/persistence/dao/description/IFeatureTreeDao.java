@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.description;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
@@ -18,5 +20,5 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  * @version 1.0
  */
 public interface IFeatureTreeDao extends ICdmEntityDao<FeatureTree> {
-	
+	public List<FeatureTree> list();
 }

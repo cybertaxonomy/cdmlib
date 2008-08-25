@@ -30,6 +30,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
+import eu.etaxonomy.cdm.remote.dto.FeatureTO;
+import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
@@ -182,6 +184,18 @@ public class RestController extends AbstractController
 					results = service.getRootTaxa(u);
 				}
 				mv.addObject( (List)results );
+			}else if(action.equals("features")){
+				logger.info("Feature Request.");
+				if(op != null && op.equals("tree")){
+					// return a list of feature trees stored in database
+					List<FeatureTreeTO> featureTree = service.getFeatureTrees(locales);
+					mv.addObject(featureTree);
+				}else{
+					// return a list of features this community store supports
+					List<FeatureTO> feature = service.getFeatures(locales);
+					mv.addObject(feature);
+				}
+				
 			}else{
 				// nothing matches
 				mv.addObject("status", "Controller does not know this operation");

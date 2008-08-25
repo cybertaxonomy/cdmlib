@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.remote.dto.FeatureTO;
+import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
@@ -203,5 +205,19 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting for non existing reference UUIDs
 	 */
 	public List<TreeNode> getRootTaxa(UUID uuid) throws CdmObjectNonExisting;
+
+	/**
+	 * 
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public List<FeatureTreeTO> getFeatureTrees(Enumeration<Locale> locales) throws CdmObjectNonExisting;
+
+	/**
+	 * 
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public List<FeatureTO> getFeatures(Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
 }

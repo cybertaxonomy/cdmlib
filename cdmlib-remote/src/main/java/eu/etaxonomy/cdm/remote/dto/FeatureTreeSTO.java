@@ -19,22 +19,16 @@ import java.util.List;
  * @created 12.07.2008 15:00:00
  *
  */
-public class FeatureTreeTO extends BaseTO{
+public class FeatureTreeSTO extends BaseTO{
 	
 	List<DescriptionTO> descriptions = new ArrayList<DescriptionTO>();
-	List<FeatureTO> features = new ArrayList<FeatureTO>();
+	
 	
 	public List<DescriptionTO> getDescriptions() {
 		return descriptions;
 	}
 	public void setDescriptions(List<DescriptionTO> descriptions) {
 		this.descriptions = descriptions;
-	}
-	public List<FeatureTO> getFeatures() {
-		return features;
-	}
-	public void setFeatures(List<FeatureTO> features) {
-		this.features = features;
 	}
 	
 }

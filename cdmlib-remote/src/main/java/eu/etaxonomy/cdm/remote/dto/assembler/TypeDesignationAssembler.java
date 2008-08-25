@@ -85,7 +85,7 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 		
 		sto.setConservedType(typeDesignation.isConservedType());
 		sto.setRejectedType(typeDesignation.isRejectedType());
-		sto.setTypeSpeciesName(nameAssembler.getSTO(typeDesignation.getTypeSpecies(), locales));
+		sto.setTypeSpeciesName(nameAssembler.getSTO(typeDesignation.getTypeName(), locales));
 		
 		for (TaxonNameBase typifiedName : typeDesignation.getTypifiedNames()){
 			sto.addTypifiedName(nameAssembler.getSTO(typifiedName, locales));

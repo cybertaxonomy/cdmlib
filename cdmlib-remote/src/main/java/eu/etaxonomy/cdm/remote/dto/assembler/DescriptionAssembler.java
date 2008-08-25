@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.remote.dto.BaseSTO;
 import eu.etaxonomy.cdm.remote.dto.DescriptionElementSTO;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
@@ -53,6 +54,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 	private MediaAssembler mediaAssembler;
 	@Autowired
 	private IDefinedTermDao languageDao;
+	@Autowired
+	private IDescriptionDao descriptionDao;
 	@Autowired
 	private LocalisedTermAssembler localisedTermAssembler;
 	@Autowired
@@ -134,6 +137,43 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		
 		
 		to.setDescriptions(descriptionTOs);
+		
+		return to;
+	}
+	
+	/**
+	 * TODO this is work in progress
+	 * @param featureTree
+	 * @param locales
+	 * @return
+	 */
+	public FeatureTreeTO getTO(FeatureTree featureTree, Enumeration<Locale> locales){
+		FeatureTreeTO to = new FeatureTreeTO();
+		List<FeatureTO> featureTOs = new ArrayList<FeatureTO>();  
+		
+		for(FeatureNode featureNode : featureTree.getRootChildren()){
+			featureTOs.add(getTO(featureNode.getFeature(), locales));
+		}
+		
+		to.setFeatures(featureTOs);
+		
+		to.setUuid(featureTree.getUuid().toString());
+		to.setCreated(featureTree.getCreated());
+		
+		return to;
+	}
+	
+	/**
+	 * TODO this is work in progress
+	 * @param feature
+	 * @param locales
+	 * @return
+	 */
+	public FeatureTO getTO(Feature feature, Enumeration<Locale> locales){
+		FeatureTO to = new FeatureTO();
+		
+		to.setUuid(feature.getUuid().toString());
+		to.setLabel(feature.getLabel());
 		
 		return to;
 	}

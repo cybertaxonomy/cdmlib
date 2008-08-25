@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.persistence.dao.description;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
-	
 }

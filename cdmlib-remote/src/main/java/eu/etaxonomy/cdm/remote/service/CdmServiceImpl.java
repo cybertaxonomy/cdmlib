@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -36,6 +35,8 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.remote.dto.FeatureTO;
+import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
+import eu.etaxonomy.cdm.remote.dto.assembler.DescriptionAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
@@ -61,6 +63,8 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private TaxonAssembler taxonAssembler;
 	@Autowired
+	private DescriptionAssembler descriptionAssembler;
+	@Autowired
 	private ITaxonDao taxonDAO;
 	@Autowired
 	private ITaxonNameDao nameDAO;
@@ -71,10 +75,12 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private IFeatureTreeDao featureTreeDAO;
 	@Autowired
-	private IFeatureDao featureDao;
+	private IFeatureDao featureDAO;
 	
 	
 	private final int MAXRESULTS = 500;
+
+	
 	
 //	private CdmEntityDaoBase entityDAO = new CdmEntityDaoBase<CdmBase>();
 		
@@ -142,7 +148,7 @@ public class CdmServiceImpl implements ICdmService {
 			}
 		}else{
 			logger.info("No featureTree at this point. Building default tree with all available features.");
-			featureTree = FeatureTree.NewInstance(featureDao.list());
+			featureTree = FeatureTree.NewInstance(featureDAO.list());
 		}
 		TaxonTO t = taxonAssembler.getTO(tb, featureTree, locales);
 		return t;
@@ -277,15 +283,34 @@ public class CdmServiceImpl implements ICdmService {
 		return refList;
 	}
 	public List<TaxonSTO> getSimpleTaxa(Set<UUID> uuids, Enumeration<Locale> locales){
-	List<TaxonSTO> taxList = new ArrayList<TaxonSTO>();
-	for (UUID u: uuids){
-		try {
-			taxList.add(getSimpleTaxon(u,locales));
-		} catch (CdmObjectNonExisting e) {
-			logger.warn("Taxon UUID "+u+" does not exist!");
+		List<TaxonSTO> taxList = new ArrayList<TaxonSTO>();
+		for (UUID u: uuids){
+			try {
+				taxList.add(getSimpleTaxon(u,locales));
+			} catch (CdmObjectNonExisting e) {
+				logger.warn("Taxon UUID "+u+" does not exist!");
+			}
 		}
+		return taxList;
 	}
-	return taxList;
+	public List<FeatureTO> getFeatures(Enumeration<Locale> locales) throws CdmObjectNonExisting {
+		List<FeatureTO> featureList = new ArrayList<FeatureTO>();
+		
+		for (Feature feature : featureDAO.list()){
+			featureList.add(descriptionAssembler.getTO(feature, locales));
+		}
+		
+		return featureList;
+	}
+	public List<FeatureTreeTO> getFeatureTrees(Enumeration<Locale> locales)
+			throws CdmObjectNonExisting {
+		List<FeatureTreeTO> featureTreeList = new ArrayList<FeatureTreeTO>();
+		
+		for (FeatureTree featureTree : featureTreeDAO.list()){
+			featureTreeList.add(descriptionAssembler.getTO(featureTree, locales));
+		}
+		
+		return featureTreeList;
 	}
 
 }

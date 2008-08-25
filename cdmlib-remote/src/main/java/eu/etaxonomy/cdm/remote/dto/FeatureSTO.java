@@ -24,12 +24,11 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @created 12.07.2008 15:00:00
  *
  */
-public class FeatureTO extends BaseTO{
+public class FeatureSTO extends BaseTO{
 	
 	Set<DescriptionElementSTO> descriptionElements;
-	List<FeatureTO> children;
+	List<FeatureSTO> children;
 	private LocalisedTermSTO type;
-	private String label;
 
 	/**
 	 * @return the descriptionElements
@@ -49,21 +48,21 @@ public class FeatureTO extends BaseTO{
 	/**
 	 * @return the children
 	 */
-	public List<FeatureTO> getChildren() {
+	public List<FeatureSTO> getChildren() {
 		return children;
 	}
 
 	/**
 	 * @param children the children to set
 	 */
-	public void setChildren(List<FeatureTO> children) {
+	public void setChildren(List<FeatureSTO> children) {
 		this.children = children;
 	}
 	
 	/**
 	 * @param children the children to set
 	 */
-	public void addChild(FeatureTO child) {
+	public void addChild(FeatureSTO child) {
 		this.children.add(child);
 	}
 
@@ -79,15 +78,6 @@ public class FeatureTO extends BaseTO{
 	 */
 	public void setType(LocalisedTermSTO type) {
 		this.type = type;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-	
+	}	
 
 }
