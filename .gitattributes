@@ -667,7 +667,6 @@ cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-summary.html -text
 cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-tree.html -text
 cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-use.html -text
 cdmlib-model/pom.xml -text
-cdmlib-model/resources/inherit.gif -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilder.java -text
