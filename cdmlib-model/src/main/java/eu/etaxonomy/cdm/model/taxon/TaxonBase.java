@@ -34,13 +34,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
- * The upmost (abstract) class for the use of a {@link name.TaxonNameBase taxon name} in a {@link reference.ReferenceBase reference}
+ * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
  * or within a taxonomic view/treatment either as a {@link Taxon taxon}
  * ("accepted" respectively "correct" name) or as a (junior) {@link Synonym synonym}.
  * Within a taxonomic view/treatment or a reference a taxon name can be used
  * only in one of both described meanings. The reference using the taxon name
  * is generally cited with "sec." (secundum, sensu). For instance:
- * "Juncus longirostris Kuvaev sec. Kirschner, J. et al. 2002".
+ * "<i>Juncus longirostris</i> Kuvaev sec. Kirschner, J. et al. 2002".
  * <P>
  * This class corresponds to: <ul>
  * <li> TaxonConcept according to the TDWG ontology
@@ -104,7 +104,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	
 	/** 
 	 * Class constructor: creates a new (abstract) taxon with the
-	 * {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
@@ -124,17 +124,17 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 	/**
 	 * Generates and returns the string with the full scientific name (including
-	 * authorship) of the {@link name.TaxonNameBase taxon name} used in <i>this</i>
-	 * (abstract) taxon as well as the title of the {@link reference.ReferenceBase reference} using
+	 * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i>
+	 * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} using
 	 * this taxon name. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#generateTitle() method.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
+	 * This method overrides the generic and inherited generateTitle() method
+	 * from {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
 	 *
 	 * @return  the string with the full scientific name of the taxon name
 	 *			and with the title of the reference involved in <i>this</i> (abstract) taxon
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
 	public String generateTitle() {
@@ -167,8 +167,8 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	/** 
-	 * Returns the {@link name.HomotypicalGroup homotypical group} of the
-	 * {@link name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+	 * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
 	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
@@ -197,7 +197,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 
 	/** 
-	 * Returns the {@link reference.ReferenceBase reference} of <i>this</i> (abstract) taxon.
+	 * Returns the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} of <i>this</i> (abstract) taxon.
 	 * This is the reference or the treatment using the {@link name.TaxonNameBase taxon name}
 	 * in <i>this</i> (abstract) taxon.
 	 */
@@ -217,7 +217,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> (abstract) taxon
 	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
-	 * as long as both the {@link name.TaxonNameBase taxon name} and the {@link reference.ReferenceBase reference}
+	 * as long as both its {@link #getName() taxon name} and its {@link #getSec() reference}
 	 * exist (are not "null").
 	 */
 	@Transient

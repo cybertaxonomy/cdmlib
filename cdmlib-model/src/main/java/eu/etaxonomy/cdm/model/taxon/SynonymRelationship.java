@@ -60,7 +60,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * Class constructor: creates a new synonym relationship instance (with the
 	 * given {@link Synonym synonym}, the given "accepted/correct" {@link Taxon taxon},
 	 * the given {@link SynonymRelationshipType synonym relationship type} and with the
-	 * {@link reference.ReferenceBase reference source} on which the relationship assertion is based).
+	 * {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship assertion is based).
 	 * Moreover the new synonym relationship will be added to the respective
 	 * sets of synonym relationships assigned to the synonym and to the
 	 * "accepted/correct" taxon.
@@ -70,7 +70,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @param type						the synonym relationship type of the new synonym relationship
 	 * @param citation					the reference source for the new synonym relationship
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @see 							common.RelationshipBase#RelationshipBase(IRelated, IRelated, RelationshipTermBase, ReferenceBase, String)
+	 * @see 							eu.etaxonomy.cdm.model.common.RelationshipBase#RelationshipBase(IRelated, IRelated, RelationshipTermBase, ReferenceBase, String)
 	 */
 	protected SynonymRelationship(Synonym synonym, Taxon taxon, SynonymRelationshipType type, ReferenceBase citation, String citationMicroReference) {
 		super(synonym, taxon, type, citation, citationMicroReference);
@@ -123,8 +123,8 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 *  
 	 * @see    #getSynonym()
 	 * @see    Synonym#getAcceptedTaxa()
-	 * @see    common.RelationshipBase#getRelatedTo()
-	 * @see    common.RelationshipBase#getType()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
 	@Transient
 	public Taxon getAcceptedTaxon(){
@@ -153,8 +153,8 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 *  
 	 * @see    #getAcceptedTaxon()
 	 * @see    Taxon#getSynonyms()
-	 * @see    common.RelationshipBase#getRelatedFrom()
-	 * @see    common.RelationshipBase#getType()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
 	@Transient
 	public Synonym getSynonym(){

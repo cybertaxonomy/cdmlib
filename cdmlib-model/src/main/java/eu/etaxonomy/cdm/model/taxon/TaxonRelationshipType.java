@@ -70,7 +70,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/** 
 	 * Class constructor: creates an additional taxon relationship type
-	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label,
+	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label,
 	 * a label abbreviation and the flags indicating whether this new taxon
 	 * relationship type is symmetric and/or transitive.
 	 * 
@@ -120,7 +120,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/**
 	 * Returns the taxon relationship type "is misapplied name for". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
+	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has been erroneously used by
 	 * the {@link TaxonBase#getSec() concept reference} to denominate the same real taxon
 	 * as the one meant by the target {@link Taxon taxon}.<BR>
@@ -131,9 +131,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	}
 	/**
 	 * Returns the taxon relationship type "is invalid designation for". This
-	 * indicates that the {@link name.TaxonNameBase taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
-	 * in such a {@link TaxonRelationship taxon relationship} has not been
-	 * {@link name.NomenclaturalStatusType#isInvalidType() validly published} but was intended to denominate
+	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
+	 * in such a {@link TaxonRelationship taxon relationship} has
+	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalStatusType#isInvalidType() not been validly published} but was intended to denominate
 	 * a real taxon which is the same as the one meant by the target {@link Taxon taxon}.<BR>
 	 * According to the nomenclature codes a not validly published taxon name is 
 	 * not a taxon name at all.<BR>
@@ -235,8 +235,10 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * involved taxa must be distinct. <BR>
 	 * The "does not exclude" taxon relationship type indicates that both
 	 * circumscriptions have common elements. This type is a generalisation of
-	 * "is congruent to", "includes" and "overlaps".<BR>
+	 * {@link #CONGRUENT_TO() "is congruent to"}, {@link #INCLUDES() "includes"} and {@link #OVERLAPS() "overlaps"}.<BR>
 	 * This type is symmetric but not transitive.
+	 * 
+	 * @see		#EXCLUDES()
 	 */
 	public static final TaxonRelationshipType DOES_NOT_EXCLUDE(){
 		return (TaxonRelationshipType)findByUuid(uuidDoesNotExclude);
@@ -250,8 +252,10 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * beeing compared. In a concept relationship the concept references of the
 	 * involved taxa must be distinct. <BR>
 	 * The "does not overlap" taxon relationship type is a generalisation of
-	 * "is congruent to", "includes" and "excludes".<BR>
+	 * {@link #CONGRUENT_TO() "is congruent to"}, {@link #INCLUDES() "includes"} and {@link #EXCLUDES() "excludes"}.<BR>
 	 * This type is symmetric but not transitive.
+	 * 
+	 * @see		#OVERLAPS()
 	 */
 	public static final TaxonRelationshipType DOES_NOT_OVERLAP(){
 		return (TaxonRelationshipType)findByUuid(uuidDoesNotOverlap);
@@ -269,6 +273,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * in the taxon relationship does not belong to the circumscription of the
 	 * target taxon. <BR>
 	 * This type is neither symmetric nor transitive.
+	 * 
+	 * @see		#INCLUDES()
 	 */
 	public static final TaxonRelationshipType NOT_INCLUDED_IN(){
 		return (TaxonRelationshipType)findByUuid(uuidNotIncludedIn);
@@ -284,8 +290,10 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * The "is not congruent to" taxon relationship type indicates that at least
 	 * one element belonging to one of both circumscriptions does not belong to
 	 * the other circumscription. This type is a generalisation of
-	 * "includes", "overlaps" and "excludes".<BR>
+	 * {@link #INCLUDES() "includes"}, {@link #OVERLAPS() "overlaps"} and {@link #EXCLUDES() "excludes"}.<BR>
 	 * This type is symmetric but not transitive.
+	 * 
+	 * @see		#CONGRUENT_TO()
 	 */
 	public static final TaxonRelationshipType NOT_CONGRUENT_TO(){
 		return (TaxonRelationshipType)findByUuid(uuidNotCongruentTo);

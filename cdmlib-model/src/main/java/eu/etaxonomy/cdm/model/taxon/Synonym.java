@@ -75,7 +75,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	
 	/** 
 	 * Class constructor: creates a new synonym instance with
-	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
@@ -90,7 +90,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 
 	/** 
 	 * Creates a new synonym instance with
-	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
@@ -145,14 +145,13 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * synonym relationship will also be removed from the set of synonym
 	 * relationships assigned to the {@link Taxon#getSynonymRelations() taxon} involved in the
 	 * relationship. Furthermore the content of
-	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon attribute} and of the
-	 * {@link SynonymRelationship#getSynonym() synonym attribute} within the synonym relationship
+	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon} attribute and of the
+	 * {@link SynonymRelationship#getSynonym() synonym} attribute within the synonym relationship
 	 * itself will be set to "null".
 	 *
 	 * @param  synonymRelation  the synonym relationship which should be deleted
 	 * @see     		  		#getSynonymRelations()
 	 * @see     		  		#addRelationship(SynonymRelationship)
-	 * @see 			  		#removeSynonym(Synonym)
 	 */
 	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
 		synonymRelation.setSynonym(null);
@@ -170,7 +169,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> synonym. If
 	 * the source of the synonym relationship does not match with <i>this</i>
 	 * synonym no addition will be carried out.<BR>
-	 * This methods does the same as the {@link #addSynonymRelation() addSynonymRelation} method.
+	 * This methods does the same as the {@link #addSynonymRelation(SynonymRelationship) addSynonymRelation} method.
 	 * 
 	 * @param synonymRelation	the synonym relationship to be added to <i>this</i> synonym's
 	 * 							synonym relationships set
@@ -216,8 +215,8 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * no synonym relationship exists from <i>this</i> synonym to the
 	 * given taxon.
 	 *  
-	 * @param taxon	the ("accepted/correct") taxon to which a synonym relationship 
-	 * 				from <i>this</i> synonym should point 
+	 * @param taxon	the ("accepted/correct") taxon which a synonym relationship 
+	 * 				from <i>this</i> synonym should point to 
 	 * @see    		#getSynonymRelations()
 	 * @see    		#getAcceptedTaxa()
 	 */

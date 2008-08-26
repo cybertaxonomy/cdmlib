@@ -63,7 +63,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 
 	/** 
 	 * Class constructor: creates an additional synonym relationship type
-	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label and
+	 * instance with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and
 	 * a label abbreviation. Synonym relationships types can be neither
 	 * symmetric nor transitive.
 	 * 

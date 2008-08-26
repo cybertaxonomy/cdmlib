@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
- * the opinion of the {@link reference.ReferenceBase reference} can build a taxonomic tree).
+ * the opinion of the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} can build a taxonomic tree).
  * An {@link java.lang.Iterable interface} is supported to iterate through taxonomic children.<BR>
  * Splitting taxa in "accepted/correct" and {@link Synonym "synonyms"} makes it easier to handle
  * particular relationships between ("accepted/correct") taxa on the one hand
@@ -108,7 +108,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	/** 
 	 * Class constructor: creates a new (accepted/correct) taxon instance with
-	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
@@ -123,7 +123,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	/** 
 	 * Creates a new (accepted/correct) taxon instance with
-	 * the {@link name.TaxonNameBase taxon name} used and the {@link reference.ReferenceBase reference}
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * using it.
 	 * 
 	 * @param  taxonNameBase	the taxon name used
@@ -137,12 +137,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	 
 	/** 
-	 * Returns the set of {@link description.TaxonDescription taxon descriptions}
+	 * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
 	 * concerning <i>this</i> taxon.
 	 * 
 	 * @see #removeDescription(TaxonDescription)
 	 * @see #addDescription(TaxonDescription)
-	 * @see description.TaxonDescription#getTaxon()
+	 * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -156,9 +156,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		this.descriptions = descriptions;
 	}
 	/** 
-	 * Adds a new {@link description.TaxonDescription taxon description} to the set
+	 * Adds a new {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon description} to the set
 	 * of taxon descriptions assigned to <i>this</i> (accepted/correct) taxon.
-	 * Due to bidirectionality the content of the {@link description.TaxonDescription#getTaxon() taxon attribute} of the
+	 * Due to bidirectionality the content of the {@link eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon() taxon attribute} of the
 	 * taxon description itself will be replaced with <i>this</i> taxon. The taxon
 	 * description will also be removed from the set of taxon descriptions
 	 * assigned to its previous taxon. 
@@ -166,7 +166,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param  description	the taxon description to be added for <i>this</i> taxon
 	 * @see     		  	#getDescriptions()
 	 * @see     		  	#removeDescription(TaxonDescription)
-	 * @see 			  	description.TaxonDescription#getTaxon()
+	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	public void addDescription(TaxonDescription description) {
 		initMethods();
@@ -179,15 +179,15 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		
 	}
 	/** 
-	 * Removes one element from the set of {@link description.TaxonDescription taxon descriptions} assigned
+	 * Removes one element from the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions} assigned
 	 * to <i>this</i> (accepted/correct) taxon. Due to bidirectionality the content of
-	 * the {@link description.TaxonDescription#getTaxon() taxon attribute} of the taxon description
+	 * the {@link eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon() taxon attribute} of the taxon description
 	 * itself will be set to "null".
 	 *
 	 * @param  description  the taxon description which should be removed
 	 * @see     		  	#getDescriptions()
 	 * @see     		  	#addDescription(TaxonDescription)
-	 * @see 			  	description.TaxonDescription#getTaxon()
+	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	public void removeDescription(TaxonDescription description) {
 		initMethods();
@@ -253,8 +253,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * synonym relationship will also be removed from the set of synonym
 	 * relationships assigned to the {@link Synonym#getSynonymRelations() synonym} involved in the
 	 * relationship. Furthermore the content of
-	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon attribute} and of the
-	 * {@link SynonymRelationship#getSynonym() synonym attribute} within the synonym relationship
+	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon} attribute and of the
+	 * {@link SynonymRelationship#getSynonym() synonym} attribute within the synonym relationship
 	 * itself will be set to "null".
 	 *
 	 * @param  synonymRelation  the synonym relationship which should be deleted
@@ -353,8 +353,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    		#getTaxonRelations()
 	 * @see    	    #getTaxonomicParent()
 	 * @see    	    #getTaxonomicChildrenCount()
-	 * @see    		common.RelationshipBase#getRelatedFrom()
-	 * @see    		common.RelationshipBase#getRelatedTo()
+	 * @see    		eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
+	 * @see    		eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * 
 	 */
 	public void removeTaxonRelation(TaxonRelationship rel) {
@@ -543,8 +543,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    			#getRelationsFromThisTaxon()
 	 * @see    	    	#getTaxonomicParent()
 	 * @see    	    	#getTaxonomicChildrenCount()
-	 * @see    			common.RelationshipBase#getRelatedFrom()
-	 * @see    			common.RelationshipBase#getRelatedTo()
+	 * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
+	 * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * 
 	 */
 	@Transient
@@ -733,8 +733,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * Returns the set of taxa playing the source role in {@link TaxonRelationship taxon relationships}
 	 * (with {@link TaxonRelationshipType taxon relationship type} "misapplied name for") where
 	 * <i>this</i> taxon plays the target role. A misapplied name is a taxon the
-	 * {@link name.TaxonNameBase taxon name} of which has been erroneously used
-	 * by the {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} of which has been erroneously used
+	 * by its {@link TaxonBase#getSec() taxon reference} to denominate the same real taxon
 	 * as the one meant by <i>this</i> ("accepted/correct") taxon. 
 	 * 
 	 * @see  #getTaxonRelations()
@@ -858,7 +858,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	/**
 	 * Creates a new {@link SynonymRelationship synonym relationship} (with the given {@link Synonym synonym},
 	 * with the given {@link SynonymRelationshipType synonym relationship type} and with the
-	 * {@link reference.ReferenceBase reference source} on which the relationship assertion is based),
+	 * {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship assertion is based),
 	 * returns it and adds it to the set of {@link #getSynonymRelations() synonym relationships}
 	 * assigned to <i>this</i> taxon. The new synonym relationship will also be
 	 * added to the set of {@link Synonym#getSynonymRelations() synonym relationships} belonging to the synonym
@@ -890,7 +890,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * Creates a new {@link Synonym synonym} (with the given {@link name.TaxonNameBase taxon name}),
+	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym and with the given 
 	 * {@link SynonymRelationshipType synonym relationship type}), returns the relationship and adds it
 	 * to the set of {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon.
@@ -921,9 +921,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return addSynonymName(synonymName, synonymType, null, null);
 	}
 	/**
-	 * Creates a new {@link Synonym synonym} (with the given {@link name.TaxonNameBase taxon name}),
+	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the given 
-	 * {@link SynonymRelationshipType synonym relationship type} and with the {@link reference.ReferenceBase reference source}
+	 * {@link SynonymRelationshipType synonym relationship type} and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
@@ -958,7 +958,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 
 	/**
-	 * Creates a new {@link Synonym synonym} (with the given {@link name.TaxonNameBase taxon name}),
+	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym and with the 
 	 * {@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of" relationship type}),
 	 * returns the relationship and adds it to the set of
@@ -990,10 +990,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	
 	/**
-	 * Creates a new {@link Synonym synonym} (with the given {@link name.TaxonNameBase taxon name}),
+	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the 
 	 * {@link SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF() "is heterotypic synonym of" relationship type}
-	 * and with the {@link reference.ReferenceBase reference source}
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
@@ -1032,17 +1032,17 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * Creates a new {@link Synonym synonym} (with the given {@link name.TaxonNameBase taxon name}),
+	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
 	 * a new {@link SynonymRelationship synonym relationship} (with the new synonym, with the 
 	 * {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of" relationship type})
-	 * and with the {@link reference.ReferenceBase reference source}
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source}
 	 * on which the relationship assertion is based), returns the relationship
 	 * and adds it to the set of {@link #getSynonymRelations() synonym relationships} assigned
 	 * to <i>this</i> taxon. The new synonym will have the same {@link TaxonBase#getSec() concept reference}
 	 * as <i>this</i> taxon. Furthermore the new synonym relationship will be 
 	 * added to the set of {@link Synonym#getSynonymRelations() synonym relationships} belonging
 	 * to the created synonym and the taxon name used as synonym will be added
-	 * to the same {@link name.HomotypicalGroup homotypical group} to which the taxon name
+	 * to the same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} to which the taxon name
 	 * of <i>this</i> taxon belongs.<BR>
 	 * The returned synonym relationship allows to add further information to it.
 	 * 
@@ -1072,13 +1072,13 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	/**
 	 * Creates a new {@link SynonymRelationship synonym relationship} (with the given {@link Synonym synonym},
 	 * with the {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() "is homotypic synonym of" relationship type}
-	 * and with the {@link reference.ReferenceBase reference source} on which the relationship
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship
 	 * assertion is based), returns it and adds it to the set of
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon.
 	 * Furthermore the new synonym relationship will be added to the set of
 	 * {@link Synonym#getSynonymRelations() synonym relationships} belonging to the synonym
-	 * involved in this synonym relationship and the {@link name.TaxonNameBase taxon name}
-	 * used as synonym will be added to the same {@link name.HomotypicalGroup homotypical group}
+	 * involved in this synonym relationship and the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+	 * used as synonym will be added to the same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}
 	 * to which the taxon name of <i>this</i> taxon belongs.<BR>
 	 * The returned synonym relationship allows to add further information to it.
 	 * 
@@ -1113,8 +1113,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * Due to bidirectionality the same synonym relationships will also be
 	 * removed from the set of synonym relationships assigned to the
 	 * {@link Synonym#getSynonymRelations() synonym} involved in the relationship. Furthermore the content of
-	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon attribute} and of the
-	 * {@link SynonymRelationship#getSynonym() synonym attribute} within the synonym relationships
+	 * the {@link SynonymRelationship#getAcceptedTaxon() accepted taxon} attribute and of the
+	 * {@link SynonymRelationship#getSynonym() synonym} attribute within the synonym relationships
 	 * themselves will be set to "null".
 	 *
 	 * @param  synonym  the synonym involved in the synonym relationship which should be deleted
@@ -1165,17 +1165,17 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
-	 * homotypic {@link Synonym synonyms} (according to the same {@link reference.ReferenceBase reference}
-	 * as for <i>this</i> taxon) under the condition that the {@link name.TaxonNameBase taxon names}
+	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * as for <i>this</i> taxon) under the condition that the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}
 	 * of these synonyms and the taxon name of <i>this</i> taxon belong to the
-	 * same {@link name.HomotypicalGroup homotypical group}.
+	 * same {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group}.
 	 * 
 	 * @return		the ordered list of homotypic synonyms
 	 * @see			#getHomotypicSynonymsByHomotypicRelationship()
 	 * @see			#getSynonyms()
 	 * @see			#getHomotypicSynonymyGroups()
-	 * @see			name.HomotypicalGroup
-	 * @see			name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
 	 */
 	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
@@ -1188,7 +1188,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	/**
 	 * Retrieves the ordered list (depending on the date of publication) of
-	 * homotypic {@link Synonym synonyms} (according to the same {@link reference.ReferenceBase reference}
+	 * homotypic {@link Synonym synonyms} (according to the same {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
 	 * as for <i>this</i> taxon) under the condition that these synonyms and
 	 * <i>this</i> taxon are involved in {@link SynonymRelationship synonym relationships} with an
 	 * "is homotypic synonym of" {@link SynonymRelationshipType#HOMOTYPIC_SYNONYM_OF() synonym relationship type}.
@@ -1212,8 +1212,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
-	 * Returns the ordered list of all {@link name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
-	 * <i>this</i> taxon belongs to. {@link name.TaxonNameBase Taxon names} of homotypic synonyms
+	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} {@link Synonym synonyms} of
+	 * <i>this</i> taxon belongs to. {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of homotypic synonyms
 	 * belong to the same homotypical group as the taxon name of <i>this</i>
 	 * taxon. Taxon names of heterotypic synonyms belong to at least one other
 	 * homotypical group. <BR>
@@ -1222,7 +1222,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * 
 	 * @see			#getHeterotypicSynonymyGroups()
 	 * @see			#getSynonyms()
-	 * @see			name.HomotypicalGroup
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
 	@Transient
 	public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
@@ -1243,9 +1243,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @return
 	 */
 	/**
-	 * Returns the ordered list of all {@link name.HomotypicalGroup homotypical groups} heterotypic
+	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
 	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
-	 * {@link name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least
+	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least
 	 * one homotypical group which cannot be the homotypical group to which the
 	 * taxon name of <i>this</i> taxon belongs. This method returns the same
 	 * list as the {@link #getHomotypicSynonymyGroups() getHomotypicSynonymyGroups} method
@@ -1257,7 +1257,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			#getHeterotypicSynonymyGroups()
 	 * @see			#getSynonyms()
 	 * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
-	 * @see			name.HomotypicalGroup
+	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
 	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){

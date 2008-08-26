@@ -59,7 +59,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	/**
 	 * Class constructor: creates a new taxon relationship instance (with the
 	 * given "accepted/correct" {@link Taxon taxa}, the given {@link SynonymRelationshipType synonym relationship type}
-	 * and with the {@link reference.ReferenceBase reference source} on which the relationship
+	 * and with the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} on which the relationship
 	 * assertion is based). Moreover the new taxon relationship will be added to
 	 * the respective sets of taxon relationships assigned to both taxa.
 	 * 
@@ -68,7 +68,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 * @param type						the taxon relationship type of the new taxon relationship
 	 * @param citation					the reference source for the new taxon relationship
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
-	 * @see 							common.RelationshipBase#RelationshipBase(IRelated, IRelated, RelationshipTermBase, ReferenceBase, String)
+	 * @see 							eu.etaxonomy.cdm.model.common.RelationshipBase
 	 */
 	protected TaxonRelationship(Taxon from, Taxon to, TaxonRelationshipType type, ReferenceBase citation, String citationMicroReference) {
 		super(from, to, type, citation, citationMicroReference);
@@ -81,8 +81,8 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 *  
 	 * @see    #getToTaxon()
 	 * @see    Taxon#getRelationsFromThisTaxon()
-	 * @see    common.RelationshipBase#getRelatedFrom()
-	 * @see    common.RelationshipBase#getType()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
 	@Transient
 	public Taxon getFromTaxon(){
@@ -109,8 +109,8 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 *  
 	 * @see    #getFromTaxon()
 	 * @see    Taxon#getRelationsToThisTaxon()
-	 * @see    common.RelationshipBase#getRelatedTo()
-	 * @see    common.RelationshipBase#getType()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
+	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
 	@Transient
 	public Taxon getToTaxon(){
