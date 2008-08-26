@@ -82,10 +82,6 @@ cdmlib-io/src/site/site.xml -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/ajcore.20080707.163647.593.txt -text
-cdmlib-model/allclasses-frame.html -text
-cdmlib-model/allclasses-noframe.html -text
-cdmlib-model/constant-values.html -text
-cdmlib-model/deprecated-list.html -text
 cdmlib-model/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.html -text
 cdmlib-model/eu/etaxonomy/cdm/datagenerator/class-use/TaxonGenerator.html -text
 cdmlib-model/eu/etaxonomy/cdm/datagenerator/package-frame.html -text
@@ -670,16 +666,8 @@ cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-frame.html -text
 cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-summary.html -text
 cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-tree.html -text
 cdmlib-model/eu/etaxonomy/cdm/strategy/parser/package-use.html -text
-cdmlib-model/help-doc.html -text
-cdmlib-model/index-all.html -text
-cdmlib-model/index.html -text
-cdmlib-model/overview-frame.html -text
-cdmlib-model/overview-summary.html -text
-cdmlib-model/overview-tree.html -text
-cdmlib-model/package-list -text
 cdmlib-model/pom.xml -text
 cdmlib-model/resources/inherit.gif -text
-cdmlib-model/serialized-form.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilder.java -text
@@ -978,7 +966,6 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonName
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/unit/EntityTestBase.java -text
-cdmlib-model/stylesheet.css -text
 cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
 cdmlib-persistence/pom.xml -text
