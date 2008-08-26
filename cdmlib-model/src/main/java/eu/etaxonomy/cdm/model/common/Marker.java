@@ -17,6 +17,8 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -37,9 +39,13 @@ public class Marker extends VersionableEntity implements Cloneable{
 	private boolean flag;
     
     @XmlElement(name = "MarkerType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private MarkerType markerType;
     
     @XmlElement(name = "MarkedObject")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private AnnotatableEntity markedObj;
 	
 	/**

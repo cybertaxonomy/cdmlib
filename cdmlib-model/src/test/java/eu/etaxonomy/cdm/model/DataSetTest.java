@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -42,7 +43,8 @@ public class DataSetTest {
 	private DataSet dataSet;
 	private List<Agent> agents;
     private List<VersionableEntity> agentData;
-    private List<TermBase> terms;
+    //private List<TermBase> terms;
+    private List<DefinedTermBase> terms;
     private List<TermVocabulary> termVocabularies;
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
@@ -71,7 +73,8 @@ public class DataSetTest {
 
 		agents = new ArrayList<Agent>();
 		agentData = new ArrayList<VersionableEntity>();
-		terms = new ArrayList<TermBase>();
+		//terms = new ArrayList<TermBase>();
+		terms = new ArrayList<DefinedTermBase>();
 		termVocabularies = new ArrayList<TermVocabulary>();
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();

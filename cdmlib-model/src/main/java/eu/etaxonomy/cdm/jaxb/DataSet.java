@@ -135,7 +135,8 @@ public class DataSet {
     	@XmlElement(name = "TypeDesignationStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TypeDesignationStatus.class),
     	@XmlElement(name = "WaterbodyOrCountry", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = WaterbodyOrCountry.class)
     })
-    protected List<? extends TermBase> terms;
+    //protected List<? extends TermBase> terms;
+    protected List<DefinedTermBase> terms;
 
     @XmlElementWrapper(name = "TermVocabularies")
     @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
@@ -251,7 +252,8 @@ public class DataSet {
      *     
      */
     
-    public List<? extends TermBase> getTerms() {
+    //public List<? extends TermBase> getTerms() {
+    public List<DefinedTermBase> getTerms() {
         return terms;
     }
 
@@ -263,7 +265,8 @@ public class DataSet {
      *     {@link List<TermBase> }
      *     
      */
-    public void setTerms(List<? extends TermBase> value) {
+    //public void setTerms(List<? extends TermBase> value) {
+    public void setTerms(List<DefinedTermBase> value) {
         this.terms = value;
     }
 
