@@ -14,7 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.TransactionStatus;
+import org.unitils.database.annotations.TestDataSource;
+import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
+import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -36,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -52,6 +58,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
+//@SpringApplicationContext("/eu/etaxonomy/cdm/model.xml")
+//@SpringApplicationContext("classpath:integrationTest.xml")
+//@ContextConfiguration(locations={"/eu/etaxonomy/cdm/integrationTest.xml"})
 public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
@@ -201,8 +210,69 @@ public class TestJaxb {
 
     }
 
-    private void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
+	/**  Saves data in DB */
+    private void saveData (CdmApplicationController appCtr, DataSet dataSet) {
 
+		Collection<TaxonBase> taxonBases;
+		List<Agent> agents;
+		//List<? extends TermBase> terms;
+		List<DefinedTermBase> terms;
+		List<ReferenceBase> references;
+		List<TaxonNameBase> taxonomicNames;
+		List<DescriptionBase> descriptions;
+
+		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		// Currently it's sufficient to save the taxa only since all other data
+		// related to the taxa, such as synonyms, are automatically saved as well.
+
+//		if ((agents = dataSet.getAgents()) != null) {
+//			logger.info("Saving " + agents.size() + " agents");
+//			appCtr.getAgentService().saveAgentAll(agents);
+//		}
+	
+		if ((terms = dataSet.getTerms()) != null) {
+			logger.info("Saving " + terms.size() + " terms");
+		    appCtr.getTermService().saveTermsAll(terms);
+		}
+		
+//		if ((references = dataSet.getReferences()) != null) {
+//			logger.info("Saving " + references.size() + " references");
+//		     appCtr.getReferenceService().saveReferenceAll(references);
+//		}
+		
+//		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+//			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
+//			appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
+//		}
+	
+	    // FIXME: Clean getTaxa()/getTaxonBases() return parameters.
+	
+	    // Need to get the taxa and the synonyms here.
+//		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
+//			logger.info("Saving taxon bases");
+//			appCtr.getTaxonService().saveTaxonAll(taxonBases);
+//		}
+		
+	    // TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
+//		if ((descriptions = dataSet.getDescriptions()) != null) {
+//			logger.info("Saving " + descriptions.size() + " descriptions");
+//			appCtr.getDescriptionService().saveDescriptionAll(descriptions);
+//		}
+		
+		logger.info("All data saved");
+
+		appCtr.commitTransaction(txStatus);
+		appCtr.close();
+
+    }
+
+	private void traverse (List<Taxon> taxonCollection, DataSet dataSet) {
+
+    	if (taxonCollection == null) {
+    		return;
+    	}
+    	
     	// The following collections store data of a particular horizontal level, 
     	// such as all synonyms, relationships, and children of all taxa of this level.
 
@@ -326,14 +396,14 @@ public class TestJaxb {
 
     		setFlatData(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
-    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
+//    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
     		// CdmFetch options not yet implemented
     		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
-    		dataSet.setTaxa(taxa);
-    		
-    		dataSet.setSynonyms(new ArrayList<Synonym>());
-    		dataSet.setRelationships(new HashSet<RelationshipBase>());
-    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
+//    		dataSet.setTaxa(taxa);
+//    		
+//    		dataSet.setSynonyms(new ArrayList<Synonym>());
+//    		dataSet.setRelationships(new HashSet<RelationshipBase>());
+//    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
     	} catch (Exception e) {
     		logger.error("error setting root data");
@@ -347,10 +417,7 @@ public class TestJaxb {
 		
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		logger.info("DocumentBuilder created");
-    		
     		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF8"), true);
-
     		cdmDocumentBuilder.marshal(dataSet, writer);
     		
     		// TODO: Split into one file per data set member to see whether performance improves?
@@ -454,34 +521,41 @@ public class TestJaxb {
 		} 
 		
 		// save data in DB
-		
-		Collection<TaxonBase> taxonBases;
-		List<Agent> agents;
-		
-		TransactionStatus txStatus = appCtr.startTransaction();
-		
 		logger.info("Saving data to DB: " + dbname);
+		
+		saveData(appCtr, dataSet);
+		
+//		Collection<TaxonBase> taxonBases;
+//		List<Agent> agents;
+//		List<TaxonNameBase> taxonomicNames;
+//		
+//		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		// Currently it's sufficient to save the taxa only since all other data
 		// related to the taxa, such as synonyms, are automatically saved as well.
 		
 //		if ((agents = dataSet.getAgents()) != null) {
-//			logger.info("Saving agents");
+//			logger.info("Saving " + agents.size() + " agents");
 //			appCtr.getAgentService().saveAgentAll(agents);
+//		}
+		
+//		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+//			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
+//		    appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
 //		}
 		
 		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 		
 		// Need to get the taxa and the synonyms here.
-		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
-			logger.info("Saving taxon bases");
-			appCtr.getTaxonService().saveTaxonAll(taxonBases);
-		}
+//		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
+//			logger.info("Saving taxon bases");
+//			appCtr.getTaxonService().saveTaxonAll(taxonBases);
+//		}
 
-		logger.info("All data saved");
-		
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
+//		logger.info("All data saved");
+//		
+//		appCtr.commitTransaction(txStatus);
+//		appCtr.close();
 
 	}
 	
@@ -520,23 +594,16 @@ public class TestJaxb {
 	// Can it be in eu.etaxonomy.cdb.model.DataSetTest?
 	private DataSet buildDataSet() {
 
-		List<Agent> agents;
-	    List<VersionableEntity> agentData;
-	    List<TermBase> terms;
-	    List<ReferenceBase> references;
-	    List<TaxonNameBase> taxonomicNames;
-	    List<Taxon> taxa;
-	    List<Synonym> synonyms;
+		List<Agent> agents = new ArrayList<Agent>();
+	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
+	    //List<TermBase> terms = new ArrayList<TermBase>();
+	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
+	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
+	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
+	    List<Taxon> taxa = new ArrayList<Taxon>();
+	    List<Synonym> synonyms = new ArrayList<Synonym>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
-	    agents = new ArrayList<Agent>();
-		agentData = new ArrayList<VersionableEntity>();
-		terms = new ArrayList<TermBase>();
-	    references = new ArrayList<ReferenceBase>();
-		taxonomicNames = new ArrayList<TaxonNameBase>();
-		taxa = new ArrayList<Taxon>();
-		synonyms = new ArrayList<Synonym>();
-		
 		StrictReferenceBase citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
 		Taxon child1, child2, child21, rootT, freeT;
