@@ -121,13 +121,16 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * 								the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the 
 	 * 								reference source for the new designation
+	 * @param isNotDesignated		the boolean flag indicating whether there is no specimen type at all for 
+	 * 								<i>this</i> specimen type designation
 	 * @see							#SpecimenTypeDesignation()
 	 * @see							TaxonNameBase#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
+	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
 	 */
 	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
-			String originalNameString) {
-		super(citation, citationMicroReference, originalNameString);
+			String originalNameString, boolean isNotDesignated) {
+		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);
 		this.setTypeStatus(status);
 	}

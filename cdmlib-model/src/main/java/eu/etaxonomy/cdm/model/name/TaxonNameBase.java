@@ -727,7 +727,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * 									added to all taxon names of the homotypical group this taxon name belongs to
 	 * @see 			  				#getNameTypeDesignations()
 	 * @see 			  				NameTypeDesignation
-	 * @see 			  				NameTypeDesignation#isNotDesignated()
+	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
 	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
 				ReferenceBase citation, 
@@ -769,20 +769,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @param  citation					the reference for this new specimen type designation
 	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
 	 * @param  originalNameString		the taxon name used in the reference to assert this designation
+	 * @param  isNotDesignated			the boolean status for a specimen type designation without specimen type
 	 * @param  addToAllHomotypicNames	the boolean indicating whether the specimen type designation should be
 	 * 									added to all taxon names of the homotypical group the typified
 	 * 									taxon name belongs to
 	 * @see 			  				#getSpecimenTypeDesignations()
 	 * @see 			  				TypeDesignationStatus
 	 * @see 			  				SpecimenTypeDesignation
+	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
 	public void addSpecimenTypeDesignation(Specimen typeSpecimen, 
 				TypeDesignationStatus status, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString, 
+				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
-		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString);
+		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
 		addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
 	}
 	

@@ -59,7 +59,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "isRejectedType",
     "isConservedType",
     "isLectoType",
-    "isNotDesignated",
     "typeName"
 })
 @Entity
@@ -75,9 +74,6 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	
 	@XmlElement(name = "IsLectoType")
 	private boolean isLectoType;
-	
-	@XmlElement(name = "IsNotDesignated")
-	private boolean isNotDesignated;
 	
 	@XmlElement(name = "TypeName")
 	@XmlIDREF
@@ -115,19 +111,18 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * 								<i>this</i> name type designation
 	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
 	 * 								<i>this</i> name type designation
-	 * @param isNotDesignated		the boolean flag indicating whether there is no reference at all for 
+	 * @param isNotDesignated		the boolean flag indicating whether there is no name type at all for 
 	 * 								<i>this</i> name type designation
 	 * @see							#NameTypeDesignation()
-	 * @see							#isNotDesignated()
+	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
-		super(citation, citationMicroReference, originalNameString);
+		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeName(typeName);
 		this.isRejectedType = isRejectedType;
 		this.isConservedType = isConservedType;
-		this.isNotDesignated = isNotDesignated;
 	}
 		
 	//********* METHODS **************************************/
@@ -207,30 +202,6 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 */
 	public void setLectoType(boolean isLectoType) {
 		this.isLectoType = isLectoType;
-	}
-
-	/**
-	 * Returns the boolean value "true" if it is known that a name type does not
-	 * exist and therefore the {@link TaxonNameBase taxon name} to which <i>this</i>
-	 * taxon name type designation is assigned must still be typified. Two
-	 * cases must be differentiated: <BR><ul> 
-	 * <li> a) it is unknown whether a name type exists and 
-	 * <li> b) it is known that no name type exists
-	 *  </ul>
-	 * If a) is true there should be no NameTypeDesignation instance at all
-	 * assigned to the "typified" taxon name.<BR>
-	 * If b) is true there should be a NameTypeDesignation instance with the
-	 * flag isNotDesignated set. The typeName should then be "null".
-	 */
-	public boolean isNotDesignated() {
-		return isNotDesignated;
-	}
-
-	/**
-	 * @see   #isNotDesignated()
-	 */
-	public void setNotDesignated(boolean isNotDesignated) {
-		this.isNotDesignated = isNotDesignated;
 	}
 
 }

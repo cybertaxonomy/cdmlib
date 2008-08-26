@@ -49,7 +49,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
     "typifiedNames",
-    "homotypicalGroup"
+    "homotypicalGroup",
+    "isNotDesignated"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -57,6 +58,9 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
 
+	@XmlElement(name = "IsNotDesignated")
+	private boolean isNotDesignated;
+	
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
 	@XmlIDREF
@@ -73,7 +77,7 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	/** 
 	 * Class constructor: creates a new empty type designation.
 	 * 
-	 * @see	#TypeDesignationBase(ReferenceBase, String, String)
+	 * @see	#TypeDesignationBase(ReferenceBase, String, String, Boolean)
 	 */
 	protected TypeDesignationBase(){
 		super();
@@ -81,18 +85,22 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	
 	/**
 	 * Class constructor: creates a new type designation
-	 * (including its {@link reference.ReferenceBase reference source} and eventually
+	 * (including its {@link ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
 	 * the former designation).
 	 * 
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @param isNotDesignated		the boolean flag indicating whether there is no type at all for 
+	 * 								<i>this</i> type designation
 	 * @see							#TypeDesignationBase()
+	 * @see							#isNotDesignated()
 	 * @see							TaxonNameBase#getTypeDesignations()
 	 */
-	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString){
+	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isNotDesignated){
 		super(citation, citationMicroReference, originalNameString);
+		this.isNotDesignated = isNotDesignated;
 	}
 	
 	
@@ -131,6 +139,32 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
+	}
+
+	/**
+	 * Returns the boolean value "true" if it is known that a type does not
+	 * exist and therefore the {@link TaxonNameBase taxon name} to which <i>this</i>
+	 * type designation is assigned must still be typified. Two
+	 * cases must be differentiated: <BR><ul> 
+	 * <li> a) it is unknown whether a type exists and 
+	 * <li> b) it is known that no type exists
+	 *  </ul>
+	 * If a) is true there should be no TypeDesignation instance at all
+	 * assigned to the "typified" taxon name.<BR>
+	 * If b) is true there should be a TypeDesignation instance with the
+	 * flag isNotDesignated set. The typeName attribute, in case of a
+	 * {@link NameTypeDesignation name type designation}, or the typeSpecimen attribute,
+	 * in case of a {@link SpecimenTypeDesignation specimen type designation}, should then be "null".
+	 */
+	public boolean isNotDesignated() {
+		return isNotDesignated;
+	}
+
+	/**
+	 * @see   #isNotDesignated()
+	 */
+	public void setNotDesignated(boolean isNotDesignated) {
+		this.isNotDesignated = isNotDesignated;
 	}
 
 
