@@ -78,9 +78,9 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 	/** 
 	 * Class constructor: creates a new empty article instance
-	 * only containing the {@link strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.ArticleDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy
 	 */
 	protected Article(){
 		super();
@@ -89,11 +89,11 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	
 	/** 
 	 * Creates a new empty article instance
-	 * only containing the {@link strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #Article()
 	 * @see #NewInstance(Journal, TeamOrPersonBase, String, String, String, String, TimePeriod)
-	 * @see strategy.cache.reference.ArticleDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy
 	 */
 	public static Article NewInstance(){
 		Article result = new Article();
@@ -102,7 +102,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	
 	/** 
 	 * Creates a new article instance with the given values and with the
-	 * {@link strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
+	 * {@link eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	inJournal		the journal in which <i>this</i> article has
 	 * 							been published 
@@ -120,9 +120,9 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * 							article has been published
 	 * @see 					#NewInstance()
 	 * @see 					Journal
-	 * @see 					agent.TeamOrPersonBase
-	 * @see 					common.TimePeriod
-	 * @see 					strategy.cache.reference.ArticleDefaultCacheStrategy
+	 * @see 					TeamOrPersonBase
+	 * @see 					TimePeriod
+	 * @see 					eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy
 	 */
 	public static Article NewInstance(Journal inJournal, TeamOrPersonBase authorTeam, String articleTitle, String pages, String series, String volume, TimePeriod datePublished ){
 		Article result = new Article();
@@ -212,10 +212,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, title, journal, pages, corresponding to <i>this</i>
 	 * article.<BR>
-	 * This method overrides the generic and inherited
-	 * StrictReferenceBase#getCitation() method.
+	 * This method overrides the generic and inherited getCitation method
+	 * from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
@@ -234,8 +234,8 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * 							within the journal
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
-	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
-	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * 
+	 * @see  					#getCitation()
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -244,18 +244,17 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 
 
 	/**
-	 * Generates, according to the {@link strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}
+	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy default cache strategy}
 	 * assigned to <i>this</i> article, a string that identifies <i>this</i>
 	 * article and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> article
 	 * @see  	#getCitation()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -269,10 +268,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * Clones <i>this</i> article. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> article
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

@@ -67,10 +67,10 @@ public abstract class SectionBase extends StrictReferenceBase {
 	 * Clones <i>this</i> section. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> section
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

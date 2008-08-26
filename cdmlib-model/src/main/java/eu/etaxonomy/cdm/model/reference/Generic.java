@@ -84,9 +84,9 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	
 	/** 
 	 * Class constructor: creates a new empty generic reference instance
-	 * only containing the {@link strategy.cache.reference.GenericDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.GenericDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy
 	 */
 	public Generic(){
 		super();
@@ -235,10 +235,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	/**
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, corresponding to <i>this</i> generic reference.<BR>
-	 * This method overrides the generic and inherited
-	 * StrictReferenceBase#getCitation() method.
+	 * This method overrides the generic and inherited getCitation method
+	 * from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
@@ -257,8 +257,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * 							within <i>this</i> generic reference
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
-	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
-	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see  					#getCitation()
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -274,14 +273,13 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * assigned to <i>this</i> generic reference, a string that identifies <i>this</i>
 	 * reference and returns it. This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> generic reference
 	 * @see  	#getCitation()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -295,10 +293,10 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * Clones <i>this</i> generic reference. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> generic
 	 * reference by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

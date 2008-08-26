@@ -28,9 +28,7 @@ public interface INomenclaturalReference<T extends ReferenceBase> extends IIdent
 	
 	/**
 	 * Returns a formatted string containing the reference citation excluding
-	 * authors but including the details as used in a {@link name.TaxonNameBase taxon name}.
-	 * 
-	 * @see	name.TaxonNameBase
+	 * authors but including the details as used in a {@link TaxonNameBase taxon name}.
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String  microReference);

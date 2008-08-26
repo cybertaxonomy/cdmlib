@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
  * This class represents reports. A report is a document characterized by 
  * information reflective of inquiry or investigation. Reports often address
  * questions posed by individuals in government or science and are generally
- * elaborated within an {@link agent.Institution institution}.
+ * elaborated within an {@link eu.etaxonomy.cdm.model.agent.Institution institution}.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "Report".
@@ -48,7 +48,7 @@ public class Report extends PublicationBase implements Cloneable {
 	}
 	
 	/** 
-	 * Creates a new report instance with the given {@link agent.Institution institution}.
+	 * Creates a new report instance with the given {@link eu.etaxonomy.cdm.model.agent.Institution institution}.
 	 * 
 	 * @param	institution		the institution where <i>this</i> report has
 	 * 							been elaborated
@@ -62,11 +62,11 @@ public class Report extends PublicationBase implements Cloneable {
 	
 	
 	/**
-	 * Returns the {@link agent.Institution institution} in which <i>this</i>
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.Institution institution} in which <i>this</i>
 	 * report has been elaborated.
 	 * 
 	 * @return  the institution
-	 * @see 	agent.Institution
+	 * @see 	eu.etaxonomy.cdm.model.agent.Institution
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -82,8 +82,15 @@ public class Report extends PublicationBase implements Cloneable {
 
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	/** 
+	 * Clones <i>this</i> report instance. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i>
+	 * report instance by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
+	 * 
+	 * @see PublicationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Report clone(){

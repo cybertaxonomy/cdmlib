@@ -38,8 +38,15 @@ public class Map extends PublicationBase implements Cloneable {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	/** 
+	 * Clones <i>this</i> map instance. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i>
+	 * map instance by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
+	 * 
+	 * @see PublicationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Map clone(){

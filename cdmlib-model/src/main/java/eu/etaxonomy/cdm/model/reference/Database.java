@@ -44,10 +44,10 @@ public class Database extends PublicationBase implements Cloneable {
 	 * Clones <i>this</i> database instance. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>
 	 * database instance by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link PublicationBase#clone() method} from PublicationBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see PublicationBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see StrictReferenceBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

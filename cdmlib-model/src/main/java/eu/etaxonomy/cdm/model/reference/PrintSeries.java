@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 
 /**
-/**
  * This class represents collections of {@link PrintedUnitBase printed published references} which
  * are grouped according to topic or any other feature. 
  * <P>
@@ -31,24 +30,34 @@ public class PrintSeries extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	private String series;
 
+	/** 
+	 * Creates a new empty print series instance.
+	 */
 	public static PrintSeries NewInstance(){
 		PrintSeries result = new PrintSeries();
 		return result;
 	}
 	
+	/** 
+	 * Creates a new print series instance with a given title string.
+	 */
 	public static PrintSeries NewInstance(String series){
 		PrintSeries result = NewInstance();
 		result.setSeries(series);
 		return result;
 	}
 	
+	/**
+	 * Returns the string representing the title of <i>this</i> print series.
+	 * 
+	 * @return  the string representing the print series
+	 */
 	public String getSeries(){
 		return this.series;
 	}
 
 	/**
-	 * 
-	 * @param series    series
+	 * @see #getSeries()
 	 */
 	public void setSeries(String series){
 		this.series = series;
@@ -56,8 +65,15 @@ public class PrintSeries extends PublicationBase implements Cloneable {
 	
 //*********** CLONE **********************************/	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	/** 
+	 * Clones <i>this</i> print series instance. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i>
+	 * print series instance by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
+	 * 
+	 * @see PublicationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public PrintSeries clone(){

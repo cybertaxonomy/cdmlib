@@ -21,8 +21,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * (like "article" or "book").
  * <P>
  * A standard set of BibTeX entry type instances
- * (see "http://en.wikipedia.org/wiki/BibTeX") will be automatically created
- * as the project starts. But this class allows to extend this standard set
+ * (see <a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a>)
+ * will be automatically created as the project starts.
+ * But this class allows to extend this standard set
  * by creating new instances of additional BibTeX entry types if needed. 
  * 
  * @author m.doering
@@ -46,7 +47,7 @@ public class BibtexEntryType extends DefinedTermBase {
 
 	/** 
 	 * Class constructor: creates an additional BibTeX entry type instance with
-	 * a description (in the {@link common.Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new BibTeX entry type to be created 
@@ -74,7 +75,7 @@ public class BibtexEntryType extends DefinedTermBase {
 
 	/** 
 	 * Creates an additional BibTeX entry type instance with
-	 * a description (in the {@link common.Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new BibTeX entry type to be created 

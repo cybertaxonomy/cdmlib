@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 /**
  * This class represents thesis. A thesis is a document that presents the
  * author's research and findings and is submitted at a
- * {@link agent.Institution high school institution} in support of candidature for
+ * {@link eu.etaxonomy.cdm.model.agent.Institution high school institution} in support of candidature for
  * a degree or professional qualification.
  * <P>
  * This class corresponds, according to the TDWG ontology, to the publication type
@@ -48,7 +48,7 @@ public class Thesis extends PublicationBase implements Cloneable{
 	}
 	
 	/** 
-	 * Creates a new thesis instance with the given {@link agent.Institution high school institution}.
+	 * Creates a new thesis instance with the given {@link eu.etaxonomy.cdm.model.agent.Institution high school institution}.
 	 * 
 	 * @param	school		the high school institution where <i>this</i> thesis
 	 * 						has been submitted
@@ -61,7 +61,7 @@ public class Thesis extends PublicationBase implements Cloneable{
 	}
 	
 	/**
-	 * Returns the {@link agent.Institution high school institution} in which <i>this</i>
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.Institution high school institution} in which <i>this</i>
 	 * report has been submitted.
 	 * 
 	 * @return  the high school institution
@@ -81,8 +81,15 @@ public class Thesis extends PublicationBase implements Cloneable{
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.PublicationBase#clone()
+	/** 
+	 * Clones <i>this</i> thesis instance. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i>
+	 * thesis instance by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
+	 * 
+	 * @see PublicationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Thesis clone(){

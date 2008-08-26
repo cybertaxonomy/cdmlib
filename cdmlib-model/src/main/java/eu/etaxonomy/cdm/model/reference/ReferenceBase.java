@@ -87,11 +87,11 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
 	/**
-	 * Returns the {@link agent.TeamOrPersonBase author (team)} who created the
+	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
 	 * content of <i>this</i> reference.
 	 * 
 	 * @return  the author (team) of <i>this</i> reference
-	 * @see 	agent.TeamOrPersonBase
+	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -127,7 +127,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This 
 	 * indicates that a {@link TaxonNameBase taxon name} has been originally
 	 * published in <i>this</i> reference following the rules of a
-	 * {@link name.NomenclaturalCode nomenclature code} and is therefore used for
+	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalCode nomenclature code} and is therefore used for
 	 * nomenclatural citations. This flag will be set as soon as <i>this</i>
 	 * reference is used as a nomenclatural reference for any taxon name.
 	 */
@@ -180,18 +180,18 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	}
 	
 	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
 	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
 	 * reference and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * IdentifiableEntity#generateTitle() method.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
 	 *
 	 * @return  the string identifying <i>this</i> reference
 	 * @see  	#getCitation()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.strategy.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
@@ -211,7 +211,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * a new instance that differs only slightly from <i>this</i> reference by
 	 * modifying only some of the attributes.
 	 * 
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

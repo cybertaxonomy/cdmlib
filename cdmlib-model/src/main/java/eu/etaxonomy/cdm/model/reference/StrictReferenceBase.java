@@ -134,7 +134,8 @@ public abstract class StrictReferenceBase extends ReferenceBase{
 	 * a new instance that differs only slightly from <i>this</i> reference by
 	 * modifying only some of the attributes.
 	 * 
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see ReferenceBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

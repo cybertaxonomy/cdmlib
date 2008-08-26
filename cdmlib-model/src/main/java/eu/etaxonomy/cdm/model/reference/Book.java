@@ -63,9 +63,9 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	
 	/** 
 	 * Class constructor: creates a new empty book instance
-	 * only containing the {@link strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.BookDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy
 	 */
 	protected Book(){
 		super();
@@ -74,10 +74,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	
 	/** 
 	 * Creates a new empty book instance
-	 * only containing the {@link strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #Book()
-	 * @see strategy.cache.reference.BookDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy
 	 */
 	public static Book NewInstance(){
 		return new Book();
@@ -126,10 +126,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, title, edition, volume, series, corresponding to
 	 * <i>this</i> book.<BR>
-	 * This method overrides the generic and inherited
-	 * StrictReferenceBase#getCitation() method.
+	 * This method overrides the generic and inherited getCitation method
+	 * from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
@@ -148,8 +148,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * 							within <i>this</i> book
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
-	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
-	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see  					#getCitation()
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -158,18 +157,17 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 
 
 	/**
-	 * Generates, according to the {@link strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}
+	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy default cache strategy}
 	 * assigned to <i>this</i> book, a string that identifies <i>this</i>
 	 * book and returns it. This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> book
 	 * @see  	#getCitation()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -183,10 +181,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * Clones <i>this</i> book. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> book
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

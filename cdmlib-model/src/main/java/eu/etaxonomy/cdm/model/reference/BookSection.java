@@ -61,10 +61,10 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 
 	
 	/** 
-	 * Class constructor: creates a new empty book instance only containing the
-	 * {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * Class constructor: creates a new empty book section instance only containing the
+	 * {@link eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
 	 */
 	protected BookSection(){
 		super();
@@ -74,10 +74,10 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 
 	/** 
 	 * Creates a new empty book section instance only containing the
-	 * {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * {@link eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #NewInstance(Book, TeamOrPersonBase, String, String)
-	 * @see strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
 	 */
 	public static BookSection NewInstance(){
 		BookSection result = new BookSection();
@@ -86,7 +86,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	
 	/** 
 	 * Creates a new book section instance with its given book, title, pages and
-	 * author (team) and its {@link strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
+	 * author (team) and its {@link eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @param	inBook			the book <i>this</i> book section belongs to
 	 * @param	author			the team or person who wrote <i>this</i> book section
@@ -95,7 +95,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @param	pages			the string representing the pages in the book
 	 * 							where <i>this</i> book section can be found  
 	 * @see 					#NewInstance()
-	 * @see 					strategy.cache.reference.BookSectionDefaultCacheStrategy
+	 * @see 					eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
 	 */
 	public static BookSection NewInstance(Book inBook, TeamOrPersonBase author, String sectionTitle, String pages ){
 		BookSection result = new BookSection();
@@ -131,10 +131,10 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * Returns a formatted string containing the entire reference citation,
 	 * including authors, title, book authors, book title, pages, corresponding to <i>this</i>
 	 * book section.<BR>
-	 * This method overrides the generic and inherited
-	 * StrictReferenceBase#getCitation() method.
+	 * This method overrides the generic and inherited getCitation method
+	 * from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
@@ -153,8 +153,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * 							within t<i>this</i> book section
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
-	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
-	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see  					#getCitation()
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
@@ -167,14 +166,13 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * assigned to <i>this</i> book section, a string that identifies <i>this</i>
 	 * book section and returns it. This string may be stored in the inherited
 	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> book section
 	 * @see  	#getCitation()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){
@@ -187,10 +185,10 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * Clones <i>this</i> book section. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> book
 	 * section by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link StrictReferenceBase#clone() method} from StrictReferenceBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

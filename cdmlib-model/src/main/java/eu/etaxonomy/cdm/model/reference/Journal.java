@@ -35,9 +35,9 @@ public class Journal extends PublicationBase implements Cloneable {
 	
 	/** 
 	 * Class constructor: creates a new empty journal instance
-	 * only containing the {@link strategy.cache.reference.JournalDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.JournalDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy
 	 */
 	protected Journal(){
 		super();
@@ -47,10 +47,10 @@ public class Journal extends PublicationBase implements Cloneable {
 
 	/** 
 	 * Creates a new empty journal instance
-	 * only containing the {@link strategy.cache.reference.JournalDefaultCacheStrategy default cache strategy}.
+	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #Journal()
-	 * @see strategy.cache.reference.JournalDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy
 	 */
 	public static Journal NewInstance(){
 		Journal result = new Journal();
@@ -69,7 +69,7 @@ public class Journal extends PublicationBase implements Cloneable {
 	}
 
 	/**
-	 * @see #getSeries()
+	 * @see #getIssn()
 	 */
 	public void setIssn(String issn){
 		this.issn = issn;
@@ -82,10 +82,10 @@ public class Journal extends PublicationBase implements Cloneable {
 	 * Clones <i>this</i> journal instance. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>
 	 * journal instance by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link PublicationBase#clone() method} from PublicationBase.
+	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
-	 * @see PublicationBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see StrictReferenceBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

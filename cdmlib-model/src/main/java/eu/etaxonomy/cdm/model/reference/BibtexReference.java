@@ -25,7 +25,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 /**
  * This class represents references which are structured according to the BibTeX
  * format. The flat BibTeX format is an usual alternative to handle references 
- * (see "http://en.wikipedia.org/wiki/BibTeX"). Therefore this class might be
+ * (see <a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a>)
+ * Therefore this class might be
  * used instead of {@link StrictReferenceBase StrictReferenceBase} depending on the data
  * to be imported in the CDM.
  * 
@@ -69,9 +70,9 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	
 	/** 
 	 * Class constructor: creates a new empty BibTeX reference instance only
-	 * containing the {@link strategy.cache.reference.BibtexDefaultCacheStrategy default cache strategy}.
+	 * containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.BibtexDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy
 	 */
 	protected BibtexReference(){
 		super();
@@ -80,9 +81,9 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 
 	/** 
 	 * Creates a new empty BibTeX reference instance only containing the
-	 * {@link strategy.cache.reference.BibtexDefaultCacheStrategy default cache strategy}.
+	 * {@link eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy default cache strategy}.
 	 * 
-	 * @see strategy.cache.reference.BibtexDefaultCacheStrategy
+	 * @see eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy
 	 */
 	public static BibtexReference NewInstance(){
 		BibtexReference result = new BibtexReference();
@@ -94,8 +95,8 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * instance a BibTeX reference with the {@link BibtexEntryType entry type} "INBOOK" belongs
 	 * to another BibTeX reference with the entry type "BOOK").<BR>
 	 * The returned "crossref" attribute corresponds to the {@link BookSection#getInBook() "inBook"}
-	 * and {@link InProceedings#getInProceedings() "inProceedings"} attributes of BookSection and of
-	 * InProccedings.
+	 * and {@link InProceedings#getInProceedings() "inProceedings"} attributes of {@link BookSection BookSection} and of
+	 * {@link InProceedings InProceedings}.
 	 * 
 	 * @return  the BibTeX reference containing <i>this</i> BibTeX reference
 	 * @see 	BibtexEntryType
@@ -117,7 +118,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference with the {@link BibtexEntryType entry type} "ARTICLE" was
 	 * published in.<BR>
 	 * The returned "journal" attribute corresponds to the {@link Article#getInJournal() "inJournal"}
-	 * attribute of Article.
+	 * attribute of {@link Article Article}.
 	 * 
 	 * @return  the string identifying the journal where <i>this</i> BibTeX
 	 * 			reference (article) was published
@@ -138,7 +139,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference, with the {@link BibtexEntryType entry type} "INBOOK", "INCOLLECTION"
 	 * "INPROCEEDINGS" or "CONFERENCE", was published in.<BR>
 	 * The returned "booktitle" attribute corresponds to the {@link BookSection#getInBook() "inBook"}
-	 * attribute of BookSection.
+	 * attribute of {@link BookSection BookSection}.
 	 * 
 	 * @return  the string identifying the book where <i>this</i> BibTeX
 	 * 			reference (part of a book) was published
@@ -159,7 +160,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference with the {@link BibtexEntryType entry type} "INBOOK" or "INCOLLECTION"
 	 * if this part of a book is a chapter.<BR>
 	 * In this case the returned string is included in the inherited {@link BookSection#getTitle() "title"}
-	 * attribute of BookSection.
+	 * attribute of {@link BookSection BookSection}.
 	 * 
 	 * @return  the string with the chapter number corresponding to <i>this</i>
 	 * 			BibTeX reference
@@ -178,7 +179,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	/**
 	 * Returns the string representing the title of <i>this</i> BibTeX reference.<BR>
 	 * The returned "title" attribute corresponds to the {@link StrictReferenceBase#getTitle() "title"}
-	 * attribute of StrictReferenceBase.
+	 * attribute of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string with the title of <i>this</i> BibTeX reference
 	 */
@@ -198,7 +199,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference with the {@link BibtexEntryType entry type} "BOOK" or "INBOOK"
 	 * was published in.<BR>
 	 * The returned "series" attribute corresponds to the inherited {@link PrintedUnitBase#getInSeries() "inSeries"}
-	 * attribute of Book.
+	 * attribute of {@link Book Book}.
 	 * 
 	 * @return  the string identifying the book series <i>this</i> BibTeX
 	 * 			reference (book) was published in
@@ -219,7 +220,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference with the {@link BibtexEntryType entry type} "BOOK", "INBOOK"
 	 * or "MANUAL".<BR>
 	 * The returned "edition" attribute corresponds to the {@link Book#getEdition() "edition"}
-	 * attribute of Book.
+	 * attribute of {@link Book Book}.
 	 * 
 	 * @return  the string identifying the edition of <i>this</i> BibTeX
 	 * 			reference (book)
@@ -262,7 +263,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * or of the journal in which <i>this</i> BibTeX reference was published if
 	 * it is an {@link BibtexEntryType#ARTICLE() "ARTICLE"}. Most publications have a "volume", but no "number".<BR>
 	 * In this case the returned string is included in the {@link StrictReferenceBase#getTitle() "title"}
-	 * attribute of StrictReferenceBase.
+	 * attribute of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string identifying the number for <i>this</i> BibTeX
 	 * 			reference (article or technical report)
@@ -317,7 +318,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * Returns the string representing the name(s) of the editor(s) of <i>this</i>
 	 * BibTeX reference.<BR>
 	 * The returned "editor" attribute corresponds to the {@link PrintedUnitBase#getEditor() "editor"} attribute
-	 * of PrintedUnitBase.
+	 * of {@link PrintedUnitBase PrintedUnitBase}.
 	 * 
 	 * @return  the string identifying the editor of <i>this</i>
 	 * 			BibTeX reference
@@ -338,7 +339,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * involved in the publishing of <i>this</i> BibTeX reference or the name of
 	 * its publisher, if it is a {@link BibtexEntryType#TECHREPORT() "TECHREPORT" (report)}.<BR>
 	 * The returned "institution" attribute corresponds to the {@link Report#getInstitution() "institution"}
-	 * attribute of Report or to its inherited {@link PublicationBase#getPublisher() "publisher"} attribute.
+	 * attribute of {@link Report Report} or to its inherited {@link PublicationBase#getPublisher() "publisher"} attribute.
 	 * 
 	 * @return  the string identifying the institution assigned to <i>this</i>
 	 * 			BibTeX reference
@@ -359,7 +360,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * reference (a {@link BibtexEntryType#MASTERTHESIS() "MASTERTHESIS"} or a
 	 * {@link BibtexEntryType#PHDTHESIS() "PHDTHESIS"}) was written.<BR>
 	 * The returned "school" attribute corresponds to the {@link Thesis#getSchool() "school"}
-	 * attribute of Thesis.
+	 * attribute of {@link Thesis Thesis}.
 	 * 
 	 * @return  the string identifying the school where <i>this</i> BibTeX 
 	 * 			reference was written
@@ -381,7 +382,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * {@link BibtexEntryType#INPROCEEDINGS() "INPROCEEDINGS"} or a {@link BibtexEntryType#CONFERENCE() "CONFERENCE"})
 	 * has been printed.<BR>
 	 * The returned "organization" attribute corresponds to the {@link Proceedings#getOrganization() "organization"}
-	 * attribute of Proceedings.
+	 * attribute of {@link Proceedings Proceedings}.
 	 * 
 	 * @return  the string with the responsible organization of the conference
 	 */
@@ -400,7 +401,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * Returns the string representing the name of the publisher of <i>this</i>
 	 * BibTeX reference.<BR>
 	 * The returned "publisher" attribute corresponds to the {@link PublicationBase#getPublisher() "publisher"} attribute
-	 * of PublicationBase.
+	 * of {@link PublicationBase PublicationBase}.
 	 * 
 	 * @return  the string identifying the publisher of <i>this</i>
 	 * 			BibTeX reference
@@ -421,7 +422,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * BibTeX reference (usually just the city, but can be the full address for
 	 * lesser-known publishers).<BR>
 	 * The returned "address" attribute corresponds to the {@link PublicationBase#getPlacePublished() "placePublished"} attribute
-	 * of PublicationBase.
+	 * of {@link PublicationBase PublicationBase}.
 	 * 
 	 * @return  the string with the publisher's address
 	 */
@@ -441,8 +442,8 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * published, if the publishing method was nonstandard. This can apply to
 	 * the entry types {@link BibtexEntryType#BOOKLET() "BOOKLET"} or {@link BibtexEntryType#MISC() "MISC"}.<BR>
 	 * The returned "howpublished" attribute might correspond to one of the
-	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
-	 * of PublicationBase.
+	 * {@link eu.etaxonomy.cdm.model.common.AnnotatableEntity#getAnnotations() annotations}
+	 * of {@link PublicationBase PublicationBase}.
 	 * 
 	 * @return  the string describing the publishing method
 	 */
@@ -462,7 +463,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * "Research Note") <i>this</i> BibTeX reference ({@link BibtexEntryType#TECHREPORT() "TECHREPORT"}) is.<BR>
 	 * The returned "reportType" attribute might correspond to one of the
 	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
-	 * of Report.
+	 * of {@link Report Report}.
 	 * 
 	 * @return  the string describing the kind of technical report
 	 */
@@ -481,7 +482,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * Returns the string with the month of publication (or, if unpublished,
 	 * the month of creation) of <i>this</i> BibTeX reference.<BR>
 	 * The returned "month" attribute corresponds partially to the {@link StrictReferenceBase#getDatePublished() "datePublished"}
-	 * attribute of StrictReferenceBase.
+	 * attribute of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string with the month of publication
 	 */
@@ -500,7 +501,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * Returns the string with the year of publication (or, if unpublished,
 	 * the year of creation) of <i>this</i> BibTeX reference.<BR>
 	 * The returned "year" attribute corresponds partially to the {@link StrictReferenceBase#getDatePublished() "datePublished"}
-	 * attribute of StrictReferenceBase.
+	 * attribute of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string with the year of publication
 	 */
@@ -521,8 +522,8 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * Returns the string specifying <i>this</i> BibTeX reference as an electronic
 	 * publication (often a preprint or a technical report).<BR>
 	 * The returned "eprint" attribute might correspond to one of the
-	 * {@link common.AnnotatableEntity#getAnnotations()() annotations}
-	 * of StrictReferenceBase.
+	 * {@link eu.etaxonomy.cdm.model.common.AnnotatableEntity#getAnnotations() annotations}
+	 * of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string specifying <i>this</i> electronic BibTeX reference
 	 */
@@ -540,8 +541,8 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	/**
 	 * Returns the string with miscellaneous extra information for <i>this</i> BibTeX
 	 * reference.<BR>
-	 * The returned "note" attribute corresponds to one of the {@link common.AnnotatableEntity#getAnnotations()() annotations}
-	 * of StrictReferenceBase.
+	 * The returned "note" attribute corresponds to one of the {@link eu.etaxonomy.cdm.model.common.AnnotatableEntity#getAnnotations() annotations}
+	 * of {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @return  the string with extra information for <i>this</i> BibTeX reference
 	 */
@@ -581,7 +582,8 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * including authors and other elements corresponding to <i>this</i> BibTeX
 	 * reference.
 	 * 
-	 * @see  NomenclaturalReferenceHelper#getCitation()
+	 * @see  #getNomenclaturalCitation(String)
+	 * @see  ReferenceBase#getCitation()
 	 */
 	@Override
 	@Transient
@@ -598,7 +600,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * 							within <i>this</i> BibTeX reference
 	 * @return					the formatted string representing the
 	 * 							nomenclatural citation
-	 * @see  					NomenclaturalReferenceHelper#getNomenclaturalCitation(String)
+	 * @see  					getCitation()
 	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
 	@Transient
@@ -612,14 +614,13 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * assigned to <i>this</i> BibTeX reference, a string that identifies <i>this</i>
 	 * BibTeX reference and returns it. This string may be stored in the
 	 * inherited {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> BibTeX reference
 	 * @see  	#getCitation()
-	 * @see  	NomenclaturalReferenceHelper#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	@Override
 	public String generateTitle(){

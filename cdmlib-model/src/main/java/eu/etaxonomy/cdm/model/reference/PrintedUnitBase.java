@@ -160,10 +160,10 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	 * Clones <i>this</i> printed unit. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> printed unit
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link PublicationBase#clone() method} from PublicationBase.
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
 	 * 
 	 * @see PublicationBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

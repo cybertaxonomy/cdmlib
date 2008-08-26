@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  */
 @Entity
 public class WebPage extends PublicationBase implements Cloneable {
-	public static final Logger logger = Logger.getLogger(WebPage.class);
+	static Logger logger = Logger.getLogger(WebPage.class);
 
 	/** 
 	 * Class constructor: creates a new empty web page instance.
@@ -43,18 +43,18 @@ public class WebPage extends PublicationBase implements Cloneable {
 	}
 	
 	/**
-	 * Generates, according to the {@link strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
+	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
 	 * assigned to <i>this</i> web page, a string that identifies <i>this</i>
 	 * web page and returns it. This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited
-	 * ReferenceBase#generateTitle() method.
+	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link ReferenceBase ReferenceBase}.
 	 *
 	 * @return  the string identifying <i>this</i> web page
 	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	common.IdentifiableEntity#getTitleCache()
-	 * @see  	common.IdentifiableEntity#generateTitle()
-	 * @see  	strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
 	@Override
 	public String generateTitle(){
@@ -66,10 +66,10 @@ public class WebPage extends PublicationBase implements Cloneable {
 	 * Clones <i>this</i> web page instance. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>
 	 * web page instance by modifying only some of the attributes.<BR>
-	 * This method overrides the {@link PublicationBase#clone() method} from PublicationBase.
+	 * This method overrides the clone method from {@link PublicationBase PublicationBase}.
 	 * 
 	 * @see PublicationBase#clone()
-	 * @see media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
