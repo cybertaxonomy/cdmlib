@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -92,8 +94,6 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
 	}
 
-	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
 	 */
@@ -104,6 +104,18 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren);
 	}
 
+//	public List<TaxonRelationship> getAllTaxonRelationships(int limit, int start){
+//		return taxonDao.getAllTaxonRelationships(limit, start);
+//	}
+//
+//	public List<SynonymRelationship> getAllSynonymRelationships(int limit, int start){
+//		return taxonDao.getAllSynonymRelationships(limit, start);
+//	}
+	
+	public List<RelationshipBase> getAllRelationships(int limit, int start){
+		return taxonDao.getAllRelationships(limit, start);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */

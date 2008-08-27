@@ -12,14 +12,18 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
@@ -52,8 +56,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	
 	public abstract List<TaxonBase> getAllTaxa(int limit, int start);
+	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
@@ -70,7 +74,31 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 	
-	/** */
+	/**
+	 * Computes all taxon relationships.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+    //public abstract List<TaxonRelationship> getAllTaxonRelationships(int limit, int start);
+
+	/**
+	 * Computes all synonym relationships.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+    //public abstract List<SynonymRelationship> getAllSynonymRelationships(int limit, int start);
+    
+	/**
+	 * Computes all relationships.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+    public abstract List<RelationshipBase> getAllRelationships(int limit, int start);
+
+    /** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);

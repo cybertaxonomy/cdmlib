@@ -131,7 +131,7 @@ public class TestJaxb {
 		appCtr.close();
     }
 
-    private void setFlatData (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
+    private void retrieveFlatData (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
     	
 	int agentRows = numberOfRows;
 	int definedTermBaseRows = numberOfRows;
@@ -159,13 +159,18 @@ public class TestJaxb {
     }
 	
     
-    private void setAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
+    private void retrieveAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
     	
+        final int MAX_ROWS = 1000;
+
     	int agentRows = numberOfRows;
     	int definedTermBaseRows = numberOfRows;
     	int referenceBaseRows = numberOfRows;
     	int taxonNameBaseRows = numberOfRows;
     	int taxonBaseRows = numberOfRows;
+    	int taxonRelationshipRows = numberOfRows;
+    	int synonymRelationshipRows = numberOfRows;
+    	int relationshipRows = numberOfRows;
     	
     	if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
     	logger.info("# Agents: " + agentRows);
@@ -199,8 +204,13 @@ public class TestJaxb {
 	    		logger.error("entry of wrong type: " + taxonBase.toString());
 			}
     	}
+    	if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+    	List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
+    	Set<RelationshipBase> relationSet = new HashSet(relationList);
+    	dataSet.setRelationships(relationSet);
+    	  
     	
-        // TODO: 
+    	// TODO: 
     	// retrieve taxa and synonyms separately
     	// need correct count for taxa and synonyms
 //    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
@@ -236,23 +246,23 @@ public class TestJaxb {
 		    appCtr.getTermService().saveTermsAll(terms);
 		}
 		
-//		if ((references = dataSet.getReferences()) != null) {
-//			logger.info("Saving " + references.size() + " references");
-//		     appCtr.getReferenceService().saveReferenceAll(references);
-//		}
+		if ((references = dataSet.getReferences()) != null) {
+			logger.info("Saving " + references.size() + " references");
+		     appCtr.getReferenceService().saveReferenceAll(references);
+		}
 		
-//		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
-//			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
-//			appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
-//		}
+		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
+			appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
+		}
 	
 	    // FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 	
 	    // Need to get the taxa and the synonyms here.
-//		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
-//			logger.info("Saving taxon bases");
-//			appCtr.getTaxonService().saveTaxonAll(taxonBases);
-//		}
+		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
+			logger.info("Saving " + taxonBases.size() + " taxon bases");
+			appCtr.getTaxonService().saveTaxonAll(taxonBases);
+		}
 		
 	    // TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
 //		if ((descriptions = dataSet.getDescriptions()) != null) {
@@ -394,16 +404,16 @@ public class TestJaxb {
     	try {
     		logger.info("Load data from DB: " + dbname);
 
-    		setFlatData(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
+    		retrieveFlatData(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
-//    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
+    		taxa = appCtr.getTaxonService().getRootTaxa(null, null, false);
     		// CdmFetch options not yet implemented
     		//appCtr.getTaxonService().getRootTaxa(null, CdmFetch.NO_FETCH(), false);
-//    		dataSet.setTaxa(taxa);
-//    		
-//    		dataSet.setSynonyms(new ArrayList<Synonym>());
-//    		dataSet.setRelationships(new HashSet<RelationshipBase>());
-//    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
+    		dataSet.setTaxa(taxa);
+    		
+    		dataSet.setSynonyms(new ArrayList<Synonym>());
+    		dataSet.setRelationships(new HashSet<RelationshipBase>());
+    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
     	} catch (Exception e) {
     		logger.error("error setting root data");
@@ -455,7 +465,7 @@ public class TestJaxb {
     		logger.error("defined terms not found");
     	}
     	
-    	TransactionStatus txStatus = appCtr.startTransaction();
+    	TransactionStatus txStatus = appCtr.startTransaction(true);
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
     	List<DefinedTermBase> terms = null;
@@ -465,18 +475,25 @@ public class TestJaxb {
     	try {
     		logger.info("Load data from DB ...");
 
-    		setAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
+    		retrieveAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
     	} catch (Exception e) {
-    		logger.info("error setting data");
+    		logger.error("error setting data");
+    		e.printStackTrace();
     	}
 
+		logger.info("All data retrieved");
+		
     	try {
     		cdmDocumentBuilder = new CdmDocumentBuilder();
-    		FileWriter writer = new FileWriter(filename);
-    		logger.info("Output Stream Encoding: " + writer.getEncoding());
+    		PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF8"), true);
     		cdmDocumentBuilder.marshal(dataSet, writer);
+    		
+    		// TODO: Split into one file per data set member to see whether performance improves?
 
+    		logger.info("XML file written");
+    		logger.info("Filename is: " + filename);
+    		
     	} catch (Exception e) {
     		logger.error("marshalling error");
     		e.printStackTrace();
@@ -525,52 +542,23 @@ public class TestJaxb {
 		
 		saveData(appCtr, dataSet);
 		
-//		Collection<TaxonBase> taxonBases;
-//		List<Agent> agents;
-//		List<TaxonNameBase> taxonomicNames;
-//		
-//		TransactionStatus txStatus = appCtr.startTransaction();
-		
-		// Currently it's sufficient to save the taxa only since all other data
-		// related to the taxa, such as synonyms, are automatically saved as well.
-		
-//		if ((agents = dataSet.getAgents()) != null) {
-//			logger.info("Saving " + agents.size() + " agents");
-//			appCtr.getAgentService().saveAgentAll(agents);
-//		}
-		
-//		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
-//			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
-//		    appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
-//		}
-		
-		// FIXME: Clean getTaxa()/getTaxonBases() return parameters.
-		
-		// Need to get the taxa and the synonyms here.
-//		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
-//			logger.info("Saving taxon bases");
-//			appCtr.getTaxonService().saveTaxonAll(taxonBases);
-//		}
-
-//		logger.info("All data saved");
-//		
-//		appCtr.commitTransaction(txStatus);
-//		appCtr.close();
-
 	}
 	
 	private void test(){
 		
-		//Loads terms and some test data to DB.
-		//initDb(serializeFromDb);
-		
-		//Loads terms to DB.
+		// Init DB with pre-loaded terms only.
 		//initPreloadedDb(serializeFromDb);
 		
+		// Init Db with pre-loaded terms and some test data.
+		//initDb(serializeFromDb);
+		
+		// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
+		// Retrieve the other data from services.
 	    //doSerialize(serializeFromDb, marshOutOne);
 		
-		//For tests to retrieve all data via services rather than traversing the tree.
-	    //doSerializeFlat(serializeFromDb, marshOutOne);
+		// Retrieve data, including taxa, synonyms, and relationships
+		// via services rather than traversing the tree.
+	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
 		doDeserialize(deserializeToDb, marshOutOne);
 	    

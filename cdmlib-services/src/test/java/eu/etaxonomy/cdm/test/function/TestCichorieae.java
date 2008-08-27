@@ -44,6 +44,9 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 /**
+ * This class tests to call the DAOs directly instead of going via the services
+ * in the service layer to retrieve data from the DB for JAXB serialization.
+ * 
  * @author a.babadshanjan
  *
  */
