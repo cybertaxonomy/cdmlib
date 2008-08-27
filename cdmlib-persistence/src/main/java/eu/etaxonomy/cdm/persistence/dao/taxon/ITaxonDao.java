@@ -10,13 +10,17 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -61,6 +65,22 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return
 	 */
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start);
+
+	/**
+	 * @param limit
+	 * @param start 
+	 * @return
+	 */
+	//public List<TaxonRelationship> getAllTaxonRelationships(Integer limit, Integer start);
+	
+	/**
+	 * @param limit
+	 * @param start 
+	 * @return
+	 */
+	//public List<SynonymRelationship> getAllSynonymRelationships(Integer limit, Integer start);
+
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 
 	/**
 	 * Find taxa by searching for @{link NameBase}

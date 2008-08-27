@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -128,10 +130,27 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Criteria crit = getSession().createCriteria(Synonym.class);
 		crit.createCriteria("dtype").add(Restrictions.eq("DTYPE", "Synonym"));
 		List<Synonym> results = crit.list();
-		// TODO add limit & start criteria
 		return results;
 	}
 
+//	public List<TaxonRelationship> getAllTaxonRelationships(Integer limit, Integer start) {
+//		Criteria crit = getSession().createCriteria(TaxonRelationship.class);
+//		List<TaxonRelationship> results = crit.list();
+//		return results;
+//	}
+
+//	public List<SynonymRelationship> getAllSynonymRelationships(Integer limit, Integer start) {
+//		Criteria crit = getSession().createCriteria(SynonymRelationship.class);
+//		List<SynonymRelationship> results = crit.list();
+//		return results;
+//	}
+	
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
+		Criteria crit = getSession().createCriteria(RelationshipBase.class);
+		List<RelationshipBase> results = crit.list();
+		return results;
+	}
+	
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		//getSession().update(taxonBase); doesn't work with lazy collections
