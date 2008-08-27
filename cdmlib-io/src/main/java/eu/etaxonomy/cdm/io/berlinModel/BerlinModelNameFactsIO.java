@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -183,13 +184,13 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	}
 	
 	
-	private Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
+	public Media getMedia(String nameFact, URL mediaUrl, File mediaPath){
 		if (mediaUrl == null){
 			logger.warn("Media Url should not be null");
 			return null;
 		}
 		String mimeTypeTif = "image/tiff";
-		String mimeTypeJpeg = "image/jpeg";
+		String mimeTypeJpg = "image/jpeg";
 		String mimeTypePng = "image/png";
 		String suffixTif = "tif";
 		String suffixJpg = "jpg";
@@ -206,27 +207,34 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		//tiff
 		String urlStringTif = mediaUrlString + "tif/" + nameFact + "." + suffixTif;
 		File file = new File(mediaPath, "tif" + sep + nameFact + "." + suffixTif);
+		MediaRepresentation representationTif = MediaRepresentation.NewInstance(mimeTypeTif, suffixTif);
 		if (file.exists()){
-			media.addRepresentation(makeImageRepresentation(urlStringTif, size, file, mimeTypeTif, suffixTif));
+			representationTif.addRepresentationPart(makeImage(urlStringTif, size, file));
 		}
+		media.addRepresentation(representationTif);
+		// end tif
 		// jpg
 		boolean fileExists = true;
 		int jpgCount = 0;
+		MediaRepresentation representationJpg = MediaRepresentation.NewInstance(mimeTypeJpg, suffixJpg);
 		while(fileExists){
 			jpgCount++;
 			String urlStringJpeg = mediaUrlString + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
 			file = new File(mediaPath, "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg);
 			if (file.exists()){ 
-				media.addRepresentation(makeImageRepresentation(urlStringJpeg, size, file, mimeTypeJpeg, suffixJpg));
+				representationJpg.addRepresentationPart(makeImage(urlStringJpeg, size, file));
 			}else{
 				fileExists = false;
 			}
 		}
+		media.addRepresentation(representationJpg);
+		// end jpg
 		//png
 		String urlStringPng = mediaUrlString + "png/" + nameFact + "." + suffixPng;
 		file = new File(mediaPath, "png" + sep + nameFact + "." + suffixPng);
+		MediaRepresentation representationPng = MediaRepresentation.NewInstance(mimeTypePng, suffixPng);
 		if (file.exists()){ 
-			media.addRepresentation(makeImageRepresentation(urlStringPng, size, file, mimeTypePng, suffixPng));
+			representationPng.addRepresentationPart(makeImage(urlStringPng, size, file));
 		}else{
 			fileExists = true;
 			int pngCount = 0;
@@ -234,25 +242,34 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				pngCount++;
 				urlStringPng = mediaUrlString + "png/" + nameFact + "00" + pngCount + "." + suffixPng;
 				file = new File(mediaPath, "png" + sep + nameFact + "00" + pngCount + "." + suffixPng);
+				
 				if (file.exists()){ 
-					media.addRepresentation(makeImageRepresentation(urlStringPng, size, file, mimeTypePng, suffixPng));
+					representationPng.addRepresentationPart(makeImage(urlStringPng, size, file));
 				}else{
 					fileExists = false;
 				}
 			}
-		} //end png
+		} 
+		media.addRepresentation(representationPng);
+		//end png
+		
+		if(logger.isDebugEnabled()){
+			for (MediaRepresentation rep : media.getRepresentations()){
+				for (MediaRepresentationPart part : rep.getParts()){
+					logger.debug("in representation: " + part.getUri());
+				}
+			}
+		}
 		
 		return media;
 	}
 	
 	
-	private MediaRepresentation makeImageRepresentation(String imageUri, Integer size, File file, String mimeType, String suffix){
+	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = new ImageMetaData();
 		imageMetaData.readFrom(file);
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
-		MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
-		representation.addRepresentationPart(image);
-		return representation;
+		return image;
 	}
 	
 	//for testing only
@@ -265,9 +282,10 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			url = new URL("http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/");
 			File path = new File("/Volumes/protolog/protolog/");
 			if(path.exists()){
-				String fact = "Sonchus_eryngiifolius";
+				String fact = "Crepis_meletonis";
 				// gotta make getMedia public for this to work
-				nf.getMedia(fact, url, path);
+				Media media = nf.getMedia(fact, url, path);
+				System.out.println(media);
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
