@@ -101,6 +101,10 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 				String status = rs.getString("Status");
 				String typePhrase = rs.getString("typePhrase");
 				
+				//TODO 
+				boolean isNotDesignated = false;
+				
+				
 				//TODO
 				//TypeCache leer
 				//RejectedFlag false
@@ -118,7 +122,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 						specimen.setTitleCache(typePhrase);
 						boolean addToAllNames = true;
 						String originalNameString = null;
-						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, addToAllNames);
+						taxonNameBase.addSpecimenTypeDesignation(specimen, typeDesignationStatus, citation, refDetail, originalNameString, isNotDesignated, addToAllNames);
 												
 						typeMap.put(typeDesignationId, specimen);
 						taxonNameStore.add(taxonNameBase);
