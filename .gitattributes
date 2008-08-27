@@ -630,6 +630,7 @@ eclipse-plugin/commons-logging-1.0.4.jar -text
 eclipse-plugin/dom4j-1.6.1.jar -text
 eclipse-plugin/ehcache-1.2.3.jar -text
 eclipse-plugin/ejb3-persistence.jar -text
+eclipse-plugin/h2-1.0.73.jar -text
 eclipse-plugin/hibernate-annotations.jar -text
 eclipse-plugin/hibernate-commons-annotations.jar -text
 eclipse-plugin/hibernate-validator.jar -text
