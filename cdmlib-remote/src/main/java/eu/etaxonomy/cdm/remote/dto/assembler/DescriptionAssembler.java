@@ -258,7 +258,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		
 		// media
 		for(Media media : descriptionElementBase.getMedia()){
-			sto.addMedia(mediaAssembler.getSTO(media, locales));			
+			sto.addMedia(mediaAssembler.getSTO(media, locales));
+			sto.setMediaType(localisedTermAssembler.getSTO(descriptionElementBase.getFeature(), locales));
 		}
 
 		// TextData specific

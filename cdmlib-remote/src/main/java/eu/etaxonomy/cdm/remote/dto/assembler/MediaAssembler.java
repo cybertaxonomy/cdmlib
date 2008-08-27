@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +27,14 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.dto.MediaRepresentationSTO;
-import eu.etaxonomy.cdm.remote.dto.MediaTO;
 import eu.etaxonomy.cdm.remote.dto.MediaSTO;
+import eu.etaxonomy.cdm.remote.dto.MediaTO;
 
 @Component
 public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 
+	private static final Logger logger = Logger.getLogger(MediaAssembler.class);
+	
 	@Autowired
 	private IDefinedTermDao languageDao;
 	
@@ -86,6 +89,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 					width = movie.getWidth();
 				} else if(part instanceof ImageFile){
 					ImageFile image = (ImageFile)part;
+					logger.info(image.getUri());
 					height = image.getHeight();
 					width = image.getWidth();
 				}

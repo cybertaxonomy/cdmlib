@@ -28,6 +28,7 @@ public class DescriptionElementSTO extends BaseSTO {
 	private String language;
 	private ReferenceSTO reference;
 	private LocalisedTermSTO areaTerm;
+	private LocalisedTermSTO mediaType;
 	
 	public Set<MediaSTO> getMedia() {
 		return media;
@@ -61,5 +62,11 @@ public class DescriptionElementSTO extends BaseSTO {
 	}
 	public LocalisedTermSTO getArea() {
 		return areaTerm;
+	}
+	public void setMediaType(LocalisedTermSTO mediaType) {
+		this.mediaType = mediaType;
+	}
+	public LocalisedTermSTO getMediaType() {
+		return mediaType;
 	}	
 }

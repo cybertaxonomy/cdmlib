@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>{
 	
 	@Autowired
-	private ReferenceAssembler refAssembler;
+	private ReferenceAssembler referenceAssembler;
 	@Autowired
 	private LocalisedTermAssembler localisedTermAssembler;
 	@Autowired
@@ -59,7 +59,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			name.setTaggedName(getTaggedName(taxonNameBase));
 			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
-				name.setNomenclaturalReference(refAssembler.getSTO(nomRef, true, taxonNameBase.getNomenclaturalMicroReference(), locales));				
+				name.setNomenclaturalReference(referenceAssembler.getSTO(nomRef, true, taxonNameBase.getNomenclaturalMicroReference(), locales));				
 			}
 			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
@@ -88,7 +88,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			name.setTaggedName(getTaggedName(taxonNameBase));
 			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
-				name.setNomenclaturalReference(refAssembler.getTO(nomRef, true ,taxonNameBase.getNomenclaturalMicroReference(), locales));
+				name.setNomenclaturalReference(referenceAssembler.getTO(nomRef, true ,taxonNameBase.getNomenclaturalMicroReference(), locales));
 			}
 			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
