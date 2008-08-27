@@ -12,7 +12,6 @@ import java.util.Enumeration;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.hamcrest.core.IsInstanceOf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
