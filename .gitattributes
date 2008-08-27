@@ -672,6 +672,8 @@ eclipse-plugin/spring-test-2.5.jar -text
 eclipse-plugin/spring-test-2.5src.zip -text
 eclipse-plugin/spring-tx-2.5.jar -text
 eclipse-plugin/spring-tx-2.5src.zip -text
+eclipse-plugin/spring-web-2.5src.zip -text
+eclipse-plugin/spring-webmvc-2.5src.zip -text
 eclipse-plugin/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 eclipse-plugin/xercesImpl.jar -text
 eclipse-plugin/xml-apis.jar -text
