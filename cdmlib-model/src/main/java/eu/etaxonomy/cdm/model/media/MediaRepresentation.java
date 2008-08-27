@@ -15,7 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
+import org.hibernate.annotations.IndexColumn;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -117,8 +117,8 @@ public class MediaRepresentation extends VersionableEntity {
 	}
 	
 	
-	@OneToMany(mappedBy="mediaRepresentation")
-	@org.hibernate.annotations.IndexColumn(name="sortIndex")
+	@OneToMany(mappedBy="mediaRepresentation",fetch= FetchType.LAZY)
+	@IndexColumn(name="sortIndex", base = 1)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public List<MediaRepresentationPart> getParts(){
 		return this.mediaRepresentationParts;
