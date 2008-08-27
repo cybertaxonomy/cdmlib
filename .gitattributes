@@ -643,6 +643,7 @@ eclipse-plugin/jaxb-impl-2.0-sources.jar -text
 eclipse-plugin/jaxb-impl-2.0.jar -text
 eclipse-plugin/jdbc2_0-stdext.jar -text
 eclipse-plugin/jdom-1.0.jar -text
+eclipse-plugin/joda-time-hibernate-1.0.jar -text
 eclipse-plugin/jta.jar -text
 eclipse-plugin/jtds-1.2.2.jar -text
 eclipse-plugin/junit-4.4.jar -text
