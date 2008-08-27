@@ -76,10 +76,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-		"agents",
-		"agentData",
 	    "terms",
 	    "termVocabularies",
+		"agents",
+		"agentData",
 	    "references",
 	    "taxonomicNames",
 	    "taxa",
