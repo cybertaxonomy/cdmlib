@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -82,17 +83,46 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	
 	
 	private void testRefParser(){
-		BotanicalName botanicalName = BotanicalName.NewInstance(null);
+		int result = 0;
+		//Barkerwebbia humilis (Becc.) Becc. ex Martelli
+
+		
+		String reference1 = "Sp. P. 2: 755. 1753., nom. inval.";
+		//String reference1 = "Sp. P.";
+		String fullRef1;
+		
+		fullRef1 = strNameAbiesBasionymAuthorUe + ", " + reference1;
+		result += parseIt(fullRef1);
+		//Abies alba (Ciardelli) D'Mueller
+		result += parseIt( "Barkerwebbia humilis (Becc.) Becc. ex Martelli");
+		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
+		result += parseIt( "Barkerwebbia elegans Becc., Webbia 16(456): 283. 1905");
+		result += parseIt( "Barkerwebbia elegans Becc. in Bot. J. 16(456): 283. 1905");
+		result += parseIt( "H. elegans (Becc.) Becc., Nova Guinea 8: 205. 1907");
+		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
+		result += parseIt( "Hieracium asturicum Arv.-Touv.");
+		result += parseIt( "Hieracium mougeotii subsp. asturicum Zahn");
+		result += parseIt( "Hieracium vogesiacum subsp. asturicum (Zahn) O. Bolòs & Vigo");
+		result += parseIt( "Hieracium cantabricum Arv.-Touv.");
+		result += parseIt( "Hieracium mougeotii subsp. cantabricum (Arv.-Touv.) Zahn");
+		result += parseIt( "Hieracium murorramondii Mateo");
+		System.out.println(result);
+	}
+	
+	
+	private int  parseIt(String fullRef1){
+		NonViralName nvName = BotanicalName.NewInstance(null);
 		NonViralNameParserImpl parser = new NonViralNameParserImpl();
 		
-		String reference1 = "Sp. P.: 755. 1753., nom. inval.";
-		//String reference1 = "Sp. P.";
-		String fullRef1 = strNameAbiesBasionymAuthorUe + ", " + reference1;
 		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);
-		parser.parseFullReference(fullRef1, null, null);
+		nvName = parser.parseFullReference(fullRef1, null, null);
 		
-		System.out.println("Name: " + botanicalName.getTitleCache());
-		System.out.println("Reference: " + botanicalName.getTitleCache());
+		System.out.println(nvName.hasProblem());
+		System.out.println("  Name: " + nvName.getTitleCache());
+		System.out.println("  Reference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getTitleCache()));
+		System.out.println("  FullReference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getNomenclaturalCitation(nvName.getNomenclaturalMicroReference())));
+		return nvName.hasProblem() == true? 1: 0;
+
 	}
 	
 	
