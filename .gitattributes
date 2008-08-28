@@ -617,6 +617,7 @@ eclipse-plugin-sources/spring-webmvc-2.5src.zip -text
 eclipse-plugin/.classpath -text
 eclipse-plugin/.project -text
 eclipse-plugin/META-INF/MANIFEST.MF -text
+eclipse-plugin/_makeSources.bat -text
 eclipse-plugin/antlr-2.7.6.jar -text
 eclipse-plugin/aopalliance-1.0.jar -text
 eclipse-plugin/asm-attrs.jar -text
@@ -643,6 +644,8 @@ eclipse-plugin/jaxb-impl-2.0-sources.jar -text
 eclipse-plugin/jaxb-impl-2.0.jar -text
 eclipse-plugin/jdbc2_0-stdext.jar -text
 eclipse-plugin/jdom-1.0.jar -text
+eclipse-plugin/joda-time-1.5-sources.jar -text
+eclipse-plugin/joda-time-1.5.jar -text
 eclipse-plugin/joda-time-hibernate-1.0.jar -text
 eclipse-plugin/jta.jar -text
 eclipse-plugin/jtds-1.2.2.jar -text
