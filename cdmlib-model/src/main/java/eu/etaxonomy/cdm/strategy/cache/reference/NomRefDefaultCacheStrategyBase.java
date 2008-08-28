@@ -53,8 +53,10 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
 		result = addYear(result, nomenclaturalReference);
 		TeamOrPersonBase team = nomenclaturalReference.getAuthorTeam();
-		String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
-		result = author + afterAuthor + result;
+		if (team != null && ! team.getTitleCache().trim().equals("")){
+			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
+			result = team.getTitleCache() + afterAuthor + result;
+		}
 		return result;
 	}
 	
