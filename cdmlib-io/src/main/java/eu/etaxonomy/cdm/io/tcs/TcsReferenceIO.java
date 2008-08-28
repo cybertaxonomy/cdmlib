@@ -6,7 +6,6 @@ package eu.etaxonomy.cdm.io.tcs;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,16 +13,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
-import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.Text;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
