@@ -32,7 +32,11 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -224,8 +228,14 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 				String strParent = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 				ReferenceBase parent = referenceMap.get(strParent);
 				if (parent != null){
-					logger.warn("parent not yet implemented");
-					//TODO refBase.setParent(parent);
+					if ((ref instanceof Article) && (parent instanceof Journal)){
+						((Article)ref).setInJournal((Journal)parent);
+					}else if ((ref instanceof BookSection) && (parent instanceof Book)){
+						((BookSection)ref).setInBook((Book)parent);
+					}else{
+						logger.warn("parent type not yet implemented");
+						//ref.setParent(parent);
+					}
 				}
 
 				
@@ -233,18 +243,20 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 				//nomRef and reference
 				tcsElementName = "shortTitle";
 				tcsNamespace = publicationNamespace;
+				boolean nomRefExists = false;
 				String strShortTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				if (! CdmUtils.Nz(strShortTitle).trim().equals("")){
 					ref.setTitle(strShortTitle);
 					nomRefMap.put(strAbout, ref);
 					nomRefCount++;
+					nomRefExists = true;
 				}
 				
 				tcsElementName = "title";
 				tcsNamespace = publicationNamespace;
 				String strTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				tcsNamespace = publicationNamespace;
-				if (! CdmUtils.Nz(strTitle).trim().equals("")){
+				if (! CdmUtils.Nz(strTitle).trim().equals("")  || nomRefExists == false){
 					//TODO
 					StrictReferenceBase biblioRef = (StrictReferenceBase)ref.clone();
 					biblioRef.setTitle(strTitle);
