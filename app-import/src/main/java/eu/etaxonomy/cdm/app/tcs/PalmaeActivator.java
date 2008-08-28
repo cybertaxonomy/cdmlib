@@ -43,19 +43,19 @@ public class PalmaeActivator {
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
 	//authors
-	static final boolean doAuthors = false;
+	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
 	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = false;
+	static final boolean doRelNames = true;
 	//static final boolean doTypes = true;
 	//static final boolean doNameFacts = true;
 	
 	//taxa
-	static final boolean doTaxa = false;
-	static final boolean doRelTaxa = false;
-	static final boolean doFacts = false;
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = true;
 	
 
 	
