@@ -184,8 +184,6 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 			
 			if ((++i % modCount) == 0){ logger.info("references handled: " + (i-1));}
 			
-			Attribute about = elPublicationCitation.getAttribute("about", rdfNamespace);
-
 			//create TaxonName element
 			String strAbout = elPublicationCitation.getAttributeValue("about", rdfNamespace);
 			
@@ -229,7 +227,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 					}else if ((ref instanceof BookSection) && (parent instanceof Book)){
 						((BookSection)ref).setInBook((Book)parent);
 					}else{
-						logger.warn("parent type not yet implemented");
+						logger.warn("parent type (parent: " + parent.getClass().getSimpleName() +", child("+strAbout+"): " + ref.getClass().getSimpleName() +  ")not yet implemented");
 						//ref.setParent(parent);
 					}
 				}
