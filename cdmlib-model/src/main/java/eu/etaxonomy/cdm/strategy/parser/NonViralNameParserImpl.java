@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.strategy.parser;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -27,6 +29,7 @@ import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -152,7 +155,10 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		String nameAndRefSeperator = "(^" + localFullName + ")("+ referenceSeperator + ")";
 		Pattern nameAndRefSeperatorPattern = Pattern.compile(nameAndRefSeperator);
 		Matcher nameAndRefSeperatorMatcher = nameAndRefSeperatorPattern.matcher(fullReferenceString);
-				
+		
+		Pattern onlyNamePattern = Pattern.compile(localFullName);
+		Matcher onlyNameMatcher = onlyNamePattern.matcher(fullReferenceString);
+		
 		if (nameAndRefSeperatorMatcher.find() ){
 			String nameAndSeperator = nameAndRefSeperatorMatcher.group(0); 
 		    String name = nameAndRefSeperatorMatcher.group(1); 
@@ -175,6 +181,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		    if (ref != null && ref.getHasProblem()){
 		    	nameToBeFilled.setHasProblem(true);
 		    }
+		}else if(onlyNameMatcher.find()){
+			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
 		}else{
 			//don't parse if name can't be seperated
 			nameToBeFilled.setHasProblem(true);
@@ -248,7 +256,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				nameToBeFilled.setNomenclaturalMicroReference(detailPart);
 			}
 			//Title (and author)
-			parseReferenceTitle(reference, yearPart);
+			INomenclaturalReference ref = parseReferenceTitle(reference, yearPart);
+			nameToBeFilled.setNomenclaturalReference(ref);
 	    }else{
 	    	Generic ref = Generic.NewInstance();
 	    	ref.setTitleCache(reference);
@@ -264,8 +273,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param year
 	 * @return
 	 */
-	private ReferenceBase parseReferenceTitle(String reference, String year){
-		ReferenceBase result = null;
+	private INomenclaturalReference parseReferenceTitle(String reference, String year){
+		INomenclaturalReference result = null;
 		Pattern bookPattern = Pattern.compile(bookReference);
 		Pattern articlePattern = Pattern.compile(articleReference);
 		Pattern bookSectionPattern = Pattern.compile(bookSectionReference);
@@ -280,20 +289,25 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			//if (articlePatter)
 			//(type, author, title, volume, editor, series;
 			Article article = Article.NewInstance();
-			article.setTitleCache(reference);
+			article.setTitle(reference);
 			result = article;
 		}else if(bookMatcher.matches()){
 			Book book = Book.NewInstance();
-			book .setTitleCache(reference);
+			book .setTitle(reference);
 			result = book;
 		}else if (bookSectionMatcher.matches()){
 			BookSection bookSection = BookSection.NewInstance();
-			bookSection.setTitleCache(reference);
+			bookSection.setTitle(reference);
 			result = bookSection;
 		}else{
 			logger.warn("unknown reference type not yet implemented");
 			//ReferenceBase refBase = 
 		}
+		//make year
+		Calendar start = Calendar.getInstance();
+		start.set(Calendar.YEAR, Integer.valueOf(year));
+		TimePeriod datePublished = TimePeriod.NewInstance(start);
+		((StrictReferenceBase)result).setDatePublished(datePublished);
 		return result;
 	}
 	
@@ -767,14 +781,14 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     						"(" + month + ")?)" ;                 // optional month
     
     //seperator
-    static String yearSeperator = "." + oWs;
+    static String yearSeperator = "\\." + oWs;
     static String detailSeperator = ":" + oWs;
     static String referenceSeperator1 = "," + oWs ;
     static String inReferenceSeperator = oWs + "in" + oWs;
     static String referenceSeperator = "(" + referenceSeperator1 +"|" + inReferenceSeperator + ")" ;
     static String referenceAuthorSeperator = ","+ oWs;
-    static String volumeSeperator = "," + fWs ;
-    static String referenceEnd = ".";
+    static String volumeSeperator = oWs ; // changed from "," + fWs
+    static String referenceEnd = "\\.";
      
     
     //status
@@ -820,15 +834,15 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     static String detail = "(" + pageNumber + ")";
     
     //reference
-    static String volume = "\\d{4}" + "\\(\\d{4}\\)?"; 	      
+    static String volume = "\\d{1,4}" + "(\\(\\d{1,4}\\))?"; 	      
     
-    static String referenceTitle = "(" + dotWord + fWs + ")" + "{2,}";
-    static String bookReference = referenceTitle + volumeSeperator +  volume;
+    static String referenceTitle = "(" + dotWord + fWs + ")" + "{1,}";
+    static String bookReference = referenceTitle + "(" + volumeSeperator +  volume + ")?";
     static String bookSectionReference = authorTeam + referenceAuthorSeperator;
     static String articleReference = inReferenceSeperator + bookReference  ; 
     static String reference = "(" + articleReference + "|" + bookReference +")" + 
     				detailSeperator + detail + yearSeperator + yearPhrase +
-    				referenceEnd; 
+    				"(" + referenceEnd + ")?"; 
 
     static Pattern referencePattern = Pattern.compile(reference);
     
