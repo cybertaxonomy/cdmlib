@@ -166,12 +166,12 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 					Element elNomenclaturalNote = elAnnotation.getChild("NomenclaturalNote", tcsNamespace);
 					if (elNomenclaturalNote != null){
 						String statusValue = (String)ImportHelper.getXmlInputValue(elNomenclaturalNote, "note", tcsNamespace);
-						String type = XmlHelp.getChildAttributeValue(elNomenclaturalNote, "type", taxonConceptNamespace, "resource", rdfNamespace);
+						String type = XmlHelp.getChildAttributeValue(elNomenclaturalNote, "type", tcsNamespace, "resource", rdfNamespace);
 						String tdwgType = "http://rs.tdwg.org/ontology/voc/TaxonName#PublicationStatus";
 						if (tdwgType.equalsIgnoreCase(type)){
 							try {
-								//NomenclaturalStatusType statusType = TaxonXTransformer.nomStatusString2NomStatus(statusValue);
-								NomenclaturalStatusType statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusValue);
+								NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								//NomenclaturalStatusType statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusValue);
 								if (statusType != null){
 									nameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
 								}
