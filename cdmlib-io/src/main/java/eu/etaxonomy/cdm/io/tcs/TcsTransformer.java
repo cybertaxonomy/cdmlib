@@ -9,7 +9,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
@@ -124,10 +126,12 @@ public final class TcsTransformer {
 		String tcsWebPage = tcsRoot + "WebPage";
 		String tcsCommunication = tcsRoot + "Communication";
 		String tcsBookSeries = tcsRoot + "BookSeries";
+		String tcsArticle = tcsRoot + "JournalArticle";
+		String tcsBookSection = tcsRoot + "BookSection";
+		
 		
 //		Artwork	An Artwork type publication.
 //		AudiovisualMaterial	A Audiovisual Material type publication.
-//		BookSection	A Book Section type publication.
 //		BookSeries	A Book Series type publication.
 //		Commentary	A Commentary type publication.
 //		Communication	A Communication type publication.
@@ -137,7 +141,6 @@ public final class TcsTransformer {
 //		EditedBook	A Edited Book type publication.
 //		Generic	A generic publication.
 //		Journal	A Journal type publication.
-//		JournalArticle	A Journal Article type publication.
 //		MagazineArticle	A Magazine Article type publication.
 //		Map	A Map type publication.
 //		NewspaperArticle	A Newspaper Article type publication.
@@ -148,7 +151,9 @@ public final class TcsTransformer {
 
 		
 		if (strPubType == null){return null;
+		}else if (tcsBookSection.equals(strPubType)){return BookSection.NewInstance();
 		}else if (tcsBook.equals(strPubType)){return Book.NewInstance();
+		}else if (tcsArticle.equals(strPubType)){return Article.NewInstance();
 		}else if (tcsJournal.equals(strPubType)){return Journal.NewInstance();
 		}else if (tcsWebPage.equals(strPubType)){return WebPage.NewInstance();
 		}else if (tcsCommunication.equals(strPubType)){return PersonalCommunication.NewInstance();
