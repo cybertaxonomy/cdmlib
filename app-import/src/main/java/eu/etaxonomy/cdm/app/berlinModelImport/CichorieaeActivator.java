@@ -56,7 +56,7 @@ public class CichorieaeActivator {
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
-	static final File mediaPath = new File("//Bgbm11/Volumes/protolog/protolog/");
+	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -67,8 +67,8 @@ public class CichorieaeActivator {
 	//ignore null
 	static final boolean ignoreNull = true;
 
+//  **************** ALL *********************	
 
-// **************** ALL *********************	
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -90,15 +90,15 @@ public class CichorieaeActivator {
 // **************** SELECTED *********************
 
 //	//authors
-//	static final boolean doAuthors = false;
+//	static final boolean doAuthors = true;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 //	//names
-//	static final boolean doTaxonNames = true;
+//	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
-//	static final boolean doNameFacts = true;
+//	static final boolean doNameFacts = false;
 //	
 //	//taxa
 //	static final boolean doTaxa = false;
