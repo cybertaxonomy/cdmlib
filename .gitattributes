@@ -79,10 +79,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTransformer.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
-cdmlib-model/.umlproject -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
-cdmlib-model/ajcore.20080707.163647.593.txt -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
