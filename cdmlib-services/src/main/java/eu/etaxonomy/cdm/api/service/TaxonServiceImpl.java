@@ -104,14 +104,6 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren);
 	}
 
-//	public List<TaxonRelationship> getAllTaxonRelationships(int limit, int start){
-//		return taxonDao.getAllTaxonRelationships(limit, start);
-//	}
-//
-//	public List<SynonymRelationship> getAllSynonymRelationships(int limit, int start){
-//		return taxonDao.getAllSynonymRelationships(limit, start);
-//	}
-	
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return taxonDao.getAllRelationships(limit, start);
 	}

@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
 
@@ -46,6 +47,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public abstract List<TaxonNameBase> getAllNames(int limit, int start);
 
+	public abstract List<ReferencedEntityBase> getAllNomenclaturalStatus(int limit, int start);
+
+	public abstract List<ReferencedEntityBase> getAllTypeDesignations(int limit, int start);
+	
 	/**
 	 * @param name
 	 * @return

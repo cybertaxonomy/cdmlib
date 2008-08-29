@@ -16,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,10 +35,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
+	private ITaxonNameDao nameDao;
 	
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
 		this.dao = dao;
+		this.nameDao = dao;
 	}
 	
 	@Autowired
@@ -79,6 +83,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return dao.list(limit, start);
 	}
 
+	public List<ReferencedEntityBase> getAllNomenclaturalStatus(int limit, int start){
+		return nameDao.getAllNomenclaturalStatus(limit, start);
+	}
+	 
+	public List<ReferencedEntityBase> getAllTypeDesignations(int limit, int start){
+		return nameDao.getAllTypeDesignations(limit, start);
+	}
+	
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
 		String uuidRank = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
 		UUID rankUuid = UUID.fromString(uuidRank);

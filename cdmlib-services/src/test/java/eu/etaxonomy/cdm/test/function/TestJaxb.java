@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -58,17 +60,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
-//@SpringApplicationContext("/eu/etaxonomy/cdm/model.xml")
-//@SpringApplicationContext("classpath:integrationTest.xml")
-//@ContextConfiguration(locations={"/eu/etaxonomy/cdm/integrationTest.xml"})
 public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
-	//private static final String serializeFromDb = "cdm_test_jaxb";
+    /* Cichorieae DB **/
 	private static final String serializeFromDb = "cdm_test_anahit";
-	
 	private static final String deserializeToDb = "cdm_test_jaxb2";
+	
+    /* TestJaxb Test Data */
+	//private static final String serializeFromDb = "cdm_test_jaxb";
 	//private static final String deserializeToDb = "cdm_test_anahit2";
 	
 	private String server = "192.168.2.10";
@@ -161,7 +162,7 @@ public class TestJaxb {
     
     private void retrieveAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
     	
-        final int MAX_ROWS = 1000;
+        final int MAX_ROWS = 50000;
 
     	int agentRows = numberOfRows;
     	int definedTermBaseRows = numberOfRows;
@@ -204,11 +205,16 @@ public class TestJaxb {
 	    		logger.error("entry of wrong type: " + taxonBase.toString());
 			}
     	}
+    	
     	if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+    	logger.info("# Relationships...");
     	List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
     	Set<RelationshipBase> relationSet = new HashSet(relationList);
     	dataSet.setRelationships(relationSet);
-    	  
+
+    	logger.info("# Referenced Entities...");
+    	dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
+    	dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
     	
     	// TODO: 
     	// retrieve taxa and synonyms separately
@@ -230,22 +236,25 @@ public class TestJaxb {
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
+		List<ReferencedEntityBase> referencedEntities;
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		// Currently it's sufficient to save the taxa only since all other data
 		// related to the taxa, such as synonyms, are automatically saved as well.
 
-//		if ((agents = dataSet.getAgents()) != null) {
-//			logger.info("Saving " + agents.size() + " agents");
-//			appCtr.getAgentService().saveAgentAll(agents);
+		/* If terms are not saved here explicitly, then only those terms that are used
+		are saved implicitly. */
+//		if ((terms = dataSet.getTerms()) != null) {
+//			logger.info("Saving " + terms.size() + " terms");
+//		    appCtr.getTermService().saveTermsAll(terms);
 //		}
-	
-		if ((terms = dataSet.getTerms()) != null) {
-			logger.info("Saving " + terms.size() + " terms");
-		    appCtr.getTermService().saveTermsAll(terms);
-		}
 		
+		if ((agents = dataSet.getAgents()) != null) {
+			logger.info("Saving " + agents.size() + " agents");
+			appCtr.getAgentService().saveAgentAll(agents);
+		}
+	
 		if ((references = dataSet.getReferences()) != null) {
 			logger.info("Saving " + references.size() + " references");
 		     appCtr.getReferenceService().saveReferenceAll(references);
@@ -264,7 +273,13 @@ public class TestJaxb {
 			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 		
-	    // TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
+	    // NomenclaturalStatus and TypeDesignations saved with taxon names?
+//		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
+//			logger.info("Saving referenced entities");
+//			appCtr.getNameService().save...;
+//		}
+
+		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
 //		if ((descriptions = dataSet.getDescriptions()) != null) {
 //			logger.info("Saving " + descriptions.size() + " descriptions");
 //			appCtr.getDescriptionService().saveDescriptionAll(descriptions);
@@ -560,7 +575,7 @@ public class TestJaxb {
 		// via services rather than traversing the tree.
 	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		doDeserialize(deserializeToDb, marshOutOne);
+		//doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}
