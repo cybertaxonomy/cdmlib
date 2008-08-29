@@ -132,18 +132,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<Synonym> results = crit.list();
 		return results;
 	}
-
-//	public List<TaxonRelationship> getAllTaxonRelationships(Integer limit, Integer start) {
-//		Criteria crit = getSession().createCriteria(TaxonRelationship.class);
-//		List<TaxonRelationship> results = crit.list();
-//		return results;
-//	}
-
-//	public List<SynonymRelationship> getAllSynonymRelationships(Integer limit, Integer start) {
-//		Criteria crit = getSession().createCriteria(SynonymRelationship.class);
-//		List<SynonymRelationship> results = crit.list();
-//		return results;
-//	}
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(RelationshipBase.class);
