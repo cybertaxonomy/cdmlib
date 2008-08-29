@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -40,12 +42,15 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
 
-	@XmlElement(name = "RelatedFrom", type = Taxon.class)
+//  FIXME: TaxonBase.class does not cover TaxonNameBase which also implements IRelated.
+//	@XmlElement(name = "RelatedFrom", type = Taxon.class)
+	@XmlElement(name = "RelatedFrom", type = TaxonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private FROM relatedFrom;
 
-	@XmlElement(name = "RelatedTo", type = Taxon.class)
+//	@XmlElement(name = "RelatedFrom", type = Taxon.class)
+	@XmlElement(name = "RelatedTo", type = TaxonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private TO relatedTo;

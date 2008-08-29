@@ -10,8 +10,11 @@
 package eu.etaxonomy.cdm.model.media;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -24,6 +27,12 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @created 09.06.2008
  * @version 1.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MediaRepresentationPart", propOrder = {
+		"sortIndex",
+		"uri",
+		"size"
+})
 @Entity
 public class MediaRepresentationPart extends VersionableEntity{
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);

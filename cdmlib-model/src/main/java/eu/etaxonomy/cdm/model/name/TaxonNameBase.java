@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @XmlType(name = "TaxonNameBase", propOrder = {
     "appendedPhrase",
     "nomenclaturalMicroReference",
-//    "nomenclaturalReference",
+    "nomenclaturalReference",
     "rank",
     "homotypicalGroup",
     "typeDesignations",
@@ -124,16 +124,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
     @XmlElement(name = "RelationToThisName")
     @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
-    @XmlElementWrapper(name = "Statuses")
-    @XmlElement(name = "Status")
+    @XmlElementWrapper(name = "NomenclaturalStatus_")
+    @XmlElement(name = "NomenclaturalStatus")
     @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
     @XmlTransient
@@ -147,8 +150,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	private Rank rank;
 
 //  FIXME: This must be an IDREF to the corresponding nomenclatural reference.
-    @XmlTransient
+//    @XmlTransient
 //    @XmlAnyElement
+	@XmlElement(name = "NomenclaturalReference", type = ReferenceBase.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private INomenclaturalReference nomenclaturalReference;
 
 	static Method methodTaxonBaseSetName;

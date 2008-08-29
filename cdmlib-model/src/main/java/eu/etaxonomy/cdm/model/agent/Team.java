@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -46,6 +49,7 @@ import javax.xml.bind.annotation.XmlType;
 	"protectedNomenclaturalTitleCache",
     "teamMembers"
 })
+@XmlRootElement
 @Entity
 public class Team extends TeamOrPersonBase {
 	
@@ -57,8 +61,9 @@ public class Team extends TeamOrPersonBase {
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
     @XmlElementWrapper(name = "TeamMembers")
-    @XmlElement(name = "Member")
-    //@XmlIDREF
+    @XmlElement(name = "TeamMember")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	

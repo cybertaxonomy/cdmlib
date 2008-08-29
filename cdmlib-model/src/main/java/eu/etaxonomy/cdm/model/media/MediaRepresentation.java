@@ -17,10 +17,22 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TextData;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * metadata for an external file such as images, phylogenetic trees, or audio
@@ -29,6 +41,12 @@ import javax.xml.bind.annotation.XmlTransient;
  * @version 1.0
  * @created 08-Nov-2007 13:06:34
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MediaRepresentation", propOrder = {
+	"mimeType",
+    "suffix"
+//    "mediaRepresentationParts"
+})
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class MediaRepresentation extends VersionableEntity {
@@ -46,11 +64,16 @@ public class MediaRepresentation extends VersionableEntity {
 	@XmlTransient
 	private Media media;
 	
-	@XmlElementWrapper(name = "MediaRepresentationParts")
-	@XmlElement(name = "MediaRepresentationPart")
+    @XmlTransient
+//	@XmlElementWrapper(name = "MediaRepresentationParts")
+//	@XmlElement(name = "MediaRepresentationPart")
+//    @XmlElements({
+//        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CategoricalData.class),
+//        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CommonTaxonName.class),
+//        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Distribution.class),
+//    })
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
-	
-	
+		
 	/**
 	 * Factory method
 	 * @return

@@ -16,6 +16,8 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -45,6 +47,8 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	private String ruleConsidered;
 	
 	@XmlElement(name = "NomenclaturalStatusType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private NomenclaturalStatusType type;
 
 	/** 

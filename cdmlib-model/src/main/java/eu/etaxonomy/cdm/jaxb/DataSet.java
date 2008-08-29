@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -42,9 +43,12 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -81,6 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 		"agents",
 		"agentData",
 	    "references",
+	    "referencedEntities",
 	    "taxonomicNames",
 	    "taxa",
 	    "synonyms",
@@ -163,6 +168,15 @@ public class DataSet {
     })
     protected List<ReferenceBase> references;
 
+    @XmlElementWrapper(name = "ReferencedEntities")
+    @XmlElements({
+    	@XmlElement(name = "NomenclaturalStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalStatus.class),
+    	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
+    	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class),
+    })
+    protected List<ReferencedEntityBase> referencedEntities;
+
+    	
     @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
     	@XmlElement(name = "ZoologicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ZoologicalName.class),
@@ -344,6 +358,58 @@ public class DataSet {
     }
 
     /**
+     * Adds the referenced entities in value to the referenced entity property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<ReferencedEntityBase> }
+     *     
+     */
+    public void addReferencedEntities(Collection<ReferencedEntityBase> value) {
+    	for (ReferencedEntityBase referencedEntity: value) {
+    		this.referencedEntities.add(referencedEntity);
+    	}
+    }
+
+    /**
+     * Gets the value of the  property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<ReferencedEntityBase> }
+     *     
+     */
+    public List<ReferencedEntityBase> getReferencedEntities() {
+        return referencedEntities;
+    }
+
+    /**
+     * Sets the value of the referencedEntities property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<ReferencedEntityBase> }
+     *     
+     */
+    public void setReferencedEntities(List<ReferencedEntityBase> value) {
+        this.referencedEntities = value;
+    }
+    
+    /**
+     * Adds the taxa in value to the taxa property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<Taxon> }
+     *     
+     */
+    public void addTaxa(Collection<Taxon> value) {
+    	for (Taxon taxon: value) {
+    		this.taxa.add(taxon);
+    	}
+    }
+
+    /**
      * Gets the value of the taxa property.
      * 
      * @return
@@ -410,19 +476,6 @@ public class DataSet {
     		this.taxa.add(value);
     }
 
-    /**
-     * Adds the taxa in value to the taxa property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<Taxon> }
-     *     
-     */
-    public void addTaxa(Collection<Taxon> value) {
-    	for (Taxon taxon: value) {
-    		this.taxa.add(taxon);
-    	}
-    }
 
     /**
      * Gets the value of the synonyms property.

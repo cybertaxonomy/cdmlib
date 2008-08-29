@@ -42,10 +42,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
-    "",
-    "",
-    "",
-    ""
+	"sex",
+    "individualCount",
+    "lifeStage",
+    "descriptions",
+    "determinations"
 })
 @XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
@@ -68,7 +69,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	@XmlSchemaType(name = "IDREF")
 	private Sex sex;
 	
-	@XmlElement(name = "Scope")
+	@XmlElement(name = "LifeStage")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	private Stage lifeStage;

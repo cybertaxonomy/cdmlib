@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -48,7 +49,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-    "typifiedNames",
+//    "typifiedNames",
     "homotypicalGroup",
     "isNotDesignated"
 })
@@ -61,10 +62,12 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	@XmlElement(name = "IsNotDesignated")
 	private boolean isNotDesignated;
 	
-	@XmlElementWrapper(name = "TypifiedNames")
-	@XmlElement(name = "TypifiedName")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+    // Need the bidirectional reference?
+	@XmlTransient
+//	@XmlElementWrapper(name = "TypifiedNames")
+//	@XmlElement(name = "TypifiedName")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	@XmlElement(name = "HomotypicalGroup")

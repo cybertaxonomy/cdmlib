@@ -47,6 +47,7 @@ public class TermLoader {
 	
 	@Autowired
 	private IVocabularyStore vocabularyStore;
+//	private VocabularyStoreImpl vocabularyStore;
 	
 	
 	//TODO private -but Autowiring for constructor arguments is needed then for classes that use this class autowired (e.g. CdmTermInitializer)
