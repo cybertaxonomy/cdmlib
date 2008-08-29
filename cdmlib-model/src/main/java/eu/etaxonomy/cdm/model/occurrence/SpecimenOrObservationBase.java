@@ -45,8 +45,10 @@ import javax.xml.bind.annotation.XmlType;
 	"sex",
     "individualCount",
     "lifeStage",
+    "description",
     "descriptions",
-    "determinations"
+    "determinations",
+    "derivationEvents"
 })
 @XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
@@ -79,9 +81,14 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
+	@XmlElement(name = "Description")
 	private MultilanguageSet description;
 	
 	// events that created derivedUnits from this unit
+	@XmlElementWrapper(name = "DerivationEvents")
+	@XmlElement(name = "DerivationEvent")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<DerivationEvent> derivationEvents = new HashSet();
 
 	/**
