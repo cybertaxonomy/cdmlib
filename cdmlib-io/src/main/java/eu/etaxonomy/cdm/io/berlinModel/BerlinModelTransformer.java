@@ -79,8 +79,14 @@ public final class BerlinModelTransformer {
 	public static int TAX_REL_IS_INCLUDED_IN = 1;
 	public static int TAX_REL_IS_SYNONYM_OF = 2;
 	public static int TAX_REL_IS_MISAPPLIED_NAME_OF = 3;
+	public static int TAX_REL_IS_PROPARTE_SYN_OF = 4;
+	public static int TAX_REL_IS_PARTIAL_SYN_OF = 5;
 	public static int TAX_REL_IS_HETEROTYPIC_SYNONYM_OF = 6;
 	public static int TAX_REL_IS_HOMOTYPIC_SYNONYM_OF = 7;
+	public static int TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF = 101;
+	public static int TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF = 102;
+	public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
+	public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
 	
 
 	//TaxonStatus
