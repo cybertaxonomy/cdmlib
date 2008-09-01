@@ -33,11 +33,11 @@ public class PalmaeActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
-	static final String sourceSecId = "pub_999999";
+	static final String sourceSecId = "palm_pub_ed_999999";
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -47,8 +47,9 @@ public class PalmaeActivator {
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
-	static final boolean doTaxonNames = false;
+	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
+
 	//static final boolean doTypes = true;
 	//static final boolean doNameFacts = true;
 	
