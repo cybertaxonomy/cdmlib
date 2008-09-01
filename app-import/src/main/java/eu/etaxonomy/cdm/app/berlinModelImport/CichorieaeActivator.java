@@ -55,7 +55,9 @@ public class CichorieaeActivator {
 	static final Object[] featureKeyList = new Integer[]{5,10,11,12}; 	
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
+	//Mac
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	//Windows
 	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
 	
 	//check - import
