@@ -23,8 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Observation", propOrder = {
-})
 @XmlRootElement(name = "Observation")
 @Entity
 public class Observation extends DerivedUnitBase {

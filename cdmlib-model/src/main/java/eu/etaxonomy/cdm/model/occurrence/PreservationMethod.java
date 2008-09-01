@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
@@ -19,9 +22,26 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:44
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "PreservationMethod")
 @Entity
 public class PreservationMethod extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(PreservationMethod.class);
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static PreservationMethod NewInstance(){
+		return new PreservationMethod();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	private PreservationMethod() {
+		super();
+	}
 	
 	/**
 	 * Factory method

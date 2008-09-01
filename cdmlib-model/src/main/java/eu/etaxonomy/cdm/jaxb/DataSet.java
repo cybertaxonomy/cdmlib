@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -53,6 +54,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.Fossil;
+import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
+import eu.etaxonomy.cdm.model.occurrence.Observation;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -84,6 +91,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "termVocabularies",
 		"agents",
 		"agentData",
+		"occurrences",
 	    "references",
 	    "referencedEntities",
 	    "taxonomicNames",
@@ -147,6 +155,17 @@ public class DataSet {
     @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     protected List<TermVocabulary> termVocabularies;
 
+    @XmlElementWrapper(name = "Occurrences")
+    @XmlElements({
+    	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
+    	@XmlElement(name = "FieldObservation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldObservation.class),
+    	@XmlElement(name = "Fossil", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Fossil.class),
+    	@XmlElement(name = "LivingBeing", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = LivingBeing.class),
+    	@XmlElement(name = "Observation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Observation.class),
+    	@XmlElement(name = "Specimen", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Specimen.class)
+    })
+    protected List<SpecimenOrObservationBase> occurrences;
+    
     @XmlElementWrapper(name = "References")
     @XmlElements({
     	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
@@ -334,7 +353,31 @@ public class DataSet {
     }
 
     /**
-     * Gets the value of the taxonomicNames property.
+     * Gets the value of the references property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<SpecimenOrObservationBase> }
+     *     
+     */
+    public List<SpecimenOrObservationBase> getOccurrences() {
+        return occurrences;
+    }
+
+    /**
+     * Sets the value of the references property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<SpecimenOrObservationBase> }
+     *     
+     */
+    public void setOccurrences(List<SpecimenOrObservationBase> value) {
+        this.occurrences = value;
+    }
+
+    /**
+     * Gets the value of the references property.
      * 
      * @return
      *     possible object is
@@ -346,7 +389,7 @@ public class DataSet {
     }
 
     /**
-     * Sets the value of the taxonomicNames property.
+     * Sets the value of the references property.
      * 
      * @param value
      *     allowed object is

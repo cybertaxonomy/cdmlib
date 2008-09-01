@@ -14,6 +14,14 @@ import java.util.Calendar;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.Agent;
@@ -26,21 +34,51 @@ import eu.etaxonomy.cdm.model.location.Point;
  * @author m.doering
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "GatheringEvent", propOrder = {
+    "locality",
+    "exactLocation",
+    "collectingArea",
+    "collectingMethod",
+    "absoluteElevation",
+    "absoluteElevationError",
+    "distanceToGround",
+    "distanceToWaterSurface"
+})
+@XmlRootElement(name = "GatheringEvent")
 @Entity
 public class GatheringEvent extends EventBase {
+	
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
 
 	//Locality name (as free text) where this occurrence happened
+	@XmlElement(name = "Locality")
 	private String locality;
+	
+	@XmlElement(name = "ExactLocation")
 	private Point exactLocation;
+	
+	@XmlElement(name = "CollectingArea")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private NamedArea collectingArea;
+	
+	@XmlElement(name = "CollectingMethod")
 	private String collectingMethod;
+	
 	// meter above/below sea level of the surface
+	@XmlElement(name = "AbsoluteElevation")
 	private Integer absoluteElevation;
+	
+	@XmlElement(name = "AbsoluteElevationError")
 	private Integer absoluteElevationError;
+	
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope 
+	@XmlElement(name = "DistanceToGround")
 	private Integer distanceToGround;
-	// distance in meters to lake or sea surface. Simmilar to distanceToGround use negative integers for distance *below* the surface, ie under water 
+	
+	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water 
+	@XmlElement(name = "DistanceToWaterSurface")
 	private Integer distanceToWaterSurface;
 
 

@@ -16,6 +16,14 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -23,12 +31,33 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DerivationEvent", propOrder = {
+    "originals",
+    "derivatives",
+    "type"
+})
+@XmlRootElement(name = "DerivationEvent")
 @Entity
 public class DerivationEvent extends EventBase{
+	
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
+	@XmlElementWrapper(name = "Originals")
+	@XmlElement(name = "Original")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
+	
+	@XmlElementWrapper(name = "Derivatives")
+	@XmlElement(name = "Derivatives")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
+	
+	@XmlElement(name = "DerivationEventTypeRef")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private DerivationEventType type;
 	
 	/**
