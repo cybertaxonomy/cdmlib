@@ -35,7 +35,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** save a taxon and return its UUID**/
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
-	/** save a collection of  taxa and return its UUID**/
+	/** save a collection of taxa and return its UUID**/
 	public abstract Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection);
 
 	
@@ -74,22 +74,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 	
-	/**
-	 * Computes all taxon relationships.
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-    //public abstract List<TaxonRelationship> getAllTaxonRelationships(int limit, int start);
-
-	/**
-	 * Computes all synonym relationships.
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-    //public abstract List<SynonymRelationship> getAllSynonymRelationships(int limit, int start);
-    
 	/**
 	 * Computes all relationships.
 	 * @param limit

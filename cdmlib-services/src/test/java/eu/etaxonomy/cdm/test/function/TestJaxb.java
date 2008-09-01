@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -159,7 +160,6 @@ public class TestJaxb {
 	
     }
 	
-    
     private void retrieveAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
     	
         final int MAX_ROWS = 50000;
@@ -172,6 +172,7 @@ public class TestJaxb {
     	int taxonRelationshipRows = numberOfRows;
     	int synonymRelationshipRows = numberOfRows;
     	int relationshipRows = numberOfRows;
+    	int occurrencesRows = numberOfRows;
     	
     	if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
     	logger.info("# Agents: " + agentRows);
@@ -216,6 +217,10 @@ public class TestJaxb {
     	dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
     	dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
     	
+    	if (occurrencesRows == 0) { occurrencesRows = appCtr.getOccurrenceService().count(SpecimenOrObservationBase.class); }
+    	logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
+    	dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+
     	// TODO: 
     	// retrieve taxa and synonyms separately
     	// need correct count for taxa and synonyms
@@ -237,6 +242,7 @@ public class TestJaxb {
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
 		List<ReferencedEntityBase> referencedEntities;
+		List<SpecimenOrObservationBase> occurrences;
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
@@ -245,10 +251,10 @@ public class TestJaxb {
 
 		/* If terms are not saved here explicitly, then only those terms that are used
 		are saved implicitly. */
-//		if ((terms = dataSet.getTerms()) != null) {
-//			logger.info("Saving " + terms.size() + " terms");
-//		    appCtr.getTermService().saveTermsAll(terms);
-//		}
+		if ((terms = dataSet.getTerms()) != null) {
+			logger.info("Saving " + terms.size() + " terms");
+		    appCtr.getTermService().saveTermsAll(terms);
+		}
 		
 		if ((agents = dataSet.getAgents()) != null) {
 			logger.info("Saving " + agents.size() + " agents");
@@ -273,7 +279,7 @@ public class TestJaxb {
 			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 		
-	    // NomenclaturalStatus and TypeDesignations saved with taxon names?
+	    // NomenclaturalStatus and TypeDesignations are saved with taxon names
 //		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
 //			logger.info("Saving referenced entities");
 //			appCtr.getNameService().save...;
@@ -285,6 +291,11 @@ public class TestJaxb {
 //			appCtr.getDescriptionService().saveDescriptionAll(descriptions);
 //		}
 		
+		if ((occurrences = dataSet.getOccurrences()) != null) {
+			logger.info("Saving " + occurrences.size() + " references");
+		     appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
+		}
+
 		logger.info("All data saved");
 
 		appCtr.commitTransaction(txStatus);
@@ -575,7 +586,7 @@ public class TestJaxb {
 		// via services rather than traversing the tree.
 	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		//doDeserialize(deserializeToDb, marshOutOne);
+		doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}

@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -271,6 +272,10 @@ public class CdmApplicationController {
 		return configuration.getDescriptionService();
 	}
 	
+	public final IOccurrenceService getOccurrenceService(){
+		return configuration.getOccurrenceService();
+	}
+
 	public final ICommonService getCommonService(){
 		return configuration.getCommonService();
 	}

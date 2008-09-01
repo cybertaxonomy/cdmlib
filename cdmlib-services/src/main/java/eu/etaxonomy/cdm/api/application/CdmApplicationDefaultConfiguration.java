@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -49,6 +50,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private HibernateTransactionManager transactionManager;
 	@Autowired
 	private IDescriptionService descriptionService;
+	@Autowired
+	private IOccurrenceService occurrenceService;
 	@Autowired
 	private ICommonService commonService;
 
@@ -99,6 +102,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public IDescriptionService getDescriptionService(){
 		return this.descriptionService;
+	}
+
+	public IOccurrenceService getOccurrenceService(){
+		return this.occurrenceService;
 	}
 
 	/* (non-Javadoc)
