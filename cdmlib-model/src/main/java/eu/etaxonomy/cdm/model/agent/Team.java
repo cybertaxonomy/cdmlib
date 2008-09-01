@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
@@ -88,6 +90,7 @@ public class Team extends TeamOrPersonBase {
 	 * A person may be a member of several distinct teams. 
 	 */
 	@ManyToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<Person> getTeamMembers(){
 		return this.teamMembers;
 	}
