@@ -166,22 +166,22 @@ public class CdmServiceImpl implements ICdmService {
 	}
 
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
-		ResultSetPageSTO<TaxonSTO> rs = new ResultSetPageSTO<TaxonSTO>();
+		ResultSetPageSTO<TaxonSTO> resultSetPage = new ResultSetPageSTO<TaxonSTO>();
 
-		rs.setPageNumber(page);
-		rs.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted));
+		resultSetPage.setPageNumber(page);
+		resultSetPage.setPageSize(pagesize);
+		resultSetPage.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted));
 //		if(MAXRESULTS > 0 && rs.getTotalResultsCount() > MAXRESULTS){
 //			rs.setTotalResultsCount(-1);
 //			return rs;
 //		}
 		// TODO: add other criteria. Has to be done in DAO...
 		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, null);
-		rs.setPageSize(results.size());
-		for (TaxonBase tb : results){
-			TaxonSTO tx = taxonAssembler.getSTO(tb, locales);
-			rs.getResults().add(tx);
+		resultSetPage.setResultsOnPage(results.size());
+		for (TaxonBase taxonBase : results){
+			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));
 		}
-		return rs;
+		return resultSetPage;
 	}
 
 	/* (non-Javadoc)

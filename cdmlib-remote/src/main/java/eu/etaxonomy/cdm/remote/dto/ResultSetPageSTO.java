@@ -102,7 +102,7 @@ public class ResultSetPageSTO<T extends IBaseSTO> {
 	private void setTotalPageCount(int totalPageCount) {
 		this.totalPageCount = totalPageCount;
 	}
-	private void setResultsOnPage(int resultsOnPage) {
+	public void setResultsOnPage(int resultsOnPage) {
 		this.resultsOnPage = resultsOnPage;
 	}
 	private void setResults(List<T> results) {
