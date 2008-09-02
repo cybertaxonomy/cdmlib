@@ -64,8 +64,11 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 						status.getLabel(),
 						status.getUuid().toString())
 				);
-			// append reference only if there is a status
-			sto.setReference(referenceAssembler.getSTO(typeDesignation.getCitation(), false, typeDesignation.getCitationMicroReference(), locales));
+			// append reference only if there is a status and only for lecto and neotypes
+			// TODO isNeoType has to be implemented in the model
+			if(typeDesignation.isLectoType()){
+				sto.setReference(referenceAssembler.getSTO(typeDesignation.getCitation(), false, typeDesignation.getCitationMicroReference(), locales));
+			}
 		}
 		sto.setTypeSpecimen(specimenAssembler.getSTO(typeDesignation.getTypeSpecimen(), locales));
 		return sto;

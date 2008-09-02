@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.remote.dto;
 
 
-public class TypeDesignationSTO extends ReferencedEntityBaseSTO {
+public abstract class TypeDesignationSTO extends ReferencedEntityBaseSTO {
 	private IdentifiedString status;
 
 

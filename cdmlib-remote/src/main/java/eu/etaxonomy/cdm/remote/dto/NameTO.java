@@ -40,7 +40,7 @@ public class NameTO extends BaseTO {
 	private NameTO basionym;
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 
-	private List<NameRelationshipTO> nameRelations = new ArrayList<NameRelationshipTO>();
+	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
 	
 	
 	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
@@ -84,10 +84,10 @@ public class NameTO extends BaseTO {
 	public void setBasionym(NameTO basionym) {
 		this.basionym = basionym;
 	}
-	public List<NameRelationshipTO> getNameRelations() {
+	public Set<NameRelationshipTO> getNameRelations() {
 		return nameRelations;
 	}
-	public void setNameRelations(List<NameRelationshipTO> nameRelations) {
+	public void setNameRelations(Set<NameRelationshipTO> nameRelations) {
 		this.nameRelations = nameRelations;
 	}
 	public Set<NameTO> getNewCombinations() {

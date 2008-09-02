@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,11 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
@@ -94,8 +96,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 				locales = prependLocale(locales, new Locale("la"));
 				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales));
 			}
-			name.setNameRelations(getNameRelationshipTOs(taxonNameBase.getNameRelations(), locales));
-	    	
+			name.setNameRelations(getNameRelationshipTOs(taxonNameBase, locales));
 		}
 		return name;
 	}
@@ -116,11 +117,29 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	 * @param locales
 	 * @return
 	 */
-	public List<NameRelationshipTO> getNameRelationshipTOs(Set<NameRelationship> nameRelationships, Enumeration<Locale> locales){
-		List<NameRelationshipTO>  nameRelationshipTOs = new ArrayList<NameRelationshipTO>(nameRelationships.size());
+	public Set<NameRelationshipTO> getNameRelationshipTOs(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){
+		Set<NameRelationship> nameRelationships = taxonNameBase.getNameRelations();
+		Set<NameRelationshipTO>  nameRelationshipTOs = new HashSet<NameRelationshipTO>(nameRelationships.size());
 
+		// HACK nameRelationships should be grouped by their type. 
+		// TODO Why isn't this happening in the model?
+		Map<NameRelationshipType, ArrayList<NameRelationship>> nameRelMap = new HashMap<NameRelationshipType, ArrayList<NameRelationship>>();
 		for(NameRelationship nameRelationship : nameRelationships){
-			nameRelationshipTOs.add(getNameRelationshipTO(nameRelationship, locales));
+			// get relations where this name is not in the from part
+			if(!nameRelationship.getFromName().equals(taxonNameBase)){
+				if(nameRelMap.containsKey(nameRelationship.getType())){
+					nameRelMap.get(nameRelationship.getType()).add(nameRelationship);
+				}else{
+					ArrayList<NameRelationship> al = new ArrayList<NameRelationship>();
+					al.add(nameRelationship);
+					nameRelMap.put(nameRelationship.getType(), al);
+				}	
+			}
+		}
+		
+		for(NameRelationshipType nameRelationshipType : nameRelMap.keySet()){
+			ArrayList<NameRelationship> nameRelations = nameRelMap.get(nameRelationshipType);
+			nameRelationshipTOs.add(getNameRelationshipTO(nameRelationshipType, nameRelations, locales));
 		}
 		
 		return nameRelationshipTOs;
@@ -133,14 +152,17 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	 * @param locales
 	 * @return
 	 */
-	public NameRelationshipTO getNameRelationshipTO(NameRelationship nameRelation, Enumeration<Locale> locales){
+	public NameRelationshipTO getNameRelationshipTO(NameRelationshipType nameRelationshipType, ArrayList<NameRelationship> nameRelations, Enumeration<Locale> locales){
 		NameRelationshipTO nameRelationshipTO = new NameRelationshipTO();
 		
-		nameRelationshipTO.setName(getSTO(nameRelation.getFromName(), locales));
+		nameRelationshipTO.setType(localisedTermAssembler.getSTO(nameRelationshipType, locales, true));
 		
-		nameRelationshipTO.setType(localisedTermAssembler.getSTO(nameRelation.getType(), locales, true));
 		
-		nameRelationshipTO.setRuleConsidered(nameRelation.getRuleConsidered());
+		for(NameRelationship nameRelation : nameRelations){
+			nameRelationshipTO.addName(getSTO(nameRelation.getFromName(), locales));
+		}
+		
+		//nameRelationshipTO.setRuleConsidered(nameRelation.getRuleConsidered());
 		
 		return nameRelationshipTO;
 	}

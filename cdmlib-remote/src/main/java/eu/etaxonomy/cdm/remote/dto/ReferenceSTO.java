@@ -28,6 +28,8 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 	 * formatted string containing the entire reference citation including microreference
 	 */
 	private String fullCitation;
+	
+	private String year;
 
 	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 
@@ -69,6 +71,14 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 
 	public void addMedia(MediaSTO media) {
 		this.media.add(media);
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public String getYear() {
+		return year;
 	}
 
 

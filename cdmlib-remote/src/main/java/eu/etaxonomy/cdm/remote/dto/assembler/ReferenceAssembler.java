@@ -76,6 +76,7 @@ public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO,
 		}
 		//TODO compile fullCitation using a formatter
 		r.setFullCitation(fullCitation);
+		r.setYear(rb.getYear());
 		return r;
 	}
 }

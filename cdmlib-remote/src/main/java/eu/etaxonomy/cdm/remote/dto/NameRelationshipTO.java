@@ -9,8 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class NameRelationshipTO extends ReferencedEntityBaseSTO {
 	private String ruleConsidered;
 
 	// basic data on the referenced Name object:
-	private NameSTO name;
+	private Set<NameSTO> relatedNames = new HashSet<NameSTO>();
 
 	/**
 	 * @return the type
@@ -59,15 +59,19 @@ public class NameRelationshipTO extends ReferencedEntityBaseSTO {
 	/**
 	 * @return the name
 	 */
-	public NameSTO getName() {
-		return name;
+	public Set<NameSTO> getRelatedNames() {
+		return relatedNames;
+	}
+	
+	public void addName(NameSTO name){
+		this.relatedNames.add(name);
 	}
 
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(NameSTO name) {
-		this.name = name;
+	public void setRelatedNames(Set<NameSTO> relatedNames) {
+		this.relatedNames = relatedNames;
 	}
 	
 	

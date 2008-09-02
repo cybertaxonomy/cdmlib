@@ -25,4 +25,8 @@ public interface IReferenceSTO extends IBaseSTO{
 
 	public abstract void addMedia(MediaSTO media);
 
+	public abstract String getYear();
+	
+	public abstract void setYear(String year);
+
 }
