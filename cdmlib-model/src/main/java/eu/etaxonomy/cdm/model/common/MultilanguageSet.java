@@ -11,6 +11,11 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 
 
@@ -18,6 +23,8 @@ import org.apache.log4j.Logger;
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MultilanguageSet")
 public class MultilanguageSet extends HashMap<Language, LanguageString> {
 	
 	private static final long serialVersionUID = 7876604337076705862L;

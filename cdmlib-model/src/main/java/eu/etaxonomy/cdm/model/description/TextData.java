@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.Map;
 
+import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageSet;
@@ -20,19 +21,39 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:59
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TextData", propOrder = {
+    "multilanguageStringMap",
+    "format"
+})
+@XmlRootElement(name = "TextData")
 @Entity
 public class TextData extends DescriptionElementBase {
+	
 	static Logger logger = Logger.getLogger(TextData.class);
 
-	@XmlTransient
+	@XmlElement(name = "MultilanguageStringMap")
+    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
 	private Map<Language, LanguageString> multilanguageStringMap;
+	
+	@XmlElement(name = "Format")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private TextFormat format;
 	
 	public static TextData NewInstance(){

@@ -65,6 +65,7 @@ public class MediaRepresentation extends VersionableEntity {
 	private Media media;
 	
     @XmlTransient
+    //FIXME: ArrayIndexOutOfBoundException during marshalling
 //	@XmlElementWrapper(name = "MediaRepresentationParts")
 //	@XmlElement(name = "MediaRepresentationPart")
 //    @XmlElements({

@@ -17,6 +17,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * {type is "host" or "hybrid_parent"}
@@ -24,10 +31,23 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "IndividualsAssociation", propOrder = {
+    "description",
+    "associatedSpecimenOrObservation"
+})
+@XmlRootElement(name = "IndividualsAssociation")
 @Entity
 public class IndividualsAssociation extends DescriptionElementBase {
+	
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
+	
+	@XmlElement(name = "Description")
 	private MultilanguageSet description;
+	
+	@XmlElement(name = "AssociatedSpecimenOrObservation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private SpecimenOrObservationBase associatedSpecimenOrObservation;
 
 

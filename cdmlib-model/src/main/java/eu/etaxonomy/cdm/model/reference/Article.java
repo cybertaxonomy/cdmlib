@@ -16,7 +16,9 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -69,6 +71,8 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	private String pages;
 	
     @XmlElement(name = "InJournal")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Journal inJournal;
 	
     @XmlTransient

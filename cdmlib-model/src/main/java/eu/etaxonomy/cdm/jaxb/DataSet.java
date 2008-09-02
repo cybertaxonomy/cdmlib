@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -94,6 +96,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 		"occurrences",
 	    "references",
 	    "referencedEntities",
+	    "featureData",
 	    "taxonomicNames",
 	    "taxa",
 	    "synonyms",
@@ -126,6 +129,13 @@ public class DataSet {
     })
     protected List<VersionableEntity> agentData;
 
+    @XmlElementWrapper(name = "FeatureData")
+    @XmlElements({
+    @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
+    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class),
+    })
+    protected List<VersionableEntity> featureData;
+
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Continent.class),
@@ -148,7 +158,6 @@ public class DataSet {
     	@XmlElement(name = "TypeDesignationStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TypeDesignationStatus.class),
     	@XmlElement(name = "WaterbodyOrCountry", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = WaterbodyOrCountry.class)
     })
-    //protected List<? extends TermBase> terms;
     protected List<DefinedTermBase> terms;
 
     @XmlElementWrapper(name = "TermVocabularies")
@@ -436,6 +445,44 @@ public class DataSet {
      */
     public void setReferencedEntities(List<ReferencedEntityBase> value) {
         this.referencedEntities = value;
+    }
+    
+    /**
+     * Adds the features in value to the feature data property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<VersionableEntity> }
+     *     
+     */
+    public void addFeatureData(Collection<VersionableEntity> value) {
+    	for (VersionableEntity featureItem: value) {
+    		this.featureData.add(featureItem);
+    	}
+    }
+
+    /**
+     * Gets the value of the feature data property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<VersionableEntity> }
+     *     
+     */
+    public List<VersionableEntity> getFeatureData() {
+        return featureData;
+    }
+
+    /**
+     * Sets the value of the feature data property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<VersionableEntity> }
+     *     
+     */
+    public void setFeatureData(List<VersionableEntity> value) {
+        this.featureData = value;
     }
     
     /**
