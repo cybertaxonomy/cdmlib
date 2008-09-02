@@ -73,19 +73,19 @@ public class TestJaxb {
 	//private static final String serializeFromDb = "cdm_test_jaxb";
 	//private static final String deserializeToDb = "cdm_test_anahit2";
 	
+	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
+	//private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	
+	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
+	 *  as many rows as specified for agents, references, etc. 
+	 *  Only root taxa and no synonyms and relationships are retrieved. */
+	private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
+	
 	private String server = "192.168.2.10";
 	private String username = "edit";
 	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
 	private String marshOutTwo = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_roundtrip.xml");
 
-	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
-	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
-	
-	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
-	 *  as many rows as specified for agents, references, etc. 
-	 *  Only root taxa and no synonyms and relationships are retrieved. */
-	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
-	
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
     public TestJaxb() {	
@@ -207,6 +207,14 @@ public class TestJaxb {
 			}
     	}
     	
+    	// TODO: 
+    	// retrieve taxa and synonyms separately
+    	// need correct count for taxa and synonyms
+//    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+//    	logger.info("# Synonym: " + taxonBaseRows);
+//		dataSet.setSynonyms(new ArrayList<Synonym>());
+//    	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
+
     	if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
     	logger.info("# Relationships...");
     	List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
@@ -221,13 +229,9 @@ public class TestJaxb {
     	logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
     	dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
 
-    	// TODO: 
-    	// retrieve taxa and synonyms separately
-    	// need correct count for taxa and synonyms
-//    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
-//    	logger.info("# Synonym: " + taxonBaseRows);
-//		dataSet.setSynonyms(new ArrayList<Synonym>());
-//    	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
+//    	logger.info("# Feature Tree, Feature Node...");
+//    	dataSet.setFeatureData(appCtr.getDescriptionService().getAllFeatureNodes(MAX_ROWS, 0));
+//    	dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTree());
 
     }
 
@@ -236,21 +240,21 @@ public class TestJaxb {
 
 		Collection<TaxonBase> taxonBases;
 		List<Agent> agents;
-		//List<? extends TermBase> terms;
 		List<DefinedTermBase> terms;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
+		List<VersionableEntity> featureData;
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		// Currently it's sufficient to save the taxa only since all other data
 		// related to the taxa, such as synonyms, are automatically saved as well.
 
-		/* If terms are not saved here explicitly, then only those terms that are used
-		are saved implicitly. */
+		/* If terms are not saved here explicitly, then only those terms that are referenced
+		by other objects are saved implicitly. */
 		if ((terms = dataSet.getTerms()) != null) {
 			logger.info("Saving " + terms.size() + " terms");
 		    appCtr.getTermService().saveTermsAll(terms);
@@ -296,6 +300,13 @@ public class TestJaxb {
 		     appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
 		}
 
+		// TODO: Implement Feature Node, Feature tree once model is final
+//		if ((featureData = dataSet.getFeatureData()) != null) {
+//			logger.info("Saving feature tree and feature nodes");
+//			appCtr.getDescriptionService().saveFeatureData(descriptions);
+//			appCtr.getDescriptionService().saveFeatureTree(tree);
+//		}
+		
 		logger.info("All data saved");
 
 		appCtr.commitTransaction(txStatus);
