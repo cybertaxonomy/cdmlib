@@ -413,6 +413,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEnt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IIdentifiableDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOrderedTermVocabularyDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOriginalSourceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITermVocabularyDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITitledDao.java -text
