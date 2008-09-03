@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -30,7 +32,12 @@ public class TcsSources {
 		//		Monocots rdf
 		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/palm_tn_29336.xml";
 		return sourceUrl;
-		
+	}
+
+	public static File taxonX_localDir(){
+		//		Monocots rdf
+		File sourceDir = new File("C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/taxonX/");
+		return sourceDir;
 	}
 	
 	public static String arecaceae_local(){
@@ -44,13 +51,12 @@ public class TcsSources {
 		//		Monocots rdf
 		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
 		return sourceUrl;
-		
 	}
 	
 	public static String arecaceae_short(){
 		//		Monocots rdf
 		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_short.rdf";
 		return sourceUrl;
-		
 	}
+	
 }

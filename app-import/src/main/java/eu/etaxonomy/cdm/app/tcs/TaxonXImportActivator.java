@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -16,11 +19,10 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
 
 /**
@@ -38,24 +40,12 @@ public class TaxonXImportActivator {
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final int sourceSecId = 7800000;
+	static final File directory  = TcsSources.taxonX_localDir();
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	
-	//authors
-	static final boolean doAuthors = false;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-	//names
-	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
-	
-	//taxa
-	static final boolean doTaxa = false;
-	static final boolean doRelTaxa = false;
-	static final boolean doDescriptions = false;
+	static final boolean doDescriptions = true;
 	
 	/**
 	 * @param args
@@ -74,23 +64,28 @@ public class TaxonXImportActivator {
 		taxonXImportConfigurator.setSecUuid(secUuid);
 		taxonXImportConfigurator.setSourceSecId(sourceSecId);
 		
-		taxonXImportConfigurator.setDoAuthors(doAuthors);
-		taxonXImportConfigurator.setDoReferences(doReferences);
-		taxonXImportConfigurator.setDoTaxonNames(doTaxonNames);
-		taxonXImportConfigurator.setDoRelNames(doRelNames);
-		//tcsImportConfigurator.setDoNameStatus(doNameStatus);
-		taxonXImportConfigurator.setDoTypes(doTypes);
-		taxonXImportConfigurator.setDoNameFacts(doNameFacts);
-		
-		taxonXImportConfigurator.setDoTaxa(doTaxa);
-		taxonXImportConfigurator.setDoRelTaxa(doRelTaxa);
 		taxonXImportConfigurator.setDoFacts(doDescriptions);
 		
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		//new Test().invoke(tcsImportConfigurator);
-		cdmImport.invoke(taxonXImportConfigurator);
+		if (directory.isDirectory()){
+			
+			for (File file : directory.listFiles() ){
+				URL url;
+				try {
+					url = file.toURI().toURL();
+					taxonXImportConfigurator.setSource(url.toString());
+					cdmImport.invoke(taxonXImportConfigurator);
+				} catch (MalformedURLException e) {
+					logger.warn(e);
+				}
+			}	
+		}else{
+			cdmImport.invoke(taxonXImportConfigurator);
+		}
+		 
 		System.out.println("End import from Source ("+ source.toString() + ")...");
 	}
 
