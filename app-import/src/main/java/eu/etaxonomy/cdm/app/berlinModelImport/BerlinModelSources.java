@@ -60,6 +60,15 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 
+	public static Source El_Salvador(){
+		//	BerlinModel - EditWp6
+		String dbms = "SQLServer";
+		String strServer = "SQL2000Intern";
+		String strDB = "Salvador";
+		int port = 1433;
+		String userName = "webUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
 	
 
 	/**
