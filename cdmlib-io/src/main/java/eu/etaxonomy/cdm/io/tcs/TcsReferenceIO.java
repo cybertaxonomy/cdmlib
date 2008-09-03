@@ -170,7 +170,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		Namespace publicationNamespace = root.getNamespace(prefix);
 
 		
-		
+		String idNamespace = "PublicationCitation";
 		tcsElementName = "PublicationCitation";
 		tcsNamespace = publicationNamespace;
 		List<Element> elPublicationCitations = root.getChildren(tcsElementName, tcsNamespace);
@@ -241,6 +241,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 				String strShortTitle = elPublicationCitation.getChildText(tcsElementName, tcsNamespace);
 				if (! CdmUtils.Nz(strShortTitle).trim().equals("")){
 					ref.setTitle(strShortTitle);
+					ImportHelper.setOriginalSource(ref, config.getSourceReference(), strAbout, idNamespace);
 					nomRefMap.put(strAbout, ref);
 					nomRefCount++;
 					nomRefExists = true;
@@ -254,10 +255,12 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 					//TODO
 					StrictReferenceBase biblioRef = (StrictReferenceBase)ref.clone();
 					biblioRef.setTitle(strTitle);
+					ImportHelper.setOriginalSource(ref, config.getSourceReference(), strAbout, idNamespace);
 					referenceMap.put(strAbout, biblioRef);
 					biblioRefsCount++;
 				}
-
+				
+				
 				checkAdditionalContents(elPublicationCitation, standardMappers, operationalMappers, unclearMappers);
 
 				

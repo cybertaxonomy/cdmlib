@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.tcs;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +28,12 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
@@ -63,7 +69,6 @@ public abstract class TcsIoBase  extends CdmIoBase {
 		return true;
 	}
 	
-	
 	private Object getValue(CdmIoXmlMapperBase mapper, Element parentElement){
 		String sourceAttribute = mapper.getSourceAttribute();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
@@ -77,8 +82,6 @@ public abstract class TcsIoBase  extends CdmIoBase {
 		Object value = child.getTextTrim();
 		return value;
 	}
-
-
 	
 	protected boolean checkAdditionalContents(Element parentElement, CdmIoXmlMapperBase[] classMappers, CdmIoXmlMapperBase[] operationalMappers, CdmIoXmlMapperBase[] unclearMappers){
 		List<Content> additionalContentList = new ArrayList<Content>();

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -99,9 +100,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		String xmlAttributeName;
 		Namespace elementNamespace;
 		Namespace attributeNamespace;
-		String cdmAttrName;
-		String value;
-
+		
 		logger.info("start makeTaxa ...");
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
@@ -118,7 +117,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		prefix = "tgeo";
 		Namespace geoNamespace = root.getNamespace(prefix);
 
-		
+		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
@@ -182,7 +181,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			Set<String> omitAttributes = null;
 			makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
 
-			
+			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonAbout, idNamespace);
 			checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
 			
 			taxonMap.put(taxonAbout, taxonBase);

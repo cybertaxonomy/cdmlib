@@ -106,9 +106,10 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 		Namespace commonNamespace = root.getNamespace(prefix);
 		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
 		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
+
+		String idNamespace = "TaxonName";
 		
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
-
 		
 		int i = 0;
 		//for each taxonName
@@ -207,6 +208,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 					}
 						
 				}
+				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), nameAbout, idNamespace);
 				
 				checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
 				
