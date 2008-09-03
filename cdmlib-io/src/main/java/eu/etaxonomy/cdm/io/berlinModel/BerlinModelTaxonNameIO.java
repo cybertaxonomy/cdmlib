@@ -85,6 +85,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
 			
 			ResultSet rs = source.getResultSet(strQuery) ;
+			String namespace = "Name";
 			
 			int i = 0;
 			//for each reference
@@ -149,7 +150,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					success &= makeNomenclaturalReference(bmiConfig, taxonNameBase, nameId, rs, stores);
 
 					//created, notes
-					success &= doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId);
+					success &= doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId, namespace);
 					
 					//Marker
 					boolean flag = true;

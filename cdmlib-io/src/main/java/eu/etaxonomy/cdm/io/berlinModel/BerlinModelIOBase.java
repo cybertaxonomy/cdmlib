@@ -22,7 +22,7 @@ public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 	}
 	
 	
-	protected boolean doIdCreatedUpdatedNotes(IImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id)
+	protected boolean doIdCreatedUpdatedNotes(IImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
 		
 		Object createdWhen = rs.getObject("Created_When");
@@ -40,7 +40,7 @@ public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 		boolean success  = true;
 		
 		//id
-		ImportHelper.setOriginalSource(identifiableEntity, bmiConfig.getSourceReference(), id);
+		ImportHelper.setOriginalSource(identifiableEntity, bmiConfig.getSourceReference(), id, namespace);
 
 		
 		//Created When, Who, Updated When Who

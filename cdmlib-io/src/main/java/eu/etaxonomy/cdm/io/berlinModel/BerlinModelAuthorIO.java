@@ -72,6 +72,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 				" SELECT *  " +
                 " FROM AuthorTeam " ;
 		ResultSet rs = source.getResultSet(strQuery) ;
+		String namespace = "AuthorTeam";
 		
 		int i = 0;
 		//for each reference
@@ -99,7 +100,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 				//title cache or nomenclaturalTitle?
 
 				//created, notes
-				doIdCreatedUpdatedNotes(config, team, rs, teamId);
+				doIdCreatedUpdatedNotes(config, team, rs, teamId, namespace);
 
 				teamMap.put(teamId, team);
 			} //while rs.hasNext()

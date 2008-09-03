@@ -118,7 +118,8 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		logger.info("start makeTaxa ...");
 		
 		ITaxonService taxonService = cdmApp.getTaxonService();
-
+		String namespace = "PTaxon";
+		
 		try {
 			//get data from database
 			String strQuery = 
@@ -201,7 +202,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 					}
 					
 					//nameId
-					ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId);
+					ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId, namespace);
 
 					
 					//TODO

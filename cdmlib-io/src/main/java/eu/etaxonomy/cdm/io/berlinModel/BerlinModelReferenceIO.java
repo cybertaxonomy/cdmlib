@@ -219,6 +219,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
                     " WHERE (1=1) AND (RefDetail.PreliminaryFlag = 1)";
 			
 			ResultSet rs = source.getResultSet(strQuery);
+			String namespace = "RefDetail";
 			
 			int i = 0;
 			RefCounter refCounter  = new RefCounter();
@@ -234,10 +235,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					Generic genericReference = Generic.NewInstance();
 					genericReference.setTitleCache(fullNomRefCache);
 					nomRefDetailMap.put(refDetailId, genericReference);
-					//created, notes
-					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId );						
-					//refId
-					ImportHelper.setOriginalSource(genericReference, bmiConfig.getSourceReference(), refDetailId);							
+					//refId, created, notes
+					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId, namespace );						
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 					refCounter.nomRefCount++;
@@ -251,10 +250,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 					genericReference.setTitleCache(fullRefCache);
 					refDetailMap.put(refDetailId, genericReference);
 					
-					//created, notes
-					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId );						
-					//refId
-					ImportHelper.setOriginalSource(genericReference, bmiConfig.getSourceReference(), refDetailId);							
+					//refId, created, notes
+					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId, namespace );						
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 					refCounter.referenceCount++;
@@ -338,6 +335,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 				resultSetList.add(source.getResultSet(strQuery2InRef));
 			}
 			
+			String namespace = "Reference";
 			
 			int j = 0;
 			Iterator<ResultSet> resultSetListIterator =  resultSetList.listIterator();
@@ -400,10 +398,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						
 						String refYear = (String)valueMap.get("refYear".toLowerCase());
 						
-						//created, notes
-						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId );						
-						//refId
-						ImportHelper.setOriginalSource(referenceBase, bmiConfig.getSourceReference(), refId);							
+						//refId, created, notes
+						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId, namespace );						
 						//refYear
 						referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 						

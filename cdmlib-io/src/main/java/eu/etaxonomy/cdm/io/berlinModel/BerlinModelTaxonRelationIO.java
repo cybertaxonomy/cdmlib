@@ -3,7 +3,7 @@
  */
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.TAX_REL_IS_HETEROTYPIC_SYNONYM_OF;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.*;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.TAX_REL_IS_HOMOTYPIC_SYNONYM_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.TAX_REL_IS_INCLUDED_IN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.TAX_REL_IS_MISAPPLIED_NAME_OF;
@@ -164,30 +164,48 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 				String microcitation = null;
 
 				if (taxon2 != null && taxon1 != null){
-					if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
-						((Taxon)taxon2).addTaxonomicChild((Taxon)taxon1, citation, microcitation);
-					}else if (relQualifierFk == TAX_REL_IS_SYNONYM_OF){
-						((Taxon)taxon2).addSynonym((Synonym)taxon1, SynonymRelationshipType.SYNONYM_OF());
-					}else if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF){
-						if (taxon1 instanceof Synonym){
-							Synonym synonym = (Synonym)taxon1;
-							SynonymRelationship synRel = ((Taxon)taxon2).addHomotypicSynonym(synonym, citation, microcitation);
-							addProParteAndPartial(synRel, synonym, bmiConfig);
-						}else{
+					if (!(taxon2 instanceof Taxon)){
+						logger.error("TaxonBase (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon");
+						continue;
+					}
+					Taxon toTaxon = (Taxon)taxon2;
+					if (isTaxonRelationship(relQualifierFk)){
+						if (!(taxon1 instanceof Taxon)){
+							logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+							continue;
+						}
+						Taxon fromTaxon = (Taxon)taxon1;
+						if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
+							toTaxon.addTaxonomicChild(fromTaxon, citation, microcitation);
+						}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
+							toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
+						}
+					}else if (isSynonymRelationship(relQualifierFk)){
+						if (!(taxon1 instanceof Synonym)){
 							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
+							continue;
 						}
-					}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
-						if (Synonym.class.isAssignableFrom(taxon1.getClass())){
-							Synonym synonym = (Synonym)taxon1;
-							SynonymRelationship synRel = ((Taxon)taxon2).addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+						Synonym synonym = (Synonym)taxon1;
+						SynonymRelationship synRel = getSynRel(relQualifierFk, toTaxon, synonym, citation, microcitation);
+							
+						if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
+								relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
+								relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
 							addProParteAndPartial(synRel, synonym, bmiConfig);
+						}else if (relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF ||
+								relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
+								relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ){
+								synRel.setProParte(true);
+						}else if(relQualifierFk == TAX_REL_IS_PARTIAL_SYN_OF || 
+								relQualifierFk == TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF ||
+								relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF ){
+								synRel.setPartial(true);
 						}else{
-							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can not be casted to Synonym");
+							logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
 						}
-					}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
-						((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
-//					}else if (relQualifierFk == TAX_REL_){
-//						((Taxon)taxon2).addMisappliedName((Taxon)taxon1, citation, microcitation);
+					}else if (isConceptRelationship(relQualifierFk)){
+						//TODO
+						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
 					}else {
 						//TODO
 						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
@@ -213,6 +231,65 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 			return false;
 		}
 
+	}
+	
+	private SynonymRelationship getSynRel (int relQualifierFk, Taxon toTaxon, Synonym synonym, ReferenceBase citation, String microcitation){
+		SynonymRelationship result;
+		if (relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
+				relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
+				relQualifierFk == TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF){
+			result = toTaxon.addHomotypicSynonym(synonym, citation, microcitation);
+		}else if (relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF ||
+				relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ||
+				relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF){
+			result = toTaxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), citation, microcitation);
+		}else if (relQualifierFk == TAX_REL_IS_SYNONYM_OF ||
+				relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF ||
+				relQualifierFk == TAX_REL_IS_PARTIAL_SYN_OF){
+			result = toTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(), citation, microcitation);
+		}else{
+			logger.warn("SynonymyRelationShipType could not be defined for relQualifierFk " + relQualifierFk + ". 'Unknown'-Type taken instead.");
+			result = toTaxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF(), citation, microcitation);
+		}
+		return result;
+
+	}
+	
+	private  boolean isSynonymRelationship(int relQualifierFk){
+		if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
+			relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF || 
+			relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF ||
+			relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF || 
+			relQualifierFk == TAX_REL_IS_PARTIAL_SYN_OF ||
+			relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
+			relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ||
+			relQualifierFk == TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF ||
+			relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF
+		){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private  boolean isTaxonRelationship(int relQualifierFk){
+		if (relQualifierFk == TAX_REL_IS_INCLUDED_IN || 
+		relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private  boolean isConceptRelationship(int relQualifierFk){
+		//TODO
+		logger.warn("'isConceptRelationship' not yet implemented");
+		if (relQualifierFk == -1 || 
+		    relQualifierFk == -2){
+			   return true;
+		}else{
+			return false;
+		}
 	}
 	
 	private void addProParteAndPartial(SynonymRelationship synRel, Synonym synonym, BerlinModelImportConfigurator bmiConfig){
