@@ -39,10 +39,13 @@ public class SalvadorActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
+	static final Source berlinModelSource = BerlinModelSources.El_Salvador();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_salvador();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
-	static final int sourceSecId = 1000000;
+	static final int sourceSecId = 7331;
+	
+	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
+	static final Object[] featureKeyList = new Integer[]{5,10,11,12}; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
