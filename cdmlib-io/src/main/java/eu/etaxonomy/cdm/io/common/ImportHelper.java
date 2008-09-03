@@ -36,10 +36,23 @@ public class ImportHelper {
 	public static final boolean  FACULTATIVE = false;
 	
 	
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, long sourceId){
+
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, long sourceId, String namespace){
+		return setOriginalSource(idEntity, sourceReference, String.valueOf(sourceId), namespace);
+	}
+	
+	/**
+	 * Adds an original source object to the identifiable entity. 
+	 * @param idEntity
+	 * @param sourceReference
+	 * @param sourceId
+	 * @return
+	 */
+	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, String sourceId, String namespace){
 		OriginalSource originalSource = new OriginalSource();
-		originalSource.setIdInSource(String.valueOf(sourceId));
+		originalSource.setIdInSource(sourceId);
 		originalSource.setCitation(sourceReference);
+		originalSource.setIdNamespace(namespace);
 		idEntity.addSource(originalSource);
 		return true;
 	}
