@@ -71,6 +71,12 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 
 
 	/**
+	 * Returns the id namespace. The id namespace is a String that further defines the origin of
+	 * the original record. In the combination with the id it should be unique within one a source. 
+	 * E.g. if a record comes from table ABC and has the id 345, 'ABC' is a suitable namespace and the 
+	 * combination of 'ABC' and 345 is a unique id for this source. 
+	 * The namespace is meant to distinguish import records that come from two different tables, elements, objects, ... 
+	 * and end up in the same CDM class. In this case the id may not be enough to identify the original record. 
 	 * @return the idNamespace
 	 */
 	public String getIdNamespace() {
