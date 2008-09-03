@@ -44,9 +44,12 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 		Query q = session.createQuery(
                 "Select c from " + clazz.getSimpleName() + " as c " +
                 "inner join c.sources as source " +
-                "where source.idInSource = :idInSource "
+                "where source.idInSource = :idInSource " + 
+                	" AND source.idNamespace = :idNamespace"
             );
 		q.setString("idInSource", idInSource);
+		q.setString("idNamespace", idNamespace);
+		//TODO integrate reference in where 
 		List<IdentifiableEntity> results = q.list();
 		
 		return results;
