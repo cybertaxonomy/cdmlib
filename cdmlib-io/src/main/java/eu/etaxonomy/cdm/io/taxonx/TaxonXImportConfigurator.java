@@ -1,5 +1,6 @@
  package eu.etaxonomy.cdm.io.taxonx;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,7 +10,6 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -17,6 +17,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class TaxonXImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
+	
+	private boolean findTaxonByName = false;
+	private String originalSourceTaxonNamespace = "TaxonConcept";
+	private String originalSourceId;
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -105,6 +109,20 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase implements 
 		}
 	}
 
+	public String getOriginalSourceTaxonNamespace() {
+		return originalSourceTaxonNamespace;
+	}
 
+	public void setOriginalSourceTaxonNamespace(String originalSourceTaxonNamespace) {
+		this.originalSourceTaxonNamespace = originalSourceTaxonNamespace;
+	}
+
+	public String getOriginalSourceId() {
+		return originalSourceId;
+	}
+
+	public void setOriginalSourceId(String originalSourceId) {
+		this.originalSourceId = originalSourceId;
+	}
 	
 }

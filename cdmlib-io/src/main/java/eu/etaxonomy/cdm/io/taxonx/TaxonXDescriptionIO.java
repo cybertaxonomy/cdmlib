@@ -15,6 +15,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -72,10 +73,10 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
 		logger.warn("not yet implemented");
 		
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		MapWrapper<Feature> featureMap = (MapWrapper<Feature>)stores.get(ICdmIO.FEATURE_STORE);
+//		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
+//		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+//		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+//		MapWrapper<Feature> featureMap = (MapWrapper<Feature>)stores.get(ICdmIO.FEATURE_STORE);
 			
 		//	invokeFactCategories(config, cdmApp);
 		
@@ -96,10 +97,8 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		
 		
 		//for testing only
-		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+		Taxon taxon = getTaxon((TaxonXImportConfigurator)config);
 		TaxonDescription description = TaxonDescription.NewInstance();
-		
-		taxon.addDescription(description);
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
@@ -120,14 +119,24 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 			}
 			
 		}
-		taxonService.saveTaxon(taxon);
-		
+		if (description.size() >0){
+			taxon.addDescription(description);
+			taxonService.saveTaxon(taxon);
+		}
 		return true;
 	}
 	
-	private Taxon getTaxon(){
-		logger.warn("not yet implemented");
-		return null;
+	private Taxon getTaxon(TaxonXImportConfigurator config){
+		Taxon result;
+		//result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+		ICommonService commonService =config.getCdmAppController().getCommonService();
+		String originalSourceId = config.getOriginalSourceId();
+		String namespace = config.getOriginalSourceTaxonNamespace();
+		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
+		if (result == null){
+			logger.warn("Taxon (id: " + originalSourceId + ", namespace: " + namespace + ") could not be found");
+		}
+		return result;
 	}
 	
 	/* (non-Javadoc)
