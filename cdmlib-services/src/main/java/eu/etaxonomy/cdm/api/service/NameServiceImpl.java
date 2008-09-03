@@ -9,6 +9,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,15 +23,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 
 @Service
@@ -35,7 +38,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
+	protected IOrderedTermVocabularyDao orderedVocabularyDao;
 	private ITaxonNameDao nameDao;
+
 	
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
@@ -46,6 +51,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
 		this.vocabularyDao = vocabularyDao;
+	}
+	
+	@Autowired
+	protected void setOrderedVocabularyDao(IOrderedTermVocabularyDao orderedVocabularyDao) {
+		this.orderedVocabularyDao = orderedVocabularyDao;
 	}
 
 	public NameServiceImpl(){
@@ -94,7 +104,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
 		String uuidRank = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
 		UUID rankUuid = UUID.fromString(uuidRank);
-		OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(rankUuid);
 		return rankVocabulary;
 	}
 
