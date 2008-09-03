@@ -133,6 +133,9 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	protected void setElements(Set<DescriptionElementBase> element) {
 		this.descriptionElements = element;
+		if (element == null){
+			this.setElements(new HashSet<DescriptionElementBase>());
+		}
 	}
 
 	public void addElement(DescriptionElementBase element) {
@@ -141,6 +144,10 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	public void removeElement(DescriptionElementBase element) {
 		this.descriptionElements.remove(element);
+	}
+	
+	public int size(){
+		return this.descriptionElements.size();
 	}
 	
 	@Override
