@@ -9,10 +9,8 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.taxonx.TaxonXDescriptionIO;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -89,8 +87,8 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	@Override
 	public ReferenceBase getSourceReference() {
 		//TODO
-		logger.warn("getSource Reference not yet fully implemented");
 		if (this.sourceReference == null){
+			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = Database.NewInstance();
 			sourceReference.setTitleCache("XXX");
 		}
