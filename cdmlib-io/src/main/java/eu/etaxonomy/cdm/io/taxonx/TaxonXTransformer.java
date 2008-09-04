@@ -81,17 +81,21 @@ public final class TaxonXTransformer {
 //		}else if ("acknowledgments".equals(descriptionType)){return Feature.ICZN();
 		}else if ("biology_ecology".equals(descriptionType)){return Feature.BIOLOGY_ECOLOGY();
 		}else if ("description".equals(descriptionType)){return Feature.DESCRIPTION();
+		}else if ("cultivation".equals(descriptionType)){return Feature.CULTIVATION();
+		}else if ("conservation".equals(descriptionType)){return Feature.CONSERVATION();
 		}else if ("diagnosis".equals(descriptionType)){return Feature.DIAGNOSIS();
 		}else if ("Description".equals(descriptionType)){return Feature.DESCRIPTION();
-//		}else if ("discussion".equals(descriptionType)){return Feature.Disc;
+		}else if ("discussion".equals(descriptionType)){return Feature.DISCUSSION();
 		}else if ("distribution".equals(descriptionType)){return Feature.DISTRIBUTION();
 		}else if ("etymology".equals(descriptionType)){return Feature.ETYMOLOGY();
 		}else if ("key".equals(descriptionType)){return Feature.KEY();
-//		}else if ("introduction".equals(descriptionType)){return Feature.intro;
+		}else if ("introduction".equals(descriptionType)){return Feature.INTRODUCTION();
 		}else if ("materials_examined".equals(descriptionType)){return Feature.MATERIALS_EXAMINED();
 		}else if ("materials_methods".equals(descriptionType)){return Feature.MATERIALS_METHODS();
 //		}else if ("multiple".equals(descriptionType)){return Feature.multi;
 //		}else if ("synopsis".equals(descriptionType)){return Feature.synopsis;
+		}else if ("uses".equals(descriptionType)){return Feature.USES();
+		}else if ("vernacular".equals(descriptionType)){return Feature.COMMON_NAME();
 		}else {
 			throw new UnknownCdmTypeException("Unknown Description Type " + descriptionType);
 		}

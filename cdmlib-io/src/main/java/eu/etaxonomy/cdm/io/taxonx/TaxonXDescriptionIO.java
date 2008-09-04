@@ -5,14 +5,18 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
+import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.jdom.Text;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -71,7 +75,7 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
-		logger.warn("not yet implemented");
+		logger.warn("not yet fully implemented");
 		
 //		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
 //		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
@@ -97,7 +101,8 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		
 		
 		//for testing only
-		Taxon taxon = getTaxon((TaxonXImportConfigurator)config);
+		Taxon taxon = getTaxon(txConfig);
+		unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
@@ -108,16 +113,15 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 			String strType = attrType.getValue();
 			try {
 				Feature feature = TaxonXTransformer.descriptionType2feature(strType);
-				String value = div.getTextTrim();
-				if (!"".equals(CdmUtils.Nz(value).trim())){
-					DescriptionElementBase desciptionElement = TextData.NewInstance(value, Language.ENGLISH(), null);
+				String text = getText(div);
+				if (!"".equals(CdmUtils.Nz(text).trim())){
+					DescriptionElementBase desciptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
 					desciptionElement.setFeature(feature);
 					description.addElement(desciptionElement);
 				}
 			} catch (UnknownCdmTypeException e) {
 				logger.warn(e.getMessage());
 			}
-			
 		}
 		if (description.size() >0){
 			taxon.addDescription(description);
@@ -126,9 +130,21 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		return true;
 	}
 	
+	private String getText(Element div){
+		String result = "";
+		Iterator<Content> it =div.getDescendants(); 
+		while (it.hasNext()){
+			Content next = (Content)it.next();
+			if (next instanceof Text){
+				result += ((Text)next).getText();
+			}
+		}
+		return result;
+	}
+	
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
-		//result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+//		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
 		ICommonService commonService =config.getCdmAppController().getCommonService();
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
@@ -137,6 +153,14 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 			logger.warn("Taxon (id: " + originalSourceId + ", namespace: " + namespace + ") could not be found");
 		}
 		return result;
+	}
+	
+	private void unlazyDescription(TaxonXImportConfigurator config, Taxon taxon){
+		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		taxonService.saveTaxon(taxon);
+		taxon.getDescriptions().size();
+		config.getCdmAppController().commitTransaction(txStatus);
 	}
 	
 	/* (non-Javadoc)
