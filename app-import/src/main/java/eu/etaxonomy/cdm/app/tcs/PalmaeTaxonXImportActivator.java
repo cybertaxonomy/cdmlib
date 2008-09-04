@@ -30,20 +30,20 @@ import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
  * @created 20.06.2008
  * @version 1.0
  */
-public class TaxonXImportActivator {
-	private static Logger logger = Logger.getLogger(TaxonXImportActivator.class);
+public class PalmaeTaxonXImportActivator {
+	private static Logger logger = Logger.getLogger(PalmaeTaxonXImportActivator.class);
 	
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String tcsSource = TcsSources.taxonX_local();
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
+	//static final String tcsSource = TcsSources.taxonX_local();
+	static final File source  = TcsSources.taxonX_localDir();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final int sourceSecId = 7800000;
-	static final File directory  = TcsSources.taxonX_localDir();
 	
 	//check - import
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
 	static final boolean doDescriptions = true;
 	
@@ -51,13 +51,12 @@ public class TaxonXImportActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from Source("+ tcsSource.toString() + ") ...");
+		System.out.println("Start import from Source("+ source.toString() + ") ...");
 		
 		//make BerlinModel Source
-		String source = tcsSource;
 		ICdmDataSource destination = cdmDestination;
 		
-		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance(source, destination);
+		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance("", destination);
 		// invoke import
 		ICdmImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 		
@@ -70,16 +69,22 @@ public class TaxonXImportActivator {
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		//new Test().invoke(tcsImportConfigurator);
-		if (directory.isDirectory()){
+		if (source.isDirectory()){
 			
-			for (File file : directory.listFiles() ){
-				URL url;
-				try {
-					url = file.toURI().toURL();
-					taxonXImportConfigurator.setSource(url.toString());
-					cdmImport.invoke(taxonXImportConfigurator);
-				} catch (MalformedURLException e) {
-					logger.warn(e);
+			for (File file : source.listFiles() ){
+				if (file.isFile()){
+					URL url;
+					try {
+						url = file.toURI().toURL();
+						taxonXImportConfigurator.setSource(url.toString());
+						String originalSourceId = file.getName();
+						originalSourceId =originalSourceId.replace(".xml", "");
+						originalSourceId =originalSourceId.replace("_tn_", "_tc_");
+						taxonXImportConfigurator.setOriginalSourceId(originalSourceId);
+						cdmImport.invoke(taxonXImportConfigurator);
+					} catch (MalformedURLException e) {
+						logger.warn(e);
+					}
 				}
 			}	
 		}else{

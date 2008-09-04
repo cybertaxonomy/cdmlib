@@ -12,7 +12,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivato
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TaxonXImportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeTaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
