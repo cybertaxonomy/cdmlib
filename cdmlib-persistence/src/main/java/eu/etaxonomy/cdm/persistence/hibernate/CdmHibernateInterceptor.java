@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.VocabularyStoreImpl;
@@ -124,7 +123,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 	
 	public void afterTransactionCompletion(Transaction tx) {
 		if ( tx.wasCommitted() ) {
-			System.out.println("Creations: " + creates + ", Updates: " + updates + ", Loads: " + loads);
+			logger.debug("Creations: " + creates + ", Updates: " + updates + ", Loads: " + loads);
 		}
 		updates=0;
 		creates=0;
