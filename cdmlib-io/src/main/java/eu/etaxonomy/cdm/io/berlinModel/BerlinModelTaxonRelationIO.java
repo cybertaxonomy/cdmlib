@@ -137,10 +137,11 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id " + 
+					" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id, q.is_concept_relation " + 
 					" FROM PTaxon as FromTaxon INNER JOIN " +
                       	" RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 INNER JOIN " +
-                      	" PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk "+
+                      	" PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk " +
+                      	" INNER JOIN RelPTQualifier q ON q.RelPTQualifierId = RelPTaxon.RelQualifierFk " + 
                     " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
@@ -155,6 +156,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 				int taxon2Id = rs.getInt("taxon2Id");
 				int relRefFk = rs.getInt("relRefFk");
 				int relQualifierFk = rs.getInt("relQualifierFk");
+				boolean isConceptRelationship = rs.getBoolean("is_concept_relation");
 				
 				TaxonBase taxon1 = taxonMap.get(taxon1Id);
 				TaxonBase taxon2 = taxonMap.get(taxon2Id);
@@ -203,9 +205,12 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 						}else{
 							logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
 						}
-					}else if (isConceptRelationship(relQualifierFk)){
+					}else if (isConceptRelationship){
 						//TODO
-						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+						if (relQualifierFk == 11){
+							
+						}
+						logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
 					}else {
 						//TODO
 						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
@@ -276,17 +281,6 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		if (relQualifierFk == TAX_REL_IS_INCLUDED_IN || 
 		relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
 			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	private  boolean isConceptRelationship(int relQualifierFk){
-		//TODO
-		logger.warn("'isConceptRelationship' not yet implemented");
-		if (relQualifierFk == -1 || 
-		    relQualifierFk == -2){
-			   return true;
 		}else{
 			return false;
 		}

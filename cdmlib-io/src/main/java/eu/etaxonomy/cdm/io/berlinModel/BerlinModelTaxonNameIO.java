@@ -77,9 +77,10 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 			String strQuery = 
 					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
-                      		" RefDetail.SecondarySources, RefDetail.IdInSource " +
-                    " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND Name.NomRefDetailFk = RefDetail.RefDetailId AND " +
-                    	" Name.NomRefFk = RefDetail.RefFk AND Name.NomRefFk = RefDetail.RefFk" +
+                      		" RefDetail.SecondarySources, RefDetail.IdInSource, Rank.RankAbbrev, Rank.Rank " +
+                    " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND  " +
+                    	" Name.NomRefFk = RefDetail.RefFk " +
+                    	" LEFT OUTER JOIN Rank ON Name.RankFk = Rank.rankID " + 
                     " WHERE (1=1) ";
 					//strQuery += " AND RefDetail.PreliminaryFlag = 1 ";
 					//strQuery += " AND Name.Created_When > '03.03.2004' ";
@@ -95,15 +96,14 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				
 				//create TaxonName element
 				int nameId = rs.getInt("nameId");
-				int rankId = rs.getInt("rankFk");
 				Object authorFk = rs.getObject("AuthorTeamFk");
 				Object exAuthorFk = rs.getObject("ExAuthorTeamFk");
 				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				
 				try {
-					if (logger.isDebugEnabled()){logger.debug(rankId);}
-					Rank rank = BerlinModelTransformer.rankId2Rank(rankId);
+					boolean useUnknownRank = true;
+					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
 					
 					TaxonNameBase taxonNameBase;
 					if (bmiConfig.getNomenclaturalCode() != null){
@@ -112,7 +112,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						taxonNameBase = NonViralName.NewInstance(rank);
 					}
 					
-					if (rankId < 40){
+					if (rank.isSupraGeneric()){
 						dbAttrName = "supraGenericName";
 					}else{
 						dbAttrName = "genus";
@@ -195,7 +195,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					
 				}
 				catch (UnknownCdmTypeException e) {
-					logger.warn("Name with id " + nameId + " has unknown rankId " + rankId + " and could not be saved.");
+					logger.warn("Name with id " + nameId + " has unknown rankId " + " and could not be saved.");
 					success = false; 
 				}
 				

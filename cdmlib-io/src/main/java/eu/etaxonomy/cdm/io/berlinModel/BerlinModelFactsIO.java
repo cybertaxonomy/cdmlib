@@ -160,8 +160,8 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				
 				if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
 				
-				int factId = rs.getInt("factId");
 				int taxonId = rs.getInt("taxonId");
+				int factId = rs.getInt("factId");
 				int factRefFk = rs.getInt("factRefFk");
 				String details = rs.getString("Details");
 //				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
@@ -199,7 +199,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 					//for diptera database
 					if (categoryFk == 99 && notes.contains("<OriginalName>")){
 						notes = notes.replaceAll("<OriginalName>", "");
-						notes = notes.replaceAll("<\\\\OriginalName>", "");
+						notes = notes.replaceAll("</OriginalName>", "");
 						fact = notes + ": " +  fact ;
 					}
 					textData.putText(fact, Language.DEFAULT());

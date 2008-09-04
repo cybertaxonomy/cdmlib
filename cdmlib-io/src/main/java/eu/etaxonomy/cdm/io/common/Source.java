@@ -29,7 +29,8 @@ public class Source {
     private final static boolean DEBUG_LOG_WRITER = false;
 	
     //DB info
-	public final static String SQL_SERVER = "SQLServer";
+	public final static String SQL_SERVER_2000 = "SQLServer2000";
+	public final static String SQL_SERVER_2005 = "SQLServer2005";
 	public final static String ACCESS = "Access";
 	public final static String EXCEL = "Excel";
 	public final static String ODDBC = "ODBC";
@@ -41,7 +42,8 @@ public class Source {
 	public final static String SELECT_CURSOR = "cursor";
 		
     //driver class
-    private static String clsSQLServer = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+    private static String clsSQLServer2005 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static String clsODBC = "sun.jdbc.odbc.JdbcOdbcDriver";
     private static String clsOracle = "oracle.jdbc.driver.OracleDriver";
     private static String clsDB2 = "COM.ibm.db2.jdbc.net.DB2Driver";
@@ -50,6 +52,7 @@ public class Source {
     
     //url
     private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
+    private static String urlSQLServer2005 = "jdbc:sqlserver://";
     private static String urlDB2 = "jdbc:db2://";
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
@@ -225,28 +228,33 @@ public class Source {
 	    	selectMethod = SELECT_DIRECT;
 	    try{
 	        if (DEBUG_LOG_WRITER) DriverManager.setLogWriter((new PrintWriter(System.out)));
-	        if (mDbms.equalsIgnoreCase("SQLServer")) {
-	            Class.forName(clsSQLServer);
+	        if (mDbms.equalsIgnoreCase(SQL_SERVER_2000)) {
+	            Class.forName(clsSQLServer2000);
 	            server = mServer + ":" + mPort;
 	            mUrl = urlSQLServer + server + ";DataBase=" + mDb + ";SelectMethod="+ selectMethod; 
 	        }
-	        else if (mDbms.equalsIgnoreCase("Access")) {
+	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
+	            Class.forName(clsSQLServer2005);
+	            server = mServer + ":" + mPort;
+	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
+	        }
+	        else if (mDbms.equalsIgnoreCase(ACCESS)) {
 	            Class.forName(clsODBC);
 	            mUrl = urlODBC + mDb ; 
 	        }
-	        else if (mDbms.equalsIgnoreCase("Excel")) {
+	        else if (mDbms.equalsIgnoreCase(EXCEL)) {
 	            Class.forName(clsODBC);
 	            mUrl = urlODBC + mDb ; 
 	        }
-	        else if (mDbms.equalsIgnoreCase("ODBC")) {
+	        else if (mDbms.equalsIgnoreCase(ODDBC)) {
 	            Class.forName(clsODBC);
 	            mUrl = urlODBC + mServer ; 
 	        }
-	        else if (mDbms.equalsIgnoreCase("Oracle")) {
+	        else if (mDbms.equalsIgnoreCase(ORACLE)) {
 	            Class.forName(clsOracle);
 	            mUrl = urlOracle + mDb ;
 	        }
-	        else if (mDbms.equalsIgnoreCase("DB2")) {
+	        else if (mDbms.equalsIgnoreCase(DB2)) {
 	            Class.forName(clsDB2);
 	            mUrl = urlDB2 + mDb; 
 	        }
@@ -255,7 +263,7 @@ public class Source {
 	             mUrl = urlDataDirectSQLServer + mServer;
 	         }
 	        else {
-	            Class.forName(clsSQLServer);
+	            Class.forName(clsSQLServer2005);
 	            mUrl = urlDefault; 
 	        }
 	        logger.debug("Connection String: " + mUrl);	

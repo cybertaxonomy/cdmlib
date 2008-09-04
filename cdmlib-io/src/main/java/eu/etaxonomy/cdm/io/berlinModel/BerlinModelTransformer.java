@@ -1,5 +1,8 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -167,58 +170,79 @@ public final class BerlinModelTransformer {
 	
 	
 	
-	
-	/** Creates an cdm-Rank by the berlinModel rankId
-	 * @param doubt doubtfulFalg
-	 * @return "true" if doubt = "a"
-	 */
-	public static Rank rankId2Rank (int rankId) throws UnknownCdmTypeException{
-		switch (rankId){
-			case 0: return null;
-			case 1: return Rank.KINGDOM();
-			case 3: return Rank.SUBKINGDOM();
-			case 5: return Rank.PHYLUM();
-			case 7: return Rank.SUBPHYLUM();
-			case 8: return Rank.DIVISION();
-			case 9: return Rank.SUBDIVISION();
-			case 10: return Rank.CLASS();
-			case 13: return Rank.SUBCLASS();
-			case 16: return Rank.SUPERORDER();
-			case 18: return Rank.ORDER();
-			case 19: return Rank.SUBORDER();
-			case 20: return Rank.FAMILY();
-			case 25: return Rank.SUBFAMILY();
-			case 30: return Rank.TRIBE();
-			case 35: return Rank.SUBTRIBE();
-			case 40: return Rank.GENUS();
-			case 42: return Rank.SUBGENUS();
-			case 45: return Rank.SECTION();
-			case 47: return Rank.SUBSECTION();
-			case 50: return Rank.SERIES();
-			case 52: return Rank.SUBSERIES();
-			case 58: return Rank.SPECIESAGGREGATE();
-			//FIXME
-			//case 59: return Rank.SPECIESAGGREGATE();
-			case 60: return Rank.SPECIES();
-			case 65: return Rank.SUBSPECIES();
-			case 68: return Rank.CONVAR();
-			case 70: return Rank.VARIETY();
-			case 73: return Rank.SUBVARIETY();
-			case 80: return Rank.FORM();
-			case 82: return Rank.SUBFORM();
-			case 84: return Rank.SPECIALFORM();
-			case 98: return Rank.INFRAGENERICTAXON();
-			case 99: return Rank.INFRASPECIFICTAXON();
+	public static Rank rankId2Rank (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException{
+		Rank result;
+		try {
+			int rankId = rs.getInt("rankFk");
 			
-			case 750: return Rank.SUPERCLASS();
-			case 780: return Rank.INFRACLASS();
-			case 820: return Rank.INFRAORDER();
+			String abbrev = rs.getString("rankAbbrev");
+			String rankName = rs.getString("rank");
+			if (logger.isDebugEnabled()){logger.debug(rankId);}
+			if (logger.isDebugEnabled()){logger.debug(abbrev);}
+			if (logger.isDebugEnabled()){logger.debug(rankName);}
 			
-			case 830: return Rank.SUPERFAMILY();
-			
-			default: {
-				throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
+			result = Rank.getRankByNameOrAbbreviation(abbrev);
+			if (result == null){
+				result = Rank.getRankByNameOrAbbreviation(rankName);
 			}
+			if (result == null){
+				switch (rankId){
+					case 0: return null;
+					case 1: return Rank.KINGDOM();
+					case 3: return Rank.SUBKINGDOM();
+					case 5: return Rank.PHYLUM();
+					case 7: return Rank.SUBPHYLUM();
+					case 8: return Rank.DIVISION();
+					case 9: return Rank.SUBDIVISION();
+					case 10: return Rank.CLASS();
+					case 13: return Rank.SUBCLASS();
+					case 16: return Rank.SUPERORDER();
+					case 18: return Rank.ORDER();
+					case 19: return Rank.SUBORDER();
+					case 20: return Rank.FAMILY();
+					case 25: return Rank.SUBFAMILY();
+					case 30: return Rank.TRIBE();
+					case 35: return Rank.SUBTRIBE();
+					case 40: return Rank.GENUS();
+					case 42: return Rank.SUBGENUS();
+					case 45: return Rank.SECTION();
+					case 47: return Rank.SUBSECTION();
+					case 50: return Rank.SERIES();
+					case 52: return Rank.SUBSERIES();
+					case 58: return Rank.SPECIESAGGREGATE();
+					//FIXME
+					//case 59: return Rank.SPECIESAGGREGATE();
+					case 60: return Rank.SPECIES();
+					case 65: return Rank.SUBSPECIES();
+					case 68: return Rank.CONVAR();
+					case 70: return Rank.VARIETY();
+					case 73: return Rank.SUBVARIETY();
+					case 80: return Rank.FORM();
+					case 82: return Rank.SUBFORM();
+					case 84: return Rank.SPECIALFORM();
+					case 98: return Rank.INFRAGENERICTAXON();
+					case 99: return Rank.INFRASPECIFICTAXON();
+					
+					case 750: return Rank.SUPERCLASS();
+					case 780: return Rank.INFRACLASS();
+					case 820: return Rank.INFRAORDER();
+					
+					case 830: return Rank.SUPERFAMILY();
+					
+					default: {
+						if (useUnknown){
+							logger.error("Rank unknown. Created UNKNOWN_RANK");
+							return Rank.UNKNOWN_RANK();
+						}
+						throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
+					}
+				}
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.warn("Exception occurred. Created UNKNOWN_RANK instead");
+			return Rank.UNKNOWN_RANK();
 		}		
 	}
 		
