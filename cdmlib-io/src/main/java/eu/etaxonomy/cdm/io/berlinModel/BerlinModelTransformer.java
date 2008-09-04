@@ -209,6 +209,13 @@ public final class BerlinModelTransformer {
 			case 84: return Rank.SPECIALFORM();
 			case 98: return Rank.INFRAGENERICTAXON();
 			case 99: return Rank.INFRASPECIFICTAXON();
+			
+			case 750: return Rank.SUPERCLASS();
+			case 780: return Rank.INFRACLASS();
+			case 820: return Rank.INFRAORDER();
+			
+			case 830: return Rank.SUPERFAMILY();
+			
 			default: {
 				throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());
 			}
