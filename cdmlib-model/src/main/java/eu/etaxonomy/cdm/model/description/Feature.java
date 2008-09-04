@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -195,6 +194,11 @@ public class Feature extends DefinedTermBase {
 	private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
 	private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
 	private static final UUID uuidAdditionalPublication = UUID.fromString("cb2eab09-6d9d-4e43-8ad2-873f23400930");
+	private static final UUID uuidUses = UUID.fromString("e5374d39-b210-47c7-bec1-bee05b5f1cb6");
+	private static final UUID uuidConservation = UUID.fromString("4518fc20-2492-47de-b345-777d2b83c9cf");
+	private static final UUID uuidCultivation = UUID.fromString("e28965b2-a367-48c5-b954-8afc8ac2c69b");
+	private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
+	private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
 	
 	
 	
@@ -202,9 +206,7 @@ public class Feature extends DefinedTermBase {
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
 
-//	"d3c4cbb6-0025-4322-886b-cd0156753a25",,"Discussion","Discussion"
 //	"86bd920d-f8c5-48b9-af1d-03f63c31de5c",,"Abstract","Abstract"
-//	"e75255ca-8ff4-4905-baad-f842927fe1d3",,"Introduction","Introduction"
 //	"489bf358-b78a-45e2-a691-f9f3f10446ce",,"Synopsis","Synopsis"
 //	"89d3b005-9876-4923-89d9-60eb75b9583b",,"Multiple","Multiple"
 //	"555a46bc-211a-476f-a022-c472970d6f8b",,"Acknowledgments","Acknowledgments"
@@ -226,6 +228,10 @@ public class Feature extends DefinedTermBase {
 		return getByUuid(uuidDistribution);
 	}
 
+	public static final Feature DISCUSSION(){
+		return getByUuid(uuidDiscussion);
+	}
+	
 	public static final Feature ECOLOGY(){
 		return getByUuid(uuidEcology);
 	}	
@@ -254,7 +260,12 @@ public class Feature extends DefinedTermBase {
 	public static final Feature DIAGNOSIS(){
 		return getByUuid(uuidDiagnosis);
 	}
+
 	
+	public static final Feature INTRODUCTION(){
+		return getByUuid(uuidIntroduction);
+	}
+
 	public static final Feature PROTOLOG(){
 		return getByUuid(uuidProtolog);
 	}
@@ -278,6 +289,23 @@ public class Feature extends DefinedTermBase {
 	public static final Feature ADDITIONAL_PUBLICATION(){
 		return getByUuid(uuidAdditionalPublication);
 	}
+	
+	
+	public static final Feature USES(){
+		return getByUuid(uuidUses);
+	}
+	
+	
+	public static final Feature CONSERVATION(){
+		return getByUuid(uuidConservation);
+	}
+	
+	
+	public static final Feature CULTIVATION(){
+		return getByUuid(uuidCultivation);
+	}
+	
+	
 	
 	/**
 	 * special kind of OrganismInteraction
