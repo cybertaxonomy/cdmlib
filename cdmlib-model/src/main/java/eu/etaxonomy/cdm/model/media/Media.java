@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 
+import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -22,28 +23,47 @@ import org.hibernate.annotations.CascadeType;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:34
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Media", propOrder = {
+    "title",
+    "mediaCreated",
+    "description",
+    "representations",
+    "rights",
+    "artist"
+})
+@XmlRootElement(name = "Media")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends AnnotatableEntity {
 	
 	private static final Logger logger = Logger.getLogger(Media.class);
 
-	@XmlElement(name = "Title")
+	@XmlElement(name = "MediaTitle")
+    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
 	private MultilanguageSet title = new MultilanguageSet();
 	
 	//creation date of the media (not of the record)
 	@XmlElement(name = "MediaCreated")
 	private Calendar mediaCreated;
 	
-	@XmlElement(name = "Description")
+	@XmlElement(name = "MediaDescription")
+    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
 	private MultilanguageSet description = new MultilanguageSet();
 	
 	//A single medium such as a picture can have multiple representations in files. 
@@ -56,6 +76,9 @@ public class Media extends AnnotatableEntity {
 	@XmlElement(name = "Right")
 	private Set<Rights> rights = new HashSet<Rights>();
 	
+	@XmlElement(name = "Artist")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Agent artist;
 
 	/**

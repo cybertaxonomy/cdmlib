@@ -49,7 +49,7 @@ public class MediaRepresentationPart extends VersionableEntity{
 	@XmlElement(name = "Size")
 	private Integer size;
 	
-	//the MEdiaRepresentation this MediaRepresentation
+	//the MediaRepresentation of this MediaRepresentationPart
 	@XmlTransient
 	private MediaRepresentation mediaRepresentation;
 

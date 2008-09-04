@@ -12,18 +12,12 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.TaxonInteraction;
-import eu.etaxonomy.cdm.model.description.TextData;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -67,14 +61,16 @@ public class MediaRepresentation extends VersionableEntity {
     @XmlTransient
     //FIXME: ArrayIndexOutOfBoundException during marshalling
 //	@XmlElementWrapper(name = "MediaRepresentationParts")
-//	@XmlElement(name = "MediaRepresentationPart")
+//	@XmlElement(name = "MediaRepresentationPart", type = ArrayList.class)
 //    @XmlElements({
 //        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CategoricalData.class),
 //        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CommonTaxonName.class),
 //        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Distribution.class),
 //    })
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
-		
+
+	// Defining mediaRepresentationParts as ArrayList gives hibernate.AnnotationException		
+
 	/**
 	 * Factory method
 	 * @return

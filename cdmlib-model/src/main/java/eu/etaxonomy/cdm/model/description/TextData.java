@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
@@ -38,7 +39,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextData", propOrder = {
-    "multilanguageStringMap",
+    "multiLanguageText",
     "format"
 })
 @XmlRootElement(name = "TextData")
@@ -47,9 +48,10 @@ public class TextData extends DescriptionElementBase {
 	
 	static Logger logger = Logger.getLogger(TextData.class);
 
-	@XmlElement(name = "MultilanguageStringMap")
+	//@XmlElement(name = "MultiLanguageText", type = MultilanguageSet.class)
+	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
-	private Map<Language, LanguageString> multilanguageStringMap;
+	private Map<Language, LanguageString> multiLanguageText;
 	
 	@XmlElement(name = "Format")
 	@XmlIDREF
@@ -91,15 +93,15 @@ public class TextData extends DescriptionElementBase {
     @Cascade({CascadeType.SAVE_UPDATE})
 	public Map<Language, LanguageString> getMultilanguageText() {
 		initTextSet();
-		return multilanguageStringMap;
+		return multiLanguageText;
 	}
 	protected void setMultilanguageText(Map<Language, LanguageString> texts) {
-		this.multilanguageStringMap = texts;
+		this.multiLanguageText = texts;
 	}
 	@Transient 
 	public String getText(Language language) {
 		initTextSet();
-		LanguageString languageString = multilanguageStringMap.get(language);
+		LanguageString languageString = multiLanguageText.get(language);
 		if (languageString == null){
 			return null;
 		}else{
@@ -108,14 +110,9 @@ public class TextData extends DescriptionElementBase {
 	}
 	
 	@Transient
-	public MultilanguageSet getMultilanguageSet() {
-		return null;  //TODO
-	}
-
-	@Transient
 	public LanguageString putText(String text, Language language) {
 		initTextSet();
-		LanguageString result = this.multilanguageStringMap.put(language , LanguageString.NewInstance(text, language));
+		LanguageString result = this.multiLanguageText.put(language , LanguageString.NewInstance(text, language));
 		return (result == null ? null : result);
 	}
 	@Transient
@@ -126,23 +123,23 @@ public class TextData extends DescriptionElementBase {
 			return null;
 		}else{
 			Language language = languageString.getLanguage();
-			return this.multilanguageStringMap.put(language, languageString);
+			return this.multiLanguageText.put(language, languageString);
 		}
 	}
 	public LanguageString removeText(Language language) {
 		initTextSet();
-		return this.multilanguageStringMap.remove(language);
+		return this.multiLanguageText.remove(language);
 	}
 	
 	private void initTextSet(){
-		if (multilanguageStringMap == null){
-			multilanguageStringMap = MultilanguageSet.NewInstance();
+		if (multiLanguageText == null){
+			multiLanguageText = MultilanguageSet.NewInstance();
 		}
 	}
 	
 	public int countLanguages(){
 		initTextSet();
-		return multilanguageStringMap.size();
+		return multiLanguageText.size();
 	}
 	
 

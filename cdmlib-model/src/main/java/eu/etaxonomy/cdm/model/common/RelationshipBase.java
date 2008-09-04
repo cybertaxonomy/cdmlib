@@ -43,13 +43,11 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	static Logger logger = Logger.getLogger(RelationshipBase.class);
 
 //  FIXME: TaxonBase.class does not cover TaxonNameBase which also implements IRelated.
-//	@XmlElement(name = "RelatedFrom", type = Taxon.class)
 	@XmlElement(name = "RelatedFrom", type = TaxonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private FROM relatedFrom;
 
-//	@XmlElement(name = "RelatedFrom", type = Taxon.class)
 	@XmlElement(name = "RelatedTo", type = TaxonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
