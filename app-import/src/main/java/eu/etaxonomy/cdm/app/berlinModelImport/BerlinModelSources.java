@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.app.berlinModelImport;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.Source;
 
 
@@ -31,7 +30,7 @@ public class BerlinModelSources {
 	}
 	
 	public static Source EDIT_CICHORIEAE(){
-		//	BerlinModel - EditWp6
+		//	BerlinModel - EditWP6
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
 		String strDB = "EditWP6";
@@ -41,7 +40,7 @@ public class BerlinModelSources {
 	}
 
 	public static Source EDIT_Diptera(){
-		//	BerlinModel - EditWp6
+		//	BerlinModel - EDIT_Diptera
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Diptera";
@@ -51,7 +50,7 @@ public class BerlinModelSources {
 	}
 	
 	public static Source EDIT_Palmae(){
-		//	BerlinModel - EditWp6
+		//	BerlinModel - EDIT_Palmae
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Palmae";
@@ -61,7 +60,7 @@ public class BerlinModelSources {
 	}
 
 	public static Source El_Salvador(){
-		//	BerlinModel - EditWp6
+		//	BerlinModel - El_Salvador
 		String dbms = "SQLServer";
 		String strServer = "SQL2000Intern";
 		String strDB = "Salvador";
@@ -70,7 +69,16 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
-
+	public static Source PESI_ERMS(){
+		//	BerlinModel - Pesi-ERMS
+		String dbms = "SQLServer";
+		String strServer = "SQL2000Intern\\SQL2005";
+		String strDB = "BM_ERMS";
+		int port = 1433;
+		String userName = "WebUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
 	/**
 	 * Initializes the source.
 	 * @param dbms
