@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * TODO add the following to a wiki page:
- * HINT: If you are about to import into a mysql data base running under windows and if you wish to dump and restore the resulting data bas under another operation systen 
+ * HINT: If you are about to import into a mysql data base running under windows and if you wish to dump and restore the resulting data base under another operation systen 
  * you must set the mysql system variable lower_case_table_names = 0 in order to create data base with table compatible names.
  * 
  * 
@@ -44,7 +44,7 @@ public class ErmsActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.PESI_ERMS();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_erms();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
 	static final int sourceSecId = 500000;
 	static final UUID featureTreeUuid = UUID.fromString("33cbf7a8-0c47-4d47-bd11-b7d77a38d0f6");
