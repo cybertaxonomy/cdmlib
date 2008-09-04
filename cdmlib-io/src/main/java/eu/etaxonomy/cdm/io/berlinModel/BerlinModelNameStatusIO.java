@@ -94,7 +94,12 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 				
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("NomStatus handled: " + (i-1));}
 				
-				int nomStatusRelId = rs.getInt("RIdentifier");
+				int nomStatusRelId;
+				try {
+					nomStatusRelId = rs.getInt("RIdentifier");
+				} catch (Exception e) {
+					nomStatusRelId = -1;
+				}
 				int nomStatusFk = rs.getInt("NomStatusFk");
 				int nameId = rs.getInt("nameFk");
 				int refFk = rs.getInt("nomStatusRefFk");
