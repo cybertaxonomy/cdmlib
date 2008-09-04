@@ -108,6 +108,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
+	private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -331,6 +332,11 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank CULTIVAR(){
 	  return getByUuid(uuidCultivar);
 	}
+	public static final Rank UNKNOWN_RANK(){
+		  return getByUuid(uuidUnknownRank);
+		}
+	
+	
 
 	
 	/**
@@ -404,9 +410,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		return (this.isLower(Rank.SPECIES()));
 	}
 
-	// TODO
-	// Preliminary implementation for BotanicalNameParser.
-	// not yet complete
+
 	/**
 	 * Returns the rank identified through a name (abbreviated or not).
 	 * Preliminary implementation for BotanicalNameParser.
@@ -416,18 +420,33 @@ public class Rank extends OrderedTermBase<Rank> {
 	 */
 	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank)
+				throws UnknownCdmTypeException{
+		return getRankByNameOrAbbreviation(strRank, false);
+	}
+
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the rank identified through a name (abbreviated or not).
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	strRank	the string identifying the rank
+	 * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the abbrev is 
+	 * 			unknown or not yet implemented
+	 * @return  		the rank
+	 */
+	@Transient
+	public static Rank getRankByNameOrAbbreviation(String strRank, boolean useUnknown)
 			throws UnknownCdmTypeException{
 		try {
 			return getRankByAbbreviation(strRank);
 		} catch (UnknownCdmTypeException e) {
-			return getRankByName(strRank);
+			return getRankByName(strRank, useUnknown);
 		}
 	}
 	
 	
-	// TODO
-	// Preliminary implementation for BotanicalNameParser.
-	// not yet complete
 	/**
 	 * Returns the rank identified through an abbreviated name.
 	 * Preliminary implementation for BotanicalNameParser.
@@ -436,7 +455,26 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @return  		the rank
 	 */
 	@Transient
-	public static Rank getRankByAbbreviation(String abbrev) throws UnknownCdmTypeException{
+	public static Rank getRankByAbbreviation(String abbrev) 
+						throws UnknownCdmTypeException{
+		return getRankByAbbreviation(abbrev, false);
+	}
+	
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the rank identified through an abbreviated name.
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	abbrev		the string for the name abbreviation
+	 * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the abbrev is 
+	 * 			unknown or not yet implemented
+	 * @return  the rank
+	 */
+	@Transient
+	public static Rank getRankByAbbreviation(String abbrev, boolean useUnknown) 
+						throws UnknownCdmTypeException{
 		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRankByAbbreviation");
 		}else if (abbrev.equalsIgnoreCase("reg.")){	return Rank.KINGDOM();
 		}else if (abbrev.equalsIgnoreCase("subreg.")){ return Rank.SUBKINGDOM();
@@ -477,7 +515,15 @@ public class Rank extends OrderedTermBase<Rank> {
 			if (abbrev == null){
 				abbrev = "(null)";
 			}
-			throw new UnknownCdmTypeException("Unknown rank abbreviation: " + abbrev);
+			if (useUnknown){
+				logger.warn("Unknown rank name: " + abbrev+". Rank 'UNKNOWN_RANK' created instead");
+				return Rank.UNKNOWN_RANK();
+			}else{
+				if (abbrev == null){
+					abbrev = "(null)";
+				}
+				throw new UnknownCdmTypeException("Unknown rank abbreviation: " + abbrev);
+			}
 		}
 	}
 	
@@ -492,7 +538,22 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @return  			the rank
 	 */
 	@Transient
-	public static Rank getRankByName(String rankName)
+	public static Rank getRankByName(String rankName)throws UnknownCdmTypeException{
+		return getRankByName(rankName, false);
+	}
+
+
+	/**
+	 * Returns the rank identified through a name.
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	rankName	the string for the name of the rank
+	 * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the rank name is 
+	 * 			unknown or not yet implemented
+	 * @return  			the rank
+	 */
+	@Transient
+	public static Rank getRankByName(String rankName, boolean useUnknown)
 			throws UnknownCdmTypeException{
 		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
 		}else if (rankName.equalsIgnoreCase("Subregnum")){ return Rank.SUBKINGDOM();
@@ -538,7 +599,15 @@ public class Rank extends OrderedTermBase<Rank> {
 			if (rankName == null){
 				rankName = "(null)";
 			}
-			throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
+			if (useUnknown){
+				logger.warn("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
+				return Rank.UNKNOWN_RANK();
+			}else{
+				if (rankName == null){
+					rankName = "(null)";
+				}
+				throw new UnknownCdmTypeException("Unknown rank name: " + rankName);
+			}
 		}
 	}
 	
