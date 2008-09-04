@@ -74,12 +74,40 @@ public class TestJaxb {
 	//private static final String deserializeToDb = "cdm_test_anahit2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
-	//private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	
 	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
 	 *  as many rows as specified for agents, references, etc. 
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
-	private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
+	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
+	
+//	private boolean doAgents = false;
+//	private boolean doAgentData = false;
+//	private boolean doFeatureData = false;
+//	private boolean doTerms = false;
+//	private boolean doTermVocabularies = false;
+//	private boolean doOccurrences = false;
+//	private boolean doReferences = false;
+//	private boolean doReferencedEntities = false;
+//	private boolean doTaxonNames = true;
+//	private boolean doTaxa = false;
+//	private boolean doSynonyms = false;
+//	private boolean doRelationships = false;
+//	private boolean doMedia = false;
+
+	private boolean doAgents = true;
+	private boolean doAgentData = true;
+	private boolean doFeatureData = true;
+	private boolean doTerms = true;
+	private boolean doTermVocabularies = true;
+	private boolean doOccurrences = true;
+	private boolean doReferences = true;
+	private boolean doReferencedEntities = true;
+	private boolean doTaxonNames = true;
+	private boolean doTaxa = true;
+	private boolean doSynonyms = true;
+	private boolean doRelationships = true;
+	private boolean doMedia = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -173,65 +201,81 @@ public class TestJaxb {
     	int synonymRelationshipRows = numberOfRows;
     	int relationshipRows = numberOfRows;
     	int occurrencesRows = numberOfRows;
-    	
-    	if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
-    	logger.info("# Agents: " + agentRows);
-    	//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-    	dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
-    	
-    	if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
-    	logger.info("# DefinedTermBase: " + definedTermBaseRows);
-    	dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
 
-    	if (referenceBaseRows == 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
-    	logger.info("# ReferenceBase: " + referenceBaseRows);
-    	dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
-    	
-    	if (taxonNameBaseRows == 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
-    	logger.info("# TaxonNameBase: " + taxonNameBaseRows);
-    	//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
-    	dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
-    	
-    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
-    	logger.info("# TaxonBase: " + taxonBaseRows);
-		dataSet.setTaxa(new ArrayList<Taxon>());
-		dataSet.setSynonyms(new ArrayList<Synonym>());
-    	List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxa(taxonBaseRows, 0);
-    	for (TaxonBase taxonBase : tb) {
-    		if (taxonBase instanceof Taxon) {
-				dataSet.addTaxon((Taxon)taxonBase);
-			} else if (taxonBase instanceof Synonym) {
-				dataSet.addSynonym((Synonym)taxonBase);
-			} else {
-	    		logger.error("entry of wrong type: " + taxonBase.toString());
-			}
+    	if (doAgents == true) {
+    		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
+    		logger.info("# Agents: " + agentRows);
+    		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
     	}
-    	
+
+    	if (doTerms == true) {
+    		if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+    		logger.info("# DefinedTermBase: " + definedTermBaseRows);
+    		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+    	}
+
+    	if (doReferences == true) {
+    		if (referenceBaseRows == 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
+    		logger.info("# ReferenceBase: " + referenceBaseRows);
+    		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
+    	}
+
+    	if (doTaxonNames == true) {
+    		if (taxonNameBaseRows == 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
+    		logger.info("# TaxonNameBase: " + taxonNameBaseRows);
+    		//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
+    		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
+    	}
+
+    	if (doTaxa == true) {
+    		if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+    		logger.info("# TaxonBase: " + taxonBaseRows);
+    		dataSet.setTaxa(new ArrayList<Taxon>());
+    		dataSet.setSynonyms(new ArrayList<Synonym>());
+    		List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxa(taxonBaseRows, 0);
+    		for (TaxonBase taxonBase : tb) {
+    			if (taxonBase instanceof Taxon) {
+    				dataSet.addTaxon((Taxon)taxonBase);
+    			} else if (taxonBase instanceof Synonym) {
+    				dataSet.addSynonym((Synonym)taxonBase);
+    			} else {
+    				logger.error("entry of wrong type: " + taxonBase.toString());
+    			}
+    		}
+    	}
+
     	// TODO: 
     	// retrieve taxa and synonyms separately
     	// need correct count for taxa and synonyms
-//    	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
-//    	logger.info("# Synonym: " + taxonBaseRows);
-//		dataSet.setSynonyms(new ArrayList<Synonym>());
-//    	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
+//  	if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+//  	logger.info("# Synonym: " + taxonBaseRows);
+//  	dataSet.setSynonyms(new ArrayList<Synonym>());
+//  	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
 
-    	if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
-    	logger.info("# Relationships...");
-    	List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
-    	Set<RelationshipBase> relationSet = new HashSet(relationList);
-    	dataSet.setRelationships(relationSet);
+    	if (doRelationships == true) {
+    		if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+    		logger.info("# Relationships...");
+    		List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
+    		Set<RelationshipBase> relationSet = new HashSet(relationList);
+    		dataSet.setRelationships(relationSet);
+    	}
 
-    	logger.info("# Referenced Entities...");
-    	dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
-    	dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
-    	
-    	if (occurrencesRows == 0) { occurrencesRows = appCtr.getOccurrenceService().count(SpecimenOrObservationBase.class); }
-    	logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
-    	dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+    	if (doReferencedEntities == true) {
+    		logger.info("# Referenced Entities...");
+    		dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
+    		dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
+    	}
 
-//    	logger.info("# Feature Tree, Feature Node...");
-//    	dataSet.setFeatureData(appCtr.getDescriptionService().getAllFeatureNodes(MAX_ROWS, 0));
-//    	dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTree());
+    	if (doOccurrences == true) {
+    		if (occurrencesRows == 0) { occurrencesRows = appCtr.getOccurrenceService().count(SpecimenOrObservationBase.class); }
+    		logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
+    		dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+    	}
+
+//  	logger.info("# Feature Tree, Feature Node...");
+//  	dataSet.setFeatureData(appCtr.getDescriptionService().getAllFeatureNodes(MAX_ROWS, 0));
+//  	dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTree());
 
     }
 
