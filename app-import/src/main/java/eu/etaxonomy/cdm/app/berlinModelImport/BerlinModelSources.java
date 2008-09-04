@@ -21,7 +21,7 @@ public class BerlinModelSources {
 	
 	public static Source euroMed(){
 		//	BerlinModel - Euro+Med
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "BGBM111";
 		String strDB = "EuroPlusMed_00_Edit";
 		int port = 1247;
@@ -31,7 +31,7 @@ public class BerlinModelSources {
 	
 	public static Source EDIT_CICHORIEAE(){
 		//	BerlinModel - EditWP6
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "BGBM111";
 		String strDB = "EditWP6";
 		int port = 1247;
@@ -41,7 +41,7 @@ public class BerlinModelSources {
 
 	public static Source EDIT_Diptera(){
 		//	BerlinModel - EDIT_Diptera
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Diptera";
 		int port = 1247;
@@ -51,7 +51,7 @@ public class BerlinModelSources {
 	
 	public static Source EDIT_Palmae(){
 		//	BerlinModel - EDIT_Palmae
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Palmae";
 		int port = 1247;
@@ -61,7 +61,7 @@ public class BerlinModelSources {
 
 	public static Source El_Salvador(){
 		//	BerlinModel - El_Salvador
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "SQL2000Intern";
 		String strDB = "Salvador";
 		int port = 1433;
@@ -71,7 +71,7 @@ public class BerlinModelSources {
 	
 	public static Source PESI_ERMS(){
 		//	BerlinModel - Pesi-ERMS
-		String dbms = "SQLServer";
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "SQL2000Intern\\SQL2005";
 		String strDB = "BM_ERMS";
 		int port = 1433;
