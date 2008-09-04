@@ -34,4 +34,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	public abstract Map<UUID, SpecimenOrObservationBase> 
 	saveSpecimenOrObservationBaseAll(Collection<SpecimenOrObservationBase> specimenOrObservationBaseCollection);
 
+	/** save a specimen or observation and return its UUID**/
+	public abstract UUID saveSpecimenOrObservationBase (SpecimenOrObservationBase specimenOrObservationBase);
+	
 }
