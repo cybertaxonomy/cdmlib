@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -146,28 +145,18 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
-//		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
-//		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
-		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		logger.info("start makeReferences ...");
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
-		String cdmAttrName;
-		String value;
 		boolean success = true;
 		IReferenceService referenceService = cdmApp.getReferenceService();
 		
-		
-		//Map<Integer, ReferenceBase> referenceCollectionMap = new HashMap<Integer, ReferenceBase>();
-		
-		Namespace rdfNamespace = root.getNamespace();
-		String prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		prefix = "tpub";
-		Namespace publicationNamespace = root.getNamespace(prefix);
+		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		String prefix = "tpub";
+		Namespace publicationNamespace = tcsConfig.getPublicationNamespace();
 
 		
 		String idNamespace = "PublicationCitation";

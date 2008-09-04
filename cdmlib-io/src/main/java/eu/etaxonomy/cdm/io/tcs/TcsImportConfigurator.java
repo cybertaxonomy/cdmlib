@@ -6,6 +6,7 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -17,6 +18,28 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TcsImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsImportConfigurator.class);
 	
+	//rdfNamespace
+	Namespace rdfNamespace;
+	//TaxonConcept namespace
+	Namespace tcNamespace;
+	//TaxonName namespace
+	Namespace tnNamespace;
+	//TDWG common namespace
+	Namespace commonNamespace;
+	//TDWG geoNamespace
+	Namespace geoNamespace;
+	//publicationNamespace
+	Namespace publicationNamespace;
+	
+//TODO	
+	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
+	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
+	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
+	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
+	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
+	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
+
+		
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			TcsReferenceIO.class
@@ -70,6 +93,7 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
+			makeNamespaces(root);
 			return root;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -78,6 +102,29 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private boolean makeNamespaces(Element root){
+		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
+		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
+
+		String prefix;
+		rdfNamespace = root.getNamespace();
+		prefix = "tc";
+		tcNamespace = root.getNamespace(prefix);
+		prefix = "tn";
+		tnNamespace = root.getNamespace(prefix);
+		prefix = "tcom";
+		commonNamespace = root.getNamespace(prefix);
+		prefix = "tgeo";
+		geoNamespace = root.getNamespace(prefix);
+		prefix = "tpub";
+		publicationNamespace = root.getNamespace(prefix);
+		if (rdfNamespace == null || tcNamespace == null || tnNamespace == null ||
+				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null){
+			logger.warn("At least one Namespace is NULL");
+		}
+		return true;
 	}
 
 
@@ -107,6 +154,55 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 		}
 	}
 	
+	public Namespace getRdfNamespace() {
+		return rdfNamespace;
+	}
+
+	public void setRdfNamespace(Namespace rdfNamespace) {
+		this.rdfNamespace = rdfNamespace;
+	}
+
+	public Namespace getTcNamespace() {
+		return tcNamespace;
+	}
+
+	public void setTcNamespace(Namespace tcNamespace) {
+		this.tcNamespace = tcNamespace;
+	}
+
+	public Namespace getTnNamespace() {
+		return tnNamespace;
+	}
+
+	public void setTnNamespace(Namespace tnNamespace) {
+		this.tnNamespace = tnNamespace;
+	}
+
+	public Namespace getCommonNamespace() {
+		return commonNamespace;
+	}
+
+	public void setCommonNamespace(Namespace commonNamespace) {
+		this.commonNamespace = commonNamespace;
+	}
+
+	public Namespace getGeoNamespace() {
+		return geoNamespace;
+	}
+
+	public void setGeoNamespace(Namespace geoNamespace) {
+		this.geoNamespace = geoNamespace;
+	}
+
+	public Namespace getPublicationNamespace() {
+		return publicationNamespace;
+	}
+
+	public void setPublicationNamespace(Namespace publicationNamespace) {
+		this.publicationNamespace = publicationNamespace;
+	}
+	
+
 	
 	
 }

@@ -63,18 +63,10 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
 		
-		Namespace rdfNamespace = root.getNamespace();
-		String prefix = "tn";
-		Namespace taxonNameNamespace = root.getNamespace(prefix);
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
-		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
+		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		Namespace taxonNameNamespace = tcsConfig.getTnNamespace();
 		
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
-
 		
 		int i = 0;
 		int nameRelCount = 0;

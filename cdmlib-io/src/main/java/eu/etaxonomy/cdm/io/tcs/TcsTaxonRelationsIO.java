@@ -61,27 +61,19 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		logger.info("start makeTaxonRelationships ...");
+		boolean success =true;
 
 		String xmlElementName;
-		String xmlAttributeName;
 		Namespace elementNamespace;
-		Namespace attributeNamespace;
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
+		Namespace taxonConceptNamespace = tcsConfig.getTcNamespace();
 
 		ITaxonService taxonService = cdmApp.getTaxonService();
-		boolean success =true;
 
-		String prefix;
-		Namespace rdfNamespace = root.getNamespace();
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
@@ -93,7 +85,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 			
 			//TaxonConcept about
 			xmlElementName = "about";
-			elementNamespace = rdfNamespace;
+			elementNamespace = tcsConfig.getRdfNamespace();
 			String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
 			
 			TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
@@ -113,83 +105,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 				List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
 				
 				for (Element elRelationship: elRelationships){
-					//relationship
-					xmlElementName = "relationshipCategory";
-					elementNamespace = taxonConceptNamespace;
-					xmlAttributeName = "resource";
-					attributeNamespace = rdfNamespace;
-					String strRelCategory = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-					try {
-						RelationshipTermBase relType = TcsTransformer.tcsRelationshipCategory2Relationship(strRelCategory);
-						boolean isReverse = TcsTransformer.isReverseRelationshipCategory(strRelCategory);
-						//toTaxon
-						xmlElementName = "toTaxon";
-						elementNamespace = taxonConceptNamespace;
-						xmlAttributeName = "resource";
-						attributeNamespace = rdfNamespace;
-						String strToTaxon = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-						TaxonBase toTaxon = taxonMap.get(strToTaxon);
-						TaxonBase fromTaxon = aboutTaxon;
-						if (toTaxon != null && fromTaxon != null){
-							//reverse
-							if (isReverse == true ){
-								TaxonBase tmp = toTaxon;
-								toTaxon = fromTaxon;
-								fromTaxon = tmp;
-							}
-							
-							//Create relationship
-							if (! (toTaxon instanceof Taxon)){
-								logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
-							}else{
-								Taxon taxonTo = (Taxon)toTaxon;
-								ReferenceBase citation = null;
-								String microReference = null;
-								if (relType instanceof SynonymRelationshipType){
-									SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
-									if (! (fromTaxon instanceof Synonym )){
-										logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
-									}else{
-										Synonym synonym = (Synonym)fromTaxon;
-										TaxonNameBase synName = synonym.getName();
-										TaxonNameBase accName = taxonTo.getName();
-										if (synName != null && accName != null && synName.isHomotypic(accName)
-													&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-											synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
-										}
-										if (! relationExists(taxonTo, synonym, synRelType)){
-											taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
-										}else{
-											//TODO citation, microReference
-											//TODO different synRelTypes -> warning
-										}
-									}
-								}else if (relType instanceof TaxonRelationshipType){
-									TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
-									if (! (fromTaxon instanceof Taxon )){
-										logger.warn("TaxonBase fromTaxon " + strTaxonAbout + "is not of Type 'Taxon'. Relationship is not added.");
-									}else{
-										Taxon taxonFrom = (Taxon)fromTaxon;
-										taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
-									}
-								}else{
-									logger.warn("Unknown Relationshiptype");
-								}
-								taxonStore.add(toTaxon);
-							}
-						}else{
-							if (toTaxon == null){
-								logger.warn("toTaxon (" + strToTaxon + ") could  not be found in taxonMap. Relationship of type " + strRelCategory + " was not added to CDM");
-							}
-							if (fromTaxon == null){
-								logger.warn("fromTaxon (" + strTaxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
-							}
-						}
-					} catch (UnknownCdmTypeException e) {
-						//TODO
-						logger.warn("tc:relationshipCategory " + strRelCategory + " not yet implemented");
-					}
-					
+					makeRelationship(elRelationship, strTaxonAbout, taxonMap, tcsConfig, taxonStore);
 				}//relationship
 			}//hasRelationships
 		}//elTaxonConcept
@@ -200,6 +116,105 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		return success;
 
 	}
+	
+	private boolean makeRelationship(
+				Element elRelationship, 
+				String strTaxonAbout,
+				MapWrapper<TaxonBase> taxonMap,
+				TcsImportConfigurator tcsConfig,
+				Set<TaxonBase> taxonStore){
+		boolean result = true;
+		String xmlElementName;
+		String xmlAttributeName;
+		Namespace elementNamespace;
+		Namespace attributeNamespace;
+		//relationship
+		xmlElementName = "relationshipCategory";
+		elementNamespace = tcsConfig.getTcNamespace();
+		xmlAttributeName = "resource";
+		attributeNamespace = tcsConfig.getRdfNamespace();
+		String strRelCategory = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
+		try {
+			RelationshipTermBase relType = TcsTransformer.tcsRelationshipCategory2Relationship(strRelCategory);
+			boolean isReverse = TcsTransformer.isReverseRelationshipCategory(strRelCategory);
+			//toTaxon
+			xmlElementName = "toTaxon";
+			elementNamespace = tcsConfig.getTcNamespace();
+			xmlAttributeName = "resource";
+			attributeNamespace = tcsConfig.getRdfNamespace();
+			String strToTaxon = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
+			TaxonBase toTaxon = taxonMap.get(strToTaxon);
+			TaxonBase fromTaxon = taxonMap.get(strTaxonAbout);
+			if (toTaxon != null && fromTaxon != null){
+				//reverse
+				if (isReverse == true ){
+					TaxonBase tmp = toTaxon;
+					toTaxon = fromTaxon;
+					fromTaxon = tmp;
+				}
+				
+				//Create relationship
+				if (! (toTaxon instanceof Taxon)){
+					logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
+					result = false;
+				}else{
+					Taxon taxonTo = (Taxon)toTaxon;
+					ReferenceBase citation = null;
+					String microReference = null;
+					if (relType instanceof SynonymRelationshipType){
+						SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
+						if (! (fromTaxon instanceof Synonym )){
+							logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
+							result = false;
+						}else{
+							Synonym synonym = (Synonym)fromTaxon;
+							TaxonNameBase synName = synonym.getName();
+							TaxonNameBase accName = taxonTo.getName();
+							if (synName != null && accName != null && synName.isHomotypic(accName)
+										&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
+								synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
+							}
+							if (! relationExists(taxonTo, synonym, synRelType)){
+								taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
+							}else{
+								//TODO citation, microReference
+								//TODO different synRelTypes -> warning
+								result = false;
+							}
+						}
+					}else if (relType instanceof TaxonRelationshipType){
+						TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
+						if (! (fromTaxon instanceof Taxon )){
+							logger.warn("TaxonBase fromTaxon " + strTaxonAbout + "is not of Type 'Taxon'. Relationship is not added.");
+							result = false;
+						}else{
+							Taxon taxonFrom = (Taxon)fromTaxon;
+							taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
+						}
+					}else{
+						logger.warn("Unknown Relationshiptype");
+						result = false;
+					}
+					taxonStore.add(toTaxon);
+				}
+			}else{
+				if (toTaxon == null){
+					logger.warn("toTaxon (" + strToTaxon + ") could  not be found in taxonMap. Relationship of type " + strRelCategory + " was not added to CDM");
+				}
+				if (fromTaxon == null){
+					logger.warn("fromTaxon (" + strTaxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
+				}
+				result = false;
+			}
+			
+		} catch (UnknownCdmTypeException e) {
+			//TODO
+			logger.warn("tc:relationshipCategory " + strRelCategory + " not yet implemented");
+			return false;
+		}
+		return result;
+	}
+	
 	
 	
 	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){

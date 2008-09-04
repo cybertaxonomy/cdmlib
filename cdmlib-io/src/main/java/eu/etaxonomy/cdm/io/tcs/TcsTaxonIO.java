@@ -106,20 +106,12 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
-		INameService nameService = cdmApp.getNameService();
 		
-		String prefix;
-		Namespace rdfNamespace = root.getNamespace();
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		prefix = "tgeo";
-		Namespace geoNamespace = root.getNamespace(prefix);
-
+		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		
 		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
-		elementNamespace = taxonConceptNamespace;
+		elementNamespace = tcsConfig.getTcNamespace();
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
 		ITaxonService taxonService = cdmApp.getTaxonService();
@@ -134,7 +126,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			
 			//hasName
 			xmlElementName = "hasName";
-			elementNamespace = taxonConceptNamespace;
+			elementNamespace = tcsConfig.getTcNamespace();
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
@@ -142,7 +134,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 				
 			//accordingTo
 			xmlElementName = "accordingTo";
-			elementNamespace = taxonConceptNamespace;
+			elementNamespace = tcsConfig.getTcNamespace();
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			//String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
@@ -161,13 +153,16 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			
 			//FIXME or synonym
 			TaxonBase taxonBase;
+			Namespace geoNamespace = tcsConfig.getGeoNamespace();
 			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
+				//Synonym
 				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geo = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 				if (geo.size() > 0){
 					logger.warn("Synonym (" + taxonAbout + ") has geo description!");
 				}
 			}else{
+				//Taxon
 				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 				TaxonDescription description = TaxonDescription.NewInstance(taxon);

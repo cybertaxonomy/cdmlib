@@ -97,16 +97,9 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 		boolean success =true;
 		INameService nameService = cdmApp.getNameService();
 		
-		Namespace rdfNamespace = root.getNamespace();
-		String prefix = "tn";
-		Namespace taxonNameNamespace = root.getNamespace(prefix);
-		prefix = "tc";
-		Namespace taxonConceptNamespace = root.getNamespace(prefix);
-		prefix = "tcom";
-		Namespace commonNamespace = root.getNamespace(prefix);
-		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
-		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
-
+		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		Namespace taxonNameNamespace = tcsConfig.getTnNamespace();
+		
 		String idNamespace = "TaxonName";
 		
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
@@ -135,7 +128,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 				//Reference
 				//TODO
 				tcsElementName = "publishedIn";
-				tcsNamespace = commonNamespace;
+				tcsNamespace = tcsConfig.getCommonNamespace();
 				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 				if (value != null){
 					Generic nomRef = Generic.NewInstance(); //TODO
