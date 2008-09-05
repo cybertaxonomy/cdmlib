@@ -12,6 +12,12 @@ package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -23,12 +29,25 @@ import org.apache.log4j.Logger;
  * @created 08-Nov-2007 13:06:22
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "OriginalSource", propOrder = {
+    "idInSource",
+    "idNamespace"
+})
+@XmlRootElement(name = "OriginalSource")
 @Entity
 public class OriginalSource extends ReferencedEntityBase implements Cloneable{
+	
 	static Logger logger = Logger.getLogger(OriginalSource.class);
+	
 	//The object's ID in the source, where the alternative string comes from
+	@XmlElement(name = "IdInSource")
 	private String idInSource;
+	
+	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
+	
+	@XmlTransient
 	private IdentifiableEntity sourcedObj;
 
 	/**

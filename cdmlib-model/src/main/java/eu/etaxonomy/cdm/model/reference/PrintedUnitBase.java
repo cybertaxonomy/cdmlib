@@ -15,7 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -56,6 +58,8 @@ public abstract class PrintedUnitBase extends PublicationBase {
 	private String pages;
 	
     @XmlElement(name = "InSeries")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private PrintSeries inSeries;
 	
     @XmlElement(name = "SeriesPart")

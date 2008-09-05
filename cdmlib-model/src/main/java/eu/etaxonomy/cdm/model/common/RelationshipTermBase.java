@@ -8,7 +8,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -16,13 +23,28 @@ import org.hibernate.annotations.CascadeType;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "RelationshipTermBase", propOrder = {
+    "symmetric",
+    "transitive",
+    "inverseRepresentations"
+})
 @XmlRootElement(name = "RelationshipTermBase")
 @MappedSuperclass
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
+	
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
+	@XmlElement(name = "Symmetric")
 	private boolean symmetric;
+	
+	@XmlElement(name = "Transitive")
 	private boolean transitive;
+	
+	@XmlElementWrapper(name = "InverseRepresentations")
+	@XmlElement(name = "InverseRepresentation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<Representation> inverseRepresentations = new HashSet();
 	
 	public RelationshipTermBase() {

@@ -38,8 +38,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentation", propOrder = {
 	"mimeType",
-    "suffix"
-//    "mediaRepresentationParts"
+    "suffix",
+    "mediaRepresentationParts"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -58,18 +58,13 @@ public class MediaRepresentation extends VersionableEntity {
 	@XmlTransient
 	private Media media;
 	
-    @XmlTransient
-    //FIXME: ArrayIndexOutOfBoundException during marshalling
-//	@XmlElementWrapper(name = "MediaRepresentationParts")
-//	@XmlElement(name = "MediaRepresentationPart", type = ArrayList.class)
-//    @XmlElements({
-//        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CategoricalData.class),
-//        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = CommonTaxonName.class),
-//        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Distribution.class),
-//    })
+	@XmlElementWrapper(name = "MediaRepresentationParts")
+    @XmlElements({
+        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = AudioFile.class),
+        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
+        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class),
+    })
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
-
-	// Defining mediaRepresentationParts as ArrayList gives hibernate.AnnotationException		
 
 	/**
 	 * Factory method
@@ -138,7 +133,7 @@ public class MediaRepresentation extends VersionableEntity {
 	
 	
 	@OneToMany(mappedBy="mediaRepresentation",fetch= FetchType.LAZY)
-	@IndexColumn(name="sortIndex", base = 1)
+	@IndexColumn(name="sortIndex", base = 0)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public List<MediaRepresentationPart> getParts(){
 		return this.mediaRepresentationParts;

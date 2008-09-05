@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-//    "typifiedNames",
+    "typifiedNames",
     "homotypicalGroup",
     "isNotDesignated"
 })
@@ -62,12 +62,11 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	@XmlElement(name = "IsNotDesignated")
 	private boolean isNotDesignated;
 	
-    // Need the bidirectional reference?
-	@XmlTransient
-//	@XmlElementWrapper(name = "TypifiedNames")
-//	@XmlElement(name = "TypifiedName")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
+	@XmlElementWrapper(name = "TypifiedNames")
+	@XmlElement(name = "TypifiedName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+    // Need these references (bidirectional) to fill table TypeDesignationBase_TaxonNameBase
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	@XmlElement(name = "HomotypicalGroup")
