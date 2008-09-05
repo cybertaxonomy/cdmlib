@@ -67,11 +67,11 @@ public class TestJaxb {
 	
     /* Cichorieae DB **/
 	private static final String serializeFromDb = "cdm_test_anahit";
-	private static final String deserializeToDb = "cdm_test_jaxb2";
+	//private static final String deserializeToDb = "cdm_test_jaxb2";
 	
     /* TestJaxb Test Data */
 	//private static final String serializeFromDb = "cdm_test_jaxb";
-	//private static final String deserializeToDb = "cdm_test_anahit2";
+	private static final String deserializeToDb = "cdm_test_anahit2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
@@ -327,11 +327,12 @@ public class TestJaxb {
 			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 		
-	    // NomenclaturalStatus and TypeDesignations are saved with taxon names
-//		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
-//			logger.info("Saving referenced entities");
-//			appCtr.getNameService().save...;
-//		}
+	    // This is actually not needed because NomenclaturalStatus and TypeDesignations
+		// are saved with taxon names.
+		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
+			logger.info("Saving referenced entities");
+			appCtr.getNameService().saveTypeDesignationAll(referencedEntities);
+		}
 
 		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
 //		if ((descriptions = dataSet.getDescriptions()) != null) {

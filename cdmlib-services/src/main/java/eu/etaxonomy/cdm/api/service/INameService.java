@@ -40,7 +40,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public abstract Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<TaxonNameBase> taxonCollection);
 
-	/**
+	public Map<UUID, ReferencedEntityBase> saveTypeDesignationAll(Collection<ReferencedEntityBase> typeDesignationCollection);
+
+		/**
 	 * @param limit
 	 * @param start
 	 * @return

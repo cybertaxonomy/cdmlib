@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
@@ -37,9 +38,10 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
+	private ITaxonNameDao nameDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
-	private ITaxonNameDao nameDao;
+	protected IReferencedEntityDao referencedEntityDao;
 
 	
 	@Autowired
@@ -56,6 +58,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	@Autowired
 	protected void setOrderedVocabularyDao(IOrderedTermVocabularyDao orderedVocabularyDao) {
 		this.orderedVocabularyDao = orderedVocabularyDao;
+	}
+
+	@Autowired
+	protected void setReferencedEntityDao(IReferencedEntityDao referencedEntityDao) {
+		this.referencedEntityDao = referencedEntityDao;
 	}
 
 	public NameServiceImpl(){
@@ -85,12 +92,18 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
+	public Map<UUID, ReferencedEntityBase> saveTypeDesignationAll(Collection<ReferencedEntityBase> typeDesignationCollection){
+		return referencedEntityDao.saveAll(typeDesignationCollection);
+	}
+	
+	@Transactional(readOnly = false)
 	public UUID removeTaxonName(TaxonNameBase taxonName) {
 		return super.removeCdmObject(taxonName);
 	}
 
 	public List<TaxonNameBase> getAllNames(int limit, int start){
-		return dao.list(limit, start);
+		return nameDao.list(limit, start);
+		//return dao.list(limit, start);
 	}
 
 	public List<ReferencedEntityBase> getAllNomenclaturalStatus(int limit, int start){
