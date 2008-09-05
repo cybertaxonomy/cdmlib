@@ -27,5 +27,8 @@ public interface IAgentService<T extends Agent> extends IIdentifiableEntityServi
 	public abstract List<T> findAgentsByTitle(String title);
 
 	public abstract List<? extends Agent> getAllAgents(int limit, int start);
+	
+	public abstract List<Agent> getAgentByCode(String code);
+
 
 }
