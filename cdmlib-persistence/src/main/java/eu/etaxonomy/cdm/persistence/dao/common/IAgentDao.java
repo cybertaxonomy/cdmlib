@@ -9,8 +9,15 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 public interface IAgentDao extends IIdentifiableDao<Agent> {
+	
+	public List<Agent> getAgentByCode(String code);
 	
 }

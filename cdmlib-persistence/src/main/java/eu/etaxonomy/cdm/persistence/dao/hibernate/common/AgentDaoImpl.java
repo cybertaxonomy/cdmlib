@@ -9,10 +9,17 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
 
 
@@ -24,4 +31,12 @@ public class AgentDaoImpl extends IdentifiableDaoBase<Agent> implements IAgentDa
 		super(Agent.class); 
 	}
 
+	public List<Agent> getAgentByCode(String code) {
+		
+		Criteria crit = getSession().createCriteria(Agent.class);
+		
+		crit.createCriteria("code").add(Restrictions.eq("code", code));
+		List<Agent> results = crit.list();
+		return results;
+	}
 }
