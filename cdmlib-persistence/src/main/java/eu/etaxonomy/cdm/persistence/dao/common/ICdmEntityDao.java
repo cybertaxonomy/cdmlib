@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -38,6 +40,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 */
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
+	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
+
 	/**
 	 * @param transientObject
 	 * @return

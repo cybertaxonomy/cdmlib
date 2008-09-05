@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -21,8 +25,10 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -34,9 +40,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  */
 @Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+//public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
 
 	static Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
+	int flushAfterNo = 2000;
 	protected Class<T> type;
 	
 	public CdmEntityDaoBase(Class<T> type){
@@ -48,7 +56,46 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		getSession().saveOrUpdate(cdmObj);
 		return cdmObj.getUuid();
 	}
+	
+    //TODO: Replace saveCdmObj() by saveCdmObject_
+	private UUID saveCdmObject_(T cdmObj){
+		getSession().saveOrUpdate(cdmObj);
+		return cdmObj.getUuid();
+	}
+	
+    //TODO: Use everywhere CdmEntityDaoBase.saveAll() instead of ServiceBase.saveCdmObjectAll()?
+	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection){
+		int types = cdmObjCollection.getClass().getTypeParameters().length;
+		if (types > 0){
+			if (logger.isDebugEnabled()){logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);}
+		}
 
+		Map<UUID, T> resultMap = new HashMap<UUID, T>();
+		Iterator<T> iterator = cdmObjCollection.iterator();
+		int i = 0;
+		while(iterator.hasNext()){
+			if ( ( (i % 5000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
+			T cdmObj = iterator.next();
+			UUID uuid = saveCdmObject_(cdmObj);
+			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+			resultMap.put(uuid, cdmObj);
+			i++;
+			if ( (i % flushAfterNo) == 0){
+				try{
+					logger.debug("flush");
+					flush();
+				}catch(Exception e){
+					logger.error("UUUIIIII");
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
+		return resultMap;
+	}
+
+	
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
 		try {
 			if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
