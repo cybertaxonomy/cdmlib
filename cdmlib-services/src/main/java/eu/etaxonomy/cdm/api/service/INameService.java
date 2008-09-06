@@ -49,9 +49,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public abstract List<TaxonNameBase> getAllNames(int limit, int start);
 
-	public abstract List<ReferencedEntityBase> getAllNomenclaturalStatus(int limit, int start);
+	public abstract List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 
-	public abstract List<ReferencedEntityBase> getAllTypeDesignations(int limit, int start);
+	public abstract List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
 	
 	/**
 	 * @param name

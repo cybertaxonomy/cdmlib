@@ -257,7 +257,7 @@ public class TestJaxb {
     		if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
     		logger.info("# Relationships...");
     		List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
-    		Set<RelationshipBase> relationSet = new HashSet(relationList);
+    		Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
     		dataSet.setRelationships(relationSet);
     	}
 

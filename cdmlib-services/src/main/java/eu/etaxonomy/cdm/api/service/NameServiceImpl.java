@@ -24,13 +24,17 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 
 @Service
@@ -42,11 +46,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	protected ITermVocabularyDao vocabularyDao;
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
 	protected IReferencedEntityDao referencedEntityDao;
+	private INomenclaturalStatusDao nomStatusDao;
+	private ITypeDesignationDao typeDesignationDao;
 
 	
 	@Autowired
 	protected void setDao(ITaxonNameDao dao) {
-		this.dao = dao;
+		//set the base class dao
+		super.dao = dao;
 		this.nameDao = dao;
 	}
 	
@@ -59,7 +66,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	protected void setOrderedVocabularyDao(IOrderedTermVocabularyDao orderedVocabularyDao) {
 		this.orderedVocabularyDao = orderedVocabularyDao;
 	}
-
+	
+	@Autowired
+	protected void setNomenclaturalStatusDao(INomenclaturalStatusDao nomStatusDao) {
+		this.nomStatusDao = nomStatusDao;
+	}
+	
+	@Autowired
+	protected void setTypeDesignationDao(ITypeDesignationDao typeDesignationDao) {
+		this.typeDesignationDao = typeDesignationDao;
+	}	
+	/**
+	 * Constructor
+	 */
 	@Autowired
 	protected void setReferencedEntityDao(IReferencedEntityDao referencedEntityDao) {
 		this.referencedEntityDao = referencedEntityDao;
@@ -69,6 +88,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		logger.debug("Load NameService Bean");
 	}
 
+//********************* METHODS ****************************************************************//	
+	
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);
 	}
@@ -103,15 +124,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 
 	public List<TaxonNameBase> getAllNames(int limit, int start){
 		return nameDao.list(limit, start);
-		//return dao.list(limit, start);
 	}
 
-	public List<ReferencedEntityBase> getAllNomenclaturalStatus(int limit, int start){
-		return nameDao.getAllNomenclaturalStatus(limit, start);
+	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
+		return nomStatusDao.list(limit, start);
 	}
 	 
-	public List<ReferencedEntityBase> getAllTypeDesignations(int limit, int start){
-		return nameDao.getAllTypeDesignations(limit, start);
+	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
+		return typeDesignationDao.getAllTypeDesignations(limit, start);
 	}
 	
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
