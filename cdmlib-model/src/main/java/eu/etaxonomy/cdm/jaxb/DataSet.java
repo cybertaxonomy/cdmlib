@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.jaxb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -444,8 +445,9 @@ public class DataSet {
      *     {@link List<ReferencedEntityBase> }
      *     
      */
-    public void setReferencedEntities(List<ReferencedEntityBase> value) {
-        this.referencedEntities = value;
+    public void setReferencedEntities(List<? extends ReferencedEntityBase> value) {
+        this.referencedEntities = new ArrayList<ReferencedEntityBase>();
+        referencedEntities.addAll(value);
     }
     
     /**
