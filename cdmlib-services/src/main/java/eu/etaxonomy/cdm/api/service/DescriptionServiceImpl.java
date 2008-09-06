@@ -13,13 +13,21 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.TermVocabularyDaoImpl;
 
 /**
  * @author a.mueller
@@ -31,7 +39,9 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase> implements IDescriptionService {
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
-	IFeatureTreeDao featureTreeDao;
+	protected IFeatureTreeDao featureTreeDao;
+	protected ITermVocabularyDao vocabularyDao;
+	
 	
 	@Autowired
 	protected void setDao(IDescriptionDao dao) {
@@ -41,6 +51,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Autowired
 	protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
 		this.featureTreeDao = featureTreeDao;
+	}
+	
+	@Autowired
+	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
+		this.vocabularyDao = vocabularyDao;
 	}
 	
 	/**
@@ -79,6 +94,23 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	public UUID saveFeatureTree(FeatureTree tree) {
 		return featureTreeDao.saveOrUpdate(tree);
 	}
+	
+	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid){
+		TermVocabulary<Feature> featureVocabulary;
+		try {
+			featureVocabulary = (TermVocabulary)vocabularyDao.findByUuid(uuid);
+		} catch (ClassCastException e) {
+			return null;
+		}
+		return featureVocabulary;
+	}
+
+	public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
+		String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";
+		UUID featureUuid = UUID.fromString(uuidFeature);
+		return getFeatureVocabulary(featureUuid);
+	}
+
 
 	
 }

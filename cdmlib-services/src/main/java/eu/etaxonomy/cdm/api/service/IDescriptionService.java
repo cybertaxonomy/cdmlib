@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
@@ -35,5 +37,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public abstract UUID saveFeatureTree(FeatureTree tree);
+	
+	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
+	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 
 }

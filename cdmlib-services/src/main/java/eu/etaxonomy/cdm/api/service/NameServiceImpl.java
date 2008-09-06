@@ -45,7 +45,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	private ITaxonNameDao nameDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
-	protected IReferencedEntityDao referencedEntityDao;
+	protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
 	private INomenclaturalStatusDao nomStatusDao;
 	private ITypeDesignationDao typeDesignationDao;
 
@@ -80,7 +80,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	 * Constructor
 	 */
 	@Autowired
-	protected void setReferencedEntityDao(IReferencedEntityDao referencedEntityDao) {
+	protected void setReferencedEntityDao(IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao) {
 		this.referencedEntityDao = referencedEntityDao;
 	}
 
@@ -98,7 +98,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return super.findCdmObjectsByTitle(name, sessionObject);
 	}
 
-	public TaxonNameBase getTaxonNameByUuid(UUID uuid) {
+	public TaxonNameBase<?,?> getTaxonNameByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid);
 	}
 
