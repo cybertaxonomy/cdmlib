@@ -418,8 +418,8 @@ public class DataSet {
      *     {@link Collection<ReferencedEntityBase> }
      *     
      */
-    public void addReferencedEntities(Collection<ReferencedEntityBase> value) {
-    	for (ReferencedEntityBase referencedEntity: value) {
+    public <T extends ReferencedEntityBase> void addReferencedEntities(Collection<T> value) {
+    	for (T referencedEntity: value) {
     		this.referencedEntities.add(referencedEntity);
     	}
     }
