@@ -6,15 +6,12 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.babadshanjan
  * @created 04.09.2008
  */
-public interface IReferencedEntityDao extends ICdmEntityDao<ReferencedEntityBase> {
+public interface IReferencedEntityDao<T extends ReferencedEntityBase> extends ICdmEntityDao<T> {
 
 }

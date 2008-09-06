@@ -8,14 +8,17 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.name;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import java.util.List;
+
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 
 /**
  * @author a.mueller
  *
  */
-public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
+public interface ITypeDesignationDao extends IReferencedEntityDao<TypeDesignationBase> {
 	
+	public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start);
 
 }

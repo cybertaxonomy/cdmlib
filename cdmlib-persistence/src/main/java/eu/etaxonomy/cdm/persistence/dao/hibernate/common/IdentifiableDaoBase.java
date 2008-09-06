@@ -25,7 +25,7 @@ import static eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE.*;
 
 
 public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntityDaoBase<T> implements IIdentifiableDao<T>{
-	static Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
+	private static final Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
 
 
 	public IdentifiableDaoBase(Class<T> type) {
