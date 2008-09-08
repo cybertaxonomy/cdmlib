@@ -40,6 +40,7 @@ public class NameTO extends BaseTO {
 	private NameTO basionym;
 	private Set<NameTO> newCombinations = new HashSet<NameTO>();
 
+	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 	private Set<NameRelationshipTO> nameRelations = new HashSet<NameRelationshipTO>();
 	
 	
@@ -112,6 +113,12 @@ public class NameTO extends BaseTO {
 	}
 	public void addNameToken(TaggedText token){
 		this.taggedName.add(token);
+	}
+	public Set<DescriptionTO> getDescriptions() {
+		return descriptions;
+	}
+	public void setDescriptions(Set<DescriptionTO> descriptions) {
+		this.descriptions = descriptions;
 	}
 
 }

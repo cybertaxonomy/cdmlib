@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.dto;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MediaRepresentationSTO extends BaseSTO {
@@ -24,7 +25,7 @@ public class MediaRepresentationSTO extends BaseSTO {
 	 */
 	private String suffix;
 		
-	private Set<MediaRepresenationPartSTO> representationParts = new HashSet<MediaRepresenationPartSTO>();;
+	private List<MediaRepresenationPartSTO> representationParts = new ArrayList<MediaRepresenationPartSTO>();;
 	
 	public String getMimeType() {
 		return mimeType;
@@ -52,11 +53,11 @@ public class MediaRepresentationSTO extends BaseSTO {
 	public void addRepresenationPart(MediaRepresenationPartSTO part){
 		this.representationParts.add(part);
 	}
-	public Set<MediaRepresenationPartSTO> getRepresentationParts() {
+	public List<MediaRepresenationPartSTO> getRepresentationParts() {
 		return representationParts;
 	}
 	public void setRepresentationParts(
-			Set<MediaRepresenationPartSTO> representationParts) {
+			List<MediaRepresenationPartSTO> representationParts) {
 		this.representationParts = representationParts;
 	}
 	

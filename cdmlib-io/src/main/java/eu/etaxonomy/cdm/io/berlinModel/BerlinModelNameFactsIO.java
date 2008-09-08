@@ -218,9 +218,9 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		int jpgCount = 0;
 		MediaRepresentation representationJpg = MediaRepresentation.NewInstance(mimeTypeJpg, suffixJpg);
 		while(fileExists){
+			String urlStringJpeg = mediaUrlString + "cmd_jpg/" + nameFact + "_page_000" + jpgCount + "." + suffixJpg;		
+			file = new File(mediaPath, "cmd_jpg" + sep + nameFact + "_page_000" + jpgCount + "." + suffixJpg);
 			jpgCount++;
-			String urlStringJpeg = mediaUrlString + "jpeg/" + nameFact + "_p" + jpgCount + "." + suffixJpg;
-			file = new File(mediaPath, "jpeg" + sep + nameFact + "_p" + jpgCount + "." + suffixJpg);
 			if (file.exists()){ 
 				representationJpg.addRepresentationPart(makeImage(urlStringJpeg, size, file));
 			}else{
@@ -282,10 +282,16 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			url = new URL("http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/");
 			File path = new File("/Volumes/protolog/protolog/");
 			if(path.exists()){
-				String fact = "Crepis_meletonis";
-				// gotta make getMedia public for this to work
+				String fact = "Acanthocephalus_amplexifolius";
+				// make getMedia public for this to work
 				Media media = nf.getMedia(fact, url, path);
-				System.out.println(media);
+				logger.info(media);
+				for (MediaRepresentation rep : media.getRepresentations()){
+					logger.info(rep.getMimeType());
+					for (MediaRepresentationPart part : rep.getParts()){
+						logger.info(part.getUri());
+					}
+				}
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

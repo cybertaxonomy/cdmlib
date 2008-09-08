@@ -77,6 +77,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 			Integer width = null;
 			Integer height = null;
 			Integer duration = null;
+			
 			for(MediaRepresentationPart part : mediaRepr.getParts()){
 
 				if(part instanceof AudioFile){

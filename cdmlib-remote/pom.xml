@@ -96,10 +96,10 @@
 				<configuration>
 					 					  
 				<!--Uncomment tomcat edit when deploying-->
-				<!--	<update>true</update>
+					<update>true</update>
 					<server>tomcat-edit</server>
 					<url>http://search.biocase.org:8080/manager</url>
-					-->
+					
 <!--				<server>tomcat-local</server>-->
 				</configuration>
 			</plugin>
@@ -126,7 +126,10 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
 					<!-- Configure the webapp -->
-					<contextPath>/cdmserver-palmae</contextPath>
+<!--					<contextPath>/cdmserver/</contextPath>-->
+					<contextPath>/cdmserver-cichorieae/</contextPath>
+<!--					<contextPath>/cdmserver-diptera/</contextPath>-->
+<!--					<contextPath>/cdmserver-palmae/</contextPath>-->
 					<!-- configure the container                 -->
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<connectors>

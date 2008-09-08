@@ -12,12 +12,18 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TextData;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,8 +44,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentation", propOrder = {
 	"mimeType",
-    "suffix",
-    "mediaRepresentationParts"
+    "suffix"
+//    "mediaRepresentationParts"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -65,7 +71,7 @@ public class MediaRepresentation extends VersionableEntity {
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class),
     })
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
-
+		
 	/**
 	 * Factory method
 	 * @return
@@ -132,9 +138,10 @@ public class MediaRepresentation extends VersionableEntity {
 	}
 	
 	
-	@OneToMany(mappedBy="mediaRepresentation",fetch= FetchType.LAZY)
+	@OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
 	@IndexColumn(name="sortIndex", base = 0)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@JoinColumn (name = "representation_id",  nullable=false)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public List<MediaRepresentationPart> getParts(){
 		return this.mediaRepresentationParts;
 	}

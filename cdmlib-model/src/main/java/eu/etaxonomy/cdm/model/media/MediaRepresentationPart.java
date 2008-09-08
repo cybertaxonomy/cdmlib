@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.media;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -29,17 +32,12 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentationPart", propOrder = {
-		"sortIndex",
 		"uri",
 		"size"
 })
 @Entity
 public class MediaRepresentationPart extends VersionableEntity{
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
-
-	//sorting index
-	@XmlElement(name = "SortIndex")
-	private int sortIndex;
 	
 	//where the media file is stored
 	@XmlElement(name = "URI")
@@ -83,6 +81,7 @@ public class MediaRepresentationPart extends VersionableEntity{
 	
 	
 	@ManyToOne
+	@JoinColumn (name="representation_id", nullable = false, updatable = false, insertable = false)
 	public MediaRepresentation getMediaRepresentation() {
 		return this.mediaRepresentation;
 	}
@@ -119,19 +118,4 @@ public class MediaRepresentationPart extends VersionableEntity{
 		this.size = size;
 	}
 
-
-	/**
-	 * @return the sortIndex
-	 */
-	public int getSortIndex() {
-		return sortIndex;
-	}
-
-
-	/**
-	 * @param sortIndex the sortIndex to set
-	 */
-	public void setSortIndex(int sortIndex) {
-		this.sortIndex = sortIndex;
-	}
 }
