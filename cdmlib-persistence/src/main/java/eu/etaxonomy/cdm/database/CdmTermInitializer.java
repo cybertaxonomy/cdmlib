@@ -23,13 +23,15 @@ import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 /**
  * Spring bean class to initialize the {@link IVocabularyStore IVocabularyStore}.
- * To initialize the store the {@link TermLoader TermLoader} and th e {@link IVocabularyStore IVocabularyStore}
+ * To initialize the store the {@link TermLoader TermLoader} and the {@link IVocabularyStore IVocabularyStore}
  * are injected via spring and the initializeTerms method is called as an init-method (@PostConstruct). 
  * @author a.mueller
  */
 @Component
 public class CdmTermInitializer {
 	private static final Logger logger = Logger.getLogger(CdmTermInitializer.class);
+	
+	public static boolean omit = false;
 	
 	@Autowired
 	TermLoader termLoader;
@@ -40,6 +42,9 @@ public class CdmTermInitializer {
 	
 	@PostConstruct
 	public void initializeTerms(){
+		if (omit == true){
+			return;
+		}
 		try {
 			logger.info("CdmTermInitializer initializeTerms start ...");
 			termLoader.setVocabularyStore(vocabularyStore);

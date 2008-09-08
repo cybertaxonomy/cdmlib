@@ -6,6 +6,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import org.springframework.stereotype.Repository;
+
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
 /**

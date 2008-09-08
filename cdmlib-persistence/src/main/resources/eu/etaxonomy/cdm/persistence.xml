@@ -64,7 +64,7 @@
             <value>eu.etaxonomy.cdm.model.common.LanguageString</value>
             <value>eu.etaxonomy.cdm.model.common.Marker</value>
             <value>eu.etaxonomy.cdm.model.common.MarkerType</value>
-            <value>eu.etaxonomy.cdm.model.common.MultilanguageSet</value>
+            <value>eu.etaxonomy.cdm.model.common.MultilanguageText</value>
             <value>eu.etaxonomy.cdm.model.common.NoDefinedTermClassException</value>
             <value>eu.etaxonomy.cdm.model.common.OrderedTermBase</value>
             <value>eu.etaxonomy.cdm.model.common.OriginalSource</value>
