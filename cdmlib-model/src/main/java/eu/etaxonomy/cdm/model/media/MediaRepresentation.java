@@ -44,8 +44,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentation", propOrder = {
 	"mimeType",
-    "suffix"
-//    "mediaRepresentationParts"
+    "suffix",
+    "mediaRepresentationParts"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
