@@ -54,11 +54,13 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 	}
 	
 	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
-		new CdmTextElementMapper("genusPart", "genusOrUninomial")
+		new CdmTextElementMapper("genusPart", "genusOrUninomial") 
+		, new CdmTextElementMapper("uninomial", "genusOrUninomial")  //TODO make it a more specific Mapper for both attributes
 		, new CdmTextElementMapper("specificEpithet", "specificEpithet")
 		, new CdmTextElementMapper("infraspecificEpithet", "infraSpecificEpithet")
 		, new CdmTextElementMapper("infragenericEpithet", "infraGenericEpithet")
 		, new CdmTextElementMapper("microReference", nsTcom, "nomenclaturalMicroReference")		
+		
 	};
 
 	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
@@ -88,7 +90,6 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 
 		String tcsElementName;
 		Namespace tcsNamespace;
-		String cdmAttrName;
 		String value;
 		
 		logger.info("start makeTaxonNames ...");
