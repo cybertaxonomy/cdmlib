@@ -65,7 +65,7 @@ public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T
 		return agentDao.list(limit, start);
 	}
 	
-	public List<Agent> searchInstitutionByCode(String code) {
+	public List<Institution> searchInstitutionByCode(String code) {
 		return agentDao.getInstitutionByCode(code);
 	}
 

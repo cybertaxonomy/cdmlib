@@ -26,6 +26,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -313,6 +314,10 @@ public class CdmApplicationController {
 
 	public final ICommonService getCommonService(){
 		return configuration.getCommonService();
+	}
+	
+	public final ICollectionService getCollectionService(){
+		return configuration.getCollectionService();
 	}
 	
 	/* **** flush ***********/

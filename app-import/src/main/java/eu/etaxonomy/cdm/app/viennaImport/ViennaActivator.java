@@ -70,7 +70,7 @@ public class ViennaActivator {
 		
 		try {
 			if (withCdm){
-				app = CdmApplicationController.NewInstance(CdmDestinations.cdm_edit_cichorieae());
+				app = CdmApplicationController.NewInstance(CdmDestinations.cdm_test_patricia());
 			}else{
 				//app = CdmApplicationController.NewInstance(DbSchemaValidation.VALIDATE);
 			}

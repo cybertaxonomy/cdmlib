@@ -16,6 +16,7 @@ import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 
@@ -32,4 +33,5 @@ public class FeatureDaoImpl extends CdmEntityDaoBase<Feature> implements IFeatur
 		Criteria crit = getSession().createCriteria(type); 
 		return crit.list(); 
 	}
+
 }

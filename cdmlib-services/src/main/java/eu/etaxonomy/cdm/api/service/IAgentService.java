@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Institution;
 
 public interface IAgentService<T extends Agent> extends IIdentifiableEntityService<T> {
 	
@@ -28,7 +29,7 @@ public interface IAgentService<T extends Agent> extends IIdentifiableEntityServi
 
 	public abstract List<? extends Agent> getAllAgents(int limit, int start);
 	
-	public abstract List<Agent> searchInstitutionByCode(String code);
+	public abstract List<Institution> searchInstitutionByCode(String code);
 
 
 }

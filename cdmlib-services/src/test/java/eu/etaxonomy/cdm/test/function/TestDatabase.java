@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -76,7 +77,7 @@ public class TestDatabase {
 			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
 	//		botanicalName.getTitleCache();
-			Rank.SPECIES();
+			
 			Taxon taxon1 = Taxon.NewInstance(botanicalName,journal);
 			appCtr.getTaxonService().saveTaxon(taxon1);
 			BotanicalName homotypName = BotanicalName.NewInstance(Rank.SUBGENUS(), botanicalName.getHomotypicalGroup());
