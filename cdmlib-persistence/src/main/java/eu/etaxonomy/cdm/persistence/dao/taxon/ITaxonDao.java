@@ -10,17 +10,14 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
-import java.util.Set;
 
-import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -100,5 +97,14 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return
 	 */
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted);
+	
+	/**
+	 * @param queryString
+	 * @param matchMode
+	 * @param onlyAcccepted
+	 * @param criteria
+	 * @return
+	 */
+	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 	
 }
