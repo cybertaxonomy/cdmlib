@@ -1,0 +1,32 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>Basu, Shyamal K.</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus acanthospathus</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5: 1845</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 : 283. 1908, &amp; Appendix Pl. 105. 1913.</bibref>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular"></div>
+<div type="description">A moderately robust rattan; stem cluster-forming, with leafsheath to 5 cm in diameter, without leafsheath 2 - 2.5 cm in diameter, smooth, green. Leaves ecirrate, about 1.5 m long; petiole insconpicuous, rachis with robust digitate claws on one side; leafsheath mostly covered with small tuberculate spines and broad-based, solitary, confluent spines; flagellum about 1.5 m long; leaflets to 45 cm long, 5 - 6 cm broad at middle, broadly lanceolate, many-nerved, inequidistant on rachis, not in groups or in pairs; terminal leaflets slightly connate at base. Inflorescence flagelliform; primary bract leathery, closely sheathing, smooth or more or less armed with short conic prickles. Male rachillae unknown. Female rachillae arching, sub-scorpioid, 5 - 6 cm long, with 10-14 flowers in each rachilla, arranged in unilateral series. Fruit broadly ovoid, suddenly beaked, 2.5 cm long, 1.5 cm broad at middle, dull orange in colour; fruit scales in 15 series, shining, superficially channelled at middle; seed deeply pitted on dorsal side; endosperm sub-ruminate; embryo basal.</div>
+<div type="distribution">INDIA (West Bengal, Sikkim, Meghayala, Assam, Arunachal Pradesh), BHUTAN.</div>
+<div type="biology_ecology">A strong climber of the lower and middle hill forests of Eastern Himalaya up to 2000 m. In West Bengal and Sikkim it is frequent at the east of Tista river.</div>
+<div type="cultivation">Experimental cultivation exists under D.F.O. North Silviculture, West Bengal.</div>
+<div type="conservation"></div>
+<div type="uses">Local people use the cane for making cane bridges over the mountain streams. Thinner canes are used for making baskets.</div>
+<div type="discussion"></div>
+<div type="materials_examined">Assam : Lakhimpore, Dulong R.F. 21.11.1957, Panigrahi 11278 (CAL &amp; ASSAM); Meghalaya : Garo Hills, 27.3. 1955, Kanjilal 5336 (CAL &amp; ASSAM); Arunachal Pradesh: Abor Expdt. 5400-6200 ft. 31.1.1912; Burkhill 36542 (CAL); West Bengal : Baradabari, 27.4.1961, Indo-Russian Expedition No. 336 (CAL); Sikkim: Lower Chumbi, 6000-7000 ft Dec. 1904, Searight 72 (CAL).</div>
+</treatment>
+</taxonxBody>
+</taxonx>
