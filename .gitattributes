@@ -423,7 +423,6 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ITitled
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IDescriptionDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureTreeDao.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AgentDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBase.java -text
