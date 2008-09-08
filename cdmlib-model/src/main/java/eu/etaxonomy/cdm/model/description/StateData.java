@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
@@ -55,7 +55,7 @@ public class StateData extends VersionableEntity {
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "ModifyingText")
-	private MultilanguageSet modifyingText;
+	private MultilanguageText modifyingText;
 	
 	/**
 	 * Factory method
@@ -93,10 +93,10 @@ public class StateData extends VersionableEntity {
 	}
 
 
-	public MultilanguageSet getModifyingText(){
+	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
 	}
-	private void setModifyingText(MultilanguageSet modifyingText) {
+	private void setModifyingText(MultilanguageText modifyingText) {
 		this.modifyingText = modifyingText;
 	}
 	public void addModifyingText(String text, Language language){

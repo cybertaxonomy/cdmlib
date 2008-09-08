@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 public class TaxonInteraction extends DescriptionElementBase {
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
-	private MultilanguageSet description;
+	private MultilanguageText description;
 	private Taxon taxon2;
 
 	/**
@@ -53,10 +53,10 @@ public class TaxonInteraction extends DescriptionElementBase {
 		this.taxon2 = taxon2;
 	}
 
-	public MultilanguageSet getDescription(){
+	public MultilanguageText getDescription(){
 		return this.description;
 	}
-	private void setDescription(MultilanguageSet description){
+	private void setDescription(MultilanguageText description){
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){

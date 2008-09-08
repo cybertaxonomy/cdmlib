@@ -43,8 +43,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "InverseRepresentation")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	//@XmlIDREF
+	//@XmlSchemaType(name = "IDREF")
 	private Set<Representation> inverseRepresentations = new HashSet();
 	
 	public RelationshipTermBase() {

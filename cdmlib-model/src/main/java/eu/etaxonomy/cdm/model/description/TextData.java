@@ -13,10 +13,10 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -50,7 +50,7 @@ public class TextData extends DescriptionElementBase {
 
 	//@XmlElement(name = "MultiLanguageText", type = MultilanguageSet.class)
 	@XmlElement(name = "MultiLanguageText")
-    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	private Map<Language, LanguageString> multiLanguageText;
 	
 	@XmlElement(name = "Format")
@@ -133,7 +133,7 @@ public class TextData extends DescriptionElementBase {
 	
 	private void initTextSet(){
 		if (multiLanguageText == null){
-			multiLanguageText = MultilanguageSet.NewInstance();
+			multiLanguageText = MultilanguageText.NewInstance();
 		}
 	}
 	

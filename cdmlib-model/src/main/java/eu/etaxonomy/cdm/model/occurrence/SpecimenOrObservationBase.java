@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -82,7 +82,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
 	// in conjunction with titleCache which serves as the "citation" string for this object
 	@XmlElement(name = "Description")
-	private MultilanguageSet description;
+	private MultilanguageText description;
 	
 	// events that created derivedUnits from this unit
 	@XmlElementWrapper(name = "DerivationEvents")
@@ -186,10 +186,10 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	}
 
 
-	public MultilanguageSet getDefinition(){
+	public MultilanguageText getDefinition(){
 		return this.description;
 	}
-	private void setDefinition(MultilanguageSet description){
+	private void setDefinition(MultilanguageText description){
 		this.description = description;
 	}
 	public void addDefinition(LanguageString description){

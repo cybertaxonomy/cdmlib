@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -24,19 +26,20 @@ import org.apache.log4j.Logger;
  * Special array that takes care that all LanguageString elements have a unique language
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultilanguageSet")
-public class MultilanguageSet extends HashMap<Language, LanguageString> {
+@XmlType(name = "MultilanguageText")
+@XmlRootElement(name = "MultilanguageText")
+public class MultilanguageText extends HashMap<Language, LanguageString> {
 	
 	private static final long serialVersionUID = 7876604337076705862L;
 	
-	static Logger logger = Logger.getLogger(MultilanguageSet.class);
+	static Logger logger = Logger.getLogger(MultilanguageText.class);
 	
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static MultilanguageSet NewInstance(){
-		MultilanguageSet result =  new MultilanguageSet();
+	public static MultilanguageText NewInstance(){
+		MultilanguageText result =  new MultilanguageText();
 		return result;
 	}
 	
@@ -44,19 +47,19 @@ public class MultilanguageSet extends HashMap<Language, LanguageString> {
 	 * Factory method
 	 * @return
 	 */
-	public static MultilanguageSet NewInstance(LanguageString languageString){
-		MultilanguageSet result =  new MultilanguageSet(languageString);
+	public static MultilanguageText NewInstance(LanguageString languageString){
+		MultilanguageText result =  new MultilanguageText(languageString);
 		return result;
 	}
 	
-	public MultilanguageSet(){
+	public MultilanguageText(){
 		super();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	protected MultilanguageSet (LanguageString languageString){
+	protected MultilanguageText (LanguageString languageString){
 		super();
 		this.add(languageString);
 	}

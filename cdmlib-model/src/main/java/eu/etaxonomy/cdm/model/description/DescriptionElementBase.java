@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.media.IMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 
 import org.apache.log4j.Logger;
@@ -79,8 +79,8 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "ModifyingText")
-    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
-	private MultilanguageSet modifyingText;
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	private MultilanguageText modifyingText;
 	
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
@@ -146,10 +146,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 
 	
-	public MultilanguageSet getModifyingText(){
+	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
 	}
-	protected void setModifyingText(MultilanguageSet modifyingText){
+	protected void setModifyingText(MultilanguageText modifyingText){
 		this.modifyingText = modifyingText;
 	}
 	public LanguageString addModifyingText(LanguageString description){

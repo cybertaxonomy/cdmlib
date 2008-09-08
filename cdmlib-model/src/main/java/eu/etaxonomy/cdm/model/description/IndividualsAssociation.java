@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 import org.apache.log4j.Logger;
@@ -43,7 +43,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	
 	@XmlElement(name = "Description")
-	private MultilanguageSet description;
+	private MultilanguageText description;
 	
 	@XmlElement(name = "AssociatedSpecimenOrObservation")
 	@XmlIDREF
@@ -77,10 +77,10 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	}
 
 	
-	public MultilanguageSet getDescription(){
+	public MultilanguageText getDescription(){
 		return this.description;
 	}
-	private void setDescription(MultilanguageSet description){
+	private void setDescription(MultilanguageText description){
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){

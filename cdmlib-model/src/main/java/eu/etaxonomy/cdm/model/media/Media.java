@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.model.media;
 
 
-import eu.etaxonomy.cdm.jaxb.MultilanguageSetAdapter;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -55,16 +55,16 @@ public class Media extends AnnotatableEntity {
 	private static final Logger logger = Logger.getLogger(Media.class);
 
 	@XmlElement(name = "MediaTitle")
-    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
-	private MultilanguageSet title = new MultilanguageSet();
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	private MultilanguageText title = new MultilanguageText();
 	
 	//creation date of the media (not of the record)
 	@XmlElement(name = "MediaCreated")
 	private Calendar mediaCreated;
 	
 	@XmlElement(name = "MediaDescription")
-    @XmlJavaTypeAdapter(MultilanguageSetAdapter.class)
-	private MultilanguageSet description = new MultilanguageSet();
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	private MultilanguageText description = new MultilanguageText();
 	
 	//A single medium such as a picture can have multiple representations in files. 
 	//Common are multiple resolutions or file formats for images for example
@@ -146,10 +146,10 @@ public class Media extends AnnotatableEntity {
 	}
 
 	
-	public MultilanguageSet getTitle(){
+	public MultilanguageText getTitle(){
 		return this.title;
 	}
-	public void setTitle(MultilanguageSet title){
+	public void setTitle(MultilanguageText title){
 		this.title = title;
 	}
 
@@ -162,10 +162,10 @@ public class Media extends AnnotatableEntity {
 	}
 
 	
-	public MultilanguageSet getDescription(){
+	public MultilanguageText getDescription(){
 		return this.description;
 	}
-	protected void setDescription(MultilanguageSet description){
+	protected void setDescription(MultilanguageText description){
 		this.description = description;
 	}
 	public void addDescription(LanguageString description){

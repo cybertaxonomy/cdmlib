@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -424,6 +424,7 @@ public class DataSet {
     		this.referencedEntities.add(referencedEntity);
     	}
     }
+  
 
     /**
      * Gets the value of the  property.
@@ -522,29 +523,25 @@ public class DataSet {
      *     {@link Collection<TaxonBase> }
      *     
      */
-    public Collection<TaxonBase> getTaxonBases() {
+    public Collection<? extends TaxonBase> getTaxa() {
     	
-    	Object obj = taxa;
-        // FIXME: This is a dirty trick. Replace by getTaxonBases_().
-    	Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
-        return taxonBases;
+    	//TODO can be deleted when everything works
+    	//Object obj = taxa;
+    	//Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
+        List<Taxon> list = taxa;
+    	return list;
     }
 
-    public Collection<TaxonBase> getTaxonBases_() {
+    public Collection<TaxonBase> getTaxonBases() {
     	
-    	Collection<TaxonBase> taxonBases = new HashSet<TaxonBase>();
-    	
+    	Collection<TaxonBase> result = new HashSet<TaxonBase>();;
     	if (taxa != null) {
-    		for (Taxon taxon: taxa) {
-    			taxonBases.add(taxon);
-    		}
+        	result.addAll(taxa);
     	}
     	if (synonyms != null) {
-    		for (Synonym synonym: synonyms) {
-    			taxonBases.add(synonym);
-    		}
+        	result.addAll(synonyms);
     	}
-        return taxonBases;
+        return result;
     }
 
     /**

@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageSet;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 /**
  * @author a.mueller
@@ -138,10 +138,10 @@ public class TextDataTest {
 	 */
 	@Test
 	public void testSetMultilanguageText() {
-		MultilanguageSet multilanguageSet = MultilanguageSet.NewInstance();
-		assertFalse(multilanguageSet.equals(textData1.getMultilanguageText()));
-		textData1.setMultilanguageText(multilanguageSet);
-		assertSame(multilanguageSet, textData1.getMultilanguageText());
+		MultilanguageText multilanguageText = MultilanguageText.NewInstance();
+		assertFalse(multilanguageText.equals(textData1.getMultilanguageText()));
+		textData1.setMultilanguageText(multilanguageText);
+		assertSame(multilanguageText, textData1.getMultilanguageText());
 		textData1.setMultilanguageText(null);
 		assertNotNull(textData1.getMultilanguageText());
 		assertEquals(0, textData1.getMultilanguageText().size());
