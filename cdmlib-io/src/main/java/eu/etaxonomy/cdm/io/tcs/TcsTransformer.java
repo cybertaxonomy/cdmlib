@@ -57,18 +57,24 @@ public final class TcsTransformer {
 	 */
 	public static Rank rankString2Rank (String strRank) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonRank#";
+		String tcsFamily = tcsRoot + "Family";
+		String tcsSubFamily = tcsRoot + "Subfamily";
+		String tcsTribe = tcsRoot + "Tribe";
+		String tcsSubtribe = tcsRoot + "Subtribe";
 		String tcsGenus = tcsRoot + "Genus";
 		String tcsSpecies = tcsRoot + "Species";
+		String tcsSubSpecies = tcsRoot + "Subspecies";
 		String tcsVariety = tcsRoot + "Variety";
 		String tcsSubVariety = tcsRoot + "Sub-Variety";
 		String tcsForm = tcsRoot + "Form";
-		String tcsSubSpecies = tcsRoot + "Subspecies";
-		String tcsFamily = tcsRoot + "Family";
 		
 		
 		
 		if (strRank == null){return null;
 		}else if (tcsFamily.equals(strRank)){return Rank.FAMILY();
+		}else if (tcsSubFamily.equals(strRank)){return Rank.SUBFAMILY();
+		}else if (tcsTribe.equals(strRank)){return Rank.TRIBE();
+		}else if (tcsSubtribe.equals(strRank)){return Rank.SUBTRIBE();
 		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
 		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
 		}else if (tcsVariety.equals(strRank)){return Rank.VARIETY();
