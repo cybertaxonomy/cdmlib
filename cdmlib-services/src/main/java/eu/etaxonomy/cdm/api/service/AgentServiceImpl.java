@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.persistence.dao.common.IAgentDao;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 
@@ -63,12 +65,14 @@ public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T
 		return agentDao.list(limit, start);
 	}
 	
-	public List<Agent> getAgentByCode(String code) {
-		return agentDao.getAgentByCode(code);
+	public List<Agent> searchInstitutionByCode(String code) {
+		return agentDao.getInstitutionByCode(code);
 	}
 
 	public void generateTitleCache() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 }

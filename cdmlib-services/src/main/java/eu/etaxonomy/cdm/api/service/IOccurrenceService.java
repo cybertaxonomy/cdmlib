@@ -6,11 +6,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -32,9 +32,10 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	 * @return Map with UUID as key and SpecimenOrObservationBase as value.
 	 **/
 	public abstract Map<UUID, SpecimenOrObservationBase> 
-	saveSpecimenOrObservationBaseAll(Collection<SpecimenOrObservationBase> specimenOrObservationBaseCollection);
+	saveSpecimenOrObservationBaseAll(java.util.Collection<SpecimenOrObservationBase> specimenOrObservationBaseCollection);
 
 	/** save a specimen or observation and return its UUID**/
 	public abstract UUID saveSpecimenOrObservationBase (SpecimenOrObservationBase specimenOrObservationBase);
+	
 	
 }
