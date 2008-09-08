@@ -65,7 +65,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection){
+	public Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection){
 		return saveCdmObjectAll(taxonCollection);
 	}
 

@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.CdmTermInitializer;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -86,33 +87,49 @@ public class CdmApplicationController {
 	 * default database schema validation type
 	 * @param dataSource
 	 */
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) throws DataSourceNotFoundException, TermNotFoundException{
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) 
+	throws DataSourceNotFoundException, TermNotFoundException{
 		return new CdmApplicationController(dataSource, defaultDbSchemaValidation);
 	}
 	
-	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException, TermNotFoundException{
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) 
+	throws DataSourceNotFoundException, TermNotFoundException{
 		return new CdmApplicationController(dataSource, dbSchemaValidation);
 	}
 
+	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
+	throws DataSourceNotFoundException, TermNotFoundException{
+		return new CdmApplicationController(dataSource, dbSchemaValidation, omitTermLoading);
+	}
+	
+	/**
+	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
+	 * @param dataSource
+	 * @param dbSchemaValidation
+	 */
+	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException, TermNotFoundException{
+        this(dataSource, dbSchemaValidation, false);
+	}
 
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
 	 * @param dataSource
+	 * @param dbSchemaValidation
+	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException, TermNotFoundException{
+	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
+	throws DataSourceNotFoundException, TermNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
-		if (setNewDataSource(dataSource, dbSchemaValidation) == false){
+		if (setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading) == false){
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
-	
 	}
-
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws TermNotFoundException {
+	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) throws TermNotFoundException {
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
@@ -133,8 +150,13 @@ public class CdmApplicationController {
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
 			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/persistence.xml"));		 
 			
+			CdmTermInitializer.omit = omitTermLoading;
+			
 			appContext.refresh();
 			appContext.start();
+			
+			CdmTermInitializer.omit = false;
+
 		} catch (BeanCreationException e) {
 			// create new schema
 			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
@@ -178,17 +200,30 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 */
 	public boolean changeDataSource(CdmPersistentDataSource dataSource) throws TermNotFoundException {
-		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE);
+		//logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false);
 	}
 	
 	/**
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
+	 * @param dbSchemaValidation
 	 */
 	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation dbSchemaValidation)  throws TermNotFoundException {
+		//logger.info("Change datasource to : " + dataSource);
+		return setNewDataSource(dataSource, dbSchemaValidation, false);
+	}
+	
+	/**
+	 * Changes the ApplicationContext to the new dataSource
+	 * @param dataSource
+	 * @param dbSchemaValidation
+	 * @param omitTermLoading
+	 */
+	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)  
+	throws TermNotFoundException {
 		logger.info("Change datasource to : " + dataSource);
-		return setNewDataSource(dataSource, dbSchemaValidation);
+		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
 	}
 	
 	/**

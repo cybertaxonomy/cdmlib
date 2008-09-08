@@ -71,7 +71,8 @@ public class TestJaxb {
 	
     /* TestJaxb Test Data */
 	//private static final String serializeFromDb = "cdm_test_jaxb";
-	private static final String deserializeToDb = "cdm_test_anahit2";
+	private static final String deserializeToDb = "cdm_test_jaxb";
+	//private static final String deserializeToDb = "cdm_test_anahit2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
@@ -135,7 +136,7 @@ public class TestJaxb {
 			
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, pwd);
-			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 			
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
@@ -155,7 +156,7 @@ public class TestJaxb {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		logger.info("Initializing DB " + dbname + " with test data");
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
+		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxa());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
@@ -322,7 +323,7 @@ public class TestJaxb {
 	    // FIXME: Clean getTaxa()/getTaxonBases() return parameters.
 	
 	    // Need to get the taxa and the synonyms here.
-		if ((taxonBases = dataSet.getTaxonBases_()) != null) {
+		if ((taxonBases = dataSet.getTaxonBases()) != null) {
 			logger.info("Saving " + taxonBases.size() + " taxon bases");
 			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
@@ -331,7 +332,7 @@ public class TestJaxb {
 		// are saved with taxon names.
 		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
 			logger.info("Saving referenced entities");
-			appCtr.getNameService().saveTypeDesignationAll(referencedEntities);
+			appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
 		}
 
 		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
@@ -629,7 +630,7 @@ public class TestJaxb {
 	private void test(){
 		
 		// Init DB with pre-loaded terms only.
-		//initPreloadedDb(serializeFromDb);
+		initPreloadedDb(serializeFromDb);
 		
 		// Init Db with pre-loaded terms and some test data.
 		//initDb(serializeFromDb);
@@ -640,9 +641,9 @@ public class TestJaxb {
 		
 		// Retrieve data, including taxa, synonyms, and relationships
 		// via services rather than traversing the tree.
-	    doSerializeFlat(serializeFromDb, marshOutOne);
+	    //doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		doDeserialize(deserializeToDb, marshOutOne);
+		//doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}

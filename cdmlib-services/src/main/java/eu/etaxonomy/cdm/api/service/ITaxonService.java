@@ -32,7 +32,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
 	/** save a collection of taxa and return its UUID**/
-	public abstract Map<UUID, TaxonBase> saveTaxonAll(Collection<TaxonBase> taxonCollection);
+	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
 	
 	/** delete a taxon and return its UUID**/

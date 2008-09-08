@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +44,16 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
 	private ITaxonNameDao nameDao;
+	@Autowired
 	protected ITermVocabularyDao vocabularyDao;
+	@Autowired
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
-	protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
+	@Autowired
+	@Qualifier("refEntDao")
+    protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
+	@Autowired
 	private INomenclaturalStatusDao nomStatusDao;
+	@Autowired
 	private ITypeDesignationDao typeDesignationDao;
 
 	
@@ -56,34 +63,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		super.dao = dao;
 		this.nameDao = dao;
 	}
-	
-	@Autowired
-	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
-		this.vocabularyDao = vocabularyDao;
-	}
-	
-	@Autowired
-	protected void setOrderedVocabularyDao(IOrderedTermVocabularyDao orderedVocabularyDao) {
-		this.orderedVocabularyDao = orderedVocabularyDao;
-	}
-	
-	@Autowired
-	protected void setNomenclaturalStatusDao(INomenclaturalStatusDao nomStatusDao) {
-		this.nomStatusDao = nomStatusDao;
-	}
-	
-	@Autowired
-	protected void setTypeDesignationDao(ITypeDesignationDao typeDesignationDao) {
-		this.typeDesignationDao = typeDesignationDao;
-	}	
+
+
 	/**
 	 * Constructor
 	 */
-	@Autowired
-	protected void setReferencedEntityDao(IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao) {
-		this.referencedEntityDao = referencedEntityDao;
-	}
-
 	public NameServiceImpl(){
 		logger.debug("Load NameService Bean");
 	}
@@ -113,8 +97,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, ReferencedEntityBase> saveTypeDesignationAll(Collection<ReferencedEntityBase> typeDesignationCollection){
-		return referencedEntityDao.saveAll(typeDesignationCollection);
+	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
+		return typeDesignationDao.saveAll(typeDesignationCollection);
+	}
+
+	@Transactional(readOnly = false)
+	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
+		return referencedEntityDao.saveAll(referencedEntityCollection);
 	}
 	
 	@Transactional(readOnly = false)
