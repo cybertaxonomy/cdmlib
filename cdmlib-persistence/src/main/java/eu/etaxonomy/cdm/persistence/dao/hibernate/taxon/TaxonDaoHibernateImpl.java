@@ -211,6 +211,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		int result = ((Integer)crit.list().get(0)).intValue();
 		return result;
 	}
+
 	
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 		
