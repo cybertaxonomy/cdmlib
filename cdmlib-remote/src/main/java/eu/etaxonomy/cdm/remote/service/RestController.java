@@ -117,13 +117,21 @@ public class RestController extends AbstractController
 				}
 			}else if(action.equalsIgnoreCase("find")){
 				//
-				// retrieve meaningful parameters
-				UUID u = null;
+				// TODO handle multiple sec
+				Set<UUID> secundum = null;
 				try {
-					u = getUuid(sec);
+					secundum = new HashSet<UUID>();
+					List<String> secs = getListPara("sec", req);
+					if(secs != null){
+						for (String secString : secs){
+							secundum.add(getUuid(secString));
+						}
+					}	
+					log.info(secundum);
 				} catch (CdmObjectNonExisting e) {
 					log.warn("Concept sec reference UUID is not valid. Ignore");
 				}
+				
 				Set<UUID> higherTaxa = new HashSet<UUID>();
 				// TODO: take higher taxa UUIDs from "higherTaxa"
 				//
@@ -134,13 +142,7 @@ public class RestController extends AbstractController
 					matchMode = MATCH_MODE.valueOf(matchModeStr.toUpperCase());
 				} catch(Exception e){
 					matchMode = MATCH_MODE.BEGINNING;
-				}
-//				if(matchMode == null){
-//				}
-				
-				
-				List<String> secundum = getListPara("sec",req);
-				logger.info("Sec: " + secundum);
+				}				
 				
 				String featureTree = getStringPara("feature", req); 
 				logger.info("FeatureTree: " + featureTree);
@@ -162,7 +164,8 @@ public class RestController extends AbstractController
 				
 				//
 				// search for taxa
-				Object obj = service.findTaxa(q, u, higherTaxa, matchMode, onlyAccepted, page, pagesize, locales);
+				
+				Object obj = service.findTaxa(q, secundum, higherTaxa, matchMode, onlyAccepted, page, pagesize, locales);
 				mv.addObject(obj);
 			}else if(action.equalsIgnoreCase("taxonomy")){
 				List results = null; 

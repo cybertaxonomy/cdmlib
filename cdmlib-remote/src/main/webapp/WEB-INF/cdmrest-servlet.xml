@@ -30,6 +30,7 @@
                 <prop key="/(taxonomy:action)/(children:operation)/(*:uuid)">restController</prop>
                 
                 <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
+                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
                 
                 <prop key="/(insert:action)">restController</prop>
             </props>

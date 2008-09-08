@@ -163,7 +163,7 @@ public interface ICdmService {
 	 *            the number of the page in request
 	 * @return a ResultSetPageSTO<TaxonSTO> instance
 	 */
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec,
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec,
 			Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted,
 			int pagesize, int page, Enumeration<Locale> locales);
 

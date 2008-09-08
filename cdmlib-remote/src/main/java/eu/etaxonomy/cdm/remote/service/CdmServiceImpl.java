@@ -17,6 +17,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -165,18 +168,31 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, UUID sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> resultSetPage = new ResultSetPageSTO<TaxonSTO>();
 
 		resultSetPage.setPageNumber(page);
 		resultSetPage.setPageSize(pagesize);
-		resultSetPage.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted));
+		
+		// TODO: add other criteria. Has to be done in DAO...
+		
+		List<Criterion> criteria = new ArrayList<Criterion>();
+		if(sec.size()>0){
+			List<ReferenceBase> secundum = new ArrayList<ReferenceBase>(); 
+			for (UUID uuid : sec){
+				ReferenceBase referenceBase = refDAO.findByUuid(uuid);
+				secundum.add(referenceBase);
+			}			
+			criteria.add(Restrictions.in("sec", secundum));
+		}
+		
+		resultSetPage.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted, criteria));
 //		if(MAXRESULTS > 0 && rs.getTotalResultsCount() > MAXRESULTS){
 //			rs.setTotalResultsCount(-1);
 //			return rs;
 //		}
-		// TODO: add other criteria. Has to be done in DAO...
-		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, null);
+		
+		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, criteria);
 		resultSetPage.setResultsOnPage(results.size());
 		for (TaxonBase taxonBase : results){
 			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));
