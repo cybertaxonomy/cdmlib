@@ -505,6 +505,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/occurrence/OccurrenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/CollectionDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/INomenclaturalStatusDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
