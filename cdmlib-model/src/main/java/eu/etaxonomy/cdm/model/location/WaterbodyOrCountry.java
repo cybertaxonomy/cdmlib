@@ -564,7 +564,6 @@ uuidPersianGulf
 	}
 	
 	
-	
 	public static final WaterbodyOrCountry getByUuid(UUID uuid){
 		return (WaterbodyOrCountry) findByUuid(uuid);
 	}
