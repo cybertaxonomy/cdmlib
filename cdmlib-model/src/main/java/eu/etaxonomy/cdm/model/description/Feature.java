@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,6 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -39,8 +42,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class Feature extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Feature.class);
 
-	private boolean supportsQuantitativeData;
 	private boolean supportsTextData;
+	private boolean supportsQuantitativeData;
 	private boolean supportsDistribution;
 	private boolean supportsIndividualAssociation;
 	private boolean supportsTaxonInteraction;
@@ -212,6 +215,22 @@ public class Feature extends DefinedTermBase {
 //	"555a46bc-211a-476f-a022-c472970d6f8b",,"Acknowledgments","Acknowledgments"
 	
 	
+	@Override
+	public ILoadableTerm readCsvLine(List csvLine, Language lang) {
+		// TODO Auto-generated method stub
+		super.readCsvLine(csvLine, lang);
+		String text = (String)csvLine.get(4);
+		if (text != null && text.length() >= 6){
+			if ("1".equals(text.substring(0, 1))){this.setSupportsTextData(true);};
+			if ("1".equals(text.substring(1, 2))){this.setSupportsQuantitativeData(true);};
+			if ("1".equals(text.substring(2, 3))){this.setSupportsDistribution(true);};
+			if ("1".equals(text.substring(3, 4))){this.setSupportsIndividualAssociation(true);};
+			if ("1".equals(text.substring(4, 5))){this.setSupportsTaxonInteraction(true);};
+			if ("1".equals(text.substring(5, 6))){this.setSupportsCommonTaxonName(true);};
+		}
+		return this;
+	}
+
 	public static final Feature getByUuid(UUID uuid){
 		return (Feature)findByUuid(uuid);
 	}

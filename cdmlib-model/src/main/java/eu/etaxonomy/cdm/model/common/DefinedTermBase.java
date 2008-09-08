@@ -105,6 +105,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public ILoadableTerm readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.ENGLISH());
 	}
+
 	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
