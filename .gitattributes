@@ -410,7 +410,6 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/collection/ICollectionDao.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAgentDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEntityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
