@@ -134,7 +134,7 @@ public class DataSet {
     @XmlElementWrapper(name = "FeatureData")
     @XmlElements({
     @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
-    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class),
+    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
     protected List<VersionableEntity> featureData;
 

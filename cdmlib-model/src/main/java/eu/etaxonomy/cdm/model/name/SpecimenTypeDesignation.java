@@ -100,8 +100,8 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	/** 
 	 * Class constructor: creates a new empty specimen type designation.
 	 * 
-	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, 
-	 * ReferenceBase, String, String)
+	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus,
+	 * ReferenceBase, String, String, boolean)
 	 */
 	protected SpecimenTypeDesignation(){
 		
@@ -124,7 +124,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * @param isNotDesignated		the boolean flag indicating whether there is no specimen type at all for 
 	 * 								<i>this</i> specimen type designation
 	 * @see							#SpecimenTypeDesignation()
-	 * @see							TaxonNameBase#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean)
+	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean, boolean)
 	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
 	 */

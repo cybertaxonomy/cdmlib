@@ -91,7 +91,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	/** 
 	 * Class constructor: creates a new empty name type designation.
 	 * 
-	 * @see	#NameTypeDesignation(TaxonNameBase, ReferenceBase, String, ReferenceBase, String, String, boolean, boolean, boolean)
+	 * @see	#NameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation() {
 		super();
@@ -132,8 +132,6 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * Returns the {@link TaxonNameBase taxon name} that plays the role of the
 	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
 	 * of the taxon name type must be "species".
-	 *  
-	 * @see   #getTypifiedName()
 	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -188,7 +186,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} that is different to the
 	 * {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *  
-	 * @see   #getLectoTypeReference()
+	 * @see   ReferencedEntityBase#getCitation()
 	 */
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
