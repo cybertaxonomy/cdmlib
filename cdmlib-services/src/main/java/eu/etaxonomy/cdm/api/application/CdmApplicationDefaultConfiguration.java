@@ -55,7 +55,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IOccurrenceService occurrenceService;
 	@Autowired
 	private ICommonService commonService;
-	//@Autowired
+	@Autowired
 	private ICollectionService collectionService;
 
 	

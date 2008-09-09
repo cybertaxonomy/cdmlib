@@ -34,12 +34,10 @@ public class AgentDaoImpl extends IdentifiableDaoBase<Agent> implements IAgentDa
 	}
 
 	public List<Institution> getInstitutionByCode(String code) {
-		System.out.println("getInstitutionByCode: "+code);
 		Criteria crit = getSession().createCriteria(Institution.class);
 		
-		crit.createCriteria("code").add(Restrictions.eq("code", code));
+		crit.add(Restrictions.eq("code", code));
 		List<Institution> results = crit.list();
-		System.out.println("CRIT LIST"+crit.toString());
 		return results;
 	}
 }
