@@ -152,6 +152,7 @@ public class CdmApplicationController {
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
 			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/persistence.xml"));		 
 			
+            //TODO: This is a workaround to omit term loading for JAXB serializing/deserializing.
 			CdmTermInitializer.omit = omitTermLoading;
 			
 			appContext.refresh();

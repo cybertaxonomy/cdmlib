@@ -122,6 +122,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 				logger.error("Entry of wrong type: " + featureItem.toString());
 			}
 		}
+		
+		if (trees.size() > 0) { saveFeatureTreeAll(trees); }
+		if (nodes.size() > 0) { saveFeatureNodeAll(nodes); }
 	}
 	
 	@Transactional(readOnly = false)

@@ -259,14 +259,14 @@ public class TestJaxb {
 
     	if (doRelationships == true) {
     		if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
-    		logger.info("# Relationships...");
+    		logger.info("# Relationships");
     		List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
     		Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
     		dataSet.setRelationships(relationSet);
     	}
 
     	if (doReferencedEntities == true) {
-    		logger.info("# Referenced Entities...");
+    		logger.info("# Referenced Entities");
     		dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
     		dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
     	}
@@ -279,7 +279,7 @@ public class TestJaxb {
 
     	if (doMedia == true) {
     		if (mediaRows == 0) { mediaRows = MAX_ROWS; }
-    		logger.info("# Media...");
+    		logger.info("# Media");
     		dataSet.setMedia(appCtr.getMediaService().getAllMedia(mediaRows, 0));
 //    		dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //    		dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
@@ -287,7 +287,7 @@ public class TestJaxb {
     	
     	if (doFeatureData == true) {
     		if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
-    		logger.info("# Feature Tree, Feature Node...");
+    		logger.info("# Feature Tree, Feature Node");
     		dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
     		dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTreesAll());
     	}
@@ -486,7 +486,7 @@ public class TestJaxb {
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
     		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
     		logger.error("datasource error");
@@ -557,7 +557,7 @@ public class TestJaxb {
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
     		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
     		logger.error("datasource error");
@@ -573,7 +573,7 @@ public class TestJaxb {
     	// get data from DB
 
     	try {
-    		logger.info("Load data from DB ...");
+    		logger.info("Retrieving data from DB");
 
     		retrieveAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
@@ -615,7 +615,7 @@ public class TestJaxb {
 			
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 			
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
