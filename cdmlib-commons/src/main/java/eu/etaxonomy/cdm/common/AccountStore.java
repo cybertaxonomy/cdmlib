@@ -103,9 +103,9 @@ public class AccountStore {
 				pwd = accounts.getPassword(dbms, strServer, userName);
 				if(pwd == null){
 					doStore = true;
-					pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(userName) + ": ");
+					pwd = CdmUtils.readInputLine("Please insert password for user '" + CdmUtils.Nz(userName) + "': ");
 				} else {
-					logger.info("using stored password for  "+CdmUtils.Nz(userName));
+					logger.info("using stored password for user '" + CdmUtils.Nz(userName) + "'");
 				}
 			}
 			// on success store userName, pwd in property file
