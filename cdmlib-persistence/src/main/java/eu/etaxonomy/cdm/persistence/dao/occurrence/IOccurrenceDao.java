@@ -18,5 +18,5 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
  */
 public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase> {
 	
-
+	public List<Collection> getCollectionByCode(String code);
 }
