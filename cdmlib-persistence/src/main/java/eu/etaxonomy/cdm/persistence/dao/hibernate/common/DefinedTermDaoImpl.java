@@ -25,6 +25,8 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
@@ -75,6 +77,17 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	}
 	
 
+	public WaterbodyOrCountry getCountryByIso(String iso639) {
+		Query query = getSession().createQuery("from WaterbodyOrCountry where iso3166_A2 = '"+iso639+"'"); 
+		//query.setParameter("isoCode", iso639);
+		return (WaterbodyOrCountry) query.uniqueResult();
+	}
+	
+	public List<? extends DefinedTermBase> getDefinedTermByRepresentationText(String text, Class clazz ) {
+		Query query = getSession().createQuery("from "+ clazz.getName()+" as wc where wc.representations.text like '"+text+"'"); 
+		return (List<? extends DefinedTermBase>) query.list();
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
 	 */
