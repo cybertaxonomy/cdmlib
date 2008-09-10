@@ -24,16 +24,22 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
+import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 import javax.xml.parsers.*; 
@@ -241,37 +247,25 @@ public class ABCD206Activator {
 			ReferenceBase sec = Database.NewInstance();
 			sec.setTitleCache("XML DATA");
 
+/**
+ * SPECIMEN OR OBSERVATION OR LIVING
+ */
+			DerivedUnitBase derivedThing = Observation.NewInstance();
 			//create specimen
-			Specimen specimen = Specimen.NewInstance();
-
-			/* 
-			for (int i=0; i< this.identificationList.size(); i++){
-				this.fullScientificNameString = this.identificationList.get(i);
-
-				TaxonNameBase taxonName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(this.fullScientificNameString);
-				if (withCdm){
-					List<TaxonNameBase> names = app.getNameService().getNamesByName(this.fullScientificNameString);
-					if (names.size() == 0){
-						System.out.println("Name not found: " + this.fullScientificNameString);
-					}else{
-						if (names.size() > 1){
-							System.out.println("More then 1 name found: " + this.fullScientificNameString);
-						}
-						taxonName = names.get(0);
-					}
+			if (this.recordBasis != null){
+				if (this.recordBasis.toLowerCase().startsWith("s")) {//specimen
+					derivedThing = Specimen.NewInstance();				
 				}
-				logger.info("Create new specimen ...");
-
-
-				//set catalogue number (unitID)
-				specimen.setCatalogNumber(this.unitID);
-				specimen.setStoredUnder(taxonName);
+				else if (this.recordBasis.toLowerCase().startsWith("o")) {//observation
+					derivedThing = Observation.NewInstance();				
+				}
+				else if (this.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
+					derivedThing = LivingBeing.NewInstance();
+				}
 			}
-			 */
-			System.out.println(this.identificationList.toString());
+
 			TaxonNameBase taxonName = NonViralNameParserImpl.NewInstance().parseFullName(this.fullScientificNameString);
 			this.fullScientificNameString = this.identificationList.get(0);
-			System.out.println("fullscientificname: "+this.fullScientificNameString);
 			if (withCdm){
 				List<TaxonNameBase> names = app.getNameService().getNamesByName(this.fullScientificNameString);
 				if (names.size() == 0){
@@ -283,15 +277,25 @@ public class ABCD206Activator {
 					taxonName = names.get(0);
 				}
 			}
-			logger.info("Create new specimen ...");
-
 
 			//set catalogue number (unitID)
-			specimen.setCatalogNumber(this.unitID);
-			specimen.setStoredUnder(taxonName);
+			derivedThing.setCatalogNumber(this.unitID);
+			derivedThing.setStoredUnder(taxonName);
+			
+			
+			//save the taxon
+			Taxon taxon = Taxon.NewInstance(taxonName, sec); //TODO
+			
+			DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
+			determinationEvent.setTaxon(taxon);
+			derivedThing.addDetermination(determinationEvent);
+//			app.getTaxonService().saveTaxon(taxon);
+			
 
 
-
+/**
+ * INSTITUTION & COLLECTION
+ */
 			//manage institution
 			Institution institution;
 			List<Institution> institutions;
@@ -316,7 +320,7 @@ public class ABCD206Activator {
 			Collection collection = Collection.NewInstance();
 			List<Collection> collections;
 			try{
-				collections = app.getCollectionService().searchCollectionByCode(this.collectionCode);
+				collections = app.getOccurrenceService().searchCollectionByCode(this.collectionCode);
 			}catch(Exception e){
 				System.out.println("BLA"+e);
 				collections=new ArrayList<Collection>();
@@ -349,10 +353,12 @@ public class ABCD206Activator {
 				}
 
 			}
-
 			//link specimen & collection
-			specimen.setCollection(collection);
+			derivedThing.setCollection(collection);
 
+/**
+ * GATHERING EVENT
+ */
 			//create gathering event
 			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 			//add locality
@@ -367,34 +373,64 @@ public class ABCD206Activator {
 
 			NamedArea area = NamedArea.NewInstance();
 			//TODO	COUNTRY
-//			WaterbodyOrCountry country = WaterbodyOrCountry.NewInstance();
-
-//			area.addWaterbodyOrCountry(waterbodyOrCountry)
-//			gatheringEvent.setCollectingArea(area);
-
+			WaterbodyOrCountry country = app.getOccurrenceService().getCountryByIso(this.isocountry);
+			if (country != null){
+				area.addWaterbodyOrCountry(country);
+				System.out.println("country not null!");
+			}
+			else{
+				List<WaterbodyOrCountry>countries = app.getOccurrenceService().getWaterbodyOrCountryByName(this.country);
+				if (countries.size() >0)
+					area.addWaterbodyOrCountry(countries.get(0));
+				else
+					System.out.println("NO COUNTRY");
+			}
+			
+			gatheringEvent.setCollectingArea(area);
+			
 			//create collector
-			Agent collector = Person.NewInstance();
+			Agent collector;
 			ListIterator<String> collectors = this.gatheringAgentList.listIterator();
 			//add the collectors
+			String collName;
 			while (collectors.hasNext()){
-				collector.setTitleCache(collectors.next());
+				collName = collectors.next();
+				/*check if the collector does already exist*/
+				try{
+					List<Agent> col = app.getAgentService().findAgentsByTitle(collName);
+					collector=col.get(0);
+					System.out.println("a trouve l'agent");
+				}catch (Exception e) {
+					// TODO: handle exception
+					collector = Person.NewInstance();
+					collector.setTitleCache(collName);
+				}
 				gatheringEvent.setCollector(collector);
 			}
 
 			//create field/observation
 			FieldObservation fieldObservation = FieldObservation.NewInstance();
 			//add fieldNumber
-			fieldObservation.setFieldNumber(fieldNumber);
+			fieldObservation.setFieldNumber(this.fieldNumber);
+			
 			//join gatheringEvent to fieldObservation
 			fieldObservation.setGatheringEvent(gatheringEvent);
+			
 
+//			//link fieldObservation and specimen
+			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
+			derivationEvent.addOriginal(fieldObservation);
+			derivedThing.addDerivationEvent(derivationEvent);
+//			derivationEvent.addDerivative(derivedThing);
+			
+/**
+ * SAVE AND STORE DATA
+ */			
 			//save the specimen data
-			app.getOccurrenceService().saveSpecimenOrObservationBase(specimen);
-			//save the fieldObs. data
-			app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
-			//save the taxon
-			Taxon taxon = Taxon.NewInstance(taxonName, sec);
-			app.getTaxonService().saveTaxon(taxon);
+		//	app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
+			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+			
+			
 
 
 			logger.info("saved new specimen ...");
