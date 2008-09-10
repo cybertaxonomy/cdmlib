@@ -9,12 +9,18 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
@@ -37,8 +43,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public abstract UUID saveFeatureTree(FeatureTree tree);
+	public abstract void saveFeatureDataAll(Collection<VersionableEntity> featureData);
+	public abstract Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
+	public abstract Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
+	
+	public abstract List<FeatureTree> getFeatureTreesAll();
+	public abstract List<FeatureNode> getFeatureNodesAll();
 	
 	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
-
+	
 }

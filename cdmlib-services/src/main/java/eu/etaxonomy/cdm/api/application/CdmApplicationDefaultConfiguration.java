@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -53,6 +54,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IDescriptionService descriptionService;
 	@Autowired
 	private IOccurrenceService occurrenceService;
+	@Autowired
+	private IMediaService mediaService;
 	@Autowired
 	private ICommonService commonService;
 	@Autowired
@@ -111,6 +114,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.occurrenceService;
 	}
 
+	public IMediaService getMediaService(){
+		return this.mediaService;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTermService()
 	 */

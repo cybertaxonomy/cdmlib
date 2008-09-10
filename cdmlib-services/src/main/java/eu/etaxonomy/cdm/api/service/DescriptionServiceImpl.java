@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -16,12 +20,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 
 /**
@@ -35,6 +46,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
 	protected IFeatureTreeDao featureTreeDao;
+	protected IFeatureNodeDao featureNodeDao;
 	protected ITermVocabularyDao vocabularyDao;
 	
 	
@@ -46,6 +58,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Autowired
 	protected void setFeatureTreeDao(IFeatureTreeDao featureTreeDao) {
 		this.featureTreeDao = featureTreeDao;
+	}
+	
+	@Autowired
+	protected void setFeatureNodeDao(IFeatureNodeDao featureNodeDao) {
+		this.featureNodeDao = featureNodeDao;
 	}
 	
 	@Autowired
@@ -90,6 +107,33 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return featureTreeDao.saveOrUpdate(tree);
 	}
 	
+	@Transactional(readOnly = false)
+	public void saveFeatureDataAll(Collection<VersionableEntity> featureData) {
+
+		List<FeatureTree> trees = new ArrayList();
+		List<FeatureNode> nodes = new ArrayList();
+		
+		for ( VersionableEntity featureItem : featureData) {
+			if (featureItem instanceof FeatureTree) {
+				trees.add((FeatureTree)featureItem);
+			} else if (featureItem instanceof FeatureNode) {
+				nodes.add((FeatureNode)featureItem);
+			} else {
+				logger.error("Entry of wrong type: " + featureItem.toString());
+			}
+		}
+	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees) {
+		return featureTreeDao.saveAll(trees);
+	}
+
+	@Transactional(readOnly = false)
+	public Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> trees) {
+		return featureNodeDao.saveAll(trees);
+	}
+
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid){
 		TermVocabulary<Feature> featureVocabulary;
 		try {
@@ -106,6 +150,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return getFeatureVocabulary(featureUuid);
 	}
 
-
+	public List<FeatureTree> getFeatureTreesAll() {
+		return featureTreeDao.list();
+	}
+	
+	public List<FeatureNode> getFeatureNodesAll() {
+		return featureNodeDao.list();
+	}
 	
 }

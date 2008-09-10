@@ -71,8 +71,8 @@ public class TestJaxb {
 	
     /* TestJaxb Test Data */
 	//private static final String serializeFromDb = "cdm_test_jaxb";
-	private static final String deserializeToDb = "cdm_test_jaxb";
-	//private static final String deserializeToDb = "cdm_test_anahit2";
+	//private static final String deserializeToDb = "cdm_test_jaxb";
+	private static final String deserializeToDb = "cdm_test_anahit2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
@@ -109,6 +109,7 @@ public class TestJaxb {
 	private boolean doSynonyms = true;
 	private boolean doRelationships = true;
 	private boolean doMedia = true;
+	private boolean doDescriptions = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -202,6 +203,8 @@ public class TestJaxb {
     	int synonymRelationshipRows = numberOfRows;
     	int relationshipRows = numberOfRows;
     	int occurrencesRows = numberOfRows;
+    	int mediaRows = numberOfRows;
+    	int featureDataRows = numberOfRows;
 
     	if (doAgents == true) {
     		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
@@ -274,10 +277,20 @@ public class TestJaxb {
     		dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
     	}
 
-//  	logger.info("# Feature Tree, Feature Node...");
-//  	dataSet.setFeatureData(appCtr.getDescriptionService().getAllFeatureNodes(MAX_ROWS, 0));
-//  	dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTree());
-
+    	if (doMedia == true) {
+    		if (mediaRows == 0) { mediaRows = MAX_ROWS; }
+    		logger.info("# Media...");
+    		dataSet.setMedia(appCtr.getMediaService().getAllMedia(mediaRows, 0));
+//    		dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentations(mediaRows, 0));
+//    		dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
+    	}
+    	
+    	if (doFeatureData == true) {
+    		if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
+    		logger.info("# Feature Tree, Feature Node...");
+    		dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
+    		dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTreesAll());
+    	}
     }
 
 	/**  Saves data in DB */
@@ -292,6 +305,7 @@ public class TestJaxb {
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity> featureData;
+		List<VersionableEntity> media;
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
@@ -301,22 +315,22 @@ public class TestJaxb {
 		/* If terms are not saved here explicitly, then only those terms that are referenced
 		by other objects are saved implicitly. */
 		if ((terms = dataSet.getTerms()) != null) {
-			logger.info("Saving " + terms.size() + " terms");
+			logger.info("Terms: " + terms.size());
 		    appCtr.getTermService().saveTermsAll(terms);
 		}
 		
 		if ((agents = dataSet.getAgents()) != null) {
-			logger.info("Saving " + agents.size() + " agents");
+			logger.info("Agents: " + agents.size());
 			appCtr.getAgentService().saveAgentAll(agents);
 		}
 	
 		if ((references = dataSet.getReferences()) != null) {
-			logger.info("Saving " + references.size() + " references");
+			logger.info("References: " + references.size());
 		     appCtr.getReferenceService().saveReferenceAll(references);
 		}
 		
 		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
-			logger.info("Saving " + taxonomicNames.size() + " taxonomic names");
+			logger.info("Taxonomic names: " + taxonomicNames.size());
 			appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
 		}
 	
@@ -324,14 +338,14 @@ public class TestJaxb {
 	
 	    // Need to get the taxa and the synonyms here.
 		if ((taxonBases = dataSet.getTaxonBases()) != null) {
-			logger.info("Saving " + taxonBases.size() + " taxon bases");
+			logger.info("Taxon bases: " + taxonBases.size());
 			appCtr.getTaxonService().saveTaxonAll(taxonBases);
 		}
 		
 	    // This is actually not needed because NomenclaturalStatus and TypeDesignations
 		// are saved with taxon names.
 		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
-			logger.info("Saving referenced entities");
+			logger.info("Referenced entities: " + referencedEntities.size());
 			appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
 		}
 
@@ -342,17 +356,20 @@ public class TestJaxb {
 //		}
 		
 		if ((occurrences = dataSet.getOccurrences()) != null) {
-			logger.info("Saving " + occurrences.size() + " references");
+			logger.info("Occurrences: " + occurrences.size());
 		     appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
 		}
 
-		// TODO: Implement Feature Node, Feature tree once model is final
-//		if ((featureData = dataSet.getFeatureData()) != null) {
-//			logger.info("Saving feature tree and feature nodes");
-//			appCtr.getDescriptionService().saveFeatureData(descriptions);
-//			appCtr.getDescriptionService().saveFeatureTree(tree);
-//		}
+		if ((featureData = dataSet.getFeatureData()) != null) {
+			logger.info("Feature data: " + featureData.size());
+			appCtr.getDescriptionService().saveFeatureDataAll(featureData);
+		}
 		
+		if ((media = dataSet.getMedia()) != null) {
+			logger.info("Media: " + media.size());
+			appCtr.getMediaService().saveMediaAll(media);
+		}
+
 		logger.info("All data saved");
 
 		appCtr.commitTransaction(txStatus);
@@ -630,7 +647,7 @@ public class TestJaxb {
 	private void test(){
 		
 		// Init DB with pre-loaded terms only.
-		initPreloadedDb(serializeFromDb);
+		//initPreloadedDb(serializeFromDb);
 		
 		// Init Db with pre-loaded terms and some test data.
 		//initDb(serializeFromDb);
@@ -641,9 +658,9 @@ public class TestJaxb {
 		
 		// Retrieve data, including taxa, synonyms, and relationships
 		// via services rather than traversing the tree.
-	    //doSerializeFlat(serializeFromDb, marshOutOne);
+	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		//doDeserialize(deserializeToDb, marshOutOne);
+		doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}
