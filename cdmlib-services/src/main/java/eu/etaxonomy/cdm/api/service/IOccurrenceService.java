@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -35,5 +38,10 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	/** save a specimen or observation and return its UUID**/
 	public abstract UUID saveSpecimenOrObservationBase (SpecimenOrObservationBase specimenOrObservationBase);
 	
+	public WaterbodyOrCountry getCountryByIso(String iso639);
 	
+	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
+	
+	/** */
+	public abstract List<Collection> searchCollectionByCode(String code);
 }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -58,8 +57,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private IMediaService mediaService;
 	@Autowired
 	private ICommonService commonService;
-	@Autowired
-	private ICollectionService collectionService;
 
 	
 	/**
@@ -139,11 +136,5 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.transactionManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCollectionService()
-	 */
-	public ICollectionService getCollectionService(){
-		return this.collectionService;
-	}
 	
 }

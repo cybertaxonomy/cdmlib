@@ -21,7 +21,9 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 
 
 @Service
@@ -46,6 +48,8 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 			result = list.get(0);
 		}return result;
 	}
+	
+
 
 	
 }

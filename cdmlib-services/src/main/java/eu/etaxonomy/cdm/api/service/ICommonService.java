@@ -9,8 +9,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 
 
 public interface ICommonService extends IService<CdmBase>{
