@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.init.TermLoader;
 public class CdmTermInitializer {
 	private static final Logger logger = Logger.getLogger(CdmTermInitializer.class);
 	
+    //TODO: This is a workaround to omit term loading for JAXB serializing/deserializing.
 	public static boolean omit = false;
 	
 	@Autowired
