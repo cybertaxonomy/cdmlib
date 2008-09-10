@@ -500,7 +500,6 @@ public class DataSet {
     public void setFeatureData(List<? extends VersionableEntity> value) {
         this.featureData = new ArrayList<VersionableEntity>();
         featureData.addAll(value);
-//        System.out.println("FFFFF");
     }
     
     /**

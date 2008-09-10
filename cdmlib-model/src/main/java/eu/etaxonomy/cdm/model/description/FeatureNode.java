@@ -45,6 +45,8 @@ public class FeatureNode extends VersionableEntity {
 	static Logger logger = Logger.getLogger(FeatureNode.class);
 	
     @XmlElement(name = "FeatureType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Feature type;
     
     @XmlElement(name = "Parent")
