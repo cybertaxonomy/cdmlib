@@ -38,5 +38,11 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		super(SpecimenOrObservationBase.class);
 	}
 	
-	
+	public List<Collection> getCollectionByCode(String code) {
+		Criteria crit = getSession().createCriteria(Collection.class);
+
+		crit.add(Restrictions.eq("code", code));
+		List<Collection> results = crit.list();
+		return results;
+	}
 }
