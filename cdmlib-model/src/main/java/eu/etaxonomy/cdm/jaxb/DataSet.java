@@ -40,6 +40,9 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -103,6 +106,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "taxa",
 	    "synonyms",
 	    "relationships",
+	    "media",
 	    "homotypicalGroups"
 })
 @XmlRootElement(name = "DataSet", namespace = "http://etaxonomy.eu/cdm/model/1.0")
@@ -232,6 +236,15 @@ public class DataSet {
     })
     protected Set<RelationshipBase> relationships;
 
+    @XmlElementWrapper(name = "Media_")
+    @XmlElement(name = "Media")
+//    @XmlElements({
+//    	@XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Media.class),
+//    	@XmlElement(name = "MediaRepresentation", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MediaRepresentation.class),
+//    	@XmlElement(name = "MediaRepresentationPart", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MediaRepresentationPart.class),
+//    })
+    protected List<VersionableEntity> media;
+    
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
     protected Set<HomotypicalGroup> homotypicalGroups;
@@ -424,7 +437,6 @@ public class DataSet {
     		this.referencedEntities.add(referencedEntity);
     	}
     }
-  
 
     /**
      * Gets the value of the  property.
@@ -459,8 +471,8 @@ public class DataSet {
      *     {@link Collection<VersionableEntity> }
      *     
      */
-    public void addFeatureData(Collection<VersionableEntity> value) {
-    	for (VersionableEntity featureItem: value) {
+    public <T extends VersionableEntity> void addFeatureData(Collection<T> value) {
+    	for (T featureItem: value) {
     		this.featureData.add(featureItem);
     	}
     }
@@ -485,8 +497,10 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public void setFeatureData(List<VersionableEntity> value) {
-        this.featureData = value;
+    public void setFeatureData(List<? extends VersionableEntity> value) {
+        this.featureData = new ArrayList<VersionableEntity>();
+        featureData.addAll(value);
+//        System.out.println("FFFFF");
     }
     
     /**
@@ -653,6 +667,45 @@ public class DataSet {
     	}
     }
 
+    /**
+     * Adds the media in value to the media property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<VersionableEntity> }
+     *     
+     */
+    public <T extends VersionableEntity> void addMedia(Collection<T> value) {
+    	for (T medium: value) {
+    		this.media.add(medium);
+    	}
+    }
+
+    /**
+     * Gets the value of the  property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<ReferencedEntityBase> }
+     *     
+     */
+    public List<VersionableEntity> getMedia() {
+        return media;
+    }
+
+    /**
+     * Sets the value of the referencedEntities property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<ReferencedEntityBase> }
+     *     
+     */
+    public void setMedia(List<? extends VersionableEntity> value) {
+        this.media = new ArrayList<VersionableEntity>();
+        media.addAll(value);
+    }
+    
     /**
      * Gets the value of the synonyms property.
      * 

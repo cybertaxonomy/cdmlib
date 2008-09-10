@@ -18,6 +18,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.swing.tree.TreeNode;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -25,12 +33,29 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "FeatureNode", propOrder = {
+    "type",
+    "parent",
+    "children"
+})
+@XmlRootElement(name = "FeatureNode")
 @Entity
 public class FeatureNode extends VersionableEntity {
 	static Logger logger = Logger.getLogger(FeatureNode.class);
 	
+    @XmlElement(name = "FeatureType")
 	private Feature type;
+    
+    @XmlElement(name = "Parent")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private FeatureNode parent;
+    
+    @XmlElementWrapper(name = "Children")
+    @XmlElement(name = "Child")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 	
 	public static FeatureNode NewInstance(){

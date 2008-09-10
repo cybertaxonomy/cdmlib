@@ -17,6 +17,13 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -37,19 +44,57 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
-@XmlType(name="Feature", factoryMethod="NewInstance")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
+	    "supportsTextData",
+	    "supportsQuantitativeData",
+	    "supportsDistribution",
+	    "supportsIndividualAssociation",
+	    "supportsTaxonInteraction",
+	    "supportsCommonTaxonName",
+	    "recommendedModifierEnumeration",
+	    "recommendedStatisticalMeasures",
+	    "supportedCategoricalEnumerations"
+})
+@XmlRootElement(name = "Feature")
 @Entity
 public class Feature extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Feature.class);
 
+	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
+	
+	@XmlElement(name = "SupportsQuantitativeData")
 	private boolean supportsQuantitativeData;
+	
+	@XmlElement(name = "SupportsDistribution")
 	private boolean supportsDistribution;
+	
+	@XmlElement(name = "SupportsIndividualAssociation")
 	private boolean supportsIndividualAssociation;
+	
+	@XmlElement(name = "SupportsTaxonInteraction")
 	private boolean supportsTaxonInteraction;
+	
+	@XmlElement(name = "SupportsCommonTaxonName")
 	private boolean supportsCommonTaxonName;
+	
+	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
+	@XmlElement(name = "RecommendedModifierEnumeration")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet<TermVocabulary>();
+	
+	@XmlElementWrapper(name = "RecommendedStatisticalMeasures")
+	@XmlElement(name = "RecommendedStatisticalMeasure")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
+	
+	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
+	@XmlElement(name = "SupportedCategoricalEnumeration")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/

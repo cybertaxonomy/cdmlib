@@ -12,9 +12,10 @@ public class CdmMarshallerListener extends Marshaller.Listener {
 	
 	public void beforeMarshal(Object target) {
 		
-		if (target instanceof DefinedTermBase) {
-			
-			((DefinedTermBase)target).setId(0);
-		}
+		//TODO: Just a place holder at this point
+		
+//		if (target instanceof DefinedTermBase) {
+//			((DefinedTermBase)target).setId(0);
+//		}
 	}
 }

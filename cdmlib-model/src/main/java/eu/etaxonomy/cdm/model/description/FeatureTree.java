@@ -17,6 +17,13 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -32,11 +39,23 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "FeatureTree", propOrder = {
+    "isDescriptionSeparated",
+    "root"
+})
+@XmlRootElement(name = "FeatureTree")
 @Entity
 public class FeatureTree extends TermBase {
 	static Logger logger = Logger.getLogger(FeatureTree.class);
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
+	
+	@XmlElement(name = "Root")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private FeatureNode root;
+	
+	@XmlElement(name = "IsDescriptionSeparated")
 	private boolean isDescriptionSeparated = false;
 	
 	/**

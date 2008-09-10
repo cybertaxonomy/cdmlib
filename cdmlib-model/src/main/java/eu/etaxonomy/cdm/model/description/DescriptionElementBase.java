@@ -84,6 +84,8 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<Media> media = new HashSet<Media>();
 
 
