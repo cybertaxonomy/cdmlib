@@ -15,6 +15,8 @@ import java.util.Locale;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 
 public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
@@ -29,6 +31,10 @@ public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitled
 	public List<Language> getLanguagesByIso(List<String> iso639List);
 	
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
+	
+	public WaterbodyOrCountry getCountryByIso(String iso639);
+	
+	public List<? extends DefinedTermBase> getDefinedTermByRepresentationText(String text, Class clazz );
 
 	
 }
