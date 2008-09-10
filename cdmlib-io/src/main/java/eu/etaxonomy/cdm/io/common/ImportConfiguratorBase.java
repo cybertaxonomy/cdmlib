@@ -34,17 +34,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ {
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
+	//check
+	private CHECK check = CHECK.CHECK_AND_IMPORT;
+	
 	//TODO
 	private boolean deleteAll = false;
 	
 	private boolean doAuthors = true;
 	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
-	
-	//check
-	private CHECK check = CHECK.CHECK_AND_IMPORT;
-	
-	
 	//names
 	private boolean doTaxonNames = true;
 	private boolean doRelNames = true;
