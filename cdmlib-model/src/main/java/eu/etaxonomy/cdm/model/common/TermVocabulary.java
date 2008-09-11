@@ -34,10 +34,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
-    "",
-    "",
-    "",
-    ""
+    "termSourceUri",
+    "termClass",
+    "terms"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity

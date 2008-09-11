@@ -37,8 +37,8 @@ public abstract class TermBase extends VersionableEntity {
 	
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){

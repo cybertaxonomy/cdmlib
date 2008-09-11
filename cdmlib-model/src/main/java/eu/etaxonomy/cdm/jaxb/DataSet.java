@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -102,6 +103,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "references",
 	    "referencedEntities",
 	    "featureData",
+	    "languageData",
 	    "taxonomicNames",
 	    "taxa",
 	    "synonyms",
@@ -142,6 +144,12 @@ public class DataSet {
     })
     protected List<VersionableEntity> featureData;
 
+    @XmlElementWrapper(name = "LanguageData")
+    @XmlElements({
+    @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
+    })
+    protected List<VersionableEntity> languageData;
+    
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Continent.class),
@@ -500,6 +508,45 @@ public class DataSet {
     public void setFeatureData(List<? extends VersionableEntity> value) {
         this.featureData = new ArrayList<VersionableEntity>();
         featureData.addAll(value);
+    }
+    
+    /**
+     * Adds the features in value to the language data property list.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Collection<VersionableEntity> }
+     *     
+     */
+    public <T extends VersionableEntity> void addLanguageData(Collection<T> value) {
+    	for (T languageItem: value) {
+    		this.languageData.add(languageItem);
+    	}
+    }
+
+    /**
+     * Gets the value of the language data property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<VersionableEntity> }
+     *     
+     */
+    public List<VersionableEntity> getLanguageData() {
+        return languageData;
+    }
+
+    /**
+     * Sets the value of the feature data property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<VersionableEntity> }
+     *     
+     */
+    public void setLanguageData(List<? extends VersionableEntity> value) {
+        this.languageData = new ArrayList<VersionableEntity>();
+        languageData.addAll(value);
     }
     
     /**
