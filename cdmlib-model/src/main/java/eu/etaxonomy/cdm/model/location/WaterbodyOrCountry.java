@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -595,6 +597,7 @@ uuidPersianGulf
 
 	
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Continent> getContinents() {
 		return continents;
 	}

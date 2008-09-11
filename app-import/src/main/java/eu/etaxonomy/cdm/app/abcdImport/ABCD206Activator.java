@@ -43,6 +43,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 import javax.xml.parsers.*; 
+
+import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.*; 
 import java.io.*; 
 
@@ -372,6 +374,8 @@ public class ABCD206Activator {
 			gatheringEvent.setExactLocation(coordinates);
 
 			NamedArea area = NamedArea.NewInstance();
+			
+			
 			//TODO	COUNTRY
 			WaterbodyOrCountry country = app.getOccurrenceService().getCountryByIso(this.isocountry);
 			if (country != null){
@@ -428,8 +432,11 @@ public class ABCD206Activator {
  */			
 			//save the specimen data
 		//	app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
+
+			TransactionStatus tx = app.startTransaction();
+			app.getTermService().saveTerm(area);
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
-			
+			app.commitTransaction(tx);
 			
 
 

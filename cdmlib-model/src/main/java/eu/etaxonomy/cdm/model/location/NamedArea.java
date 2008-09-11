@@ -66,6 +66,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedAreaType getType(){
 		return this.type;
 	}
@@ -74,6 +75,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 
 	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedAreaLevel getLevel(){
 		return this.level;
 	}
@@ -99,6 +101,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
 
 	@ManyToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;
 	}
@@ -114,6 +117,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 			WaterbodyOrCountry waterbodyOrCountry) {
 		this.waterbodiesOrCountries.remove(waterbodyOrCountry);
 	}
+	
 	public Point getPointApproximation() {
 		return pointApproximation;
 	}

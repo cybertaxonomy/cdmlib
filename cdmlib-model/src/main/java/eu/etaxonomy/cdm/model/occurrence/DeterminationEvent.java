@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.occurrence;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -49,6 +51,7 @@ public class DeterminationEvent extends EventBase {
 	}
 	
 	@ManyToOne
+	@Cascade( { CascadeType.SAVE_UPDATE })
 	public DeterminationModifier getModifier() {
 		return modifier;
 	}
@@ -58,6 +61,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	@ManyToOne
+	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Taxon getTaxon(){
 		return this.taxon;
 	}
@@ -93,6 +97,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	@ManyToOne
+	@Cascade( { CascadeType.SAVE_UPDATE })
 	public SpecimenOrObservationBase getIdentifiedUnit() {
 		return identifiedUnit;
 	}
