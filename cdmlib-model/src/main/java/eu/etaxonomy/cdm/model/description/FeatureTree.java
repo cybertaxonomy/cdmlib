@@ -32,9 +32,9 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
- * Feature type trees arrange feature types (characters). They may also be used to
- * define flat feature types subsets for filtering purposes. 
- * A feature type tree is build out of feature type nodes, which can be hierarchically organised.
+ * Feature trees arrange feature (characters). They may also be used to
+ * define flat feature subsets for filtering purposes. 
+ * A feature tree is build out of feature nodes, which can be hierarchically organized.
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16

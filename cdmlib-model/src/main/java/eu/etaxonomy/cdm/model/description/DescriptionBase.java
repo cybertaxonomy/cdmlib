@@ -34,12 +34,21 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 /**
- * The upmost (abstract) class for the whole description with possibly several
- * feature data of a specimen or of a taxon.
+ * The upmost (abstract) class for a description as a whole (with possibly
+ * several elementary information data) for a specimen, a taxon or even a
+ * taxon name.
+ * <P>
+ * This class corresponds to DescriptionsSectionType according to SDD
  * 
  * @author m.doering
  * @version 1.0
@@ -79,34 +88,59 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
 	/**
-	 * Returns the set of specimens or observations involved in this description
-	 * as a whole. Also taxon descriptions are often based on concrete specimens
-	 * or observations. 
+	 * Returns the set of {@link SpecimenOrObservationBase specimens or observations} involved in
+	 * <i>this</i> description as a whole. Taxon descriptions are also often based
+	 * on concrete specimens or observations. 
 	 * 
-	 * @return	the set of of specimens or observations 
+	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
+	 * @see    #removeDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 */
 	//@ManyToMany  //FIXME
 	@Transient 
 	public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
 		return describedSpecimenOrObservations;
 	}
+
+	/** 
+	 * @see    #getDescribedSpecimenOrObservations()
+	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
+	 */
 	public void setDescribedSpecimenOrObservations(
 			Set<SpecimenOrObservationBase> describedSpecimenOrObservations) {
 		this.describedSpecimenOrObservations = describedSpecimenOrObservations;
 	}
+	
+	/**
+	 * Adds an existing {@link SpecimenOrObservationBase specimen or observation} to the set of
+	 * {@link #getDescribedSpecimenOrObservations() specimens or observations} described in <i>this</i>
+	 * description or which <i>this</i> description is based on.
+	 * 
+	 * @param describedSpecimenOrObservation	the specimen or observation to be added to <i>this</i> description
+	 * @see    	   								#getDescribedSpecimenOrObservations()
+	 */
 	public void addDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
 	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getDescribedSpecimenOrObservations() specimens or observations} involved
+	 * in <i>this</i> description.
+	 *
+	 * @param  describedSpecimenOrObservation   the specimen or observation which should be deleted
+	 * @see     		  						#getDescribedSpecimenOrObservations()
+	 * @see     		  						#addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
+	 */
 	public void removeDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		this.describedSpecimenOrObservations.remove(describedSpecimenOrObservation);
 	}
 
 	/**
-	 * Returns the set of references used as sources for this description as a
+	 * Returns the set of {@link ReferenceBase references} used as sources for <i>this</i> description as a
 	 * whole. More than one source can be used for a general description without
 	 * assigning for each data element of the description one of those sources. 
 	 * 
-	 * @return	the set of references 
+	 * @see    #addDescriptionSource(ReferenceBase)
+	 * @see    #removeDescriptionSource(ReferenceBase)
 	 */
 //	@ManyToMany  //FIXME
 //	@Cascade( { CascadeType.SAVE_UPDATE })
@@ -114,23 +148,56 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	public Set<ReferenceBase> getDescriptionSources() {
 		return this.descriptionSources;
 	}
+	
+	/** 
+	 * @see    #getDescriptionSources()
+	 * @see    #addDescriptionSource(ReferenceBase)
+	 */
 	protected void setDescriptionSources(Set<ReferenceBase> descriptionSources) {
 		this.descriptionSources = descriptionSources;
 	}
+	
+	/**
+	 * Adds an existing {@link ReferenceBase reference} to the set of
+	 * {@link #getDescriptionSources() references} used as sources for <i>this</i>
+	 * description.
+	 * 
+	 * @param descriptionSource	the reference source to be added to <i>this</i> description
+	 * @see    	   				#getDescriptionSources()
+	 */
 	public void addDescriptionSource(ReferenceBase descriptionSource) {
 		this.descriptionSources.add(descriptionSource);
 	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getDescriptionSources() references} used as
+	 * sources for <i>this</i> description.
+	 *
+	 * @param  descriptionSource	the reference source which should be deleted
+	 * @see     		  			#getDescriptionSources()
+	 * @see     		  			#addDescriptionSource(ReferenceBase)
+	 */
 	public void removeDescriptionSource(ReferenceBase descriptionSource) {
 		this.descriptionSources.remove(descriptionSource);
 	}
 
-
+	/**
+	 * Returns the set of {@link DescriptionElementBase elementary description data} which constitute
+	 * <i>this</i> description as a whole. 
+	 * 
+	 * @see    #addElement(DescriptionElementBase)
+	 * @see    #removeElement(DescriptionElementBase)
+	 */
 	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DescriptionElementBase> getElements() {
 		return this.descriptionElements;
 	}
 
+	/** 
+	 * @see    #getElements()
+	 * @see    #addElement(DescriptionElementBase)
+	 */
 	protected void setElements(Set<DescriptionElementBase> element) {
 		this.descriptionElements = element;
 		if (element == null){
@@ -138,18 +205,53 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 		}
 	}
 
+	/**
+	 * Adds an existing {@link DescriptionElementBase elementary description} to the set of
+	 * {@link #getElements() elementary description data} which constitute <i>this</i>
+	 * description as a whole.
+	 * 
+	 * @param element	the elementary description to be added to <i>this</i> description
+	 * @see    	   		#getDescriptionSources()
+	 */
 	public void addElement(DescriptionElementBase element) {
 		this.descriptionElements.add(element);
 	}
 
+	/** 
+	 * Removes one element from the set of {@link #getElements() elementary description data} which
+	 * constitute <i>this</i> description as a whole.
+	 *
+	 * @param  element	the reference source which should be deleted
+	 * @see     		#getElements()
+	 * @see     		#addElement(DescriptionElementBase)
+	 */
 	public void removeElement(DescriptionElementBase element) {
 		this.descriptionElements.remove(element);
 	}
 	
+	/**
+	 * Returns the number of {@link DescriptionElementBase elementary description data} which constitute
+	 * <i>this</i> description as a whole. This is the cardinality of the set of
+	 * elementary description data.
+	 * 
+	 * @see		#getElements()
+	 * @return	the number of elements of the elementary description data set
+	 */
 	public int size(){
 		return this.descriptionElements.size();
 	}
 	
+	/**
+	 * Generates a string that identifies <i>this</i> description.
+	 * This string may be stored in the inherited
+	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
+	 * This method overrides the generic and inherited generateTitle method
+	 * from {@link IdentifiableEntity IdentifiableEntity}.
+	 *
+	 * @return  the string identifying <i>this</i> description
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 */
 	@Override
 	public String generateTitle() {
 		//TODO generate title "generate Title not yet implemented"
