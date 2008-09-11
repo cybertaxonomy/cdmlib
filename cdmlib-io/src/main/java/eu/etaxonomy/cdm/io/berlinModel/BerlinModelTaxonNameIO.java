@@ -112,7 +112,11 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 						taxonNameBase = NonViralName.NewInstance(rank);
 					}
 					
-					if (rank.isSupraGeneric()){
+					if (rank == null){
+						//TODO rank should never be null or a more sophisticated algorithm has to be implemented for genus/supraGenericName
+						logger.warn("Rank is null. Genus epethiton was imported. May be wrong");
+					}
+					if (rank != null && rank.isSupraGeneric()){
 						dbAttrName = "supraGenericName";
 					}else{
 						dbAttrName = "genus";
@@ -327,6 +331,9 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				if (!ignoreNull){ logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
 				" was not found in authorTeam store. Relation was not set!!");}
 				return null;
+//			}else if(teamId == 0){ //casus El Salvador
+//				//do nothing 
+//				return null;
 			}else{
 				return author;
 			}

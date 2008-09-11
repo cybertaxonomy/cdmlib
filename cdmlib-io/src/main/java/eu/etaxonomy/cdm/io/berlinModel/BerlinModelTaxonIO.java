@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
 
-	private int modCount = 30000;
+	private int modCount = 10000;
 	
 	public BerlinModelTaxonIO(){
 		super();
@@ -104,7 +105,12 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	@Override
 	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
-			
+		
+		//make not needed maps empty
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		authorMap.makeEmpty();
+
+		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);

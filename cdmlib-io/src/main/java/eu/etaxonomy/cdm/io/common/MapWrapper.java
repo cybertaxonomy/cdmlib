@@ -27,12 +27,7 @@ public class MapWrapper<T extends CdmBase> {
 	private IService<CdmBase> service = null; 
 	
 	public MapWrapper(IService<CdmBase> service){
-		if (service == null){
-			internalMap = new HashMap<Integer, CdmBase>();
-		}else{
-			this.service = service;
-			internalMap =  new HashMap<Integer, UUID>();
-		}
+		makeNewMap(service);
 	}
 	
 	public void put(Object id, T cdmBase){
@@ -107,4 +102,17 @@ public class MapWrapper<T extends CdmBase> {
 		}
 	}
 	
+	public boolean makeEmpty(){
+		return makeNewMap(service);
+	}
+	
+	public boolean makeNewMap(IService<CdmBase> service){
+			if (service == null){
+				internalMap = new HashMap<Integer, CdmBase>();
+			}else{
+				this.service = service;
+				internalMap =  new HashMap<Integer, UUID>();
+			}
+			return true;
+	}
 }
