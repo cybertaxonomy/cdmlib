@@ -10,10 +10,15 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 
 public interface ICommonService extends IService<CdmBase>{
@@ -27,5 +32,12 @@ public interface ICommonService extends IService<CdmBase>{
 	/** find cdmBase by UUID**/
 	public abstract ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
+	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations);
+	
+//	public Map<UUID, LanguageStringBase> saveLanguageStringsAll(Collection<LanguageStringBase> languageStringBases);
+	public void saveLanguageDataAll(Collection<VersionableEntity> languageData);
+
+	public List<Representation> getAllRepresentations(int limit, int start);
+	
 	
 }

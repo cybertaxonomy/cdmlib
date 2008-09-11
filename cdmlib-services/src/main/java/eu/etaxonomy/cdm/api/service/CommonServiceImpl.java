@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
+import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 
 
 @Service
@@ -33,6 +46,8 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 	
 	@Autowired
 	IOriginalSourceDao originalSourceDao;
+	@Autowired
+	private IRepresentationDao representationDao;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
@@ -50,6 +65,39 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 	}
 	
 
+	@Transactional(readOnly = false)
+	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
+		return representationDao.saveAll(representations);
+	}
 
+	@Transactional(readOnly = false)
+	public void saveLanguageDataAll(Collection<VersionableEntity> languageData) {
+
+		List<Representation> representations = new ArrayList();
+		
+		for ( VersionableEntity languageItem : languageData) {
+			if (languageItem instanceof Representation) {
+				representations.add((Representation)languageItem);
+			} else {
+				logger.error("Entry of wrong type: " + languageItem.toString());
+			}
+		}
+		
+		if (representations.size() > 0) { saveRepresentationAll(representations); }
+	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, Representation> saveRepresentationAll(Collection<Representation> representations) {
+		return representationDao.saveAll(representations);
+	}
+	
+//	@Transactional(readOnly = false)
+//	public Map<UUID, LanguageStringBase> saveLanguageStringsAll(Collection<LanguageStringBase> languageStringBases){
+//		return representationDao.saveAll(languageStringBases);
+//	}
+	
+	public List<Representation> getAllRepresentations(int limit, int start){
+		return representationDao.list(limit, start);
+	}
 	
 }

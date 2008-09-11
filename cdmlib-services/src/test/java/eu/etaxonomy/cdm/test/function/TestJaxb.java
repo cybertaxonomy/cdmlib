@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -84,32 +85,35 @@ public class TestJaxb {
 	
 //	private boolean doAgents = false;
 //	private boolean doAgentData = false;
+//	private boolean doCommon = true;
 //	private boolean doFeatureData = false;
-//	private boolean doTerms = false;
-//	private boolean doTermVocabularies = false;
+//	private boolean doDescriptions = false;
+//	private boolean doMedia = false;
 //	private boolean doOccurrences = false;
 //	private boolean doReferences = false;
 //	private boolean doReferencedEntities = false;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = false;
-//	private boolean doSynonyms = false;
 //	private boolean doRelationships = false;
-//	private boolean doMedia = false;
-
+//	private boolean doSynonyms = false;
+//	private boolean doTaxonNames = false;
+//	private boolean doTaxa = false;
+//	private boolean doTerms = false;
+//	private boolean doTermVocabularies = false;
+	
 	private boolean doAgents = true;
 	private boolean doAgentData = true;
+	private boolean doCommon = true;
 	private boolean doFeatureData = true;
-	private boolean doTerms = true;
-	private boolean doTermVocabularies = true;
+	private boolean doDescriptions = true;
+	private boolean doMedia = true;
 	private boolean doOccurrences = true;
 	private boolean doReferences = true;
 	private boolean doReferencedEntities = true;
+	private boolean doRelationships = true;
+	private boolean doSynonyms = true;
 	private boolean doTaxonNames = true;
 	private boolean doTaxa = true;
-	private boolean doSynonyms = true;
-	private boolean doRelationships = true;
-	private boolean doMedia = true;
-	private boolean doDescriptions = true;
+	private boolean doTerms = true;
+	private boolean doTermVocabularies = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -205,6 +209,8 @@ public class TestJaxb {
     	int occurrencesRows = numberOfRows;
     	int mediaRows = numberOfRows;
     	int featureDataRows = numberOfRows;
+    	int languageDataRows = numberOfRows;
+    	int termVocabularyRows = numberOfRows;
 
     	if (doAgents == true) {
     		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
@@ -217,6 +223,13 @@ public class TestJaxb {
     		if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
     		logger.info("# DefinedTermBase: " + definedTermBaseRows);
     		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+    	}
+    	
+    	if (doTermVocabularies == true) {
+    		if (termVocabularyRows == 0) { termVocabularyRows = appCtr.getAgentService().count(Agent.class); }
+//    		logger.info("# TermVocabulary");
+    		logger.warn("TermVocabulary not yet implemented");
+//    		dataSet.setTermVocabularies(appCtr.getTermService().gatAllVocabularies(MAX_ROWS, 0));;
     	}
 
     	if (doReferences == true) {
@@ -291,6 +304,12 @@ public class TestJaxb {
     		dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
     		dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTreesAll());
     	}
+
+    	if (doCommon == true) {
+    		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
+    		logger.info("# Representation");
+    		dataSet.setLanguageData(appCtr.getCommonService().getAllRepresentations(MAX_ROWS, 0));
+    	}
     }
 
 	/**  Saves data in DB */
@@ -306,68 +325,89 @@ public class TestJaxb {
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity> featureData;
 		List<VersionableEntity> media;
+		List<VersionableEntity> languageData = new ArrayList<VersionableEntity>();
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
-		// Currently it's sufficient to save the taxa only since all other data
-		// related to the taxa, such as synonyms, are automatically saved as well.
+		// If data of a certain type, such as terms, are not saved here explicitly, 
+		// then only those data of this type that are referenced by other objects are saved implicitly.
+		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
+		// are automatically saved as well.
 
-		/* If terms are not saved here explicitly, then only those terms that are referenced
-		by other objects are saved implicitly. */
 		if ((terms = dataSet.getTerms()) != null) {
 			logger.info("Terms: " + terms.size());
-		    appCtr.getTermService().saveTermsAll(terms);
+			appCtr.getTermService().saveTermsAll(terms);
 		}
-		
-		if ((agents = dataSet.getAgents()) != null) {
-			logger.info("Agents: " + agents.size());
-			appCtr.getAgentService().saveAgentAll(agents);
+
+		if (doAgents == true) {
+			if ((agents = dataSet.getAgents()) != null) {
+				logger.info("Agents: " + agents.size());
+				appCtr.getAgentService().saveAgentAll(agents);
+			}
 		}
-	
-		if ((references = dataSet.getReferences()) != null) {
-			logger.info("References: " + references.size());
-		     appCtr.getReferenceService().saveReferenceAll(references);
+
+		if (doReferences == true) {
+			if ((references = dataSet.getReferences()) != null) {
+				logger.info("References: " + references.size());
+				appCtr.getReferenceService().saveReferenceAll(references);
+			}
 		}
-		
-		if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
-			logger.info("Taxonomic names: " + taxonomicNames.size());
-			appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
+
+		if (doTaxonNames == true) {
+			if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+				logger.info("Taxonomic names: " + taxonomicNames.size());
+				appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
+			}
 		}
-	
-	    // FIXME: Clean getTaxa()/getTaxonBases() return parameters.
-	
-	    // Need to get the taxa and the synonyms here.
-		if ((taxonBases = dataSet.getTaxonBases()) != null) {
-			logger.info("Taxon bases: " + taxonBases.size());
-			appCtr.getTaxonService().saveTaxonAll(taxonBases);
+
+		// Need to get the taxa and the synonyms here.
+		if (doTaxa == true) {
+			if ((taxonBases = dataSet.getTaxonBases()) != null) {
+				logger.info("Taxon bases: " + taxonBases.size());
+				appCtr.getTaxonService().saveTaxonAll(taxonBases);
+			}
 		}
-		
-	    // This is actually not needed because NomenclaturalStatus and TypeDesignations
-		// are saved with taxon names.
-		if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
-			logger.info("Referenced entities: " + referencedEntities.size());
-			appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
+
+	    // NomenclaturalStatus, TypeDesignations
+		if (doReferencedEntities == true) {
+			if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
+				logger.info("Referenced entities: " + referencedEntities.size());
+				appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
+			}
 		}
 
 		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
 //		if ((descriptions = dataSet.getDescriptions()) != null) {
-//			logger.info("Saving " + descriptions.size() + " descriptions");
-//			appCtr.getDescriptionService().saveDescriptionAll(descriptions);
+//		logger.info("Saving " + descriptions.size() + " descriptions");
+//		appCtr.getDescriptionService().saveDescriptionAll(descriptions);
 //		}
-		
-		if ((occurrences = dataSet.getOccurrences()) != null) {
-			logger.info("Occurrences: " + occurrences.size());
-		     appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
+
+		if (doOccurrences == true) {
+			if ((occurrences = dataSet.getOccurrences()) != null) {
+				logger.info("Occurrences: " + occurrences.size());
+				appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
+			}
 		}
 
-		if ((featureData = dataSet.getFeatureData()) != null) {
-			logger.info("Feature data: " + featureData.size());
-			appCtr.getDescriptionService().saveFeatureDataAll(featureData);
+		if (doFeatureData == true) {
+			if ((featureData = dataSet.getFeatureData()) != null) {
+				logger.info("Feature data: " + featureData.size());
+				appCtr.getDescriptionService().saveFeatureDataAll(featureData);
+			}
 		}
-		
-		if ((media = dataSet.getMedia()) != null) {
-			logger.info("Media: " + media.size());
-			appCtr.getMediaService().saveMediaAll(media);
+
+		if (doMedia == true) {
+			if ((media = dataSet.getMedia()) != null) {
+				logger.info("Media: " + media.size());
+				appCtr.getMediaService().saveMediaAll(media);
+			}
+		}
+
+		if (doCommon == true) {
+			if ((languageData = dataSet.getLanguageData()) != null) {
+				logger.info("Language data: " + languageData.size());
+				appCtr.getCommonService().saveLanguageDataAll(languageData);
+			}
 		}
 
 		logger.info("All data saved");
