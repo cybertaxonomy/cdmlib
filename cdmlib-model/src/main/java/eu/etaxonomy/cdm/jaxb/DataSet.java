@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
@@ -147,8 +149,9 @@ public class DataSet {
     @XmlElementWrapper(name = "LanguageData")
     @XmlElements({
     @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
+    @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class),
     })
-    protected List<VersionableEntity> languageData;
+    protected List<LanguageStringBase> languageData;
     
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
@@ -515,10 +518,10 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link Collection<VersionableEntity> }
+     *     {@link Collection<LanguageStringBase> }
      *     
      */
-    public <T extends VersionableEntity> void addLanguageData(Collection<T> value) {
+    public <T extends LanguageStringBase> void addLanguageData(Collection<T> value) {
     	for (T languageItem: value) {
     		this.languageData.add(languageItem);
     	}
@@ -529,10 +532,10 @@ public class DataSet {
      * 
      * @return
      *     possible object is
-     *     {@link List<VersionableEntity> }
+     *     {@link List<LanguageStringBase> }
      *     
      */
-    public List<VersionableEntity> getLanguageData() {
+    public List<LanguageStringBase> getLanguageData() {
         return languageData;
     }
 
@@ -541,11 +544,11 @@ public class DataSet {
      * 
      * @param value
      *     allowed object is
-     *     {@link List<VersionableEntity> }
+     *     {@link List<LanguageStringBase> }
      *     
      */
-    public void setLanguageData(List<? extends VersionableEntity> value) {
-        this.languageData = new ArrayList<VersionableEntity>();
+    public void setLanguageData(List<? extends LanguageStringBase> value) {
+        this.languageData = new ArrayList<LanguageStringBase>();
         languageData.addAll(value);
     }
     
