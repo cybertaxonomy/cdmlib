@@ -12,12 +12,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.name.NomenclaturalStatusDaoHibernateImpl;
-import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 
 /**
  * @author a.babadshanjan
@@ -38,17 +34,4 @@ extends LanguageStringBaseDaoImpl<Representation> implements IRepresentationDao 
 		return results;
 	}
 }
-
-
-//public List<ReferencedEntityBase> getAllNomenclaturalStatus(Integer limit, Integer start) {
-//	Criteria crit = getSession().createCriteria(NomenclaturalStatus.class);
-//	List<ReferencedEntityBase> results = crit.list();
-//	return results;
-//}
-
-//public List<TypeDesignationBase> getAllTypeDesignations(Integer limit, Integer start) {
-//	Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
-//	List<TypeDesignationBase> results = crit.list();
-//	return results;
-//}
 
