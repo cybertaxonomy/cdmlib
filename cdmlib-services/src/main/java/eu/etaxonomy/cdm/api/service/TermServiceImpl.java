@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -33,6 +37,8 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	static Logger logger = Logger.getLogger(TermServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
+	@Autowired
+	private IRepresentationDao representationDao;
 	
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
@@ -89,5 +95,43 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		return null;
 	}
 
+	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start) {
+		return vocabularyDao.list(limit, start);
+	}
+	
+	public Map<UUID, TermVocabulary<DefinedTermBase>> 
+    saveTermVocabulariesAll(Collection<TermVocabulary<DefinedTermBase>> termVocabularies) {
+		return vocabularyDao.saveAll(termVocabularies);
+	}
 
+	@Transactional(readOnly = false)
+	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
+		return representationDao.saveAll(representations);
+	}
+
+	@Transactional(readOnly = false)
+	public void saveLanguageDataAll(Collection<VersionableEntity> languageData) {
+
+		List<Representation> representations = new ArrayList();
+		
+		for ( VersionableEntity languageItem : languageData) {
+			if (languageItem instanceof Representation) {
+				representations.add((Representation)languageItem);
+			} else {
+				logger.error("Entry of wrong type: " + languageItem.toString());
+			}
+		}
+		
+		if (representations.size() > 0) { saveRepresentationAll(representations); }
+	}
+	
+	@Transactional(readOnly = false)
+	public Map<UUID, Representation> saveRepresentationAll(Collection<Representation> representations) {
+		return representationDao.saveAll(representations);
+	}
+	
+	public List<Representation> getAllRepresentations(int limit, int start){
+		return representationDao.list(limit, start);
+	}
+	
 }

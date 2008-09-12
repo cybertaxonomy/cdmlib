@@ -46,8 +46,6 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 	
 	@Autowired
 	IOriginalSourceDao originalSourceDao;
-	@Autowired
-	private IRepresentationDao representationDao;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
@@ -62,42 +60,6 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 		if (! list.isEmpty()){
 			result = list.get(0);
 		}return result;
-	}
-	
-
-	@Transactional(readOnly = false)
-	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
-		return representationDao.saveAll(representations);
-	}
-
-	@Transactional(readOnly = false)
-	public void saveLanguageDataAll(Collection<VersionableEntity> languageData) {
-
-		List<Representation> representations = new ArrayList();
-		
-		for ( VersionableEntity languageItem : languageData) {
-			if (languageItem instanceof Representation) {
-				representations.add((Representation)languageItem);
-			} else {
-				logger.error("Entry of wrong type: " + languageItem.toString());
-			}
-		}
-		
-		if (representations.size() > 0) { saveRepresentationAll(representations); }
-	}
-	
-	@Transactional(readOnly = false)
-	public Map<UUID, Representation> saveRepresentationAll(Collection<Representation> representations) {
-		return representationDao.saveAll(representations);
-	}
-	
-//	@Transactional(readOnly = false)
-//	public Map<UUID, LanguageStringBase> saveLanguageStringsAll(Collection<LanguageStringBase> languageStringBases){
-//		return representationDao.saveAll(languageStringBases);
-//	}
-	
-	public List<Representation> getAllRepresentations(int limit, int start){
-		return representationDao.list(limit, start);
 	}
 	
 }

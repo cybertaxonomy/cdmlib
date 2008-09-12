@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -83,37 +84,37 @@ public class TestJaxb {
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
 	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
-//	private boolean doAgents = false;
-//	private boolean doAgentData = false;
-//	private boolean doCommon = true;
-//	private boolean doFeatureData = false;
-//	private boolean doDescriptions = false;
-//	private boolean doMedia = false;
-//	private boolean doOccurrences = false;
-//	private boolean doReferences = false;
-//	private boolean doReferencedEntities = false;
-//	private boolean doRelationships = false;
-//	private boolean doSynonyms = false;
-//	private boolean doTaxonNames = false;
-//	private boolean doTaxa = false;
-//	private boolean doTerms = false;
-//	private boolean doTermVocabularies = false;
-	
-	private boolean doAgents = true;
-	private boolean doAgentData = true;
-	private boolean doCommon = true;
-	private boolean doFeatureData = true;
-	private boolean doDescriptions = true;
-	private boolean doMedia = true;
-	private boolean doOccurrences = true;
-	private boolean doReferences = true;
-	private boolean doReferencedEntities = true;
-	private boolean doRelationships = true;
-	private boolean doSynonyms = true;
-	private boolean doTaxonNames = true;
-	private boolean doTaxa = true;
+	private boolean doAgents = false;
+	private boolean doAgentData = false;
+	private boolean doCommon = false;
+	private boolean doFeatureData = false;
+	private boolean doDescriptions = false;
+	private boolean doMedia = false;
+	private boolean doOccurrences = false;
+	private boolean doReferences = false;
+	private boolean doReferencedEntities = false;
+	private boolean doRelationships = false;
+	private boolean doSynonyms = false;
+	private boolean doTaxonNames = false;
+	private boolean doTaxa = false;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
+	
+//	private boolean doAgents = true;
+//	private boolean doAgentData = true;
+//	private boolean doCommon = true;
+//	private boolean doFeatureData = true;
+//	private boolean doDescriptions = true;
+//	private boolean doMedia = true;
+//	private boolean doOccurrences = true;
+//	private boolean doReferences = true;
+//	private boolean doReferencedEntities = true;
+//	private boolean doRelationships = true;
+//	private boolean doSynonyms = true;
+//	private boolean doTaxonNames = true;
+//	private boolean doTaxa = true;
+//	private boolean doTerms = true;
+//	private boolean doTermVocabularies = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -203,8 +204,6 @@ public class TestJaxb {
     	int referenceBaseRows = numberOfRows;
     	int taxonNameBaseRows = numberOfRows;
     	int taxonBaseRows = numberOfRows;
-    	int taxonRelationshipRows = numberOfRows;
-    	int synonymRelationshipRows = numberOfRows;
     	int relationshipRows = numberOfRows;
     	int occurrencesRows = numberOfRows;
     	int mediaRows = numberOfRows;
@@ -227,9 +226,8 @@ public class TestJaxb {
     	
     	if (doTermVocabularies == true) {
     		if (termVocabularyRows == 0) { termVocabularyRows = appCtr.getAgentService().count(Agent.class); }
-//    		logger.info("# TermVocabulary");
-    		logger.warn("TermVocabulary not yet implemented");
-//    		dataSet.setTermVocabularies(appCtr.getTermService().gatAllVocabularies(MAX_ROWS, 0));;
+    		logger.info("# TermVocabulary");
+    		dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
     	}
 
     	if (doReferences == true) {
@@ -308,7 +306,7 @@ public class TestJaxb {
     	if (doCommon == true) {
     		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
     		logger.info("# Representation");
-    		dataSet.setLanguageData(appCtr.getCommonService().getAllRepresentations(MAX_ROWS, 0));
+    		dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
     	}
     }
 
@@ -326,6 +324,8 @@ public class TestJaxb {
 		List<VersionableEntity> featureData;
 		List<VersionableEntity> media;
 		List<VersionableEntity> languageData = new ArrayList<VersionableEntity>();
+		List<TermVocabulary<DefinedTermBase>> termVocabularies
+		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
@@ -337,6 +337,13 @@ public class TestJaxb {
 		if ((terms = dataSet.getTerms()) != null) {
 			logger.info("Terms: " + terms.size());
 			appCtr.getTermService().saveTermsAll(terms);
+		}
+
+		if (doTermVocabularies == true) {
+			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
+				logger.info("Language data: " + termVocabularies.size());
+				appCtr.getTermService().saveTermVocabulariesAll(termVocabularies);
+			}
 		}
 
 		if (doAgents == true) {
@@ -404,9 +411,10 @@ public class TestJaxb {
 		}
 
 		if (doCommon == true) {
-			if ((languageData = dataSet.getLanguageData()) != null) {
+//			if ((languageData = dataSet.getLanguageData()) != null) {
+			if ((languageData = dataSet.getLanguageData()).size() > 0) {
 				logger.info("Language data: " + languageData.size());
-				appCtr.getCommonService().saveLanguageDataAll(languageData);
+				appCtr.getTermService().saveLanguageDataAll(languageData);
 			}
 		}
 
