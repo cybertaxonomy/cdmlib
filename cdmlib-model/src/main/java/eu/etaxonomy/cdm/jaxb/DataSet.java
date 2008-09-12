@@ -176,7 +176,7 @@ public class DataSet {
 
     @XmlElementWrapper(name = "TermVocabularies")
     @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    protected List<TermVocabulary> termVocabularies;
+    protected List<TermVocabulary<DefinedTermBase>> termVocabularies;
 
     @XmlElementWrapper(name = "Occurrences")
     @XmlElements({
@@ -344,7 +344,7 @@ public class DataSet {
      *     
      */
     
-    public List<TermVocabulary> getTermVocabularies() {
+    public List<TermVocabulary<DefinedTermBase>> getTermVocabularies() {
         return termVocabularies;
     }
 
@@ -356,7 +356,7 @@ public class DataSet {
      *     {@link List<TermVocabulary> }
      *     
      */
-    public void setTermVocabularies(List<TermVocabulary> value) {
+    public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
         this.termVocabularies = value;
     }
 

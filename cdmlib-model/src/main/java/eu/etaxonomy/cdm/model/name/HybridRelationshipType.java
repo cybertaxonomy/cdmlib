@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -41,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:27
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
+@XmlType(name = "HybridRelationshipType")
+@XmlRootElement(name = "HybridRelationshipType")
 @Entity
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
   
