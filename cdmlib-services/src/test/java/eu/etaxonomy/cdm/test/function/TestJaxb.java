@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -86,7 +87,7 @@ public class TestJaxb {
 	
 	private boolean doAgents = false;
 	private boolean doAgentData = false;
-	private boolean doCommon = false;
+	private boolean doLanguageData = true;
 	private boolean doFeatureData = false;
 	private boolean doDescriptions = false;
 	private boolean doMedia = false;
@@ -102,7 +103,7 @@ public class TestJaxb {
 	
 //	private boolean doAgents = true;
 //	private boolean doAgentData = true;
-//	private boolean doCommon = true;
+//	private boolean doLanguageData = true;
 //	private boolean doFeatureData = true;
 //	private boolean doDescriptions = true;
 //	private boolean doMedia = true;
@@ -211,23 +212,30 @@ public class TestJaxb {
     	int languageDataRows = numberOfRows;
     	int termVocabularyRows = numberOfRows;
 
-    	if (doAgents == true) {
-    		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
-    		logger.info("# Agents: " + agentRows);
-    		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
+    	if (doTermVocabularies == true) {
+    		if (termVocabularyRows == 0) { termVocabularyRows = appCtr.getAgentService().count(Agent.class); }
+    		logger.info("# TermVocabulary");
+    		dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
     	}
-
+    	
+    	if (doLanguageData == true) {
+    		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
+    		logger.info("# Representation");
+    		dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
+    		dataSet.addLanguageData(appCtr.getTermService().getAllLanguageStrings(MAX_ROWS, 0));
+    	}
+    	
     	if (doTerms == true) {
     		if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
     		logger.info("# DefinedTermBase: " + definedTermBaseRows);
     		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
     	}
-    	
-    	if (doTermVocabularies == true) {
-    		if (termVocabularyRows == 0) { termVocabularyRows = appCtr.getAgentService().count(Agent.class); }
-    		logger.info("# TermVocabulary");
-    		dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
+
+    	if (doAgents == true) {
+    		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
+    		logger.info("# Agents: " + agentRows);
+    		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
+    		dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
     	}
 
     	if (doReferences == true) {
@@ -302,12 +310,6 @@ public class TestJaxb {
     		dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
     		dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTreesAll());
     	}
-
-    	if (doCommon == true) {
-    		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
-    		logger.info("# Representation");
-    		dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
-    	}
     }
 
 	/**  Saves data in DB */
@@ -323,7 +325,7 @@ public class TestJaxb {
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity> featureData;
 		List<VersionableEntity> media;
-		List<VersionableEntity> languageData = new ArrayList<VersionableEntity>();
+		List<LanguageStringBase> languageData = new ArrayList<LanguageStringBase>();
 		List<TermVocabulary<DefinedTermBase>> termVocabularies
 		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
 
@@ -410,8 +412,7 @@ public class TestJaxb {
 			}
 		}
 
-		if (doCommon == true) {
-//			if ((languageData = dataSet.getLanguageData()) != null) {
+		if (doLanguageData == true) {
 			if ((languageData = dataSet.getLanguageData()).size() > 0) {
 				logger.info("Language data: " + languageData.size());
 				appCtr.getTermService().saveLanguageDataAll(languageData);

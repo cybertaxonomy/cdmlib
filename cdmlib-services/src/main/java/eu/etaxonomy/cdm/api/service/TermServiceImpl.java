@@ -18,14 +18,19 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
@@ -38,7 +43,12 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	
 	protected ITermVocabularyDao vocabularyDao;
 	@Autowired
+	@Qualifier("langStrBaseDao")
+	private ILanguageStringBaseDao languageStringBaseDao;
+	@Autowired
 	private IRepresentationDao representationDao;
+	@Autowired
+	private ILanguageStringDao languageStringDao;
 	
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
@@ -104,25 +114,14 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		return vocabularyDao.saveAll(termVocabularies);
 	}
 
-	@Transactional(readOnly = false)
-	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
-		return representationDao.saveAll(representations);
-	}
+//	@Transactional(readOnly = false)
+//	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
+//		return representationDao.saveAll(representations);
+//	}
 
 	@Transactional(readOnly = false)
-	public void saveLanguageDataAll(Collection<VersionableEntity> languageData) {
-
-		List<Representation> representations = new ArrayList();
-		
-		for ( VersionableEntity languageItem : languageData) {
-			if (languageItem instanceof Representation) {
-				representations.add((Representation)languageItem);
-			} else {
-				logger.error("Entry of wrong type: " + languageItem.toString());
-			}
-		}
-		
-		if (representations.size() > 0) { saveRepresentationAll(representations); }
+	public Map<UUID, LanguageStringBase> saveLanguageDataAll(Collection<LanguageStringBase> languageData) {
+		return languageStringBaseDao.saveAll(languageData);
 	}
 	
 	@Transactional(readOnly = false)
@@ -132,6 +131,15 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	
 	public List<Representation> getAllRepresentations(int limit, int start){
 		return representationDao.list(limit, start);
+	}
+	
+	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
+		return languageStringDao.list(limit, start);
+	}
+	
+	public Map<UUID, LanguageStringBase> 
+	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases) {
+		return languageStringBaseDao.saveAll(languageStringBases);
 	}
 	
 }
