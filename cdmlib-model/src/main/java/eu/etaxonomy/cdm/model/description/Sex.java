@@ -44,8 +44,8 @@ public class Sex extends Scope {
 	}
 
 	/** 
-	 * Class constructor: creates a new sex instance with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
+	 * Class constructor: creates a new sex instance with a description
+	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new sex to be created 

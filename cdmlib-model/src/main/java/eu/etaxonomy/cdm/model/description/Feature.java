@@ -34,9 +34,12 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
- * Individual property of observed phenomena able to be described or measured.
- * Experts do not use the word feature for the actual description but only for
- * the property itself. Naming this class FeatureType would create confusion.  
+ * Individual property (also designed as character, type or category)
+ * of observed phenomena able to be described or measured.
+ * Structured descriptions are based on features.<BR>
+ * Experts do not use the word feature for the actual description
+ * but only for the property itself. Therefore naming this class FeatureType
+ * would have leaded to confusion. 
  * NEEDS TO BE COMPLEMENTED SPM / TDWG http://rs.tdwg.
  * org/ontology/voc/SpeciesProfileModel
  * 

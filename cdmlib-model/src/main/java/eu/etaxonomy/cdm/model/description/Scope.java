@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import javax.persistence.*;
 
 /**
- * The class representing restrictions for the applicability of
+ * The class representing restrictions for the validity of
  * {@link TaxonDescription taxon descriptions}. This could include not only {@link Stage life stage}
  * or {@link Sex sex} but also for instance particular morphological parts or seasons.
  * 

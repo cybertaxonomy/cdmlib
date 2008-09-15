@@ -13,8 +13,12 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.media.IMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
@@ -36,11 +40,18 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * The upmost (abstract) class for a description element of a specimen
- * or of a taxon. A concrete description element assigns descriptive data to
- * the feature. As experts use the word feature for the property itself but not
- * for the actual description naming this class FeatureBase would make no sense.  
- * 
+ * The upmost (abstract) class for a piece of information) about
+ * a {@link SpecimenOrObservationBase specimen}, a {@link Taxon taxon} or even a {@link TaxonNameBase taxon name}.
+ * A concrete description element assigns descriptive data to one {@link Feature feature}.<BR>
+ * Experts use the word feature for the property itself but not for the actual
+ * description element. Therefore naming this class FeatureBase would have
+ * leaded to confusion.  
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> DescriptionsBaseType according to the the SDD schema
+ * <li> InfoItem according to the TDWG ontology
+ * <li> MeasurementOrFact according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -58,9 +69,23 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
 	
+
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty description element instance.
+	 * 
+	 * @see #DescriptionElementBase(Feature)
+	 */
 	protected DescriptionElementBase(){
 	}
 	
+	/** 
+	 * Class constructor: creates a new description element instance with the
+	 * given {@link Feature feature} that is described or measured.
+	 * 
+	 * @param	feature	the feature described or measured
+	 * @see 			#DescriptionElementBase()
+	 */
 	protected DescriptionElementBase(Feature feature){
 		if (feature == null){
 			feature = Feature.UNKNOWN();
@@ -89,77 +114,171 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	private Set<Media> media = new HashSet<Media>();
 
 
+	/** 
+	 * Returns the set of {@link Media media} (that is pictures, movies,
+	 * recorded sounds ...) <i>this</i> description element is based on.
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}
+	/**
+	 * @see	#getMedia() 
+	 */
 	protected void setMedia(Set<Media> media) {
 		this.media = media;
 	}
+	/**
+	 * Adds a {@link Media media} to the set of {@link #getMedia() media}
+	 * <i>this</i> description element is based on.
+	 * 
+	 * @param media	the media to be added to <i>this</i> description element
+	 * @see    	   	#getMedia()
+	 */
 	public void addMedia(Media media){
 		this.media.add(media);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getMedia() media}
+	 * <i>this</i> description element is based on.
+	 *
+	 * @param  media	the media which should be removed
+	 * @see     		#getMedia()
+	 * @see     		#addMedia(Media)
+	 */
 	public void removeMedia(Media media){
 		this.media.remove(media);
 	}
 
 
 	/**
-	 * Same as getFeature()
-	 * @see getFeature() 
-	 * @return
+	 * Does exactly the same as getFeature().
+	 * 
+	 * @see #getFeature() 
 	 */
 	@Transient
 	public Feature getType(){
 		return this.getFeature();
 	}
 	/**
-	 * Same as setFeature(Feature feature)
-	 * @see setFeature(Feature feature) 
-	 * @param type
+	 * Does exactly the same as setFeature(Feature).
+	 * 
+	 * @param type	the feature to be described or measured
+	 * @see 		#setFeature(Feature) 
+	 * @see 		#getFeature() 
 	 */
 	public void setType(Feature type){
 		this.setFeature(type);
 	}
 	
+	/** 
+	 * Returns the {@link Feature feature} <i>this</i> description element is for.
+	 * A feature is a property that can be described or measured but not the
+	 * description or the measurement itself.
+	 */
 	@ManyToOne
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Feature getFeature(){
 		return this.feature;
 	}
+	/**
+	 * @see	#getFeature() 
+	 */
 	public void setFeature(Feature feature){
 		this.feature = feature;
 	}
 
 	
+	/** 
+	 * Returns the set of {@link Modifier modifiers} which modulate
+	 * <i>this</i> description element.
+	 */
 	@OneToMany
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
+	/**
+	 * @see	#getModifiers() 
+	 */
 	protected void setModifiers(Set<Modifier> modifiers){
 		this.modifiers = modifiers;
 	}
+	/**
+	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
+	 * which modulate <i>this</i> description element.
+	 * 
+	 * @param modifier	the modifier to be added to <i>this</i> description element
+	 * @see    	   		#getModifiers()
+	 */
 	public void addModifier(Modifier modifier){
 		this.modifiers.add(modifier);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getModifiers() modifiers}
+	 * which modulate <i>this</i> description element.
+	 *
+	 * @param  modifier	the modifier which should be removed
+	 * @see     		#getModifiers()
+	 * @see     		#addModifier(Modifier)
+	 */
 	public void removeModifier(Modifier modifier){
 		this.modifiers.remove(modifier);
 	}
 
 	
+	/** 
+	 * Returns the {@link MultilanguageText multilanguage text} used to modulate
+	 * <i>this</i> description element. A multilanguage text does not belong to
+	 * a controlled {@link TermVocabulary term vocabulary} as a {@link Modifier modifier} does.
+	 */
 	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
 	}
+	/**
+	 * @see	#getModifyingText() 
+	 */
 	protected void setModifyingText(MultilanguageText modifyingText){
 		this.modifyingText = modifyingText;
 	}
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the {@link MultilanguageText multilanguage text} used to modulate
+	 * <i>this</i> description element.
+	 * 
+	 * @param description	the language string describing the modulation
+	 * 						in a particular language
+	 * @see    	   			#getModifyingText()
+	 * @see    	   			#addModifyingText(String, Language)
+	 */
 	public LanguageString addModifyingText(LanguageString description){
 		return this.modifyingText.add(description);
 	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to modulate <i>this</i> description element. The different language
+	 * strings contained in the multilanguage text should all have
+	 * the same meaning.
+	 * 
+	 * @param text		the string describing the modulation
+	 * 					in a particular language
+	 * @param language	the language in which the text string is formulated
+	 * @see    	   		#getModifyingText()
+	 * @see    	   		#addModifyingText(LanguageString)
+	 */
 	public LanguageString addModifyingText(String text, Language language){
 		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
+	/** 
+	 * Removes from the {@link MultilanguageText multilanguage text} used to modulate
+	 * <i>this</i> description element the one {@link LanguageString language string}
+	 * with the given {@link Language language}.
+	 *
+	 * @param  language	the language in which the language string to be removed
+	 * 					has been formulated
+	 * @see     		#getModifyingText()
+	 */
 	public LanguageString removeModifyingText(Language language){
 		return this.modifyingText.remove(language);
 	}

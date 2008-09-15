@@ -43,8 +43,8 @@ public class Stage extends Scope {
 	}
 
 	/** 
-	 * Class constructor: creates a new life stage instance with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
+	 * Class constructor: creates a new life stage instance with a description
+	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
 	 * 
 	 * @param	term  		 the string (in the default language) describing the
 	 * 						 new life stage to be created 

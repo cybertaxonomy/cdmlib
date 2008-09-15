@@ -11,12 +11,16 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+
 import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
- * This class contains possible modulations for the InfoItems such as "variance",
- * "maximum", "often", "probably"
+ * This class represents possible modulations for the InfoItems such as "variance",
+ * "maximum", "often", "probably". Its instances build a controlled
+ * {@link TermVocabulary term vocabulary}.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:35

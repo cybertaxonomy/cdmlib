@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * <P>
  * This class corresponds to: <ul>
  * <li> DescriptionsBaseType with a "Class" element according to the the SDD schema
+ * <li> SpeciesProfileModel according to the TDWG ontology
  * <li> CharacterCircumscription according to the TCS
  * </ul>
  * 
@@ -94,8 +95,8 @@ public class TaxonDescription extends DescriptionBase {
 	}
 	
 	/** 
-	 * Returns the set of {@link NamedArea named areas} delimiting the geographical area for which
-	 * <i>this</i> taxon description applies.
+	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
+	 * data where <i>this</i> taxon description is valid.
 	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -110,8 +111,7 @@ public class TaxonDescription extends DescriptionBase {
 	}
 	/**
 	 * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
-	 * delimiting the geographical area for which <i>this</i> taxon description
-	 * applies.
+	 * delimiting the geospatial area where <i>this</i> taxon description is valid.
 	 * 
 	 * @param geoScope	the named area to be additionally assigned to <i>this</i> taxon description
 	 * @see    	   		#getGeoScopes()
@@ -121,7 +121,7 @@ public class TaxonDescription extends DescriptionBase {
 	}
 	/** 
 	 * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
-	 * the geographical area for which <i>this</i> taxon description applies.
+	 * the geospatial area where <i>this</i> taxon description is valid.
 	 *
 	 * @param  geoScope   the named area which should be removed
 	 * @see     		  #getGeoScopes()
@@ -134,7 +134,7 @@ public class TaxonDescription extends DescriptionBase {
 	
 	/** 
 	 * Returns the set of {@link Scope scopes} (this covers mostly {@link Stage life stage} or {@link Sex sex} or both)
-	 * restricting the applicability of <i>this</i> taxon description. This set
+	 * restricting the validity of <i>this</i> taxon description. This set
 	 * of scopes should contain no more than one "sex" and one "life stage".
 	 */
 	@OneToMany
@@ -149,7 +149,7 @@ public class TaxonDescription extends DescriptionBase {
 	}
 	/**
 	 * Adds a {@link Scope scope} (mostly a {@link Stage life stage} or a {@link Sex sex})
-	 * to the set of {@link #getScopes() scopes} restricting the applicability of
+	 * to the set of {@link #getScopes() scopes} restricting the validity of
 	 * <i>this</i> taxon description.
 	 * 
 	 * @param scope	the scope to be added to <i>this</i> taxon description
@@ -160,7 +160,7 @@ public class TaxonDescription extends DescriptionBase {
 	}
 	/** 
 	 * Removes one element from the set of {@link #getScopes() scopes}
-	 * restricting the applicability of <i>this</i> taxon description.
+	 * restricting the validity of <i>this</i> taxon description.
 	 *
 	 * @param  scope	the scope which should be removed
 	 * @see     		#getScopes()
@@ -172,7 +172,7 @@ public class TaxonDescription extends DescriptionBase {
 
 
 	/** 
-	 * Returns the {@link Taxon taxon} to which <i>this</i> taxon description applies.
+	 * Returns the {@link Taxon taxon} <i>this</i> taxon description is about.
 	 */
 	@ManyToOne
 	@JoinColumn(name="taxon_fk")
