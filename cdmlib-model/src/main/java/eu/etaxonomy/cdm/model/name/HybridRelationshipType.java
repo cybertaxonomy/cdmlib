@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
@@ -66,7 +67,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	}
 	/** 
 	 * Class constructor: creates an additional hybrid relationship type
-	 * instance with a description (in the {@link common.Language#DEFAULT() default language}), a label,
+	 * instance with a description (in the {@link Language#DEFAULT() default language}), a label,
 	 * a label abbreviation and the flags indicating whether this new hybrid
 	 * relationship type is symmetric and/or transitive.
 	 * 

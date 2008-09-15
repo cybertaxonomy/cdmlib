@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -28,8 +30,12 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A description that delimits this taxon.
- * Equivalent to TCS /DataSet/TaxonConcepts/TaxonConcept/CharacterCircumscription 
+ * This class represents descriptions that delimit or circumscribe a real taxon.
+ * <P>
+ * This class corresponds to: <ul>
+ * <li> DescriptionsBaseType with a "Class" element according to the the SDD schema
+ * <li> CharacterCircumscription according to the TCS
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0
@@ -56,52 +62,118 @@ public class TaxonDescription extends DescriptionBase {
 	@XmlTransient
 	private Taxon taxon;
 
+
+	/**
+	 * Class constructor: creates a new empty taxon description instance.
+	 */
+	public TaxonDescription(){
+		super();
+	}
+	
+	
+	/**
+	 * Creates a new empty taxon description instance.
+	 * 
+	 * @see	#NewInstance(Taxon)
+	 */
 	public static TaxonDescription NewInstance(){
 		return new TaxonDescription();
 	}
 	
+	/**
+	 * Creates a new taxon description instance for the given {@link Taxon taxon}.
+	 * The new taxon description will be also added to the {@link Taxon#getDescriptions() set of descriptions}
+	 * assigned to the given taxon.
+	 * 
+	 * @see	#NewInstance()
+	 */
 	public static TaxonDescription NewInstance(Taxon taxon){
 		TaxonDescription description = new TaxonDescription();
 		taxon.addDescription(description);
 		return description;
 	}
 	
-	public TaxonDescription(){
-		super();
-	}
-	
-	
+	/** 
+	 * Returns the set of {@link NamedArea named areas} delimiting the geographical area for which
+	 * <i>this</i> taxon description applies.
+	 */
 	@OneToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
+	/**
+	 * @see	#getGeoScopes()
+	 */
 	protected void setGeoScopes(Set<NamedArea> geoScopes){
 		this.geoScopes = geoScopes;
 	}
+	/**
+	 * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
+	 * delimiting the geographical area for which <i>this</i> taxon description
+	 * applies.
+	 * 
+	 * @param geoScope	the named area to be additionally assigned to <i>this</i> taxon description
+	 * @see    	   		#getGeoScopes()
+	 */
 	public void addGeoScope(NamedArea geoScope){
 		this.geoScopes.add(geoScope);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
+	 * the geographical area for which <i>this</i> taxon description applies.
+	 *
+	 * @param  geoScope   the named area which should be removed
+	 * @see     		  #getGeoScopes()
+	 * @see     		  #addGeoScope(NamedArea)
+	 */
 	public void removeGeoScope(NamedArea geoScope){
 		this.geoScopes.remove(geoScope);
 	}
 
 	
+	/** 
+	 * Returns the set of {@link Scope scopes} (this covers mostly {@link Stage life stage} or {@link Sex sex} or both)
+	 * restricting the applicability of <i>this</i> taxon description. This set
+	 * of scopes should contain no more than one "sex" and one "life stage".
+	 */
 	@OneToMany
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
+	/**
+	 * @see	#getScopes()
+	 */
 	protected void setScopes(Set<Scope> scopes){
 		this.scopes = scopes;
 	}
+	/**
+	 * Adds a {@link Scope scope} (mostly a {@link Stage life stage} or a {@link Sex sex})
+	 * to the set of {@link #getScopes() scopes} restricting the applicability of
+	 * <i>this</i> taxon description.
+	 * 
+	 * @param scope	the scope to be added to <i>this</i> taxon description
+	 * @see    	   	#getScopes()
+	 */
 	public void addScope(Scope scope){
 		this.scopes.add(scope);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getScopes() scopes}
+	 * restricting the applicability of <i>this</i> taxon description.
+	 *
+	 * @param  scope	the scope which should be removed
+	 * @see     		#getScopes()
+	 * @see     		#addScope(Scope)
+	 */
 	public void removeScope(Scope scope){
 		this.scopes.remove(scope);
 	}
 
 
+	/** 
+	 * Returns the {@link Taxon taxon} to which <i>this</i> taxon description applies.
+	 */
 	@ManyToOne
 	@JoinColumn(name="taxon_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)

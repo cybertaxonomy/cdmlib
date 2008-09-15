@@ -13,26 +13,38 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+
+/**
+ * This class represents descriptions for {@link SpecimenOrObservationBase specimens or observations}.
+ * <P>
+ * This class corresponds to DescriptionsBaseType with an "Object" element
+ * according to the SDD schema.
+ *  
+ * @author a.mueller
+ * @version 1.0
+ * @created 08-Jul-2008
+ */
 @Entity
 public class SpecimenDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(SpecimenDescription.class);
 	
 
 	/**
-	 * Factory method
-	 * @return
-	 */
-	public static SpecimenDescription NewInstance(){
-		return new SpecimenDescription();
-	}
-	
-	/**
-	 * Constructor
+	 * Class constructor: creates a new empty specimen description instance.
 	 */
 	public SpecimenDescription() {
 		super();
 	}
 	
 
+	/**
+	 * Creates a new empty specimen description instance.
+	 */
+	public static SpecimenDescription NewInstance(){
+		return new SpecimenDescription();
+	}
+	
 
 }

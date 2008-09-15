@@ -24,8 +24,8 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
- * This class represents all piece of information (not ruled by a {@link name.NomenclaturalCode nomenclatural code})
- * concerning a {@link name.TaxonNameBase taxon name} like for instance the content of its first
+ * This class represents all piece of information (not ruled by a {@link NomenclaturalCode nomenclatural code})
+ * concerning a {@link TaxonNameBase taxon name} like for instance the content of its first
  * publication (protolog) or a picture of this publication.
  *  
  * @author a.mueller
@@ -44,21 +44,24 @@ public class TaxonNameDescription extends DescriptionBase {
 
 
 	/**
-	 * Factory method
-	 * @return
-	 */
-	public static TaxonNameDescription NewInstance(){
-		return new TaxonNameDescription();
-	}
-	
-	/**
-	 * Constructor
+	 * Class constructor: creates a new empty taxon name description instance.
 	 */
 	public TaxonNameDescription() {
 		super();
 	}
 	
 	
+	/**
+	 * Creates a new empty taxon name description instance.
+	 */
+	public static TaxonNameDescription NewInstance(){
+		return new TaxonNameDescription();
+	}
+	
+	/** 
+	 * Returns the {@link TaxonNameBase taxon name} to which <i>this</i> taxon name description
+	 * provides additional information not ruled by a {@link NomenclaturalCode nomenclatural code}.
+	 */
 	@ManyToOne
 	@JoinColumn(name="taxonName_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)

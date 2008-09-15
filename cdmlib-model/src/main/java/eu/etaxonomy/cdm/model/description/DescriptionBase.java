@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
  * several elementary information data) for a specimen, a taxon or even a
  * taxon name.
  * <P>
- * This class corresponds to DescriptionsSectionType according to SDD
+ * This class corresponds to DescriptionsSectionType according to the SDD
+ * schema.
  * 
  * @author m.doering
  * @version 1.0
@@ -89,8 +90,9 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 
 	/**
 	 * Returns the set of {@link SpecimenOrObservationBase specimens or observations} involved in
-	 * <i>this</i> description as a whole. Taxon descriptions are also often based
-	 * on concrete specimens or observations. 
+	 * <i>this</i> description as a whole. {@link TaxonDescription Taxon descriptions} are also often based
+	 * on concrete specimens or observations. For {@link TaxonNameDescription taxon name descriptions}
+	 * this set should be empty.
 	 * 
 	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 * @see    #removeDescribedSpecimenOrObservations(SpecimenOrObservationBase)
@@ -113,10 +115,14 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	/**
 	 * Adds an existing {@link SpecimenOrObservationBase specimen or observation} to the set of
 	 * {@link #getDescribedSpecimenOrObservations() specimens or observations} described in <i>this</i>
-	 * description or which <i>this</i> description is based on.
+	 * description or which <i>this</i> description is based on.<BR>
+	 * Due to bidirectionality if <i>this</i> description is a {@link SpecimenDescription specimen description},
+	 * <i>this</i> description will also be added to the set of specimen
+	 * descriptions corresponding to the given additional specimen or observation.
 	 * 
 	 * @param describedSpecimenOrObservation	the specimen or observation to be added to <i>this</i> description
 	 * @see    	   								#getDescribedSpecimenOrObservations()
+	 * @see    	   								SpecimenOrObservationBase#addDescription(DescriptionBase)
 	 */
 	public void addDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
@@ -124,11 +130,15 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	
 	/** 
 	 * Removes one element from the set of {@link #getDescribedSpecimenOrObservations() specimens or observations} involved
-	 * in <i>this</i> description.
+	 * in <i>this</i> description.<BR>
+	 * Due to bidirectionality if <i>this</i> description is a {@link SpecimenDescription specimen description},
+	 * <i>this</i> description will also be removed from the set of specimen
+	 * descriptions corresponding to the given specimen or observation.
 	 *
-	 * @param  describedSpecimenOrObservation   the specimen or observation which should be deleted
+	 * @param  describedSpecimenOrObservation   the specimen or observation which should be removed
 	 * @see     		  						#getDescribedSpecimenOrObservations()
 	 * @see     		  						#addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
+	 * @see     		  						SpecimenOrObservationBase#removeDescription(DescriptionBase)
 	 */
 	public void removeDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		this.describedSpecimenOrObservations.remove(describedSpecimenOrObservation);

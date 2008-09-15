@@ -153,7 +153,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	}
 	
 	/** 
-	 * Returns the {@link name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
+	 * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
 	@ManyToOne
 	@JoinColumn(name="taxonName_fk")
@@ -198,7 +198,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 
 	/** 
 	 * Returns the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference} of <i>this</i> (abstract) taxon.
-	 * This is the reference or the treatment using the {@link name.TaxonNameBase taxon name}
+	 * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
 	 * in <i>this</i> (abstract) taxon.
 	 */
 	@ManyToOne
