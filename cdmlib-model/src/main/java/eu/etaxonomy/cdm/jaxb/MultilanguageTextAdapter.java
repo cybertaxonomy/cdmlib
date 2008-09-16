@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * @created 02.09.2008
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,8 +41,8 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextHelper
 		for(Language language : value.keySet()) {
 			multilanguageTextHelper.setLanguage(language);
 			multilanguageTextHelper.setLanguageString(value.get(language));
-//			multilanguageText.add(value.get(language));
 			
+//			multilanguageText.add(value.get(language));
 		}
 
 		return multilanguageTextHelper;
@@ -52,14 +53,10 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextHelper
 //	public Map<Language, LanguageString> unmarshal(MultilanguageText value)
 			throws Exception {
 		
-//		Map<Language, LanguageString> map = new ConcurrentHashMap<Language, LanguageString>();
-//		
-//		for(Language language : value.keySet()) {
-//			map.put(language, value.get(language));
-//		}
-//		
-//		return map;
-    	
-    	return null;
+		Map<Language, LanguageString> map = new HashMap<Language, LanguageString>();
+		
+		map.put(value.getLanguage(), value.getLanguageString());
+		
+		return map;
 	}
 }

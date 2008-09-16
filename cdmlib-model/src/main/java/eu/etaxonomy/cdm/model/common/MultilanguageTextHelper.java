@@ -6,11 +6,16 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -26,10 +31,16 @@ import javax.xml.bind.annotation.XmlType;
 public class MultilanguageTextHelper {
 
 	@XmlElement(name = "Language")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Language language;
 	
 	@XmlElement(name = "LanguageString")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private LanguageString languageString;
+	
+//	private HashMap<Language, LanguageString> mlText;
 	
 	public MultilanguageTextHelper() {
 	}
