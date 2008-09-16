@@ -915,9 +915,6 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     
     static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
     static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
-
-
-
     
     
 }
