@@ -44,7 +44,7 @@ public class DipteraActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_patricia();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
@@ -91,7 +91,7 @@ public class DipteraActivator {
 //	//taxa
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 	
 	
@@ -130,7 +130,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setCheck(check);
 		
 		// invoke import
-		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
+		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
