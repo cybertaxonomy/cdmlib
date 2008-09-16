@@ -68,54 +68,53 @@ public class TestJaxb {
 	
 	private static final Logger logger = Logger.getLogger(TestJaxb.class);
 	
-    /* Cichorieae DB **/
-	private static final String serializeFromDb = "cdm_test_anahit";
-	//private static final String deserializeToDb = "cdm_test_jaxb2";
+    /* SerializeFrom DB **/
+	//private static final String serializeFromDb = "cdm_test_anahit";
+	private static final String serializeFromDb = "cdm_test_jaxb";
 	
-    /* TestJaxb Test Data */
-	//private static final String serializeFromDb = "cdm_test_jaxb";
-	//private static final String deserializeToDb = "cdm_test_jaxb";
-	private static final String deserializeToDb = "cdm_test_anahit2";
+    /* SerializeTo DB */
+	//private static final String deserializeToDb = "cdm_test_anahit2";
+	private static final String deserializeToDb = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
-	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	//private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	
 	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
 	 *  as many rows as specified for agents, references, etc. 
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
-	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
+	private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
-	private boolean doAgents = false;
-	private boolean doAgentData = false;
-	private boolean doLanguageData = true;
-	private boolean doFeatureData = false;
-	private boolean doDescriptions = false;
-	private boolean doMedia = false;
-	private boolean doOccurrences = false;
-	private boolean doReferences = false;
-	private boolean doReferencedEntities = false;
-	private boolean doRelationships = false;
-	private boolean doSynonyms = false;
-	private boolean doTaxonNames = false;
-	private boolean doTaxa = false;
-	private boolean doTerms = true;
-	private boolean doTermVocabularies = true;
-	
-//	private boolean doAgents = true;
-//	private boolean doAgentData = true;
+//	private boolean doAgents = false;
+//	private boolean doAgentData = false;
 //	private boolean doLanguageData = true;
-//	private boolean doFeatureData = true;
-//	private boolean doDescriptions = true;
-//	private boolean doMedia = true;
-//	private boolean doOccurrences = true;
-//	private boolean doReferences = true;
-//	private boolean doReferencedEntities = true;
-//	private boolean doRelationships = true;
-//	private boolean doSynonyms = true;
-//	private boolean doTaxonNames = true;
-//	private boolean doTaxa = true;
+//	private boolean doFeatureData = false;
+//	private boolean doDescriptions = false;
+//	private boolean doMedia = false;
+//	private boolean doOccurrences = false;
+//	private boolean doReferences = false;
+//	private boolean doReferencedEntities = false;
+//	private boolean doRelationships = false;
+//	private boolean doSynonyms = false;
+//	private boolean doTaxonNames = false;
+//	private boolean doTaxa = false;
 //	private boolean doTerms = true;
 //	private boolean doTermVocabularies = true;
+	
+	private boolean doAgents = true;
+	private boolean doAgentData = true;
+	private boolean doLanguageData = true;
+	private boolean doFeatureData = true;
+	private boolean doDescriptions = true;
+	private boolean doMedia = true;
+	private boolean doOccurrences = true;
+	private boolean doReferences = true;
+	private boolean doReferencedEntities = true;
+	private boolean doRelationships = true;
+	private boolean doSynonyms = true;
+	private boolean doTaxonNames = true;
+	private boolean doTaxa = true;
+	private boolean doTerms = true;
+	private boolean doTermVocabularies = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -220,7 +219,7 @@ public class TestJaxb {
     	
     	if (doLanguageData == true) {
     		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
-    		logger.info("# Representation");
+    		logger.info("# Representation, Language String");
     		dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
     		dataSet.addLanguageData(appCtr.getTermService().getAllLanguageStrings(MAX_ROWS, 0));
     	}
@@ -709,7 +708,7 @@ public class TestJaxb {
 		// via services rather than traversing the tree.
 	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		doDeserialize(deserializeToDb, marshOutOne);
+		//doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}
