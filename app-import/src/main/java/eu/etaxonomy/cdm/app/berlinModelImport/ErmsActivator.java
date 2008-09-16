@@ -44,11 +44,11 @@ public class ErmsActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.PESI_ERMS();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_erms();
 	static final UUID secUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
 	static final int sourceSecId = 500000;
 	static final UUID featureTreeUuid = UUID.fromString("33cbf7a8-0c47-4d47-bd11-b7d77a38d0f6");
-	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
+	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,14, 249, 250, 251, 252, 253}; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -60,12 +60,14 @@ public class ErmsActivator {
 	//ignore null
 	static final boolean ignoreNull = true;
 	
+// ***************** ALL ************************************************//
+	
 	//authors
 	static final boolean doAuthors = true;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.CONCEPT_REFERENCES;
 	//names
-	static final boolean doTaxonNames = true;
+	static final boolean doTaxonNames = false;
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
 	static final boolean doTypes = true;
@@ -77,10 +79,13 @@ public class ErmsActivator {
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false;
 	
+	
+//******************** NONE ***************************************//
+	
 //	//authors
-//	static final boolean doAuthors = false;
+//	static final boolean doAuthors = true;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
 //	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
@@ -89,11 +94,11 @@ public class ErmsActivator {
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = false;
+//	static final boolean doTaxa = true;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
-	
+//	
 	
 	
 	/**
