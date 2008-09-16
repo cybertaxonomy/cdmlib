@@ -35,8 +35,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * This class represents information pieces expressed in a {@link MultilanguageText multilanguage text}
- * and eventually with a format used for structuring the text.
+ * This class represents information pieces expressed in one or several natural
+ * languages and eventually with a format used for structuring the text.
  * <P>
  * This class corresponds partially to NaturalLanguageDescription according to
  * the SDD schema.
@@ -77,6 +77,13 @@ public class TextData extends DescriptionElementBase {
 		this(null);
 	}
 	
+	/** 
+	 * Class constructor: creates a new text data instance with the {@link Feature feature}
+	 * to be described.
+	 * 
+	 * @param	feature	the feature the text data refer to
+	 * @see 			#TextData()
+	 */
 	public TextData(Feature feature){
 		super(feature);
 		initTextSet();
@@ -93,10 +100,28 @@ public class TextData extends DescriptionElementBase {
 		return new TextData();
 	}
 	
+	/** 
+	 * Creates a new text data instance with the {@link Feature feature}
+	 * to be described.
+	 * 
+	 * @param	feature	the feature the text data refer to
+	 * @see 			#NewInstance()
+	 * @see 			#NewInstance(String, Language, TextFormat)
+	 */
 	public static TextData NewInstance(Feature feature){
 		return new TextData(feature);
 	}
 	
+	/** 
+	 * Creates a new text data instance with a given text in a given particular
+	 * {@link Language language} and with the given text format for structuring it.
+	 * 
+	 * @param	text		the text string containing the content of the description 
+	 * @param	language	the language in which the text string is formulated
+	 * @param	format		the text format used to structure the text string
+	 * @see 				#NewInstance()
+	 * @see 				#NewInstance(Feature)
+	 */
 	public static TextData NewInstance(String text, Language language, TextFormat format){
 		TextData result =  new TextData();
 		result.putText(text, language);

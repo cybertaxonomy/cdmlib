@@ -228,11 +228,15 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 
 	
 	/** 
-	 * Returns the {@link MultilanguageText multilanguage text} used to modulate
-	 * <i>this</i> description element.  The different {@link LanguageString language strings}
+	 * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> description element.  The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.<BR>
 	 * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
 	 * as a {@link Modifier modifier} does.
+	 * <P>
+	 * NOTE: the actual descriptive information for <i>this</i> description element
+	 * is NOT stored in the modifying text. This is only metainformation for
+	 * the element.
 	 */
 	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
@@ -245,10 +249,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
-	 * to the {@link MultilanguageText multilanguage text} used to modulate
-	 * <i>this</i> description element.
+	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> description element.
 	 * 
-	 * @param description	the language string describing the modulation
+	 * @param description	the language string describing the validity
 	 * 						in a particular language
 	 * @see    	   			#getModifyingText()
 	 * @see    	   			#addModifyingText(String, Language)
@@ -261,7 +265,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
 	 * used to modulate <i>this</i> description element.
 	 * 
-	 * @param text		the string describing the modulation
+	 * @param text		the string describing the validity
 	 * 					in a particular language
 	 * @param language	the language in which the text string is formulated
 	 * @see    	   		#getModifyingText()
@@ -271,8 +275,8 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 		return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
 	/** 
-	 * Removes from the {@link MultilanguageText multilanguage text} used to modulate
-	 * <i>this</i> description element the one {@link LanguageString language string}
+	 * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> description element the one {@link LanguageString language string}
 	 * with the given {@link Language language}.
 	 *
 	 * @param  language	the language in which the language string to be removed
