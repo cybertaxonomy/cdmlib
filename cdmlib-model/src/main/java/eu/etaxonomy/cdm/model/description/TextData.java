@@ -59,8 +59,8 @@ public class TextData extends DescriptionElementBase {
 	//@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	//private MultilanguageText multiLanguageText;
-	private Map<Language, LanguageString> multiLanguageText;
+	private MultilanguageText multiLanguageText;
+	//private Map<Language, LanguageString> multiLanguageText;
 	
 	@XmlElement(name = "Format")
 	@XmlIDREF
@@ -112,11 +112,13 @@ public class TextData extends DescriptionElementBase {
 	@OneToMany (fetch= FetchType.LAZY)
 	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
-	public Map<Language, LanguageString> getMultilanguageText() {
+	//public Map<Language, LanguageString> getMultilanguageText() {
+    public MultilanguageText getMultilanguageText() {
 		initTextSet();
 		return multiLanguageText;
 	}
-	protected void setMultilanguageText(Map<Language, LanguageString> texts) {
+	//protected void setMultilanguageText(Map<Language, LanguageString> texts) {
+	protected void setMultilanguageText(MultilanguageText texts) {
 		this.multiLanguageText = texts;
 	}
 	@Transient 
