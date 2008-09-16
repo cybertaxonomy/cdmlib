@@ -2,6 +2,9 @@
 app-import/.classpath
 app-import/.project
 app-import/.settings
+app-import/src/main/resources/arecaceae.rdf_alt
+app-import/src/main/resources/arecaceae.zip
+app-import/src/main/resources/arecaceae.zip_alt
 app-import/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
