@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -34,6 +35,12 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * This class represents information pieces expressed in a {@link MultilanguageText multilanguage text}
+ * and eventually with a format used for structuring the text.
+ * <P>
+ * This class corresponds partially to NaturalLanguageDescription according to
+ * the SDD schema.
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:59
@@ -60,6 +67,30 @@ public class TextData extends DescriptionElementBase {
 	@XmlSchemaType(name = "IDREF")
 	private TextFormat format;
 	
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty life stage instance.
+	 * 
+	 * @see #Stage(String, String, String)
+	 */
+	/**
+	 * Constructor
+	 */
+	public TextData(){
+		this(null);
+	}
+	
+	public TextData(Feature feature){
+		super(feature);
+		initTextSet();
+	}
+	
+	//********* METHODS **************************************/
+	/** 
+	 * Creates a new empty life stage instance.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
 	public static TextData NewInstance(){
 		return new TextData();
 	}
@@ -73,18 +104,6 @@ public class TextData extends DescriptionElementBase {
 		result.putText(text, language);
 		result.setFormat(format);
 		return result;
-	}
-	
-	/**
-	 * Constructor
-	 */
-	public TextData(){
-		this(null);
-	}
-	
-	public TextData(Feature feature){
-		super(feature);
-		initTextSet();
 	}
 
 	/**

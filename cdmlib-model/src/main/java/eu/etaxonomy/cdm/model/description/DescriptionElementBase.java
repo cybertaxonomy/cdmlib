@@ -229,8 +229,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	
 	/** 
 	 * Returns the {@link MultilanguageText multilanguage text} used to modulate
-	 * <i>this</i> description element. A multilanguage text does not belong to
-	 * a controlled {@link TermVocabulary term vocabulary} as a {@link Modifier modifier} does.
+	 * <i>this</i> description element.  The different {@link LanguageString language strings}
+	 * contained in the multilanguage text should all have the same meaning.<BR>
+	 * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
+	 * as a {@link Modifier modifier} does.
 	 */
 	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
@@ -257,9 +259,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
 	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
-	 * used to modulate <i>this</i> description element. The different language
-	 * strings contained in the multilanguage text should all have
-	 * the same meaning.
+	 * used to modulate <i>this</i> description element.
 	 * 
 	 * @param text		the string describing the modulation
 	 * 					in a particular language

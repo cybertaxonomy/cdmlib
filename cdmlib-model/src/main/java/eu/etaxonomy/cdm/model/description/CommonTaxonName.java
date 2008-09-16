@@ -16,9 +16,21 @@ import javax.persistence.ManyToOne;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
+/**
+ * This class represents common or vernacular names for {@link Taxon taxa}.
+ * Only {@link TaxonDescription taxon descriptions} may contain common names.
+ * Common names vary not only according to the {@link Language language} but also sometimes
+ * according to {@link TaxonDescription#getGeoScopes() geospatial areas}. Furthermore there might be several
+ * distinct common names in one language and in the same geospatial area to
+ * designate the same taxon. Therefore using a {@link MultilanguageText multilanguage text}
+ * would not have been adequate.
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:17
@@ -31,11 +43,20 @@ public class CommonTaxonName extends DescriptionElementBase {
 	private Language language;
 
 	/**
-	 * Factory method. Sets the feature (type) of this description element to COMMON_NAME
-	 * and sets the name and language
-	 * @param name
-	 * @param language
-	 * @return
+	 * Class constructor: creates a new empty common name instance.
+	 * The corresponding {@link Feature feature} is set to {@link Feature#COMMON_NAME() COMMON_NAME}.
+	 */
+	protected CommonTaxonName(){
+		super(Feature.COMMON_NAME());
+	}
+	
+	/**
+	 * Creates a common name instance with the given name string and the given
+	 * {@link Language language}. The corresponding {@link Feature feature} is set to
+	 * {@link Feature#COMMON_NAME() COMMON_NAME}.
+	 * 
+	 * @param name		the name string 
+	 * @param language	the language of the name string
 	 */
 	public static CommonTaxonName NewInstance(String name, Language language){
 		CommonTaxonName result = new CommonTaxonName();
@@ -44,14 +65,12 @@ public class CommonTaxonName extends DescriptionElementBase {
 		return result;
 	}
 	
-	protected CommonTaxonName(){
-		super(Feature.COMMON_NAME());
-	}
 	
 	
 	
-	
-	/** Deprecated because feature should always be <code>COMMON_NAME</code> for class CommonTaxonName
+	/**
+	 * Deprecated because {@link Feature feature} should always be {@link Feature#COMMON_NAME() COMMON_NAME}
+	 * for all common name instances.
 	*/
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#setFeature(eu.etaxonomy.cdm.model.description.Feature)
@@ -62,24 +81,29 @@ public class CommonTaxonName extends DescriptionElementBase {
 		super.setFeature(feature);
 	}
 
+	/** 
+	 * Returns the {@link Language language} used for <i>this</i> common name.
+	 */
 	@ManyToOne
 	public Language getLanguage(){
 		return this.language;
 	}
+	/** 
+	 * @see	#getLanguage()
+	 */
 	public void setLanguage(Language language){
 		this.language = language;
 	}
 
-	/**
-	 * @return
+	/** 
+	 * Returns the name string of <i>this</i> common name.
 	 */
 	public String getName(){
 		return this.name;
 	}
 
-	/**
-	 * 
-	 * @param name    name
+	/** 
+	 * @see	#getName()
 	 */
 	public void setName(String name){
 		this.name = name;
