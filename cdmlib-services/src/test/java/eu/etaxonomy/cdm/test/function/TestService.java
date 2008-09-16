@@ -5,19 +5,23 @@ package eu.etaxonomy.cdm.test.function;
 
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -36,8 +40,9 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 public class TestService {
-	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestService.class);
+	
+	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	private static CdmApplicationController appCtr;
 	
 	
@@ -197,6 +202,17 @@ public class TestService {
 
 	}
 
+	public void testFeature(){
+		TransactionStatus tx = appCtr.startTransaction();
+		Language lang = Language.DEFAULT();
+		IDescriptionService descriptionService = appCtr.getDescriptionService();
+		TermVocabulary<Feature> voc = descriptionService.getDefaultFeatureVocabulary();
+		SortedSet<Feature> terms = voc.getTermsOrderedByLabels(lang);
+		for (DefinedTermBase term : terms){
+			logger.warn(term.getRepresentation(lang));
+		}
+		appCtr.commitTransaction(tx);
+	}
 	
 	
 	public void regenerateTaxonTitleCache(){
@@ -206,14 +222,15 @@ public class TestService {
 	
 	private void test(){
 		System.out.println("Start ...");
-    	testAppController();
+//    	testAppController();
 		//testRootTaxa();
 		//testTermApi();
 		//testDeleteTaxa();
 		//testDeleteRelationship();
 		//regenerateTaxonTitleCache();
 //		testVocabularyLists();
-		testTransientRank();
+//		testTransientRank();
+		testFeature();
 		System.out.println("\nEnd ...");
 	}
 	
