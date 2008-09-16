@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -23,6 +24,7 @@ import org.apache.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageString")
+@XmlRootElement(name = "LanguageString")
 @Entity
 public class LanguageString  extends LanguageStringBase{
 	static Logger logger = Logger.getLogger(LanguageString.class);

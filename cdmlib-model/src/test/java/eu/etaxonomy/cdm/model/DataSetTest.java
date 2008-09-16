@@ -45,7 +45,7 @@ public class DataSetTest {
     private List<VersionableEntity> agentData;
     //private List<TermBase> terms;
     private List<DefinedTermBase> terms;
-    private List<TermVocabulary> termVocabularies;
+    private List<TermVocabulary<DefinedTermBase>> termVocabularies;
     private List<ReferenceBase> references;
     private List<TaxonNameBase> taxonomicNames;
     private List<Taxon> taxa;
@@ -75,7 +75,7 @@ public class DataSetTest {
 		agentData = new ArrayList<VersionableEntity>();
 		//terms = new ArrayList<TermBase>();
 		terms = new ArrayList<DefinedTermBase>();
-		termVocabularies = new ArrayList<TermVocabulary>();
+		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
 	    references = new ArrayList<ReferenceBase>();
 		taxonomicNames = new ArrayList<TaxonNameBase>();
 		taxa = new ArrayList<Taxon>();

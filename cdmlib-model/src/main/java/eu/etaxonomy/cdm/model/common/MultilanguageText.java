@@ -34,6 +34,10 @@ public class MultilanguageText extends HashMap<Language, LanguageString> {
 	
 	static Logger logger = Logger.getLogger(MultilanguageText.class);
 	
+//	public static class MultilanguageTexthelper {
+//		
+//	}
+	
 	/**
 	 * Factory method
 	 * @return

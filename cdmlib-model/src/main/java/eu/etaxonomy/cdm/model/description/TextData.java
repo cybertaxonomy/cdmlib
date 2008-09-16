@@ -25,6 +25,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -48,9 +49,10 @@ public class TextData extends DescriptionElementBase {
 	
 	static Logger logger = Logger.getLogger(TextData.class);
 
-	//@XmlElement(name = "MultiLanguageText", type = MultilanguageSet.class)
+	//@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	//private MultilanguageText multiLanguageText;
 	private Map<Language, LanguageString> multiLanguageText;
 	
 	@XmlElement(name = "Format")
