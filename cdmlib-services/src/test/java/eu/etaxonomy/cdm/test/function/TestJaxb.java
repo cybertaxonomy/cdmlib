@@ -77,12 +77,12 @@ public class TestJaxb {
 	private static final String deserializeToDb = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
-	//private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
+	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	
 	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
 	 *  as many rows as specified for agents, references, etc. 
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
-	private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
+	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
 	
 //	private boolean doAgents = false;
 //	private boolean doAgentData = false;
@@ -708,7 +708,7 @@ public class TestJaxb {
 		// via services rather than traversing the tree.
 	    doSerializeFlat(serializeFromDb, marshOutOne);
 	    
-		//doDeserialize(deserializeToDb, marshOutOne);
+		doDeserialize(deserializeToDb, marshOutOne);
 	    
 		//doSerialize(deserializeToDb, marshOutTwo);
 		}
