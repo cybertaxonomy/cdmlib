@@ -39,8 +39,8 @@ public class EuroMedActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_diptera();
+	static final Source berlinModelSource = BerlinModelSources.euroMed();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("2ea816f8-20cf-4e8f-b52d-dc46d69f89e1");
 	static final int sourceSecId = 1000000;
 	
