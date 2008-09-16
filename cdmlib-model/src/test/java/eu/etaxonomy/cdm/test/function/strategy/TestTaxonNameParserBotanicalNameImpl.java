@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -92,26 +93,30 @@ public class TestTaxonNameParserBotanicalNameImpl {
 		String fullRef1;
 		
 		fullRef1 = strNameAbiesBasionymAuthorUe + ", " + reference1;
-		result += parseIt(fullRef1);
+//		result += parseIt(fullRef1);
 		//Abies alba (Ciardelli) D'Mueller
-		result += parseIt( "Barkerwebbia humilis (Becc.) Becc. ex Martelli");
-		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
-		result += parseIt( "Barkerwebbia elegans Becc., Webbia 16(456): 283. 1905");
-		result += parseIt( "Barkerwebbia elegans Becc. in Bot. J. 16(456): 283. 1905");
-		result += parseIt( "H. elegans (Becc.) Becc., Nova Guinea 8: 205. 1907");
-		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
-		result += parseIt( "Hieracium asturicum Arv.-Touv.");
-		result += parseIt( "Hieracium mougeotii subsp. asturicum Zahn");
-		result += parseIt( "Hieracium vogesiacum subsp. asturicum (Zahn) O. Bolòs & Vigo");
-		result += parseIt( "Hieracium cantabricum Arv.-Touv.");
-		result += parseIt( "Hieracium mougeotii subsp. cantabricum (Arv.-Touv.) Zahn");
-		result += parseIt( "Hieracium murorramondii Mateo");
+//		result += parseIt( "Barkerwebbia humilis (Becc.) Becc. ex Martelli");
+//		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
+//		result += parseIt( "Barkerwebbia elegans Becc., Webbia 16(456): 283. 1905");
+//		result += parseIt( "Barkerwebbia elegans Becc. in Bot. J. 16(456): 283. 1905");
+//		result += parseIt( "H. elegans (Becc.) Becc., Nova Guinea 8: 205. 1907");
+//		result += parseIt( "Heterospathe elegans subsp. versteegiana M.S.Trudgen & W.J.Baker");
+//		result += parseIt( "Hieracium asturicum Arv.-Touv.");
+//		result += parseIt( "Hieracium mougeotii subsp. asturicum Zahn");
+//		result += parseIt( "Hieracium vogesiacum subsp. asturicum (Zahn) O. Bolòs & Vigo");
+//		result += parseIt( "Hieracium cantabricum Arv.-Touv.");
+//		result += parseIt( "Hieracium mougeotii subsp. cantabricum (Arv.-Touv.) Zahn");
+//		result += parseIt( "Hieracium murorramondii Mateo");
+		result += parseIt( "Micrasterias denticulata Brébisson ex Ralfs 1848");
+//		[13:11:55] Patricia Kelbert : Micrasterias denticulata var. angulosa (Hantzsch) W. et G.S. West 1902
+//		[13:12:04] Patricia Kelbert : Micrasterias angulosa Hantzsch in Rabenhorst 1862
+		
 		System.out.println(result);
 	}
 	
 	
 	private int  parseIt(String fullRef1){
-		NonViralName nvName = BotanicalName.NewInstance(null);
+		NonViralName nvName = ZoologicalName.NewInstance(null);
 		NonViralNameParserImpl parser = new NonViralNameParserImpl();
 		
 		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);
