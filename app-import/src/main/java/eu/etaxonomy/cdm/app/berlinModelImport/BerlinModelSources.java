@@ -71,7 +71,7 @@ public class BerlinModelSources {
 	
 	public static Source PESI_ERMS(){
 		//	BerlinModel - Pesi-ERMS
-		String dbms = Source.SQL_SERVER_2005;
+		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "SQL2000Intern\\SQL2005";
 		String strDB = "BM_ERMS";
 		int port = 1433;
