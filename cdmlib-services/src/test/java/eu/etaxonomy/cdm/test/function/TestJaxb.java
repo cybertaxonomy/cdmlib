@@ -212,7 +212,7 @@ public class TestJaxb {
     	int termVocabularyRows = numberOfRows;
 
     	if (doTermVocabularies == true) {
-    		if (termVocabularyRows == 0) { termVocabularyRows = appCtr.getAgentService().count(Agent.class); }
+    		if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
     		logger.info("# TermVocabulary");
     		dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
     	}
@@ -533,7 +533,7 @@ public class TestJaxb {
     		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
@@ -604,7 +604,7 @@ public class TestJaxb {
     		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, serializeFromDb, username, password);
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
