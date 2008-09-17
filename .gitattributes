@@ -145,6 +145,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTransformer.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/DiffCdmDataBases.java -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
