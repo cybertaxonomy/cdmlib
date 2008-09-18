@@ -234,9 +234,9 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
 	 * as a {@link Modifier modifier} does.
 	 * <P>
-	 * NOTE: the actual descriptive information for <i>this</i> description element
-	 * is NOT stored in the modifying text. This is only metainformation for
-	 * the element.
+	 * NOTE: the actual content of <i>this</i> description element is NOT
+	 * stored in the modifying text. This is only metainformation
+	 * (like "Some experts express doubt about this assertion").
 	 */
 	public MultilanguageText getModifyingText(){
 		return this.modifyingText;

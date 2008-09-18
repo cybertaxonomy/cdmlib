@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * This class represents information pieces expressed in one or several natural
- * languages and eventually with a format used for structuring the text.
+ * languages. A {@link TextFormat format} used for structuring the text may also be stated.
  * <P>
  * This class corresponds partially to NaturalLanguageDescription according to
  * the SDD schema.
@@ -116,7 +116,7 @@ public class TextData extends DescriptionElementBase {
 	 * Creates a new text data instance with a given text in a given particular
 	 * {@link Language language} and with the given text format for structuring it.
 	 * 
-	 * @param	text		the text string containing the content of the description 
+	 * @param	text		the text string with the content of the description 
 	 * @param	language	the language in which the text string is formulated
 	 * @param	format		the text format used to structure the text string
 	 * @see 				#NewInstance()
@@ -129,8 +129,12 @@ public class TextData extends DescriptionElementBase {
 		return result;
 	}
 
-	/**
-	 * @return
+	/** 
+	 * Returns the multilanguage text with the content of <i>this</i> text data. 
+	 * The different {@link LanguageString language strings} (texts) contained in the
+	 * multilanguage text should all have the same meaning.
+	 * 
+	 * @see	#getText(Language)
 	 */
 	@OneToMany (fetch= FetchType.LAZY)
 	@MapKey(name="language")
@@ -140,10 +144,20 @@ public class TextData extends DescriptionElementBase {
 		initTextSet();
 		return multiLanguageText;
 	}
+	/**
+	 * @see	#getMultilanguageText() 
+	 */
 	protected void setMultilanguageText(Map<Language, LanguageString> texts) {
 	//protected void setMultilanguageText(MultilanguageText texts) {
 		this.multiLanguageText = texts;
 	}
+	/** 
+	 * Returns the text string in the given {@link Language language} with the content
+	 * of <i>this</i> text data.
+	 * 
+	 * @param language	the language in which the text string looked for is formulated
+	 * @see				#getMultilanguageText()
+	 */
 	@Transient 
 	public String getText(Language language) {
 		initTextSet();
@@ -155,12 +169,35 @@ public class TextData extends DescriptionElementBase {
 		}
 	}
 	
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language}, returns it and adds it to the multilanguage 
+	 * text representing the content of <i>this</i> text data.
+	 * 
+	 * @param text		the string representing the content of the text data
+	 * 					in a particular language
+	 * @param language	the language in which the text string is formulated
+	 * @return			the language string
+	 * @see    	   		#getMultilanguageText()
+	 * @see    	   		#putText(LanguageString)
+	 */
 	@Transient
 	public LanguageString putText(String text, Language language) {
 		initTextSet();
 		LanguageString result = this.multiLanguageText.put(language , LanguageString.NewInstance(text, language));
 		return (result == null ? null : result);
 	}
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the multilanguage text representing the content of <i>this</i> text data.
+	 * The given language string will be returned. 
+	 * 
+	 * @param languageString	the language string representing the content of
+	 * 							the text data in a particular language
+	 * @return					the language string
+	 * @see    	   				#getMultilanguageText()
+	 * @see    	   				#putText(String, Language)
+	 */
 	@Transient
 	public LanguageString putText(LanguageString languageString) {
 		initTextSet();
@@ -172,6 +209,17 @@ public class TextData extends DescriptionElementBase {
 			return this.multiLanguageText.put(language, languageString);
 		}
 	}
+	/** 
+	 * Removes from the multilanguage representing the content of
+	 * <i>this</i> text data the one {@link LanguageString language string}
+	 * with the given {@link Language language}. Returns the removed
+	 * language string.
+	 *
+	 * @param  language	the language in which the language string to be removed
+	 * 					has been formulated
+	 * @return			the language string associated with the given language
+	 * @see     		#getMultilanguageText()
+	 */
 	public LanguageString removeText(Language language) {
 		initTextSet();
 		return this.multiLanguageText.remove(language);
@@ -183,16 +231,31 @@ public class TextData extends DescriptionElementBase {
 		}
 	}
 	
+	/** 
+	 * Returns the number of {@link Language languages} in which the content
+	 * of <i>this</i> text data has been formulated.
+	 * 
+	 * @see	#getMultilanguageText()
+	 */
 	public int countLanguages(){
 		initTextSet();
 		return multiLanguageText.size();
 	}
 	
 
+	/** 
+	 * Returns the {@link TextFormat format} used for structuring the text representing
+	 * the content of <i>this</i> text data.
+	 * 
+	 * @see	#getMultilanguageText()
+	 */
 	@ManyToOne
 	public TextFormat getFormat() {
 		return format;
 	}
+	/** 
+	 * @see	#getFormat()
+	 */
 	public void setFormat(TextFormat format) {
 		this.format = format;
 	}
