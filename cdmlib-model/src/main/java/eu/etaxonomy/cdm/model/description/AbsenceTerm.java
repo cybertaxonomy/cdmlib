@@ -17,6 +17,10 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents terms describing different types of absence
@@ -26,6 +30,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:08
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "AbsenceTerm")
+@XmlRootElement(name = "AbsenceTerm")
 @Entity
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	static Logger logger = Logger.getLogger(AbsenceTerm.class);

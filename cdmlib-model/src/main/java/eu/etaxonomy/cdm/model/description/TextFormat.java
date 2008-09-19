@@ -17,6 +17,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class representing kinds of formats used for structuring text
@@ -26,6 +30,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:59
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TextFormat")
+@XmlRootElement(name = "TextFormat")
 @Entity
 public class TextFormat extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(TextFormat.class);

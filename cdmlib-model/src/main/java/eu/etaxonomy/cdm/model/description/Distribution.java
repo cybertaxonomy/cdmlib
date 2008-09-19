@@ -16,6 +16,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents elementary distribution data for a {@link Taxon taxon}.
@@ -33,11 +40,22 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:21
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Distribution", propOrder = {
+    "area",
+    "status"
+})
+@XmlRootElement(name = "Distribution")
 @Entity
 public class Distribution extends DescriptionElementBase {
 	static Logger logger = Logger.getLogger(Distribution.class);
 	
+	@XmlElement(name = "NamedArea")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private NamedArea area;
+	
+	@XmlElement(name = "PresenceAbsenceStatus")
 	private PresenceAbsenceTermBase status;
 
 	
