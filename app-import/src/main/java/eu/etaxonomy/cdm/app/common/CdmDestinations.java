@@ -55,10 +55,26 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+	public static ICdmDataSource cdm_test_anahit2(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_anahit2"; 
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	public static ICdmDataSource cdm_test_jaxb(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_jaxb"; 
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_test_jaxb2(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_jaxb2"; 
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
