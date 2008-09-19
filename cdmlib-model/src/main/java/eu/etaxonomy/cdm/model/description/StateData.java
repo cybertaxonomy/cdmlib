@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * This class represents the assignment of values ({@link State state terms}) to {@link Feature features}
+ * corresponding to {@link CategoricalData categorical data}. A state data instance
+ * constitutes an atomized part of an information piece (categorical data) so
+ * that several state data instances may belong to one categorical data
+ * instance.
+ * <P>
+ * This class corresponds to CharacterStateDataType according to the SDD schema.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:53
@@ -57,54 +66,128 @@ public class StateData extends VersionableEntity {
 	@XmlElement(name = "ModifyingText")
 	private MultilanguageText modifyingText;
 	
-	/**
-	 * Factory method
-	 * @return
+	/** 
+	 * Class constructor: creates a new empty state data instance.
+	 */
+	public StateData() {
+		super();
+	}
+	
+	/** 
+	 * Creates a new empty state data instance.
 	 */
 	public static StateData NewInstance(){
 		return new StateData();
 	}
-	
-	public StateData() {
-		super();
-	}
 
+	/** 
+	 * Returns the {@link State state term} used in <i>this</i> state data.
+	 */
 	@ManyToOne
 	public State getState(){
 		return this.state;
 	}
+	/** 
+	 * @see	#getState()
+	 */
 	public void setState(State state){
 		this.state = state;
 	}
 	
 
+	/** 
+	 * Returns the set of {@link Modifier modifiers} used to qualify the validity
+	 * of <i>this</i> state data. This is only metainformation.
+	 */
 	@OneToMany
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
+	/**
+	 * @see	#getModifiers() 
+	 */
 	private void setModifiers(Set<Modifier> modifiers) {
 		this.modifiers = modifiers;
 	}
+	/**
+	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
+	 * used to qualify the validity of <i>this</i> state data.
+	 * 
+	 * @param modifier	the modifier to be added to <i>this</i> state data
+	 * @see    	   		#getModifiers()
+	 */
 	public void addModifier(Modifier modifier){
 		this.modifiers.add(modifier);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getModifiers() modifiers}
+	 * used to qualify the validity of <i>this</i> state data.
+	 *
+	 * @param  modifier	the modifier which should be removed
+	 * @see     		#getModifiers()
+	 * @see     		#addModifier(Modifier)
+	 */
 	public void removeModifier(Modifier modifier){
 		this.modifiers.remove(modifier);
 	}
 
 
+	/** 
+	 * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> state data.  The different {@link LanguageString language strings}
+	 * contained in the multilanguage text should all have the same meaning.<BR>
+	 * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
+	 * as a {@link Modifier modifier} does.
+	 * <P>
+	 * NOTE: the actual content of <i>this</i> state data is NOT
+	 * stored in the modifying text. This is only metainformation
+	 * (like "Some experts express doubt about this assertion").
+	 */
 	public MultilanguageText getModifyingText(){
 		return this.modifyingText;
 	}
+	/**
+	 * @see	#getModifyingText() 
+	 */
 	private void setModifyingText(MultilanguageText modifyingText) {
 		this.modifyingText = modifyingText;
 	}
+	/**
+	 * Creates a {@link LanguageString language string} based on the given text string
+	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
+	 * used to qualify the validity of <i>this</i> state data.
+	 * 
+	 * @param text		the string describing the validity
+	 * 					in a particular language
+	 * @param language	the language in which the text string is formulated
+	 * @see    	   		#getModifyingText()
+	 * @see    	   		#addModifyingText(LanguageString)
+	 */
 	public void addModifyingText(String text, Language language){
 		this.modifyingText.put(language, LanguageString.NewInstance(text, language));
 	}
+	/**
+	 * Adds a translated {@link LanguageString text in a particular language}
+	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> state data.
+	 * 
+	 * @param text	the language string describing the validity
+	 * 				in a particular language
+	 * @see    	   	#getModifyingText()
+	 * @see    	   	#addModifyingText(String, Language)
+	 */
 	public void addModifyingText(LanguageString text){
 		this.modifyingText.add(text);
 	}
+	/** 
+	 * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity
+	 * of <i>this</i> state data the one {@link LanguageString language string}
+	 * with the given {@link Language language}.
+	 *
+	 * @param  lang	the language in which the language string to be removed
+	 * 				has been formulated
+	 * @see     	#getModifyingText()
+	 */
 	public void removeModifyingText(Language lang){
 		this.modifyingText.remove(lang);
 	}

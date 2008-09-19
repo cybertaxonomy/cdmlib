@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * The interaction itself is described by a {@link MultilanguageText multilanguage text}.
  * <P>
  * This class corresponds to:  <ul>
- * <li> NaturalLanguageDescription (partially) according to the SDD schema
+ * <li> NaturalLanguageDescriptionType (partially) according to the SDD schema
  * <li> Associations according to the TDWG ontology
  * </ul>
  *

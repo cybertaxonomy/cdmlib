@@ -192,7 +192,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	
 	/** 
 	 * Returns the set of {@link Modifier modifiers} which modulate
-	 * <i>this</i> description element.
+	 * <i>this</i> description element. This is only metainformation.
 	 */
 	@OneToMany
 	public Set<Modifier> getModifiers(){
@@ -263,7 +263,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
 	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
-	 * used to modulate <i>this</i> description element.
+	 * used to qualify the validity of <i>this</i> description element.
 	 * 
 	 * @param text		the string describing the validity
 	 * 					in a particular language

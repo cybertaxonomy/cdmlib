@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
  * or "introduced") in this named area.
  * <P>
  * This class corresponds partially to: <ul>
- * <li> CodedDescription according to the the SDD schema
+ * <li> CodedDescriptionType according to the the SDD schema
  * <li> Distribution according to the TDWG ontology
  * </ul>
  *

@@ -33,8 +33,8 @@ import javax.xml.bind.annotation.XmlType;
  * Only {@link SpecimenDescription specimen descriptions} may contain individuals association.
  * The association itself is described by a {@link MultilanguageText multilanguage text}.
  * <P>
- * This class corresponds (partially) to NaturalLanguageDescription according
- * to the SDD schema.
+ * This class corresponds (partially) to NaturalLanguageDescriptionType
+ * according to the SDD schema.
  *
  * @author m.doering
  * @version 1.0
