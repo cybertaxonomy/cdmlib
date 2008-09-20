@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -17,9 +18,14 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
- * This class represents possible modulations for the InfoItems such as "variance",
- * "maximum", "often", "probably". Its instances build a controlled
- * {@link TermVocabulary term vocabulary}.
+ * This class represents possible modulations for the validity of
+ * information pieces ({@link DescriptionElementBase} description elements).
+ * It can cover probability ("perhaps"), frequency ("often") intensity ("very"),
+ * timing ("spring") and so on. Its instances can be grouped to build
+ * different controlled {@link TermVocabulary term vocabularies}.
+ * <P>
+ * This class corresponds to GeneralModifierNLDType according to
+ * the SDD schema.
  * 
  * @author m.doering
  * @version 1.0
@@ -28,24 +34,38 @@ import javax.persistence.*;
 @Entity
 public class Modifier extends OrderedTermBase<Modifier> {
 	static Logger logger = Logger.getLogger(Modifier.class);
-
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static Modifier NewInstance(){
-		return new Modifier();
-	}
 	
-	/**
-	 * Constructor
+	/** 
+	 * Class constructor: creates a new empty modifier instance.
+	 * 
+	 * @see #Modifier(String, String, String)
 	 */
 	protected Modifier(){
 		super();
 	}
 	
 
+	/** 
+	 * Class constructor: creates a new modifier with a description
+	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new modifier to be created 
+	 * @param	label  		 the string identifying the new modifier to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new modifier to be created
+	 * @see 				 #Modifier()
+	 */
 	public Modifier(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
+	}
+
+	/** 
+	 * Creates a new empty modifier instance.
+	 * 
+	 * @see #Modifier(String, String, String)
+	 */
+	public static Modifier NewInstance(){
+		return new Modifier();
 	}
 }

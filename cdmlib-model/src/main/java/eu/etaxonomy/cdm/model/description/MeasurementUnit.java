@@ -30,6 +30,8 @@ public class MeasurementUnit extends DefinedTermBase {
 	
 	/** 
 	 * Class constructor: creates a new empty measurement unit instance.
+	 * 
+	 * @see #MeasurementUnit(String, String, String)
 	 */
 	protected MeasurementUnit(){
 		super();
@@ -54,6 +56,8 @@ public class MeasurementUnit extends DefinedTermBase {
 	
 	/** 
 	 * Creates a new empty measurement unit instance.
+	 * 
+	 * @see #MeasurementUnit(String, String, String)
 	 */
 	public static MeasurementUnit NewInstance(){
 		return new MeasurementUnit();
