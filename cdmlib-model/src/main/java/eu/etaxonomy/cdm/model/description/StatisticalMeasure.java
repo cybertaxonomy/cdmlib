@@ -10,10 +10,17 @@
 package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+
 import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
+/**
+ * This class represents terms describing different statistical measures (such
+ * as "sample size", "minimum" or "average") for {@link Feature features} that can be
+ * described with numerical values (like for instance weights or temperature).
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:54
@@ -22,23 +29,11 @@ import javax.persistence.*;
 public class StatisticalMeasure extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
-		return new StatisticalMeasure(term, label, labelAbbrev);
-	}
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static StatisticalMeasure NewInstance(){
-		return new StatisticalMeasure();
-	}
-	
-	/**
-	 * Constructor
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty statistical measure instance.
+	 * 
+	 * @see #StatisticalMeasure(String, String, String)
 	 */
 	public StatisticalMeasure() {
 		super();
@@ -47,6 +42,31 @@ public class StatisticalMeasure extends DefinedTermBase {
 		super(term, label, labelAbbrev);
 	}
 
+	//********* METHODS **************************************/
+	/** 
+	 * Creates a new empty statistical measure instance.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	public static StatisticalMeasure NewInstance(){
+		return new StatisticalMeasure();
+	}
+	/** 
+	 * Creates a new statistical measure instance with a description
+	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new statistical measure to be created 
+	 * @param	label  		 the string identifying the new statistical measure
+	 * 						 to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new statistical measure to be created
+	 * @see 				 #NewInstance()
+	 */
+	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
+		return new StatisticalMeasure(term, label, labelAbbrev);
+	}
+	
 
 	public static final StatisticalMeasure MIN(){
 		return null;

@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * This class represents information pieces expressed in one or several natural
- * languages. A {@link TextFormat format} used for structuring the text may also be stated.
+ * languages (for the {@link Feature feature} "medical use" for instance).
+ * A {@link TextFormat format} used for structuring the text may also be stated.
  * <P>
  * This class corresponds partially to NaturalLanguageDescriptionType according
  * to the SDD schema.

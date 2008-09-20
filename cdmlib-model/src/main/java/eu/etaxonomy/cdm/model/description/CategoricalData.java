@@ -21,14 +21,14 @@ import javax.persistence.*;
 
 /**
  * This class represents information pieces expressed in categorical type of
- * data (in opposition to quantitative data on one side and to literal data on
+ * data (in opposition to {@link QuantitativeData quantitative data} on one side and to literal data on
  * the other side).<BR>
- * The color of petals for instance can be described with {@link State state terms}
- * such as "blue" or "white". If the color of petals of a particular tree is
- * described as "mostly blue" and "exceptionally white" two {@link StateData state data}
- * instances must be assigned to an instance of the present class: the first one
- * with the state "blue" and the {@link Modifier modifier} "mostly" and the second one
- * with the state "white" and the modifier "exceptionally".  
+ * The "color of petals" {@link Feature feature} for instance can be described with
+ * {@link State state terms} such as "blue" or "white". If the color of petals of a
+ * particular tree is described as "mostly blue" and "exceptionally white" two
+ * {@link StateData state data} instances must be assigned to an instance of the
+ * present class: the first one with the state "blue" and the {@link Modifier modifier}
+ * "mostly" and the second one with the state "white" and the modifier "exceptionally".  
  * <P>
  * This class corresponds partially to CodedDescriptionType according to
  * the SDD schema.

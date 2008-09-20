@@ -11,12 +11,15 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+
 import org.apache.log4j.Logger;
 import javax.persistence.*;
 
 /**
- * This class contains the measurement units such as "centimeter" or "degree
- * Celsius"
+ * This class represents measurement units such as "centimeter" or "degree
+ * Celsius".
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:34
@@ -25,24 +28,35 @@ import javax.persistence.*;
 public class MeasurementUnit extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(MeasurementUnit.class);
 	
-	/**
-	 * Factory method
-	 * @return
+	/** 
+	 * Class constructor: creates a new empty measurement unit instance.
+	 */
+	protected MeasurementUnit(){
+		super();
+	}
+
+	/** 
+	 * Creates a new measurement unit with a description
+	 * (in the {@link Language#DEFAULT() default language}), a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new measurement unit to be created 
+	 * @param	label  		 the string identifying the new measurement unit
+	 * 						 to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new measurement unit to be created
+	 * @see 				 #NewInstance()
+	 */
+	public MeasurementUnit(String term, String label, String labelAbbrev) {
+		super(term, label, labelAbbrev);
+	}
+
+	
+	/** 
+	 * Creates a new empty measurement unit instance.
 	 */
 	public static MeasurementUnit NewInstance(){
 		return new MeasurementUnit();
 	}
 	
-	/**
-	 * Constructor
-	 */
-	protected MeasurementUnit(){
-		super();
-	}
-	
-
-	public MeasurementUnit(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
-	}
-
 }
