@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,9 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 	//flush after saving this number of objects
 	int flushAfterNo = 2000;
 	protected ApplicationContext appContext;
+
+	@Autowired
+	@Qualifier("cdmDao")
 	protected ICdmEntityDao<T> dao;
 	
 	protected void setEntityDao(ICdmEntityDao<T> dao){
@@ -97,8 +102,11 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		return dao.delete(cdmObj);
 	}
 	
-	protected List<T> list(int limit, int start) {
+	public List<T> list(int limit, int start) {
 		return dao.list(limit, start);
 	}
 
+	public List<T> rows(String tableName, int limit, int start) {
+		return dao.rows(tableName, limit, start);
+	}
 }

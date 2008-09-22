@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
@@ -43,6 +45,16 @@ import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 @Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonService {
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
+	
+//	@Autowired
+//	@Qualifier("cdmDao")
+//	protected void setDao(ICdmEntityDao dao) {
+//		this.dao = dao;
+//	}
+	
+//	@Autowired
+//	@Qualifier("cdmDao")
+//	ICdmEntityDao dao;
 	
 	@Autowired
 	IOriginalSourceDao originalSourceDao;

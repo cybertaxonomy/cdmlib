@@ -10,10 +10,13 @@
 package eu.etaxonomy.cdm.api.service;
 
 
+import java.util.List;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
 /**
@@ -24,5 +27,9 @@ import eu.etaxonomy.cdm.model.common.Language;
 public interface IService<T extends CdmBase>{
 
 	public abstract int count(Class<T> clazz);
+	
+	public abstract List<T> list(int limit, int start);
+	
+	public abstract List<T> rows(String tableName, int limit, int start);
 	
 }
