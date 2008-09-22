@@ -69,6 +69,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 */
 	public List<T> list(int limit, int start) throws DataAccessException;
 
+	public List<T> rows(String tableName, int limit, int start) throws DataAccessException;
+
 	/**
 	 * @param id
 	 * @return

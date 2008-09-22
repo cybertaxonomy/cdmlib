@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
@@ -176,4 +177,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return crit.list(); 
 	}
 
+	public List<T> rows(String tableName, int limit, int start) {
+		Query query = getSession().createQuery("from " + tableName);
+		query.setFirstResult(start);
+		query.setMaxResults(limit);
+		List<T> result = query.list();
+		return result;
+	}
 }

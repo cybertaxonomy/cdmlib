@@ -19,7 +19,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
-@Repository
+//@Repository
+@Repository(value="cdmDao")
 public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdmGenericDao{
 
 	public CdmGenericDaoImpl() {
