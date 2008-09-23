@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * This class corresponds to: <ul>
  * <li> DescriptionsBaseType according to the the SDD schema
  * <li> InfoItem according to the TDWG ontology
- * <li> MeasurementOrFact according to the ABCD schema
+ * <li> MeasurementOrFactAtomised according to the ABCD schema
  * </ul>
  * 
  * @author m.doering
@@ -191,7 +191,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 
 	
 	/** 
-	 * Returns the set of {@link Modifier modifiers} which modulate
+	 * Returns the set of {@link Modifier modifiers} used to qualify the validity of
 	 * <i>this</i> description element. This is only metainformation.
 	 */
 	@OneToMany
@@ -206,7 +206,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 	/**
 	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
-	 * which modulate <i>this</i> description element.
+	 * used to qualify the validity of <i>this</i> description element.
 	 * 
 	 * @param modifier	the modifier to be added to <i>this</i> description element
 	 * @see    	   		#getModifiers()
@@ -216,7 +216,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	}
 	/** 
 	 * Removes one element from the set of {@link #getModifiers() modifiers}
-	 * which modulate <i>this</i> description element.
+	 * used to qualify the validity of <i>this</i> description element.
 	 *
 	 * @param  modifier	the modifier which should be removed
 	 * @see     		#getModifiers()

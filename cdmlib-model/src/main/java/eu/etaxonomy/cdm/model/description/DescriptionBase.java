@@ -42,14 +42,18 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * The upmost (abstract) class for a description as a whole (with possibly
- * several elementary information data) for a specimen, a taxon or even a
- * taxon name.
+ * several {@link DescriptionElementBase elementary information data})
+ * for a {@link SpecimenOrObservationBase specimen}, a {@link Taxon taxon}
+ * or even a {@link TaxonNameBase taxon name}.
  * <P>
- * This class corresponds to DescriptionsSectionType according to the SDD
- * schema.
+ * This class corresponds to: <ul>
+ * <li> DescriptionsSectionType according to the the SDD schema
+ * <li> MeasurementOrFact according to the ABCD schema
+ * </ul>
  * 
  * @author m.doering
  * @version 1.0

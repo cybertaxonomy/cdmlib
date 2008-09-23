@@ -22,7 +22,8 @@ import javax.persistence.*;
 /**
  * This class represents information pieces expressed in numerical data
  * (in opposition to {@link CategoricalData categorical data} on one side and to literal data on
- * the other side).<BR>
+ * the other side). Only {@link TaxonDescription taxon descriptions} and
+ * {@link SpecimenDescription specimen descriptions} may contain quantitative data.<BR>
  * The "length of leaves" {@link Feature feature} for instance can be measured in inches.
  * If the length of leaves of a particular tree is described as
  * "typically between 3 and 5 inches" and "at the utmost 8 inches" then three

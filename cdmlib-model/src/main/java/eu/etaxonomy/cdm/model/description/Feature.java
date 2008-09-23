@@ -32,16 +32,38 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * Individual property (also designed as character, type or category)
- * of observed phenomena able to be described or measured.
- * Structured descriptions are based on features.<BR>
+ * The class for individual properties (also designed as character, type or
+ * category) of observed phenomena able to be described or measured. It also
+ * covers categories of informations on {@link TaxonNameBase taxon names} not
+ * taken in account in {@link NomenclaturalCode nomenclature}.<BR>
+ * Descriptions require features in order to be structured and disaggregated 
+ * in {@link DescriptionElementBase description elements}.<BR>
  * Experts do not use the word feature for the actual description
  * but only for the property itself. Therefore naming this class FeatureType
- * would have leaded to confusion. 
- * NEEDS TO BE COMPLEMENTED SPM / TDWG http://rs.tdwg.
- * org/ontology/voc/SpeciesProfileModel
+ * would have leaded to confusion.
+ * <P>
+ * A standard set of feature instances will be automatically
+ * created as the project starts. But this class allows to extend this standard
+ * set by creating new instances of additional features if needed.<BR>
+ * Since features are {@link DefinedTermBase defined terms} they have a hierarchical
+ * structure that allows to define "kind of"- or "generalization of"-features.
+ * <P>
+ * This class corresponds to DescriptionsSectionType according to the SDD
+ * schema.
+ * 
  * 
  * @author m.doering
  * @version 1.0
@@ -103,126 +125,291 @@ public class Feature extends DefinedTermBase {
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
 
-	public static Feature NewInstance() {
-		return new Feature();
-	}
-	
-	public static Feature NewInstance(String term, String label, String labelAbbrev){
-		return new Feature(term, label, labelAbbrev);
-	}
-
-	/**
-	 * Default Constructor
+	/** 
+	 * Class constructor: creates a new empty feature instance.
+	 * 
+	 * @see #Feature(String, String, String)
 	 */
 	public Feature() {
 		super();
 	}
 	
+	/** 
+	 * Class constructor: creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new feature to be created 
+	 * @param	label  		 the string identifying the new feature to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new feature to be created
+	 * @see 				 #Feature()
+	 */
 	protected Feature(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
+	/** 
+	 * Creates a new empty feature instance.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	public static Feature NewInstance() {
+		return new Feature();
+	}
+	
+	/** 
+	 * Creates a new feature instance with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new feature to be created 
+	 * @param	label  		 the string identifying the new feature to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new feature to be created
+	 * @see 				 #readCsvLine(List, Language)
+	 * @see 				 #NewInstance()
+	 */
+	public static Feature NewInstance(String term, String label, String labelAbbrev){
+		return new Feature(term, label, labelAbbrev);
+	}
+
 /* *************************************************************************************/
+	
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link QuantitativeData quantitative data} (true)
+	 * or not (false). If this flag is set <i>this</i> feature can only apply to
+	 * {@link TaxonDescription taxon descriptions} or {@link SpecimenDescription specimen descriptions}.
+	 *  
+	 * @return  the boolean value of the supportsQuantitativeData flag
+	 */
 	public boolean isSupportsQuantitativeData() {
 		return supportsQuantitativeData;
 	}
 
+	/**
+	 * @see	#isSupportsQuantitativeData() 
+	 */
 	public void setSupportsQuantitativeData(boolean supportsQuantitativeData) {
 		this.supportsQuantitativeData = supportsQuantitativeData;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link TextData text data} (true)
+	 * or not (false).
+	 *  
+	 * @return  the boolean value of the supportsTextData flag
+	 */
 	public boolean isSupportsTextData() {
 		return supportsTextData;
 	}
 
+	/**
+	 * @see	#isSupportsTextData() 
+	 */
 	public void setSupportsTextData(boolean supportsTextData) {
 		this.supportsTextData = supportsTextData;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link Distribution distribution} objects
+	 * (true) or not (false). This flag is set if and only if <i>this</i> feature
+	 * is the {@link #DISTRIBUTION() distribution feature}.
+	 *  
+	 * @return  the boolean value of the supportsDistribution flag
+	 */
 	public boolean isSupportsDistribution() {
 		return supportsDistribution;
 	}
 
+	/**
+	 * @see	#isSupportsDistribution() 
+	 */
 	public void setSupportsDistribution(boolean supportsDistribution) {
 		this.supportsDistribution = supportsDistribution;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link IndividualsAssociation individuals associations}
+	 * (true) or not (false).
+	 *  
+	 * @return  the boolean value of the supportsIndividualAssociation flag
+	 */
 	public boolean isSupportsIndividualAssociation() {
 		return supportsIndividualAssociation;
 	}
 
+	/**
+	 * @see	#isSupportsIndividualAssociation() 
+	 */
 	public void setSupportsIndividualAssociation(
 			boolean supportsIndividualAssociation) {
 		this.supportsIndividualAssociation = supportsIndividualAssociation;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link TaxonInteraction taxon interactions}
+	 * (true) or not (false).
+	 *  
+	 * @return  the boolean value of the supportsTaxonInteraction flag
+	 */
 	public boolean isSupportsTaxonInteraction() {
 		return supportsTaxonInteraction;
 	}
 
+	/**
+	 * @see	#isSupportsTaxonInteraction() 
+	 */
 	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction) {
 		this.supportsTaxonInteraction = supportsTaxonInteraction;
 	}
 
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link CommonTaxonName common names}
+	 * (true) or not (false). This flag is set if and only if <i>this</i> feature
+	 * is the {@link #COMMON_NAME() common name feature}.
+	 *  
+	 * @return  the boolean value of the supportsCommonTaxonName flag
+	 */
 	public boolean isSupportsCommonTaxonName() {
 		return supportsCommonTaxonName;
 	}
 
+	/**
+	 * @see	#isSupportsTaxonInteraction() 
+	 */
 	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName) {
 		this.supportsCommonTaxonName = supportsCommonTaxonName;
 	}
 
+	/**
+	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
+	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
+	 * with <i>this</i> feature.
+	 */
 	@OneToMany
 	public Set<TermVocabulary> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
+	/**
+	 * @see	#getRecommendedModifierEnumeration() 
+	 */
 	protected void setRecommendedModifierEnumeration(
 			Set<TermVocabulary> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
 
+	/**
+	 * Adds a {@link TermVocabulary term vocabulary} (with {@link Modifier modifiers}) to the set of
+	 * {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies} assigned
+	 * to <i>this</i> feature.
+	 * 
+	 * @param recommendedModifierEnumeration	the term vocabulary to be added
+	 * @see    	   								#getRecommendedModifierEnumeration()
+	 */
 	public void addRecommendedModifierEnumeration(
 			TermVocabulary recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getRecommendedModifierEnumeration() recommended modifier vocabularies}
+	 * assigned to <i>this</i> feature.
+	 *
+	 * @param  recommendedModifierEnumeration	the term vocabulary which should be removed
+	 * @see     								#getRecommendedModifierEnumeration()
+	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
+	 */
 	public void removeRecommendedModifierEnumeration(
 			TermVocabulary recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
+	/**
+	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
+	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
+	 */
 	@OneToMany
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
 	}
 
+	/**
+	 * @see	#getRecommendedStatisticalMeasures() 
+	 */
 	protected void setRecommendedStatisticalMeasures(
 			Set<StatisticalMeasure> recommendedStatisticalMeasures) {
 		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
 	}
 
+	/**
+	 * Adds a {@link StatisticalMeasure statistical measure} to the set of
+	 * {@link #getRecommendedStatisticalMeasures() recommended statistical measures} assigned
+	 * to <i>this</i> feature.
+	 * 
+	 * @param recommendedStatisticalMeasure	the statistical measure to be added
+	 * @see    	   							#getRecommendedStatisticalMeasures()
+	 */
 	public void addRecommendedStatisticalMeasure(
 			StatisticalMeasure recommendedStatisticalMeasure) {
 		this.recommendedStatisticalMeasures.add(recommendedStatisticalMeasure);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getRecommendedStatisticalMeasures() recommended statistical measures}
+	 * assigned to <i>this</i> feature.
+	 *
+	 * @param  recommendedStatisticalMeasure	the statistical measure which should be removed
+	 * @see     								#getRecommendedStatisticalMeasures()
+	 * @see     								#addRecommendedStatisticalMeasure(StatisticalMeasure)
+	 */
 	public void removeRecommendedStatisticalMeasure(
 			StatisticalMeasure recommendedStatisticalMeasure) {
 		this.recommendedStatisticalMeasures.remove(recommendedStatisticalMeasure);
 	}
 
+	/**
+	 * Returns the set of {@link TermVocabulary term vocabularies} containing the list of
+	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
+	 * with <i>this</i> feature.
+	 */
 	@OneToMany
 	public Set<TermVocabulary> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
+	/**
+	 * @see	#getSupportedCategoricalEnumerations() 
+	 */
 	protected void setSupportedCategoricalEnumerations(
 			Set<TermVocabulary> supportedCategoricalEnumerations) {
 		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
 	}
+	/**
+	 * Adds a {@link TermVocabulary term vocabulary} to the set of
+	 * {@link #getSupportedCategoricalEnumerations() supported state vocabularies} assigned
+	 * to <i>this</i> feature.
+	 * 
+	 * @param supportedCategoricalEnumeration	the term vocabulary which should be removed
+	 * @see    	   								#getSupportedCategoricalEnumerations()
+	 */
 	public void addSupportedCategoricalEnumeration(
 			TermVocabulary supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getSupportedCategoricalEnumerations() supported state vocabularies}
+	 * assigned to <i>this</i> feature.
+	 *
+	 * @param  supportedCategoricalEnumeration	the term vocabulary which should be removed
+	 * @see     								#getSupportedCategoricalEnumerations()
+	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
+	 */
 	public void removeSupportedCategoricalEnumeration(
 			TermVocabulary supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
@@ -263,6 +450,19 @@ public class Feature extends DefinedTermBase {
 //	"555a46bc-211a-476f-a022-c472970d6f8b",,"Acknowledgments","Acknowledgments"
 	
 	
+	/** 
+	 * Creates and returns a new feature instance on the basis of a given string
+	 * list (containing an UUID, an URI, a label and a description) and a given
+	 * {@link Language language} to be associated with the description. Furthermore
+	 * the flags concerning the supported subclasses of {@link DescriptionElementBase description elements}
+	 * are set according to a particular string belonging to the given
+	 * string list.<BR>
+	 * This method overrides the readCsvLine method from {@link DefinedTermBase#readCsvLine(List, Language) DefinedTermBase}.
+	 *
+	 * @param  csvLine	the string list with elementary information for attributes
+	 * @param  lang		the language in which the description has been formulated
+	 * @see     		#NewInstance(String, String, String)
+	 */
 	@Override
 	public ILoadableTerm readCsvLine(List csvLine, Language lang) {
 		// TODO Auto-generated method stub
@@ -279,95 +479,230 @@ public class Feature extends DefinedTermBase {
 		return this;
 	}
 
+	/**
+	 * Returns the feature identified through its immutable universally
+	 * unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the feature corresponding to the given
+	 * 					universally unique identifier
+	 */
 	public static final Feature getByUuid(UUID uuid){
 		return (Feature)findByUuid(uuid);
 	}
 	
+	/**
+	 * Returns the "unknown" feature. This feature allows to store values of
+	 * {@link DescriptionElementBase description elements} even if it is momentarily
+	 * not known what they mean.
+	 */
 	public static final Feature UNKNOWN(){
 		return getByUuid(uuidUnknown);
 	}
 	
+	/**
+	 * Returns the "description" feature. This feature allows to handle global
+	 * {@link DescriptionElementBase description elements} for a global {@link DescriptionBase description}.<BR>
+	 * The "description" feature is the highest level feature. 
+	 */
 	public static final Feature DESCRIPTION(){
 		return getByUuid(uuidDescription);
 	}
 
+	/**
+	 * Returns the "distribution" feature. This feature allows to handle only
+	 * {@link Distribution distributions}.
+	 * 
+	 * @see	#isSupportsDistribution()
+	 */
 	public static final Feature DISTRIBUTION(){
 		return getByUuid(uuidDistribution);
 	}
 
+	/**
+	 * Returns the "discussion" feature. This feature can only be described
+	 * with {@link TextData text data}.
+	 * 
+	 * @see	#isSupportsTextData()
+	 */
 	public static final Feature DISCUSSION(){
 		return getByUuid(uuidDiscussion);
 	}
 	
+	/**
+	 * Returns the "ecology" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "ecology" feature generalizes all other possible features concerning
+	 * ecological matters.
+	 */
 	public static final Feature ECOLOGY(){
 		return getByUuid(uuidEcology);
 	}	
 	
+	/**
+	 * Returns the "biology_ecology" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "biology_ecology" feature generalizes all possible features concerning
+	 * biological aspects of ecological matters.
+	 * 
+	 * @see #ECOLOGY()
+	 */
 	public static final Feature BIOLOGY_ECOLOGY(){
 		return getByUuid(uuidBiologyEcology);
 	}
 	
+	/**
+	 * Returns the "key" feature. This feature is the "upper" feature generalizing
+	 * all features being used within an identification key.
+	 */
 	public static final Feature KEY(){
 		return getByUuid(uuidKey);
 	}		
 	
 	
+	/**
+	 * Returns the "materials_examined" feature. This feature can only be described
+	 * with {@link TextData text data} or eventually with {@link CategoricalData categorical data}
+	 * mentioning which material has been examined in order to accomplish
+	 * the description. This feature applies only to
+	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
+	 */
 	public static final Feature MATERIALS_EXAMINED(){
 		return getByUuid(uuidMaterialsExamined);
 	}
 	
+	/**
+	 * Returns the "materials_methods" feature. This feature can only be described
+	 * with {@link TextData text data} or eventually with {@link CategoricalData categorical data}
+	 * mentioning which methods have been adopted to analyze the material in
+	 * order to accomplish the description. This feature applies only to
+	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
+	 */
 	public static final Feature MATERIALS_METHODS(){
 		return getByUuid(uuidMaterialsMethods);
 	}
 	
+	/**
+	 * Returns the "etymology" feature. This feature can only be described
+	 * with {@link TextData text data} or eventually with {@link CategoricalData categorical data}
+	 * giving some information about the history of the taxon name. This feature applies only to
+	 * {@link TaxonNameDescription taxon name descriptions}.
+	 */
 	public static final Feature ETYMOLOGY(){
 		return getByUuid(uuidEtymology);
 	}
 		
+	/**
+	 * Returns the "diagnosis" feature. This feature can only be described
+	 * with {@link TextData text data} or eventually with {@link CategoricalData categorical data}.
+	 * This feature applies only to {@link SpecimenDescription specimen descriptions} or to
+	 * {@link TaxonDescription taxon descriptions}.
+	 */
 	public static final Feature DIAGNOSIS(){
 		return getByUuid(uuidDiagnosis);
 	}
 
 	
+	/**
+	 * Returns the "introduction" feature. This feature can only be described
+	 * with {@link TextData text data}.
+	 * 
+	 * @see	#isSupportsTextData()
+	 */
 	public static final Feature INTRODUCTION(){
 		return getByUuid(uuidIntroduction);
 	}
 
+	/**
+	 * Returns the "protologue" feature. This feature can only be described
+	 * with {@link TextData text data} reproducing the content of the protologue 
+	 * (or some information about it) of the taxon name. This feature applies only to
+	 * {@link TaxonNameDescription taxon name descriptions}.
+	 * 
+	 * @see	#isSupportsTextData()
+	 */
 	public static final Feature PROTOLOG(){
 		return getByUuid(uuidProtolog);
 	}
+	/**
+	 * Returns the "common_name" feature. This feature allows to handle only
+	 * {@link CommonTaxonName common names}.
+	 * 
+	 * @see	#isSupportsCommonTaxonName()
+	 */
 	public static final Feature COMMON_NAME(){
 		return getByUuid(uuidCommonName);
 	}
 	
+	/**
+	 * Returns the "phenology" feature. This feature can only be described
+	 * with {@link CategoricalData categorical data} or eventually with {@link TextData text data}
+	 * containing information time about recurring natural phenomena.
+	 * This feature only applies to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "phenology" feature generalizes all other possible features
+	 * concerning time information about particular natural phenomena
+	 * (such as "first flight of butterflies").
+	 */
 	public static final Feature PHENOLOGY(){
 		return getByUuid(uuidPhenology);
 	}
 
 	
+	/**
+	 * Returns the "occurrence" feature.
+	 */
 	public static final Feature OCCURRENCE(){
 		return getByUuid(uuidOccurrence);
 	}
 	
+	/**
+	 * Returns the "citation" feature. This feature can only be described
+	 * with {@link TextData text data}.
+	 * 
+	 * @see	#isSupportsTextData()
+	 */
 	public static final Feature CITATION(){
 		return getByUuid(uuidCitation);
 	}
 	
+	/**
+	 * Returns the "additional_publication" feature. This feature can only be
+	 * described with {@link TextData text data} with information about a
+	 * publication where a {@link TaxonNameBase taxon name} has also been published
+	 * but which is not the {@link TaxonNameBase#getNomenclaturalReference() nomenclatural reference}.
+	 * This feature applies only to {@link TaxonNameDescription taxon name descriptions}.
+	 * 
+	 * @see	#isSupportsTextData()
+	 */
 	public static final Feature ADDITIONAL_PUBLICATION(){
 		return getByUuid(uuidAdditionalPublication);
 	}
 	
 	
+	/**
+	 * Returns the "uses" feature. This feature only applies
+	 * to {@link TaxonDescription taxon descriptions}.<BR>
+	 * The "uses" feature generalizes all other possible features concerning
+	 * particular uses (for instance "industrial use of seeds").
+	 */
 	public static final Feature USES(){
 		return getByUuid(uuidUses);
 	}
 	
 	
+	/**
+	 * Returns the "conservation" feature. This feature only applies
+	 * to {@link SpecimenDescription specimen descriptions} and generalizes
+	 * methods and conditions for the conservation of {@link Specimen specimens}.<BR>
+	 */
 	public static final Feature CONSERVATION(){
 		return getByUuid(uuidConservation);
 	}
 	
 	
+	/**
+	 * Returns the "cultivation" feature.
+	 */
 	public static final Feature CULTIVATION(){
 		return getByUuid(uuidCultivation);
 	}
@@ -376,6 +711,18 @@ public class Feature extends DefinedTermBase {
 	
 	/**
 	 * special kind of OrganismInteraction
+	 */
+	/**
+	 * Returns the "hybrid_parent" feature. This feature can only be used
+	 * by {@link TaxonInteraction taxon interactions}.<BR>
+	 * <P>
+	 * Note: It must be distinguished between hybrid relationships as
+	 * relevant nomenclatural relationships between {@link BotanicalName plant names}
+	 * on the one side and the biological relation between two {@link Taxon taxa}
+	 * as it is here the case on the other one. 
+	 * 
+	 * @see	#isSupportsTaxonInteraction()
+	 * @see	HybridRelationshipType
 	 */
 	public static final Feature HYBRID_PARENT(){
 		//TODO

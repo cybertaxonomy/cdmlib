@@ -21,7 +21,7 @@ import javax.persistence.*;
  * This class represents possible modulations for the validity of
  * information pieces ({@link DescriptionElementBase} description elements).
  * It can cover probability ("perhaps"), frequency ("often") intensity ("very"),
- * timing ("spring") and so on. Its instances can be grouped to build
+ * timing ("spring") and other domains. Its instances can be grouped to build
  * different controlled {@link TermVocabulary term vocabularies}.
  * <P>
  * This class corresponds to GeneralModifierNLDType according to

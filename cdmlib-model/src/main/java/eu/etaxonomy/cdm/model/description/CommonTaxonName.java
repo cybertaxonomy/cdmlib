@@ -21,8 +21,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
- * only valid for Taxa, not specimen/occurrences. Check DescriptionBase relation.
-/**
  * This class represents common or vernacular names for {@link Taxon taxa}.
  * Only {@link TaxonDescription taxon descriptions} may contain common names.
  * Common names vary not only according to the {@link Language language} but also sometimes

@@ -25,7 +25,7 @@ import javax.persistence.*;
 /**
  * The class representing restrictions for the validity of
  * {@link TaxonDescription taxon descriptions}. This could include not only {@link Stage life stage}
- * or {@link Sex sex} but also for instance particular anatomical parts or seasons.
+ * or {@link Sex sex} but also for instance particular organism parts or seasons.
  * 
  * @author m.doering
  * @version 1.0

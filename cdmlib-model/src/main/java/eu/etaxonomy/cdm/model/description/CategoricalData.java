@@ -22,7 +22,8 @@ import javax.persistence.*;
 /**
  * This class represents information pieces expressed in categorical type of
  * data (in opposition to {@link QuantitativeData quantitative data} on one side and to literal data on
- * the other side).<BR>
+ * the other side). Only {@link TaxonDescription taxon descriptions} and
+ * {@link SpecimenDescription specimen descriptions} may contain categorical data.<BR>
  * The "color of petals" {@link Feature feature} for instance can be described with
  * {@link State state terms} such as "blue" or "white". If the color of petals of a
  * particular tree is described as "mostly blue" and "exceptionally white" two
@@ -99,8 +100,11 @@ public class CategoricalData extends DescriptionElementBase {
 	}
 
 	/**
-	 * Returns the boolean value of the flag indicating whether <i>this</i> categorical data
-	 * should be ordered (true) or not (false).
+	 * Returns the boolean value of the flag indicating whether the {@link StateData state data}
+	 * belonging to <i>this</i> categorical data should be treated as an
+	 * {@link List "ordered" list} (true) according to the {@link State states} or as an
+	 * {@link Set "unordered" set} (false). The use of this flag depends mostly
+	 * on the {@link Feature feature} of <i>this</i> categorical data.
 	 *  
 	 * @return  the boolean value of the orderRelevant flag
 	 */
