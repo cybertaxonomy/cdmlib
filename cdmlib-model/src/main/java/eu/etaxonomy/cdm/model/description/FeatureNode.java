@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class FeatureNode extends VersionableEntity {
 	static Logger logger = Logger.getLogger(FeatureNode.class);
 	
+	private Feature feature;
     @XmlElement(name = "FeatureType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -85,18 +86,18 @@ public class FeatureNode extends VersionableEntity {
 	@Transient
 	@Deprecated
 	protected Feature getType() {
-		return type;
+		return feature;
 	}
 	protected void setType(Feature feature) {
-		this.type = feature;
+		this.feature = feature;
 	}
 
 	@ManyToOne
 	public Feature getFeature() {
-		return type;
+		return feature;
 	}
 	public void setFeature(Feature feature) {
-		this.type = feature;
+		this.feature = feature;
 	}
 	
 
