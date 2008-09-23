@@ -166,7 +166,7 @@ public class DataSet {
     @XmlElementWrapper(name = "LanguageData")
     @XmlElements({
     @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
-    @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class),
+    @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
     })
     protected List<LanguageStringBase> languageData;
     
