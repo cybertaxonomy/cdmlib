@@ -70,15 +70,13 @@ import eu.etaxonomy.cdm.test.function.TestJaxb;
  * @author a.babadshanjan
  * @created 15.09.2008
  */
-//@Service
-//@Transactional(readOnly = true)
 public class TestCdmDbComparator {
 	
 	private static final String sourceDbOne = "cdm_test_jaxb";
 	private static final String sourceDbTwo = "cdm_test_jaxb2";
 	
-	private static final Source sourceOne = TestCdmDbComparator.CDM_DB(sourceDbOne);
-	private static final Source sourceTwo = TestCdmDbComparator.CDM_DB(sourceDbTwo);
+	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);
+	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB_(sourceDbTwo);
 	
 	private static final String server = "192.168.2.10";
 	private static final String username = "edit";
@@ -102,20 +100,20 @@ public class TestCdmDbComparator {
 		return source;
 	}
 
-//	String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-//	
-//	DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-//	ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-//	appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
-
-
+	public static ICdmDataSource CDM_DB_(String dbname) {
+		
+	String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+	ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+	return datasource;
+	}
+	
     private final int MAX_ROWS = 60000;
     private final int MAX_TABLES = 150;
 
     private static final Logger logger = Logger.getLogger(TestCdmDbComparator.class);
 	
 	private static final String[] table_list = {
-			"Address",
+//			"Address",
 			"Agent",
 //			"Agent_Agent",
 //			"Agent_Annotation",
@@ -126,7 +124,7 @@ public class TestCdmDbComparator {
 //			"Agent_Media", 
 //			"Agent_OriginalSource", 
 //			"Agent_Rights", 
-//			"Annotation", 
+			"Annotation", 
 //			"CDM_VIEW", 
 //			"CDM_VIEW_CDM_VIEW", 
 //			"Collection", 
@@ -137,7 +135,7 @@ public class TestCdmDbComparator {
 //			"Collection_OriginalSource", 
 //			"Collection_Rights", 
 //			"Contact", 
-//			"DefinedTermBase", 
+			"DefinedTermBase", 
 //			"DefinedTermBase_DefinedTermBase",
 //			"DefinedTermBase_Media", 
 //			"DefinedTermBase_Representation", 
@@ -145,7 +143,7 @@ public class TestCdmDbComparator {
 //			"DerivationEvent", 
 //			"DerivationEvent_Annotation", 
 //			"DerivationEvent_Marker", 
-//			"DescriptionBase", 
+			"DescriptionBase", 
 //			"DescriptionBase_Annotation", 
 //			"DescriptionBase_DefinedTermBase",
 //			"DescriptionBase_DescriptionElementBase",
@@ -171,16 +169,16 @@ public class TestCdmDbComparator {
 //			"GatheringEvent_Annotation", 
 //			"GatheringEvent_Marker", 
 //			"GenBankAccession", 
-//			"HomotypicalGroup", 
+			"HomotypicalGroup", 
 //			"HomotypicalGroup_Annotation", 
 //			"HomotypicalGroup_Marker", 
 //			"HybridRelationship", 
 //			"HybridRelationship_Annotation", 
 //			"HybridRelationship_Marker", 
 //			"InstitutionalMembership", 
-//			"LanguageString", 
+			"LanguageString", 
 //			"Locus", 
-//			"Marker", 
+			"Marker", 
 //			"Media", 
 //			"MediaRepresentation", 
 //			"MediaRepresentationPart", 
@@ -189,17 +187,17 @@ public class TestCdmDbComparator {
 //			"Media_Rights", 
 //			"Media_Sequence", 
 //			"Media_TaxonBase", 
-//			"NameRelationship", 
+			"NameRelationship", 
 //			"NameRelationship_Annotation", 
 //			"NameRelationship_Marker", 
-//			"NomenclaturalStatus", 
+			"NomenclaturalStatus", 
 //			"NomenclaturalStatus_Annotation", 
 //			"NomenclaturalStatus_Marker", 
-//			"OriginalSource", 
+			"OriginalSource", 
 //			"OriginalSource_Annotation", 
 //			"OriginalSource_Marker", 
 //			"Person_Keyword", 
-//			"ReferenceBase", 
+			"ReferenceBase", 
 //			"ReferenceBase_Annotation", 
 //			"ReferenceBase_Extension", 
 //			"ReferenceBase_Marker", 
@@ -207,7 +205,7 @@ public class TestCdmDbComparator {
 //			"ReferenceBase_OriginalSource", 
 //			"ReferenceBase_Rights", 
 //			"RelationshipTermBase_inverseRepresentation",
-//			"Representation",
+			"Representation",
 //			"Rights",
 //			"Sequence",
 //			"Sequence_Annotation", 
@@ -218,7 +216,7 @@ public class TestCdmDbComparator {
 //			"Sequence_OriginalSource", 
 //			"Sequence_ReferenceBase", 
 //			"Sequence_Rights", 
-//			"SpecimenOrObservationBase", 
+			"SpecimenOrObservationBase", 
 //			"SpecimenOrObservationBase_Annotation",
 //			"SpecimenOrObservationBase_DerivationEvent",
 //			"SpecimenOrObservationBase_Extension",
@@ -231,16 +229,16 @@ public class TestCdmDbComparator {
 //			"StateData_DefinedTermBase", 
 //			"StatisticalMeasurementValue", 
 //			"StatisticalMeasurementValue_DefinedTermBase",
-//			"SynonymRelationship", 
+			"SynonymRelationship", 
 //			"SynonymRelationship_Annotation", 
 //			"SynonymRelationship_Marker", 
-//			"TaxonBase", 
+			"TaxonBase", 
 //			"TaxonBase_Annotation", 
 //			"TaxonBase_Extension", 
 //			"TaxonBase_Marker", 
 //			"TaxonBase_OriginalSource", 
 //			"TaxonBase_Rights", 
-//			"TaxonNameBase", 
+			"TaxonNameBase", 
 //			"TaxonNameBase_Annotation", 
 //			"TaxonNameBase_Extension", 
 //			"TaxonNameBase_HybridRelationship",
@@ -249,10 +247,10 @@ public class TestCdmDbComparator {
 //			"TaxonNameBase_OriginalSource", 
 //			"TaxonNameBase_Rights", 
 //			"TaxonNameBase_TypeDesignationBase",
-//			"TaxonRelationship", 
+			"TaxonRelationship", 
 //			"TaxonRelationship_Annotation", 
 //			"TaxonRelationship_Marker", 
-//			"TermVocabulary", 
+			"TermVocabulary", 
 //			"TermVocabulary_Representation", 
 			"TypeDesignationBase", 
 //			"TypeDesignationBase_Annotation", 
@@ -542,7 +540,46 @@ public class TestCdmDbComparator {
 		return tables;
 	}
 	
-    public void doCompareDatabases(Map<String, List<CdmBase>> tablesDbOne, Map<String, List<CdmBase>> tablesDbTwo) {
+    public void compareTables(String tableName, List<CdmBase> tablesDbOne, List<CdmBase> tablesDbTwo) {
+    	
+		int tableOneSize = tablesDbOne.size();
+		int tableTwoSize = tablesDbTwo.size();
+		
+		if (tableOneSize != tableTwoSize) {
+			logger.warn("Table '" + tableName + "', Rows differ: " + tablesDbOne.size() + ", " + tablesDbTwo.size());
+		} else {
+			logger.info("Table '" + tableName + "': " + tablesDbOne.size());
+		}
+		
+		int different = 0;
+		
+		try {
+		for (int i = 0; i < tableOneSize; i++) {
+
+			CdmBase obj1 = tablesDbOne.get(i);
+			CdmBase obj2 = tablesDbTwo.get(i);
+
+			if (obj1.equals(obj2) != true) {
+
+				different++;
+				logger.debug("Row # " + i + " differs:");
+				logger.debug("Table 1 = " + obj1); 
+				logger.debug("Table 2 = " + obj2); 
+
+			}
+			i++;
+		}
+		if (different > 0) {
+			logger.info("# Rows total: " + tableOneSize);
+			logger.info("# Rows identical: " + (tableOneSize - different)); 
+			logger.warn("# Rows different: " + different); 
+		} 
+		} catch (org.hibernate.LazyInitializationException e){
+			logger.error("LazyInitializationException");
+		}
+	}
+
+    	public void doCompareDatabases(Map<String, List<CdmBase>> tablesDbOne, Map<String, List<CdmBase>> tablesDbTwo) {
 //        public void doCompareDatabases(Map<String, List<String>> tablesDbOne, Map<String, List<String>> tablesDbTwo) {
 		
 		logger.debug("# Tables in DB 1: " + tablesDbOne.size());
@@ -597,10 +634,49 @@ public class TestCdmDbComparator {
 		
 //		Map<String, List<String>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
 //		Map<String, List<String>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
+		//TODO: Loop in this order: 
+		//      1) Retrieve DB1/Table1
+		//      2) Retrieve DB2/Table1
+		//      3) Compare tables
+		//      4) next table
 		Map<String, List<CdmBase>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
 		Map<String, List<CdmBase>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
 	    doCompareDatabases(tablesDbOne, tablesDbTwo);
 
+	}
+	
+	private void test_(){
+		
+		CdmApplicationController appCtrOne = null;
+		CdmApplicationController appCtrTwo = null;
+		logger.info("Comparing '" + sourceDbOne + "' and '" + sourceDbTwo + "'");
+
+		try {
+			appCtrOne = CdmApplicationController.NewInstance(sourceOne, DbSchemaValidation.VALIDATE, true);
+			appCtrTwo = CdmApplicationController.NewInstance(sourceTwo, DbSchemaValidation.VALIDATE, true);
+
+		} catch (Exception e) {
+			logger.error("Error creating application controller");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		try {
+			//get data from database
+			for (int i = 0; i < table_list.length; i++) {
+
+				List<CdmBase> rowsDbOne = new ArrayList<CdmBase>(MAX_ROWS);
+				List<CdmBase> rowsDbTwo = new ArrayList<CdmBase>(MAX_ROWS);
+				rowsDbOne = appCtrOne.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
+				rowsDbTwo = appCtrTwo.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
+				compareTables(table_list[i], rowsDbOne, rowsDbTwo);
+			}
+			logger.info("End database comparison"); 
+				
+		} catch (Exception e) {
+    		logger.error("Error retrieving or comparing data");
+    		e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -608,6 +684,6 @@ public class TestCdmDbComparator {
 	 */
 	public static void  main(String[] args) {
 		TestCdmDbComparator diff = new TestCdmDbComparator();
-    	diff.test();
+    	diff.test_();
 	}
 }
