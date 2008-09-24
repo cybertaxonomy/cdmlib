@@ -178,7 +178,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 
 	public List<T> rows(String tableName, int limit, int start) {
-		Query query = getSession().createQuery("from " + tableName);
+		Query query = getSession().createQuery("from " + tableName + " order by uuid");
 		query.setFirstResult(start);
 		query.setMaxResults(limit);
 		List<T> result = query.list();
