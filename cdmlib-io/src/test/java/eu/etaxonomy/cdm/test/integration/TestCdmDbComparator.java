@@ -559,18 +559,18 @@ public class TestCdmDbComparator {
 			CdmBase obj1 = tablesDbOne.get(i);
 			CdmBase obj2 = tablesDbTwo.get(i);
 
+			// This compares only whether both tables contain the same objects.
+			// It doesn't check whether all field values are the same.
+			logger.debug("Row # " + i + ":");
 			if (obj1.equals(obj2) != true) {
-
 				different++;
-				logger.debug("Row # " + i + " differs:");
 				logger.debug("Table 1 = " + obj1); 
 				logger.debug("Table 2 = " + obj2); 
-
+			} else {
+				logger.debug("Entry = " + obj1); 
 			}
-			i++;
 		}
 		if (different > 0) {
-			logger.info("# Rows total: " + tableOneSize);
 			logger.info("# Rows identical: " + (tableOneSize - different)); 
 			logger.warn("# Rows different: " + different); 
 		} 
@@ -632,13 +632,6 @@ public class TestCdmDbComparator {
 
 	private void test(){
 		
-//		Map<String, List<String>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
-//		Map<String, List<String>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
-		//TODO: Loop in this order: 
-		//      1) Retrieve DB1/Table1
-		//      2) Retrieve DB2/Table1
-		//      3) Compare tables
-		//      4) next table
 		Map<String, List<CdmBase>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
 		Map<String, List<CdmBase>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
 	    doCompareDatabases(tablesDbOne, tablesDbTwo);
@@ -663,6 +656,8 @@ public class TestCdmDbComparator {
 		
 		try {
 			//get data from database
+	    	TransactionStatus txStatOne = appCtrOne.startTransaction(true);
+	    	TransactionStatus txStatTwo = appCtrTwo.startTransaction(true);
 			for (int i = 0; i < table_list.length; i++) {
 
 				List<CdmBase> rowsDbOne = new ArrayList<CdmBase>(MAX_ROWS);
@@ -671,6 +666,11 @@ public class TestCdmDbComparator {
 				rowsDbTwo = appCtrTwo.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
 				compareTables(table_list[i], rowsDbOne, rowsDbTwo);
 			}
+	    	appCtrTwo.commitTransaction(txStatTwo);
+	    	appCtrOne.commitTransaction(txStatOne);
+	    	//java.lang.IllegalStateException: Cannot deactivate transaction synchronization - not active
+	    	appCtrOne.close();
+	    	appCtrTwo.close();
 			logger.info("End database comparison"); 
 				
 		} catch (Exception e) {
