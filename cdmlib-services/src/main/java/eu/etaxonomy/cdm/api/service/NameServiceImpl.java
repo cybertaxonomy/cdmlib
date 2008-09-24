@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
@@ -55,6 +57,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	private INomenclaturalStatusDao nomStatusDao;
 	@Autowired
 	private ITypeDesignationDao typeDesignationDao;
+	@Autowired
+	private IHomotypicalGroupDao homotypicalGroupDao;
 
 	
 	@Autowired
@@ -97,6 +101,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
+	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
+		return homotypicalGroupDao.saveAll(homotypicalGroups);
+	}
+	
+	@Transactional(readOnly = false)
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection){
 		return typeDesignationDao.saveAll(typeDesignationCollection);
 	}
@@ -121,6 +130,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	 
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
 		return typeDesignationDao.getAllTypeDesignations(limit, start);
+	}
+ 	
+	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
+		return homotypicalGroupDao.list(limit, start);
 	}
 	
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {

@@ -44,6 +44,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 		
+	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
 	
 	/**
 	 * @param limit
@@ -69,7 +70,8 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	public abstract List getNamesByName(String name, CdmBase sessionObject);
 		
-	
+	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
+
 	/**
 	 * Returns all Ranks.
 	 * @return

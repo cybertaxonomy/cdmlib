@@ -99,6 +99,7 @@ public class TestJaxb {
 //	private boolean doTaxa = false;
 //	private boolean doTerms = true;
 //	private boolean doTermVocabularies = true;
+//	private boolean doHomotypicalGroups = true;
 	
 	private boolean doAgents = true;
 	private boolean doAgentData = true;
@@ -115,6 +116,7 @@ public class TestJaxb {
 	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
+	private boolean doHomotypicalGroups = true;
 	
 	private String server = "192.168.2.10";
 	private String username = "edit";
@@ -210,6 +212,7 @@ public class TestJaxb {
     	int featureDataRows = numberOfRows;
     	int languageDataRows = numberOfRows;
     	int termVocabularyRows = numberOfRows;
+    	int homotypicalGroupRows = numberOfRows;
 
     	if (doTermVocabularies == true) {
     		if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
@@ -250,6 +253,12 @@ public class TestJaxb {
     		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
     	}
 
+    	if (doHomotypicalGroups == true) {
+    		if (homotypicalGroupRows == 0) { homotypicalGroupRows = MAX_ROWS; }
+    		logger.info("# Homotypical Groups");
+    		dataSet.setHomotypicalGroups(appCtr.getNameService().getAllHomotypicalGroups(homotypicalGroupRows, 0));
+    	}
+    	
     	if (doTaxa == true) {
     		if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
     		logger.info("# TaxonBase: " + taxonBaseRows);
@@ -327,6 +336,7 @@ public class TestJaxb {
 		List<LanguageStringBase> languageData = new ArrayList<LanguageStringBase>();
 		List<TermVocabulary<DefinedTermBase>> termVocabularies
 		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
+		List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
@@ -368,6 +378,13 @@ public class TestJaxb {
 			}
 		}
 
+		if (doHomotypicalGroups == true) {
+			if ((homotypicalGroups = dataSet.getHomotypicalGroups()) != null) {
+				logger.info("Homotypical groups: " + homotypicalGroups.size());
+				appCtr.getNameService().saveAllHomotypicalGroups(homotypicalGroups);
+			}
+		}
+		
 		// Need to get the taxa and the synonyms here.
 		if (doTaxa == true) {
 			if ((taxonBases = dataSet.getTaxonBases()) != null) {
@@ -561,7 +578,6 @@ public class TestJaxb {
     		
     		dataSet.setSynonyms(new ArrayList<Synonym>());
     		dataSet.setRelationships(new HashSet<RelationshipBase>());
-    		dataSet.setHomotypicalGroups(new HashSet<HomotypicalGroup>());
     		
     	} catch (Exception e) {
     		logger.error("error setting root data");
