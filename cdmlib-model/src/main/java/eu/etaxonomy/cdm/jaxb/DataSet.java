@@ -124,11 +124,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "featureData",
 	    "languageData",
 	    "taxonomicNames",
+	    "homotypicalGroups",
 	    "taxa",
 	    "synonyms",
 	    "relationships",
-	    "media",
-	    "homotypicalGroups"
+	    "media"
 })
 @XmlRootElement(name = "DataSet", namespace = "http://etaxonomy.eu/cdm/model/1.0")
 public class DataSet {
@@ -291,7 +291,7 @@ public class DataSet {
     
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
-    protected Set<HomotypicalGroup> homotypicalGroups;
+    protected List<HomotypicalGroup> homotypicalGroups;
 
 //	@XmlElement(name = "TdwgArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = TdwgArea.class),
 
@@ -798,7 +798,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public Set<HomotypicalGroup> getHomotypicalGroups() {
+    public List<HomotypicalGroup> getHomotypicalGroups() {
         return homotypicalGroups;
     }
 
@@ -810,7 +810,7 @@ public class DataSet {
      *     {@link List<Synonym> }
      *     
      */
-    public void setHomotypicalGroups(Set<HomotypicalGroup> value) {
+    public void setHomotypicalGroups(List<HomotypicalGroup> value) {
         this.homotypicalGroups = value;
     }
     

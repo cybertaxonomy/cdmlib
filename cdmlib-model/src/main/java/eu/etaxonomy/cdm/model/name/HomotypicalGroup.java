@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -75,6 +77,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	    
 	/** 
