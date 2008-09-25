@@ -478,6 +478,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/agent/IAgentDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnotatableDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEntityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
@@ -495,6 +496,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IF
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureNodeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureTreeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotatableDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBase.java -text
