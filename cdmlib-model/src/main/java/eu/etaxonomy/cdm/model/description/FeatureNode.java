@@ -212,7 +212,7 @@ public class FeatureNode extends VersionableEntity {
 	 * Inserts the given feature node in the list of children of <i>this</i> feature node
 	 * at the given (index + 1) position. If the given index is out of bounds
 	 * an exception will arise.<BR>
-	 * Due to bidirectionality this methods must also assign <i>this</i> feature node
+	 * Due to bidirectionality this method must also assign <i>this</i> feature node
 	 * as the parent of the given child.
 	 * 
 	 * @param	child	the feature node to be added 
