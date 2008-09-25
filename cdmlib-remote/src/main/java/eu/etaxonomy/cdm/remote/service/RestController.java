@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -29,7 +31,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
+import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -187,7 +191,7 @@ public class RestController extends AbstractController
 					results = service.getRootTaxa(u);
 				}
 				mv.addObject( (List)results );
-			}else if(action.equals("features")){
+			}else if(action.equalsIgnoreCase("features")){
 				logger.info("Feature Request.");
 				if(op != null && op.equals("tree")){
 					// return a list of feature trees stored in database
@@ -199,6 +203,30 @@ public class RestController extends AbstractController
 					mv.addObject(feature);
 				}
 				
+			}else if(action.equalsIgnoreCase("annotations")){
+			
+				logger.info("Annotation action requested.");
+				
+				UUID annotatableEntityUuid = getUuid(uuid);
+				
+				String requestMethod = req.getMethod();
+				
+				if(requestMethod.equalsIgnoreCase("GET")){
+					List<AnnotationTO> annotations = service.getAnnotations(annotatableEntityUuid, locales);
+					mv.addObject(annotations);					
+				}else if(requestMethod.equalsIgnoreCase("POST")){
+					
+					String annotationText = req.getParameter("annotation");
+					
+					// TODO set locale
+					
+					
+					Annotation annotation = Annotation.NewInstance(annotationText, null);
+					
+					service.saveAnnotation(annotatableEntityUuid, annotation);
+					//log.info(service.saveAnnotation(annotatableEntityUuid, annotation));
+					
+				}				
 			}else{
 				// nothing matches
 				mv.addObject("status", "Controller does not know this operation");

@@ -17,13 +17,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
@@ -38,6 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -49,6 +52,7 @@ import eu.etaxonomy.cdm.remote.dto.ResultSetPageSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 import eu.etaxonomy.cdm.remote.dto.TreeNode;
+import eu.etaxonomy.cdm.remote.dto.assembler.AnnotationAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.DescriptionAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
@@ -68,6 +72,8 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private DescriptionAssembler descriptionAssembler;
 	@Autowired
+	private AnnotationAssembler annotationAssembler;
+	@Autowired
 	private ITaxonDao taxonDAO;
 	@Autowired
 	private ITaxonNameDao nameDAO;
@@ -79,6 +85,8 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureTreeDao featureTreeDAO;
 	@Autowired
 	private IFeatureDao featureDAO;
+	@Autowired
+	private IAnnotatableDao annotatableDao;
 	
 	
 	private final int MAXRESULTS = 500;
@@ -328,5 +336,38 @@ public class CdmServiceImpl implements ICdmService {
 		
 		return featureTreeList;
 	}
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#getAnnotations(java.util.UUID)
+	 */
+	public List<AnnotationTO> getAnnotations(UUID uuid, Enumeration<Locale> locales)
+			throws CdmObjectNonExisting {
+		List<AnnotationTO> annotationList = new ArrayList<AnnotationTO>();
+		
+		// TODO the cast should be removed, but i don't knwo how at the moment
+		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
+		
+		Set<Annotation> annotations = annotatableEntity.getAnnotations();
+		
+		for (Annotation annotation : annotations ){
+			annotationList.add(annotationAssembler.getTO(annotation, locales));
+		}
+		
+		return annotationList;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#saveAnnotation(java.util.UUID, eu.etaxonomy.cdm.model.common.Annotation)
+	 */
+	@Transactional(readOnly=false)
+	public UUID saveAnnotation(UUID uuid, Annotation annotation)
+			throws CdmObjectNonExisting {
+		
+		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
+		
+		annotatableEntity.addAnnotation(annotation);
+		
+		UUID updatedUuid = annotatableDao.saveOrUpdate(annotatableEntity);
+		annotatableDao.flush();
+		
+		return updatedUuid;
+	}
 }

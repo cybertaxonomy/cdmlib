@@ -18,12 +18,16 @@
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(ref:dto)/(*:uuid)">restController</prop>
+                
                 <prop key="/(simple:action)/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(taxon:dto)/(acceptedfor:operation)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(ref:dto)/(*:uuid)">restController</prop>
                 <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                <prop key="/(features:action)/(*:q)">restController</prop>
+                
+                <prop key="/(annotations:action)/(*:uuid)">restController</prop>
+                
+                <prop key="/(features:action)/(*:q)">restController</prop>                
                 <prop key="/(features:action)/(tree:operation)/(*:uuid)">restController</prop>
                 <prop key="/(taxonomy:action)/(root:operation)/(*:sec)">restController</prop>
                 <prop key="/(taxonomy:action)/(parents:operation)/(*:uuid)">restController</prop>

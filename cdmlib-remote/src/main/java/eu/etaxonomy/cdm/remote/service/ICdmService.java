@@ -16,7 +16,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -220,4 +222,21 @@ public interface ICdmService {
 	 */
 	public List<FeatureTO> getFeatures(Enumeration<Locale> locales) throws CdmObjectNonExisting;
 
+	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public List<AnnotationTO> getAnnotations(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @param annotation
+	 * @return
+	 * @throws CdmObjectNonExisting
+	 */
+	public UUID saveAnnotation(UUID uuid, Annotation annotation) throws CdmObjectNonExisting;
+	
 }
