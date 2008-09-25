@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
 	"feature",
-    "type",
+//    "type",
     "parent",
     "children"
 })
@@ -64,10 +64,10 @@ public class FeatureNode extends VersionableEntity {
     @XmlSchemaType(name = "IDREF")
 	private Feature feature;
 	
-    @XmlElement(name = "FeatureType")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	private Feature type;
+//    @XmlElement(name = "FeatureType")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//	private Feature type;
     
     @XmlElement(name = "Parent")
     @XmlIDREF
@@ -113,20 +113,20 @@ public class FeatureNode extends VersionableEntity {
 	
 	
 //** ********************** FEATURE ******************************/
-	/**
-	 * Does the same as getFeature
-	 */
-	@Transient
-	@Deprecated
-	protected Feature getType() {
-		return feature;
-	}
-	/**
-	 * Does the same as setFeature
-	 */
-	protected void setType(Feature feature) {
-		this.feature = feature;
-	}
+//	/**
+//	 * Does the same as getFeature
+	//	 */
+	//	@Transient
+	//	@Deprecated
+	//	protected Feature getType() {
+	//		return feature;
+	//	}
+	//	/**
+	//	 * Does the same as setFeature
+	//	 */
+	//	protected void setType(Feature feature) {
+	//		this.feature = feature;
+	//	}
 
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
@@ -297,16 +297,17 @@ public class FeatureNode extends VersionableEntity {
 	}
 
 	/** 
-	 * Returns the integer indicating the position of the given node within the
-	 * list of {@link #getChildren() children} of <i>this</i> feature node.
+	 * Returns the integer indicating the position of the given feature node
+	 * within the list of {@link #getChildren() children} of <i>this</i> feature node.
 	 * If the list does not contain this node then -1 will be returned. 
 	 * 
-	 * @param  node	the integer indicating the position of the feature node
+	 * @param  node	the feature node the position of which is being searched
 	 * @see			#addChild(FeatureNode, int) 
 	 * @see			#removeChild(int) 
 	 */
 	@Transient
-	public int getIndex(TreeNode node) {
+//	public int getIndex(TreeNode node) {
+	public int getIndex(FeatureNode node) {
 		if (! children.contains(node)){
 			return -1;
 		}else{
