@@ -27,10 +27,13 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -41,13 +44,21 @@ import javax.xml.bind.annotation.XmlSchemaType;
  * @created 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "WaterbodyOrCountry", propOrder = {
+    "validPeriod",
+    "continents"
+})
+@XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
 public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	/**
 	 * 2 character ISO 3166 Country codes
 	 */
+	@XmlAttribute(name = "iso3166_A2")
 	private char[] iso3166_A2 = new char[2];
+	
+    @XmlElement(name = "ValidPeriod")
 	private TimePeriod validPeriod;
 	
     @XmlElementWrapper(name = "Continents")
@@ -649,6 +660,20 @@ uuidPersianGulf
 		result = super.readCsvLine(csvLine);
 		// iso codes extra
 		this.iso3166_A2=csvLine.get(4).trim().toCharArray();
+		String[] continentList;
+		String tmp = csvLine.get(5).trim().toString();
+		if (tmp.length()>2){
+			tmp=tmp.substring(1, tmp.length()-1);
+
+			continentList=tmp.split(",");
+			for (int i=0;i<continentList.length;i++){
+				// 3b69f979-408c-4080-b573-0ad78a315610
+				logger.debug("continent: "+continentList[i]);
+//				System.out.println("continent: "+continentList[i]);
+				Continent conti = new Continent();
+				this.addContinents(conti.getByUuid(UUID.fromString(continentList[i])));
+			}
+		}
 		return result;
 	}
 	public void writeCsvLine(CSVWriter writer) {

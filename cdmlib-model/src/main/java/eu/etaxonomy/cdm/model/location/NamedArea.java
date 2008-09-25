@@ -20,22 +20,61 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "NamedArea", propOrder = {
+    "validPeriod",
+    "shape",
+    "pointApproximation",
+    "waterbodiesOrCountries",
+    "type",
+    "level"
+})
+@XmlRootElement(name = "NamedArea")
 @Entity
 public class NamedArea extends OrderedTermBase<NamedArea> {
 	static Logger logger = Logger.getLogger(NamedArea.class);
+	
 	//description of time valid context of this area. e.g. year range
+    @XmlElement(name = "ValidPeriod")
 	private TimePeriod validPeriod;
+	
 	//Binary shape definition for user's defined area as polygon
+	@XmlElement(name = "Shape")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Media shape;
+	
+    @XmlElement(name = "PointApproximation")
 	private Point pointApproximation;
+	
+	@XmlElementWrapper(name = "WaterbodiesOrCountries")
+	@XmlElement(name = "WaterbodiesOrCountry")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
+	
+	@XmlElement(name = "NamedAreaType")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private NamedAreaType type;
+	
+	@XmlElement(name = "NamedAreaLevel")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private NamedAreaLevel level;
 	
 	/**

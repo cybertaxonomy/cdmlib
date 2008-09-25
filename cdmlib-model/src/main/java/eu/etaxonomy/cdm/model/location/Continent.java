@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.location;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +26,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:18
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Continent")
+@XmlRootElement(name = "Continent")
 @Entity
 public class Continent extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(Continent.class);

@@ -1,6 +1,11 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.description.Modifier;
 
@@ -10,6 +15,9 @@ import eu.etaxonomy.cdm.model.description.Modifier;
  * @author m.doering
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DeterminationModifier")
+@XmlRootElement(name = "DeterminationModifier")
 @Entity
 public class DeterminationModifier extends Modifier {
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);

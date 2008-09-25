@@ -13,6 +13,10 @@ package eu.etaxonomy.cdm.model.location;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Reference systems for coordinates also according to OGC (Open Geographical
@@ -22,6 +26,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:49
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ReferenceSystem")
+@XmlRootElement(name = "ReferenceSystem")
 @Entity
 public class ReferenceSystem extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ReferenceSystem.class);

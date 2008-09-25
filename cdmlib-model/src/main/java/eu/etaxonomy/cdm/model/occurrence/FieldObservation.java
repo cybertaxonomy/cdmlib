@@ -15,6 +15,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * In situ observation of a taxon in the field. If a specimen exists, 
@@ -23,12 +30,26 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:40
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "FieldObservation", propOrder = {
+    "fieldNumber",
+    "fieldNotes",
+    "gatheringEvent"
+})
+@XmlRootElement(name = "FieldObservation")
 @Entity
 public class FieldObservation extends SpecimenOrObservationBase{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
+	@XmlElement(name = "FieldNumber")
 	private String fieldNumber;
+	
+	@XmlElement(name = "FieldNotes")
 	private String fieldNotes;
+	
+	@XmlElement(name = "GatheringEvent")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private GatheringEvent gatheringEvent;
 
 	/**

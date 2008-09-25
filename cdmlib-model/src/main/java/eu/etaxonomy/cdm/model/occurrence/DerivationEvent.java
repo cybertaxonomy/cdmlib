@@ -50,12 +50,12 @@ public class DerivationEvent extends EventBase{
 	private Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
 	
 	@XmlElementWrapper(name = "Derivatives")
-	@XmlElement(name = "Derivatives")
+	@XmlElement(name = "Derivative")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
 	
-	@XmlElement(name = "DerivationEventTypeRef")
+	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private DerivationEventType type;

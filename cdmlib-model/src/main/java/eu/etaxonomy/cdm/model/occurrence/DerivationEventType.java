@@ -2,8 +2,16 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.UUID;
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DerivationEventType")
+@XmlRootElement(name = "DerivationEventType")
 @Entity
 public class DerivationEventType extends DefinedTermBase {
 

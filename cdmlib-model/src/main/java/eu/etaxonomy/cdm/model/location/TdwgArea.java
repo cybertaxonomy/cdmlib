@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -29,6 +33,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @created 15.07.2008
  * @version 1.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TdwgArea")
+@XmlRootElement(name = "TdwgArea")
 @Entity
 public class TdwgArea {
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);

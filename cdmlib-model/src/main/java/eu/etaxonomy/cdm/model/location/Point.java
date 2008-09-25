@@ -10,6 +10,13 @@
 package eu.etaxonomy.cdm.model.location;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -18,15 +25,32 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:44
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Point", propOrder = {
+    "longitude",
+    "latitude",
+    "errorRadius",
+    "referenceSystem"
+})
+@XmlRootElement(name = "Point")
 @Embeddable
 public class Point {
 	private static final Logger logger = Logger.getLogger(Point.class);
 	
 	//TODO was Float but H2 threw errors
+	@XmlElement(name = "Longitude")
 	private Double longitude;
+	
+	@XmlElement(name = "Latitude")
 	private Double latitude;
+	
 	//in Meters
+	@XmlElement(name = "ErrorRadius")
 	private Integer errorRadius = 0;
+	
+	@XmlElement(name = "ReferenceSystem")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private ReferenceSystem referenceSystem;
 	
 	/**

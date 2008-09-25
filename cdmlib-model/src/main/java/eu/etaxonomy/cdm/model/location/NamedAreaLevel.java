@@ -14,6 +14,10 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Controlled vocabulary to diferenciate levels of areas such as province, state,
@@ -22,6 +26,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "NamedAreaLevel")
+@XmlRootElement(name = "NamedAreaLevel")
 @Entity
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final Logger logger = Logger.getLogger(NamedAreaLevel.class);

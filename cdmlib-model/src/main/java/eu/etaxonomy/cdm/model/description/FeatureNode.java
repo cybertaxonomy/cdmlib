@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
+	"feature",
     "type",
     "parent",
     "children"
@@ -44,7 +45,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class FeatureNode extends VersionableEntity {
 	static Logger logger = Logger.getLogger(FeatureNode.class);
 	
+    @XmlElement(name = "Feature")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Feature feature;
+	
     @XmlElement(name = "FeatureType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
