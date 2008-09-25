@@ -72,8 +72,8 @@ import eu.etaxonomy.cdm.test.function.TestJaxb;
  */
 public class TestCdmDbComparator {
 	
-	private static final String sourceDbOne = "cdm_test_jaxb";
-	private static final String sourceDbTwo = "cdm_test_jaxb2";
+	private static final String sourceDbOne = "cdm_edit_salvador";
+	private static final String sourceDbTwo = "cdm_test_anahit2";
 	
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);
 	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB_(sourceDbTwo);
@@ -162,8 +162,8 @@ public class TestCdmDbComparator {
 //			"DeterminationEvent_Annotation", 
 //			"DeterminationEvent_Marker", 
 //			"Extension", 
-//			"FeatureNode", 
-//			"FeatureTree", 
+			"FeatureNode", 
+			"FeatureTree", 
 //			"FeatureTree_Representation", 
 //			"GatheringEvent", 
 //			"GatheringEvent_Annotation", 
@@ -179,9 +179,9 @@ public class TestCdmDbComparator {
 			"LanguageString", 
 //			"Locus", 
 			"Marker", 
-//			"Media", 
-//			"MediaRepresentation", 
-//			"MediaRepresentationPart", 
+			"Media", 
+			"MediaRepresentation", 
+			"MediaRepresentationPart", 
 //			"Media_Annotation", 
 //			"Media_Marker", 
 //			"Media_Rights", 
