@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -32,10 +33,22 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
- * Feature trees arrange feature (characters). They may also be used to
- * define flat feature subsets for filtering purposes. 
- * A feature tree is build out of feature nodes, which can be hierarchically organized.
- * @author m.doering
+ * The class to arrange {@link Feature features} (characters) in a tree structure.
+ * Feature trees are essential for determination process but may also be used
+ * to define flat feature subsets for filtering purposes. Particular feature trees
+ * allow different determination processes depending on the concerned taxonomic
+ * group.<BR>
+ * A feature tree is build on {@link FeatureNode feature nodes}.
+ * <P>
+ * This class corresponds partially to ConceptTreeDefType according to the SDD
+ * schema.
+ * <P>
+ * Note: The tree structure of features needed for a determination process has
+ * nothing in common with the possible hierarchical structure of features
+ * depending on their grade of precision.  
+ *  
+ * @see		IdentificationKey
+ * @author  m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
@@ -57,31 +70,52 @@ public class FeatureTree extends TermBase {
 	
 	@XmlElement(name = "IsDescriptionSeparated")
 	private boolean isDescriptionSeparated = false;
-	
-	/**
-	 * @return the isDescriptionSeperated
+		
+	/** 
+	 * Class constructor: creates a new feature tree instance with an empty
+	 * {@link #getRoot() root node}.
 	 */
-	public boolean isDescriptionSeparated() {
-		return isDescriptionSeparated;
+	protected FeatureTree() {
+		super();
+		root = FeatureNode.NewInstance();
 	}
 
-	/**
-	 * @param isDescriptionSeperated the isDescriptionSeperated to set
+	/** 
+	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}.
+	 * 
+	 * @see #NewInstance(UUID)
+	 * @see #NewInstance(List)
 	 */
-	public void setDescriptionSeparated(boolean isDescriptionSeperated) {
-		this.isDescriptionSeparated = isDescriptionSeperated;
-	}
-
 	public static FeatureTree NewInstance(){
 		return new FeatureTree();
 	}
 
+	/** 
+	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}
+	 * and assigns to the new feature tree the given
+	 * UUID (universally unique identifier).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @see 			#NewInstance()
+	 * @see 			#NewInstance(List)
+	 */
 	public static FeatureTree NewInstance(UUID uuid){
 		FeatureTree result =  new FeatureTree();
 		result.setUuid(uuid);
 		return result;
 	}
 	
+	/** 
+	 * Creates a new feature tree instance with a {@link #getRoot() root node}
+	 * the children of which are the feature nodes build on the base of the
+	 * given list of {@link Feature features}. This corresponds to a flat feature tree.
+	 * For each feature within the list a new {@link FeatureNode feature node} without
+	 * children nodes will be created. 
+	 * 
+	 * @param	featureList	the feature list
+	 * @see 				#NewInstance()
+	 * @see 				#NewInstance(UUID)
+	 */
 	public static FeatureTree NewInstance(List<Feature> featureList){
 		FeatureTree result =  new FeatureTree();
 		FeatureNode root = result.getRoot();
@@ -93,10 +127,24 @@ public class FeatureTree extends TermBase {
 		
 		return result;
 	}
-		
-	protected FeatureTree() {
-		super();
-		root = FeatureNode.NewInstance();
+	
+	/**
+	 * Returns the boolean value of the flag indicating whether the
+	 * {@link DescriptionElementBase description elements} associated with the {@link Feature features}
+	 * belonging to <i>this</i> feature tree should be treated separately (true)
+	 * or not (false).
+	 *  
+	 * @return  the boolean value of the isDescriptionSeparated flag
+	 */
+	public boolean isDescriptionSeparated() {
+		return isDescriptionSeparated;
+	}
+
+	/**
+	 * @see	#isDescriptionSeparated() 
+	 */
+	public void setDescriptionSeparated(boolean isDescriptionSeperated) {
+		this.isDescriptionSeparated = isDescriptionSeperated;
 	}
 	
 //	@OneToMany
@@ -108,15 +156,28 @@ public class FeatureTree extends TermBase {
 //		this.nodes = nodes;
 //	}
 
+	/** 
+	 * Returns the topmost {@link FeatureNode feature node} (root node) of <i>this</i>
+	 * feature tree. The root node does not have any parent. Since feature nodes
+	 * recursively point to their child nodes the complete feature tree is
+	 * defined by its root node.
+	 */
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getRoot() {
 		return root;
 	}
+	/**
+	 * @see	#getRoot() 
+	 */
 	public void setRoot(FeatureNode root) {
 		this.root = root;
 	}
 	
+	/** 
+	 * Returns the (ordered) list of {@link FeatureNode feature nodes} which are immediate
+	 * children of the root node of <i>this</i> feature tree.
+	 */
 	@Transient
 	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();

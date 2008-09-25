@@ -10,14 +10,20 @@
 package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import java.util.*;
 import javax.persistence.*;
 
 /**
- * Dichotomous or multifurcating authored keys (incl. legacy data)
- * @author m.doering
+ * The class representing dichotomous or multifurcating authored keys
+ * (including legacy data) used to identify (this means to assign {@link Taxon taxa} to)
+ * {@link SpecimenOrObservationBase specimens or observations}. The determination process is
+ * based on {@link FeatureTree feature trees} and on particular {@link StatisticalMeasurementValue values}
+ * or {@link StateData states} for the {@link Feature features} belonging to the feature tree.
+ * 
+ * @author m.doering 
  * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
@@ -28,25 +34,53 @@ public class IdentificationKey extends Media {
 	
 	private Set<Taxon> coveredTaxa = new HashSet();
 	
-	public static IdentificationKey NewInstance(){
-		return new IdentificationKey();
-	}
-	
+	/** 
+	 * Class constructor: creates a new empty identification key instance.
+	 */
 	protected IdentificationKey() {
 		super();
 	}
+	
+	/** 
+	 * Creates a new empty identification key instance.
+	 */
+	public static IdentificationKey NewInstance(){
+		return new IdentificationKey();
+	}
 
 	
+	/** 
+	 * Returns the set of possible {@link Taxon taxa} corresponding to
+	 * <i>this</i> identification key.
+	 */
 	@OneToMany
 	public Set<Taxon> getCoveredTaxa() {
 		return coveredTaxa;
 	}
+	/**
+	 * @see	#getCoveredTaxa() 
+	 */
 	protected void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
+	/**
+	 * Adds a {@link Taxon taxa} to the set of {@link #getCoveredTaxa() covered taxa}
+	 * corresponding to <i>this</i> identification key.
+	 * 
+	 * @param	taxon	the taxon to be added to <i>this</i> identification key
+	 * @see    	   		#getCoveredTaxa()
+	 */
 	public void addCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.add(taxon);
 	}
+	/** 
+	 * Removes one element from the set of {@link #getCoveredTaxa() covered taxa}
+	 * corresponding to <i>this</i> identification key.
+	 *
+	 * @param	taxon	the taxon which should be removed
+	 * @see     		#getCoveredTaxa()
+	 * @see     		#addCoveredTaxon(Taxon)
+	 */
 	public void removeCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.remove(taxon);
 	}

@@ -80,7 +80,7 @@ public class QuantitativeData extends DescriptionElementBase {
 		this.statisticalValues = statisticalValues;
 	}
 	/**
-	 * Adds a {@link StatisticalMeasurementValue statistical measurement value} to the list of
+	 * Adds a {@link StatisticalMeasurementValue statistical measurement value} to the set of
 	 * {@link #getStatisticalValues() statistical measurement values} describing
 	 * the {@link Feature feature} corresponding to <i>this</i> quantitative data.
 	 * 

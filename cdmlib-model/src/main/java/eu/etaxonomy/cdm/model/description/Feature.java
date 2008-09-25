@@ -55,15 +55,19 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * but only for the property itself. Therefore naming this class FeatureType
  * would have leaded to confusion.
  * <P>
+ * Since features are {@link DefinedTermBase defined terms} they have a hierarchical
+ * structure that allows to specify ("kind of") or generalize
+ * ("generalization of") features. "Kind of" / "generalization of" relations
+ * are bidirectional (a feature F1 is a "Kind of" a feature F2 if and only
+ * if the feature F2 is a "generalization of" the feature F1. This hierarchical
+ * structure has nothing in common with {@link FeatureTree feature trees} used for determination.
+ * <P> 
  * A standard set of feature instances will be automatically
  * created as the project starts. But this class allows to extend this standard
  * set by creating new instances of additional features if needed.<BR>
- * Since features are {@link DefinedTermBase defined terms} they have a hierarchical
- * structure that allows to define "kind of"- or "generalization of"-features.
  * <P>
  * This class corresponds to DescriptionsSectionType according to the SDD
  * schema.
- * 
  * 
  * @author m.doering
  * @version 1.0
