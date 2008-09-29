@@ -37,7 +37,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.jaxb.DataSet;
+import eu.etaxonomy.cdm.io.jaxb.DataSet;
+import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -64,7 +65,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
-import eu.etaxonomy.cdm.test.function.TestJaxb;
 
 /**
  * @author a.babadshanjan
@@ -72,8 +72,8 @@ import eu.etaxonomy.cdm.test.function.TestJaxb;
  */
 public class TestCdmDbComparator {
 	
-	private static final String sourceDbOne = "cdm_edit_salvador";
-	private static final String sourceDbTwo = "cdm_test_anahit2";
+	private static final String sourceDbOne = "cdm_test_jaxb";
+	private static final String sourceDbTwo = "cdm_test_jaxb2";
 	
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);
 	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB_(sourceDbTwo);

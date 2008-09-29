@@ -129,7 +129,14 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmExporter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmMarshallerListener.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmResourceResolver.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmSchemaGenerator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/DataSet.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
