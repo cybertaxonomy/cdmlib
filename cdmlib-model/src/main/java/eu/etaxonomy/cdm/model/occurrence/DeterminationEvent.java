@@ -33,7 +33,9 @@ public class DeterminationEvent extends EventBase {
 	private SpecimenOrObservationBase identifiedUnit;
 	private Taxon taxon;
 	private DeterminationModifier modifier;
+	private String preferredFlag;
 
+	
 	
 	/**
 	 * Factory method
@@ -105,5 +107,14 @@ public class DeterminationEvent extends EventBase {
 	public void setIdentifiedUnit(SpecimenOrObservationBase identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
+	
+	public String getPreferredFlag() {
+		return preferredFlag;
+	}
+
+	public void setPreferredFlag(String preferredFlag) {
+		this.preferredFlag = preferredFlag;
+	}
+
 
 }
