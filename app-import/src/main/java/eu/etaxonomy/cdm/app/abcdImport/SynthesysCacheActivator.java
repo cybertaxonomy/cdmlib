@@ -9,10 +9,32 @@
 
 package eu.etaxonomy.cdm.app.abcdImport;
 
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.RangeAddress;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -22,6 +44,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -40,206 +63,157 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-import javax.xml.parsers.*; 
 
 import org.springframework.transaction.TransactionStatus;
-import org.w3c.dom.*; 
-import java.io.*; 
+
+import sun.management.counter.Units;
+import sun.nio.cs.ext.SJIS;
+
+
 
 
 /**
  * @author PK
- * @created 04.08.2008
+ * @created 19.09.2008
  * @version 1.0
  */
-public class ABCD206Activator {
-	private static final Logger logger = Logger.getLogger(ABCD206Activator.class);
+public class SynthesysCacheActivator {
+	private static final Logger logger = Logger.getLogger(SynthesysCacheActivator.class);
 
-	protected String fullScientificNameString;
-	protected String institutionCode;
-	protected String collectionCode;
-	protected String unitID;
-	protected String recordBasis;
-	protected String accessionNumber;
-	protected String collectorsNumber;
-	protected String fieldNumber;
-	protected Double longitude;
-	protected Double latitude;
-	protected String locality;
-	protected String country;
-	protected String isocountry;
-	protected ArrayList<String> gatheringAgentList;
-	protected ArrayList<String> identificationList;
+	protected String fullScientificNameString = null;
+	protected String institutionCode = null;
+	protected String collectionCode = null;
+	protected String unitID = null;
+	protected String recordBasis = null;
+	protected String accessionNumber = null;
+	protected String collectorsNumber = null;
+	protected String fieldNumber = null;
+	protected Double longitude = null;
+	protected Double latitude = null;
+	protected String locality = null;
+	protected String country = null;
+	protected String isocountry = null;
+	protected ArrayList<String> gatheringAgentList = new ArrayList<String>();
+	protected ArrayList<String> identificationList = new ArrayList<String>();
 
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+
+	protected HSSFWorkbook hssfworkbook = null;
 
 
 
-	private void parseXML(){
+	private ArrayList<Hashtable<String, String>> parseXLS() {
+		String filename = "/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
+//		String filename = "/home/patricia/Desktop/synthesys.xls";
+		ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String,String>>();
+		
 		try {
-			// création d'une fabrique de documents
-			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
+			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(filename));
+			HSSFWorkbook wb = new HSSFWorkbook(fs);
+			HSSFSheet sheet = wb.getSheetAt(0);
+			HSSFRow row;
+			HSSFCell cell;
 
-			// création d'un constructeur de documents
-			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
+			int rows; // No of rows
+			rows = sheet.getPhysicalNumberOfRows();
 
-			// lecture du contenu d'un fichier XML avec DOM
-			File xml = new File("/home/patricia/Desktop/abcd206_3.xml");
-			Document document = constructeur.parse(xml);
+			int cols = 0; // No of columns
+			int tmp = 0;
 
-			Element racine = document.getDocumentElement();
+			// This trick ensures that we get the data properly even if it doesn't start from first few rows
+			for(int i = 0; i < 10 || i < rows; i++) {
+				row = sheet.getRow(i);
+				if(row != null) {
+					tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+					if(tmp > cols) cols = tmp;
+				}
+			}
 
-			NodeList group,childs,identifications,results,taxonsIdentified,person,scnames;
-
-			String tmpName = null;
-			try {
-				group = racine.getElementsByTagName("Identifications");
-				this.identificationList = new ArrayList<String>();
-				for (int i=0; i< group.getLength(); i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0; j<childs.getLength();j++){
-						if(childs.item(j).getNodeName() == "Identification"){
-							identifications = childs.item(j).getChildNodes();
-							for (int m=0; m<identifications.getLength();m++){
-								if(identifications.item(m).getNodeName() == "Result"){
-									results = identifications.item(m).getChildNodes();
-									for(int k=0; k<results.getLength();k++){
-										if (results.item(k).getNodeName() == "TaxonIdentified"){
-											taxonsIdentified = results.item(k).getChildNodes();
-											for (int l=0; l<taxonsIdentified.getLength(); l++){
-												if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
-													scnames = taxonsIdentified.item(l).getChildNodes();
-													for (int n=0;n<scnames.getLength();n++){
-														if (scnames.item(n).getNodeName() == "FullScientificNameString")
-															tmpName = scnames.item(n).getTextContent();
-													}
-												}
-											}
-										}
-									}
-								}
-								if(identifications.item(m).getNodeName() == "PreferredFlag"){
-									this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent());
-								}
-							}
+			
+			Hashtable<String, String> headers = null;
+			ArrayList<String> columns = new ArrayList<String>();
+			row = sheet.getRow(0);
+			for (int c =0; c<cols; c++){
+				cell = row.getCell(c);
+				columns.add(cell.toString());
+			}
+			for(int r = 1; r < rows; r++) {
+				row = sheet.getRow(r);
+				headers = new Hashtable<String, String>();
+				if(row != null) {
+					for(int c = 0; c < cols; c++) {
+						cell = row.getCell((short)c);
+						if(cell != null) {
+							headers.put(columns.get(c),cell.toString());
 						}
 					}
 				}
-			} catch (NullPointerException e) {
-				System.out.println(e);
+				units.add(headers);
 			}
-			System.out.println("this.identificationList "+this.identificationList.toString());
-			try {
-				group = racine.getElementsByTagName("SourceInstitutionID");
-				this.institutionCode = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.institutionCode= "";
-			}
-			try {
-				group = racine.getElementsByTagName("SourceID");
-				this.collectionCode = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.collectionCode = "";
-			}
-			try {
-				group = racine.getElementsByTagName("UnitID");
-				this.unitID = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.unitID = "";
-			}
-			try {
-				group = racine.getElementsByTagName("RecordBasis");
-				this.recordBasis = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.recordBasis = "";
-			}
-			try {
-				group = racine.getElementsByTagName("AccessionNumber");
-				this.accessionNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.accessionNumber = "";
-			}
-			try {
-				group = racine.getElementsByTagName("LocalityText");
-				this.locality = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.locality = "";
-			}
-			try {
-				group = racine.getElementsByTagName("LongitudeDecimal");
-				this.longitude = Double.valueOf(group.item(0).getTextContent());
-			} catch (NullPointerException e) {
-				this.longitude=0.0;
-			}
-			try {
-				group = racine.getElementsByTagName("LatitudeDecimal");
-				this.latitude = Double.valueOf(group.item(0).getTextContent());
-			} catch (NullPointerException e) {
-				this.latitude=0.0;
-			}
-			try {
-				group = racine.getElementsByTagName("Country");
-				this.country = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.country = "";
-			}
-			try {
-				group = racine.getElementsByTagName("ISO3166Code");
-				this.isocountry = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.isocountry = "";
-			}
+			System.out.println("units: "+units);
 
-			try {
-				group = racine.getElementsByTagName("CollectorsFieldNumber");
-				this.fieldNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.fieldNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("CollectorsNumber");
-				this.collectorsNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.collectorsNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("AccessionNumber");
-				this.accessionNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.accessionNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("GatheringAgent");
-				this.gatheringAgentList = new ArrayList<String>();
-				for (int i=0; i< group.getLength(); i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0; j<childs.getLength();j++){
-						if (childs.item(j).getNodeName() == "Person"){
-							person = childs.item(j).getChildNodes();
-							for (int k=0; k<person.getLength(); k++)
-								if (person.item(k).getNodeName() == "FullName")
-									gatheringAgentList.add(person.item(k).getTextContent());
-						}
-
-					}
-				}
-			} catch (NullPointerException e) {
-				this.gatheringAgentList = new ArrayList<String>();
-			}
-
-			System.out.println("racine: "+racine.getNodeName());
-			System.out.println(this.collectionCode);
-			System.out.println(this.institutionCode);
-			System.out.println(this.fieldNumber);
+			
 
 
+		} catch(Exception ioe) {
+			ioe.printStackTrace();
+		}
+		return units;
+	}
+
+
+	public void saveUnit(Hashtable<String,String> unit){
+		String author = unit.get("author");
+		author=author.replaceAll("None","");
+		String taxonName = unit.get("taxonName");
+		taxonName = taxonName.replaceAll("None", "");
+
+		try {
+			this.institutionCode = unit.get("institution").replaceAll("None", null);
 		} catch (Exception e) {
-			logger.info("Error occured while parsing XML file"+e);
 		}
 
+		try {this.collectionCode = unit.get("collection").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.unitID = unit.get("unitID").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.recordBasis = unit.get("recordBasis").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.accessionNumber = null;
+		} catch (Exception e) {
+		}
+		try {this.locality = unit.get("locality").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.longitude = Double.valueOf(unit.get("longitude"));
+		} catch (Exception e) {
+		}
+		try {this.latitude = Double.valueOf(unit.get("latitude"));
+		} catch (Exception e) {
+		}
+		try {this.country = unit.get("country").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.isocountry = unit.get("isoCountry").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.fieldNumber = unit.get("field number").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {this.collectorsNumber = unit.get("collector number").replaceAll("None", null);
+		} catch (Exception e) {
+		}
+		try {String coll =unit.get("collector");
+		coll=coll.replaceAll("None", null);
+		this.gatheringAgentList.add(coll);
+		} catch (Exception e) {
+		}
+		try {this.identificationList.add(taxonName+" "+author);
+		} catch (Exception e) {System.out.println(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -247,6 +221,7 @@ public class ABCD206Activator {
 		boolean result = true;
 		boolean withCdm = true;
 		CdmApplicationController app = null;
+		TransactionStatus tx = null;
 
 
 		try {
@@ -258,11 +233,12 @@ public class ABCD206Activator {
 			e1.printStackTrace();
 			System.out.println("TermNotFoundException " +e1);
 		}
-
-
+		System.out.println("avant!");
+		tx = app.startTransaction();
+		System.out.println("apres");
 		try {
 			ReferenceBase sec = Database.NewInstance();
-			sec.setTitleCache("XML DATA");
+			sec.setTitleCache("SYNTHESYS CACHE DATA");
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -289,6 +265,7 @@ public class ABCD206Activator {
 			NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 			String scientificName="";
 			String preferredFlag="";
+			System.out.println(this.identificationList);
 			for (int i = 0; i < this.identificationList.size(); i++) {
 				this.fullScientificNameString = this.identificationList.get(i);
 				this.fullScientificNameString = this.fullScientificNameString.replaceAll(" et ", " & ");
@@ -328,15 +305,17 @@ public class ABCD206Activator {
 					}
 				}
 
-				TransactionStatus tx = app.startTransaction();
+				
+//				tx = app.startTransaction();
 				app.getNameService().saveTaxonName(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
-				app.commitTransaction(tx);
+//				app.commitTransaction(tx);
 
 
 				determinationEvent = DeterminationEvent.NewInstance();
 				determinationEvent.setTaxon(taxon);
-				determinationEvent.setPreferredFlag(preferredFlag);
+				if (preferredFlag != "")
+					determinationEvent.setPreferredFlag(preferredFlag);
 				derivedThing.addDetermination(determinationEvent);
 			}
 
@@ -406,6 +385,7 @@ public class ABCD206Activator {
 				}
 
 			}
+			System.out.println("collection inserted");
 			//link specimen & collection
 			derivedThing.setCollection(collection);
 
@@ -425,21 +405,35 @@ public class ABCD206Activator {
 			gatheringEvent.setExactLocation(coordinates);
 
 			NamedArea area = NamedArea.NewInstance();
-			app.getTermService().saveTerm(area);
+			
 
-			WaterbodyOrCountry country = app.getOccurrenceService().getCountryByIso(this.isocountry);
+			WaterbodyOrCountry country = null;
+//			System.out.println("isocountry "+this.isocountry);
+			if (this.isocountry != null)
+				country = app.getOccurrenceService().getCountryByIso(this.isocountry);
+			
+//			System.out.println(country.getLabel());
+//			Set<Continent> cont = country.getContinents();
+//			
+//			System.out.println(cont.size());
+//			Iterator<Continent> iter = cont.iterator();
+//			while (iter.hasNext())
+//				System.out.println(iter.next().toString());
+			
 			if (country != null){
 				area.addWaterbodyOrCountry(country);
 				System.out.println("country not null!");
 			}
-			else{
-				List<WaterbodyOrCountry>countries = app.getOccurrenceService().getWaterbodyOrCountryByName(this.country);
-				if (countries.size() >0)
-					area.addWaterbodyOrCountry(countries.get(0));
-				else
-					System.out.println("NO COUNTRY");//TODO need to add a new country!
-			}
-
+//			else{
+//				if (this.country != null){
+//					List<WaterbodyOrCountry>countries = app.getOccurrenceService().getWaterbodyOrCountryByName(this.country);
+//					if (countries.size() >0)
+//						area.addWaterbodyOrCountry(countries.get(0));
+//					else
+//						System.out.println("NO COUNTRY");//TODO need to add a new country!
+//				}
+//			}
+//			app.getTermService().saveTerm(area);
 			gatheringEvent.setCollectingArea(area);
 
 			//create collector
@@ -481,12 +475,16 @@ public class ABCD206Activator {
 			 */			
 			//save the specimen data
 			//	app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
-
-			//TransactionStatus tx = app.startTransaction();
-			//app.getTermService().saveTerm(area);//save it sooner
-			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
-			//app.commitTransaction(tx);
-
+			try {
+//				tx = app.startTransaction();
+				app.getTermService().saveTerm(area);//save it sooner
+				app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+//				app.commitTransaction(tx);
+//				app.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("PATATE "+e);
+			}
 
 
 			logger.info("saved new specimen ...");
@@ -498,6 +496,11 @@ public class ABCD206Activator {
 			e.printStackTrace();
 			result = false;
 		}
+//		
+		app.commitTransaction(tx);
+		System.out.println("commit done");
+		app.close();
+		
 		return result;
 	}
 
@@ -519,9 +522,16 @@ public class ABCD206Activator {
 	 */
 	public static void main(String[] args) {
 		logger.info("main method");
-		ABCD206Activator abcdAct = new ABCD206Activator();
-		abcdAct.parseXML();
-		abcdAct.invoke();
+		SynthesysCacheActivator abcdAct = new SynthesysCacheActivator();
+		ArrayList<Hashtable<String,String>> units = abcdAct.parseXLS();
+		Hashtable<String,String> unit=null;
+		for (int i=0; i<units.size();i++){
+			unit = units.get(i);
+			System.out.println(unit);
+			abcdAct.saveUnit(unit);//and then invoke
+			abcdAct.invoke();
+			
+		}
 	}
 
 
