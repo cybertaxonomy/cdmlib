@@ -41,7 +41,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
     "collection",
     "catalogNumber",
     "storedUnder",
-    "derivedFrom"
+    "derivedFrom",
+    "accessionNumber",
+    "collectorsNumber"
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
@@ -54,6 +56,12 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 
 	@XmlElement(name = "CatalogNumber")
 	private String catalogNumber;
+	
+	@XmlElement(name = "AccessionNumber")
+	private String accessionNumber;
+	
+	@XmlElement(name = "CollectorsNumber")
+	private String collectorsNumber;
 	
 	@XmlElement(name = "StoredUnder")
 	@XmlIDREF
@@ -152,14 +160,35 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 	public void setCatalogNumber(String catalogNumber) {
 		this.catalogNumber = catalogNumber;
 	}
+	
+	public void setStoredUnder(TaxonNameBase storedUnder) {
+		this.storedUnder = storedUnder;
+	}
+	
+	public String getAccessionNumber() {
+		return accessionNumber;
+	}
+	
+	
+	public void setAccessionNumber(String accessionNumber) {
+		this.accessionNumber = accessionNumber;
+	}
+	
+	public String getCollectorsNumber() {
+		return collectorsNumber;
+	}
+	
+	public void setCollectorsNumber(String collectorsNumber) {
+		this.collectorsNumber = collectorsNumber;
+	}
+	
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
 	}
-	public void setStoredUnder(TaxonNameBase storedUnder) {
-		this.storedUnder = storedUnder;
-	}
+	
+
 
 }
