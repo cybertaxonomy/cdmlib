@@ -11,6 +11,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -27,9 +32,16 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:31
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Journal", propOrder = {
+    "issn"
+})
+@XmlRootElement(name = "Journal")
 @Entity
 public class Journal extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Journal.class);
+	
+	@XmlElement(name = "ISSN")
 	private String issn;
 
 	

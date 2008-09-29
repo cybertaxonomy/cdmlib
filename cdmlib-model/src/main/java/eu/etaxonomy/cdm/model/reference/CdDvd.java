@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +27,9 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:15
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "CdDvd")
+@XmlRootElement(name = "CdDvd")
 @Entity
 public class CdDvd extends PublicationBase implements Cloneable{
 	static Logger logger = Logger.getLogger(CdDvd.class);

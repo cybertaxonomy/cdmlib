@@ -152,13 +152,7 @@ cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilder.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmMarshallerListener.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmResourceResolver.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmSchemaGenerator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DataSet.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DateTimeAdapter.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/LsInputImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/MultilanguageTextAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
@@ -416,9 +410,6 @@ cdmlib-model/src/site/resources/images/uml/Types_section.png -text
 cdmlib-model/src/site/resources/images/uml/package_overview.png -text
 cdmlib-model/src/site/site.xml -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/jaxb/CdmDocumentBuilderTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/jaxb/CdmSchemaGeneratorTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DataSetTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text

@@ -15,6 +15,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -35,34 +42,111 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
  * @version 1.0
  * @created 08-Nov-2007 13:06:12
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "BibtexReference", propOrder = {
+    "type",
+    "journal",
+    "booktitle",
+    "chapter",
+    "title",
+    "series",
+    "edition",
+    "volume",
+    "number",
+    "pages",
+    "annote",
+    "editor",
+    "institution",
+    "school",
+    "organization",
+    "publisher",
+    "address",
+    "howpublished",
+    "reportType",
+    "month",
+    "year",
+    "eprint",
+    "note",
+    "crossref"
+})
+@XmlRootElement(name = "BibtexReference")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
 	private static final Logger logger = Logger.getLogger(BibtexReference.class);
 	
+	@XmlElement(name = "BibtexEntryType")
 	private BibtexEntryType type;
+	
+	@XmlElement(name = "Journal")
 	private String journal;
+	
+	@XmlElement(name = "Booktitle")
 	private String booktitle;
+	
+	@XmlElement(name = "Chapter")
 	private String chapter;
+	
+	@XmlElement(name = "Title")
 	private String title;
+	
+	@XmlElement(name = "Series")
 	private String series;
+	
+	@XmlElement(name = "Edition")
 	private String edition;
+	
+	@XmlElement(name = "Volume")
 	private String volume;
+	
+	@XmlElement(name = "Number")
 	private String number;
+	
+	@XmlElement(name = "Pages")
 	private String pages;
+	
+	@XmlElement(name = "Annote")
 	private String annote;
+	
+	@XmlElement(name = "Editor")
 	private String editor;
+	
+	@XmlElement(name = "Institution")
 	private String institution;
+	
+	@XmlElement(name = "School")
 	private String school;
+	
+	@XmlElement(name = "Organization")
 	private String organization;
+	
+	@XmlElement(name = "Publisher")
 	private String publisher;
+	
+	@XmlElement(name = "Address")
 	private String address;
+	
+	@XmlElement(name = "Howpublished")
 	private String howpublished;
+	
+	@XmlElement(name = "ReportType")
 	private String reportType;
+	
+	@XmlElement(name = "Month")
 	private String month;
+	
+	@XmlElement(name = "Year")
 	private String year;
+	
+	@XmlElement(name = "Eprint")
 	private String eprint;
+	
+	@XmlElement(name = "Note")
 	private String note;
+	
+	@XmlElement(name = "Crossref")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private BibtexReference crossref;
 
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
