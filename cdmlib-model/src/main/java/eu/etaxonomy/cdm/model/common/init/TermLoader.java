@@ -149,8 +149,8 @@ public class TermLoader {
 		
 		logger.info("load terms");
 		insertDefaultTerms(Language.class, NOT_ORDERED);
-		insertDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
 		insertDefaultTerms(Continent.class, NOT_ORDERED);
+		insertDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
 		insertDefaultTerms(Rank.class, ORDERED);
 		insertDefaultTerms(TypeDesignationStatus.class, ORDERED);
 		insertDefaultTerms(NomenclaturalStatusType.class, ORDERED);
