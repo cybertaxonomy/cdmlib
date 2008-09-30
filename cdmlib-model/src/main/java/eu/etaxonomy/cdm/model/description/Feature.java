@@ -16,7 +16,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
@@ -339,7 +344,11 @@ public class Feature extends DefinedTermBase {
 	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
 	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
 	 */
-	@OneToMany
+	@ManyToMany
+    @JoinTable(
+            name="DefinedTermBase_StatisticalMeasure"
+        )
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
 	}

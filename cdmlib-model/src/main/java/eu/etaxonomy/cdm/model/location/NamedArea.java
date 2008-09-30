@@ -138,8 +138,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.shape = shape;
 	}
 
-
-	@ManyToMany
+    @ManyToMany
+    @JoinTable(
+        name="DefinedTermBase_WaterbodyOrCountry"
+    )
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;

@@ -27,7 +27,7 @@ import javax.persistence.*;
  */
 @Entity
 public class StatisticalMeasure extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(StatisticalMeasure.class);
+	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
