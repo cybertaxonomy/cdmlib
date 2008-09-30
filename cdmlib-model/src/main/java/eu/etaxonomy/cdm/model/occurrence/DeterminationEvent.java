@@ -33,7 +33,7 @@ public class DeterminationEvent extends EventBase {
 	private SpecimenOrObservationBase identifiedUnit;
 	private Taxon taxon;
 	private DeterminationModifier modifier;
-	private String preferredFlag;
+	private boolean preferredFlag;
 
 	
 	
@@ -108,11 +108,11 @@ public class DeterminationEvent extends EventBase {
 		this.identifiedUnit = identifiedUnit;
 	}
 	
-	public String getPreferredFlag() {
+	public boolean getPreferredFlag() {
 		return preferredFlag;
 	}
 
-	public void setPreferredFlag(String preferredFlag) {
+	public void setPreferredFlag(boolean preferredFlag) {
 		this.preferredFlag = preferredFlag;
 	}
 
