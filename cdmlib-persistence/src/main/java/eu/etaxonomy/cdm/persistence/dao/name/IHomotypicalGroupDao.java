@@ -6,7 +6,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.name;
 
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
