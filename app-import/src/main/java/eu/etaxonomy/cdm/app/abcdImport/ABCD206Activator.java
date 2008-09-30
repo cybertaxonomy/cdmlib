@@ -68,14 +68,19 @@ public class ABCD206Activator {
 	protected String locality;
 	protected String country;
 	protected String isocountry;
+	protected int depth;
+	protected int altitude;
 	protected ArrayList<String> gatheringAgentList;
 	protected ArrayList<String> identificationList;
+	protected ArrayList<String> namedAreaList;
+
 
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 
 
 
-	private void parseXML(){
+	private NodeList getUnitsNodeList(){
+		NodeList unitList = null;
 		try {
 			// création d'une fabrique de documents
 			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
@@ -84,11 +89,20 @@ public class ABCD206Activator {
 			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
 
 			// lecture du contenu d'un fichier XML avec DOM
-			File xml = new File("/home/patricia/Desktop/abcd206_3.xml");
+			File xml = new File("/home/patricia/Desktop/multiABCD.xml");
 			Document document = constructeur.parse(xml);
 
 			Element racine = document.getDocumentElement();
+			unitList = racine.getElementsByTagName("Unit");
 
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		return unitList;
+	}
+
+	private void setUnitProperties(Element racine){
+		try{
 			NodeList group,childs,identifications,results,taxonsIdentified,person,scnames;
 
 			String tmpName = null;
@@ -211,6 +225,36 @@ public class ABCD206Activator {
 				this.accessionNumber = "";
 			}
 
+			try {//ALTITUDE
+				group = racine.getElementsByTagName("Altitude");
+				for (int i=0;i<group.getLength();i++){
+					childs = group.item(i).getChildNodes();
+					for (int j=0;j<childs.getLength();j++){
+						if (childs.item(j).getNodeName() == "MeasurementOrFactText")
+							this.altitude = Integer.valueOf(childs.item(j).getTextContent());
+					}
+				}
+			} catch (NullPointerException e) {
+				this.altitude = -9999;
+			}
+
+			try {//PROFONDEUR
+				group = racine.getElementsByTagName("Depth");
+				this.depth = Integer.valueOf(group.item(0).getTextContent());
+			} catch (NullPointerException e) {
+				this.depth = -9999;
+			}
+
+			try{
+				group = racine.getElementsByTagName("NamedArea");
+				this.namedAreaList = new ArrayList<String>();
+				for (int i=0;i<group.getLength();i++){
+					this.namedAreaList.add(group.item(i).getTextContent());
+				}
+			}catch(NullPointerException e){
+				this.gatheringAgentList = new ArrayList<String>();
+			}
+
 			try {
 				group = racine.getElementsByTagName("GatheringAgent");
 				this.gatheringAgentList = new ArrayList<String>();
@@ -234,7 +278,7 @@ public class ABCD206Activator {
 			System.out.println(this.collectionCode);
 			System.out.println(this.institutionCode);
 			System.out.println(this.fieldNumber);
-
+			System.out.println(this.unitID);
 
 		} catch (Exception e) {
 			logger.info("Error occured while parsing XML file"+e);
@@ -247,7 +291,7 @@ public class ABCD206Activator {
 		boolean result = true;
 		boolean withCdm = true;
 		CdmApplicationController app = null;
-
+		TransactionStatus tx = null;
 
 		try {
 			app = CdmApplicationController.NewInstance(CdmDestinations.cdm_test_patricia(), hbm2dll);
@@ -259,7 +303,7 @@ public class ABCD206Activator {
 			System.out.println("TermNotFoundException " +e1);
 		}
 
-
+		tx = app.startTransaction();
 		try {
 			ReferenceBase sec = Database.NewInstance();
 			sec.setTitleCache("XML DATA");
@@ -288,13 +332,17 @@ public class ABCD206Activator {
 			List<TaxonNameBase> names = null;
 			NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 			String scientificName="";
-			String preferredFlag="";
+			boolean preferredFlag=false;
 			for (int i = 0; i < this.identificationList.size(); i++) {
 				this.fullScientificNameString = this.identificationList.get(i);
 				this.fullScientificNameString = this.fullScientificNameString.replaceAll(" et ", " & ");
 				if (this.fullScientificNameString.indexOf("_preferred_") != -1){
 					scientificName = this.fullScientificNameString.split("_preferred_")[0];
-					preferredFlag = this.fullScientificNameString.split("_preferred_")[1];
+					String pTmp = this.fullScientificNameString.split("_preferred_")[1];
+					if (pTmp == "1" || pTmp.toLowerCase().indexOf("true") != -1)
+						preferredFlag=true;
+					else
+						preferredFlag=false;
 				}
 				else scientificName = this.fullScientificNameString;
 
@@ -328,10 +376,10 @@ public class ABCD206Activator {
 					}
 				}
 
-				TransactionStatus tx = app.startTransaction();
+//				TransactionStatus tx = app.startTransaction();
 				app.getNameService().saveTaxonName(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
-				app.commitTransaction(tx);
+//				app.commitTransaction(tx);
 
 
 				determinationEvent = DeterminationEvent.NewInstance();
@@ -398,8 +446,7 @@ public class ABCD206Activator {
 						}
 					} catch (NullPointerException e) {}
 				}
-				System.out.println("a trouvé la collection avec la meme institution? "+collectionFound);
-				if (!collectionFound){ //need to add a new collection with the pre-configured institution
+				if (!collectionFound){ 
 					collection.setCode(this.collectionCode);
 					collection.setCodeStandard("GBIF");
 					collection.setInstitute(institution);
@@ -424,20 +471,23 @@ public class ABCD206Activator {
 			coordinates.setLongitude(this.longitude);
 			gatheringEvent.setExactLocation(coordinates);
 
+			if (this.altitude != -9999)
+				gatheringEvent.setAbsoluteElevation(this.altitude);
+			if (this.depth != -9999)
+				gatheringEvent.setAbsoluteElevation(this.depth);
+
+
 			NamedArea area = NamedArea.NewInstance();
-			app.getTermService().saveTerm(area);
+//			app.getTermService().saveTerm(area);
 
 			WaterbodyOrCountry country = app.getOccurrenceService().getCountryByIso(this.isocountry);
 			if (country != null){
 				area.addWaterbodyOrCountry(country);
-				System.out.println("country not null!");
 			}
 			else{
 				List<WaterbodyOrCountry>countries = app.getOccurrenceService().getWaterbodyOrCountryByName(this.country);
 				if (countries.size() >0)
 					area.addWaterbodyOrCountry(countries.get(0));
-				else
-					System.out.println("NO COUNTRY");//TODO need to add a new country!
 			}
 
 			gatheringEvent.setCollectingArea(area);
@@ -460,15 +510,13 @@ public class ABCD206Activator {
 				}
 				gatheringEvent.setCollector(collector);
 			}
-
 			//create field/observation
 			FieldObservation fieldObservation = FieldObservation.NewInstance();
 			//add fieldNumber
 			fieldObservation.setFieldNumber(this.fieldNumber);
-
+			
 			//join gatheringEvent to fieldObservation
 			fieldObservation.setGatheringEvent(gatheringEvent);
-
 
 //			//link fieldObservation and specimen
 			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
@@ -483,14 +531,11 @@ public class ABCD206Activator {
 			//	app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
 
 			//TransactionStatus tx = app.startTransaction();
-			//app.getTermService().saveTerm(area);//save it sooner
+			app.getTermService().saveTerm(area);//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 			//app.commitTransaction(tx);
 
-
-
 			logger.info("saved new specimen ...");
-
 
 
 		} catch (Exception e) {
@@ -498,6 +543,9 @@ public class ABCD206Activator {
 			e.printStackTrace();
 			result = false;
 		}
+		app.commitTransaction(tx);
+		System.out.println("commit done");
+		app.close();
 		return result;
 	}
 
@@ -520,8 +568,13 @@ public class ABCD206Activator {
 	public static void main(String[] args) {
 		logger.info("main method");
 		ABCD206Activator abcdAct = new ABCD206Activator();
-		abcdAct.parseXML();
-		abcdAct.invoke();
+		NodeList unitsList = abcdAct.getUnitsNodeList();
+		if (unitsList != null)
+			for (int i=0;i<unitsList.getLength();i++){
+				abcdAct.setUnitProperties((Element)unitsList.item(i));
+				abcdAct.invoke();
+				hbm2dll = DbSchemaValidation.UPDATE;
+			}
 	}
 
 

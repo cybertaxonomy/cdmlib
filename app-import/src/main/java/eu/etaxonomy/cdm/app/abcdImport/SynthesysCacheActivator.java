@@ -96,7 +96,7 @@ public class SynthesysCacheActivator {
 	protected ArrayList<String> gatheringAgentList = new ArrayList<String>();
 	protected ArrayList<String> identificationList = new ArrayList<String>();
 
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 
 	protected HSSFWorkbook hssfworkbook = null;
 
@@ -233,9 +233,7 @@ public class SynthesysCacheActivator {
 			e1.printStackTrace();
 			System.out.println("TermNotFoundException " +e1);
 		}
-		System.out.println("avant!");
 		tx = app.startTransaction();
-		System.out.println("apres");
 		try {
 			ReferenceBase sec = Database.NewInstance();
 			sec.setTitleCache("SYNTHESYS CACHE DATA");
@@ -264,14 +262,18 @@ public class SynthesysCacheActivator {
 			List<TaxonNameBase> names = null;
 			NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 			String scientificName="";
-			String preferredFlag="";
+			boolean preferredFlag=false;
 			System.out.println(this.identificationList);
 			for (int i = 0; i < this.identificationList.size(); i++) {
 				this.fullScientificNameString = this.identificationList.get(i);
 				this.fullScientificNameString = this.fullScientificNameString.replaceAll(" et ", " & ");
 				if (this.fullScientificNameString.indexOf("_preferred_") != -1){
 					scientificName = this.fullScientificNameString.split("_preferred_")[0];
-					preferredFlag = this.fullScientificNameString.split("_preferred_")[1];
+					String pTmp = this.fullScientificNameString.split("_preferred_")[1];
+					if (pTmp == "1" || pTmp.toLowerCase().indexOf("true") != -1)
+						preferredFlag=true;
+					else
+						preferredFlag=false;
 				}
 				else scientificName = this.fullScientificNameString;
 
@@ -314,8 +316,7 @@ public class SynthesysCacheActivator {
 
 				determinationEvent = DeterminationEvent.NewInstance();
 				determinationEvent.setTaxon(taxon);
-				if (preferredFlag != "")
-					determinationEvent.setPreferredFlag(preferredFlag);
+				determinationEvent.setPreferredFlag(preferredFlag);
 				derivedThing.addDetermination(determinationEvent);
 			}
 
