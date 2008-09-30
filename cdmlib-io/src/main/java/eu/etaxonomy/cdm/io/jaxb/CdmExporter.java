@@ -75,14 +75,6 @@ public class CdmExporter {
 	
 	private static final Logger logger = Logger.getLogger(CdmExporter.class);
 	
-    /* SerializeFrom DB **/
-	private static final String serializeFromDb = "cdm_test_anahit2";
-	//private static final String serializeFromDb = "cdm_test_anahit";
-	
-    /* SerializeTo DB */
-	private static final String deserializeToDb = "cdm_test_anahit";
-	//private static final String deserializeToDb = "cdm_test_jaxb2";
-	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 	
@@ -133,48 +125,6 @@ public class CdmExporter {
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
     public CdmExporter() {	
-    }
-
-    public void initDb(String dbname) {
-    	
-    	CdmApplicationController appCtr = initPreloadedDb(dbname);
-    	loadTestData(dbname, appCtr);
-    }
-    
-    public CdmApplicationController initPreloadedDb(String dbname) {
-    	
-		logger.info("Initializing DB " + dbname);
-		
-		CdmApplicationController appCtr = null;
-		try {
-			String pwd = AccountStore.readOrStorePassword(dbname, server, username, null);
-			
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, pwd);
-			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-			
-		} catch (DataSourceNotFoundException e) {
-			logger.error("datasource error");
-		} catch (TermNotFoundException e) {
-			logger.error("defined terms not found");
-		}
-		
-		return appCtr;
-    }
-
-    public void loadTestData(String dbname, CdmApplicationController appCtr) {
-    	
-		logger.info("Loading test data into " + dbname);
-		
-		DataSet dataSet = buildDataSet();
-		
-		TransactionStatus txStatus = appCtr.startTransaction();
-		
-		logger.info("Initializing DB " + dbname + " with test data");
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxa());
-
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
     }
 
     private void retrieveAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
@@ -519,30 +469,22 @@ public class CdmExporter {
     }
     
     
-    /** Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
+    /** Retrieves data from a CDM DB and serializes them CDM to XML.
+     * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
      * Taxa that are not part of the taxonomic tree are not found.
+     * 
+     * @param exImpConfig
      * @param dbname
      * @param filename
      */
-    public void doSerializeTaxonTree(String dbname, String filename) {
-    	
-		logger.info("Serializing DB " + dbname + " to file " + filename);
+    public void doSerializeTaxonTree(JaxbExportImportConfigurator exImpConfig, String filename) {
 
-		CdmApplicationController appCtr = null;
+    	String dbname = exImpConfig.getCdmSource().getName();
+    	logger.info("Serializing DB " + dbname + " to file " + filename);
 
-    	try {
-    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-    		
-    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
+		CdmApplicationController appCtr = 
+			exImpConfig.getSourceAppController(exImpConfig.getCdmSource(), true);
 
-    	} catch (DataSourceNotFoundException e) {
-    		logger.error("datasource error");
-    	} catch (TermNotFoundException e) {
-    		logger.error("defined terms not found");
-    	}
-    	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
@@ -591,26 +533,23 @@ public class CdmExporter {
     }
     
 
-    // get all data directly from the services, including taxa, synonyms, and relationships
-    public void doSerialize(String dbname, String filename) {
+    /** Retrieves data from a CDM DB and serializes them CDM to XML.
+     * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
+     * Taxa that are not part of the taxonomic tree are not found.
+     * 
+     * @param exImpConfig
+     * @param dbname
+     * @param filename
+     */
+    public void doSerialize(JaxbExportImportConfigurator expImpConfig, String filename) {
     	
+    	String dbname = expImpConfig.getCdmSource().getName();
 		logger.info("Serializing DB " + dbname + " to file " + filename);
+		logger.info("DbSchemaValidation = " + expImpConfig.getCdmSourceSchemaValidation());
 
-		CdmApplicationController appCtr = null;
+		CdmApplicationController appCtr = 
+			expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
 
-    	try {
-    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-    		
-    		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-    		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
-
-    	} catch (DataSourceNotFoundException e) {
-    		logger.error("datasource error");
-    	} catch (TermNotFoundException e) {
-    		logger.error("defined terms not found");
-    	}
-    	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
     	DataSet dataSet = new DataSet();
     	List<Taxon> taxa = null;
@@ -650,25 +589,19 @@ public class CdmExporter {
     }
     
 
-	public void doDeserialize(String dbname, String filename) {
+    /** Reads data from an XML and stores them into a CDM DB.
+     * 
+     * @param exImpConfig
+     * @param dbname
+     * @param filename
+     */
+	public void doDeserialize(JaxbExportImportConfigurator expImpConfig, String filename) {
 		
+    	String dbname = expImpConfig.getCdmDestination().getName();
 		logger.info("Deserializing file " + filename + " to DB " + dbname);
 
-		CdmApplicationController appCtr = null;
-
-		try {
-    		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-			
-			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-			appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
-			
-		} catch (DataSourceNotFoundException e) {
-			logger.error("datasource error");
-		} catch (TermNotFoundException e) {
-			logger.error("defined terms not found");
-		}
-
+		CdmApplicationController appCtr = 
+			expImpConfig.getDestinationAppController(expImpConfig.getCdmDestination(), true);
 		DataSet dataSet = new DataSet();
 		
         // unmarshalling XML file
@@ -689,185 +622,5 @@ public class CdmExporter {
 		saveData(appCtr, dataSet);
 		
 	}
-	
-	private void test(){
 		
-		// Init DB with pre-loaded terms only.
-		//initPreloadedDb(serializeFromDb);
-		
-		// Init Db with pre-loaded terms and some test data.
-		//initDb(serializeFromDb);
-		
-		// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
-		// Retrieve the other data from services.
-	    //doSerializeTaxonTree(serializeFromDb, marshOutOne);
-		
-		// Retrieve data, including taxa, synonyms, and relationships
-		// via services rather than traversing the tree.
-	    doSerialize(serializeFromDb, marshOutOne);
-	    
-		doDeserialize(deserializeToDb, marshOutOne);
-	    
-		//doSerialize(deserializeToDb, marshOutTwo);
-		}
-	
-	/**
-	 * @param args
-	 */
-	public static void  main(String[] args) {
-		CdmExporter sc = new CdmExporter();
-    	sc.test();
-	}
-
-	/**
-	 * This method constructs a small sample taxonomic tree to test JAXB marshaling.
-	 * The sample tree contains four taxa. The root taxon has two children taxa, and
-	 * there is one "free" taxon without a parent and children.
-	 */
-	private DataSet buildDataSet() {
-
-		List<Agent> agents = new ArrayList<Agent>();
-	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
-	    //List<TermBase> terms = new ArrayList<TermBase>();
-	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
-	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
-	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
-	    List<Taxon> taxa = new ArrayList<Taxon>();
-	    List<Synonym> synonyms = new ArrayList<Synonym>();
-	    List<AnnotatableEntity> homotypicalGroups;
-
-		StrictReferenceBase citRef, sec;
-		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
-		Taxon child1, child2, child21, rootT, freeT;
-		Synonym syn11, syn12, syn2, synFree;
-		Rank rankSpecies, rankSubspecies, rankGenus;
-
-		// agents 
-		// - persons, institutions 
-
-		Person linne = new Person("Carl", "Linné", "L.");
-		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
-		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
-		TimePeriod period = new TimePeriod(birth, death);
-		linne.setLifespan(period);
-
-		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
-		linne.addKeyword(keyword);
-
-		Institution institute = Institution.NewInstance();
-
-		agents.add(linne);
-		agents.add(institute);
-
-		// agent data
-		// - contacts, addresses, memberships
-
-		//Contact contact1 = new Contact();
-		//contact1.setEmail("someone@somewhere.org");
-		InstitutionalMembership membership 
-		= new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
-		//agentData.add(contact1);
-
-		agentData.add(membership);
-
-		// terms
-		// - ranks, keywords
-
-		rankSpecies = Rank.SPECIES();
-		rankSubspecies = Rank.SUBSPECIES();
-		rankGenus = Rank.GENUS();
-		
-		terms.add(keyword);
-		
-        // taxonomic names
-		
-		nameRoot = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
-		
-		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
-		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
-		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
-		
-		name2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzae",null,linne,null,"p.2", null);
-		synName2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"echinata",null,linne,null,"p.2", null);
-		
-		name21 = BotanicalName.NewInstance(rankSubspecies,"Calendula",null,"lanzea","something",linne,null,"p.1", null);
-		//name211 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
-		//name212 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
-		
-		nameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"intybus",null,linne,null,"p.200", null);
-		synNameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"balearicum",null,linne,null,"p.2", null);
-
-		taxonomicNames.add(nameRoot);
-		taxonomicNames.add(name1);
-		taxonomicNames.add(synName11);
-		taxonomicNames.add(synName12);
-		taxonomicNames.add(name2);
-		taxonomicNames.add(name21);
-		taxonomicNames.add(synName2);
-		taxonomicNames.add(nameFree);
-		taxonomicNames.add(synNameFree);
-		
-        // references
-		
-		sec = Book.NewInstance();
-		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Plant Speciation");
-		references.add(sec);
-		
-		citRef = Database.NewInstance();
-		citRef.setAuthorTeam(linne);
-		citRef.setTitleCache("BioCASE");
-		references.add(citRef);
-
-		// taxa
-		
-		rootT = Taxon.NewInstance(nameRoot, sec);
-		freeT = Taxon.NewInstance(nameFree, sec);
-		child1 = Taxon.NewInstance(name1, sec);
-		child2 = Taxon.NewInstance(name2, sec);
-		child21 = Taxon.NewInstance(name21, sec);
-		
-		// synonyms
-		
-		synFree = Synonym.NewInstance(synNameFree, sec);
-		syn11 = Synonym.NewInstance(synName11, sec);
-		syn12 = Synonym.NewInstance(synName12, sec);
-		syn2 = Synonym.NewInstance(synName2, sec);
-		
-		child1.addSynonym(syn11, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-		child1.addSynonym(syn12, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		freeT.addSynonym(synFree, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-
-		synonyms.add(synFree);
-		synonyms.add(syn11);
-		synonyms.add(syn12);
-		synonyms.add(syn2);
-		
-		// taxonomic children
-		
-		rootT.addTaxonomicChild(child1, sec, "p.1010");
-		rootT.addTaxonomicChild(child2, sec, "p.1020");
-		child2.addTaxonomicChild(child21, sec, "p.2000");
-				
-		taxa.add(rootT);
-		taxa.add(freeT);
-		taxa.add(child1);
-		taxa.add(child2);
-		taxa.add(child21);
-		
-		DataSet dataSet = new DataSet();
-		
-		dataSet.setAgents(agents);
-		dataSet.setAgentData(agentData);
-		dataSet.setTerms(terms);
-		dataSet.setReferences(references);
-		dataSet.setTaxonomicNames(taxonomicNames);
-		dataSet.setTaxa(taxa);
-		dataSet.setSynonyms(synonyms);
-		
-		return dataSet;
-
-	}
-	
 }

@@ -11,9 +11,13 @@ import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * @author a.babadshanjan
@@ -22,6 +26,8 @@ import eu.etaxonomy.cdm.io.common.Source;
 public class JaxbExportImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(JaxbExportImportConfigurator.class);
+
+	private int maxRows = 0;
 
 	private boolean doAgents = true;
 	private boolean doAgentData = true;
@@ -40,21 +46,99 @@ public class JaxbExportImportConfigurator {
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
 	
-	private ICdmDataSource cdmSource;
-
 //	private Object source;
+//	private ICdmDataSource cdmDb;
+	private ICdmDataSource cdmSource;
+	private ICdmDataSource cdmDestination;
+	private DbSchemaValidation cdmSourceSchemaValidation = DbSchemaValidation.VALIDATE;
+	private DbSchemaValidation cdmDestSchemaValidation = DbSchemaValidation.CREATE;
+	private CdmApplicationController cdmApp = null;
 
-	public JaxbExportImportConfigurator(ICdmDataSource sourceDb) {
-
-		this.cdmSource = sourceDb;
+	public JaxbExportImportConfigurator() {
 	}
 	
-	public ICdmDataSource getSource() {
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getSourceAppController(ICdmDataSource cdmDb, boolean createNew){
+		if (cdmApp == null || createNew == true){
+			try {
+				cdmApp = CdmApplicationController.NewInstance(this.getCdmSource(), this.getCdmSourceSchemaValidation());
+			} catch (DataSourceNotFoundException e) {
+				logger.error("Could not connect to source database");
+				return null;
+			}catch (TermNotFoundException e) {
+				logger.error("Terms not found in source database. " +
+				"This error should not happen since preloaded terms are not expected for this application.");
+				return null;
+			}
+		}
+		return cdmApp;
+	}
+
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getDestinationAppController(ICdmDataSource cdmDb, boolean createNew){
+		if (cdmApp == null || createNew == true){
+			try {
+				cdmApp = CdmApplicationController.NewInstance(this.getCdmDestination(), this.getCdmDestSchemaValidation());
+			} catch (DataSourceNotFoundException e) {
+				logger.error("Could not connect to destination database");
+				return null;
+			}catch (TermNotFoundException e) {
+				logger.error("Terms not found in destination database. " +
+				"This error should not happen since preloaded terms are not expected for this application.");
+				return null;
+			}
+		}
+		return cdmApp;
+	}
+
+	public int getMaxRows() {
+		return maxRows;
+	}
+	
+	public void setMaxRows(int maxRows) {
+		this.maxRows = maxRows;
+	}
+	
+	public ICdmDataSource getCdmSource() {
 		return cdmSource;
 	}
 	
-	public void setSource(ICdmDataSource cdmSource) {
-		setSource(cdmSource);
+	public void setCdmSource(ICdmDataSource cdmSource) {
+		this.cdmSource = cdmSource;
+	}
+
+	public ICdmDataSource getCdmDestination() {
+		return cdmDestination;
+	}
+
+	public void setCdmDestination(ICdmDataSource cdmDestination) {
+		this.cdmDestination = cdmDestination;
+	}
+
+	public DbSchemaValidation getCdmSourceSchemaValidation() {
+		return cdmSourceSchemaValidation;
+	}
+
+	public void setCdmSourceSchemaValidation(DbSchemaValidation cdmSchemaValidation) {
+		this.cdmSourceSchemaValidation = cdmSchemaValidation;
+	}
+
+	public DbSchemaValidation getCdmDestSchemaValidation() {
+		return cdmDestSchemaValidation;
+	}
+
+	public void setCdmDestSchemaValidation(DbSchemaValidation cdmSchemaValidation) {
+		this.cdmDestSchemaValidation = cdmSchemaValidation;
 	}
 
 	public boolean isDoAgents() {
