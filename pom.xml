@@ -562,6 +562,11 @@
 				<artifactId>imageinfo</artifactId>
 				<version>1.7</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>3.1-FINAL</version>
+			</dependency>
 			
 		    <!-- joda-time -->
 			<dependency>
