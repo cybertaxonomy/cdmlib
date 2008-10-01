@@ -15,9 +15,9 @@
   <name>CDM Import/Export</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</connection>
-    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-io/</developerConnection>
-    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-io/</url>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/app-import/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/app-import/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/app-import/</url>
   </scm>
   
   <dependencies>
@@ -25,5 +25,9 @@
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-io</artifactId>
   	</dependency>
+	<dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi</artifactId>
+	</dependency>
   </dependencies>
 </project>
