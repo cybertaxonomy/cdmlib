@@ -721,10 +721,6 @@ public class Feature extends DefinedTermBase {
 	}
 	
 	
-	
-	/**
-	 * special kind of OrganismInteraction
-	 */
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
 	 * by {@link TaxonInteraction taxon interactions}.<BR>

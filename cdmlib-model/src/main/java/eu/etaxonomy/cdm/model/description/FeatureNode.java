@@ -159,7 +159,7 @@ public class FeatureNode extends VersionableEntity {
 	}
 	/**
 	 * Assigns the given feature node as the parent of <i>this</i> feature node.
-	 * Due to bidirectionality this methods must also add <i>this</i> feature node
+	 * Due to bidirectionality this method must also add <i>this</i> feature node
 	 * to the list of children of the given parent.
 	 * 
 	 * @param	parent	the feature node to be set as parent 
@@ -182,7 +182,7 @@ public class FeatureNode extends VersionableEntity {
 	}
 	/**
 	 * Assigns the given feature node list as the list of children of
-	 * <i>this</i> feature node. Due to bidirectionality this methods must also
+	 * <i>this</i> feature node. Due to bidirectionality this method must also
 	 * add <i>this</i> feature node to the list of children of the given parent.
 	 * 
 	 * @param	children	the feature node list to be set as child list 
@@ -195,7 +195,7 @@ public class FeatureNode extends VersionableEntity {
 	}
 	/**
 	 * Adds the given feature node at the end of the list of children of
-	 * <i>this</i> feature node. Due to bidirectionality this methods must also
+	 * <i>this</i> feature node. Due to bidirectionality this method must also
 	 * assign <i>this</i> feature node as the parent of the given child.
 	 * 
 	 * @param	child	the feature node to be added 

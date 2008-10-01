@@ -34,16 +34,16 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
  * The class to arrange {@link Feature features} (characters) in a tree structure.
- * Feature trees are essential for determination process but may also be used
- * to define flat feature subsets for filtering purposes. Particular feature trees
- * allow different determination processes depending on the concerned taxonomic
- * group.<BR>
+ * Feature trees are essential as interactive multiple-access keys for
+ * determination process and for systematical output arrangement of
+ * {@link DescriptionElementBase description elements} according to different goals but may also be used
+ * to define flat feature subsets for filtering purposes.<BR>
  * A feature tree is build on {@link FeatureNode feature nodes}.
  * <P>
  * This class corresponds partially to ConceptTreeDefType according to the SDD
  * schema.
  * <P>
- * Note: The tree structure of features needed for a determination process has
+ * Note: The tree structure of features used for purposes described above has
  * nothing in common with the possible hierarchical structure of features
  * depending on their grade of precision.  
  *  
@@ -128,6 +128,7 @@ public class FeatureTree extends TermBase {
 		return result;
 	}
 	
+	// Delete the isDescriptionSeparated flag ??
 	/**
 	 * Returns the boolean value of the flag indicating whether the
 	 * {@link DescriptionElementBase description elements} associated with the {@link Feature features}

@@ -29,7 +29,9 @@ import javax.persistence.*;
  * particular tree is described as "mostly blue" and "exceptionally white" two
  * {@link StateData state data} instances must be assigned to an instance of the
  * present class: the first one with the state "blue" and the {@link Modifier modifier}
- * "mostly" and the second one with the state "white" and the modifier "exceptionally".  
+ * "mostly" and the second one with the state "white" and the modifier "exceptionally".
+ * Whenever more than one state data belongs to a categorical data they should be
+ * interpreted as being related by the inclusive disjunction "or".  
  * <P>
  * This class corresponds partially to CodedDescriptionType according to
  * the SDD schema.
@@ -99,12 +101,12 @@ public class CategoricalData extends DescriptionElementBase {
 		this.states.remove(state);
 	}
 
+	//rename to isStateSequenceIntentional ??
 	/**
-	 * Returns the boolean value of the flag indicating whether the {@link StateData state data}
-	 * belonging to <i>this</i> categorical data should be treated as an
-	 * {@link List "ordered" list} (true) according to the {@link State states} or as an
-	 * {@link Set "unordered" set} (false). The use of this flag depends mostly
-	 * on the {@link Feature feature} of <i>this</i> categorical data.
+	 * Returns the boolean value of the flag indicating whether the sequence of
+	 * {@link StateData state data} belonging to <i>this</i> categorical data is intentional
+	 * (true) and therefore relevant for interpretation or analysis or not (false).
+	 * The use of this flag depends mostly on the {@link Feature feature} of <i>this</i> categorical data.
 	 *  
 	 * @return  the boolean value of the orderRelevant flag
 	 */

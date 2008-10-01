@@ -17,11 +17,11 @@ import java.util.*;
 import javax.persistence.*;
 
 /**
- * The class representing dichotomous or multifurcating authored keys
- * (including legacy data) used to identify (this means to assign {@link Taxon taxa} to)
- * {@link SpecimenOrObservationBase specimens or observations}. The determination process is
- * based on {@link FeatureTree feature trees} and on particular {@link StatisticalMeasurementValue values}
- * or {@link StateData states} for the {@link Feature features} belonging to the feature tree.
+ * The class representing single-access fixed dichotomous or polytomous authored
+ * decision keys (as opposed to {@link FeatureTree multiple-access keys}) used to identify
+ * {@link SpecimenOrObservationBase specimens or observations} (this means to assign {@link Taxon taxa} to).
+ * The determination process is based on the tree structure of the key and on
+ * the statements of its leads.
  * 
  * @author m.doering 
  * @version 1.0
