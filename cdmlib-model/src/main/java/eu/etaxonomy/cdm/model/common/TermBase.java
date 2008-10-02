@@ -148,12 +148,32 @@ public abstract class TermBase extends VersionableEntity {
 		}
 		return super.getUuid().toString();
 	}
-
+	
 	@Transient
 	public String getLabel(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null : repr.getLabel();
+	}	
+	
+	@Transient
+	public void setLabel(String label){
+		Language lang = Language.DEFAULT();
+		setLabel(label, lang);
 	}
+
+	@Transient
+	public void setLabel(String label, Language language){
+		if (language != null){
+			Representation repr = getRepresentation(language);
+			if (repr != null){
+				repr.setLabel(label);
+			}else{
+				repr = Representation.NewInstance(null, label, null, language);
+			}
+			this.addRepresentation(repr);
+		}
+	}
+
 
 	@Transient
 	public String getDescription() {
