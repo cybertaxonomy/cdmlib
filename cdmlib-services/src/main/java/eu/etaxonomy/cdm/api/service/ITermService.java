@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -57,13 +58,13 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 	public List<Representation> getAllRepresentations(int limit, int start);
 	
-	//public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations);
-	
 	public Map<UUID, LanguageStringBase> saveLanguageDataAll(Collection<LanguageStringBase> languageData);
 	
 	public List<LanguageString> getAllLanguageStrings(int limit, int start);
 	
 	public Map<UUID, LanguageStringBase> 
 	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases);
+	
+	public Language getLanguageByIso(String iso639);
 
 }

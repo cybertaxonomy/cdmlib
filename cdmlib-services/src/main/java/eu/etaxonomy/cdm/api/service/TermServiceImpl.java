@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -49,6 +50,8 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	private IRepresentationDao representationDao;
 	@Autowired
 	private ILanguageStringDao languageStringDao;
+	@Autowired
+	private IDefinedTermDao definedTermDao;
 	
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
@@ -58,6 +61,7 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	@Autowired
 	protected void setDao(IDefinedTermDao dao) {
 		this.dao = dao;
+		this.definedTermDao = dao;
 	}
 	
 	/* (non-Javadoc)
@@ -140,6 +144,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	public Map<UUID, LanguageStringBase> 
 	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases) {
 		return languageStringBaseDao.saveAll(languageStringBases);
+	}
+	
+	public Language getLanguageByIso(String iso639) {
+		return definedTermDao.getLanguageByIso(iso639);
 	}
 	
 }
