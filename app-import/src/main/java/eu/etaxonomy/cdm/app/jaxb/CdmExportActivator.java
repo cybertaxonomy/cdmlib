@@ -83,7 +83,7 @@ public class CdmExportActivator {
 	private static final Logger logger = Logger.getLogger(CdmExportActivator.class);
 	
     /* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_jaxb";
+	private static final String sourceDbName = "cdm_test_anahit";
 	private static final String destinationDbName = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -98,7 +98,7 @@ public class CdmExportActivator {
 
 	public static ICdmDataSource CDM_DB(String dbname) {
 
-		logger.info("Initializing DB " + dbname);
+		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 		return datasource;
@@ -160,7 +160,7 @@ public class CdmExportActivator {
 
     	CdmExporter cdmExporter = new CdmExporter();
 
-    	/* ********* INIT ****/
+    	/* ********* INIT ****************************/
     	
     	// Init source DB
 //    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.CREATE);
@@ -173,15 +173,22 @@ public class CdmExportActivator {
     	// Reset DbSchemaValidation
 //    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
     	
-    	/* ********* SERIALIZE ****/
+    	// Init destination DB
+//    	expImpConfigurator.setCdmDestSchemaValidation(DbSchemaValidation.CREATE);
+//		CdmApplicationController appCtr = 
+//			expImpConfigurator.getDestinationAppController(expImpConfigurator.getCdmDestination(), true);
+
+    	/* ********* SERIALIZE ***********************/
     	
+//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.CREATE);
+    	
+    	// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
+//    	cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
+
     	// Retrieve data, including taxa, synonyms, and relationships via services.
     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
 
-    	// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
-    	//cdmExporter.doSerializeTaxonTree(sourceDb, marshOutOne);
-
-    	/* ********* DESERIALIZE ****/
+    	/* ********* DESERIALIZE *********************/
     	
     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
 
