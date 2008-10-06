@@ -66,7 +66,7 @@ public class JaxbExportImportConfigurator {
 	public CdmApplicationController getSourceAppController(ICdmDataSource cdmDb, boolean createNew){
 		if (cdmApp == null || createNew == true){
 			try {
-				cdmApp = CdmApplicationController.NewInstance(this.getCdmSource(), this.getCdmSourceSchemaValidation());
+				cdmApp = CdmApplicationController.NewInstance(this.getCdmSource(), this.getCdmSourceSchemaValidation(), true);
 			} catch (DataSourceNotFoundException e) {
 				logger.error("Could not connect to source database");
 				return null;
@@ -88,7 +88,7 @@ public class JaxbExportImportConfigurator {
 	public CdmApplicationController getDestinationAppController(ICdmDataSource cdmDb, boolean createNew){
 		if (cdmApp == null || createNew == true){
 			try {
-				cdmApp = CdmApplicationController.NewInstance(this.getCdmDestination(), this.getCdmDestSchemaValidation());
+				cdmApp = CdmApplicationController.NewInstance(this.getCdmDestination(), this.getCdmDestSchemaValidation(), true);
 			} catch (DataSourceNotFoundException e) {
 				logger.error("Could not connect to destination database");
 				return null;

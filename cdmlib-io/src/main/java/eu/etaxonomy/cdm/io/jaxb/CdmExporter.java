@@ -75,62 +75,18 @@ public class CdmExporter {
 	
 	private static final Logger logger = Logger.getLogger(CdmExporter.class);
 	
-	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows. */
-	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
-	
-	/** For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
-	 *  as many rows as specified for agents, references, etc. 
-	 *  Only root taxa and no synonyms and relationships are retrieved. */
-	//private static final int NUMBER_ROWS_TO_RETRIEVE = 10;
-	
-//	private boolean doAgents = false;
-//	private boolean doAgentData = false;
-//	private boolean doLanguageData = false;
-//	private boolean doFeatureData = false;
-//	private boolean doDescriptions = false;
-//	private boolean doMedia = false;
-//	private boolean doOccurrences = false;
-//	private boolean doReferences = false;
-//	private boolean doReferencedEntities = false;
-//	private boolean doRelationships = false;
-//	private boolean doSynonyms = false;
-//	private boolean doTaxonNames = false;
-//	private boolean doTaxa = false;
-//	private boolean doTerms = false;
-//	private boolean doTermVocabularies = false;
-//	private boolean doHomotypicalGroups = true;
-	
-	private boolean doAgents = true;
-	private boolean doAgentData = true;
-	private boolean doLanguageData = true;
-	private boolean doFeatureData = true;
-	private boolean doDescriptions = true;
-	private boolean doMedia = true;
-	private boolean doOccurrences = true;
-	private boolean doReferences = true;
-	private boolean doReferencedEntities = true;
-	private boolean doRelationships = true;
-	private boolean doSynonyms = true;
-	private boolean doTaxonNames = true;
-	private boolean doTaxa = true;
-	private boolean doTerms = true;
-	private boolean doTermVocabularies = true;
-	private boolean doHomotypicalGroups = true;
-	
-	private String server = "192.168.2.10";
-	private String username = "edit";
-	private String marshOutOne = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
-	private String marshOutTwo = new String( System.getProperty("user.home") + File.separator + "cdm_test_jaxb_roundtrip.xml");
-
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
     public CdmExporter() {	
     }
 
-    private void retrieveAllDataFlat (CdmApplicationController appCtr, DataSet dataSet, int numberOfRows) {
+    private void retrieveData (JaxbExportImportConfigurator expImpConfig, DataSet dataSet) {
     	
         final int MAX_ROWS = 50000;
-
+        int numberOfRows = expImpConfig.getMaxRows();
+		CdmApplicationController appCtr = 
+			expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), false);
+        
     	int agentRows = numberOfRows;
     	int definedTermBaseRows = numberOfRows;
     	int referenceBaseRows = numberOfRows;
@@ -144,52 +100,52 @@ public class CdmExporter {
     	int termVocabularyRows = numberOfRows;
     	int homotypicalGroupRows = numberOfRows;
 
-    	if (doTermVocabularies == true) {
+    	if (expImpConfig.isDoTermVocabularies() == true) {
     		if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
     		logger.info("# TermVocabulary");
     		dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
     	}
     	
-    	if (doLanguageData == true) {
+    	if (expImpConfig.isDoLanguageData() == true) {
     		if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
     		logger.info("# Representation, Language String");
     		dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
     		dataSet.addLanguageData(appCtr.getTermService().getAllLanguageStrings(MAX_ROWS, 0));
     	}
     	
-    	if (doTerms == true) {
+    	if (expImpConfig.isDoTerms() == true) {
     		if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
     		logger.info("# DefinedTermBase: " + definedTermBaseRows);
     		dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
     	}
 
-    	if (doAgents == true) {
+    	if (expImpConfig.isDoAgents() == true) {
     		if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
     		logger.info("# Agents: " + agentRows);
     		//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
     		dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
     	}
 
-    	if (doReferences == true) {
+    	if (expImpConfig.isDoReferences() == true) {
     		if (referenceBaseRows == 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
     		logger.info("# ReferenceBase: " + referenceBaseRows);
     		dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
     	}
 
-    	if (doTaxonNames == true) {
+    	if (expImpConfig.isDoTaxonNames() == true) {
     		if (taxonNameBaseRows == 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
     		logger.info("# TaxonNameBase: " + taxonNameBaseRows);
     		//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
     		dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
     	}
 
-    	if (doHomotypicalGroups == true) {
+    	if (expImpConfig.isDoHomotypicalGroups() == true) {
     		if (homotypicalGroupRows == 0) { homotypicalGroupRows = MAX_ROWS; }
     		logger.info("# Homotypical Groups");
     		dataSet.setHomotypicalGroups(appCtr.getNameService().getAllHomotypicalGroups(homotypicalGroupRows, 0));
     	}
     	
-    	if (doTaxa == true) {
+    	if (expImpConfig.isDoTaxa() == true) {
     		if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
     		logger.info("# TaxonBase: " + taxonBaseRows);
     		dataSet.setTaxa(new ArrayList<Taxon>());
@@ -214,7 +170,7 @@ public class CdmExporter {
 //  	dataSet.setSynonyms(new ArrayList<Synonym>());
 //  	dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
 
-    	if (doRelationships == true) {
+    	if (expImpConfig.isDoRelationships() == true) {
     		if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
     		logger.info("# Relationships");
     		List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
@@ -222,19 +178,19 @@ public class CdmExporter {
     		dataSet.setRelationships(relationSet);
     	}
 
-    	if (doReferencedEntities == true) {
+    	if (expImpConfig.isDoReferencedEntities() == true) {
     		logger.info("# Referenced Entities");
     		dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
     		dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
     	}
 
-    	if (doOccurrences == true) {
+    	if (expImpConfig.isDoOccurrences() == true) {
     		if (occurrencesRows == 0) { occurrencesRows = appCtr.getOccurrenceService().count(SpecimenOrObservationBase.class); }
     		logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
     		dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
     	}
 
-    	if (doMedia == true) {
+    	if (expImpConfig.isDoMedia() == true) {
     		if (mediaRows == 0) { mediaRows = MAX_ROWS; }
     		logger.info("# Media");
     		dataSet.setMedia(appCtr.getMediaService().getAllMedia(mediaRows, 0));
@@ -242,7 +198,7 @@ public class CdmExporter {
 //    		dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
     	}
     	
-    	if (doFeatureData == true) {
+    	if (expImpConfig.isDoFeatureData() == true) {
     		if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
     		logger.info("# Feature Tree, Feature Node");
     		dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
@@ -251,7 +207,7 @@ public class CdmExporter {
     }
 
 	/**  Saves data in DB */
-    private void saveData (CdmApplicationController appCtr, DataSet dataSet) {
+    private void saveData (JaxbExportImportConfigurator expImpConfig, DataSet dataSet) {
 
 		Collection<TaxonBase> taxonBases;
 		List<Agent> agents;
@@ -268,6 +224,8 @@ public class CdmExporter {
 		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
 		List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
 
+		CdmApplicationController appCtr = 
+			expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		// If data of a certain type, such as terms, are not saved here explicitly, 
@@ -275,40 +233,47 @@ public class CdmExporter {
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 		
-		if ((terms = dataSet.getTerms()) != null) {
-			logger.info("Terms: " + terms.size());
-			appCtr.getTermService().saveTermsAll(terms);
+		if (expImpConfig.isDoTerms() == true) {
+			if ((terms = dataSet.getTerms()).size() > 0) {
+				logger.info("Terms: " + terms.size());
+				appCtr.getTermService().saveTermsAll(terms);
+			}
 		}
 
-		if (doTermVocabularies == true) {
+//		if ((terms = dataSet.getTerms()) != null) {
+//			logger.info("Terms: " + terms.size());
+//			appCtr.getTermService().saveTermsAll(terms);
+//		}
+		
+		if (expImpConfig.isDoTermVocabularies() == true) {
 			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
 				logger.info("Language data: " + termVocabularies.size());
 				appCtr.getTermService().saveTermVocabulariesAll(termVocabularies);
 			}
 		}
 
-		if (doAgents == true) {
+		if (expImpConfig.isDoAgents() == true) {
 			if ((agents = dataSet.getAgents()) != null) {
 				logger.info("Agents: " + agents.size());
 				appCtr.getAgentService().saveAgentAll(agents);
 			}
 		}
 
-		if (doReferences == true) {
+		if (expImpConfig.isDoReferences() == true) {
 			if ((references = dataSet.getReferences()) != null) {
 				logger.info("References: " + references.size());
 				appCtr.getReferenceService().saveReferenceAll(references);
 			}
 		}
 
-		if (doTaxonNames == true) {
+		if (expImpConfig.isDoTaxonNames() == true) {
 			if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
 				logger.info("Taxonomic names: " + taxonomicNames.size());
 				appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
 			}
 		}
 
-		if (doHomotypicalGroups == true) {
+		if (expImpConfig.isDoHomotypicalGroups() == true) {
 			if ((homotypicalGroups = dataSet.getHomotypicalGroups()) != null) {
 				logger.info("Homotypical groups: " + homotypicalGroups.size());
 				appCtr.getNameService().saveAllHomotypicalGroups(homotypicalGroups);
@@ -316,7 +281,7 @@ public class CdmExporter {
 		}
 		
 		// Need to get the taxa and the synonyms here.
-		if (doTaxa == true) {
+		if (expImpConfig.isDoTaxa() == true) {
 			if ((taxonBases = dataSet.getTaxonBases()) != null) {
 				logger.info("Taxon bases: " + taxonBases.size());
 				appCtr.getTaxonService().saveTaxonAll(taxonBases);
@@ -324,7 +289,7 @@ public class CdmExporter {
 		}
 
 	    // NomenclaturalStatus, TypeDesignations
-		if (doReferencedEntities == true) {
+		if (expImpConfig.isDoReferencedEntities() == true) {
 			if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
 				logger.info("Referenced entities: " + referencedEntities.size());
 				appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
@@ -337,28 +302,28 @@ public class CdmExporter {
 //		appCtr.getDescriptionService().saveDescriptionAll(descriptions);
 //		}
 
-		if (doOccurrences == true) {
+		if (expImpConfig.isDoOccurrences() == true) {
 			if ((occurrences = dataSet.getOccurrences()) != null) {
 				logger.info("Occurrences: " + occurrences.size());
 				appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
 			}
 		}
 
-		if (doFeatureData == true) {
+		if (expImpConfig.isDoFeatureData() == true) {
 			if ((featureData = dataSet.getFeatureData()) != null) {
 				logger.info("Feature data: " + featureData.size());
 				appCtr.getDescriptionService().saveFeatureDataAll(featureData);
 			}
 		}
 
-		if (doMedia == true) {
+		if (expImpConfig.isDoMedia() == true) {
 			if ((media = dataSet.getMedia()) != null) {
 				logger.info("Media: " + media.size());
 				appCtr.getMediaService().saveMediaAll(media);
 			}
 		}
 
-		if (doLanguageData == true) {
+		if (expImpConfig.isDoLanguageData() == true) {
 			if ((languageData = dataSet.getLanguageData()).size() > 0) {
 				logger.info("Language data: " + languageData.size());
 				appCtr.getTermService().saveLanguageDataAll(languageData);
@@ -509,7 +474,7 @@ public class CdmExporter {
 
         // traverse the taxonomic tree
     	
-    	if (NUMBER_ROWS_TO_RETRIEVE <= 0) { traverse(taxa, dataSet); }
+    	if (exImpConfig.getMaxRows() <= 0) { traverse(taxa, dataSet); }
     	
 		logger.info("All data retrieved");
 		
@@ -545,7 +510,7 @@ public class CdmExporter {
     	
     	String dbname = expImpConfig.getCdmSource().getName();
 		logger.info("Serializing DB " + dbname + " to file " + filename);
-		logger.info("DbSchemaValidation = " + expImpConfig.getCdmSourceSchemaValidation());
+		logger.debug("DbSchemaValidation = " + expImpConfig.getCdmSourceSchemaValidation());
 
 		CdmApplicationController appCtr = 
 			expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
@@ -560,7 +525,8 @@ public class CdmExporter {
     	try {
     		logger.info("Retrieving data from DB");
 
-    		retrieveAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
+    		retrieveData(expImpConfig, dataSet);
+//    		retrieveAllDataFlat(appCtr, dataSet, NUMBER_ROWS_TO_RETRIEVE);
     		
     	} catch (Exception e) {
     		logger.error("error setting data");
@@ -600,8 +566,6 @@ public class CdmExporter {
     	String dbname = expImpConfig.getCdmDestination().getName();
 		logger.info("Deserializing file " + filename + " to DB " + dbname);
 
-		CdmApplicationController appCtr = 
-			expImpConfig.getDestinationAppController(expImpConfig.getCdmDestination(), true);
 		DataSet dataSet = new DataSet();
 		
         // unmarshalling XML file
@@ -619,7 +583,7 @@ public class CdmExporter {
 		// save data in DB
 		logger.info("Saving data to DB: " + dbname);
 		
-		saveData(appCtr, dataSet);
+		saveData(expImpConfig, dataSet);
 		
 	}
 		
