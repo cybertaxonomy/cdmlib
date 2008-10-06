@@ -39,9 +39,9 @@ public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends Str
 	 */
 	public abstract String getTitleCache(T name);
 
+	public abstract String getFullTitleCache(T name);
 
-	
-	public abstract List<Object> getTaggedName(T taxonNameBase);
+		public abstract List<Object> getTaggedName(T taxonNameBase);
 
 
 

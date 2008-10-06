@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -79,6 +80,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
     "nomenclaturalMicroReference",
     "nomenclaturalReference",
     "rank",
+    "fullTitleCache",
+    "protectedFullTitleCache",
     "homotypicalGroup",
     "typeDesignations",
     "relationsFromThisName",
@@ -97,6 +100,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 
 	private static Method methodDescriptionSetTaxonName;
 
+	@XmlElement(name = "FullTitleCache")
+	private String fullTitleCache;
+	
+	//if true titleCache will not be automatically generated/updated
+	@XmlElement(name = "ProtectedFullTitleCache")
+	private boolean protectedFullTitleCache;
+	
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
 	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
@@ -143,6 +153,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     //@XmlElementWrapper(name = "TaxonBases")
     //@XmlElement(name = "TaxonBase")
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
+    
+    
 
     @XmlElement(name = "Rank")
 	@XmlIDREF
@@ -239,7 +251,52 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	@Transient
 	public abstract boolean isCodeCompliant();
 	
+	public abstract String generateFullTitle();
 
+    @Transient
+	public String getFullTitleCache(){
+		if (protectedFullTitleCache){
+			return this.fullTitleCache;			
+		}
+		if (fullTitleCache == null){
+			this.setTitleCache(generateFullTitle(), protectedFullTitleCache);
+		}
+		return fullTitleCache;
+	}
+
+    public void setFullTitleCache(String fullTitleCache){
+		setFullTitleCache(fullTitleCache, PROTECTED);
+	}
+	
+	public void setFullTitleCache(String fullTitleCache, boolean protectCache){
+		//TODO truncation of full title cache
+//		if (fullTitleCache != null && fullTitleCache.length() > 254){
+//			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
+//			fullTitleCache = fullTitleCache.substring(0, 249) + "...";
+//		}
+		this.fullTitleCache = fullTitleCache;
+		this.setProtectedFullTitleCache(protectCache);
+	}
+	
+	@Column(length=330)
+	@Deprecated //for hibernate use only
+	protected String getPersistentFullTitleCache(){
+		return getFullTitleCache();
+	}	
+	
+	@Deprecated //for hibernate use only
+	protected void setPersistentFullTitleCache(String fullTitleCache){
+		this.fullTitleCache = fullTitleCache;
+	}
+	
+	public boolean isProtectedFullTitleCache() {
+		return protectedFullTitleCache;
+	}
+
+	public void setProtectedFullTitleCache(boolean protectedFullTitleCache) {
+		this.protectedFullTitleCache = protectedFullTitleCache;
+	}
+	
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
 	 * in which <i>this</i> taxon name is involved. A taxon name can be both source

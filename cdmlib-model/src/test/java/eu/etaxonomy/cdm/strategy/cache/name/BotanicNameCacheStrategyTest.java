@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -23,9 +24,17 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 
@@ -36,6 +45,17 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 public class BotanicNameCacheStrategyTest {
 	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
 	
+	private static final String familyNameString = "Familia";
+	private static final String genusNameString = "Genus";
+	private static final String speciesNameString = "Abies alba";
+	private static final String subSpeciesNameString = "Abies alba subsp. beta";
+	private static final String appendedPhraseString = "app phrase";
+
+	private static final String authorString = "L.";
+	private static final String exAuthorString = "Exaut.";
+	private static final String basAuthorString = "Basio, A.";
+	private static final String exBasAuthorString = "ExBas. N.";
+
 	private BotanicNameDefaultCacheStrategy strategy;
 	private BotanicalName familyName;
 	private BotanicalName genusName;
@@ -46,18 +66,8 @@ public class BotanicNameCacheStrategyTest {
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
+	private Book citationRef;
 	
-	private final String familyNameString = "Familia";
-	private final String genusNameString = "Genus";
-	private final String speciesNameString = "Abies alba";
-	private final String subSpeciesNameString = "Abies alba subsp. beta";
-
-	private final String authorString = "L.";
-	private final String exAuthorString = "Exaut.";
-	private final String basAuthorString = "Basio, A.";
-	private final String exBasAuthorString = "ExBas. N.";
-	
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -96,6 +106,28 @@ public class BotanicNameCacheStrategyTest {
 		basAuthor.setNomenclaturalTitle(basAuthorString);
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
+		
+		citationRef = Book.NewInstance();
+		// Gard. Dict. ed. 8, no. 1. 1768.
+		citationRef.setTitle("Gard. Dict.");
+		//citationRef.setPlacePublished("");
+		citationRef.setVolume("1");
+		citationRef.setEdition("ed. 8");
+		GregorianCalendar testDate = new GregorianCalendar();
+		testDate.set(1768, 1, 1);
+		TimePeriod period = new TimePeriod(testDate);
+		
+		citationRef.setDatePublished(period);
+		
+		//speciesName.setNomenclaturalMicroReference("89");
+		NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+		speciesName.addStatus(nomStatus);
+		
+		speciesName.setNomenclaturalReference(citationRef);
+		speciesName.setAppendedPhrase("app phrase");
+		
+//		subSpeciesName.setNomenclaturalReference(citationRef);
+//		subSpeciesName.setAppendedPhrase("app phrase");
 	}
 
 	/**
@@ -127,7 +159,7 @@ public class BotanicNameCacheStrategyTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getFullNameCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
 	public final void testGetTitleCache() {
@@ -147,6 +179,15 @@ public class BotanicNameCacheStrategyTest {
 		subSpeciesName.setExBasionymAuthorTeam(null);
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. alba", strategy.getTitleCache(subSpeciesName));
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	public final void testGetFullTitleCache() {
+		assertNull(speciesNameString, strategy.getFullTitleCache(null));
+		assertEquals("Abies alba app phrase Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
 	}
 
 	/**
@@ -193,7 +234,8 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testGetSpeciesNameCache() {
-		assertEquals(speciesNameString, strategy.getNameCache(speciesName));
+		String nameString = speciesNameString + " " + appendedPhraseString;
+		assertEquals(nameString, strategy.getNameCache(speciesName));
 	}
 
 	/**

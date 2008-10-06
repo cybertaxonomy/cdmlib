@@ -110,6 +110,12 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 		return this.toString();
 	}
 
+	@Override
+	public String generateFullTitle(){
+		logger.warn("not yet implemented");
+		return this.toString();
+	}
+	
 	/**
 	 * Returns the boolean value "true" if the components of <i>this</i> viral taxon name
 	 * follow the rules of the corresponding

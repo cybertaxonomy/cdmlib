@@ -117,7 +117,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	protected boolean protectedNameCache;
 
     @XmlTransient
-	//@XmlAnyElement
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
@@ -487,6 +486,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 			return null;
 		}else{
 			return cacheStrategy.getTitleCache(this);
+		}
+	}
+	
+	@Override
+	public String generateFullTitle(){
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getFullTitleCache(this);
 		}
 	}
 	

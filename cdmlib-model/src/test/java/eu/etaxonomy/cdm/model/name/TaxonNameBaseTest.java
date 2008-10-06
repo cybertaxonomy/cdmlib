@@ -74,6 +74,8 @@ public class TaxonNameBaseTest {
 		public INameCacheStrategy getCacheStrategy(){return null;};
 		@Override
 		public NomenclaturalCode getNomenclaturalCode(){return null;};
+		@Override
+		public String generateFullTitle(){return null;};
 	}
 
 	
@@ -87,6 +89,11 @@ public class TaxonNameBaseTest {
 		logger.warn("not yet implemented");
 	}
 
+	@Test
+	public void testGenerateFullTitle() {
+		logger.warn("not yet implemented");
+	}
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#TaxonNameBase()}.
 	 */

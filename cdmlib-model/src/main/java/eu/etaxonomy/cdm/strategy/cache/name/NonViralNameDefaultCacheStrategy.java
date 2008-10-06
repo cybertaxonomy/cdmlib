@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,8 +19,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
 
@@ -148,7 +154,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.INameCacheStrategy#getNameCache()
 	 */
-	// just for testing
 	@Override
 	public String getTitleCache(T nonViralName) {
 		if (nonViralName == null){
@@ -179,6 +184,37 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
 			result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
 		}
+		return result;
+	}
+	
+	
+	@Override
+	public String getFullTitleCache(T nonViralName) {
+		if (nonViralName == null){
+			return null;
+		}
+		String result = "";
+		String titleCache = getTitleCache(nonViralName);
+		String microReference = nonViralName.getNomenclaturalMicroReference();
+		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
+		String referenceBaseCache = null;
+		if (ref != null){
+			referenceBaseCache = ref.getNomenclaturalCitation(microReference);
+		}
+		
+		String ncStatusCache = "";
+//		NomenclaturalStatus ncStatus = (NomenclaturalStatus)nonViralName.getStatus().iterator().next();
+//		ncStatusCache = ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
+		
+		Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
+		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
+		while (iterator.hasNext()) {
+			NomenclaturalStatus ncStatus = (NomenclaturalStatus)iterator.next();
+			ncStatusCache = ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
+		}
+					
+		result = CdmUtils.concat(" ", titleCache, referenceBaseCache);
+		result = CdmUtils.concat(", ", result, ncStatusCache);
 		return result;
 	}
 	
