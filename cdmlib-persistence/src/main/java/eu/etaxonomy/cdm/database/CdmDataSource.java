@@ -220,6 +220,10 @@ public class CdmDataSource implements ICdmDataSource {
 		return database;
 	}
 
+	public DatabaseTypeEnum getDatabaseType() {
+		return dbType;
+	}
+	
 	public String getFilePath() {
 		return filePath;
 	}

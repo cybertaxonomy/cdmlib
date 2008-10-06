@@ -56,6 +56,7 @@ public interface ICdmDataSource {
 	 */
 	public String getDatabase();
 	
+	public DatabaseTypeEnum getDatabaseType();
 	
 	/**
 	 * @return
