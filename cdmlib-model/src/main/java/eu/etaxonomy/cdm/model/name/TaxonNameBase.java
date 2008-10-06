@@ -259,7 +259,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 			return this.fullTitleCache;			
 		}
 		if (fullTitleCache == null){
-			this.setTitleCache(generateFullTitle(), protectedFullTitleCache);
+			this.setFullTitleCache(generateFullTitle(), protectedFullTitleCache);
 		}
 		return fullTitleCache;
 	}
