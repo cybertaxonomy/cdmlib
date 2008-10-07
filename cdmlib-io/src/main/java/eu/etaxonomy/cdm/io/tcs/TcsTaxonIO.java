@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
@@ -223,7 +224,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
 			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
 			NamedArea namedArea = TdwgArea.getAreaByTdwgLabel(strGeoRegion);
-			PresenceAbsenceTermBase status = null;
+			PresenceAbsenceTermBase status = PresenceTerm.PRESENT();
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
 			distribution.setFeature(Feature.DISTRIBUTION());
 			//System.out.println(namedArea);
