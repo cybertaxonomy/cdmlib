@@ -67,7 +67,7 @@ public class TestSpecimen {
 		logger.info("Create determination event");
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
 		determinationEvent.setTaxon(taxon);
-		Person actor = Person.NewTitledInstance("J. Müller (JE)");
+		Person actor = Person.NewTitledInstance("J. Mï¿½ller (JE)");
 		determinationEvent.setActor(actor);
 		
 		logger.info("Create gathering event");
@@ -88,7 +88,7 @@ public class TestSpecimen {
 		namedArea.setType(NamedAreaType.ADMINISTRATION_AREA());
 		// XX
 		
-		gatheringEvent.setCollectingArea(namedArea);
+		gatheringEvent.addCollectingArea(namedArea);
 		String localityString = "Sierras Pampeanas, Sauce Chico";
 		gatheringEvent.setLocality(localityString);
 		

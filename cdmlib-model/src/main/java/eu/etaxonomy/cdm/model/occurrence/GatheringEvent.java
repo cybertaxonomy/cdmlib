@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -61,7 +63,7 @@ public class GatheringEvent extends EventBase {
 	@XmlElement(name = "CollectingArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private NamedArea collectingArea;
+	private Set<NamedArea> collectingAreas;
 	
 	@XmlElement(name = "CollectingMethod")
 	private String collectingMethod;
@@ -104,12 +106,20 @@ public class GatheringEvent extends EventBase {
 		this.exactLocation = exactLocation;
 	}
 
-	@ManyToOne
-	public NamedArea getCollectingArea(){
-		return this.collectingArea;
+	@ManyToMany
+	public Set<NamedArea> getCollectingAreas(){
+		return this.collectingAreas;
 	}
-	public void setCollectingArea(NamedArea area){
-		this.collectingArea = area;
+	public void setCollectingAreas(Set<NamedArea> area){
+		this.collectingAreas = area;
+	}
+	public void addCollectingArea(NamedArea area){
+		this.collectingAreas.add(area);
+	}
+	public void removeCollectingArea(NamedArea area){
+		//TODO to be implemented?
+		logger.warn("not yet fully implemented?");
+		this.collectingAreas.remove(area);
 	}
 
 	public String getLocality(){
