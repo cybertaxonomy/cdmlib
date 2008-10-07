@@ -41,6 +41,7 @@ cdmlib-services/.settings
 cdmlib-services/.umlproject
 cdmlib-services/cdmlib-services.uml
 cdmlib-services/src/main/resources/log4j.properties
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
 eclipse-feature-sources/.classpath
 eclipse-feature-sources/.project
