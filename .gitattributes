@@ -154,6 +154,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/TestABCD.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/UnitsGatheringArea.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/UnitsGatheringEvent.java -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
