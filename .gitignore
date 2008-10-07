@@ -38,6 +38,9 @@ cdmlib-remote/target
 cdmlib-services/.classpath
 cdmlib-services/.project
 cdmlib-services/.settings
+cdmlib-services/.umlproject
+cdmlib-services/cdmlib-services.uml
+cdmlib-services/src/main/resources/log4j.properties
 cdmlib-services/target
 eclipse-feature-sources/.classpath
 eclipse-feature-sources/.project
