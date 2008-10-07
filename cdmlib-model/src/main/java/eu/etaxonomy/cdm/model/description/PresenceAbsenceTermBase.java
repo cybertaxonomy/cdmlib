@@ -9,8 +9,13 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.List;
+import java.util.UUID;
+
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -62,6 +67,18 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 	 */
 	protected PresenceAbsenceTermBase(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
+	 */
+	@Override
+	public ILoadableTerm readCsvLine(List csvLine) {
+		Language lang = Language.DEFAULT();
+		super.readCsvLine(csvLine, lang);
+		String abbreviatedLabel = (String)csvLine.get(4);
+		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
+		return this;
 	}
 
 }

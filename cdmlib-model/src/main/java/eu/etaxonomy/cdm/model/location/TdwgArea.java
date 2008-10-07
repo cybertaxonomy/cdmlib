@@ -106,17 +106,6 @@ public class TdwgArea {
 		return null;
 	}	
 	
-	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		logger.warn("not yet implemented");
-
-	}
-	
 	private static final UUID uuid1 = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
 	private static final UUID uuid2 = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
 	private static final UUID uuid3 = UUID.fromString("e63e4a1a-b51b-4efa-bf99-c4a389d4aab3");

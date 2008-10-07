@@ -25,7 +25,9 @@ import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -164,6 +166,8 @@ public class TermLoader {
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);
 		insertDefaultTerms(Feature.class, NOT_ORDERED);
 		insertDefaultTerms(NamedArea.class, "TdwgArea.csv", ORDERED);
+		insertDefaultTerms(PresenceTerm.class, "PresenceTerm.csv", ORDERED);
+		insertDefaultTerms(AbsenceTerm.class, "AbsenceTerm.csv", ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

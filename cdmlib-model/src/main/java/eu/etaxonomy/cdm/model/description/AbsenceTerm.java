@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -35,8 +37,32 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AbsenceTerm")
 @Entity
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
-	static Logger logger = Logger.getLogger(AbsenceTerm.class);
+	private static final Logger logger = Logger.getLogger(AbsenceTerm.class);
 	
+	/** 
+	 * Creates a new empty absence term.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	public static AbsenceTerm NewInstance(){
+		return new AbsenceTerm();
+	}
+	
+	/** 
+	 * Creates a new absence term with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new absence term to be created 
+	 * @param	label  		 the string identifying the new absence term to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new absence term to be created
+	 * @see 				 #NewInstance()
+	 */
+	public static AbsenceTerm NewInstance(String term, String label, String labelAbbrev){
+		return new AbsenceTerm(term, label, labelAbbrev);
+	}
+		
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty absence term.
@@ -63,27 +89,15 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	}
 
 	//********* METHODS **************************************/
-	/** 
-	 * Creates a new empty absence term.
-	 * 
-	 * @see #NewInstance(String, String, String)
-	 */
-	public static AbsenceTerm NewInstance(){
-		return new AbsenceTerm();
+
+	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+
+	
+
+	public static final AbsenceTerm getByUuid(UUID uuid){
+		return (AbsenceTerm)findByUuid(uuid);
 	}
 	
-	/** 
-	 * Creates a new absence term with a description (in the {@link Language#DEFAULT() default language}),
-	 * a label and a label abbreviation.
-	 * 
-	 * @param	term  		 the string (in the default language) describing the
-	 * 						 new absence term to be created 
-	 * @param	label  		 the string identifying the new absence term to be created
-	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
-	 * 						 new absence term to be created
-	 * @see 				 #NewInstance()
-	 */
-	public static AbsenceTerm NewInstance(String term, String label, String labelAbbrev){
-		return new AbsenceTerm(term, label, labelAbbrev);
-	}
+	public static final AbsenceTerm ABSENT(){return getByUuid(uuidAbsence);}
+
 }
