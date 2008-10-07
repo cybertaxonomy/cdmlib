@@ -21,6 +21,9 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -468,7 +471,9 @@ public class ABCD206Activator {
 			//create gathering event
 			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 			//add locality
-			gatheringEvent.setLocality(this.locality);
+			Language language = Language.DEFAULT();
+			LanguageStringBase loc = LanguageString.NewInstance(this.locality,language);
+			gatheringEvent.setLocality(loc);
 
 			//create coordinates point
 			Point coordinates = Point.NewInstance();
