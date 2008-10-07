@@ -26,6 +26,7 @@ cdmlib-model/target
 cdmlib-persistence/.classpath
 cdmlib-persistence/.project
 cdmlib-persistence/.settings
+cdmlib-persistence/cdmlib-persistence.uml
 cdmlib-persistence/src/test/resources/Copy[!!-~]of[!!-~]test.cdm.datasource.xml
 cdmlib-persistence/target
 cdmlib-remote/.classpath
