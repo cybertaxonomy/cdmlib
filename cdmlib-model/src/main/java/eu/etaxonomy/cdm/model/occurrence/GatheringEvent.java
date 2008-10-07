@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 @XmlType(name = "GatheringEvent", propOrder = {
     "locality",
     "exactLocation",
-    "collectingArea",
+    "collectingAreas",
     "collectingMethod",
     "absoluteElevation",
     "absoluteElevationError",
@@ -60,6 +60,7 @@ public class GatheringEvent extends EventBase {
 	@XmlElement(name = "ExactLocation")
 	private Point exactLocation;
 	
+    @XmlElementWrapper(name = "CollectingAreas")
 	@XmlElement(name = "CollectingArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
