@@ -1146,7 +1146,9 @@ public class TdwgArea {
 	private static final UUID uuidZAMOO = UUID.fromString("597b7676-a24d-4eaf-b7a9-dec4a2ecc712");
 	private static final UUID uuidZIMOO = UUID.fromString("4cc60186-d723-4ff6-913a-5dd8d293a92a");
 	
+	//TODO
 	//preliminary
+	//better implementation see PresenceAbsenceTerm, but even better is to take it from the rdf
 	private static boolean initMap(){
 		map = new HashMap<String, UUID>();
 		map.put("1", UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b"));

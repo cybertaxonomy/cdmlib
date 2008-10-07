@@ -9,9 +9,13 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -43,8 +47,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "PresenceAbsenceTermBase")
 @Entity
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase> extends OrderedTermBase<PresenceAbsenceTermBase> {
-	static Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
+	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
+	private static Map<String, UUID> map = new HashMap<String, UUID>();
+
+	
 	/** 
 	 * Class constructor: creates a new empty presence or absence term.
 	 * 
@@ -77,8 +84,19 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 		Language lang = Language.DEFAULT();
 		super.readCsvLine(csvLine, lang);
 		String abbreviatedLabel = (String)csvLine.get(4);
+		String uuid = (String)csvLine.get(0);
+		map.put(abbreviatedLabel, UUID.fromString(uuid));
 		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
 		return this;
+	}
+	
+	public static PresenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev){
+		UUID uuid = map.get(abbrev);
+		if (uuid == null){
+			logger.warn("Unknown Abbreviation for PresenceAbsenceTerm: " + CdmUtils.Nz(abbrev));
+			return null;
+		}
+		return (PresenceTerm)DefinedTermBase.findByUuid(uuid);
 	}
 
 }

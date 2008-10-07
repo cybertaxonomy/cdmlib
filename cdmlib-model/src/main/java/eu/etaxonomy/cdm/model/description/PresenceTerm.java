@@ -9,10 +9,14 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -132,4 +136,27 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	public static final PresenceTerm INTRODUCED_NATURALIZED(){return getByUuid(uuidIN);}
 	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return getByUuid(uuidIF);}
 	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return getByUuid(uuidE);}
+
+//	//preliminary
+//	private static boolean initMap(){
+//		map = new HashMap<String, UUID>();
+//		map.put("p", uuidP);
+//		map.put("n", uuidN);
+//		map.put("nq", uuidNQ);
+//		map.put("ne", uuidNE);
+//		map.put("nd", uuidND);
+//		map.put("nf", uuidNF);
+//		map.put("c", uuidC);
+//		map.put("cf", uuidCF);
+//		map.put("i", uuidI);
+//		map.put("iq", uuidIQ);
+//		map.put("ie", uuidIE);
+//		map.put("id", uuidID);
+//		map.put("ip", uuidIP);
+//		map.put("ia", uuidIA);
+//		map.put("in", uuidIN);
+//		map.put("if", uuidIF);
+//		map.put("e", uuidE);
+//		return true;
+//	}
 }
