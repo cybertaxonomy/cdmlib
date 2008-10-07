@@ -496,7 +496,7 @@ public class ABCD206Activator {
 					area.addWaterbodyOrCountry(countries.get(0));
 			}
 
-			gatheringEvent.setCollectingArea(area);
+			gatheringEvent.addCollectingArea(area);
 
 			//create collector
 			Agent collector;

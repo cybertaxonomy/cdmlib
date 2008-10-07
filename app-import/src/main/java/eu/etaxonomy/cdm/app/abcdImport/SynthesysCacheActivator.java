@@ -417,7 +417,7 @@ public class SynthesysCacheActivator {
 //				}
 //			}
 //			app.getTermService().saveTerm(area);
-			gatheringEvent.setCollectingArea(area);
+			gatheringEvent.addCollectingArea(area);
 
 			//create collector
 			Agent collector;
