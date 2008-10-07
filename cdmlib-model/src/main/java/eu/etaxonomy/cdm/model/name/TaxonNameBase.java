@@ -270,10 +270,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 	public void setFullTitleCache(String fullTitleCache, boolean protectCache){
 		//TODO truncation of full title cache
-//		if (fullTitleCache != null && fullTitleCache.length() > 254){
-//			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
-//			fullTitleCache = fullTitleCache.substring(0, 249) + "...";
-//		}
+		if (fullTitleCache != null && fullTitleCache.length() > 329){
+			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
+			fullTitleCache = fullTitleCache.substring(0, 329) + "...";
+		}
 		this.fullTitleCache = fullTitleCache;
 		this.setProtectedFullTitleCache(protectCache);
 	}

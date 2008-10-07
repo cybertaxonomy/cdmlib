@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
@@ -55,7 +56,7 @@ public class GatheringEvent extends EventBase {
 
 	//Locality name (as free text) where this occurrence happened
 	@XmlElement(name = "Locality")
-	private String locality;
+	private LanguageStringBase locality;
 	
 	@XmlElement(name = "ExactLocation")
 	private Point exactLocation;
@@ -123,10 +124,10 @@ public class GatheringEvent extends EventBase {
 		this.collectingAreas.remove(area);
 	}
 
-	public String getLocality(){
+	public LanguageStringBase getLocality(){
 		return this.locality;
 	}
-	public void setLocality(String locality){
+	public void setLocality(LanguageStringBase locality){
 		this.locality = locality;
 	}
 

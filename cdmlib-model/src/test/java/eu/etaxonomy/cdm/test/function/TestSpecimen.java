@@ -18,6 +18,9 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -90,7 +93,8 @@ public class TestSpecimen {
 		
 		gatheringEvent.addCollectingArea(namedArea);
 		String localityString = "Sierras Pampeanas, Sauce Chico";
-		gatheringEvent.setLocality(localityString);
+		LanguageStringBase locality = LanguageString.NewInstance(localityString, Language.DEFAULT());
+		gatheringEvent.setLocality(locality);
 		
 		
 		logger.info("Create new specimen ...");
