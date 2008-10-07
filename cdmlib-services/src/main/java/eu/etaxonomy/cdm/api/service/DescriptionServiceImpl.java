@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -159,6 +161,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	
 	public List<FeatureNode> getFeatureNodesAll() {
 		return featureNodeDao.list();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getWebServiceUrl(java.util.Set, java.lang.String)
+	 */
+	public String getWebServiceUrl(Set<Distribution> distributions,	String webServiceUrl) {
+		return Distribution.getWebServiceUrl(distributions, webServiceUrl);
 	}
 	
 }
