@@ -14,6 +14,7 @@ cdmlib-commons/target
 cdmlib-io/.classpath
 cdmlib-io/.project
 cdmlib-io/.settings
+cdmlib-io/src/test/resources/log4j.properties
 cdmlib-io/target
 cdmlib-model/.classpath
 cdmlib-model/.project
