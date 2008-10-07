@@ -210,11 +210,14 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
 		while (iterator.hasNext()) {
 			NomenclaturalStatus ncStatus = (NomenclaturalStatus)iterator.next();
-			ncStatusCache = ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
+			ncStatusCache = ", " + ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
 		}
-					
-		result = CdmUtils.concat(" ", titleCache, referenceBaseCache);
-		result = CdmUtils.concat(", ", result, ncStatusCache);
+		String refConcat = " ";
+		if (referenceBaseCache != null && ! referenceBaseCache.trim().startsWith("in ")){
+			refConcat = ", ";
+		}
+		result = CdmUtils.concat(refConcat, titleCache, referenceBaseCache);
+		result = CdmUtils.concat("", result, ncStatusCache);
 		return result;
 	}
 	

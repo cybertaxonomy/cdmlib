@@ -705,6 +705,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	private void makeEmpty(NonViralName nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
+		nameToBeFilled.setFullTitleCache(null, false);
 		nameToBeFilled.setNameCache(null);
 				
 		nameToBeFilled.setAppendedPhrase(null);
