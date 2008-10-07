@@ -9,6 +9,7 @@ app-import/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
+cdmlib-commons/bin
 cdmlib-commons/target
 cdmlib-io/.classpath
 cdmlib-io/.project
