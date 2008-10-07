@@ -59,6 +59,7 @@ public class TestABCD {
 	protected Double longitude;
 	protected Double latitude;
 	protected String locality;
+	protected String languageIso = null;
 	protected String country;
 	protected String isocountry;
 	protected int depth;
@@ -214,6 +215,9 @@ public class TestABCD {
 			try {
 				group = racine.getElementsByTagName("LocalityText");
 				this.locality = group.item(0).getTextContent();
+				if (group.item(0).hasAttributes())
+					if (group.item(0).getAttributes().getNamedItem("lang") != null)
+						this.languageIso = group.item(0).getAttributes().getNamedItem("lang").getTextContent();
 			} catch (NullPointerException e) {
 				this.locality = "";
 			}
@@ -559,7 +563,7 @@ public class TestABCD {
 			 * GATHERING EVENT
 			 */
 			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,app);
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(this.locality, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(app, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
 			unitsGatheringEvent.addArea(unitsGatheringArea.getArea());
 

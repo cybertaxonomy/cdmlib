@@ -9,6 +9,9 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -16,12 +19,13 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 public class UnitsGatheringEvent {
 
 	private GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+	CdmApplicationController app;
 
-
-	public UnitsGatheringEvent(String locality, Double longitude, Double latitude, ArrayList<String> collectorNames){
-		this.setLocality(locality);
+	public UnitsGatheringEvent(CdmApplicationController app, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
+		this.setLocality(locality, languageIso);
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
+		this.app = app;
 	}
 
 	public GatheringEvent getGatheringEvent(){
@@ -39,8 +43,13 @@ public class UnitsGatheringEvent {
 //		return gatheringEvent;
 //	}
 
-	public void setLocality(String locality){
-		this.gatheringEvent.setLocality(locality);
+	public void setLocality(String locality, String languageIso){
+		LanguageStringBase loc;
+		if (languageIso == null)
+			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
+		else
+			loc = LanguageString.NewInstance(locality,app.getTermService().getLanguageByIso(languageIso));
+		this.gatheringEvent.setLocality(loc);
 	}
 
 	public void setCoordinates(Double longitude, Double latitude){
@@ -66,7 +75,7 @@ public class UnitsGatheringEvent {
 	 * If the collector already exists, then use it
 	 * if not, create a new collector
 	 */
-	public void setCollector(ArrayList<String> collectorNames, CdmApplicationController app){
+	public void setCollector(ArrayList<String> collectorNames,boolean getExisting){
 		//create collector
 		Agent collector;
 		ListIterator<String> collectors = collectorNames.listIterator();
