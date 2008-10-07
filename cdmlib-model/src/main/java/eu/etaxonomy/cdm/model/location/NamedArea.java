@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -164,6 +166,19 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 	public void setPointApproximation(Point pointApproximation) {
 		this.pointApproximation = pointApproximation;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
+	 */
+	@Override
+	public ILoadableTerm readCsvLine(List csvLine) {
+		Language lang = Language.DEFAULT();
+		super.readCsvLine(csvLine, lang);
+		String abbreviatedLabel = (String)csvLine.get(4);
+		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
+		return this;
 	}
 
 }

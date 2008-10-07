@@ -166,8 +166,8 @@ public class TermLoader {
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);
 		insertDefaultTerms(Feature.class, NOT_ORDERED);
 		insertDefaultTerms(NamedArea.class, "TdwgArea.csv", ORDERED);
-		insertDefaultTerms(PresenceTerm.class, "PresenceTerm.csv", ORDERED);
-		insertDefaultTerms(AbsenceTerm.class, "AbsenceTerm.csv", ORDERED);
+		insertDefaultTerms(PresenceTerm.class, ORDERED);
+		insertDefaultTerms(AbsenceTerm.class, ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

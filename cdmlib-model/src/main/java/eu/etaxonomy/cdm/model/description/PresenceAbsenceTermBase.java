@@ -50,8 +50,9 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
 	private static Map<String, UUID> map = new HashMap<String, UUID>();
-
+	private String defaultColor = "000000";
 	
+
 	/** 
 	 * Class constructor: creates a new empty presence or absence term.
 	 * 
@@ -86,6 +87,8 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 		String abbreviatedLabel = (String)csvLine.get(4);
 		String uuid = (String)csvLine.get(0);
 		map.put(abbreviatedLabel, UUID.fromString(uuid));
+		String color = (String)csvLine.get(5);
+		this.setDefaultColor(color);
 		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
 		return this;
 	}
@@ -97,6 +100,22 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 			return null;
 		}
 		return (PresenceTerm)DefinedTermBase.findByUuid(uuid);
+	}
+
+	
+	/**
+	 * @return the defaultColor
+	 */
+	public String getDefaultColor() {
+		return defaultColor;
+	}
+
+	/**
+	 * @param defaultColor the defaultColor to set
+	 */
+	//TODO check RGB length 6 and between 000000 and FFFFFF
+	public void setDefaultColor(String defaultColor) {
+		this.defaultColor = defaultColor;
 	}
 
 }

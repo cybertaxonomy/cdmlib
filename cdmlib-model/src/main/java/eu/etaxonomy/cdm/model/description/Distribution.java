@@ -9,7 +9,18 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
@@ -91,6 +102,77 @@ public class Distribution extends DescriptionElementBase {
 		Distribution result = new Distribution();
 		result.setArea(area);
 		result.setStatus(status);
+		return result;
+	}
+	
+	@Transient
+	//TODO move to an other place -> e.g. service layer
+	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl){
+		if (webServiceUrl == null){
+			logger.warn("No WebServiceURL defined");
+			return null;
+		}
+		String result = webServiceUrl + "?";
+		//TODO
+		String layer = "l=tdwg3"; 
+		List<String> layers = new ArrayList(); 
+		layers.add(layer);
+		
+		String areaData = "ad=";
+		//TODO 
+		areaData += "tdwg3:";
+		String areaStyle = "as=";
+		//TODO
+		String bbox = "bbox=-20,40,40,40";
+		String mapSize = "ms=400x300";
+		List<PresenceAbsenceTermBase> statusList = new ArrayList<PresenceAbsenceTermBase>();
+		for (Distribution distribution:distributions){
+			//collect status
+			PresenceAbsenceTermBase status = distribution.getStatus();
+			if (! statusList.contains(status)){
+				statusList.add(status);
+			}
+			//collect
+		}
+		
+		//style
+		Map<PresenceAbsenceTermBase, Character> styleMap = new HashMap<PresenceAbsenceTermBase, Character>();
+		int i = 1;
+		for (PresenceAbsenceTermBase status: statusList){
+			char style; //TODO char
+			//TODO ASCII Translation 64+i
+			int ascii = 96 + i;
+			if (i >26){
+				ascii = 64 + i;
+			}
+			style = (char)ascii;
+			String color = status.getDefaultColor();//"00FFAA"; //TODO
+			if (i > 1){
+				areaStyle += "|";
+			}
+			areaStyle += style + ":" + color;
+			styleMap.put(status, style);
+			i++;
+		}
+		
+		//areaData
+		i = 1;
+		for (Distribution distribution: distributions){
+			//TODO null
+			char style = styleMap.get(distribution.getStatus());
+			//TODO
+			
+			NamedArea area = distribution.getArea();
+			Representation representation = area.getRepresentation(Language.DEFAULT());
+			String areaAbbrev = representation.getAbbreviatedLabel();
+			if (i > 1){
+				areaData += "|";
+			}
+			areaData += style + ":" + areaAbbrev;
+			i++;
+		}
+		
+		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, mapSize});
 		return result;
 	}
 	
