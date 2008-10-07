@@ -89,7 +89,8 @@ public class ABCD206Activator {
 			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
 
 			// lecture du contenu d'un fichier XML avec DOM
-			File xml = new File("/home/patricia/Desktop/multiABCD.xml");
+//			File xml = new File("/home/patricia/Desktop/multiABCD.xml");
+			File xml = new File("/home/patricia/Desktop/abcd206_3.xml");
 			Document document = constructeur.parse(xml);
 
 			Element racine = document.getDocumentElement();
@@ -249,11 +250,16 @@ public class ABCD206Activator {
 				group = racine.getElementsByTagName("NamedArea");
 				this.namedAreaList = new ArrayList<String>();
 				for (int i=0;i<group.getLength();i++){
-					this.namedAreaList.add(group.item(i).getTextContent());
+					childs = group.item(i).getChildNodes();
+					for (int j=0; j<childs.getLength();j++){
+						if (childs.item(j).getNodeName() == "AreaName")
+							this.namedAreaList.add(childs.item(j).getTextContent());
+					}
 				}
 			}catch(NullPointerException e){
-				this.gatheringAgentList = new ArrayList<String>();
+				this.namedAreaList = new ArrayList<String>();
 			}
+			System.out.println(this.namedAreaList);
 
 			try {
 				group = racine.getElementsByTagName("GatheringAgent");
