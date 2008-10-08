@@ -166,8 +166,8 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getWebServiceUrl(java.util.Set, java.lang.String)
 	 */
-	public String getWebServiceUrl(Set<Distribution> distributions,	String webServiceUrl) {
-		return Distribution.getWebServiceUrl(distributions, webServiceUrl);
+	public String getWebServiceUrl(Set<Distribution> distributions,	String webServiceUrl, String bbox, String mapSize) {
+		return Distribution.getWebServiceUrl(distributions, webServiceUrl, bbox, mapSize);
 	}
 	
 }
