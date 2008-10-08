@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 import org.apache.log4j.Logger;
@@ -68,7 +67,7 @@ public class Distribution extends DescriptionElementBase {
 	private NamedArea area;
 	
 	@XmlElement(name = "PresenceAbsenceStatus")
-	private PresenceAbsenceTermBase status;
+	private PresenceAbsenceTermBase<?> status;
 
 	
 	/**
@@ -99,28 +98,31 @@ public class Distribution extends DescriptionElementBase {
 	 * @param	status	the presence or absence term for the new distribution
 	 * @see				#NewInstance()
 	 */
-	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase status){
+	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase<?> status){
 		Distribution result = new Distribution();
 		result.setArea(area);
 		result.setStatus(status);
 		return result;
 	}
 	
+	//preliminary implementation for TDWG areas
 	@Transient
 	//TODO move to an other place -> e.g. service layer
 	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, String bbox, String mapSize){
+		String result;
 		String layer; 
 		String areaData;
+		String areaStyle;
 		
 		if (webServiceUrl == null){
 			logger.warn("No WebServiceURL defined");
 			return null;
 		}
-		String result = webServiceUrl + "?";
-		List<String> layers = new ArrayList<String>(); 
+		List<String> layerStrings = new ArrayList<String>(); 
 		List<Set<Distribution>> layerData = new ArrayList<Set<Distribution>>(); 
+		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 		
-		String areaStyle = "as=";
+		//bbox, mapSize, format, ...
 		//TODO
 		if (CdmUtils.Nz(bbox).equals("")){
 			bbox = "bbox=-20,40,40,40"; //TODO
@@ -128,24 +130,25 @@ public class Distribution extends DescriptionElementBase {
 		if (CdmUtils.Nz(mapSize).equals("")){
 			mapSize = "ms=400x300";
 		}
-		List<PresenceAbsenceTermBase> statusList = new ArrayList<PresenceAbsenceTermBase>();
+		
+		//iterate through distributions and group styles and layers
 		for (Distribution distribution:distributions){
 			//collect status
-			PresenceAbsenceTermBase status = distribution.getStatus();
+			PresenceAbsenceTermBase<?> status = distribution.getStatus();
 			if (! statusList.contains(status)){
 				statusList.add(status);
 			}
-			//layers
+			//group by layers
 			NamedArea area = distribution.getArea();
 			if (area != null){
 				NamedAreaLevel level = area.getLevel();
 				String geoLayerString = getGeoServiceLayer(level);
 				Set<Distribution> layerDistributionSet;
-				int index = layers.indexOf(geoLayerString);
+				int index = layerStrings.indexOf(geoLayerString);
 				if (index != -1){
 					layerDistributionSet = layerData.get(index);
 				}else{
-					layers.add(geoLayerString);
+					layerStrings.add(geoLayerString);
 					layerDistributionSet = new HashSet<Distribution>();
 					layerData.add(layerDistributionSet);
 				}
@@ -155,16 +158,17 @@ public class Distribution extends DescriptionElementBase {
 		
 		//layer
 		layer = ""; 
-		for (String layerString : layers){
+		for (String layerString : layerStrings){
 			layer += "|" + layerString;
 		}
 		layer = "l=" + layer.substring(1); //remove first |
 		
 		
 		//style
-		Map<PresenceAbsenceTermBase, Character> styleMap = new HashMap<PresenceAbsenceTermBase, Character>();
+		areaStyle = "";
+		Map<PresenceAbsenceTermBase<?>, Character> styleMap = new HashMap<PresenceAbsenceTermBase<?>, Character>();
 		int i = 1;
-		for (PresenceAbsenceTermBase status: statusList){
+		for (PresenceAbsenceTermBase<?> status: statusList){
 			char style; 
 			int ascii = 96 + i;
 			if (i >26){
@@ -172,21 +176,18 @@ public class Distribution extends DescriptionElementBase {
 			}
 			style = (char)ascii;
 			String color = status.getDefaultColor();//"00FFAA"; //TODO
-			if (i > 1){
-				areaStyle += "|";
-			}
-			areaStyle += style + ":" + color;
+			areaStyle += "|" + style + ":" + color;
 			styleMap.put(status, style);
 			i++;
 		}
-		
-		areaData = "";
+		areaStyle = "as=" + areaStyle.substring(1); //remove first |
 		
 		//areaData
-		i = 1;
-		for (String layerString : layers){
-			int index = layers.indexOf(layerString);
-			Set<Distribution> layerDistributions = layerData.get(index);
+		areaData = "";
+		i = 0;
+		for (String layerString : layerStrings){
+			//int index = layers.indexOf(layerString);
+			Set<Distribution> layerDistributions = layerData.get(i);
 			int distributionListIndex = 1;
 			for (Distribution distribution: layerDistributions){
 				//TODO null
@@ -204,9 +205,12 @@ public class Distribution extends DescriptionElementBase {
 				areaData += style + ":" + areaAbbrev;
 				distributionListIndex++;
 			}
+			i++;
 		}
 		areaData = "ad=" + areaData.substring(1); //remove first |
 		
+		//result
+		result = webServiceUrl + "?";
 		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, mapSize});
 		return result;
 	}
@@ -258,13 +262,13 @@ public class Distribution extends DescriptionElementBase {
 	 * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
 	 */
 	@ManyToOne
-	public PresenceAbsenceTermBase getStatus(){
+	public PresenceAbsenceTermBase<?> getStatus(){
 		return this.status;
 	}
 	/** 
 	 * @see	#getStatus()
 	 */
-	public void setStatus(PresenceAbsenceTermBase status){
+	public void setStatus(PresenceAbsenceTermBase<?> status){
 		this.status = status;
 	}
 
