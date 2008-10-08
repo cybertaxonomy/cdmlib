@@ -177,6 +177,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		Language lang = Language.DEFAULT();
 		super.readCsvLine(csvLine, lang);
 		String abbreviatedLabel = (String)csvLine.get(4);
+		//TODO if TDWG
+		if (true){
+			TdwgArea.addTdwgArea(this,abbreviatedLabel);
+		}
 		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
 		return this;
 	}

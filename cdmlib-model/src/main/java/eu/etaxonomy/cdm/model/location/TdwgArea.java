@@ -58,6 +58,36 @@ public class TdwgArea {
 		return (NamedArea)DefinedTermBase.findByUuid(uuid);
 	}
 	
+	protected static void addTdwgArea(NamedArea area, String tdwgLabel){
+		if (tdwgLabel == null || area == null){
+			logger.warn("tdwgLabel = null");
+			return;
+		}
+		if (area == null){
+			logger.warn("area = null (tdwgLabel = " +tdwgLabel + ")");
+		}
+		if (map == null){
+			map = new HashMap<String, UUID>();
+		}
+		//add to map
+		map.put(tdwgLabel, area.getUuid());
+		//add type
+		area.setType(NamedAreaType.ADMINISTRATION_AREA());
+		//add level
+		if (tdwgLabel.trim().length()== 1){
+			area.setLevel(NamedAreaLevel.TDWG_LEVEL1());
+		}else if (tdwgLabel.trim().length()== 2){
+			area.setLevel(NamedAreaLevel.TDWG_LEVEL2());
+		}else if (tdwgLabel.trim().length()== 3){
+			area.setLevel(NamedAreaLevel.TDWG_LEVEL3());
+		}else if (tdwgLabel.trim().length()== 6){
+			area.setLevel(NamedAreaLevel.TDWG_LEVEL4());
+		}else {
+			logger.warn("Unknown TDWG Level " + tdwgLabel + "! Unvalid string length (" +  tdwgLabel.length() +")");
+		}	
+	}
+	
+	
 
 //********************* OLD ******************************/
 	

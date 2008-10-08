@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -107,24 +108,26 @@ public class Distribution extends DescriptionElementBase {
 	
 	@Transient
 	//TODO move to an other place -> e.g. service layer
-	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl){
+	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, String bbox, String mapSize){
+		String layer; 
+		String areaData;
+		
 		if (webServiceUrl == null){
 			logger.warn("No WebServiceURL defined");
 			return null;
 		}
 		String result = webServiceUrl + "?";
-		//TODO
-		String layer = "l=tdwg3"; 
-		List<String> layers = new ArrayList(); 
-		layers.add(layer);
+		List<String> layers = new ArrayList<String>(); 
+		List<Set<Distribution>> layerData = new ArrayList<Set<Distribution>>(); 
 		
-		String areaData = "ad=";
-		//TODO 
-		areaData += "tdwg3:";
 		String areaStyle = "as=";
 		//TODO
-		String bbox = "bbox=-20,40,40,40";
-		String mapSize = "ms=400x300";
+		if (CdmUtils.Nz(bbox).equals("")){
+			bbox = "bbox=-20,40,40,40"; //TODO
+		}
+		if (CdmUtils.Nz(mapSize).equals("")){
+			mapSize = "ms=400x300";
+		}
 		List<PresenceAbsenceTermBase> statusList = new ArrayList<PresenceAbsenceTermBase>();
 		for (Distribution distribution:distributions){
 			//collect status
@@ -132,15 +135,37 @@ public class Distribution extends DescriptionElementBase {
 			if (! statusList.contains(status)){
 				statusList.add(status);
 			}
-			//collect
+			//layers
+			NamedArea area = distribution.getArea();
+			if (area != null){
+				NamedAreaLevel level = area.getLevel();
+				String geoLayerString = getGeoServiceLayer(level);
+				Set<Distribution> layerDistributionSet;
+				int index = layers.indexOf(geoLayerString);
+				if (index != -1){
+					layerDistributionSet = layerData.get(index);
+				}else{
+					layers.add(geoLayerString);
+					layerDistributionSet = new HashSet<Distribution>();
+					layerData.add(layerDistributionSet);
+				}
+				layerDistributionSet.add(distribution);
+			}
 		}
+		
+		//layer
+		layer = ""; 
+		for (String layerString : layers){
+			layer += "|" + layerString;
+		}
+		layer = "l=" + layer.substring(1); //remove first |
+		
 		
 		//style
 		Map<PresenceAbsenceTermBase, Character> styleMap = new HashMap<PresenceAbsenceTermBase, Character>();
 		int i = 1;
 		for (PresenceAbsenceTermBase status: statusList){
-			char style; //TODO char
-			//TODO ASCII Translation 64+i
+			char style; 
 			int ascii = 96 + i;
 			if (i >26){
 				ascii = 64 + i;
@@ -155,26 +180,51 @@ public class Distribution extends DescriptionElementBase {
 			i++;
 		}
 		
+		areaData = "";
+		
 		//areaData
 		i = 1;
-		for (Distribution distribution: distributions){
-			//TODO null
-			char style = styleMap.get(distribution.getStatus());
-			//TODO
-			
-			NamedArea area = distribution.getArea();
-			Representation representation = area.getRepresentation(Language.DEFAULT());
-			String areaAbbrev = representation.getAbbreviatedLabel();
-			if (i > 1){
-				areaData += "|";
+		for (String layerString : layers){
+			int index = layers.indexOf(layerString);
+			Set<Distribution> layerDistributions = layerData.get(index);
+			int distributionListIndex = 1;
+			for (Distribution distribution: layerDistributions){
+				//TODO null
+				char style = styleMap.get(distribution.getStatus());
+				//TODO
+				
+				NamedArea area = distribution.getArea();
+				Representation representation = area.getRepresentation(Language.DEFAULT());
+				String areaAbbrev = representation.getAbbreviatedLabel();
+				if (distributionListIndex == 1){
+					areaData += "|" + layerString + ":";
+				}else{
+					areaData += "|";	
+				}
+				areaData += style + ":" + areaAbbrev;
+				distributionListIndex++;
 			}
-			areaData += style + ":" + areaAbbrev;
-			i++;
 		}
+		areaData = "ad=" + areaData.substring(1); //remove first |
 		
 		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, mapSize});
 		return result;
 	}
+		
+	private static String getGeoServiceLayer(NamedAreaLevel level){
+		//TODO integrate into CDM 
+		if (level.equals(NamedAreaLevel.TDWG_LEVEL1())){
+			return "tdwg1";
+		}else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())){
+			return "tdwg2";
+		}if (level.equals(NamedAreaLevel.TDWG_LEVEL3())){
+			return "tdwg3";
+		}if (level.equals(NamedAreaLevel.TDWG_LEVEL4())){
+			return "tdwg4";
+		}
+		return "unknown";
+	}
+		
 	
 	/** 
 	 * Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
