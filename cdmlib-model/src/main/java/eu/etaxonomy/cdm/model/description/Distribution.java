@@ -105,129 +105,7 @@ public class Distribution extends DescriptionElementBase {
 		return result;
 	}
 	
-	//preliminary implementation for TDWG areas
-	@Transient
-	//TODO move to an other place -> e.g. service layer
-	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, String bbox, String mapSize){
-		String result;
-		String layer; 
-		String areaData;
-		String areaStyle;
-		
-		if (webServiceUrl == null){
-			logger.warn("No WebServiceURL defined");
-			return null;
-		}
-		List<String> layerStrings = new ArrayList<String>(); 
-		List<Set<Distribution>> layerData = new ArrayList<Set<Distribution>>(); 
-		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
-		
-		//bbox, mapSize, format, ...
-		//TODO
-		if (CdmUtils.Nz(bbox).equals("")){
-			bbox = "bbox=-20,40,40,40"; //TODO
-		}
-		if (CdmUtils.Nz(mapSize).equals("")){
-			mapSize = "ms=400x300";
-		}
-		
-		//iterate through distributions and group styles and layers
-		for (Distribution distribution:distributions){
-			//collect status
-			PresenceAbsenceTermBase<?> status = distribution.getStatus();
-			if (! statusList.contains(status)){
-				statusList.add(status);
-			}
-			//group by layers
-			NamedArea area = distribution.getArea();
-			if (area != null){
-				NamedAreaLevel level = area.getLevel();
-				String geoLayerString = getGeoServiceLayer(level);
-				Set<Distribution> layerDistributionSet;
-				int index = layerStrings.indexOf(geoLayerString);
-				if (index != -1){
-					layerDistributionSet = layerData.get(index);
-				}else{
-					layerStrings.add(geoLayerString);
-					layerDistributionSet = new HashSet<Distribution>();
-					layerData.add(layerDistributionSet);
-				}
-				layerDistributionSet.add(distribution);
-			}
-		}
-		
-		//layer
-		layer = ""; 
-		for (String layerString : layerStrings){
-			layer += "|" + layerString;
-		}
-		layer = "l=" + layer.substring(1); //remove first |
-		
-		
-		//style
-		areaStyle = "";
-		Map<PresenceAbsenceTermBase<?>, Character> styleMap = new HashMap<PresenceAbsenceTermBase<?>, Character>();
-		int i = 1;
-		for (PresenceAbsenceTermBase<?> status: statusList){
-			char style; 
-			int ascii = 96 + i;
-			if (i >26){
-				ascii = 64 + i;
-			}
-			style = (char)ascii;
-			String color = status.getDefaultColor();//"00FFAA"; //TODO
-			areaStyle += "|" + style + ":" + color;
-			styleMap.put(status, style);
-			i++;
-		}
-		areaStyle = "as=" + areaStyle.substring(1); //remove first |
-		
-		//areaData
-		areaData = "";
-		i = 0;
-		for (String layerString : layerStrings){
-			//int index = layers.indexOf(layerString);
-			Set<Distribution> layerDistributions = layerData.get(i);
-			int distributionListIndex = 1;
-			for (Distribution distribution: layerDistributions){
-				//TODO null
-				char style = styleMap.get(distribution.getStatus());
-				//TODO
-				
-				NamedArea area = distribution.getArea();
-				Representation representation = area.getRepresentation(Language.DEFAULT());
-				String areaAbbrev = representation.getAbbreviatedLabel();
-				if (distributionListIndex == 1){
-					areaData += "|" + layerString + ":";
-				}else{
-					areaData += "|";	
-				}
-				areaData += style + ":" + areaAbbrev;
-				distributionListIndex++;
-			}
-			i++;
-		}
-		areaData = "ad=" + areaData.substring(1); //remove first |
-		
-		//result
-		result = webServiceUrl + "?";
-		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, mapSize});
-		return result;
-	}
-		
-	private static String getGeoServiceLayer(NamedAreaLevel level){
-		//TODO integrate into CDM 
-		if (level.equals(NamedAreaLevel.TDWG_LEVEL1())){
-			return "tdwg1";
-		}else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())){
-			return "tdwg2";
-		}if (level.equals(NamedAreaLevel.TDWG_LEVEL3())){
-			return "tdwg3";
-		}if (level.equals(NamedAreaLevel.TDWG_LEVEL4())){
-			return "tdwg4";
-		}
-		return "unknown";
-	}
+
 		
 	
 	/** 
@@ -270,6 +148,157 @@ public class Distribution extends DescriptionElementBase {
 	 */
 	public void setStatus(PresenceAbsenceTermBase<?> status){
 		this.status = status;
+	}
+	
+	//preliminary implementation for TDWG areas
+	@Transient
+	//TODO move to an other place -> e.g. service layer
+	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int hight, String bbox){
+		String result = "";
+		String layer = ""; 
+		String areaData = "";
+		String areaStyle = "";
+		String widthStr = null;
+		String hightStr = null;
+		
+		if (webServiceUrl == null){
+			logger.warn("No WebServiceURL defined");
+			return null;
+		}
+		//List<String> layerStrings = new ArrayList<String>(); 
+		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>(); 
+		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
+		
+		//bbox, width, hight
+		if (width > 0){
+			widthStr = "w=" + width;
+		}
+		if (hight > 0){
+			hightStr = "h=" + hight;
+		}
+		
+		//iterate through distributions and group styles and layers
+		for (Distribution distribution:distributions){
+			//collect status
+			PresenceAbsenceTermBase<?> status = distribution.getStatus();
+			if (! statusList.contains(status)){
+				statusList.add(status);
+			}
+			//group by layers and styles
+			NamedArea area = distribution.getArea();
+			if (area != null){
+				NamedAreaLevel level = area.getLevel();
+				String geoLayerString = getGeoServiceLayer(level);
+				//Set<Distribution> layerDistributionSet;
+				//int index = layerStrings.indexOf(geoLayerString);
+				Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+				if (styleMap == null){
+					styleMap = new HashMap<Integer, Set<Distribution>>();
+					layerMap.put(geoLayerString, styleMap);
+				}
+				addDistributionToMap(distribution, styleMap, statusList);
+			}
+		}
+		
+		//layer
+		layer = ""; 
+		for (String layerString : layerMap.keySet()){
+			layer += "|" + layerString;
+		}
+		layer = "l=" + layer.substring(1); //remove first |
+		
+		
+		//style
+		areaStyle = "";
+		Map<PresenceAbsenceTermBase<?>, Character> styleCharMap = new HashMap<PresenceAbsenceTermBase<?>, Character>();
+		int i = 0;
+		for (PresenceAbsenceTermBase<?> status: statusList){
+			char style = getStyleAbbrev(i);
+			String color = status.getDefaultColor();//"00FFAA"; //TODO
+			areaStyle += "|" + style + ":" + color;
+			styleCharMap.put(status, style);
+			i++;
+		}
+		areaStyle = "as=" + areaStyle.substring(1); //remove first |
+		
+		//areaData
+		areaData = "";
+		boolean isFirstLayer = true;
+		for (String layerString : layerMap.keySet()){
+			//Set<Distribution> layerDistributions = layerData.get(layerIndex);
+			//int distributionListIndex = 1;
+			areaData += (isFirstLayer? "" : "||") + layerString + ":";
+			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
+			boolean isFirstStyle = true;
+			for (int style: styleMap.keySet()){
+				char styleChar = getStyleAbbrev(style);
+				areaData += (isFirstStyle? "" : "|") + styleChar + ":";
+				Set<Distribution> distributionSet = styleMap.get(style);
+				boolean isFirstDistribution = true;
+				for (Distribution distribution: distributionSet){
+					String areaAbbrev = getAreaAbbrev(distribution);
+					areaData += (isFirstDistribution ? "" : ",") + areaAbbrev;
+					isFirstDistribution = false;
+				}
+				isFirstStyle = false;
+			}
+			isFirstLayer = false;
+		}
+		areaData = "ad=" + areaData.substring(0); //remove first |
+		
+		//result
+		result = webServiceUrl + "?";
+		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, widthStr, hightStr});
+		return result;
+	}
+	
+	private static String getAreaAbbrev(Distribution distribution){
+		NamedArea area = distribution.getArea();
+		Representation representation = area.getRepresentation(Language.DEFAULT());
+		String areaAbbrev = representation.getAbbreviatedLabel();
+		return areaAbbrev;
+	}
+	
+	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap, List<PresenceAbsenceTermBase<?>> statusList){
+		int style = statusList.indexOf(distribution.getStatus());
+		Set<Distribution> distributionSet = styleMap.get(style);
+		if (distributionSet == null){
+			distributionSet = new HashSet<Distribution>();
+			styleMap.put(style, distributionSet);
+		}
+		distributionSet.add(distribution);
+	}
+	
+	
+	/**
+	 * transform an integer (style counter) into a valid character representing a style.
+	 * 0-25 => a-z<br>
+	 * 26-51 => A-Z<br>
+	 * i not in {0,...,51} is undefined
+	 * @param i
+	 * @return
+	 */
+	private static char getStyleAbbrev(int i){
+		i++;
+		int ascii = 96 + i;
+		if (i >26){
+			ascii = 64 + i;
+		}
+		return (char)ascii;
+	}
+	
+	private static String getGeoServiceLayer(NamedAreaLevel level){
+		//TODO integrate into CDM 
+		if (level.equals(NamedAreaLevel.TDWG_LEVEL1())){
+			return "tdwg1";
+		}else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())){
+			return "tdwg2";
+		}if (level.equals(NamedAreaLevel.TDWG_LEVEL3())){
+			return "tdwg3";
+		}if (level.equals(NamedAreaLevel.TDWG_LEVEL4())){
+			return "tdwg4";
+		}
+		return "unknown";
 	}
 
 }
