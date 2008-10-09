@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
  */
 public class TestCdmDbComparator {
 	
-	private static final String sourceDbOne = "cdm_test_anahit";
+	private static final String sourceDbOne = "cdm_test_jaxb";
 	private static final String sourceDbTwo = "cdm_test_jaxb2";
 	
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);

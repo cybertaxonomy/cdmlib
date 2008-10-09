@@ -225,7 +225,8 @@ public class CdmExporter {
 		List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
 
 		CdmApplicationController appCtr = 
-			expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
+			//expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
+		    expImpConfig.getDestinationAppController(expImpConfig.getCdmDestination(), true);
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		// If data of a certain type, such as terms, are not saved here explicitly, 
@@ -233,17 +234,17 @@ public class CdmExporter {
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 		
-		if (expImpConfig.isDoTerms() == true) {
-			if ((terms = dataSet.getTerms()).size() > 0) {
-				logger.info("Terms: " + terms.size());
-				appCtr.getTermService().saveTermsAll(terms);
-			}
-		}
-
-//		if ((terms = dataSet.getTerms()) != null) {
-//			logger.info("Terms: " + terms.size());
-//			appCtr.getTermService().saveTermsAll(terms);
+//		if (expImpConfig.isDoTerms() == true) {
+//			if ((terms = dataSet.getTerms()).size() > 0) {
+//				logger.info("Terms: " + terms.size());
+//				appCtr.getTermService().saveTermsAll(terms);
+//			}
 //		}
+
+		if ((terms = dataSet.getTerms()) != null) {
+			logger.info("Terms: " + terms.size());
+			appCtr.getTermService().saveTermsAll(terms);
+		}
 		
 		if (expImpConfig.isDoTermVocabularies() == true) {
 			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
