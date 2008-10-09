@@ -54,5 +54,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 	
-	public abstract String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, String bbox, String mapSize);
+	public abstract String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int hight, String bbox);
 }
