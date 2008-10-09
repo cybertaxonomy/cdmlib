@@ -83,7 +83,7 @@ public class CdmExportActivator {
 	private static final Logger logger = Logger.getLogger(CdmExportActivator.class);
 	
     /* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_anahit";
+	private static final String sourceDbName = "cdm_test_jaxb";
 	private static final String destinationDbName = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -164,11 +164,19 @@ public class CdmExportActivator {
     	
     	// Init source DB
 //    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.CREATE);
-//		CdmApplicationController appCtr = 
+//		CdmApplicationController appCtrInit = null;
 //			expImpConfigurator.getSourceAppController(expImpConfigurator.getCdmSource(), true);
+//		try {
+//			appCtrInit = CdmApplicationController.NewInstance(expImpConfigurator.getCdmSource(), expImpConfigurator.getCdmDestSchemaValidation(), false);
+//		} catch (DataSourceNotFoundException e) {
+//			logger.error("Could not connect to database");
+//		}catch (TermNotFoundException e) {
+//			logger.error("Terms not found in database. " +
+//			"This error should not happen since preloaded terms are not expected for this application.");
+//		}
 
 		// Load some test data to source DB
-//    	loadTestData(sourceDbName, appCtr);
+//    	loadTestData(sourceDbName, appCtrInit);
     	
     	// Reset DbSchemaValidation
 //    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
@@ -186,11 +194,11 @@ public class CdmExportActivator {
 //    	cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
 
     	// Retrieve data, including taxa, synonyms, and relationships via services.
-    	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
+     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
 
     	/* ********* DESERIALIZE *********************/
     	
-    	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
+     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
 
     }
 
