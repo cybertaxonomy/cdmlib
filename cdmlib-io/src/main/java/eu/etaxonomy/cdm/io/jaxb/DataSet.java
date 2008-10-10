@@ -305,7 +305,23 @@ public class DataSet {
 //	@XmlElement(name = "TdwgArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = TdwgArea.class),
 
 	public DataSet () {
-    }
+		
+		agents = new ArrayList<Agent>(); 
+		agentData = new ArrayList<VersionableEntity>();
+		featureData = new ArrayList<VersionableEntity>();
+		languageData = new ArrayList<LanguageStringBase>();
+		terms = new ArrayList<DefinedTermBase>();
+		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
+		occurrences = new ArrayList<SpecimenOrObservationBase>();
+		references = new ArrayList<ReferenceBase>();
+		referencedEntities = new ArrayList<ReferencedEntityBase>();
+		taxonomicNames = new ArrayList<TaxonNameBase>();
+		taxa = new ArrayList<Taxon>();
+		synonyms = new ArrayList<Synonym>();
+		relationships = new HashSet<RelationshipBase>();
+		media = new ArrayList<VersionableEntity>();
+		homotypicalGroups = new ArrayList<HomotypicalGroup>();
+	}
 
     /**
      * Gets the value of the agents property.

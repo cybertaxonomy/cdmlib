@@ -148,8 +148,8 @@ public class CdmExporter {
     	if (expImpConfig.isDoTaxa() == true) {
     		if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
     		logger.info("# TaxonBase: " + taxonBaseRows);
-    		dataSet.setTaxa(new ArrayList<Taxon>());
-    		dataSet.setSynonyms(new ArrayList<Synonym>());
+//    		dataSet.setTaxa(new ArrayList<Taxon>());
+//    		dataSet.setSynonyms(new ArrayList<Synonym>());
     		List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxa(taxonBaseRows, 0);
     		for (TaxonBase taxonBase : tb) {
     			if (taxonBase instanceof Taxon) {
@@ -219,10 +219,13 @@ public class CdmExporter {
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity> featureData;
 		List<VersionableEntity> media;
-		List<LanguageStringBase> languageData = new ArrayList<LanguageStringBase>();
-		List<TermVocabulary<DefinedTermBase>> termVocabularies
-		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
-		List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
+//		List<LanguageStringBase> languageData = new ArrayList<LanguageStringBase>();
+//		List<TermVocabulary<DefinedTermBase>> termVocabularies
+//		    = new ArrayList<TermVocabulary<DefinedTermBase>>();
+//		List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
+		List<LanguageStringBase> languageData;
+		List<TermVocabulary<DefinedTermBase>> termVocabularies;
+		List<HomotypicalGroup> homotypicalGroups;
 
 		CdmApplicationController appCtr = 
 			//expImpConfig.getSourceAppController(expImpConfig.getCdmSource(), true);
@@ -234,17 +237,17 @@ public class CdmExporter {
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 		
-//		if (expImpConfig.isDoTerms() == true) {
-//			if ((terms = dataSet.getTerms()).size() > 0) {
-//				logger.info("Terms: " + terms.size());
-//				appCtr.getTermService().saveTermsAll(terms);
-//			}
-//		}
-
-		if ((terms = dataSet.getTerms()) != null) {
-			logger.info("Terms: " + terms.size());
-			appCtr.getTermService().saveTermsAll(terms);
+		if (expImpConfig.isDoTerms() == true) {
+			if ((terms = dataSet.getTerms()).size() > 0) {
+				logger.info("Terms: " + terms.size());
+				appCtr.getTermService().saveTermsAll(terms);
+			}
 		}
+
+//		if ((terms = dataSet.getTerms()) != null) {
+//			logger.info("Terms: " + terms.size());
+//			appCtr.getTermService().saveTermsAll(terms);
+//		}
 		
 		if (expImpConfig.isDoTermVocabularies() == true) {
 			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
@@ -254,28 +257,32 @@ public class CdmExporter {
 		}
 
 		if (expImpConfig.isDoAgents() == true) {
-			if ((agents = dataSet.getAgents()) != null) {
+//			if ((agents = dataSet.getAgents()) != null) {
+			if ((agents = dataSet.getAgents()).size() > 0) {
 				logger.info("Agents: " + agents.size());
 				appCtr.getAgentService().saveAgentAll(agents);
 			}
 		}
 
 		if (expImpConfig.isDoReferences() == true) {
-			if ((references = dataSet.getReferences()) != null) {
+//			if ((references = dataSet.getReferences()) != null) {
+			if ((references = dataSet.getReferences()).size() > 0) {
 				logger.info("References: " + references.size());
 				appCtr.getReferenceService().saveReferenceAll(references);
 			}
 		}
 
 		if (expImpConfig.isDoTaxonNames() == true) {
-			if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+//			if ((taxonomicNames = dataSet.getTaxonomicNames()) != null) {
+			if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 				logger.info("Taxonomic names: " + taxonomicNames.size());
 				appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
 			}
 		}
 
 		if (expImpConfig.isDoHomotypicalGroups() == true) {
-			if ((homotypicalGroups = dataSet.getHomotypicalGroups()) != null) {
+//			if ((homotypicalGroups = dataSet.getHomotypicalGroups()) != null) {
+			if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 				logger.info("Homotypical groups: " + homotypicalGroups.size());
 				appCtr.getNameService().saveAllHomotypicalGroups(homotypicalGroups);
 			}
@@ -283,7 +290,8 @@ public class CdmExporter {
 		
 		// Need to get the taxa and the synonyms here.
 		if (expImpConfig.isDoTaxa() == true) {
-			if ((taxonBases = dataSet.getTaxonBases()) != null) {
+//			if ((taxonBases = dataSet.getTaxonBases()) != null) {
+			if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
 				logger.info("Taxon bases: " + taxonBases.size());
 				appCtr.getTaxonService().saveTaxonAll(taxonBases);
 			}
@@ -291,7 +299,8 @@ public class CdmExporter {
 
 	    // NomenclaturalStatus, TypeDesignations
 		if (expImpConfig.isDoReferencedEntities() == true) {
-			if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
+//			if ((referencedEntities = dataSet.getReferencedEntities()) != null) {
+			if ((referencedEntities = dataSet.getReferencedEntities()).size() > 0) {
 				logger.info("Referenced entities: " + referencedEntities.size());
 				appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
 			}
@@ -304,21 +313,24 @@ public class CdmExporter {
 //		}
 
 		if (expImpConfig.isDoOccurrences() == true) {
-			if ((occurrences = dataSet.getOccurrences()) != null) {
+//			if ((occurrences = dataSet.getOccurrences()) != null) {
+			if ((occurrences = dataSet.getOccurrences()).size() > 0) {
 				logger.info("Occurrences: " + occurrences.size());
 				appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
 			}
 		}
 
 		if (expImpConfig.isDoFeatureData() == true) {
-			if ((featureData = dataSet.getFeatureData()) != null) {
+//			if ((featureData = dataSet.getFeatureData()) != null) {
+			if ((featureData = dataSet.getFeatureData()).size() > 0) {
 				logger.info("Feature data: " + featureData.size());
 				appCtr.getDescriptionService().saveFeatureDataAll(featureData);
 			}
 		}
 
 		if (expImpConfig.isDoMedia() == true) {
-			if ((media = dataSet.getMedia()) != null) {
+//			if ((media = dataSet.getMedia()) != null) {
+			if ((media = dataSet.getMedia()).size() > 0) {
 				logger.info("Media: " + media.size());
 				appCtr.getMediaService().saveMediaAll(media);
 			}
