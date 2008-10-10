@@ -110,7 +110,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 //	 */
 	public FeatureTreeTO getTO(FeatureTree featureTree, Set<TaxonDescription> descriptions,
 			Enumeration<Locale> locales) {
-		FeatureTreeTO to = new FeatureTreeTO();
+	 	FeatureTreeTO to = new FeatureTreeTO();
 		List<DescriptionTO> descriptionTOs = new ArrayList<DescriptionTO>();  
 		
 		
@@ -187,13 +187,42 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				FeatureTO featureTO = getFeatureTO(node, elementListMap, locales);
 				descriptionTO.addFeature(featureTO);
 				featureTO.setUuid(node.getFeature().getUuid().toString());
+				
+
+				// TODO SUPEREVIL HACK for ultraquick display of distributions in the dataportal.
+				// In my opinion the generation of the webservice URL should not reside
+				// in the cdmlib, because this is not loose coupling anymore. 
+				// the client has to consider what should happen with the distribution data it
+				// retrieves from the model. n.hoffmann 
+				if(featureTO.getFeature().getTerm().equals("Distribution")){
+					
+					Distribution distribution = Distribution.NewInstance();
+					
+					String webServiceUrl = "http://edit.csic.es/fitxers/EDIT_2.php";
+					
+					Set<Distribution> distributionSet = new HashSet<Distribution>();
+					for (DescriptionElementBase des : description.getElements()){
+						if(des instanceof Distribution){
+							distributionSet.add((Distribution) des);
+						}
+					}
+					
+					
+					featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
+				}
+				
+				
 			}else{ //is not leaf
 				FeatureTO featureTO = new FeatureTO();
 				for (FeatureNode childNode: node.getChildren()){
 					FeatureTO childFeatureTO = getFeatureTO(childNode, elementListMap, locales);
 					featureTO.addChild(childFeatureTO);
 				}
+				
+				
 			}
+			
+
 		}
 		return descriptionTO;
 	}
@@ -206,8 +235,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		FeatureTO featureTO = new FeatureTO();
 		Set<DescriptionElementSTO> elementList = getDescriptionElements(elementListMap, node.getFeature(), locales);
 		featureTO.setDescriptionElements(elementList);
-		featureTO.setType(localisedTermAssembler.getSTO(node.getFeature(), locales));
-		 
+		featureTO.setFeature(localisedTermAssembler.getSTO(node.getFeature(), locales));
+		
 		return featureTO;
 	}
 	
@@ -262,9 +291,14 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 			sto.setMediaType(localisedTermAssembler.getSTO(descriptionElementBase.getFeature(), locales));
 		}
 
+		
+		
 		// TextData specific
 		if(descriptionElementBase instanceof TextData){
 			TextData textdata = (TextData)descriptionElementBase;
+			
+			sto.setClassType(TextData.class.getSimpleName());
+			
 			//TODO extract method for finding text by preferred languages
 			for (Language language : languages) {
 				String text = textdata.getText(language);
@@ -285,6 +319,10 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		// Distribution specific
 		if(descriptionElementBase instanceof Distribution){
 			Distribution distribution = (Distribution) descriptionElementBase;
+			
+			sto.setClassType(Distribution.class.getSimpleName());
+			
+			
 			
 			sto.setArea(localisedTermAssembler.getSTO(distribution.getArea(), locales));
 			

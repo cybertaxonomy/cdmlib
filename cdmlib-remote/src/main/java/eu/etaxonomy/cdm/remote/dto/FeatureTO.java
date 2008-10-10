@@ -28,8 +28,13 @@ public class FeatureTO extends BaseTO{
 	
 	Set<DescriptionElementSTO> descriptionElements;
 	List<FeatureTO> children;
-	private LocalisedTermSTO type;
+	private LocalisedTermSTO feature;
 	private String label;
+	
+	/**
+	 * HACK url to webservice in case this is a distribution feature 
+	 */
+	private String url;
 
 	/**
 	 * @return the descriptionElements
@@ -70,15 +75,15 @@ public class FeatureTO extends BaseTO{
 	/**
 	 * @return the type
 	 */
-	public LocalisedTermSTO getType() {
-		return type;
+	public LocalisedTermSTO getFeature() {
+		return feature;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(LocalisedTermSTO type) {
-		this.type = type;
+	public void setFeature(LocalisedTermSTO feature) {
+		this.feature = feature;
 	}
 
 	public void setLabel(String label) {
@@ -87,6 +92,20 @@ public class FeatureTO extends BaseTO{
 
 	public String getLabel() {
 		return label;
+	}
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	
 
