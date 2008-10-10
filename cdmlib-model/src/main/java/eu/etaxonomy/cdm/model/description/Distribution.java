@@ -153,13 +153,13 @@ public class Distribution extends DescriptionElementBase {
 	//preliminary implementation for TDWG areas
 	@Transient
 	//TODO move to an other place -> e.g. service layer
-	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int hight, String bbox){
+	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int height, String bbox){
 		String result = "";
 		String layer = ""; 
 		String areaData = "";
 		String areaStyle = "";
 		String widthStr = null;
-		String hightStr = null;
+		String heightStr = null;
 		
 		if (webServiceUrl == null){
 			logger.warn("No WebServiceURL defined");
@@ -173,8 +173,8 @@ public class Distribution extends DescriptionElementBase {
 		if (width > 0){
 			widthStr = "w=" + width;
 		}
-		if (hight > 0){
-			hightStr = "h=" + hight;
+		if (height > 0){
+			heightStr = "h=" + height;
 		}
 		
 		//iterate through distributions and group styles and layers
@@ -248,7 +248,7 @@ public class Distribution extends DescriptionElementBase {
 		
 		//result
 		result = webServiceUrl + "?";
-		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, widthStr, hightStr});
+		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, widthStr, heightStr});
 		return result;
 	}
 	
