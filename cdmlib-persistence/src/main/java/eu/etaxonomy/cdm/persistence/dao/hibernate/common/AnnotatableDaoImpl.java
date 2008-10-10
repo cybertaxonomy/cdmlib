@@ -34,6 +34,5 @@ public class AnnotatableDaoImpl<T extends AnnotatableEntity> extends CdmEntityDa
 	public AnnotatableDaoImpl(Class<T> type) {
 		super(type);
 	}
-
 	
 }
