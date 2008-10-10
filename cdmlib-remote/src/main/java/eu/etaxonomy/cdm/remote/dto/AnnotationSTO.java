@@ -9,30 +9,38 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 /**
- * @author nho
+ * @author n.hoffmann
  * @created 24.09.2008
  * @version 1.0
  */
 public class AnnotationSTO extends BaseTO {
 	private static Logger logger = Logger.getLogger(AnnotationSTO.class);
 	
+	private Set<AnnotationElementSTO> annotationElements = new HashSet<AnnotationElementSTO>();
+
+	/**
+	 * @return the annotationElements
+	 */
+	public Set<AnnotationElementSTO> getAnnotationElements() {
+		return annotationElements;
+	}
+
+	/**
+	 * @param annotationElements the annotationElements to set
+	 */
+	public void setAnnotationElements(Set<AnnotationElementSTO> annotationElements) {
+		this.annotationElements = annotationElements;
+	}
 	
-	private String text;
-
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
+	public void addAnnotationElement(AnnotationElementSTO annotationElementSTO){
+		this.annotationElements.add(annotationElementSTO);
 	}
 
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
 }

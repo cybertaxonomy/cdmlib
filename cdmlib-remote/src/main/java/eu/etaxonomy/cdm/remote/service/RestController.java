@@ -212,14 +212,14 @@ public class RestController extends AbstractController
 				String requestMethod = req.getMethod();
 				
 				if(requestMethod.equalsIgnoreCase("GET")){
-					List<AnnotationTO> annotations = service.getAnnotations(annotatableEntityUuid, locales);
-					mv.addObject(annotations);					
+					logger.info("Processing GET request");
+					AnnotationTO annotation = service.getAnnotation(annotatableEntityUuid, locales);
+					mv.addObject(annotation);					
 				}else if(requestMethod.equalsIgnoreCase("POST")){
 					
 					String annotationText = req.getParameter("annotation");
-					
 					// TODO set locale
-					
+					logger.info("Processing POST request");
 					
 					Annotation annotation = Annotation.NewInstance(annotationText, null);
 					

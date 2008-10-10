@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -19,5 +21,6 @@ import org.apache.log4j.Logger;
 public class AnnotationTO extends AnnotationSTO {
 	private static Logger logger = Logger.getLogger(AnnotationTO.class);
 
+	
 	
 }
