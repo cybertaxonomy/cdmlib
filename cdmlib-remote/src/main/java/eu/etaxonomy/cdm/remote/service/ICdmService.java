@@ -228,7 +228,7 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting
 	 */
-	public List<AnnotationTO> getAnnotations(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	/**
 	 * 

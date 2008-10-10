@@ -339,20 +339,15 @@ public class CdmServiceImpl implements ICdmService {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#getAnnotations(java.util.UUID)
 	 */
-	public List<AnnotationTO> getAnnotations(UUID uuid, Enumeration<Locale> locales)
+	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales)
 			throws CdmObjectNonExisting {
 		List<AnnotationTO> annotationList = new ArrayList<AnnotationTO>();
 		
 		// TODO the cast should be removed, but i don't knwo how at the moment
 		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
 		
-		Set<Annotation> annotations = annotatableEntity.getAnnotations();
 		
-		for (Annotation annotation : annotations ){
-			annotationList.add(annotationAssembler.getTO(annotation, locales));
-		}
-		
-		return annotationList;
+		return annotationAssembler.getTO(annotatableEntity, locales);
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#saveAnnotation(java.util.UUID, eu.etaxonomy.cdm.model.common.Annotation)
