@@ -290,5 +290,15 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 	protected boolean isIgnore(IImportConfigurator config){
 		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

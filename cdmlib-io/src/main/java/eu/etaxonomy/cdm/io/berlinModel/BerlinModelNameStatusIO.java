@@ -114,7 +114,7 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 				
 				if (taxonName != null ){
 					if (nomStatusFk == NAME_ST_NOM_INVAL){
-						//TODO references, mikroref, etc überall
+						//TODO references, mikroref, etc ï¿½berall
 						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
 					}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
 						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
@@ -199,6 +199,16 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoNameStatus();
+	}
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

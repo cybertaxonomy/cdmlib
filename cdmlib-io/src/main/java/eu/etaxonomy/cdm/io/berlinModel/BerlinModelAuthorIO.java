@@ -124,5 +124,15 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		return ! config.isDoAuthors();
 	}
 
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

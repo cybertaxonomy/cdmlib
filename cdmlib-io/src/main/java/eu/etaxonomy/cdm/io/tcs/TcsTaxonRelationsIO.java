@@ -261,6 +261,16 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoRelTaxa();
 	}
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }

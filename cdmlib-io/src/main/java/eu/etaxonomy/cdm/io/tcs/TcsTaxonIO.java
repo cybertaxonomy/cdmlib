@@ -240,5 +240,17 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoTaxa();
 	}
+
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

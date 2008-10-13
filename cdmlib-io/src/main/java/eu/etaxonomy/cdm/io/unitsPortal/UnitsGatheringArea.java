@@ -1,15 +1,18 @@
 package eu.etaxonomy.cdm.io.unitsPortal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
 public class UnitsGatheringArea {
 
 	private NamedArea area = NamedArea.NewInstance();
+	private ArrayList<NamedArea> areas = new ArrayList<NamedArea>();
 
 
 //	protected NamedArea MyArea(){
@@ -27,9 +30,25 @@ public class UnitsGatheringArea {
 	public UnitsGatheringArea(String isoCountry, String country, CdmApplicationController app){
 		this.setCountry(isoCountry, country, app);
 	}
+	
+	public UnitsGatheringArea(ArrayList<String> namedAreas){
+		this.setAreaNames(namedAreas);
+	}
 
 	public NamedArea getArea(){
 		return this.area;
+	}
+	
+	public ArrayList<NamedArea> getAreas(){
+		return this.areas;
+	}
+	
+	public void setAreaNames(ArrayList<String> namedAreas){
+		for (int i=0; i< namedAreas.size(); i++){
+			this.area.setLabel(namedAreas.get(i));
+			this.areas.add(this.area);
+			this.area = NamedArea.NewInstance();
+		}
 	}
 	
 	public void setCountry(String iso, String fullName, CdmApplicationController app){
@@ -44,6 +63,11 @@ public class UnitsGatheringArea {
 			countries = app.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
 			if (countries.size() >0)
 				this.area.addWaterbodyOrCountry(countries.get(0));
+			else{
+				this.area.setLabel(fullName);
+				//this.area.setLevel(NamedAreaLevel.COUNTRY()); 
+				//TODO need COUNTRY LEVEL
+			}
 		}
 	}
 	

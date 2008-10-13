@@ -36,6 +36,9 @@ public interface ICdmIO<T extends IImportConfigurator> {
 	
 	public boolean invoke(T config, CdmApplicationController app, Map<String, MapWrapper<? extends CdmBase>> stores);
 	
+	public boolean invoke(T config, Map<String, MapWrapper<? extends CdmBase>> stores);
+	
+	public boolean invoke(T config);
 
 	
 }

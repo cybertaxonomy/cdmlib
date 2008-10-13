@@ -218,5 +218,15 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		return ! config.isDoTypes();
 	}
 
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

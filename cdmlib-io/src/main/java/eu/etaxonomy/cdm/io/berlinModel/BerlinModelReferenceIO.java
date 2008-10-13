@@ -1087,6 +1087,16 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		TimePeriod timePeriod = ImportHelper.getDatePublished("1756 - 1783");
 		System.out.println(timePeriod.getYear());
 	}
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 }

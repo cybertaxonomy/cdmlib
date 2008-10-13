@@ -154,6 +154,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/SpecimenImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/TestABCD.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/unitsPortal/UnitsGatheringEvent.java -text

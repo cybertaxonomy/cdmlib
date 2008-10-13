@@ -22,7 +22,7 @@ public class UnitsGatheringEvent {
 	CdmApplicationController app;
 
 	public UnitsGatheringEvent(CdmApplicationController app, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
-		this.setLocality(locality, languageIso);
+		//this.setLocality(locality, languageIso);//TODO
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
 		this.app = app;
@@ -44,12 +44,17 @@ public class UnitsGatheringEvent {
 //	}
 
 	public void setLocality(String locality, String languageIso){
+		System.out.println(locality);
 		LanguageStringBase loc;
 		if (languageIso == null)
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
 		else
-			loc = LanguageString.NewInstance(locality,app.getTermService().getLanguageByIso(languageIso));
+			loc = LanguageString.NewInstance(locality,this.app.getTermService().getLanguageByIso(languageIso));
 		this.gatheringEvent.setLocality(loc);
+	}
+	
+	public LanguageStringBase getLocality(){
+		return this.gatheringEvent.getLocality();
 	}
 
 	public void setCoordinates(Double longitude, Double latitude){
@@ -85,7 +90,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<Agent> col = app.getAgentService().findAgentsByTitle(collName);
+				List<Agent> col = this.app.getAgentService().findAgentsByTitle(collName);
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();
@@ -113,7 +118,7 @@ public class UnitsGatheringEvent {
 			}
 		}
 		else if (collectorNames.size() == 1) {
-			collName = collectorNames.get(1);
+			collName = collectorNames.get(0);
 			collector = Person.NewInstance();
 			collector.setTitleCache(collName);
 			this.gatheringEvent.setCollector(collector);

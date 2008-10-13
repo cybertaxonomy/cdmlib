@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -20,14 +22,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -42,11 +43,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-public class TestABCD {
+public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 
 
 	private static final Logger logger = Logger.getLogger(TestABCD.class);
-	private static ICdmDataSource destination;
 
 	protected String fullScientificNameString;
 	protected String institutionCode;
@@ -71,9 +71,10 @@ public class TestABCD {
 	protected HSSFWorkbook hssfworkbook = null;
 
 
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
-
-
+	public TestABCD() {
+		super();
+	}
+	
 	private static NodeList getUnitsNodeList(String fileName){
 		NodeList unitList = null;
 		try {
@@ -447,6 +448,7 @@ public class TestABCD {
 		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 		String scientificName="";
 		boolean preferredFlag=false;
+		//TODO Botanical Name from ABCD? Zoological? etc etc
 		for (int i = 0; i < identificationsList.size(); i++) {
 			fullScientificNameString = identificationsList.get(i);
 			fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
@@ -500,14 +502,15 @@ public class TestABCD {
 		}
 
 	}
-	public boolean invoke(){
+	
+	public boolean start(IImportConfigurator config){
 		boolean result = true;
 		boolean withCdm = true;
 		CdmApplicationController app = null;
 		TransactionStatus tx = null;
 
 		try {
-			app = CdmApplicationController.NewInstance(destination, hbm2dll);
+			app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 		} catch (DataSourceNotFoundException e1) {
 			e1.printStackTrace();
 			System.out.println("DataSourceNotFoundException "+e1);
@@ -562,10 +565,16 @@ public class TestABCD {
 			/**
 			 * GATHERING EVENT
 			 */
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,app);
+
 			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(app, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			unitsGatheringEvent.addArea(unitsGatheringArea.getArea());
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,app);
+			NamedArea areaCountry = unitsGatheringArea.getArea();
+			unitsGatheringEvent.addArea(areaCountry);
+			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);
+			ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
+			for (int i=0; i<nas.size();i++)
+				unitsGatheringEvent.addArea(nas.get(i));
 
 
 			//create field/observation
@@ -585,7 +594,10 @@ public class TestABCD {
 			 */			
 
 			//TODO foreach area!!!!
-			app.getTermService().saveTerm(unitsGatheringArea.getArea());//save it sooner
+			app.getTermService().saveTerm(areaCountry);//save it sooner
+			for (int i=0; i<nas.size();i++)
+				app.getTermService().saveTerm(nas.get(i));//save it sooner
+			//app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 
 			logger.info("saved new specimen ...");
@@ -602,46 +614,59 @@ public class TestABCD {
 		return result;
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	
+	public boolean invoke(IImportConfigurator config){
+		System.out.println("INVOKE Specimen Import");
 		TestABCD test = new TestABCD();
-
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_test_patricia";
-		String cdmUserName = "edit";
-		String pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, null);
-		destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, -1, cdmUserName, pwd);
-
-		if (args[0] == "File")
+		String sourceName = config.getSourceNameString();
+		String extension = sourceName.substring(sourceName.length()-3, sourceName.length());
+		System.out.println("extension: "+extension);
+		if (extension.indexOf("xml") != -1)
 		{
-			NodeList unitsList = getUnitsNodeList("/home/patricia/Desktop/abcd206_3.xml");
+			NodeList unitsList = getUnitsNodeList(sourceName);
 			if (unitsList != null)
 			{
 				for (int i=0;i<unitsList.getLength();i++){
 					test.setUnitPropertiesXML((Element)unitsList.item(i));
-					test.invoke();
-					hbm2dll = DbSchemaValidation.UPDATE;
+					test.start(config);
+					config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				}
 			}
 		}
 		else{
-			ArrayList<Hashtable<String,String>> unitsList = parseXLS("/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls");
+			ArrayList<Hashtable<String,String>> unitsList = parseXLS(sourceName);
 			if (unitsList != null){
 				Hashtable<String,String> unit=null;
 				for (int i=0; i<unitsList.size();i++){
 					unit = unitsList.get(i);
 					test.setUnitPropertiesExcel(unit);//and then invoke
-					test.invoke();
-					hbm2dll = DbSchemaValidation.UPDATE;
+					test.start(config);
+					config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				}
 			}
 
 		}
-		// TODO Auto-generated method stub
+		return false;
 
 	}
+
+	public boolean check(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config,
+			CdmApplicationController app, Map stores) {
+		invoke(config,stores);
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		invoke(config);
+		return false;
+	}
+
+
+
 
 }

@@ -264,6 +264,16 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		return ! config.isDoFacts();
 	}
 
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 	
 }

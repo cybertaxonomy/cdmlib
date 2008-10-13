@@ -170,4 +170,14 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		return ! config.isDoFacts();
 	}
 
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

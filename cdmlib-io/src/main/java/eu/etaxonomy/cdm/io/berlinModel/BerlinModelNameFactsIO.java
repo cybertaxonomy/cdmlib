@@ -298,4 +298,14 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		}		
 	}
 
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean invoke(IImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
