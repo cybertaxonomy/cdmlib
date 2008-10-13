@@ -160,6 +160,7 @@ public class Distribution extends DescriptionElementBase {
 		String areaStyle = "";
 		String widthStr = null;
 		String heightStr = null;
+		String adLayerSeperator = "/";
 		
 		if (webServiceUrl == null){
 			logger.warn("No WebServiceURL defined");
@@ -227,7 +228,7 @@ public class Distribution extends DescriptionElementBase {
 		for (String layerString : layerMap.keySet()){
 			//Set<Distribution> layerDistributions = layerData.get(layerIndex);
 			//int distributionListIndex = 1;
-			areaData += (isFirstLayer? "" : "||") + layerString + ":";
+			areaData += (isFirstLayer? "" : "||") + layerString + adLayerSeperator;
 			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
 			boolean isFirstStyle = true;
 			for (int style: styleMap.keySet()){
