@@ -23,10 +23,6 @@ app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.x
 app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/log4j.properties -text
-app-import/src/main/resources/taxonX/Utf8/Kopie[!!-~]von[!!-~]palm_tn_222905.xml -text
-app-import/src/main/resources/taxonX/Utf8/Kopie[!!-~]von[!!-~]palm_tn_222911.xml -text
-app-import/src/main/resources/taxonX/Utf8/palm_tn_222905.xml -text
-app-import/src/main/resources/taxonX/Utf8/palm_tn_222911.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29336.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29339.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29350.xml -text
