@@ -50,7 +50,6 @@ app-import/src/main/resources/taxonX/palm_tn_29429.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29430.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29684.xml -text
 app-import/src/main/resources/taxonX/palm_tn_29864.xml -text
-app-import/src/main/resources/taxonX/zip/taxonX_ForImport_renamed.zip -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
