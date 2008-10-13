@@ -45,7 +45,7 @@ public class UnitsGatheringEvent {
 
 	public void setLocality(String locality, String languageIso){
 		System.out.println(locality);
-		LanguageStringBase loc;
+		LanguageString loc;
 		if (languageIso == null)
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
 		else
