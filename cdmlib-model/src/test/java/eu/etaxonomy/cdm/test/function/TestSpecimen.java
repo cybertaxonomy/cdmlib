@@ -93,7 +93,7 @@ public class TestSpecimen {
 		
 		gatheringEvent.addCollectingArea(namedArea);
 		String localityString = "Sierras Pampeanas, Sauce Chico";
-		LanguageStringBase locality = LanguageString.NewInstance(localityString, Language.DEFAULT());
+		LanguageString locality = LanguageString.NewInstance(localityString, Language.DEFAULT());
 		gatheringEvent.setLocality(locality);
 		
 		

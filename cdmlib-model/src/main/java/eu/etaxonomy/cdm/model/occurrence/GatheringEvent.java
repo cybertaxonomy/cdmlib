@@ -32,6 +32,7 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -60,7 +61,7 @@ public class GatheringEvent extends EventBase {
 
 	//Locality name (as free text) where this occurrence happened
 	@XmlElement(name = "Locality")
-	private LanguageStringBase locality;
+	private LanguageString locality;
 	
 	@XmlElement(name = "ExactLocation")
 	private Point exactLocation;
@@ -132,10 +133,10 @@ public class GatheringEvent extends EventBase {
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public LanguageStringBase getLocality(){
+	public LanguageString getLocality(){
 		return this.locality;
 	}
-	public void setLocality(LanguageStringBase locality){
+	public void setLocality(LanguageString locality){
 		this.locality = locality;
 	}
 
