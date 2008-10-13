@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -26,6 +27,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
@@ -116,6 +120,8 @@ public class GatheringEvent extends EventBase {
 		this.collectingAreas = area;
 	}
 	public void addCollectingArea(NamedArea area){
+		if (this.collectingAreas == null)
+			this.collectingAreas = new HashSet<NamedArea>();
 		this.collectingAreas.add(area);
 	}
 	public void removeCollectingArea(NamedArea area){
@@ -124,6 +130,8 @@ public class GatheringEvent extends EventBase {
 		this.collectingAreas.remove(area);
 	}
 
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public LanguageStringBase getLocality(){
 		return this.locality;
 	}
