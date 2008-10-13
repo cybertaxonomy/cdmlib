@@ -115,9 +115,16 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 				Feature feature = TaxonXTransformer.descriptionType2feature(strType);
 				String text = getText(div);
 				if (!"".equals(CdmUtils.Nz(text).trim())){
-					DescriptionElementBase desciptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
-					desciptionElement.setFeature(feature);
-					description.addElement(desciptionElement);
+					// FIXME hibernate throws an exception when a string is longer than approx. 4000 chars.
+					// for now we truncate any description text to 4000 characters.
+					if(text.length() > 4000){
+						text = text.substring(0, 3900) + "... [text truncated]";
+						logger.warn("FIXME - Truncation of text occurred.");
+					}
+					
+					DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
+					descriptionElement.setFeature(feature);
+					description.addElement(descriptionElement);
 				}
 			} catch (UnknownCdmTypeException e) {
 				logger.warn(e.getMessage());
