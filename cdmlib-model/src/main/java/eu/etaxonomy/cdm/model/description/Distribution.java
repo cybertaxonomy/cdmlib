@@ -220,7 +220,9 @@ public class Distribution extends DescriptionElementBase {
 			styleCharMap.put(status, style);
 			i++;
 		}
-		areaStyle = "as=" + areaStyle.substring(1); //remove first |
+		
+		String styleWorkaround = "|z:FFFFFF";
+		areaStyle = "as=" + areaStyle.substring(1) + styleWorkaround; //remove first |
 		
 		//areaData
 		areaData = "";
@@ -245,7 +247,9 @@ public class Distribution extends DescriptionElementBase {
 			}
 			isFirstLayer = false;
 		}
-		areaData = "ad=" + areaData.substring(0); //remove first |
+		
+		String workaround = "tdwg2/z:Subarctic%20America,Australia||";
+		areaData = "ad=" + workaround  + areaData.substring(0); //remove first |
 		
 		//result
 		result = webServiceUrl + "?";
