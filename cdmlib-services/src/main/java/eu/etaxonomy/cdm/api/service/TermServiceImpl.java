@@ -150,4 +150,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 		return definedTermDao.getLanguageByIso(iso639);
 	}
 	
+	@Transactional(readOnly = false)
+	public UUID saveLanguageData(
+			LanguageStringBase languageData) {
+			return languageStringBaseDao.save(languageData);
+	}
+	
 }

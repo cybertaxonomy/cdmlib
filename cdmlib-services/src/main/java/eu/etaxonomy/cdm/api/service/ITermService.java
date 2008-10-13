@@ -60,6 +60,8 @@ public interface ITermService extends IService<DefinedTermBase> {
 	
 	public Map<UUID, LanguageStringBase> saveLanguageDataAll(Collection<LanguageStringBase> languageData);
 	
+	public UUID saveLanguageData(LanguageStringBase languageData);
+	
 	public List<LanguageString> getAllLanguageStrings(int limit, int start);
 	
 	public Map<UUID, LanguageStringBase> 
