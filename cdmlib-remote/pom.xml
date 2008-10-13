@@ -85,20 +85,29 @@
 	</dependencies>
 
 	<build>
-		<finalName>cdmserver</finalName>
-<!--		<finalName>cdmserver-palmae</finalName>-->
+<!--		<finalName>cdmserver</finalName>-->
+		<finalName>cdmserver-palmae</finalName>
 <!--		<finalName>cdmserver-diptera</finalName>-->
 <!--		<finalName>cdmserver-cichorieae</finalName>-->
+<!--		<finalName>cdmserver-elsalvador</finalName>-->
+<!--		<finalName>cdmserver-erms</finalName>-->
 		<plugins>
 			<plugin><!--use mvn tomcat:deploy -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					 					  
-				<!--Uncomment tomcat edit when deploying-->
+				<!--Uncomment tomcat to deploy to-->
+					<!-- current production -->
 					<update>true</update>
 					<server>tomcat-edit</server>
 					<url>http://search.biocase.org:8080/manager</url>
+					
+					<!-- remote testing-->
+<!--					<update>true</update>
+					<server>tomcat-cdm</server>
+					<url>http://160.45.63.201:8080/manager</url>
+	-->				
 					
 <!--				<server>tomcat-local</server>-->
 				</configuration>
@@ -127,9 +136,11 @@
 				<configuration>
 					<!-- Configure the webapp -->
 <!--					<contextPath>/cdmserver/</contextPath>-->
-					<contextPath>/cdmserver-cichorieae/</contextPath>
+<!--					<contextPath>/cdmserver-cichorieae/</contextPath>-->
 <!--					<contextPath>/cdmserver-diptera/</contextPath>-->
-<!--					<contextPath>/cdmserver-palmae/</contextPath>-->
+					<contextPath>/cdmserver-palmae/</contextPath>
+<!--					<contextPath>/cdmserver-elsalvador/</contextPath>-->
+<!--					<contextPath>/cdmserver-erms/</contextPath>-->
 					<!-- configure the container                 -->
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<connectors>

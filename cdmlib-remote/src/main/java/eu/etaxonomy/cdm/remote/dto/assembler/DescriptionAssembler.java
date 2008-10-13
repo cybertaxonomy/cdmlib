@@ -192,7 +192,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				// TODO SUPEREVIL HACK for ultraquick display of distributions in the dataportal.
 				// In my opinion the generation of the webservice URL should not reside
 				// in the cdmlib, because this is not loose coupling anymore. 
-				// the client has to consider what should happen with the distribution data it
+				// the client should consider what should happen with the distribution data it
 				// retrieves from the model. n.hoffmann 
 				if(featureTO.getFeature().getTerm().equals("Distribution")){
 					
@@ -207,8 +207,12 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 						}
 					}
 					
-					
-					featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
+					// don't break in case something is wrong with the URL
+					try{
+						featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
+					}catch(Exception e){
+						// pass
+					}
 				}
 				
 				
