@@ -15,7 +15,6 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
-		System.out.println("makeIOClassList");
 		ioClassList = new Class[]{
 			TestABCD.class,
 		};

@@ -11,7 +11,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -22,7 +21,7 @@ public class UnitsGatheringEvent {
 	CdmApplicationController app;
 
 	public UnitsGatheringEvent(CdmApplicationController app, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
-		//this.setLocality(locality, languageIso);//TODO
+		this.setLocality(locality, languageIso);
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
 		this.app = app;
@@ -53,7 +52,7 @@ public class UnitsGatheringEvent {
 		this.gatheringEvent.setLocality(loc);
 	}
 	
-	public LanguageStringBase getLocality(){
+	public LanguageString getLocality(){
 		return this.gatheringEvent.getLocality();
 	}
 

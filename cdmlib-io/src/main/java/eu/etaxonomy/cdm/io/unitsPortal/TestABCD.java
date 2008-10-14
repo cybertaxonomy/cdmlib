@@ -74,7 +74,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 	public TestABCD() {
 		super();
 	}
-	
+
 	private static NodeList getUnitsNodeList(String fileName){
 		NodeList unitList = null;
 		try {
@@ -147,35 +147,44 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 
 			String tmpName = null;
 			try {
-				group = racine.getElementsByTagName("Identifications");
-				this.identificationList = new ArrayList<String>();
+				group = racine.getChildNodes();
 				for (int i=0; i< group.getLength(); i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0; j<childs.getLength();j++){
-						if(childs.item(j).getNodeName() == "Identification"){
-							identifications = childs.item(j).getChildNodes();
-							for (int m=0; m<identifications.getLength();m++){
-								if(identifications.item(m).getNodeName() == "Result"){
-									results = identifications.item(m).getChildNodes();
-									for(int k=0; k<results.getLength();k++){
-										if (results.item(k).getNodeName() == "TaxonIdentified"){
-											taxonsIdentified = results.item(k).getChildNodes();
-											for (int l=0; l<taxonsIdentified.getLength(); l++){
-												if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
-													scnames = taxonsIdentified.item(l).getChildNodes();
-													for (int n=0;n<scnames.getLength();n++){
-														if (scnames.item(n).getNodeName() == "FullScientificNameString")
-															tmpName = scnames.item(n).getTextContent();
-													}
+					if (group.item(i).getNodeName() == "Identifications"){
+						group = group.item(i).getChildNodes();
+						break;
+					}
+				}
+//				group = racine.getElementsByTagName("Identifications");
+				this.identificationList = new ArrayList<String>();
+				for (int j=0; j< group.getLength(); j++){
+					if(group.item(j).getNodeName() == "Identification"){
+						identifications = group.item(j).getChildNodes();
+						for (int m=0; m<identifications.getLength();m++){
+							if(identifications.item(m).getNodeName() == "Result"){
+								results = identifications.item(m).getChildNodes();
+								for(int k=0; k<results.getLength();k++){
+									if (results.item(k).getNodeName() == "TaxonIdentified"){
+										taxonsIdentified = results.item(k).getChildNodes();
+										for (int l=0; l<taxonsIdentified.getLength(); l++){
+											if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
+												scnames = taxonsIdentified.item(l).getChildNodes();
+												for (int n=0;n<scnames.getLength();n++){
+													if (scnames.item(n).getNodeName() == "FullScientificNameString")
+														tmpName = scnames.item(n).getTextContent();
 												}
 											}
 										}
 									}
 								}
-								if(identifications.item(m).getNodeName() == "PreferredFlag"){
-									this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent());
-								}
 							}
+							else if(identifications.item(m).getNodeName() == "PreferredFlag"){
+								this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent());
+							}
+							else{
+								if (tmpName != null)
+									this.identificationList.add(tmpName+"_preferred_"+"0");
+							}
+
 						}
 					}
 				}
@@ -378,7 +387,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		} catch (Exception e) {System.out.println(e);
 		}
 	}
-	
+
 	private Institution getInstitution(String institutionCode, CdmApplicationController app){
 		Institution institution;
 		List<Institution> institutions;
@@ -439,7 +448,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return collection;
 	}
 
-	private void setTaxonNameBase(ArrayList<String> identificationsList, CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
+	private void setTaxonNameBase(CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
 		TaxonNameBase taxonName;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -449,8 +458,8 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		String scientificName="";
 		boolean preferredFlag=false;
 		//TODO Botanical Name from ABCD? Zoological? etc etc
-		for (int i = 0; i < identificationsList.size(); i++) {
-			fullScientificNameString = identificationsList.get(i);
+		for (int i = 0; i < this.identificationList.size(); i++) {
+			fullScientificNameString = this.identificationList.get(i);
 			fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
 			if (fullScientificNameString.indexOf("_preferred_") != -1){
 				scientificName = fullScientificNameString.split("_preferred_")[0];
@@ -502,7 +511,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		}
 
 	}
-	
+
 	public boolean start(IImportConfigurator config){
 		boolean result = true;
 		boolean withCdm = true;
@@ -543,7 +552,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 			if (derivedThing == null) 
 				derivedThing = Observation.NewInstance();
 
-			this.setTaxonNameBase(this.identificationList, app, derivedThing, sec);
+			this.setTaxonNameBase(app, derivedThing, sec);
 
 
 			//set catalogue number (unitID)
@@ -593,11 +602,10 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 			 * SAVE AND STORE DATA
 			 */			
 
-			//TODO foreach area!!!!
 			app.getTermService().saveTerm(areaCountry);//save it sooner
 			for (int i=0; i<nas.size();i++)
-				app.getTermService().saveTerm(nas.get(i));//save it sooner
-			//app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
+				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
+			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 
 			logger.info("saved new specimen ...");
@@ -614,7 +622,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return result;
 	}
 
-	
+
 	public boolean invoke(IImportConfigurator config){
 		System.out.println("INVOKE Specimen Import");
 		TestABCD test = new TestABCD();
@@ -626,6 +634,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 			NodeList unitsList = getUnitsNodeList(sourceName);
 			if (unitsList != null)
 			{
+				System.out.println("nb units to insert: "+unitsList.getLength());
 				for (int i=0;i<unitsList.getLength();i++){
 					test.setUnitPropertiesXML((Element)unitsList.item(i));
 					test.start(config);
