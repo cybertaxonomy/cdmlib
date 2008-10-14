@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
     "actor",
     "description"
 })
-@XmlRootElement(name = "")
+@XmlRootElement(name = "EventBase")
 @MappedSuperclass
 public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	

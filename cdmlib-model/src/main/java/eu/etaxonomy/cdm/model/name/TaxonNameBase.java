@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
@@ -309,12 +310,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@Transient
+//	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
+//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getNameRelations() {
 		Set<NameRelationship> rels = new HashSet<NameRelationship>();
 		rels.addAll(getRelationsFromThisName());
 		rels.addAll(getRelationsToThisName());
 		return rels;
 	}
+	
+//	protected void setNameRelations(Set<NameRelationship> nameRelations) {
+//		this.nameRelations = nameRelations;
+//	}
+	
 	/**
 	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
 	 * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
@@ -379,8 +387,49 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    				 #getNameRelations()
 	 */
 	public void removeNameRelationship(NameRelationship nameRelation) {
-		//TODO to be implemented?
-		logger.warn("not yet fully implemented?");
+		
+		TaxonNameBase fromName = nameRelation.getFromName();
+		TaxonNameBase toName = nameRelation.getToName();
+
+		if (nameRelation != null) {
+			nameRelation.setToName(null);
+			nameRelation.setFromName(null);
+		}
+		
+		if (fromName != null) {
+			fromName.removeNameRelationship(nameRelation);
+		}
+		
+		if (toName != null) {
+			toName.removeNameRelationship(nameRelation);
+		}
+		
+		this.relationsToThisName.remove(nameRelation);
+		this.relationsFromThisName.remove(nameRelation);
+	}
+
+		
+	public void removeTaxonName(TaxonNameBase taxonName) {
+		Set<NameRelationship> nameRelationships = new HashSet<NameRelationship>();
+//		nameRelationships.addAll(this.getNameRelations());
+		nameRelationships.addAll(this.getRelationsFromThisName());
+		nameRelationships.addAll(this.getRelationsToThisName());
+		for(NameRelationship nameRelationship : nameRelationships) {
+			// remove name relationship from this side 
+			if (nameRelationship.getFromName().equals(this) && nameRelationship.getToName().equals(taxonName)) {
+				this.removeNameRelation(nameRelationship);
+			}
+		}
+	}
+	
+	public void removeNameRelation(NameRelationship nameRelation) {
+		nameRelation.setToName(null);
+	
+		TaxonNameBase name = nameRelation.getFromName();
+		if (name != null){
+			nameRelation.setFromName(null);
+			name.removeNameRelation(nameRelation);
+		}
 		this.relationsToThisName.remove(nameRelation);
 		this.relationsFromThisName.remove(nameRelation);
 	}
@@ -423,7 +472,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
 	}
@@ -440,7 +489,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
 	}

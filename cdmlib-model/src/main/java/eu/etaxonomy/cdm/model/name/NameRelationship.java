@@ -115,7 +115,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	/**
 	 * @see  #getFromName()
 	 */
-	private void setFromName(TaxonNameBase fromName){
+	void setFromName(TaxonNameBase fromName){
 		super.setRelatedFrom(fromName);
 	}
 
@@ -133,7 +133,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	/**
 	 * @see  #getToName()
 	 */
-	private void setToName(TaxonNameBase toName){
+	void setToName(TaxonNameBase toName){
 		super.setRelatedTo(toName);
 	}
 
