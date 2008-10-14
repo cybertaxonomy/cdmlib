@@ -12,7 +12,7 @@
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>imports</artifactId>
-  <name>CDM Import/Export</name>
+  <name>App Import</name>
   <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/app-import/</connection>

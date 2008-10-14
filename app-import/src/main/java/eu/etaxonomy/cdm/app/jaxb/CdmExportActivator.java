@@ -7,20 +7,13 @@
 package eu.etaxonomy.cdm.app.jaxb;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.TransactionStatus;
 //import org.unitils.database.annotations.TestDataSource;
 //import org.unitils.database.annotations.Transactional;
@@ -28,15 +21,11 @@ import org.springframework.transaction.TransactionStatus;
 //import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.jaxb.CdmDocumentBuilder;
 import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportImportConfigurator;
@@ -44,35 +33,26 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  
 /**
  * @author a.babadshanjan
@@ -83,7 +63,7 @@ public class CdmExportActivator {
 	private static final Logger logger = Logger.getLogger(CdmExportActivator.class);
 	
     /* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_jaxb";
+	private static final String sourceDbName = "cdm_test_jaxb2";
 	private static final String destinationDbName = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -91,7 +71,6 @@ public class CdmExportActivator {
 	 *  as many rows as specified for agents, references, etc. 
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
-	
 	
 	private static final String server = "192.168.2.10";
 	private static final String username = "edit";
@@ -163,23 +142,23 @@ public class CdmExportActivator {
     	/* ********* INIT ****************************/
     	
     	// Init source DB
-//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.CREATE);
-//		CdmApplicationController appCtrInit = null;
-//			expImpConfigurator.getSourceAppController(expImpConfigurator.getCdmSource(), true);
-//		try {
-//			appCtrInit = CdmApplicationController.NewInstance(expImpConfigurator.getCdmSource(), expImpConfigurator.getCdmDestSchemaValidation(), false);
-//		} catch (DataSourceNotFoundException e) {
-//			logger.error("Could not connect to database");
-//		}catch (TermNotFoundException e) {
-//			logger.error("Terms not found in database. " +
-//			"This error should not happen since preloaded terms are not expected for this application.");
-//		}
+    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
+		CdmApplicationController appCtrInit = null;
+			expImpConfigurator.getSourceAppController(expImpConfigurator.getCdmSource(), true);
+		try {
+			appCtrInit = CdmApplicationController.NewInstance(expImpConfigurator.getCdmSource(), expImpConfigurator.getCdmSourceSchemaValidation(), false);
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Could not connect to database");
+		}catch (TermNotFoundException e) {
+			logger.error("Terms not found in database. " +
+			"This error should not happen since preloaded terms are not expected for this application.");
+		}
 
 		// Load some test data to source DB
 //    	loadTestData(sourceDbName, appCtrInit);
     	
-    	// Reset DbSchemaValidation
-//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
+//    	testMakeTaxonSynonym(appCtrInit);
+    	testRemoveNameRelationship(appCtrInit);
     	
     	// Init destination DB
 //    	expImpConfigurator.setCdmDestSchemaValidation(DbSchemaValidation.CREATE);
@@ -188,17 +167,18 @@ public class CdmExportActivator {
 
     	/* ********* SERIALIZE ***********************/
     	
-//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.CREATE);
+    	// Reset DbSchemaValidation
+//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
     	
     	// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
 //    	cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
 
     	// Retrieve data, including taxa, synonyms, and relationships via services.
-     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
+//     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
 
     	/* ********* DESERIALIZE *********************/
     	
-     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
+//     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
 
     }
 
@@ -206,8 +186,6 @@ public class CdmExportActivator {
     public CdmApplicationController initDb(String dbname, CdmApplicationController appCtr) {
     	
 		logger.info("Loading test data into " + dbname);
-		
-		
 		return appCtr;
     }
 
@@ -387,4 +365,97 @@ public class CdmExportActivator {
 
 	}
 	
+	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
+		
+		logger.info("Testing makeTaxonSynonym()");
+		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
+		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
+		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		
+		ReferenceBase citation;
+		citation = Book.NewInstance();
+		Agent linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
+		citation.setAuthorTeam((TeamOrPersonBase)linne);
+		citation.setTitleCache("Make Taxon Synonym Test");
+		String microRef = "123";
+		appCtr.getReferenceService().saveReference(citation);
+		
+		appCtr.getTaxonService().makeTaxonSynonym(oldTaxon, newAcceptedTaxon, synonymType, citation, microRef);
+
+		appCtr.commitTransaction(txStatus);
+		appCtr.close();
+		
+	}
+
+	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
+		
+		logger.info("Testing testRemoveNameRelationship()");
+		TransactionStatus txStatus = appCtr.startTransaction();
+		
+		BotanicalName name1, name2;
+		Agent linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
+		name1 = BotanicalName.NewInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
+		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
+		
+		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo");
+		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom");
+			
+		appCtr.getNameService().saveTaxonName(name1);
+		appCtr.getNameService().saveTaxonName(name2);
+		
+		logger.info("Removing Name Relationships");
+		
+		Set<NameRelationship> name1FromRelations = name1.getRelationsFromThisName();
+		NameRelationship nameRel = null;
+		
+		for (NameRelationship name1Rel: name1FromRelations) {
+			nameRel = name1Rel;
+		}
+
+        name1.removeNameRelationship(nameRel);
+//		name1.removeTaxonName(name2);
+		appCtr.getNameService().saveTaxonName(name1);
+        
+		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("6a8be65b-94b6-4136-919a-02002e409158"));
+		Set<Synonym> synonyms = taxon.getSynonyms();
+		
+//		List<TaxonBase> taxa = appCtr.getTaxonService().getAllTaxa(100, 0);
+//		Set<Synonym> synonyms = null;
+//		for (TaxonBase taxonBase: taxa) {
+//			synonyms = taxonBase.getSynonyms();
+//		}
+		
+		Synonym syn = null;
+		for (Synonym synonym: synonyms) {
+			if (synonym.getUuid().toString().equals("f7ad5713-70ce-42af-984f-865c1f126460")) {
+				syn = synonym;
+			}
+		}
+		taxon.removeSynonym(syn);
+		appCtr.getTaxonService().saveTaxon(taxon);
+		
+//		name1FromRelations.removeAll(name1FromRelations);
+		
+//		Set<NameRelationship> name2ToRelations = name2.getRelationsToThisName();
+//		for (NameRelationship name2Rel: name2ToRelations) {
+//			name2.removeNameRelationship(name2Rel);
+//		}
+		
+		appCtr.commitTransaction(txStatus);
+		appCtr.close();
+
+	}
+		
+	private void createNameRelationship(CdmApplicationController appCtr) {
+		
+		TransactionStatus txStatus = appCtr.startTransaction();
+
+		appCtr.commitTransaction(txStatus);
+		appCtr.close();
+		
+	}
+	
+
 }
