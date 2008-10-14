@@ -72,8 +72,8 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
  */
 public class TestCdmDbComparator {
 	
-	private static final String sourceDbOne = "cdm_test_anahit";
-	private static final String sourceDbTwo = "cdm_test_anahit2";
+	private static final String sourceDbOne = "cdm_test_jaxb";
+	private static final String sourceDbTwo = "cdm_test_jaxb2";
 	
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);
 	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB_(sourceDbTwo);
@@ -544,9 +544,13 @@ public class TestCdmDbComparator {
     	
 		int tableOneSize = tablesDbOne.size();
 		int tableTwoSize = tablesDbTwo.size();
-		
+		int tableMinSize = 0;
+		int tableMaxSize = 0;
+	
 		if (tableOneSize != tableTwoSize) {
 			logger.warn("Table '" + tableName + "', Rows differ: " + tablesDbOne.size() + ", " + tablesDbTwo.size());
+            tableMinSize = Math.min(tableOneSize, tableTwoSize);
+            tableMaxSize = Math.max(tableOneSize, tableTwoSize);
 		} else {
 			logger.info("Table '" + tableName + "': " + tablesDbOne.size());
 		}
@@ -554,7 +558,7 @@ public class TestCdmDbComparator {
 		int different = 0;
 		
 		try {
-		for (int i = 0; i < tableOneSize; i++) {
+		for (int i = 0; i < tableMinSize; i++) {
 
 			CdmBase obj1 = tablesDbOne.get(i);
 			CdmBase obj2 = tablesDbTwo.get(i);
@@ -571,7 +575,7 @@ public class TestCdmDbComparator {
 			}
 		}
 		if (different > 0) {
-			logger.info("# Rows identical: " + (tableOneSize - different)); 
+			logger.info("# Rows identical: " + (tableMaxSize - different)); 
 			logger.warn("# Rows different: " + different); 
 		} 
 		} catch (org.hibernate.LazyInitializationException e){
