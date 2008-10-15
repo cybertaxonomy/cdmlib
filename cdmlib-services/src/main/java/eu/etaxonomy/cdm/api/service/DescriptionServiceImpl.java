@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -164,10 +166,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getWebServiceUrl(java.util.Set, java.lang.String)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getEditGeoServiceUrlParameterString(java.util.Set, java.lang.String)
 	 */
-	public String getWebServiceUrl(Set<Distribution> distributions,	String webServiceUrl, int width, int height, String bbox) {
-		return Distribution.getWebServiceUrl(distributions, webServiceUrl, width, height, bbox);
-	}
+	public String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox) {
+		return Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, width, height, bbox);
+}
 	
 }

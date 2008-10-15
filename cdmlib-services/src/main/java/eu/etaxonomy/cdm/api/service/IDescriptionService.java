@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
@@ -54,5 +56,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 	
-	public abstract String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int hight, String bbox);
+	public abstract String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox);
 }
