@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+//import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -131,6 +132,7 @@ public class GatheringEvent extends EventBase {
 		this.collectingAreas.remove(area);
 	}
 
+//  @Embedded
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public LanguageString getLocality(){

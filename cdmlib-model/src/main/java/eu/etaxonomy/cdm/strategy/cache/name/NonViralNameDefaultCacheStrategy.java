@@ -195,6 +195,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		String result = "";
 		String titleCache = getTitleCache(nonViralName);
+		if (nonViralName.hasProblem() == true) {
+			return titleCache;
+		}
 		String microReference = nonViralName.getNomenclaturalMicroReference();
 		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
@@ -203,8 +206,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
 		
 		String ncStatusCache = "";
-//		NomenclaturalStatus ncStatus = (NomenclaturalStatus)nonViralName.getStatus().iterator().next();
-//		ncStatusCache = ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
 		
 		Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();

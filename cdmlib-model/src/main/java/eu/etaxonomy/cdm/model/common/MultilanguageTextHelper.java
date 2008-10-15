@@ -39,7 +39,8 @@ public class MultilanguageTextHelper {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private LanguageString languageString;
-	
+
+// TODO: Need a HashMap instead of just one pair of Language/LanguageString
 //	private HashMap<Language, LanguageString> mlText;
 	
 	public MultilanguageTextHelper() {

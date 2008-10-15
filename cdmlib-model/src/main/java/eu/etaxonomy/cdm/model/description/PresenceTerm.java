@@ -137,26 +137,5 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return getByUuid(uuidIF);}
 	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return getByUuid(uuidE);}
 
-//	//preliminary
-//	private static boolean initMap(){
-//		map = new HashMap<String, UUID>();
-//		map.put("p", uuidP);
-//		map.put("n", uuidN);
-//		map.put("nq", uuidNQ);
-//		map.put("ne", uuidNE);
-//		map.put("nd", uuidND);
-//		map.put("nf", uuidNF);
-//		map.put("c", uuidC);
-//		map.put("cf", uuidCF);
-//		map.put("i", uuidI);
-//		map.put("iq", uuidIQ);
-//		map.put("ie", uuidIE);
-//		map.put("id", uuidID);
-//		map.put("ip", uuidIP);
-//		map.put("ia", uuidIA);
-//		map.put("in", uuidIN);
-//		map.put("if", uuidIF);
-//		map.put("e", uuidE);
-//		return true;
-//	}
+
 }
