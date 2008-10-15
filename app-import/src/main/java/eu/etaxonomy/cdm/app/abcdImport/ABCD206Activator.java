@@ -472,7 +472,7 @@ public class ABCD206Activator {
 			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 			//add locality
 			Language language = Language.DEFAULT();
-			LanguageStringBase loc = LanguageString.NewInstance(this.locality,language);
+			LanguageString loc = LanguageString.NewInstance(this.locality,language);
 			gatheringEvent.setLocality(loc);
 
 			//create coordinates point
