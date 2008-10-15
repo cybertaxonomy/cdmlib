@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 
  /**
@@ -46,5 +47,8 @@ public interface INomenclaturalReference<T extends ReferenceBase> extends IIdent
 	 * successfully (false) or not (true).
 	 */
 	public boolean getHasProblem();
+	
+	public void setDatePublished(TimePeriod datePublished);
+	
 	
 }

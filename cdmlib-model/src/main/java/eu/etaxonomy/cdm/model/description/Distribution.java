@@ -9,12 +9,16 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.awt.Color;
+import java.awt.color.ColorSpace;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -151,34 +155,50 @@ public class Distribution extends DescriptionElementBase {
 	}
 	
 	//preliminary implementation for TDWG areas
-	@Transient
+	/**
+	 * Returns the parameter String for the EDIT geo webservice to create a map.
+	 * @param distributions A set of distributions that should be shown on the map
+	 * @param presenceAbsenceTermColors A map that defines the colors of PresenceAbsenceTerms. 
+	 * The PresenceAbsenceTerms are defined by their uuid. If a PresenceAbsenceTerm is not included in
+	 * this map, it's default color is taken instead. If the map == null all terms are colored by their default color. 
+	 * @param width The maps width
+	 * @param height The maps height
+	 * @param bbox The maps bounding box (e.g. "-180,-90,180,90" for the whole world)
+	 * @return
+	 */
 	//TODO move to an other place -> e.g. service layer
-	public static String getWebServiceUrl(Set<Distribution> distributions, String webServiceUrl, int width, int height, String bbox){
+	@Transient
+	public static String getEditGeoServiceUrlParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox){
 		String result = "";
 		String layer = ""; 
 		String areaData = "";
 		String areaStyle = "";
-		String widthStr = null;
-		String heightStr = null;
+		String widthStr = "";
+		String heightStr = "";
 		String adLayerSeperator = "/";
 		
-		if (webServiceUrl == null){
-			logger.warn("No WebServiceURL defined");
-			return null;
+		if (presenceAbsenceTermColors == null) {
+			presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>(); 
 		}
+
 		//List<String> layerStrings = new ArrayList<String>(); 
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>(); 
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 		
 		//bbox, width, hight
 		if (width > 0){
-			widthStr = "w=" + width;
+			widthStr = "" + width;
 		}
 		if (height > 0){
-			heightStr = "h=" + height;
+			heightStr = "," + height;
+		}
+		String ms = "ms=" + widthStr + heightStr;
+		if (ms.equals("ms=")){
+			ms = null;
 		}
 		
 		//iterate through distributions and group styles and layers
+		//and collect necessary information
 		for (Distribution distribution:distributions){
 			//collect status
 			PresenceAbsenceTermBase<?> status = distribution.getStatus();
@@ -215,14 +235,20 @@ public class Distribution extends DescriptionElementBase {
 		int i = 0;
 		for (PresenceAbsenceTermBase<?> status: statusList){
 			char style = getStyleAbbrev(i);
-			String color = status.getDefaultColor();//"00FFAA"; //TODO
-			areaStyle += "|" + style + ":" + color;
+			Color statusColor = presenceAbsenceTermColors.get(status);
+			String rgb;
+			if (statusColor != null){
+				rgb = Integer.toHexString(statusColor.getRGB()).substring(2);
+			}else{
+				rgb = status.getDefaultColor(); //TODO
+			}
+			
+			areaStyle += "|" + style + ":" + rgb;
 			styleCharMap.put(status, style);
 			i++;
 		}
 		
-		String styleWorkaround = "|z:FFFFFF";
-		areaStyle = "as=" + areaStyle.substring(1) + styleWorkaround; //remove first |
+		areaStyle = "as=" + areaStyle.substring(1); //remove first |
 		
 		//areaData
 		areaData = "";
@@ -248,12 +274,10 @@ public class Distribution extends DescriptionElementBase {
 			isFirstLayer = false;
 		}
 		
-		String workaround = "tdwg2/z:Subarctic%20America,Australia||";
-		areaData = "ad=" + workaround  + areaData.substring(0); //remove first |
+		areaData = "ad=" + areaData.substring(0); //remove first |
 		
 		//result
-		result = webServiceUrl + "?";
-		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, widthStr, heightStr});
+		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
 		return result;
 	}
 	
@@ -261,6 +285,9 @@ public class Distribution extends DescriptionElementBase {
 		NamedArea area = distribution.getArea();
 		Representation representation = area.getRepresentation(Language.DEFAULT());
 		String areaAbbrev = representation.getAbbreviatedLabel();
+		if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
+			areaAbbrev = areaAbbrev.replace("-", "");
+		}
 		return areaAbbrev;
 	}
 	

@@ -10,8 +10,13 @@
 package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.*;
+
+import java.awt.Color;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -69,12 +74,16 @@ public class DistributionTest {
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("BGM"), AbsenceTerm.ABSENT()));
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("FRA"), AbsenceTerm.ABSENT()));
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("NFK-NI"), PresenceTerm.PRESENT()));
-		String result = Distribution.getWebServiceUrl(distributions, webServiceUrl, 600, 0, null);
+		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
+		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
+		String result = Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceColorMap, 600, 0, null);
 		//TODO Set semantics is not determined
 		String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
-		assertTrue(result.startsWith("http://www.test.de/webservice?l=tdwg"));
-		assertTrue(result.endsWith("&w=600"));
+		assertTrue(result.startsWith("l=tdwg"));
+		assertTrue(result.endsWith("&ms=600"));
+		//assertTrue(result.matches("0000ff"));
 		//TODO continue
 	}
 }

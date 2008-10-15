@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 
 /**
@@ -660,6 +661,16 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 		this.type = type;
 	}
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#setDatePublished(eu.etaxonomy.cdm.model.common.TimePeriod)
+	 */
+	public void setDatePublished(TimePeriod datePublished) {
+		//TODO
+		logger.warn("Not yet implemented");
+	}
 
 	/**
 	 * Returns a formatted string containing the entire reference citation,
