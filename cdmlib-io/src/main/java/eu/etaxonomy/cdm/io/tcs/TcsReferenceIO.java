@@ -138,7 +138,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+	public boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
@@ -152,7 +152,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		String tcsElementName;
 		Namespace tcsNamespace;
 		boolean success = true;
-		IReferenceService referenceService = cdmApp.getReferenceService();
+		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
 		
 		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
 		String prefix = "tpub";
@@ -289,16 +289,6 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
 		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
-	}
-
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 	
 }

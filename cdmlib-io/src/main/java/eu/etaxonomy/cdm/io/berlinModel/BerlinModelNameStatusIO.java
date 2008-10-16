@@ -65,7 +65,7 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 	}
 	
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 			
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
@@ -77,7 +77,7 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 		
 		logger.info("start makeNameStatus ...");
 		
-		INameService nameService = cdmApp.getNameService();
+		INameService nameService = config.getCdmAppController().getNameService();
 		
 		try {
 			//get data from database
@@ -201,15 +201,4 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 		return ! config.isDoNameStatus();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
 }

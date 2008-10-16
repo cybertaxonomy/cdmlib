@@ -278,13 +278,14 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	
 
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 				
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
+	    CdmApplicationController cdmApp = config.getCdmAppController();
 		boolean success = true;
 		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
@@ -1088,15 +1089,4 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		System.out.println(timePeriod.getYear());
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
 }

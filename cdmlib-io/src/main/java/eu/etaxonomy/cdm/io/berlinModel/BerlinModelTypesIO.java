@@ -65,7 +65,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
@@ -75,7 +75,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		INameService nameService = cdmApp.getNameService();
+		INameService nameService = config.getCdmAppController().getNameService();
 		
 		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
 		String dbAttrName;
@@ -218,15 +218,4 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		return ! config.isDoTypes();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
 }

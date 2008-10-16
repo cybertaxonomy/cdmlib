@@ -22,7 +22,6 @@ public class SpecimenIoBase  extends CdmIoBase {
 
 	@Override
 	protected boolean doInvoke(IImportConfigurator config,
-			CdmApplicationController app,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		// TODO Auto-generated method stub
 		return false;
@@ -38,11 +37,5 @@ public class SpecimenIoBase  extends CdmIoBase {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 
 }

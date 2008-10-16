@@ -103,7 +103,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
 		
 		//make not needed maps empty
@@ -123,7 +123,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		
 		logger.info("start makeTaxa ...");
 		
-		ITaxonService taxonService = cdmApp.getTaxonService();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		String namespace = "PTaxon";
 		
 		try {
@@ -243,14 +243,4 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		return ! config.isDoTaxa();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 }

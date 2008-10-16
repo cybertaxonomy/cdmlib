@@ -123,7 +123,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp,
+	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 			
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -134,6 +134,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
+		CdmApplicationController cdmApp = config.getCdmAppController();
 		ITaxonService taxonService = cdmApp.getTaxonService();
 		
 		logger.info("start makeFacts ...");
@@ -264,16 +265,4 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		return ! config.isDoFacts();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	
 }

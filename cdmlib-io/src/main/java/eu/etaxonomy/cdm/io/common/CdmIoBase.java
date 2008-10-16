@@ -54,17 +54,17 @@ public abstract class CdmIoBase implements ICdmIO {
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	public boolean invoke(IImportConfigurator config,
-			CdmApplicationController app, Map stores) {
+			Map stores) {
 		if (isIgnore(config)){
 			logger.warn("No invoke for " + ioName + " (ignored)");
 			return true;
 		}else{
-			return doInvoke(config, app, stores);
+			return doInvoke(config, stores);
 		}
 	}
 	
 	protected abstract boolean doInvoke(IImportConfigurator config,
-			CdmApplicationController app, Map<String, MapWrapper<? extends CdmBase>> stores);
+			Map<String, MapWrapper<? extends CdmBase>> stores);
 
 	
 	protected abstract boolean isIgnore(IImportConfigurator config);

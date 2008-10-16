@@ -74,7 +74,7 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		return featureMap;
 	}
 	
-	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		logger.warn("not yet fully implemented");
 		
 //		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
@@ -95,7 +95,7 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 		Namespace nsTaxonx = root.getNamespace();
 		
 		//Object source = config.getSource();
-		ITaxonService taxonService = cdmApp.getTaxonService();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		logger.info("start make Descriptions ...");
 		
@@ -152,7 +152,7 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		ICommonService commonService =config.getCdmAppController().getCommonService();
+		ICommonService commonService = config.getCdmAppController().getCommonService();
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
 		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
@@ -175,16 +175,6 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoFacts();
-	}
-
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

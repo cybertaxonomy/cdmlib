@@ -58,7 +58,7 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, 
+	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -69,16 +69,9 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			return false;
 		}
 		
-		
-		
-		
-		
-		
-		
-		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
-		ITaxonService taxonService = cdmApp.getTaxonService();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		String dbAttrName;
 		String cdmAttrName;
@@ -163,16 +156,5 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoOccurrence();
 	}
-
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	
 }

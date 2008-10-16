@@ -90,7 +90,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 	
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
@@ -115,7 +115,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 		elementNamespace = tcsConfig.getTcNamespace();
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
-		ITaxonService taxonService = cdmApp.getTaxonService();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		int i = 0;
 		//for each taxonConcept
@@ -242,15 +242,4 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 	}
 
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 }

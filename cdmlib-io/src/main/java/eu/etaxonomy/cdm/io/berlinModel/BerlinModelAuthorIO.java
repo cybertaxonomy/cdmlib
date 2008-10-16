@@ -52,7 +52,6 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 	 */
 	@Override
 	protected boolean doInvoke(IImportConfigurator config, 
-			CdmApplicationController cdmApp, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
@@ -65,7 +64,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		logger.info("start makeAuthors ...");
 		boolean success = true ;
 		
-		IAgentService agentService = cdmApp.getAgentService();
+		IAgentService agentService = config.getCdmAppController().getAgentService();
 		
 		//get data from database
 		String strQuery = 
@@ -124,15 +123,4 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		return ! config.isDoAuthors();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	
 }

@@ -41,7 +41,7 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
@@ -56,7 +56,7 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 		Element source = tcsConfig.getSourceRoot();
 		
 		logger.info("start makeNameRelationships ...");
-		INameService nameService = cdmApp.getNameService();
+		INameService nameService = config.getCdmAppController().getNameService();
 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
 		
@@ -130,13 +130,4 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 		return ! config.isDoRelNames();
 	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

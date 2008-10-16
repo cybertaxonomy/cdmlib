@@ -659,16 +659,16 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 
 	}
 
-	public boolean check(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+//	public boolean check(IImportConfigurator config) {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 
-	public boolean invoke(IImportConfigurator config,
-			CdmApplicationController app, Map stores) {
-		invoke(config,stores);
-		return false;
-	}
+//	public boolean invoke(IImportConfigurator config,
+//			CdmApplicationController app, Map stores) {
+//		invoke(config,stores);
+//		return false;
+//	}
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
 		invoke(config);

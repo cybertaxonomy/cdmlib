@@ -133,7 +133,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			ICdmIO cdmIo = null;
 			try {
 				cdmIo = ioClass.newInstance();
-				result &= cdmIo.invoke(config, cdmApp, stores);
+				result &= cdmIo.invoke(config, stores);
 			} catch (Exception e) {
 				logger.error(e);
 				e.printStackTrace();

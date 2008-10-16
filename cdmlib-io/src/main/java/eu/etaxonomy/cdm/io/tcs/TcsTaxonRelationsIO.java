@@ -56,7 +56,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, CdmApplicationController cdmApp, Map<String, MapWrapper<? extends CdmBase>> stores){ 
+	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){ 
 	
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
@@ -72,7 +72,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 		Element root = tcsConfig.getSourceRoot();
 		Namespace taxonConceptNamespace = tcsConfig.getTcNamespace();
 
-		ITaxonService taxonService = cdmApp.getTaxonService();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
@@ -261,16 +261,5 @@ public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoRelTaxa();
 	}
-
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean invoke(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	
 }
