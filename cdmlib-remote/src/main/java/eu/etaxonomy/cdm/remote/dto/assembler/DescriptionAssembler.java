@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.remote.dto.assembler;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -209,7 +212,12 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 					
 					// don't break in case something is wrong with the URL
 					try{
-						featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
+//						featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
+						//TODO: fill presenceAbsenceColorMap 
+						Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+						presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
+						presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
+						featureTO.setUrl(distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 780, 390, null));
 					}catch(Exception e){
 						// pass
 					}
