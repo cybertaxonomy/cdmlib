@@ -30,8 +30,10 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -130,19 +132,22 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		
 		//Move Synonym Relations to new Taxon
 		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
-			//TODO citation and microcitation
-			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), null, null);
+			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), 
+					synRelation.getCitation(), synRelation.getCitationMicroReference());
 		}
 
 		//Move Taxon RelationShips to new Taxon
+		Set<TaxonRelationship> removableTaxonRels = new HashSet<TaxonRelationship>();
 		for(TaxonRelationship taxonRelation : oldTaxon.getTaxonRelations()){
 			//CHILDREN
 			if (taxonRelation.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
 				if (taxonRelation.getFromTaxon() == oldTaxon){
-					oldTaxon.removeTaxonRelation(taxonRelation);
+					removableTaxonRels.add(taxonRelation);
+//					oldTaxon.removeTaxonRelation(taxonRelation);
 				}else if(taxonRelation.getToTaxon() == oldTaxon){
 					newAcceptedTaxon.addTaxonomicChild(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					oldTaxon.removeTaxonRelation(taxonRelation);
+					removableTaxonRels.add(taxonRelation);
+//					oldTaxon.removeTaxonRelation(taxonRelation);
 				}else{
 					logger.warn("Taxon is not part of its own Taxonrelationship");
 				}
@@ -151,10 +156,12 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
 				if (taxonRelation.getFromTaxon() == oldTaxon){
 					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					oldTaxon.removeTaxonRelation(taxonRelation);
+					removableTaxonRels.add(taxonRelation);
+//					oldTaxon.removeTaxonRelation(taxonRelation);
 				}else if(taxonRelation.getToTaxon() == oldTaxon){
 					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					oldTaxon.removeTaxonRelation(taxonRelation);
+					removableTaxonRels.add(taxonRelation);
+//					oldTaxon.removeTaxonRelation(taxonRelation);
 				}else{
 					logger.warn("Taxon is not part of its own Taxonrelationship");
 				}
@@ -164,14 +171,18 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 //			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIEDNAMEFOR())){
 //				if (taxonRelation.getFromTaxon() == oldTaxon){
 //					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-//					oldTaxon.removeTaxonRelation(taxonRelation);
+//			        removableTaxonRels.add(taxonRelation);
 //				}else if(taxonRelation.getToTaxon() == oldTaxon){
 //					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-//					oldTaxon.removeTaxonRelation(taxonRelation);
+//	                removableTaxonRels.add(taxonRelation);
 //				}else{
 //					logger.warn("Taxon is not part of its own Taxonrelationship");
 //				}
 //			}
+		}
+		
+		for(TaxonRelationship taxonRel : removableTaxonRels) {
+			oldTaxon.removeTaxonRelation(taxonRel);
 		}
 		
 		//Move Descriptions to new Taxon
