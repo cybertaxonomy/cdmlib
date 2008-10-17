@@ -192,10 +192,10 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		//delete old Taxon
 		this.dao.saveOrUpdate(newAcceptedTaxon);
 //		FIXME implement
-		this.dao.delete(oldTaxon);
+//		this.dao.delete(oldTaxon);
 		
 		//return
-		this.dao.flush();
+//		this.dao.flush();
 		return synRel.getSynonym();
 	}
 
