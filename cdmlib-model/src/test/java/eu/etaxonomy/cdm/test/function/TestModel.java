@@ -88,8 +88,10 @@ public class TestModel {
 	}
 
 	public void testTDWG(){
-		NamedArea tdwgArea = TdwgArea.getAreaByTdwgLabel("GER");
+		NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GER");
+		NamedArea tdwgArea2 = TdwgArea.getAreaByTdwgLabel("Qatar");
 		System.out.println(tdwgArea.getLabel());
+		System.out.println(tdwgArea2.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
 	}
 	
 	private void test(){

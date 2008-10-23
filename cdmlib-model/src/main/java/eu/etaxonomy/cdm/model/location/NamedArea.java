@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.location;
 
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -107,7 +108,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	
 	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaType is DefinedTerm -> no Cascade
 	public NamedAreaType getType(){
 		return this.type;
 	}
@@ -116,7 +117,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 
 	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
+	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaLevel is DefinedTerm -> no Cascade
 	public NamedAreaLevel getLevel(){
 		return this.level;
 	}
@@ -177,12 +178,21 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		Language lang = Language.DEFAULT();
 		super.readCsvLine(csvLine, lang);
 		String abbreviatedLabel = (String)csvLine.get(4);
-		//TODO if TDWG
-		if (true){
-			TdwgArea.addTdwgArea(this,abbreviatedLabel);
-		}
 		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	@Override
+	public void setVocabulary(TermVocabulary newVocabulary) {
+		super.setVocabulary(newVocabulary);
+		if (newVocabulary.equals(TermVocabulary.TDWG())){
+			TdwgArea.addTdwgArea(this);
+		}
+	}
+
+	
+	
 }

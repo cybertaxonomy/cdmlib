@@ -14,6 +14,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+
+import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
+import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -46,26 +50,30 @@ import javax.xml.bind.annotation.XmlType;
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	static Logger logger = Logger.getLogger(TermVocabulary.class);
 	
+	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
+
+	public static void setVocabularyStore(IVocabularyStore vocabularyStore){
+		DefinedTermBase.vocabularyStore = vocabularyStore;
+	}
+	
 	private static final UUID uuidLanguage = UUID.fromString("17ba1c02-256d-47cf-bed0-2964ec1108ba");
 	private static final UUID uuidRank = UUID.fromString("b17451eb-4278-4179-af68-44f27aa3d151");
 	private static final UUID uuidContinent = UUID.fromString("ed4e5948-172a-424c-83d6-6fc7c7da70ed");
-	
+	private static final UUID uuidTdwg = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
+
 	
 	public static TermVocabulary findByUuid(UUID uuid){
-		//in tests tems may no be initialised by database access
-//		if (!isInitialized()){
-//			initTermList(null);
-//		}
-//		return termVocabularyMap.get(uuid);
-		//TODO
-		logger.error("Not yet implemented");
-		return null;
+		TermVocabulary<?> voc = vocabularyStore.getVocabularyByUuid(uuid);
+		return voc;
 	}
 	public static final TermVocabulary getUUID(UUID uuid){
 		return findByUuid(uuid);
 	}
 	public static final TermVocabulary LANGUAGE(){
 		return getUUID(uuidLanguage);
+	}
+	public static final TermVocabulary TDWG(){
+		return getUUID(uuidTdwg);
 	}
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  

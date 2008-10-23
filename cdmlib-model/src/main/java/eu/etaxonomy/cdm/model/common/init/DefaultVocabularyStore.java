@@ -42,7 +42,9 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getTermByUuid(java.util.UUID)
 	 */
 	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid) {
-		if (!isInitialized  &&  ! initialize()){ return null;}
+		if (!isInitialized  &&  ! initialize()){ 
+			return null;
+		}
 		return (DefinedTermBase<DefinedTermBase>)definedTermsMap.get(uuid);
 	}
 
@@ -50,7 +52,9 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getVocabularyByUuid(java.util.UUID)
 	 */
 	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid) {
-		if (!isInitialized  &&  ! initialize()){ return null;}
+		if (!isInitialized  &&  ! initialize()){ 
+			return null;
+		}
 		return termVocabularyMap.get(uuid);
 	}
 	

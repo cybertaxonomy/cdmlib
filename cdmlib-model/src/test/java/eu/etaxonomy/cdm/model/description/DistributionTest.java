@@ -68,12 +68,12 @@ public class DistributionTest {
 	public void testGetWebServiceUrl() {
 		String webServiceUrl = "http://www.test.de/webservice";
 		Set<Distribution> distributions = new HashSet<Distribution>();
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("SPA"), PresenceTerm.PRESENT()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("GER"), PresenceTerm.INTRODUCED()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("14"), PresenceTerm.CULTIVATED()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("BGM"), AbsenceTerm.ABSENT()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("FRA"), AbsenceTerm.ABSENT()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgLabel("NFK-NI"), PresenceTerm.PRESENT()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("SPA"), PresenceTerm.PRESENT()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("GER"), PresenceTerm.INTRODUCED()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("14"), PresenceTerm.CULTIVATED()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("BGM"), AbsenceTerm.ABSENT()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("FRA"), AbsenceTerm.ABSENT()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("NFK-NI"), PresenceTerm.PRESENT()));
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
 		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);

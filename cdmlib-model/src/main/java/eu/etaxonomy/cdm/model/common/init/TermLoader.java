@@ -74,6 +74,7 @@ public class TermLoader {
 	@Transactional(readOnly = false)
 	public TermVocabulary<DefinedTermBase> insertTerms(Class<ILoadableTerm> termClass, String filename, boolean isEnumeration, boolean isOrdered) throws NoDefinedTermClassException, FileNotFoundException {
 		DefinedTermBase.setVocabularyStore(vocabularyStore); //otherwise DefinedTermBase is not able to find DefaultLanguage
+		TermVocabulary.setVocabularyStore(vocabularyStore);
 		try {
 			String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
 			logger.debug("strResourceFileName is " + strResourceFileName);
