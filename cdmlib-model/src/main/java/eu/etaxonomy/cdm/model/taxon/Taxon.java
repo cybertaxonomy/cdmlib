@@ -491,6 +491,40 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 
 	
+//	@Transient
+//	public void removeMisappliedName(Taxon misappliedNameTaxon){
+//		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
+//		for (TaxonRelationship taxRel : taxRels ){
+//			if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) 
+//				&& taxRel.getFromTaxon().equals(misappliedNameTaxon)){
+//				this.removeTaxonRelation(taxRel);
+//			}
+//		}
+//	}
+	
+	/** 
+	 * Removes one {@link TaxonRelationship taxon relationship} with {@link TaxonRelationshipType taxon relationship type}
+	 * taxonRelType and with the given child taxon playing the
+	 * source role from the set of {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging
+	 * to <i>this</i> taxon. The taxon relationship will also be removed from the set
+	 * of {@link #getRelationsFromThisTaxon() "taxon relationships from"} belonging to the other side taxon.
+	 * Furthermore, the inherited RelatedFrom and RelatedTo attributes of the
+	 * taxon relationship will be nullified.<P>
+	 *
+	 * @param taxon			the taxon which plays the source role in the taxon relationship
+	 * @param taxonRelType	the taxon relationship type
+	 */
+	@Transient
+	public void removeTaxon(Taxon taxon, TaxonRelationshipType taxonRelType){
+		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
+		for (TaxonRelationship taxRel : taxRels ){
+			if (taxRel.getType().equals(taxonRelType) 
+				&& taxRel.getFromTaxon().equals(taxon)){
+				this.removeTaxonRelation(taxRel);
+			}
+		}
+	}
+	
 	/**
 	 * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
 	 * "taxonomically included in") instance where <i>this</i> taxon plays the target
@@ -551,7 +585,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public void removeTaxonomicChild(Taxon child){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 		for (TaxonRelationship taxRel : taxRels ){
-			if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && taxRel.getFromTaxon().equals(child)){
+			if (taxRel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) 
+				&& taxRel.getFromTaxon().equals(child)){
 				this.removeTaxonRelation(taxRel);
 			}
 		}
