@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportImportConfigurator;
+import eu.etaxonomy.cdm.io.test.function.TestDatabase;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -63,7 +64,7 @@ public class CdmExportActivator {
 	private static final Logger logger = Logger.getLogger(CdmExportActivator.class);
 	
     /* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_jaxb2";
+	private static final String sourceDbName = "cdm_test_jaxb";
 	private static final String destinationDbName = "cdm_test_jaxb2";
 	
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -155,10 +156,10 @@ public class CdmExportActivator {
 		}
 
 		// Load some test data to source DB
-//    	loadTestData(sourceDbName, appCtrInit);
+    	TestDatabase.loadTestData(sourceDbName, appCtrInit);
     	
 //    	testMakeTaxonSynonym(appCtrInit);
-    	testRemoveNameRelationship(appCtrInit);
+//    	testRemoveNameRelationship(appCtrInit);
     	
     	// Init destination DB
 //    	expImpConfigurator.setCdmDestSchemaValidation(DbSchemaValidation.CREATE);
@@ -168,17 +169,17 @@ public class CdmExportActivator {
     	/* ********* SERIALIZE ***********************/
     	
     	// Reset DbSchemaValidation
-//    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
+    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
     	
     	// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
 //    	cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
 
     	// Retrieve data, including taxa, synonyms, and relationships via services.
-//     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
+     	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
 
     	/* ********* DESERIALIZE *********************/
     	
-//     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
+     	cdmExporter.doDeserialize(expImpConfigurator, marshOutOne);
 
     }
 
@@ -190,20 +191,6 @@ public class CdmExportActivator {
     }
 
     
-    public void loadTestData(String dbname, CdmApplicationController appCtr) {
-    	
-		logger.info("Loading test data into " + dbname);
-		
-		TransactionStatus txStatus = appCtr.startTransaction();
-		DataSet dataSet = buildDataSet();
-		
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxa());
-
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
-    }
-
-	
 	/**
 	 * @param args
 	 */
@@ -214,157 +201,7 @@ public class CdmExportActivator {
 	}
 
 	
-	/**
-	 * This method constructs a small sample taxonomic tree to test JAXB marshaling.
-	 * The sample tree contains four taxa. The root taxon has two children taxa, and
-	 * there is one "free" taxon without a parent and children.
-	 */
-	private DataSet buildDataSet() {
-
-		List<Agent> agents = new ArrayList<Agent>();
-	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
-	    //List<TermBase> terms = new ArrayList<TermBase>();
-	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
-	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
-	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
-	    List<Taxon> taxa = new ArrayList<Taxon>();
-	    List<Synonym> synonyms = new ArrayList<Synonym>();
-	    List<AnnotatableEntity> homotypicalGroups;
-
-		StrictReferenceBase citRef, sec;
-		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
-		Taxon child1, child2, child21, rootT, freeT;
-		Synonym syn11, syn12, syn2, synFree;
-		Rank rankSpecies, rankSubspecies, rankGenus;
-
-		// agents 
-		// - persons, institutions 
-
-		Person linne = new Person("Carl", "Linné", "L.");
-		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
-		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
-		TimePeriod period = new TimePeriod(birth, death);
-		linne.setLifespan(period);
-
-		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
-		linne.addKeyword(keyword);
-
-		Institution institute = Institution.NewInstance();
-
-		agents.add(linne);
-		agents.add(institute);
-
-		// agent data
-		// - contacts, addresses, memberships
-
-		//Contact contact1 = new Contact();
-		//contact1.setEmail("someone@somewhere.org");
-		InstitutionalMembership membership 
-		= new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
-		//agentData.add(contact1);
-
-		agentData.add(membership);
-
-		// terms
-		// - ranks, keywords
-
-		rankSpecies = Rank.SPECIES();
-		rankSubspecies = Rank.SUBSPECIES();
-		rankGenus = Rank.GENUS();
-		
-		terms.add(keyword);
-		
-        // taxonomic names
-		
-		nameRoot = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
-		
-		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
-		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
-		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
-		
-		name2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzae",null,linne,null,"p.2", null);
-		synName2 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"echinata",null,linne,null,"p.2", null);
-		
-		name21 = BotanicalName.NewInstance(rankSubspecies,"Calendula",null,"lanzea","something",linne,null,"p.1", null);
-		//name211 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
-		//name212 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
-		
-		nameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"intybus",null,linne,null,"p.200", null);
-		synNameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"balearicum",null,linne,null,"p.2", null);
-
-		taxonomicNames.add(nameRoot);
-		taxonomicNames.add(name1);
-		taxonomicNames.add(synName11);
-		taxonomicNames.add(synName12);
-		taxonomicNames.add(name2);
-		taxonomicNames.add(name21);
-		taxonomicNames.add(synName2);
-		taxonomicNames.add(nameFree);
-		taxonomicNames.add(synNameFree);
-		
-        // references
-		
-		sec = Book.NewInstance();
-		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Plant Speciation");
-		references.add(sec);
-		
-		citRef = Database.NewInstance();
-		citRef.setAuthorTeam(linne);
-		citRef.setTitleCache("BioCASE");
-		references.add(citRef);
-
-		// taxa
-		
-		rootT = Taxon.NewInstance(nameRoot, sec);
-		freeT = Taxon.NewInstance(nameFree, sec);
-		child1 = Taxon.NewInstance(name1, sec);
-		child2 = Taxon.NewInstance(name2, sec);
-		child21 = Taxon.NewInstance(name21, sec);
-		
-		// synonyms
-		
-		synFree = Synonym.NewInstance(synNameFree, sec);
-		syn11 = Synonym.NewInstance(synName11, sec);
-		syn12 = Synonym.NewInstance(synName12, sec);
-		syn2 = Synonym.NewInstance(synName2, sec);
-		
-		child1.addSynonym(syn11, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
-		child1.addSynonym(syn12, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		child2.addSynonym(syn2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-		freeT.addSynonym(synFree, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-
-		synonyms.add(synFree);
-		synonyms.add(syn11);
-		synonyms.add(syn12);
-		synonyms.add(syn2);
-		
-		// taxonomic children
-		
-		rootT.addTaxonomicChild(child1, sec, "p.1010");
-		rootT.addTaxonomicChild(child2, sec, "p.1020");
-		child2.addTaxonomicChild(child21, sec, "p.2000");
-				
-		taxa.add(rootT);
-		taxa.add(freeT);
-		taxa.add(child1);
-		taxa.add(child2);
-		taxa.add(child21);
-		
-		DataSet dataSet = new DataSet();
-		
-		dataSet.setAgents(agents);
-		dataSet.setAgentData(agentData);
-		dataSet.setTerms(terms);
-		dataSet.setReferences(references);
-		dataSet.setTaxonomicNames(taxonomicNames);
-		dataSet.setTaxa(taxa);
-		dataSet.setSynonyms(synonyms);
-		
-		return dataSet;
-
-	}
-	
+    // move to cdmlib-services: cdm.test.integration
 	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
 		
 		logger.info("Testing makeTaxonSynonym()");
@@ -389,6 +226,7 @@ public class CdmExportActivator {
 		
 	}
 
+    // move to cdmlib-services: cdm.test.integration
 	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
 		
 		logger.info("Testing testRemoveNameRelationship()");
@@ -448,6 +286,7 @@ public class CdmExportActivator {
 
 	}
 		
+    // move to cdmlib-services: cdm.test.integration
 	private void createNameRelationship(CdmApplicationController appCtr) {
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
@@ -457,5 +296,4 @@ public class CdmExportActivator {
 		
 	}
 	
-
 }
