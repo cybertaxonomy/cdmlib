@@ -143,17 +143,10 @@ public class CdmExportActivator {
     	/* ********* INIT ****************************/
     	
     	// Init source DB
-    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
 		CdmApplicationController appCtrInit = null;
-			expImpConfigurator.getSourceAppController(expImpConfigurator.getCdmSource(), true);
-		try {
-			appCtrInit = CdmApplicationController.NewInstance(expImpConfigurator.getCdmSource(), expImpConfigurator.getCdmSourceSchemaValidation(), false);
-		} catch (DataSourceNotFoundException e) {
-			logger.error("Could not connect to database");
-		}catch (TermNotFoundException e) {
-			logger.error("Terms not found in database. " +
-			"This error should not happen since preloaded terms are not expected for this application.");
-		}
+		
+		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
+		appCtrInit = TestDatabase.initDb(sourceDb, DbSchemaValidation.CREATE, false);
 
 		// Load some test data to source DB
     	TestDatabase.loadTestData(sourceDbName, appCtrInit);
@@ -168,11 +161,11 @@ public class CdmExportActivator {
 
     	/* ********* SERIALIZE ***********************/
     	
-    	// Reset DbSchemaValidation
-    	expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
+    	// Set DbSchemaValidation
+    	//expImpConfigurator.setCdmSourceSchemaValidation(DbSchemaValidation.VALIDATE);
     	
     	// Retrieve taxa, synonyms, and relationships through traversing the taxonomic tree.
-//    	cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
+    	//cdmExporter.doSerializeTaxonTree(expImpConfigurator, marshOutOne);
 
     	// Retrieve data, including taxa, synonyms, and relationships via services.
      	cdmExporter.doSerialize(expImpConfigurator, marshOutOne);
@@ -184,13 +177,6 @@ public class CdmExportActivator {
     }
 
 	
-    public CdmApplicationController initDb(String dbname, CdmApplicationController appCtr) {
-    	
-		logger.info("Loading test data into " + dbname);
-		return appCtr;
-    }
-
-    
 	/**
 	 * @param args
 	 */
@@ -201,7 +187,7 @@ public class CdmExportActivator {
 	}
 
 	
-    // move to cdmlib-services: cdm.test.integration
+    // TODO: move to cdmlib-services: cdm.test.integration
 	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
 		
 		logger.info("Testing makeTaxonSynonym()");
@@ -226,7 +212,7 @@ public class CdmExportActivator {
 		
 	}
 
-    // move to cdmlib-services: cdm.test.integration
+    // TODO: move to cdmlib-services: cdm.test.integration
 	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
 		
 		logger.info("Testing testRemoveNameRelationship()");
@@ -286,7 +272,7 @@ public class CdmExportActivator {
 
 	}
 		
-    // move to cdmlib-services: cdm.test.integration
+    // TODO: move to cdmlib-services: cdm.test.integration
 	private void createNameRelationship(CdmApplicationController appCtr) {
 		
 		TransactionStatus txStatus = appCtr.startTransaction();
