@@ -75,32 +75,13 @@ public class TestCdmDbComparator {
 	private static final String sourceDbOne = "cdm_test_jaxb";
 	private static final String sourceDbTwo = "cdm_test_jaxb2";
 	
-	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB_(sourceDbOne);
-	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB_(sourceDbTwo);
+	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB(sourceDbOne);
+	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB(sourceDbTwo);
 	
 	private static final String server = "192.168.2.10";
 	private static final String username = "edit";
 
-	public static Source CDM_DB(String dbname){
-		
-		String dbms = "MySQL";
-		String strServer = server;
-		String strDB = dbname;
-		String userName = username;
-		return  makeSource(dbms, strServer, strDB, -1, userName, null);
-	}
-
-	private static Source makeSource(String dbms, String strServer, String strDB, int port, String userName, String pwd ){
-		//establish connection
-		pwd = AccountStore.readOrStorePassword(dbms, strServer, userName, pwd);
-		//String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		Source source = new Source(dbms, strServer, strDB);
-		source.setPort(port);
-		source.setUserAndPwd(userName, pwd);
-		return source;
-	}
-
-	public static ICdmDataSource CDM_DB_(String dbname) {
+	public static ICdmDataSource CDM_DB(String dbname) {
 		
 	String password = AccountStore.readOrStorePassword(dbname, server, username, null);
 	ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
@@ -292,7 +273,7 @@ public class TestCdmDbComparator {
 //        }
 //    }
     
-	public Map<String, List<String>> doLoadDataFromDb(String dbname, Source source) {
+	private Map<String, List<String>> doLoadDataFromDb(String dbname, Source source) {
     	
 		Map<String, List<String>> dbTables = new HashMap<String, List<String>>();
 		
@@ -305,7 +286,6 @@ public class TestCdmDbComparator {
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
     		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-//    		Source source = new Source(dbms, strServer, strDB);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
@@ -333,11 +313,9 @@ public class TestCdmDbComparator {
     	
     }
 	
-	public Map<String, List<CdmBase>> doLoadDataFromDb_(String dbname) {
-//		public Map<String, List<String>> doLoadDataFromDb_(String dbname) {
+	private Map<String, List<CdmBase>> doLoadDataFromDb_(String dbname) {
     	
 		Map<String, List<CdmBase>> dbTables = new HashMap<String, List<CdmBase>>();
-//		Map<String, List<String>> dbTables = new HashMap<String, List<String>>();
 		
 		logger.info("Loading data from DB " + dbname);
 
@@ -348,7 +326,6 @@ public class TestCdmDbComparator {
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
     		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-//    		Source source = new Source(dbms, strServer, strDB);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
@@ -364,7 +341,6 @@ public class TestCdmDbComparator {
     	try {
 
     		dbTables = retrieveAllTables_(appCtr);
-//    		dbTables = retrieveAllTables_(appCtr);
     		
     	} catch (Exception e) {
     		logger.error("error setting data");
@@ -377,7 +353,7 @@ public class TestCdmDbComparator {
     	
     }
 	
-	public Map<String, List<String>> doLoadDataFromDb__(String dbname, Source source) {
+	private Map<String, List<String>> doLoadDataFromDb__(String dbname, Source source) {
     	
 		Map<String, List<String>> dbTables = new HashMap<String, List<String>>();
 		
@@ -396,9 +372,8 @@ public class TestCdmDbComparator {
     }
 	
     private Map<String, List<CdmBase>> retrieveAllTables_(CdmApplicationController appCtr) {
-//    private Map<String, List<String>> retrieveAllTables_(CdmApplicationController appCtr) {
     	
-		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
+//		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
 		Map<String, List<CdmBase>> tables_ = new HashMap<String, List<CdmBase>>(table_list.length);
 		
 		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
@@ -413,13 +388,10 @@ public class TestCdmDbComparator {
 	    		System.out.println("Retrieving table '" + table_list[i] + "'");
 	    		
 				List<CdmBase> rows = new ArrayList<CdmBase>(MAX_ROWS);
-//				List<String> rows = new ArrayList<String>(MAX_ROWS);
 
-//				rows = appCtr.getCommonService().list(MAX_ROWS, 0);
 				rows = appCtr.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
 				
     			tables_.put(table_list[i], rows);
-//				tables.put(table_list[i], rows);
 
 			}
 				
@@ -540,7 +512,7 @@ public class TestCdmDbComparator {
 		return tables;
 	}
 	
-    public void compareTables(String tableName, List<CdmBase> tablesDbOne, List<CdmBase> tablesDbTwo) {
+    private void compareTables(String tableName, List<CdmBase> tablesDbOne, List<CdmBase> tablesDbTwo) {
     	
 		int tableOneSize = tablesDbOne.size();
 		int tableTwoSize = tablesDbTwo.size();
@@ -583,7 +555,7 @@ public class TestCdmDbComparator {
 		}
 	}
 
-    	public void doCompareDatabases(Map<String, List<CdmBase>> tablesDbOne, Map<String, List<CdmBase>> tablesDbTwo) {
+    	private void doCompareDatabases(Map<String, List<CdmBase>> tablesDbOne, Map<String, List<CdmBase>> tablesDbTwo) {
 //        public void doCompareDatabases(Map<String, List<String>> tablesDbOne, Map<String, List<String>> tablesDbTwo) {
 		
 		logger.debug("# Tables in DB 1: " + tablesDbOne.size());
@@ -634,15 +606,15 @@ public class TestCdmDbComparator {
 		logger.info("End database comparison"); 
 	}
 
-	private void test(){
-		
-		Map<String, List<CdmBase>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
-		Map<String, List<CdmBase>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
-	    doCompareDatabases(tablesDbOne, tablesDbTwo);
-
-	}
+//	private void test_(){
+//		
+//		Map<String, List<CdmBase>> tablesDbOne = doLoadDataFromDb_(sourceDbOne);
+//		Map<String, List<CdmBase>> tablesDbTwo = doLoadDataFromDb_(sourceDbTwo);
+//	    doCompareDatabases(tablesDbOne, tablesDbTwo);
+//
+//	}
 	
-	private void test_(){
+	private void test(){
 		
 		CdmApplicationController appCtrOne = null;
 		CdmApplicationController appCtrTwo = null;
@@ -688,6 +660,6 @@ public class TestCdmDbComparator {
 	 */
 	public static void  main(String[] args) {
 		TestCdmDbComparator diff = new TestCdmDbComparator();
-    	diff.test_();
+    	diff.test();
 	}
 }
