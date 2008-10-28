@@ -14,6 +14,11 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -24,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -41,8 +47,36 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class TestDatabase {
 
+	private static final String server = "192.168.2.10";
+	private static final String username = "edit";
+
 	private static final Logger logger = Logger.getLogger(TestDatabase.class);
 
+	public static ICdmDataSource CDM_DB(String dbname) {
+		
+		logger.info("Setting DB " + dbname);
+		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+		return datasource;
+	}
+	
+    public static CdmApplicationController 
+    initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
+    	
+		logger.info("Initializing database '" + db.getName() + "'");
+		
+		CdmApplicationController appCtrInit = null;
+		try {
+			appCtrInit = CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Could not connect to database");
+		}catch (TermNotFoundException e) {
+			logger.error("Terms not found in database. " +
+			"This error should not happen if preloaded terms are not expected for this application.");
+		}
+		return appCtrInit;
+    }
+    
 	public static void loadTestData(String dbname, CdmApplicationController appCtr) {
     	
 		logger.info("Loading test data into " + dbname);
@@ -74,8 +108,10 @@ public class TestDatabase {
 	    List<AnnotatableEntity> homotypicalGroups;
 
 		StrictReferenceBase citRef, sec;
-		BotanicalName name1, name2, name21, nameRoot, nameFree, synName11, synName12, synName2, synNameFree;
-		Taxon child1, child2, child21, rootT, freeT;
+		BotanicalName name1, name2, name21, nameRoot1, nameFree, synName11, synName12, synName2, synNameFree;
+		BotanicalName nameRoot2, nameR2_1, nameR2_2;
+		Taxon child1, child2, child21, root1T, root2T, freeT;
+		Taxon childR2_1, childR2_2;
 		Synonym syn11, syn12, syn2, synFree;
 		Rank rankSpecies, rankSubspecies, rankGenus;
 
@@ -118,7 +154,7 @@ public class TestDatabase {
 		
         // taxonomic names
 		
-		nameRoot = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
+		nameRoot1 = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
 		
 		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
 		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
@@ -131,10 +167,15 @@ public class TestDatabase {
 		//name211 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
 		//name212 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"lanzea",null,linne,null,"p.1", null);
 		
+		nameRoot2 = 
+			BotanicalName.NewInstance(rankGenus,"Sonchus",null,null,null,linne,null,"p.200", null);
+		nameR2_1 = BotanicalName.NewInstance(rankSpecies,"Sonchus",null,"child1",null,linne,null,"p.1", null);
+		nameR2_2 = BotanicalName.NewInstance(rankSpecies,"Sonchus",null,"child2",null,linne,null,"p.2", null);
+		
 		nameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"intybus",null,linne,null,"p.200", null);
 		synNameFree = BotanicalName.NewInstance(rankSpecies,"Cichorium",null,"balearicum",null,linne,null,"p.2", null);
 
-		taxonomicNames.add(nameRoot);
+		taxonomicNames.add(nameRoot1);
 		taxonomicNames.add(name1);
 		taxonomicNames.add(synName11);
 		taxonomicNames.add(synName12);
@@ -143,6 +184,7 @@ public class TestDatabase {
 		taxonomicNames.add(synName2);
 		taxonomicNames.add(nameFree);
 		taxonomicNames.add(synNameFree);
+		taxonomicNames.add(nameRoot2);
 		
         // references
 		
@@ -158,11 +200,14 @@ public class TestDatabase {
 
 		// taxa
 		
-		rootT = Taxon.NewInstance(nameRoot, sec);
+		root1T = Taxon.NewInstance(nameRoot1, sec);
+		root2T = Taxon.NewInstance(nameRoot2, sec);
 		freeT = Taxon.NewInstance(nameFree, sec);
 		child1 = Taxon.NewInstance(name1, sec);
 		child2 = Taxon.NewInstance(name2, sec);
 		child21 = Taxon.NewInstance(name21, sec);
+		childR2_1 = Taxon.NewInstance(nameR2_1, sec);
+		childR2_2 = Taxon.NewInstance(nameR2_2, sec);
 		
 		// synonyms
 		
@@ -183,15 +228,21 @@ public class TestDatabase {
 		
 		// taxonomic children
 		
-		rootT.addTaxonomicChild(child1, sec, "p.1010");
-		rootT.addTaxonomicChild(child2, sec, "p.1020");
+		root1T.addTaxonomicChild(child1, sec, "p.1010");
+		root1T.addTaxonomicChild(child2, sec, "p.1020");
 		child2.addTaxonomicChild(child21, sec, "p.2000");
 				
-		taxa.add(rootT);
+		root2T.addTaxonomicChild(child1, sec, "p.1010");
+		root2T.addTaxonomicChild(child2, sec, "p.1020");
+		
+		taxa.add(root1T);
+		taxa.add(root2T);
 		taxa.add(freeT);
 		taxa.add(child1);
 		taxa.add(child2);
 		taxa.add(child21);
+		taxa.add(childR2_1);
+		taxa.add(childR2_2);
 		
 		DataSet dataSet = new DataSet();
 		
