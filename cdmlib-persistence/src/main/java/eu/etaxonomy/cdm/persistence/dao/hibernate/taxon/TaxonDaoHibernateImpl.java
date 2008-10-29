@@ -132,7 +132,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 	
-	public List<Taxon> getAllTaxa_(Integer limit, Integer start) {
+	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		List<Taxon> results = crit.list();
 		return results;

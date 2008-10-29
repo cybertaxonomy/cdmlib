@@ -61,7 +61,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param start 
 	 * @return
 	 */
-	public List<Taxon> getAllTaxa_(Integer limit, Integer start);
+	public List<Taxon> getAllTaxa(Integer limit, Integer start);
 
 	/**
 	 * @param limit
