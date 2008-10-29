@@ -85,7 +85,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 
 	public List<Taxon> getAllTaxa(int limit, int start){
-		return taxonDao.getAllTaxa_(limit, start);
+		return taxonDao.getAllTaxa(limit, start);
 	}
 	
 	public List<Synonym> getAllSynonyms(int limit, int start) {
