@@ -52,7 +52,15 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	public abstract List<TaxonBase> getAllTaxa(int limit, int start);
+	public abstract List<Taxon> getAllTaxa(int limit, int start);
+	
+	/**
+	 * Computes all taxon bases.
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+	public abstract List<TaxonBase> getAllTaxonBases(int limit, int start);
 	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
