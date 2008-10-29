@@ -150,7 +150,7 @@ public class CdmExporter {
     		logger.info("# TaxonBase: " + taxonBaseRows);
 //    		dataSet.setTaxa(new ArrayList<Taxon>());
 //    		dataSet.setSynonyms(new ArrayList<Synonym>());
-    		List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxa(taxonBaseRows, 0);
+    		List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
     		for (TaxonBase taxonBase : tb) {
     			if (taxonBase instanceof Taxon) {
     				dataSet.addTaxon((Taxon)taxonBase);

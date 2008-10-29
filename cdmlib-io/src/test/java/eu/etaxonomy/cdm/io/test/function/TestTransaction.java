@@ -119,7 +119,9 @@ public class TestTransaction {
 				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "scabra", null, author, null, "2", null);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
-	    	List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(sec);
+//	    	List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(sec);
+	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
+	    	
 	    	taxon1 = taxa.get(0);
 			child1 = Taxon.NewInstance(name1, sec);
 	    	taxon1.addHeterotypicSynonymName(synName1);
