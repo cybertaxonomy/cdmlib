@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -75,14 +76,25 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 public class TestTransaction {
 	
 	private static final String dbName = "cdm_test_jaxb";
-	
     private static final int MAX_ENTRIES = 20;
 	
 	private static final ICdmDataSource db = TestDatabase.CDM_DB(dbName);
-	
     private static final Logger logger = Logger.getLogger(TestTransaction.class);
+
     
-    
+    /** Modifies disjunct objects within two transactions of one application context.
+     *  Flow:
+     *  Start transaction #1. Modify and save taxon #1.
+     *  Start transaction #2. Modify taxon #2.
+     *  Commit transaction #1.
+     *  Save taxon #2.
+     *  Commit transaction #2.
+     *  
+     *  It is possible to commit transaction #2 before committing transaction #1
+     *  but it is not possible to modify data after transaction #2 has been committed
+     *  (LazyInitializationException). However, it is possible to save data after 
+     *  transaction #2 has been committed.
+     */    
 	private void modifyDisjunctObjects() {
 		
 		CdmApplicationController appCtr = null;
@@ -97,51 +109,53 @@ public class TestTransaction {
 			System.exit(1);
 		}
 		
-		BotanicalName synName1, name1, name2;
-		Rank rankGenus = Rank.GENUS();
+		BotanicalName name1, name2;
 		Rank rankSpecies = Rank.SPECIES();
 		Taxon taxon1, taxon2, child1, child2;
 		
 		try {
-			/* ************** Start Transaction 1 ******************************** */
-	    	TransactionStatus txStatOne = appCtr.startTransaction(true);
+			/* ************** Start Transaction #1 ******************************** */
+			
+	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-			/* ************** Start Transaction 2 ******************************** */
-			TransactionStatus txStatTwo = appCtr.startTransaction(true);
-
 	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = agents.get(0);
-	    	synName1 = 
-	    		BotanicalName.NewInstance(rankGenus, "Aposeris", null, null, null, author, null, "0", null);
-			name1 = 
-				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "lucida", null, author, null, "1", null);
-			name2 = 
-				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "scabra", null, author, null, "2", null);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
-//	    	List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(sec);
 	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
-	    	
-	    	taxon1 = taxa.get(0);
-			child1 = Taxon.NewInstance(name1, sec);
-	    	taxon1.addHeterotypicSynonymName(synName1);
-			taxon1.addTaxonomicChild(child1, sec, "10");
-			appCtr.getTaxonService().saveTaxon(taxon1);
 
-			/* ************** Commit Transaction 1 ******************************** */
-	    	appCtr.commitTransaction(txStatOne);
+			name1 = 
+				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "lucida", null, author, null, "1", null);
+            // Calendula L.
+			taxon1 = taxa.get(0);
+			child1 = Taxon.NewInstance(name1, sec);
+			taxon1.addTaxonomicChild(child1, sec, "D#t1-c1");
+			appCtr.getTaxonService().saveTaxon(taxon1);
+			
+
+			/* ************** Start Transaction #2 ******************************** */
 	    	
+			TransactionStatus txStatTwo = appCtr.startTransaction();
+
+			name2 = 
+				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "scabra", null, author, null, "2", null);
+            // Sonchus L.
 	    	taxon2 = taxa.get(1);
 			child2 = Taxon.NewInstance(name2, sec);
-			taxon2.addTaxonomicChild(child2, sec, "10");
-			appCtr.getTaxonService().saveTaxon(taxon2);
-
-			/* ************** Commit Transaction 2 ******************************** */
+			taxon2.addTaxonomicChild(child2, sec, "D#t2-c2");
+			
+			/* ************** Commit Transaction #1 ******************************** */
+			
+	    	appCtr.commitTransaction(txStatOne);
+	    	
+			UUID t2uuid = appCtr.getTaxonService().saveTaxon(taxon2);
+	    	
+			/* ************** Commit Transaction #2 ******************************** */
+			
 	    	appCtr.commitTransaction(txStatTwo);
 	    	
-	    	//java.lang.IllegalStateException: Cannot deactivate transaction synchronization - not active
 	    	appCtr.close();
-			logger.info(""); 
+			logger.info("End test modifying disjunct objects"); 
 				
 		} catch (Exception e) {
     		logger.error("Error");
@@ -149,7 +163,15 @@ public class TestTransaction {
 		}
 	}
 	
-	
+
+    /** Modifies shared objects within two transactions of one application context.
+     *  Flow:
+     *  Start transaction #1. Modify and save taxon #1.
+     *  Start transaction #2. Modify taxon #1.
+     *  Commit transaction #1.
+     *  Save taxon #1.
+     *  Commit transaction #2.
+     */    
 	private void modifySharedObjects() {
 		
 		CdmApplicationController appCtr = null;
@@ -164,49 +186,53 @@ public class TestTransaction {
 			System.exit(1);
 		}
 		
-		BotanicalName synName1, name1, name2;
-		Rank rankGenus = Rank.GENUS();
+		BotanicalName name1, name2;
 		Rank rankSpecies = Rank.SPECIES();
 		Taxon taxon1, taxon2, child1, child2;
 		
 		try {
-			/* ************** Start Transaction 1 ******************************** */
-	    	TransactionStatus txStatOne = appCtr.startTransaction(true);
+			/* ************** Start Transaction #1 ******************************** */
+			
+	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-			/* ************** Start Transaction 2 ******************************** */
-			TransactionStatus txStatTwo = appCtr.startTransaction(true);
-
 	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = agents.get(0);
-	    	synName1 = 
-	    		BotanicalName.NewInstance(rankGenus, "Aposeris", null, null, null, author, null, "0", null);
-			name1 = 
-				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "lucida", null, author, null, "1", null);
-			name2 = 
-				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "scabra", null, author, null, "2", null);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
-	    	List<Taxon> taxa = appCtr.getTaxonService().getRootTaxa(sec);
-	    	taxon1 = taxa.get(0);
-			child1 = Taxon.NewInstance(name1, sec);
-	    	taxon1.addHeterotypicSynonymName(synName1);
-			taxon1.addTaxonomicChild(child1, sec, "10");
-			appCtr.getTaxonService().saveTaxon(taxon1);
+	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
 
-			/* ************** Commit Transaction 1 ******************************** */
+			name1 = 
+				BotanicalName.NewInstance(rankSpecies, "Launaea", null, "child1", null, author, null, "1", null);
+			// Cichorium intybus L.
+	    	taxon1 = taxa.get(5);
+			child1 = Taxon.NewInstance(name1, sec);
+			taxon1.addTaxonomicChild(child1, sec, "S#t1-c1");
+			appCtr.getTaxonService().saveTaxon(taxon1);
+			
+
+			/* ************** Start Transaction #2 ******************************** */
+	    	
+			TransactionStatus txStatTwo = appCtr.startTransaction();
+
+			name2 = 
+				BotanicalName.NewInstance(rankSpecies, "Reichardia", null, "child2", null, author, null, "2", null);
+			// Cichorium intybus L.
+	    	taxon2 = taxa.get(5);
+			child2 = Taxon.NewInstance(name2, sec);
+			taxon2.addTaxonomicChild(child2, sec, "S#t1-c2");
+			
+			/* ************** Commit Transaction #1 ******************************** */
+			
 	    	appCtr.commitTransaction(txStatOne);
 	    	
-	    	taxon2 = taxa.get(1);
-			child2 = Taxon.NewInstance(name2, sec);
-			taxon2.addTaxonomicChild(child2, sec, "10");
-			appCtr.getTaxonService().saveTaxon(taxon2);
-
-			/* ************** Commit Transaction 2 ******************************** */
+			UUID t2uuid = appCtr.getTaxonService().saveTaxon(taxon2);
+	    	
+			/* ************** Commit Transaction #2 ******************************** */
+			
 	    	appCtr.commitTransaction(txStatTwo);
 	    	
-	    	//java.lang.IllegalStateException: Cannot deactivate transaction synchronization - not active
 	    	appCtr.close();
-			logger.info(""); 
+			logger.info("End test modifying shared objects"); 
 				
 		} catch (Exception e) {
     		logger.error("Error");
@@ -225,7 +251,7 @@ public class TestTransaction {
     	TestDatabase.loadTestData(dbName, appCtrInit);
     	
 		modifyDisjunctObjects();
-//		modifySharedObjects();
+		modifySharedObjects();
 	}
 	
 	/**
