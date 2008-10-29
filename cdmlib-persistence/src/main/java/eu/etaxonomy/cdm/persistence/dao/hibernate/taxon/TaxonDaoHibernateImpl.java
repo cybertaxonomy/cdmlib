@@ -119,7 +119,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 
-	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page) {
+	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
 		Criteria crit = getSession().createCriteria(TaxonBase.class);
 		List<TaxonBase> results = crit.list();
 		// TODO add page & pagesize criteria
@@ -128,8 +128,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(Synonym.class);
-		crit.createCriteria("dtype").add(Restrictions.eq("DTYPE", "Synonym"));
 		List<Synonym> results = crit.list();
+		return results;
+	}
+	
+	public List<Taxon> getAllTaxa_(Integer limit, Integer start) {
+		Criteria crit = getSession().createCriteria(Taxon.class);
+		List<Taxon> results = crit.list();
 		return results;
 	}
 	

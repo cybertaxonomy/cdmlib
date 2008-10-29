@@ -53,9 +53,16 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param page page to start, with 0 being first page 
 	 * @return
 	 */
-	public List<TaxonBase> getAllTaxa(Integer pagesize, Integer page);
+	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page);
 	
 	
+	/**
+	 * @param limit
+	 * @param start 
+	 * @return
+	 */
+	public List<Taxon> getAllTaxa_(Integer limit, Integer start);
+
 	/**
 	 * @param limit
 	 * @param start 
