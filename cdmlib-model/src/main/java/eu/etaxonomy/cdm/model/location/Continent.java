@@ -35,10 +35,12 @@ public class Continent extends DefinedTermBase {
 
 	private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
-	private static final UUID uuidAsia = UUID.fromString("7f4f4f89-3b4c-475d-929f-144109bd8457");
+	private static final UUID uuidAsiaTemperate = UUID.fromString("7f4f4f89-3b4c-475d-929f-144109bd8457");
+	private static final UUID uuidAsiaTropical = UUID.fromString("f8039275-d2c0-4753-a1ab-0336642a1499");
 	private static final UUID uuidNAmerica = UUID.fromString("81d8aca3-ddd7-4537-9f2b-5327c95b6e28");
 	private static final UUID uuidSAmerica = UUID.fromString("12b861c9-c922-498c-8b1a-62afc26d19e3");
-	private static final UUID uuidOceania = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
+	private static final UUID uuidAustralasia = UUID.fromString("a2afdb9a-04a0-434c-9e75-d07dbeb86526");
+	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
 
 	/**
@@ -79,8 +81,12 @@ public class Continent extends DefinedTermBase {
 		return getByUuid(uuidAfrica);
 	}
 
-	public static final Continent ASIA(){
-		return getByUuid(uuidAsia);
+	public static final Continent ASIA_TEMPERATE(){
+		return getByUuid(uuidAsiaTemperate);
+	}
+
+	public static final Continent ASIA_TROPICAL(){
+		return getByUuid(uuidAsiaTropical);
 	}
 
 	public static final Continent NORTH_AMERICA(){
@@ -95,8 +101,12 @@ public class Continent extends DefinedTermBase {
 		return getByUuid(uuidSAmerica);
 	}
 
-	public static final Continent OCEANIA(){
-		return getByUuid(uuidOceania);
+	public static final Continent AUSTRALASIA(){
+		return getByUuid(uuidAustralasia);
+	}
+	
+	public static final Continent PACIFIC(){
+		return getByUuid(uuidPacific);
 	}
 
 }

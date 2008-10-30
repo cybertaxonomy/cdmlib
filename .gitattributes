@@ -421,6 +421,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCa
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestUUID.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestBookDefaultCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestNameCacheStrategies.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/strategy/TestTaxonNameParserBotanicalNameImpl.java -text
