@@ -366,6 +366,7 @@ cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
 cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
+cdmlib-model/src/main/resources/terms/StatisticalMeasure.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text

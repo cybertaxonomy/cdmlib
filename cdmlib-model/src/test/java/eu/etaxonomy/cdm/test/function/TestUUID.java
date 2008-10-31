@@ -9,17 +9,18 @@ import java.util.UUID;
  */
 public class TestUUID {
 	
-	private static int NBR_OF_UUIDS = 6;
+	private static int NBR_OF_UUIDS = 7;
 	
 	public static void generateRandomUUID(int nbr) {
 
-		System.out.println("Generating " + nbr + " UUID(s)");
+		System.out.println("Generating " + nbr + " UUID(s):");
 		
 		for (int i = 0; i < nbr; i++) {
 			
 			UUID uuid = UUID.randomUUID();
-			int j = i + 1;
-			System.out.println("UUID #" + j + " = " + uuid);
+			//int j = i + 1;
+			//System.out.println("UUID #" + j + " = " + uuid);
+			System.out.println(uuid);
 		}
 	}
 

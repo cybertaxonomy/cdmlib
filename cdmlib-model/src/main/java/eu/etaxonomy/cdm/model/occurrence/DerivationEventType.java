@@ -15,12 +15,10 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @Entity
 public class DerivationEventType extends DefinedTermBase {
 
-	private static final String strUnknownUuid = "00000000-0000-0000-0000-000000000000";
-	
-	private static final UUID uuidDuplicate = UUID.fromString(strUnknownUuid);
-	private static final UUID uuidGateringInSitu = UUID.fromString(strUnknownUuid);
-	private static final UUID uuidTissueSampling = UUID.fromString(strUnknownUuid);
-	private static final UUID uuidDnaExtraction = UUID.fromString(strUnknownUuid);
+	private static final UUID uuidDuplicate = UUID.fromString("67d2f161-ea1a-4a0c-8142-5f688b82cfbe");
+	private static final UUID uuidGateringInSitu = UUID.fromString("4287d10e-6ef0-47c1-aece-f2de040895d9");
+	private static final UUID uuidTissueSampling = UUID.fromString("06f3cbb2-87c6-4487-8926-3f901ede1689");
+	private static final UUID uuidDnaExtraction = UUID.fromString("16493ed9-b953-4e2e-98ec-140326080b2f");
 	
 	
 	/**
@@ -43,14 +41,14 @@ public class DerivationEventType extends DefinedTermBase {
 	/**
 	 * Constructor
 	 */
-	protected DerivationEventType() {
+	public DerivationEventType() {
 		super();
 	}
 
 	/**
 	 * Constructor
 	 */
-	protected DerivationEventType(String term, String label, String labelAbbrev) {
+	public DerivationEventType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 	

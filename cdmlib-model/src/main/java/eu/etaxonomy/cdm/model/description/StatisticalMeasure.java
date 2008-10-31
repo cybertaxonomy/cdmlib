@@ -9,8 +9,11 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
@@ -27,7 +30,16 @@ import javax.persistence.*;
  */
 @Entity
 public class StatisticalMeasure extends DefinedTermBase {
+	
 	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
+	
+	private static final UUID uuidMin = UUID.fromString("2c8b42e5-154c-42bd-a301-03b483275dd6");
+	private static final UUID uuidMax = UUID.fromString("8955815b-7d21-4149-b1b7-d37af3c2046c");
+	private static final UUID uuidAverage = UUID.fromString("264c3979-d551-4795-9e25-24c6b533fbb1");
+	private static final UUID uuidSampleSize = UUID.fromString("571f86ca-a44c-4484-9981-11fd82138a7a");
+	private static final UUID uuidVariance = UUID.fromString("4d22cf5e-89ff-4de3-a9ae-12dbeda3faba");
+	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
+	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -67,33 +79,36 @@ public class StatisticalMeasure extends DefinedTermBase {
 		return new StatisticalMeasure(term, label, labelAbbrev);
 	}
 	
+	public static final StatisticalMeasure getByUuid(UUID uuid){
+		return (StatisticalMeasure) findByUuid(uuid);
+	}	
 
 	public static final StatisticalMeasure MIN(){
-		return null;
+		return getByUuid(uuidMin);
 	}
 
 	public static final StatisticalMeasure MAX(){
-		return null;
+		return getByUuid(uuidMax);
 	}
 
 	public static final StatisticalMeasure AVERAGE(){
-		return null;
+		return getByUuid(uuidAverage);
 	}
 
 	public static final StatisticalMeasure SAMPLE_SIZE(){
-		return null;
+		return getByUuid(uuidSampleSize);
 	}
 
 	public static final StatisticalMeasure VARIANCE(){
-		return null;
+		return getByUuid(uuidVariance);
 	}
 
 	public static final StatisticalMeasure TYPICAL_LOWER_BOUNDARY(){
-		return null;
+		return getByUuid(uuidTypicalLowerBoundary);
 	}
 
 	public static final StatisticalMeasure TYPICAL_UPPER_BOUNDARY(){
-		return null;
+		return getByUuid(uuidTypicalUpperBoundary);
 	}
 
 }

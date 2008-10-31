@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Controlled vocabulary to diferenctiate categories of areas
+ * Controlled vocabulary to differentiate categories of areas
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:37
