@@ -1,0 +1,156 @@
+/**
+ * 
+ */
+package tcsxml;
+
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.jdom.Element;
+import org.jdom.Namespace;
+
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+
+/**
+ * @author a.mueller
+ *
+ */
+public class TcsXmlPublicationsIO extends TcsXmlIoBase implements ICdmIO {
+	private static final Logger logger = Logger.getLogger(TcsXmlPublicationsIO.class);
+
+	private static int modCount = 1000;
+	
+	public TcsXmlPublicationsIO(){
+		super();
+	}
+	
+	@Override
+	public boolean doCheck(IImportConfigurator config){
+		boolean result = true;
+		result &= checkArticlesWithoutJournal(config);
+		//result &= checkPartOfJournal(config);
+		
+		return result;
+	}
+		
+	private static boolean checkArticlesWithoutJournal(IImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			//TODO
+			//				result = firstRow = false;
+//			}
+//			
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+
+	
+	@Override
+	public boolean doInvoke(IImportConfigurator config,
+			Map<String, MapWrapper<? extends CdmBase>> stores){
+		
+		logger.info("start make Publications ...");
+		boolean success = true;
+		String childName;
+		boolean obligatory;
+	
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
+		
+		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
+		Element elDataSet = getDataSetElement(tcsConfig);
+		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		
+		DoubleResult<Element, Boolean> doubleResult;
+		childName = "Publications";
+		obligatory = false;
+		doubleResult = XmlHelp.getSingleChildElement(elDataSet, childName, tcsNamespace, obligatory);
+		success &= doubleResult.getSecondResult();
+		Element elPublications = doubleResult.getFirstResult();
+		
+		String tcsElementName = "Publication";
+		String idNamespace = "Publication";
+		List<Element> elPublicationList = elPublications.getChildren(tcsElementName, tcsNamespace);
+		
+		int i = 0;
+		//for each taxonName
+		for (Element elPublication : elPublicationList){
+			if ((++i % modCount) == 0){ logger.info("publications handled: " + (i-1));}
+			
+			//create TaxonName element
+			String strId = elPublication.getAttributeValue("id", tcsNamespace);
+			
+			childName = "Simple";
+			obligatory = true;
+			doubleResult = XmlHelp.getSingleChildElement(elPublication, childName, tcsNamespace, obligatory);
+			success &= doubleResult.getSecondResult();
+			Element elSimple = doubleResult.getFirstResult();
+
+			String simple = elSimple.getTextNormalize();
+			ReferenceBase reference = Generic.NewInstance();
+			reference.setTitleCache(simple);
+
+			childName = "PublicationDetailed";
+			obligatory = false;
+			doubleResult =  XmlHelp.getSingleChildElement(elPublication, childName, tcsNamespace, obligatory);
+			success &= doubleResult.getSecondResult();
+			Element elPublicationDetailed = doubleResult.getFirstResult();
+
+			success &= tcsConfig.getPlaceholderClass().makePublicationDetailed(tcsConfig, elPublicationDetailed, reference);
+			ImportHelper.setOriginalSource(reference, config.getSourceReference(), strId, idNamespace);
+			
+			referenceMap.put(strId, reference);
+			
+			
+		}
+//		//save and store in map
+//		logger.info("Save nomenclatural references (" + nomRefCount + ")");
+//		referenceService.saveReferenceAll(nomRefMap.objects());
+		logger.info("Save bibliographical references (" + i +")");
+		referenceService.saveReferenceAll(referenceMap.objects());
+
+		logger.info("end make publications ...");
+		return success;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(IImportConfigurator config){
+		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	}
+	
+}
