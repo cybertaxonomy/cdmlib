@@ -9,10 +9,19 @@
 
 package eu.etaxonomy.cdm.app.abcdImport;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -23,7 +32,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -42,12 +50,6 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-
-import javax.xml.parsers.*; 
-
-import org.springframework.transaction.TransactionStatus;
-import org.w3c.dom.*; 
-import java.io.*; 
 
 
 /**
