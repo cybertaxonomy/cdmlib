@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.molecular;
 
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import org.apache.log4j.Logger;
@@ -37,16 +39,16 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
-public class DnaSample extends Specimen {
+public class DnaSample extends Specimen implements Cloneable {
 	
-	static Logger logger = Logger.getLogger(DnaSample.class);
+	private static final Logger logger = Logger.getLogger(DnaSample.class);
 	
-	@XmlElement(name = "BankNumber")
-	private String bankNumber;
+//	@XmlElement(name = "BankNumber")
+//	private String bankNumber;
 	
 	@XmlElementWrapper(name = "Sequences")
 	@XmlElement(name = "sequence")
-	private Set<Sequence> sequences = new HashSet();
+	private Set<Sequence> sequences = getNewSequenceSet();
 
 	@OneToMany
 	public Set<Sequence> getSequences() {
@@ -83,5 +85,36 @@ public class DnaSample extends Specimen {
 	public void setBankNumber(String bankNumber){
 		this.setCatalogNumber(bankNumber);
 	}
+	
+
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> dna sample. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> dna sample
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link Specimen Specimen}.
+	 * 
+	 * @see Specimen#clone()
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DnaSample clone(){
+		DnaSample result = (DnaSample)super.clone();
+		//sequenceSet
+		Set<Sequence> sequenceSet = getNewSequenceSet();
+		sequenceSet.addAll(this.sequences);
+		result.setSequences(sequenceSet);
+		//no changes to: bankNumber
+		return result;
+	}
+	
+	@Transient
+	private Set<Sequence> getNewSequenceSet(){
+		return new HashSet<Sequence>();
+	}
+
 
 }
