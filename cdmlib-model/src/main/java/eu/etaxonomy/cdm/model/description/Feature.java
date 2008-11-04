@@ -303,6 +303,9 @@ public class Feature extends DefinedTermBase {
 	 * with <i>this</i> feature.
 	 */
 	@OneToMany
+    @JoinTable(
+            name="DefinedTermBase_RecommendedModifierEnumeration"
+        )
 	public Set<TermVocabulary> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
@@ -348,7 +351,7 @@ public class Feature extends DefinedTermBase {
     @JoinTable(
             name="DefinedTermBase_StatisticalMeasure"
         )
-	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
 	}
@@ -392,6 +395,9 @@ public class Feature extends DefinedTermBase {
 	 * with <i>this</i> feature.
 	 */
 	@OneToMany
+    @JoinTable(
+            name="DefinedTermBase_CategoricalEnumeration"
+        )
 	public Set<TermVocabulary> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
