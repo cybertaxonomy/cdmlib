@@ -64,8 +64,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#saveSpecimenOrObservationBaseAll(java.util.Collection)
 	 */
 	@Transactional(readOnly = false)
-	public Map<UUID, SpecimenOrObservationBase> saveSpecimenOrObservationBaseAll(
-			Collection<SpecimenOrObservationBase> specimenOrObservationBaseCollection) {
+	public Map<UUID, ? extends SpecimenOrObservationBase> saveSpecimenOrObservationBaseAll(
+			Collection<? extends SpecimenOrObservationBase> specimenOrObservationBaseCollection) {
 		return saveCdmObjectAll(specimenOrObservationBaseCollection);
 	}
 
