@@ -27,10 +27,24 @@ import org.apache.log4j.Logger;
  */
 @Entity
 public class Extension extends VersionableEntity implements Cloneable {
-	static Logger logger = Logger.getLogger(Extension.class);
+	private static final  Logger logger = Logger.getLogger(Extension.class);
 	private String value;
 	private ExtensionType type;
 	private IdentifiableEntity extendedObj;
+	
+	public static Extension NewInstance(){
+		return new Extension();
+	}
+	
+	/**
+	 * TODO should not be private but throws error in persistence/io test
+	 * Constructor
+	 */
+	protected Extension(){
+		
+	}
+	
+	
 	
 	@Transient
 	public IdentifiableEntity getExtendedObj() {
