@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -486,5 +488,20 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 		}
 		return cdmApp;
 	}
+	
+	
+	protected static Method getDefaultFunction(Class<?> clazz, String methodName){
+		try {
+			return clazz.getMethod(methodName, List.class) ;
+		} catch (SecurityException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 }

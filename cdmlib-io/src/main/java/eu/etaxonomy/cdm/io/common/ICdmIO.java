@@ -31,6 +31,7 @@ public interface ICdmIO<T extends IImportConfigurator> {
 	final String TAXONNAME_STORE = "taxonName";
 	final String TAXON_STORE = "taxon";
 	final String FEATURE_STORE = "feature";
+	final String SPECIMEN_STORE = "specimen";
 	
 	public boolean check(T config);
 	
