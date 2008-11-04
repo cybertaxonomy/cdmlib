@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -48,7 +47,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
 	private int modCount = 50;
-	private int maxCount = 20;
+	private int maxCount = 200000;
 	
 	public BerlinModelNameFactsIO(){
 		super();
