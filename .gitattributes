@@ -20,6 +20,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeTaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsSources.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/TcsXmlTestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
