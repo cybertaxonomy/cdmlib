@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>Basu, Shyamal K.</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus leptospadix</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist.5 : 1845</citation>
+<bibref>Beccari in Hook. f. Fl.Brit.Ind. 6:44. 1892</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11 :142. 1908 and Appendix PI. 14. 1913</bibref>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular">Dhangri bet, Rab bet, Rani bet, Mugri bet.</div>
+<div type="description">A slender cluster forming climber; stem thickened at joints, with lead-sheaths 12-20 mm in diameter, naked stem smooth, 8 -10 mm in diameter at the internodes. Leaves ecirrate, delicate looking, 80-105 cm long; leafsheath with flagellum, thickly scurfy outside, armed with flattened, 15-20 mm long, subulate, half-whorled spines; ocrea persistent, prickly at margins; flagellum filiform with non-spinous base; armed distally with small, delicate claws; petiole terete; petiole and rachis armed with deflexed spines and claws; rachis delicate angular, covered thickly with greyish indumentum; leaflets closely placed, linear-ensiform, alternate to sub-opposite, to 30 cm long, distinctly 3-nerved, attenuate at base; acuminate to bristly subulate at apex; uppermost leaflets shorter. Male inflorescence flagelliform, decompound; male rachillae scorpioid, 1 -2cm long, with 6-12 closely set bifarious flowers. Male flowers 4-4.5 X 1.5 mm; calyx tubular, campanulate, divided up to middle into apiculate lobes; corolla double the length of calyx into 3 oblong segments. Female inflorescence similar to male; female rachillae erect from base, arching above, 1.5 - 2 cm long; each with 5-8 female flowers. Fruit globose, 1.5 mm in diameter, mamil-late; fruit scales yellow with reddish brown margins, channelled at middle; seed globose, endosperm homogeneous.</div>
+<div type="distribution">INDIA (West Bengal, Sikkim, Meghalaya, Assam, Manipur, Nagaland, Arunachal Pradesh), BHUTAN.</div>
+<div type="biology_ecology">Mostly on damp river plains, and forming big thickets. It becomes a cluster forming high climber when it grows in moist valleys among tall trees.</div>
+<div type="cultivation">Infrequent in silviculture practice. Experimental cultivation was possible in the Jalpaiguri forest division of north Bengal. Cultivated in the Indian Botanic Garden, Howrah.</div>
+<div type="conservation"></div>
+<div type="uses">Cane is thin and delicate therefore used mainly for making rough baskets. Split canes are durable and used for making chair bottoms.</div>
+<div type="discussion"></div>
+<div type="materials_examined"></div>
+</treatment>
+</taxonxBody>
+</taxonx>

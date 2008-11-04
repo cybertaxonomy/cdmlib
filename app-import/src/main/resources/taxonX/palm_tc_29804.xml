@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>Renuka, C.</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus palustris</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5:62. 1845</citation>
+<bibref>Beccari in Hook, f., Fl. Brit. Ind. 6: 1893</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 401., PI. 173, 1908</bibref>
+<bibref>Basu, Rattans in India Monogr. Rev.: 63. 1992</bibref>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular">Dunda beth</div>
+<div type="description">Solitary, medium diameter rattan. Stem to 20 m long or more, with sheaths 2.5 cm in diameter, without sheaths 1.5 cm. Leaf 2.5-2.9 m long, citrate; sheath pale green, with horizontal green markings, spiny: spines broad-based, flat, deflexed, 2.5 cm long, arranged irregularly with smaller ones; knee prominent; ocrea slightly developed; petiole very short in mature leaves, 8-10 cm long, spiny; rachis spiny on the upper side and margins, basal portion of adaxial side with a single row of spines, distal portion with half whorls of recurved black spines: leaflets 30-46 x 3.5-6.1 cm, grouped, lanceolate, midrib not prominent, margin ciliate. Inflorescence long flagellate; male inflorescence 1.5 m long; primary sheath tubular, enlarged distally, loosely sheathing; partial inflorescence to 50 cm long; secondary sheath closely sheathing, rachilla 2.5 cm long, male flowers 4 mm long; female inflorescence, primary sheath tightly sheathing, armed with spines; spines recurved, 0.6 cm long; partial inflorescence 50 cm long; secondary sheath tightly sheathing, spiny, spines 0.2 cm long; rachilla 8-10 cm long; female flowers 4 mm long; involucre cup-shaped. Fruit ovoid, 1.5 x 1 cm long; scales in 19 vertical rows, dirty straw coloured, superficially channelled in the middle; endosperm not ruminate.</div>
+<div type="distribution">In evergreen forests of South and Little Andamans. (Map. 6).</div>
+<div type="biology_ecology">Flowering October-November. Fruiting April - May.</div>
+<div type="conservation"></div>
+<div type="uses">Used in furniture industry and also used for making walking sticks and 'lathies'.</div>
+<div type="discussion"></div>
+<div type="materials_examined">Bajajag Valley. Jan. 1897, Heining s.n. (CAL) Ace. no.595167; Navy Point, Jarwakhari hill jungle. 7.4.1894, Kurz s.n. (CAL); Wumberleygung, South Andamans, 6.4.88, male fl.,  Renuca  4059 (KFRI); 4th KM, Little Andamans, 13.4.92, Vijayakumaran 6636(KFRI); Mannarghat, South Andamans, 1.4.1993, male infl., Renuka and Vijayakumaran 7030 (KFRI).</div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,30 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
+<mods:name>Dransfield, J.</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus divaricatus Becc. var. contrarius J.Dransf.</name>
+<author>J.Dransf.</author>
+<citation>Kew Bull. 45: 89 (1990)</citation>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"><lang>Latin</lang> - contrary</div>
+<div type="vernacular"></div>
+<div type="description">Slender montane rattan, similar in all respects to C. divaricatus var. divaricatus but differing in the much smaller leaf, not exceeding 25 cm long, bearing regular, lanceolate close leaflets, not at all divaricate, to 15 x 2 cm.</div>
+<div type="distribution">Known only from G Dulit. Endemic.</div>
+<div type="biology_ecology"></div>
+<div type="conservation"></div>
+<div type="uses">Not known.</div>
+<div type="discussion">C. divaricatus var. contrarius was collected in a shady moss forest near the edge of a cliff ate. 1,200m altitude.</div>
+<div type="materials_examined"></div>
+</treatment>
+</taxonxBody>
+</taxonx>

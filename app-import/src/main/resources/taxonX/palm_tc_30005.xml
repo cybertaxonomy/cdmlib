@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>Renuka, C.</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus viminalis</name>
+<author>Willd.</author>
+<citation>Sp. Pl. 2:203. 1799</citation>
+<bibref>Basu, Rattans in India Monogr. Rev.: 117. 1992</bibref>
+<synonomy>
+<name>Calamus viminalis Willd. var. fasciculatus (Griff.) Becc.</name>
+<author>(Griff.) Becc.</author>
+<bibref>(Griff.) Becc. in Hook. f.. Fl. Brit. Ind. 6: 444. 1892</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Card. Calcutta 11: 206., pl.57, 1908</bibref>
+</synonomy>
+<synonomy>
+<name>Calamus viminalis Willd. var. fasciculatus Becc. sub. var. bengalensis Becc.</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Card. Calcutta 11: 206. 1908</bibref>
+</synonomy>
+<synonomy>
+<name>Calamus viminalis Willd. var. fasciculatus Becc. sub. var. andamanicus Becc.</name>
+<author>Becc.</author>
+<bibref>Becc. in Ann. Roy. Bot. Calcutta 11:207. 1908</bibref>
+</synonomy>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular">Jungli beth</div>
+<div type="description">Clustering, medium-diameter rattan. Stem to 20 m long or more, with sheaths to 1.8 cm in diameter, without sheaths to 1.3 cm. Leaves 1 m long or more, ecirrate; sheath green, younger sheaths covered with a white powder; sparingly armed with spines; spines to 0.5 cm long; knee present; ocrea slightly developed; petiole and rachis spiny on the sides; spines straight, 1.25-3.45 cm long, younger sheaths covered with a white powder; leaflets ca. 12.5-23.5 x 1.2-2.2 cm, fasciculate, narrowly lanceolate, midvein prominent. Inflorescence long; drooping; primary sheath tightly sheathing, with spines to 0.8 cm long; partial inflorescence to 30 cm long; secondary sheath tightly sheathing, unarmed; rachilla to 15 cm long, 2 cm apart. Fruit globose, 0.9 cm across, green,turns grey white on maturity, scales in 18 vertical rows, deeply channelled; endosperm not ruminate.</div>
+<div type="distribution">Common in Andaman Islands. (Map 8).</div>
+<div type="biology_ecology">Flowering November-December. Fruiting April-May.</div>
+<div type="conservation"></div>
+<div type="uses">Used in furniture industry; ripened fruits are consumed by man, animals and birds.</div>
+<div type="discussion"></div>
+<div type="materials_examined">S. Andamans, 13.4.1964, Thothatri 10210 (CAL); Long Island, 22.1.1959, Thothathri 91115 (CAL); Chiriatapu, 5.12.1978, Basu 7082 (ANC); Wrightmyo, South Andamans, 5.4.1988, Renuka.4054 (KFRI); Wumberleygung, South Andamans, 6.4.1988, fr., Renuka 4061 (KFRI); Man-narghat, South Andamans, 7.4.1992, fr., Vijayakumaran 6630 (KFRI).</div>
+</treatment>
+</taxonxBody>
+</taxonx>

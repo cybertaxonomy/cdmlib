@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3">
+	<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name>Dransfield, J and Beentje, H.</mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+	</taxonxHeader>
+	<taxonxBody>
+		<treatment type="species">
+			<nomenclature>
+				<name>Borassus madagascariensis</name>
+				<author>Bojer ex Jum. &amp; H. Perrier</author>
+				<citation>Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 61, pl. 33-35, figs. 14-15 (1913)</citation>			
+				<bibref>Beccari, Webbia 4, 2: 349 (1913)</bibref>
+				<bibref>Jumelle, Cat. Pl. Madagascar, Palmae: 7 (1938)</bibref>
+				<bibref>Jum. &amp; H. Perrier, Fl. Madagascar  30: 12, fig. 2 (1945).</bibref>				
+				<collection_event>
+					<locality>"sur les bords de la rivi&#232;re Marou-voai dans la baie de Bombetok, autour du village de Majungay, Madagascar; cult. &#224; Bois Ch&#233;ri; cult. au Jardin du Roi, Pamplemousses".</locality>
+					<type>Not mentioned</type>
+					<type_loc></type_loc>
+				</collection_event>
+				<synonomy>
+					<name>Borassus flabellifer L. var. madagascariensis</name>
+					<author>Jum. &amp; H. Perrier</author>
+					<first_desc>Jum. &amp; H.Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille, II, 5: 389, f. 2-4 (1907).</first_desc>
+				</synonomy>
+			</nomenclature>
+			<div type="introduction">Strangely, this is one of the least known palms of the island. Despite its occurrence in the West, it has not been collected often or in a proper manner, probably because of its giant stature. Until further collections become available, the differences with both B. sambiranensis and mainland African Borassus aethiopum will remain unclear, and slightly doubtful.</div>
+			<div type="etymology"/>
+			<div type="vernacular">Dimaka, Marandravina, Befelatanana (Sakalava).</div>
+			<div type="description">Solitary palm. TRUNK 10-16 m high, cylindrical or with a swelling at or above the middle of the trunk, and smooth, 40-60 cm diam., to 75 cm diam. at the swelling and 50 cm diam. just below the crown (fide Perrier). LEAVES 12-30 in the crown, spirally inserted, costapalmate; sheath with a central proximal cleft; petiole 2-3 m long, distally 3.5-7 x 3.5 cm and channelled, green with scattered brown scales on both surfaces, the margins darker with black irregular and rather thin flat spines, the largest 3-7 mm high and 11-15 mm wide; adaxial hastula 12-15 mm high, V-shaped; costa 21-35 cm long, flanked proximally by hastula to 6 cm long and c. 5 mm high; lamina 1.6-2.2 m long, 2.5-3 m wide, undulating, with 60-95 segments 1.2-2 m long, segments pale green, 4-9 cm wide, on both surfaces with reddish or faint orange scattered glands, main vein 1 per segment, with numerous fine longitudinal veinlets and faintly visible transverse veinlets, midrib proximally denticulate on the abaxial surface. STAMINATE INFLORESCENCE (fide Perrier, Beccari) branched to 1 or 2 orders, c. 1.2 m long, with 4-14 partial inflorescences; peduncle 20-60 cm long; prophyll 30-36 x 13-16 cm; peduncular bracts 1-4, 30-42 x 13-20 cm, the proximal keeled, all slightly beaked; rachis c. 12 cm, with 4-14 first order branches; first order branches 38-60 cm long, c. 2 cm wide, concave on one side, convex on the other, with obtuse margins, bearing up to 3 rachillae; rachis bract 36-48 x 5-15 cm; rachillae 35-40 cm long, 3-6 cm diam., subcylindrical or slightly flattened, ending in an abrupt narrowed conical part; flowers 10-12 per cavity; sepals free (Perrier) or connate for 50% (Beccari), obtuse, 5.5 x 2 mm; petals connate for 5 mm, free for 3 mm, 1 mm wide in the free part, rounded;  stamens as long as the petals. PISTILLATE INFLORESCENCE unbranched, c. 1.2 m long; peduncle c. 37 cm long, 9 x 3.5 cm diam., slightly concave on one side; prophyll 35-48 cm long, 10-18 cm wide when flat, chestnut red-brown adaxially, pale brown with remnants of patches of indument abaxially; peduncular bracts 8-9, 28-40 x 10-15 cm; rachilla 25-50 cm long, c. 6 cm diam. (8-10 cm in fruit), with (7, fide Perrier) 16-17 (-20) flowers; bracts crowded, 2-3.5 cm high, coriaceous or almost woody, the distal margin somewhat erose; pistillate flowers solitary, with two bracteoles 2.5-3 cm high and 10-11 cm wide; petals c. 5 cm long; filaments united in a low ring with 6 thin filaments and sterile anthers, these T-shaped. FRUIT subglobose, 15-18 cm diam. (-25 cm, fide Perrier); exocarp smooth, mesocarp very fibrous (pulpy when fresh) and c. 1 cm thick; pyrene c. 12 x 8-12 x 5-7 cm, shaped as one-third of a globe. SEED (fide Beccari, Perrier) 6.5-8.5 cm long, 7-7.5 cm wide, 5-5.5 cm thick.</div>
+			<div type="distribution">Western Madagascar.</div>
+			<div type="biology_ecology">Along rivers, on alluvium; c. 70 m.</div>
+			<div type="conservation">Vulnerable. Although known from several sites, habitat destruction is continuing all over the distribution area.</div>
+			<div type="uses">The stem pith gives a slightly bitter sago-like substance which is eaten (Jumelle &amp; Perrier 1945), as is the palm-heart; hollowed-out stem formerly used (fide  Perrier) for containers. Alcohol is produced from the fruit; shoots of germinating seedlings are eaten.</div>
+			<div type="discussion">We are not convinced of the distinctness from B. aethiopum Mart., though the seeds seem larger in the Madagascar taxon. Jumelle and Perrier state that the main differences are the fruit being turbinate (but then they illustrate a fruit which does not bear this out! They do admit that this is a matter of mutual compression, and solitary fruits are spheroid) and the disposition of the segments at the top of the petiole (without elaborating). They state it resembles  B. deleb, which Dransfield (1986) considers to be a synonym of B. aethiopum.</div>
+			<div type="materials_examined">Antsalova: Manambolo R. gorges near Bekopaka, March 1990 (fr.), Du Puy &amp; Du Puy MB791 (K, TAN). ?Miandrivazo: Sakeny R plain, July 1989 (fr.), B. Du Puy et al. MB256 (K, TAN).</div>
+		</treatment>
+	</taxonxBody>
+</taxonx>

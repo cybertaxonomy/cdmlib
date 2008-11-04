@@ -1,0 +1,32 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the rattans of the Malay Peninsula. Malayan Forest Recirds 29.</mods:title></mods:titleInfo>
+<mods:name>Dransfield, J.</mods:name>
+<mods:originInfo><mods:dateIssued>1979</mods:dateIssued>
+<mods:publisher>Forest Department, Ministry of Primary Industries, Malaysia</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus radulosus</name>
+<author>Becc.</author>
+<citation>in Hook, f., Fl. Br. India 6 (1892) 443</citation>
+<bibref>Beccari in Ann. Roy. Bot. Gard. Calcutta 11 (1908) 174</bibref>
+<bibref>Ridley in Fl. Mai. Pen. 5 (1925) 57</bibref>
+<bibref>Furtado in Gdns' Bull. Singapore 15 (1956) 221</bibref>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"><lang>Lat.</lang> radulosus - rasp-like</div>
+<div type="vernacular">rotan ?</div>
+<div type="description">? Solitary or ? clustering rattan climbing to 10-15 m. Stem without sheaths 1.5 cm in diameter, with sheaths to 3 cm. Internodes about 15 cm long. Sheaths densely armed with triangular swollen based spines about 6 mm long, obliquely aligned and somewhat upward pointing. Knee present. Ocrea inconspicuous. Flagellum present. Leaf ecirrate to about 1.5 m long; petiole absent. Leaflets numerous, regular, close, narrow, the longest to 45 cm long by 2.5 cm broad, the two terminal leaflets smallest, joined briefly. Female inflorescence ending in a flagellum, bearing partial inflorescences to 1 m long, bearing up to 15 rachillae on each side, with rachillae to 10 cm long. Bracts densely armed with small spines. Mature fruit not known.</div>
+<div type="distribution">Perak: only known from the type (Scortechini 468b in Florence) and one collection by Kunstler (1871) from Gopeng.</div>
+<div type="biology_ecology"></div>
+<div type="conservation"></div>
+<div type="uses"></div>
+<div type="discussion">This rattan has not been seen in the field. Its armature is very distinctive; otherwise it might be confused with C. demiflorus.</div>
+<div type="materials_examined"></div>
+</treatment>
+</taxonxBody>
+</taxonx>

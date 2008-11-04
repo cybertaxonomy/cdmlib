@@ -1,0 +1,31 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
+<mods:name>Basu, Shyamal K.</mods:name>
+<mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus khasianus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 :41908 and Appendix PI. 192. 1913.</citation>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular"></div>
+<div type="description">A robust climber; stem cluster forming, with leafsheath 5 cm in diameter near lower part; leaves cirrate; leafsheath with distinct knee, more or less smooth on outer surface; tubular part of the sheath infrequently armed with flattened, subulate spines; rachis semiterete at lower part, armed below with paired or solitary hooks; leaflets numerous, lanceolate, in groups of 2 - 4 leaflets on each side of the rachis with long vacant space in between the groups; each to 50 cm long, to 4 cm broad at middle, 3-5 nerved; nerves mostly smooth on both sides or minutely spinous at margins and on upper nerves. Male inflorescence not seen. Female inflorescence 1.5 - 2 m long; partial inflorescences arching from the axis with distinct cushion at the point of attachment with the axis; rachillae sinuous, 20 cm long; 15-16 female flowers on each side of rachilla. Fruits globose, 3 cm in diameter; fruit-scales in 18 series, deeply channelled at middle; seed globose, centrally pitted; endosperm superficially ruminate; embryo basal; fruiting perianth cylindrical.</div>
+<div type="distribution">: INDIA (Assam, Meghalaya, West Bengal). Endemic.</div>
+<div type="biology_ecology">Infrequent in the moist forest of Garo and Khasia hills up to 700 m. It is also reported from the Buxa forest range of Jalpaiguri in West Bengal.</div>
+<div type="cultivation">Not cultivated.</div>
+<div type="conservation"></div>
+<div type="uses"></div>
+<div type="discussion">This species is based on G. Man's collection from Khasia hills of Meghalaya. Beccari in his description also referred to the specimens of J.D. Hooker and Thomson from Churra and Nowgong of Assam and C.B. Clarke's specimens collected from Ladder Valley of Khasia hills and from Turra and Lakkat of Garo hills in Meghalaya. These specimens are not available in the Central National Herbarium (CAL) or any other herbaria in India.</div>
+<div type="materials_examined">West Bengal : Buxa forest, 1959, D.F.O. s.n. (DD). No specimens seen from Assam and Meghalaya.</div>
+</treatment>
+</taxonxBody>
+</taxonx>

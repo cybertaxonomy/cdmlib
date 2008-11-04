@@ -1,0 +1,55 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Two unusual Calamus species from New Guinea</mods:title>
+</mods:titleInfo>
+<mods:name>William J. Baker</mods:name>
+<mods:originInfo>
+<mods:publiher>Kew Bull. 57: 719-724</mods:publiher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus anomalus</name>
+<author>Burret</author>
+<citation>in Notizbl. Bot. Gart. Berlin-Dahlem 12: 320 (1935)</citation>
+<collection_event>
+<locality>Papua New Guinea, Mafulu</locality>
+<type>Brass 5298</type>
+<type_loc>(holotype B†; isotype NY!)</type_loc>
+</collection_event>
+<synonomy>
+<name>Calamus setiger</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 320 (1936)</bibref>
+</synonomy> 
+<synonomy>
+<name>Schizospatha setigera</name>
+<author>(Burret) Furtado</author>
+<bibref>Furtado, Gard. Bull. Singapore 14: 526 (1955)</bibref>
+<collection_event>
+<locality>Papua New Guinea, Boridi</locality>
+<type>Carr 13123 </type>
+<type_loc>(holotype B†; isotypes, BM!, K!, L!, SING)</type_loc>
+</collection_event>
+</synonomy>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"><lang></lang></div>
+<div type="vernacular"></div>
+<div type="description"></div>
+<div type="distribution">Known from four localities along a 110 km stretch of the western slopes of the Owen Stanley Range, north-east of Port Moresby.</div>
+<div type="biology_ecology">Lower montane oak forest between 1250-1830 m.</div>
+<div type="conservation">Least concern. Although C. anomalus is known from a relatively small part of the Owen Stanley Range, forest clearance in this area is limited.</div>
+<div type="uses"></div>
+<div type="discussion">This remarkable rattan was considered so unusual by Furtado (1955) that he erected a new genus, Schizospatha, to account for it. Although Schizospatha has since been placed in synonymy with Calamus (Moore 1973), the morphology of C. anomalus is still regarded as bizarre for the genus. In vegetative form, C. anomalus is rather similar to other slender montane rattans in New Guinea, but its unusual inflorescence morphology is shared only by its close relative C. essigii. Curiously, Burret did not acknowledge this peculiar method of inflorescence emergence in the protologue of C. anomalus or its synonym C. setiger.
+Burret (1936) distinguished Calamus setiger from C. anomalus on the grounds that the former possesses bristle-like spines and apical pairs of leaflets that are united only briefly compared with C. anomalus with its few, very small, short spines and its apical leaflets united to between a quarter and a half of their length. On re-examining the same collections, Burret’s conclusions are shown to be flawed. Specimens cited by Burret in the protologue of C. setiger display some variation in the degree of fusion of the apical leaflet pair, including one specimen at Kew (Carr 14422) which has apical leaflets fused to almost one quarter of their length. The spines of C. anomalus sensu Burret are slightly different from those of C. setiger in being distinctly ascending, rather sparse and readily detached, but these distinctions cannot be regarded as sufficient to maintain two species. Furtado (1955) disputed Burret’s assertion that C. anomalus is closely related to C. setiger, mistakenly believing that it does not possess the distinctive inflorescence morphology of the latter and consequently he did not include it in his new genus Schizospatha.
+</div>
+<div type="materials_examined">PAPUA NEW GUINEA. Central Province: Mafulu, Brass 5298 (holotype B†; isotype NY!); Boridi, Sept. 1935, Carr 13123 (B†, BM!, K!, L!, SING), Oct. 1935, Carr 14421 (B†, BM!, K!, L!, SING), Carr 14422 (B†, BM!, K!, L!, SING), Sept. 1973, Foreman LAE 60184 (L, LAE!); Ridge SW of Efogi village, Sept. 1973 Foreman LAE 52494 (LAE!); Koiari Mountains, Sept. 1972, Zieck NGF 36506 (LAE!), Zieck NGF 36507 (LAE!), Zieck NGF 36508 (LAE!), Zieck NGF 36509 (LAE!)</div>
+</treatment>
+</taxonxBody>
+</taxonx>

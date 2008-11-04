@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
+<mods:name>Renuka, C.</mods:name>
+<mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment type="species">
+<nomenclature>
+<name>Calamus longisetus</name>
+<author>Griff.</author>
+<citation>Calc. Journ. Nat. Hist. 5: 36. 1845</citation>
+<bibref>Beccari in Hook, f., Fl. Brit. Ind. 6: 440. 1892</bibref>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11:134. PI. 9. 1908</bibref>
+<bibref>Dransfield, Man. Rattan. Mai. Pen. 154. 1979</bibref>
+<bibref>Basu, Rattans in India Monogr. Rev.: 102. 1992</bibref>
+</nomenclature>
+<div type="introduction"></div>
+<div type="etymology"></div>
+<div type="vernacular"></div>
+<div type="description">Clustering, large diameter rattan. Stem 20 m long or more, with sheaths 4.5 cm in diameter, without sheaths 3 cm. Leaf 2.5 m long, ecirrate: sheath pale green, fearfully armed with spines, spines black, downwardly pointed, flat, 5 cm long, arranged in whorls, whorls of longer spines interspersed with whorls of smaller ones; knee present; ocrea not seen, petiole armed with spines of 3 cm long; rachis with spines of 1.5 cm long, interspersed with smaller spines; leaflets ca. 35-56 x 2.4-4.5 cm, grouped, linear - lanceolate, midvein prominent, margin spinulose, spines to 0.1 cm long, midrib with a row of cilia at the lower side, cilia 2 cm long. Inflorescence long flagellate; male inflorescence 60 cm long; primary sheath tubular, loosely sheathing, distal end lacerate, armed with black tipped spines; secondary sheath unarmed, lacerate at mouth; rachillae 10-12 cm long; male flowers 8-11 mm long, 3-4 mm thick; female inflorescence, primary and secondary sheaths as in the male; rachillae 10-16 cm long. Fruit ovoid, ca. 3x2.7 cm, mottled like a leopard's skin; scales in 12 vertical rows; endosperm not ruminate.</div>
+<div type="distribution">In evergreen forests, fairly common in South Andamans. (Map. 5).</div>
+<div type="biology_ecology">Flowering November-December. Fruiting April-May.</div>
+<div type="conservation"></div>
+<div type="uses">Used in furniture industry.</div>
+<div type="discussion"></div>
+<div type="materials_examined">Wumberleygung, South Andamans, 6.4.88, fr., Renuka 4060 (KFRI); Mannarghat, South Andamans, 4.4.92, fr., Vijayakumaran 6626 (KFRI).</div>
+</treatment>
+</taxonxBody>
+</taxonx>
