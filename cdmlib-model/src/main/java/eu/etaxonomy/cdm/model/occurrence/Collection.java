@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Collection")
 @Entity
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
-public class Collection extends IdentifyableMediaEntity{
+public class Collection extends IdentifyableMediaEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
@@ -163,5 +163,36 @@ public class Collection extends IdentifyableMediaEntity{
 	public void setSuperCollection(Collection superCollection) {
 		this.superCollection = superCollection;
 	}
+
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> collection. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> collection
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link IdentifyableMediaEntity IdentifyableMediaEntity}.
+	 * 
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Collection clone(){
+		try{
+			Collection result = (Collection)super.clone();
+			//superCollection
+			result.setSuperCollection(this.superCollection);
+			//institute
+			result.setInstitute(this.institute);
+			//no changes to: code, codeStandard, name, townOrLocation
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+		
+	
 	
 }

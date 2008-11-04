@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Fossil")
 @Entity
-public class Fossil extends Specimen {
-	static Logger logger = Logger.getLogger(Fossil.class);
+public class Fossil extends Specimen implements Cloneable{
+	private static final Logger logger = Logger.getLogger(Fossil.class);
 	
 	/**
 	 * Factory method
@@ -43,4 +43,26 @@ public class Fossil extends Specimen {
 	protected Fossil() {
 		super();
 	}
+	
+
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> fossil. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> fossil
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link Specimen Specimen}.
+	 * 
+	 * @see Specimen#clone()
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Specimen clone(){
+		Specimen result = (Specimen)super.clone();
+		//no changes to: -
+		return result;
+	}
+
 }

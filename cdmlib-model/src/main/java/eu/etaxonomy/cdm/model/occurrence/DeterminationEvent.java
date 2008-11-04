@@ -19,6 +19,7 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.EventBase;
 
 import java.util.*;
+
 import javax.persistence.*;
 
 /**
@@ -28,7 +29,7 @@ import javax.persistence.*;
  */
 @Entity
 public class DeterminationEvent extends EventBase {
-	static Logger logger = Logger.getLogger(DeterminationEvent.class);
+	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
 
 	private SpecimenOrObservationBase identifiedUnit;
 	private Taxon taxon;
@@ -115,6 +116,35 @@ public class DeterminationEvent extends EventBase {
 	public void setPreferredFlag(boolean preferredFlag) {
 		this.preferredFlag = preferredFlag;
 	}
-
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> determination event. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> determination event
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link EventBase EventBase}.
+	 * 
+	 * @see EventBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DeterminationEvent clone(){
+		try{
+			DeterminationEvent result = (DeterminationEvent)super.clone();
+			//type
+			result.setIdentifiedUnit(this.getIdentifiedUnit());
+			//modifier
+			result.setModifier(this.getModifier());
+			//taxon
+			result.setTaxon(this.getTaxon()); //TODO
+			//no changes to: preferredFlag
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

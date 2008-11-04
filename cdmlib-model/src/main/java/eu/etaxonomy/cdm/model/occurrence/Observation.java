@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Observation")
 @Entity
-public class Observation extends DerivedUnitBase {
-	static Logger logger = Logger.getLogger(Observation.class);
+public class Observation extends DerivedUnitBase implements Cloneable{
+	private static final Logger logger = Logger.getLogger(Observation.class);
 	
 	/**
 	 * Factory method
@@ -42,4 +42,31 @@ public class Observation extends DerivedUnitBase {
 	protected Observation() {
 		super();
 	}
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> observation. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> observation
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Observation clone(){
+		try{
+			Observation result = (Observation)super.clone();
+			//no changes to: -
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
 }

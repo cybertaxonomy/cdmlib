@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
-public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
+public abstract class DerivedUnitBase extends SpecimenOrObservationBase implements Cloneable{
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF
@@ -105,8 +105,9 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 	
 	
 	
-	@ManyToOne
 	@Deprecated //only for bidirectional and persistence use
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private DerivationEvent getDerivationEvent() {
 		return getDerivedFrom();
 	}
@@ -189,6 +190,32 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase {
 		return storedUnder;
 	}
 	
+	
+	//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> derivedUnitBase. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> specimen
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
+	 * 
+	 * @see SpecimenOrObservationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DerivedUnitBase clone() throws CloneNotSupportedException{
+		DerivedUnitBase result = (DerivedUnitBase)super.clone();
+		//collection
+		result.setCollection(this.collection);
+		//derivedFrom
+		result.setDerivedFrom(this.derivedFrom);
+		//storedUnder
+		result.setStoredUnder(this.storedUnder);
+		//no changes to: accessionNumber, catalogNumber, collectorsNumber
+		return result;
+	}
+
 
 
 }

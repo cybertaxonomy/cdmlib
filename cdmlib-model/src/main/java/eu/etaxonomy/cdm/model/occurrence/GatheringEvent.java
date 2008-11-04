@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-//import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -34,7 +33,6 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
@@ -56,7 +54,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity
-public class GatheringEvent extends EventBase {
+public class GatheringEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
 
@@ -71,7 +69,7 @@ public class GatheringEvent extends EventBase {
 	@XmlElement(name = "CollectingArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<NamedArea> collectingAreas;
+	private Set<NamedArea> collectingAreas = getNewNamedAreaSet();
 	
 	@XmlElement(name = "CollectingMethod")
 	private String collectingMethod;
@@ -119,11 +117,14 @@ public class GatheringEvent extends EventBase {
 		return this.collectingAreas;
 	}
 	public void setCollectingAreas(Set<NamedArea> area){
+		if (area == null){
+			getNewNamedAreaSet();
+		}
 		this.collectingAreas = area;
 	}
 	public void addCollectingArea(NamedArea area){
 		if (this.collectingAreas == null)
-			this.collectingAreas = new HashSet<NamedArea>();
+			this.collectingAreas = getNewNamedAreaSet();
 		this.collectingAreas.add(area);
 	}
 	public void removeCollectingArea(NamedArea area){
@@ -199,4 +200,43 @@ public class GatheringEvent extends EventBase {
 		this.distanceToWaterSurface = distanceToWaterSurface;
 	}
 	
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> gathering event. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> gathering event
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public GatheringEvent clone(){
+		try{
+			GatheringEvent result = (GatheringEvent)super.clone();
+			//locality
+			LanguageString langString = LanguageString.NewInstance(this.locality.getText(), this.locality.getLanguage());
+			result.setLocality(langString);
+			//exact location
+			result.setExactLocation(this.exactLocation.clone());
+			//namedAreas
+			Set<NamedArea> namedAreas = getNewNamedAreaSet();
+			namedAreas.addAll(this.collectingAreas);
+			result.setCollectingAreas(namedAreas);
+			
+			//no changes to: distanceToWaterSurface, distanceToGround, collectingMethod, absoluteElevationError, absoluteElevation
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static Set<NamedArea> getNewNamedAreaSet(){
+		return new HashSet<NamedArea>();
+	}
 }

@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,8 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Specimen")
 @Entity
-public class Specimen extends DerivedUnitBase {
-	static Logger logger = Logger.getLogger(Specimen.class);
+public class Specimen extends DerivedUnitBase implements Cloneable {
+	private static final Logger logger = Logger.getLogger(Specimen.class);
 	
 	@XmlElement(name = "Preservation")
 	@XmlIDREF
@@ -63,5 +67,33 @@ public class Specimen extends DerivedUnitBase {
 	public void setPreservation(PreservationMethod preservation){
 		this.preservation = preservation;
 	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> specimen. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> specimen
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Specimen clone(){
+		try{
+			Specimen result = (Specimen)super.clone();
+			result.setPreservation(this.preservation);
+			//no changes to: -
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 }

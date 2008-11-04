@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,6 +24,9 @@ import eu.etaxonomy.cdm.model.description.Modifier;
 public class DeterminationModifier extends Modifier {
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 
+	private static final UUID uuidUnknown = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
+	
 	/**
 	 * Factory method
 	 * @return
@@ -53,5 +58,11 @@ public class DeterminationModifier extends Modifier {
 	protected DeterminationModifier(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
+	
+
+	public static final DeterminationModifier getByUuid(UUID uuid){
+		return (DeterminationModifier)findByUuid(uuid);
+	}
+
 
 }

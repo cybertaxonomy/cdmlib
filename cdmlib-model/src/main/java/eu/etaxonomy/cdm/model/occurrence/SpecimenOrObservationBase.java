@@ -14,8 +14,10 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.Media;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -24,6 +26,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
 import java.util.*;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,17 +57,17 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
-public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
+public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
-	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
+	private Set<SpecimenDescription> descriptions = getNewDescriptionSet();
 	
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
-	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
+	private Set<DeterminationEvent> determinations = getNewDeterminationEventSet();
 	
 	@XmlElement(name = "Sex")
 	@XmlIDREF
@@ -89,7 +92,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	@XmlElement(name = "DerivationEvent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<DerivationEvent> derivationEvents = new HashSet();
+	private Set<DerivationEvent> derivationEvents = getNewDerivationEventSet();
 
 	/**
 	 * Constructor
@@ -101,16 +104,19 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 //	@ManyToMany   //FIXME
 //	@Cascade( { CascadeType.SAVE_UPDATE })
 	@Transient
-	public Set<DescriptionBase> getDescriptions() {
+	public Set<SpecimenDescription> getDescriptions() {
 		return this.descriptions;
 	}
-	protected void setDescriptions(Set<DescriptionBase> descriptions) {
+	protected void setDescriptions(Set<SpecimenDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
-	public void addDescription(DescriptionBase description) {
+	public void addDescription(SpecimenDescription description) {
+		if (this.descriptions == null){
+			this.descriptions = getNewDescriptionSet();
+		}
 		this.descriptions.add(description);
 	}
-	public void removeDescription(DescriptionBase description) {
+	public void removeDescription(SpecimenDescription description) {
 		this.descriptions.remove(description);
 	}
 	
@@ -193,9 +199,11 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 		this.description = description;
 	}
 	public void addDefinition(LanguageString description){
+		initDescription();
 		this.description.add(description);
 	}
 	public void addDefinition(String text, Language language){
+		initDescription();
 		this.description.put(language, LanguageString.NewInstance(text, language));
 	}
 	public void removeDefinition(Language lang){
@@ -216,4 +224,70 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity{
 	@Transient
 	public abstract GatheringEvent getGatheringEvent();
 	
+	
+//******************** CLONE **********************************************/
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		SpecimenOrObservationBase result = null;
+		result = (SpecimenOrObservationBase)super.clone();
+		
+		//defininion (description, languageString)
+		if (this.getDefinition() != null){
+			result.setDefinition(this.getDefinition().clone());
+		}
+		//sex
+		result.setSex(this.sex);
+		//life stage
+		result.setLifeStage(this.lifeStage);
+		
+		//Descriptions
+		Set<SpecimenDescription> descriptions = getNewDescriptionSet();
+		descriptions.addAll(this.descriptions);
+		result.setDescriptions(descriptions);
+		
+		//DeterminationEvent
+		Set<DeterminationEvent> determinationEvents = getNewDeterminationEventSet();
+		determinationEvents.addAll(this.determinations);
+		result.setDeterminations(determinationEvents);
+		
+		//DerivationEvent
+		Set<DerivationEvent> derivationEvent = getNewDerivationEventSet();
+		derivationEvent.addAll(this.getDerivationEvents());
+		result.setDerivationEvents(derivationEvent);
+		
+		//no changes to: individualCount
+		return result;
+	}
+	
+	@Transient
+	private Set<SpecimenDescription> getNewDescriptionSet(){
+		return new HashSet<SpecimenDescription>();
+	}
+
+	@Transient
+	private Set<DeterminationEvent> getNewDeterminationEventSet(){
+		return new HashSet<DeterminationEvent>();
+	}
+
+
+	@Transient
+	private Set<DerivationEvent> getNewDerivationEventSet(){
+		return new HashSet<DerivationEvent>();
+	}
+	
+	/**
+	 * Initializes the description multilanguage text if it is not yet initialized (== null).
+	 */
+	@Transient
+	private void initDescription(){
+		if (this.description == null){
+			this.description = new MultilanguageText();	
+		}
+	}
 }

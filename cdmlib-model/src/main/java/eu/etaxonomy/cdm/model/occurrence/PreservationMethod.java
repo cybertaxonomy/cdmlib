@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import org.apache.log4j.Logger;
 import javax.persistence.*;
@@ -26,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "PreservationMethod")
 @Entity
 public class PreservationMethod extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(PreservationMethod.class);
+	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	
 	/**
 	 * Factory method
@@ -57,4 +59,10 @@ public class PreservationMethod extends DefinedTermBase {
 	protected PreservationMethod(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
+	
+
+	public static final PreservationMethod getByUuid(UUID uuid){
+		return (PreservationMethod)findByUuid(uuid);
+	}
+
 }

@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "FieldObservation")
 @Entity
-public class FieldObservation extends SpecimenOrObservationBase{
+public class FieldObservation extends SpecimenOrObservationBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	@XmlElement(name = "FieldNumber")
@@ -93,5 +93,34 @@ public class FieldObservation extends SpecimenOrObservationBase{
 	public void setFieldNotes(String fieldNotes) {
 		this.fieldNotes = fieldNotes;
 	}
+	
+	
+	//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> field observation. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> field observation
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
+	 * 
+	 * @see SpecimenOrObservationBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public FieldObservation clone(){
+		try{
+			FieldObservation result = (FieldObservation)super.clone();
+			result.setGatheringEvent(this.gatheringEvent);  //TODO ?
+			//no changes to: fieldNotes, fieldNumber
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
 
 }

@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "LivingBeing")
 @Entity
-public class LivingBeing extends DerivedUnitBase {
+public class LivingBeing extends DerivedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(LivingBeing.class);
 
 	/**
@@ -43,4 +43,30 @@ public class LivingBeing extends DerivedUnitBase {
 	protected LivingBeing() {
 		super();
 	}
+
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> living beeing. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> living beeing
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public LivingBeing clone(){
+		try{
+			LivingBeing result = (LivingBeing)super.clone();
+			//no changes to: -
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

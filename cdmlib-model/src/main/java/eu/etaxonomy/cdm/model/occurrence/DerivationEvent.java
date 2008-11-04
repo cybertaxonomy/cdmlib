@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
-public class DerivationEvent extends EventBase{
+public class DerivationEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
 
@@ -47,13 +47,13 @@ public class DerivationEvent extends EventBase{
 	@XmlElement(name = "Original")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
+	private Set<SpecimenOrObservationBase> originals = getNewOriginalsSet();
 	
 	@XmlElementWrapper(name = "Derivatives")
 	@XmlElement(name = "Derivative")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
+	protected Set<DerivedUnitBase> derivatives = getNewDerivatesSet();
 	
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
@@ -121,4 +121,48 @@ public class DerivationEvent extends EventBase{
 	public void setType(DerivationEventType type) {
 		this.type = type;
 	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> derivation event. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> derivation event
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link EventBase EventBase}.
+	 * 
+	 * @see EventBase#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public DerivationEvent clone(){
+		try{
+			DerivationEvent result = (DerivationEvent)super.clone();
+			//type
+			result.setType(this.getType());
+			//derivates
+			Set<DerivedUnitBase> derivates = getNewDerivatesSet();
+			derivates.addAll(this.derivatives);
+			result.setDerivatives(derivates);
+			//originals
+			Set<SpecimenOrObservationBase> originals = getNewOriginalsSet();
+			originals.addAll(this.originals);
+			result.setOriginals(this.getOriginals());
+			//no changes to: -
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private static Set<DerivedUnitBase> getNewDerivatesSet(){
+		return new HashSet<DerivedUnitBase>();
+	}
+
+	private static Set<SpecimenOrObservationBase> getNewOriginalsSet(){
+		return new HashSet<SpecimenOrObservationBase>();
+	}
+	
 }
