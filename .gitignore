@@ -63,6 +63,8 @@ eclipse-plugin/dist
 eclipse-plugin/log4j-1.2.14src.zip
 eclipse-plugin/target
 eclipse-updateSite/.classpath
+eclipse-updateSite/artifacts.xml
+eclipse-updateSite/content.xml
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.3.04.jar
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.4.01.jar
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_1.2.3.04.jar
