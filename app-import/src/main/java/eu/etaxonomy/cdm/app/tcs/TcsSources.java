@@ -58,5 +58,13 @@ public class TcsSources {
 		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_short.rdf";
 		return sourceUrl;
 	}
+
+	public static String tcsXmlTest_local(){
+		//		tcsXmlTest.xml
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/tcsXmlTest.xml";
+		return sourceUrl;
+		
+	}	
+	
 	
 }

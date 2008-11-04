@@ -61,10 +61,7 @@ public class PalmaeActivator {
 	
 
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	private void doImport(){
 		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
 		//make BerlinModel Source
@@ -95,8 +92,17 @@ public class PalmaeActivator {
 		CdmDefaultImport<TcsImportConfigurator> tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		tcsImport.invoke(tcsImportConfigurator);
+		
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}
 
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		PalmaeActivator me = new PalmaeActivator();
+		me.doImport();
+		
+	}
 	
 }
