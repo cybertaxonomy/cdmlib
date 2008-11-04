@@ -5,6 +5,7 @@ app-import/.settings
 app-import/src/main/resources/arecaceae.rdf_alt
 app-import/src/main/resources/arecaceae.zip
 app-import/src/main/resources/arecaceae.zip_alt
+app-import/src/main/resources/arecaceae_alt.rdf
 app-import/target
 cdmlib-commons/.classpath
 cdmlib-commons/.project
