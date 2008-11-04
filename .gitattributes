@@ -107,8 +107,10 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmSchemaGenerator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/DataSet.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmIoXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/CdmTextElementMapper.java -text

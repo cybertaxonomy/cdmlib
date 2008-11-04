@@ -25,6 +25,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase implements 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				TaxonXDescriptionIO.class
+				, TaxonXNomenclatureIO.class
 //				, new TaxonXDescriptionIO(config.isDoFacts())
 
 		};
