@@ -396,7 +396,7 @@ public class Feature extends DefinedTermBase {
 	 */
 	@OneToMany
     @JoinTable(
-            name="DefinedTermBase_CategoricalEnumeration"
+            name="DefinedTermBase_SupportedCategoricalEnumeration"
         )
 	public Set<TermVocabulary> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
