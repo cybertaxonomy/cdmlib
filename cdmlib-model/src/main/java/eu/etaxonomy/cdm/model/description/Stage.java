@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -30,7 +29,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Stage extends Scope {
-	static Logger logger = Logger.getLogger(Stage.class);
+	private static final Logger logger = Logger.getLogger(Stage.class);
 
 	// ************* CONSTRUCTORS *************/	
 	/** 

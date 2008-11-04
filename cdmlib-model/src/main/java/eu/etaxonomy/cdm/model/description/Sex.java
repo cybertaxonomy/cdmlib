@@ -10,13 +10,14 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.UUID;
+
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-
-import javax.persistence.*;
 
 /**
  * The class representing the restriction concerning the sex for
@@ -31,8 +32,16 @@ import javax.persistence.*;
  */
 @Entity
 public class Sex extends Scope {
-	static Logger logger = Logger.getLogger(Sex.class);
+	private static final Logger logger = Logger.getLogger(Sex.class);
 
+	private static final UUID uuidMale = UUID.fromString("600a5212-cc02-431d-8a80-2bf595bd1eab");
+	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
+
+	
+	public static final Sex getByUuid(UUID uuid){
+		return (Sex) findByUuid(uuid);
+	}
+	
 	
 	/** 
 	 * Class constructor: creates a new empty sex instance.
@@ -66,5 +75,14 @@ public class Sex extends Scope {
 	public static Sex NewInstance(){
 		return new Sex();
 	}
+	
+	public static Sex MALE(){
+		return getByUuid(uuidMale);
+	}
 
+	public static Sex FEMALE(){
+		return getByUuid(uuidFemale);
+	}
+
+	
 }

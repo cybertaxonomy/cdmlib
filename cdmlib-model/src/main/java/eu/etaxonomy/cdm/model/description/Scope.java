@@ -33,7 +33,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Scope extends Modifier {
-	static Logger logger = Logger.getLogger(Scope.class);
+	private static final Logger logger = Logger.getLogger(Scope.class);
 	
 	// ************* CONSTRUCTORS *************/	
 
