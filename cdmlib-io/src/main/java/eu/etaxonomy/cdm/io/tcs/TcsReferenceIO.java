@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -143,7 +142,6 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
 		
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
