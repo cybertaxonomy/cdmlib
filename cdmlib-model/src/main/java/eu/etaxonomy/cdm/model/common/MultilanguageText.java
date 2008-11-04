@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 
 /**
@@ -28,16 +31,12 @@ import org.apache.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MultilanguageText")
 @XmlRootElement(name = "MultilanguageText")
-public class MultilanguageText extends HashMap<Language, LanguageString> {
+public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable{
 	
 	private static final long serialVersionUID = 7876604337076705862L;
 	
-	static Logger logger = Logger.getLogger(MultilanguageText.class);
-	
-//	public static class MultilanguageTexthelper {
-//		
-//	}
-	
+	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
+		
 	/**
 	 * Factory method
 	 * @return
@@ -60,6 +59,7 @@ public class MultilanguageText extends HashMap<Language, LanguageString> {
 		super();
 	}
 	
+	
 	/**
 	 * Constructor
 	 */
@@ -68,6 +68,12 @@ public class MultilanguageText extends HashMap<Language, LanguageString> {
 		this.add(languageString);
 	}
 	
+	
+	
+	/**
+	 * @param language
+	 * @return
+	 */
 	public String getText(Language language){
 		LanguageString languageString = super.get(language);
 		if (languageString != null){
@@ -86,20 +92,16 @@ public class MultilanguageText extends HashMap<Language, LanguageString> {
 		if (languageString == null){
 			return null;
 		}else{
-//			Language language = languageString.getLanguage();
-//			String text = languageString.getText();
-//			String result =this.put(languageString.getLanguage(), languageString.getText());
-//			return result;
-//		}
 			return this.put(languageString.getLanguage(), languageString);
 		}
 	}
 	
 	
 	/**
-	 * 
+	 * Iterates on the languages. As soon as there exists a language string for this language in this multilanguage text
+	 * it is returned.
 	 * @param languages
-	 * @return
+	 * @return 
 	 */
 	public LanguageString getPreferredLanguageString(List<Language> languages){
 		
@@ -112,6 +114,31 @@ public class MultilanguageText extends HashMap<Language, LanguageString> {
 		}
 		return super.get(Language.DEFAULT());
 	}
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> multi-language text. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> multi-language text
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see DerivedUnitBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public MultilanguageText clone(){
+		MultilanguageText result = (MultilanguageText)super.clone();
+		Set<Language> languages = super.keySet();
+		for (Language language : languages){
+			LanguageString languageString = super.get(language);
+			this.put(language, languageString);
+		}
+		//no changes to: -
+		return result;
+	}
+
 	
 
 }
