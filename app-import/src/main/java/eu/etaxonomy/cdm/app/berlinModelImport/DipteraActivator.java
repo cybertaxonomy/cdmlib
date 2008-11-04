@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -137,7 +136,11 @@ public class DipteraActivator {
 			CdmApplicationController app = bmImportConfigurator.getCdmAppController();
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
-			
+		
+			//parse distributions
+			DipteraDistributionParser dipDist = new DipteraDistributionParser();
+			dipDist.doDistribution(app);
+						
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
 			app = bmImportConfigurator.getCdmAppController();

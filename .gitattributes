@@ -8,6 +8,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelImpor
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/CichorieaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/DipteraActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/DipteraDistributionParser.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/ErmsActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
