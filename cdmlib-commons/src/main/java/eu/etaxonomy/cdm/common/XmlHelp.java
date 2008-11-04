@@ -227,5 +227,66 @@ public class XmlHelp {
 		} 
 	}
 	
+	/**
+	 * Gets the child element and tests if there is no other child element exists having the same name.
+	 * The result is returned as a pair of thd child element and a boolean value that indicates if the 
+	 * elements cardinality was correct. <BR>
+	 * If there is more then one child element with the child element name 
+	 * or if there is no such element and obligatory is <code>true</code> the second part of the result is <code>false</code>
+	 * Otherwise it is <code>true</code>.
+	 * @param parentElement the parent element
+	 * @param childName name of the child element
+	 * @param nsChild the namespace for the child element
+	 * @param obligatory if <code>true</code>, return value is only <code>true</code> if exactly 1 child element with
+	 * the given name exists
+	 * @return
+	 */
+	static public DoubleResult<Element, Boolean> getSingleChildElement(Element parentElement, String childName, Namespace nsChild, boolean obligatory){
+		DoubleResult<Element, Boolean> result = new DoubleResult<Element, Boolean>();
+		result.setSecondResult(false);
+		
+		if (parentElement == null){
+			logger.warn("Parent element is null");
+			return result;
+		}
+		List<Element> elList = parentElement.getChildren(childName, nsChild);
+		if (elList.size() > 1){
+			logger.error("Multiple '" + childName + "' elements.");
+			return result;		
+		}else if (elList.size() == 0){
+			logger.info("There is no '" + childName + "' element");
+			if (! obligatory){
+				result.setSecondResult(true);
+			}
+			return result;
+		}
+		Element childElement = elList.get(0);		
+		result.setFirstResult(childElement);
+		result.setSecondResult(true);
+		return result;
+	}
 	
+	static public Element getSingleChildElement(ResultWrapper<Boolean> success, Element parentElement, String childName, Namespace nsChild, boolean obligatory){
+		
+		if (parentElement == null){
+			logger.warn("Parent element is null");
+			success.setValue(false);
+			return null;
+		}
+		List<Element> elList = parentElement.getChildren(childName, nsChild);
+		if (elList.size() > 1){
+			logger.error("Multiple '" + childName + "' elements.");
+			success.setValue(false);
+			return null;	
+		}else if (elList.size() == 0){
+			logger.info("There is no '" + childName + "' element");
+			if (obligatory){
+				success.setValue(false);
+			}
+			return null;
+		}
+		Element childElement = elList.get(0);		
+		return childElement;
+	}	
+
 }

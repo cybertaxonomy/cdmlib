@@ -10,6 +10,7 @@ cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
 cdmlib-commons/bin
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
 cdmlib-commons/target
 cdmlib-io/.classpath
 cdmlib-io/.project
