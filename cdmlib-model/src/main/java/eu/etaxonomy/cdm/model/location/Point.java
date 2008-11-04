@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+
 /**
  * @author m.doering
  * @version 1.0
@@ -34,7 +37,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "Point")
 @Embeddable
-public class Point {
+public class Point implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Point.class);
 	
 	//TODO was Float but H2 threw errors
@@ -115,5 +118,31 @@ public class Point {
 	public void setErrorRadius(Integer errorRadius){
 		this.errorRadius = errorRadius;
 	}
+	
+	
+//*********** CLONE **********************************/	
+	
+	/** 
+	 * Clones <i>this</i> point. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> point
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Point clone(){
+		try{
+			Point result = (Point)super.clone();
+			result.setReferenceSystem(this.referenceSystem);
+			//no changes to: errorRadius, latitude, longitude
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 
 }
