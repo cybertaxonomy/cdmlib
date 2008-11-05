@@ -241,17 +241,113 @@ public class TestTransaction {
 	}
 	
 
+	private void checkTransactionFacets() {
+		
+		CdmApplicationController appCtr = null;
+		logger.info("Test checking transaction facets");
+		
+		try {
+			appCtr = CdmApplicationController.NewInstance(db, DbSchemaValidation.VALIDATE, true);
+
+		} catch (Exception e) {
+			logger.error("Error creating application controller");
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		try {
+			/* ************** Start Transaction #1 ******************************** */
+			
+	    	TransactionStatus txStatOne = appCtr.startTransaction();
+	    	appCtr.commitTransaction(txStatOne);
+	    	// set CdmApplicationController = debug in log4j.properties to see the transaction properties
+	    	appCtr.close();
+			logger.info("End test ask session for objects"); 
+			
+		} catch (Exception e) {
+    		logger.error("Error");
+    		e.printStackTrace();
+		}
+	}
+		
+	private void askSessionForObjects() {
+		
+		CdmApplicationController appCtr = null;
+		logger.info("Test asking session for objects");
+
+		try {
+			appCtr = CdmApplicationController.NewInstance(db, DbSchemaValidation.VALIDATE, true);
+
+		} catch (Exception e) {
+			logger.error("Error creating application controller");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		BotanicalName name1, name1_;
+		Rank rankSpecies = Rank.SPECIES();
+		Taxon taxon1;
+		TaxonBase taxon1_;
+		UUID t1uuid;
+		
+		try {
+			/* ************** Start Transaction #1 ******************************** */
+			
+	    	TransactionStatus txStatOne = appCtr.startTransaction();
+	    	
+	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	TeamOrPersonBase author = agents.get(0);
+	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
+	    	ReferenceBase sec = references.get(0);
+
+			name1 = 
+				BotanicalName.NewInstance(rankSpecies, "NewTaxon1", null, "taxon1", null, author, null, "1", null);
+	    	taxon1 = Taxon.NewInstance(name1, sec);
+			t1uuid = appCtr.getTaxonService().saveTaxon(taxon1, txStatOne);
+
+			/* ************** Start Transaction #2 ******************************** */
+	    	
+			TransactionStatus txStatTwo = appCtr.startTransaction();
+
+			// ask whether object taxon1 is known
+			//getSession().
+			
+			name1_ = 
+				BotanicalName.NewInstance(rankSpecies, "NewTaxon1_", null, "taxon1_", null, author, null, "1_", null);
+	    	taxon1_ = appCtr.getTaxonService().getTaxonByUuid(t1uuid);
+			
+			/* ************** Commit Transaction #1 ******************************** */
+			
+	    	appCtr.commitTransaction(txStatOne);
+	    	
+			//UUID t2uuid = appCtr.getTaxonService().saveTaxon(taxon2);
+	    	
+			/* ************** Commit Transaction #2 ******************************** */
+			
+	    	appCtr.commitTransaction(txStatTwo);
+	    	
+	    	appCtr.close();
+			logger.info("End test ask session for objects"); 
+				
+		} catch (Exception e) {
+    		logger.error("Error");
+    		e.printStackTrace();
+		}
+	}
+	
+
 	private void test() { 
 		
     	/* Init DB */
 		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-		CdmApplicationController appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
+//		CdmApplicationController appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
 
 		/* Load test data into DB */
-    	TestDatabase.loadTestData(dbName, appCtrInit);
-    	
-		modifyDisjunctObjects();
-		modifySharedObjects();
+//    	TestDatabase.loadTestData(dbName, appCtrInit);
+
+		checkTransactionFacets();
+//		modifyDisjunctObjects();
+//		modifySharedObjects();
 	}
 	
 	/**
