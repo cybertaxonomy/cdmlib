@@ -303,7 +303,8 @@ public class TestTransaction {
 			name1 = 
 				BotanicalName.NewInstance(rankSpecies, "NewTaxon1", null, "taxon1", null, author, null, "1", null);
 	    	taxon1 = Taxon.NewInstance(name1, sec);
-			t1uuid = appCtr.getTaxonService().saveTaxon(taxon1, txStatOne);
+			t1uuid = appCtr.getTaxonService().saveTaxon(taxon1);
+			//t1uuid = appCtr.getTaxonService().saveTaxon(taxon1, txStatOne);
 
 			/* ************** Start Transaction #2 ******************************** */
 	    	
