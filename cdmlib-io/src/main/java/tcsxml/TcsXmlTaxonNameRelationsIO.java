@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
-public class TcsXmlTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
+public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameRelationsIO.class);
 
 	private static int modCount = 5000;
@@ -61,7 +61,7 @@ public class TcsXmlTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 		String idNamespace = "TaxonName";
 
 		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = getDataSetElement(tcsConfig);
+		Element elDataSet = super. getDataSetElement(tcsConfig);
 		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
 		
 		DoubleResult<Element, Boolean> doubleResult;
@@ -96,30 +96,9 @@ public class TcsXmlTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 				boolean inverse = false;
 				
 				String id = elTaxonName.getAttributeValue("id", elTaxonName.getNamespace());
-				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
+//				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 				
-				makeNomenclaturalNoteType(tcsConfig, elBasionym, relType, taxonNameMap, inverse);
-				
-				String basionymId = attrResource.getValue();
-				TaxonNameBase basionym = taxonNameMap.get(basionymId);
-				if (basionym == null){
-					logger.warn("Basionym name ("+basionymId+") not found in Map! Basionym not set!");
-					continue;
-				}
-				if (fromName == null){
-					Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
-					if (about != null){
-						fromName = taxonNameMap.get(about.getValue() );
-					}
-					if (fromName == null){
-						logger.warn("From name ("+about+") not found in Map! Basionym not set!");
-						continue;
-					}
-				}
-				String ruleConcidered = null; //TODO
-				fromName.addBasionym(basionym, ruleConcidered);
-				nameStore.add(fromName);
-
+				makeNomenclaturalNoteType(tcsConfig, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
 			}
 		}// end Basionyms
 		
@@ -132,25 +111,39 @@ public class TcsXmlTaxonNameRelationsIO extends CdmIoBase implements ICdmIO {
 		return success.getValue();
 	}
 	
-	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonNameBase<?,?>> taxonNameMap nameMap, boolean inverse){
+	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonNameBase<?,?>> taxonNameMap, Set<TaxonNameBase> nameStore, String id, boolean inverse){
 		if (elRelation == null){
 			return false;
 		}
 		Namespace ns = elRelation.getNamespace();
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		
 		String ruleConsidered = elRelation.getChildText("RuleConsidered", ns);
 		String note = elRelation.getChildText("Note", ns);
 		String microReference = elRelation.getChildText("MicroReference", ns);
+		Element elRelatedName = elRelation.getChild("RelatedName", ns);
+		//TODO relType
+		String relatedNameId = elRelatedName.getAttributeValue("ref", ns);
 		
-		TaxonNameBase<?,?> relatedName = getReferencedName();
-		TaxonNameBase<?,?> relatedaName = getReferencedName();
+		TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
+		TaxonNameBase<?,?> toName = taxonNameMap.get(relatedNameId);
+		if (fromName == null){
+			logger.warn("fromName (" + id + ") not found in Map! Relationship not set!");
+			return false;
+		}
+		if (toName == null){
+			logger.warn("toName (" + id + ") not found in Map! Relationship not set!");
+			return false;
+		}
+
 		
-		taxonNameMap.get(id);
-		
-		relatedName.addRelationshipToName(toName, relType, ruleConsidered);
-		
-		return false;
+		//TODO note, microreference
+		if (inverse == false){
+			toName.addRelationshipToName(fromName, relType, ruleConsidered);
+		}else{
+			fromName.addRelationshipToName(toName, relType, ruleConsidered);
+		}
+		nameStore.add(fromName);
+		return true;
 	}
 	
 	/* (non-Javadoc)
