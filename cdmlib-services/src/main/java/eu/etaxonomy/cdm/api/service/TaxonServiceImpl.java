@@ -59,10 +59,10 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		return super.saveCdmObject(taxon);
 	}
 
-	//@Transactional(readOnly = false)
+	@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus) {
 		
-		return super.saveCdmObject(taxon);
+		return super.saveCdmObject(taxon, txStatus);
 	}
 	
 	

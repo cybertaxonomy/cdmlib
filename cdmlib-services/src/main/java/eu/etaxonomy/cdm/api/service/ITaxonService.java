@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.transaction.TransactionStatus;
+
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -31,6 +33,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** save a taxon and return its UUID**/
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
+	/** save a taxon and return its UUID**/
+	public abstract UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus);
+	
 	/** save a collection of taxa and return its UUID**/
 	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
