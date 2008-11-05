@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
-import eu.etaxonomy.cdm.io.test.function.TestDatabase;
+import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.io.unitsPortal.TestABCD;
 
 /**
@@ -50,19 +50,31 @@ public class CichorieaeDistributionActivator {
 
     	logger.info("Importing distribution data");
 
-    	ArrayList<Hashtable<String,String>> unitsList = parseXLS(fileName);
-    	if (unitsList != null){
-    		Hashtable<String,String> unit=null;
-    		for (int i=0; i<unitsList.size();i++){
-    			unit = unitsList.get(i);
-//    			saveData();
+    	ArrayList<Hashtable<String, String>> recordList = parseXLS(fileName);
+    	if (recordList != null){
+    		Hashtable<String,String> unit = null;
+    		for (int i = 0; i < recordList.size(); i++) {
+    			unit = recordList.get(i);
+    			saveData();
     			config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
     		}
     	}
     }
+    
+    private void saveData() {
+    	/*
+    	 * Relevant columns:
+    	Name (EDIT; hier müssen wir noch abschließend Korrektur lesen)
+    	Distribution TDWG
+    	Status (hier gibt es nur Eintragungen, wenn NICHT native; außerdem müssen wir die Daten noch abschließend überprüfen)
+    	Literature number (in Bearbeitung)
+    	Literature (in Bearbeitung, da sind noch Standardisierungen erforderlich).
+    	*/
+    }
 
     private static ArrayList<Hashtable<String, String>> parseXLS(String fileName) {
-    	ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String,String>>();
+    	
+    	ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String, String>>();
 
     	try {
     		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName));
@@ -88,7 +100,7 @@ public class CichorieaeDistributionActivator {
     		Hashtable<String, String> headers = null;
     		ArrayList<String> columns = new ArrayList<String>();
     		row = sheet.getRow(0);
-    		for (int c =0; c<cols; c++){
+    		for (int c = 0; c < cols; c++){
     			cell = row.getCell(c);
     			columns.add(cell.toString());
     		}
@@ -99,7 +111,7 @@ public class CichorieaeDistributionActivator {
     				for(int c = 0; c < cols; c++) {
     					cell = row.getCell((short)c);
     					if(cell != null) {
-    						headers.put(columns.get(c),cell.toString());
+    						headers.put(columns.get(c), cell.toString());
     					}
     				}
     			}

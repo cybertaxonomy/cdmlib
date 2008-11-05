@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportImportConfigurator;
-import eu.etaxonomy.cdm.io.test.function.TestDatabase;
+import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
