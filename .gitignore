@@ -54,6 +54,8 @@ eclipse-plugin-sources/target
 eclipse-plugin/.settings
 eclipse-plugin/cdmlib-commons-1.3.jar
 eclipse-plugin/cdmlib-commons-1.3src.zip
+eclipse-plugin/cdmlib-io-1.3.jar
+eclipse-plugin/cdmlib-io-1.3src.zip
 eclipse-plugin/cdmlib-model-1.3.jar
 eclipse-plugin/cdmlib-model-1.3src.zip
 eclipse-plugin/cdmlib-persistence-1.3.jar
