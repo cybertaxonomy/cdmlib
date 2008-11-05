@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -157,10 +158,12 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		}
 	}
 	
+	@Transient
 	private static Set<DerivedUnitBase> getNewDerivatesSet(){
 		return new HashSet<DerivedUnitBase>();
 	}
 
+	@Transient
 	private static Set<SpecimenOrObservationBase> getNewOriginalsSet(){
 		return new HashSet<SpecimenOrObservationBase>();
 	}
