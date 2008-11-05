@@ -63,4 +63,12 @@ public class MeasurementUnit extends DefinedTermBase {
 		return new MeasurementUnit();
 	}
 	
+	/** 
+	 * Creates a new empty measurement unit instance.
+	 * 
+	 * @see #MeasurementUnit(String, String, String)
+	 */
+	public static MeasurementUnit NewInstance(String term, String label, String labelAbbrev){
+		return new MeasurementUnit(term, label, labelAbbrev);
+	}
 }
