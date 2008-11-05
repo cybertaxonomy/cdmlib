@@ -195,6 +195,9 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * <i>this</i> description element. This is only metainformation.
 	 */
 	@OneToMany
+    @JoinTable(
+            name="DescriptionElementBase_Modifier"
+        )
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
