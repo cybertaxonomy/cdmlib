@@ -96,7 +96,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public EventBase clone() throws CloneNotSupportedException{
+	public Object clone() throws CloneNotSupportedException{
 		EventBase result = (EventBase)super.clone();
 		//Actor
 		result.setActor(this.getActor());
