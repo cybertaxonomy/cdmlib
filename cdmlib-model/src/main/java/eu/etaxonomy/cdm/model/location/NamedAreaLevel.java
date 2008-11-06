@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Controlled vocabulary to diferenciate levels of areas such as province, state,
+ * Controlled vocabulary to differentiate levels of areas such as province, state,
  * etc.
  * @author m.doering
  * @version 1.0
@@ -41,6 +41,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final UUID uuidState = UUID.fromString("08aa6127-8ebc-4120-8411-a468a7257e02");
 	private static final UUID uuidProvince = UUID.fromString("401d48b4-9f09-4354-be0f-c2138444f72d");
 	private static final UUID uuidTown = UUID.fromString("f127b4d2-f6bc-4019-9c87-ee3f4de1f094");
+	private static final UUID uuidCountry = UUID.fromString("79db63a4-1563-461e-8e41-48f5722feca4");
 
 	
 	/**
@@ -120,4 +121,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		return getByUuid(uuidTown);
 	}
 
+	public static final NamedAreaLevel COUNTRY(){
+		return getByUuid(uuidCountry);
+	}
 }
