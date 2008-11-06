@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {
-    "bankNumber",
     "sequences"
 })
 @XmlRootElement(name = "DnaSample")
