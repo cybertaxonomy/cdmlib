@@ -204,7 +204,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DerivedUnitBase clone() throws CloneNotSupportedException{
+	public Object clone() throws CloneNotSupportedException{
 		DerivedUnitBase result = (DerivedUnitBase)super.clone();
 		//collection
 		result.setCollection(this.collection);

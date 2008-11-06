@@ -82,7 +82,7 @@ public class Specimen extends DerivedUnitBase implements Cloneable {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Specimen clone(){
+	public Object clone(){
 		try{
 			Specimen result = (Specimen)super.clone();
 			result.setPreservation(this.preservation);
