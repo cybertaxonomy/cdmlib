@@ -57,26 +57,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		return result;
 	}
 
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
-		// <CategoricalCharacter id="c1">
-		new CdmTextElementMapper("CategoricalCharacter", "CategoricalData")
-		// <Representation>
-		, new CdmTextElementMapper("Representation", "Representation")
-		// <Label>Simple</Label>
-		, new CdmTextElementMapper("Label", "label")
-		// <StateDefinition id="s1">
-		, new CdmTextElementMapper("StateDefinition", "State")
-	};
-
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
-		// <tn:basionymAuthorship>Becc.</tn:basionymAuthorship>
-		// new CdmUnclearMapper("basionymAuthorship")
-	};
-
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
-		// new CdmUnclearMapper("authorship")
-	};
-
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 

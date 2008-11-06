@@ -260,13 +260,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmSchemaGenerator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/DataSet.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/CdmIoXmlMapperBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/CdmTextElementMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/CdmUnclearMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDIoBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
