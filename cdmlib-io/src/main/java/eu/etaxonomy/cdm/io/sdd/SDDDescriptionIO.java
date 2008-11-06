@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -32,7 +31,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -59,7 +57,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 		logger.info("start Datasets ...");
 		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
-		
+
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
 		boolean success =true;
@@ -93,7 +91,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Rank rank = null; //Rank.getRankByAbbreviation(abbrev);
 		NonViralName taxonNameBase = NonViralName.NewInstance(rank);
 		Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
-		
+
 		Feature categoricalCharacter = Feature.NewInstance();
 
 		int i = 0;
@@ -231,7 +229,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					// <StateDefinition id="s1">
 					List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-					
+
 					int k = 0;
 					//for each StateDefinition
 					for (Element elStateDefinition : elStateDefinitions){
@@ -291,7 +289,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
 					String role = elLabel.getAttributeValue("role");
 					label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
-					
+
 					MeasurementUnit unit = null;
 					if (!label.equals("")){
 						if (role.equals("Abbrev")){
@@ -301,7 +299,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 
 					}
-					
+
 					units.put(idQC, unit);
 
 					//<Default>
@@ -460,7 +458,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 						MeasurementUnit unit = units.get(ref);
 						quantitativeData.setUnit(unit);
-						
+
 						// <Measure type="Min" value="2.3"/>
 						List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
 						int l = 0;
@@ -478,7 +476,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 						taxonDescription.addElement(quantitativeData);
 					}
-					
+
 					// <TextChar ref="c3">
 					List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
 					k = 0;
@@ -489,13 +487,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						Feature feature = features.get(ref);
 						TextData textData = TextData.NewInstance();
 						textData.setFeature(feature);
-		
+
 						// <Content>Free form text</Content>
 						String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
 						textData.putText(content, datasetLanguage);
 						taxonDescription.addElement(textData);
 					}
-					
+
 					taxon.addDescription(taxonDescription);
 
 					if (!ref.equals("")){
@@ -515,10 +513,10 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				}
 
 			}
-			
+
 			// <Agents>
 			Element elAgents = elDataset.getChild("Agents",sddNamespace);
-			
+
 			// <Agent id="a1">
 			listAgents = elAgents.getChildren("Agent", sddNamespace);
 			j = 0;
@@ -531,32 +529,32 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					String idA = elAgent.getAttributeValue("id");
 
-				    //  <Representation>
-			        //   <Label>Kevin Thiele</Label>
-			        //  </Representation>
+					//  <Representation>
+					//   <Label>Kevin Thiele</Label>
+					//  </Representation>
 					elRepresentation = elAgent.getChild("Representation",sddNamespace);
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-					
+
 					if (authors.containsKey(idA)) {
 						authors.put(idA, Person.NewTitledInstance(label));
 					}
-					
+
 					if (editors.containsKey(idA)) {
 						editors.put(idA, Person.NewTitledInstance(label));
 					}
-					
+
 				} catch (Exception e) {
 					//FIXME
 					logger.warn("Import of Agent " + j + " failed.");
 					success = false; 
 				}
 
-				
+
 			}
 
 			for (Iterator<TaxonDescription> taxonDescription = taxonDescriptions.values().iterator() ; taxonDescription.hasNext() ;){
 				TaxonDescription td = taxonDescription.next();
-/*
+				/*
 				if (authors.size()>1) {
 					for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
 						td.setCreatedBy(author.next());
@@ -568,39 +566,42 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					}
 					td.setCreatedBy(team);
 				}
-*/
-				
+				 */
+
 				Iterator<Person> author = authors.values().iterator();
 				if (author.hasNext()){
 					td.setCreatedBy(author.next());
 				}
-				
+
 				Iterator<Person> editor = editors.values().iterator();
 				if (editor.hasNext()){
 					td.setUpdatedBy(editor.next());
 				}
 			}
-			
-			// REPERE
-			
-			
+
 		}
 		logger.info(i + " Datasets handled");
 
 		ITermService termService = config.getCdmAppController().getTermService();
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
-			termService.saveTerm(k.next()); 
+			Feature feature = k.next();
+			feature.setCreated(created);
+			termService.saveTerm(feature); 
 		}
 		for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
-			termService.saveTerm(k.next()); 
+			MeasurementUnit unit = k.next();
+			unit.setCreated(created);
+			termService.saveTerm(unit); 
 		}
-		
+
 		// Returns a CdmApplicationController created by the values of this configuration.
 		IDescriptionService descriptionService = config.getCdmAppController().getDescriptionService();
 
 		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
+			TaxonDescription taxonDescription = k.next();
+			taxonDescription.setCreated(created);
 			// Persists a Description
-			descriptionService.saveDescription(k.next()); 
+			descriptionService.saveDescription(taxonDescription); 
 		}
 
 		//		makeNameSpecificData(nameMap);
