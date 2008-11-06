@@ -21,42 +21,19 @@ import org.apache.log4j.Logger;
 public class SDDSources {
 	private static final Logger logger = Logger.getLogger(SDDSources.class);
 	
-	public static String arecaceae(){
+/*	public static String arecaceae(){
 		//	Monocots rdf
 		String sourceUrl = "http://dev.e-taxonomy.eu/trac/attachment/wiki/SampleDataConversion/Monocotyledonae/arecaceae.rdf?format=raw";
 		return sourceUrl;
 		
 	}
-	
-	public static String taxonX_local(){
-		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/palm_tn_29336.xml";
-		return sourceUrl;
-	}
-
-	public static File taxonX_localDir(){
-		//		Monocots rdf
-		File sourceDir = new File("C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/taxonX/");
-		return sourceDir;
-	}
+*/
 	
 	public static String viola_local(){
 		//		SDD xml examples from the SDD v1.1 package
 		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/SDD-Test-Simple.xml";
 		return sourceUrl;
 		
-	}
-
-	public static String arecaceae_pub(){
-		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
-		return sourceUrl;
-	}
-	
-	public static String arecaceae_short(){
-		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_short.rdf";
-		return sourceUrl;
 	}
 	
 }
