@@ -118,7 +118,7 @@ public class SpecimenTest {
 		
 		//Null test is not full implemented, but an error is thrown if null throws 
 		//null pointer exception somewhere
-		Specimen specimenNullClone = specimen.clone();
+		Specimen specimenNullClone = (Specimen)specimen.clone();
 		
 		String accessionNumber = "accNumber";
 		String catalogNumber = "catNumber";
@@ -190,7 +190,7 @@ public class SpecimenTest {
 		specimen.addSource(source);
 
 		
-		Specimen specimenClone = specimen.clone();
+		Specimen specimenClone = (Specimen)specimen.clone();
 		
 		assertFalse(id == specimenClone.getId());
 		assertFalse(created.equals(specimenClone.getCreated()));
