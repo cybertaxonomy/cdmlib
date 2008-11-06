@@ -20,9 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -51,23 +49,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	public boolean doCheck(IImportConfigurator config){
 		boolean result = true;
 		logger.warn("No check implemented for SDD");
-		//result &= checkArticlesWithoutJournal(tcsConfig);
-		//result &= checkPartOfJournal(tcsConfig);
-
 		return result;
 	}
 
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
-
-		String sddElementName;
 		String value;
 
 		logger.info("start Datasets ...");
 		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
+		
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
 		boolean success =true;
@@ -91,10 +83,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		String generatorName = elGenerator.getAttributeValue("name");
 		String generatorVersion = elGenerator.getAttributeValue("version");
 
-		// This returns a List of all the child elements
-		// nested directly (one level deep) within this element with the given
-		// local name and belonging to the given Namespace, returned as
-		// Element objects.
 		List<Element> elDatasets = root.getChildren("Dataset",sddNamespace);
 
 		Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
@@ -102,17 +90,14 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 		Map<String,Feature> features = new HashMap<String,Feature>();
 
-		int i = 0;
-		//for each Dataset
-
 		Rank rank = null; //Rank.getRankByAbbreviation(abbrev);
 		NonViralName taxonNameBase = NonViralName.NewInstance(rank);
 		Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
 		
 		Feature categoricalCharacter = Feature.NewInstance();
-		// Collection<TermVocabulary<DefinedTermBase>> sce = new HashSet<TermVocabulary<DefinedTermBase>>();
-		// Collection<TermVocabulary<DefinedTermBase>> rme = new HashSet<TermVocabulary<DefinedTermBase>>();
 
+		int i = 0;
+		//for each Dataset
 		for (Element elDataset : elDatasets){
 
 			if ((++i % modCount) == 0){ logger.info("Datasets handled: " + (i-1));}
@@ -246,7 +231,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					// <StateDefinition id="s1">
 					List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-//					Map<String,TermVocabulary<DefinedTermBase>> supportedCategoricalEnumerations = new HashMap<String,TermVocabulary<DefinedTermBase>>();
 					
 					int k = 0;
 					//for each StateDefinition
@@ -260,13 +244,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// </Representation>
 						elRepresentation = elStateDefinition.getChild("Representation",sddNamespace);
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-/*
-						TermVocabulary<DefinedTermBase> tv = new TermVocabulary<DefinedTermBase>(label,label,label,"");
-						TermVocabulary<DefinedTermBase> recommendedModifier = new TermVocabulary<DefinedTermBase>("test","test","test","");
-						categoricalCharacter.addSupportedCategoricalEnumeration(tv);
-						categoricalCharacter.addRecommendedModifierEnumeration(recommendedModifier);
-						supportedCategoricalEnumerations.put(idSD, tv);
-*/
 						State state = new State(label,label,label);
 						states.put(idSD, state);
 					}
@@ -610,25 +587,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 		logger.info(i + " Datasets handled");
 
-		//		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
-
-		/*		if (description.size() >0){
-			taxon.addDescription(description);
-			taxonService.saveTaxon(taxon);
-		}
-		 */
-/*				TransactionStatus txStatus = config.getCdmAppController().startTransaction();
-				taxonService.saveTaxon(taxon);
-				taxon.getDescriptions().size();
-				config.getCdmAppController().commitTransaction(txStatus);
-
-		 // Returns a CdmApplicationController created by the values of this configuration.
-				ITermService termService = config.getCdmAppController().getTermService();
-		 // Persists TermVocabulary
-				termService.saveTermVocabulariesAll(sce);
-				termService.saveTermVocabulariesAll(rme);
-*/
-		
 		ITermService termService = config.getCdmAppController().getTermService();
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			termService.saveTerm(k.next()); 
@@ -654,7 +612,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxonNames();
+		return false;
 	}
 
 }
