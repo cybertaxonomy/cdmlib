@@ -136,7 +136,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public DerivationEvent clone(){
+	public Object clone(){
 		try{
 			DerivationEvent result = (DerivationEvent)super.clone();
 			//type
