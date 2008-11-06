@@ -9,6 +9,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -25,6 +26,24 @@ public class SDDImportConfigurator extends ImportConfiguratorBase implements IIm
 				SDDDescriptionIO.class
 		};
 	};
+	
+	public static SDDImportConfigurator NewInstance(String url,
+			ICdmDataSource destination){
+		return new SDDImportConfigurator(url, destination);
+	}
+	
+	
+	/**
+	 * @param berlinModelSource
+	 * @param sourceReference
+	 * @param destination
+	 */
+	private SDDImportConfigurator(String url, ICdmDataSource destination) {
+		super();
+		setSource(url);
+		setDestination(destination);
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
