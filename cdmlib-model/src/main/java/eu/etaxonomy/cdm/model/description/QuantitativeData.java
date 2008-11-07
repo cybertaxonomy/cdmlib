@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -69,6 +71,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * the {@link Feature feature} corresponding to <i>this</i> quantitative data.
 	 */
 	@OneToMany
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasurementValue> getStatisticalValues() {
 		return statisticalValues;
 	}
