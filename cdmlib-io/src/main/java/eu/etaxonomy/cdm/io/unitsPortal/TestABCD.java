@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -49,6 +50,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(TestABCD.class);
 
 	protected String fullScientificNameString;
+	protected String nomenclatureCode;
 	protected String institutionCode;
 	protected String collectionCode;
 	protected String unitID;
@@ -158,6 +160,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 				this.identificationList = new ArrayList<String>();
 				for (int j=0; j< group.getLength(); j++){
 					if(group.item(j).getNodeName() == "Identification"){
+						this.nomenclatureCode ="";
 						identifications = group.item(j).getChildNodes();
 						for (int m=0; m<identifications.getLength();m++){
 							if(identifications.item(m).getNodeName() == "Result"){
@@ -171,6 +174,20 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 												for (int n=0;n<scnames.getLength();n++){
 													if (scnames.item(n).getNodeName() == "FullScientificNameString")
 														tmpName = scnames.item(n).getTextContent();
+													if (scnames.item(n).getNodeName() == "NameAtomised"){
+														System.out.println("NamedAtomised");
+														try {
+															if (scnames.item(n).hasChildNodes()){
+
+																this.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
+																System.out
+																.println(this.nomenclatureCode);
+															}
+														} catch (Exception e) {
+															// TODO Auto-generated catch block
+															this.nomenclatureCode ="";
+														}
+													}
 												}
 											}
 										}
@@ -178,11 +195,11 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 								}
 							}
 							else if(identifications.item(m).getNodeName() == "PreferredFlag"){
-								this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent());
+								this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent()+"_code_"+this.nomenclatureCode);
 							}
 							else{
 								if (tmpName != null)
-									this.identificationList.add(tmpName+"_preferred_"+"0");
+									this.identificationList.add(tmpName+"_preferred_"+"0"+"_code_"+this.nomenclatureCode);
 							}
 
 						}
@@ -449,7 +466,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 	private void setTaxonNameBase(CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
-		TaxonNameBase taxonName;
+		TaxonNameBase taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
@@ -463,31 +480,47 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 			fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
 			if (fullScientificNameString.indexOf("_preferred_") != -1){
 				scientificName = fullScientificNameString.split("_preferred_")[0];
-				String pTmp = fullScientificNameString.split("_preferred_")[1];
+				String pTmp = fullScientificNameString.split("_preferred_")[1].split("_code_")[0];
 				if (pTmp == "1" || pTmp.toLowerCase().indexOf("true") != -1)
 					preferredFlag=true;
 				else
 					preferredFlag=false;
 			}
 			else scientificName = fullScientificNameString;
+			if (fullScientificNameString.indexOf("_code_") != -1){
+				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
+			}
 
-//			taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICZN(),null);
-//			if (taxonName.hasProblem()){
-//			System.out.println("pb ICZN");
-//			taxonName  = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICBN(),null);
-//			if (taxonName.hasProblem()){
-//			System.out.println("pb ICBN");
-//			taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNB(), null);
-//			if (taxonName.hasProblem()){
-//			System.out.println("pb ICNB");
-//			taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNCP(), null);
-//			if (taxonName.hasProblem()){
-//			System.out.println("pb ICNCP");
-//			}
-//			}
-//			}				
-//			}
-			taxonName = nvnpi.parseFullName(scientificName);
+			System.out.println("nomenclature: "+this.nomenclatureCode);
+			if (this.nomenclatureCode == "Zoological"){
+				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICZN(),null);
+				if (taxonName.hasProblem())
+					System.out.println("pb ICZN");}
+			if (this.nomenclatureCode == "Botanical"){
+				taxonName  = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICBN(),null);
+				if (taxonName.hasProblem())
+					System.out.println("pb ICBN");}
+			if (this.nomenclatureCode == "Bacterial"){
+				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNB(), null);
+				if (taxonName.hasProblem())
+					System.out.println("pb ICNB");
+			}
+			if (this.nomenclatureCode == "Cultivar"){
+				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNCP(), null);
+				if (taxonName.hasProblem())
+					System.out.println("pb ICNCP");
+			}
+			if (this.nomenclatureCode == "Viral"){
+				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICVCN(), null);
+				if (taxonName.hasProblem())
+					System.out.println("pb ICVCN");
+			}
+			try{taxonName.hasProblem();}
+			catch (Exception e) {
+				taxonName = nvnpi.parseFullName(scientificName);
+			}
+			if (taxonName.hasProblem())
+				taxonName = nvnpi.parseFullName(scientificName);
 			if (true){
 				names = app.getNameService().getNamesByName(scientificName);
 				if (names.size() == 0){
@@ -660,14 +693,14 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 //	public boolean check(IImportConfigurator config) {
-//		// TODO Auto-generated method stub
-//		return false;
+//	// TODO Auto-generated method stub
+//	return false;
 //	}
 
 //	public boolean invoke(IImportConfigurator config,
-//			CdmApplicationController app, Map stores) {
-//		invoke(config,stores);
-//		return false;
+//	CdmApplicationController app, Map stores) {
+//	invoke(config,stores);
+//	return false;
 //	}
 
 	public boolean invoke(IImportConfigurator config, Map stores) {

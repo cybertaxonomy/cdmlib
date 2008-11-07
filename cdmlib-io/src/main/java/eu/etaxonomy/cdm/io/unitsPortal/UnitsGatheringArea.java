@@ -65,7 +65,7 @@ public class UnitsGatheringArea {
 				this.area.addWaterbodyOrCountry(countries.get(0));
 			else{
 				this.area.setLabel(fullName);
-				//this.area.setLevel(NamedAreaLevel.COUNTRY()); 
+				this.area.setLevel(NamedAreaLevel.COUNTRY()); 
 				//TODO need COUNTRY LEVEL
 			}
 		}
