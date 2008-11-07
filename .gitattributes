@@ -3,6 +3,7 @@
 /LICENSE.TXT -text
 app-import/pom.xml -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/ABCD206Activator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SpecimenImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SynthesysCacheActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelSources.java -text
