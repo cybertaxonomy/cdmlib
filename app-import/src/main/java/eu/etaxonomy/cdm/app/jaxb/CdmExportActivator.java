@@ -7,53 +7,31 @@
 package eu.etaxonomy.cdm.app.jaxb;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
-//import org.unitils.database.annotations.TestDataSource;
-//import org.unitils.database.annotations.Transactional;
-//import org.unitils.database.util.TransactionMode;
-//import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
-import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportImportConfigurator;
-import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  
 /**
  * @author a.babadshanjan
@@ -146,10 +124,10 @@ public class CdmExportActivator {
 		CdmApplicationController appCtrInit = null;
 		
 		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-		appCtrInit = TestDatabase.initDb(sourceDb, DbSchemaValidation.CREATE, false);
+		appCtrInit = CdmDestinations.initDb(sourceDb, DbSchemaValidation.CREATE, false);
 
 		// Load some test data to source DB
-    	TestDatabase.loadTestData(sourceDbName, appCtrInit);
+		CdmDestinations.loadTestData(sourceDbName, appCtrInit);
     	
 //    	testMakeTaxonSynonym(appCtrInit);
 //    	testRemoveNameRelationship(appCtrInit);
