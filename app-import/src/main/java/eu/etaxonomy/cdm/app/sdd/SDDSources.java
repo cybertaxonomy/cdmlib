@@ -34,4 +34,18 @@ public class SDDSources {
 		
 	}
 	
+	public static String viola_local_andreas(){
+		//		SDD xml examples from the SDD v1.1 package
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/SDD-Test-Simple.xml";
+		return sourceUrl;
+		
+	}
+
+	public static String arecaceae_pub(){
+		//		Monocots rdf
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
+		return sourceUrl;
+	}
+
+	
 }
