@@ -255,6 +255,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmMarshallerListener.java -text
