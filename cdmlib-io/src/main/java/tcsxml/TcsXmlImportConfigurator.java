@@ -27,24 +27,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	
 	//	rdfNamespace
 	Namespace tcsXmlNamespace;
-//	//TaxonConcept namespace
-//	Namespace tcNamespace;
-//	//TaxonName namespace
-//	Namespace tnNamespace;
-//	//TDWG common namespace
-//	Namespace commonNamespace;
-//	//TDWG geoNamespace
-//	Namespace geoNamespace;
-//	//publicationNamespace
-//	Namespace publicationNamespace;
-	
-//TODO	
+
 	protected static Namespace nsTcsXml = Namespace.getNamespace("http://www.tdwg.org/schemas/tcs/1.01");
-//	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
-//	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
-//	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
-//	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
-//	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 
 		
 	protected void makeIoClassList(){
@@ -52,6 +36,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 			TcsXmlMetaDataIO.class
 			, TcsXmlSpecimensIO.class
 			, TcsXmlPublicationsIO.class
+			, TcsXmlTaxonNameIO.class
+			, TcsXmlTaxonNameRelationsIO.class
 		};
 	};
 	
@@ -115,16 +101,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 
 		String prefix;
 		tcsXmlNamespace = root.getNamespace();
-//		prefix = "tc";
-//		tcNamespace = root.getNamespace(prefix);
-//		prefix = "tn";
-//		tnNamespace = root.getNamespace(prefix);
-//		prefix = "tcom";
-//		commonNamespace = root.getNamespace(prefix);
-//		prefix = "tgeo";
-//		geoNamespace = root.getNamespace(prefix);
-//		prefix = "tpub";
-//		publicationNamespace = root.getNamespace(prefix);
 		if (tcsXmlNamespace == null 
 				/**|| tcNamespace == null 
 				 * || tnNamespace == null 
@@ -170,46 +146,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	public void setTcsXmlNamespace(Namespace tcsXmlNamespace) {
 		this.tcsXmlNamespace = tcsXmlNamespace;
 	}
-
-//	public Namespace getTcNamespace() {
-//		return tcNamespace;
-//	}
-//
-//	public void setTcNamespace(Namespace tcNamespace) {
-//		this.tcNamespace = tcNamespace;
-//	}
-//
-//	public Namespace getTnNamespace() {
-//		return tnNamespace;
-//	}
-//
-//	public void setTnNamespace(Namespace tnNamespace) {
-//		this.tnNamespace = tnNamespace;
-//	}
-//
-//	public Namespace getCommonNamespace() {
-//		return commonNamespace;
-//	}
-//
-//	public void setCommonNamespace(Namespace commonNamespace) {
-//		this.commonNamespace = commonNamespace;
-//	}
-//
-//	public Namespace getGeoNamespace() {
-//		return geoNamespace;
-//	}
-//
-//	public void setGeoNamespace(Namespace geoNamespace) {
-//		this.geoNamespace = geoNamespace;
-//	}
-//
-//	public Namespace getPublicationNamespace() {
-//		return publicationNamespace;
-//	}
-//
-//	public void setPublicationNamespace(Namespace publicationNamespace) {
-//		this.publicationNamespace = publicationNamespace;
-//	}
 	
 
 	/**
@@ -263,6 +199,9 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	 * @return the placeholderClass
 	 */
 	public ITcsXmlPlaceholderClass getPlaceholderClass() {
+		if (placeholderClass == null){
+			placeholderClass = new DefaultTcsXmlPlaceholders();
+		}
 		return placeholderClass;
 	}
 
