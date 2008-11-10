@@ -20,6 +20,16 @@ public class UnitsGatheringEvent {
 	private GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 	CdmApplicationController app;
 
+	/*
+	 * Constructor
+	 * Fill in the locality, coordinates and the collector(s) for the current GatheringEvent
+	 * @param app: the CDM Application Controller
+	 * @param locality
+	 * @param languageIso
+	 * @param longitude
+	 * @param latitude
+	 * @param collectorNames
+	 */
 	public UnitsGatheringEvent(CdmApplicationController app, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
 		this.setLocality(locality, languageIso);
 		this.setCoordinates(longitude, latitude);
@@ -30,18 +40,12 @@ public class UnitsGatheringEvent {
 	public GatheringEvent getGatheringEvent(){
 		return this.gatheringEvent;
 	}
-//	protected GatheringEvent MyGatheringEvent(){
-//		//create gathering event
-//		gatheringEvent = GatheringEvent.NewInstance();
-//		return gatheringEvent;
-//	}
-//
-//	private GatheringEvent getInstance(){
-//		if (gatheringEvent == null)
-//			gatheringEvent = MyGatheringEvent();
-//		return gatheringEvent;
-//	}
 
+	/*
+	 * Set the locality for the current GatheringEvent
+	 * @param locality
+	 * @param langageIso
+	 */
 	public void setLocality(String locality, String languageIso){
 		System.out.println(locality);
 		LanguageString loc;
@@ -52,10 +56,18 @@ public class UnitsGatheringEvent {
 		this.gatheringEvent.setLocality(loc);
 	}
 	
+	/*
+	 * return the locality associated to the GatheringEvent
+	 */
 	public LanguageString getLocality(){
 		return this.gatheringEvent.getLocality();
 	}
 
+	/*
+	 * Set the coordinates for the current GatheringEvent
+	 * @param: longitude
+	 * @param: latitude
+	 */
 	public void setCoordinates(Double longitude, Double latitude){
 		//create coordinates point
 		Point coordinates = Point.NewInstance();
@@ -69,7 +81,10 @@ public class UnitsGatheringEvent {
 		this.gatheringEvent.setAbsoluteElevation(elevation);
 	}
 
-	/**/
+	/*
+	 * Add a NamedArea to the GatheringEvent
+	 * @param area: the NamedArea to add
+	 */
 
 	public void addArea(NamedArea area){
 		this.gatheringEvent.addCollectingArea(area);
@@ -78,6 +93,7 @@ public class UnitsGatheringEvent {
 	/*
 	 * If the collector already exists, then use it
 	 * if not, create a new collector
+	 * NOT USED
 	 */
 	public void setCollector(ArrayList<String> collectorNames,boolean getExisting){
 		//create collector
@@ -101,6 +117,8 @@ public class UnitsGatheringEvent {
 
 	/*
 	 * Create a new collector or collector's team
+	 * @param: collectorNames: the list of names to add as collector/collectorTeam
+	 * USED - create each time a new Collector
 	 */
 	public void setCollector(ArrayList<String> collectorNames){
 		Person collector;

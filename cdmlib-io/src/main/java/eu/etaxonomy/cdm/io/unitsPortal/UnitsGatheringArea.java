@@ -15,34 +15,43 @@ public class UnitsGatheringArea {
 	private ArrayList<NamedArea> areas = new ArrayList<NamedArea>();
 
 
-//	protected NamedArea MyArea(){
-//		//create gathering event
-//		area = NamedArea.NewInstance();
-//		return area;
-//	}
-//
-//	private NamedArea getInstance(){
-//		if (area == null)
-//			area = MyArea();
-//		return area;
-//	}
-	
+	/*
+	 * Constructor
+	 * Set/create country
+	 * @param isoCountry (try to used the isocode first)
+	 * @param country
+	 * @param app
+	 */
 	public UnitsGatheringArea(String isoCountry, String country, CdmApplicationController app){
 		this.setCountry(isoCountry, country, app);
 	}
 	
+	/*
+	 * Constructor
+	 * Set a list of NamedAreas
+	 */
 	public UnitsGatheringArea(ArrayList<String> namedAreas){
 		this.setAreaNames(namedAreas);
 	}
 
+	/*
+	 * Return the current NamedArea
+	 */
 	public NamedArea getArea(){
 		return this.area;
 	}
 	
+	/*
+	 * Return the current list of NamedAreas
+	 */
 	public ArrayList<NamedArea> getAreas(){
 		return this.areas;
 	}
 	
+	/*
+	 * Set the list of NamedAreas
+	 * @param namedAreas
+	 */
 	public void setAreaNames(ArrayList<String> namedAreas){
 		for (int i=0; i< namedAreas.size(); i++){
 			this.area.setLabel(namedAreas.get(i));
@@ -51,6 +60,15 @@ public class UnitsGatheringArea {
 		}
 	}
 	
+	/*
+	 * Set the current Country
+	 * Search in the DB if the isoCode is known
+	 * If not, search if the country name is in the DB
+	 * If not, create a new Label with the Level Country
+	 * @param iso: the country iso code
+	 * @param fullName: the country's full name
+	 * @param app: the CDM application controller
+	 */
 	public void setCountry(String iso, String fullName, CdmApplicationController app){
 		WaterbodyOrCountry country=null;
 		List<WaterbodyOrCountry>countries;
@@ -66,16 +84,13 @@ public class UnitsGatheringArea {
 			else{
 				this.area.setLabel(fullName);
 				this.area.setLevel(NamedAreaLevel.COUNTRY()); 
-				//TODO need COUNTRY LEVEL
 			}
 		}
 	}
 	
-	public void setAreaName(String areaName, String langIso, CdmApplicationController app){
-		Language language = app.getTermService().getLanguageByIso(langIso); 
-//		for (int i=0;i<areaNames.size();i++)
-//			this.getInstance().setLabel(areaNames.get(i), language);
-		this.area.setLabel(areaName, language);
-	}
+//	public void setAreaName(String areaName, String langIso, CdmApplicationController app){
+//		Language language = app.getTermService().getLanguageByIso(langIso); 
+//		this.area.setLabel(areaName, language);
+//	}
 
 }

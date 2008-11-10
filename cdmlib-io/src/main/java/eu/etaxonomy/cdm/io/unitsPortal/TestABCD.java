@@ -77,6 +77,11 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		super();
 	}
 
+	/*
+	 * Return the list of root nodes for an ABCD 2.06 XML file
+	 * @param fileName: the file's location
+	 * @return the list of root nodes ("Unit")
+	 */
 	private static NodeList getUnitsNodeList(String fileName){
 		NodeList unitList = null;
 		try {
@@ -92,6 +97,11 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return unitList;
 	}
 
+	/*
+	 * Store the Excel's data into variables
+	 * @param fileName: the location of the Excel file
+	 * @return the list of units data
+	 */
 	private static ArrayList<Hashtable<String, String>> parseXLS(String fileName) {
 		ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String,String>>();
 
@@ -143,6 +153,12 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return units;
 	}
 
+	/*
+	 * Store the unit's properties into variables
+	 * Look which unit is the preferred one
+	 * Look what kind of name it is supposed to be, for the parsing (Botanical, Zoological)
+	 * @param racine: the root node for a single unit
+	 */
 	private void setUnitPropertiesXML(Element racine){
 		try{
 			NodeList group,childs,identifications,results,taxonsIdentified,person,scnames;
@@ -184,7 +200,6 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 																.println(this.nomenclatureCode);
 															}
 														} catch (Exception e) {
-															// TODO Auto-generated catch block
 															this.nomenclatureCode ="";
 														}
 													}
@@ -351,6 +366,10 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		}
 	}
 
+	/*
+	 * Store the unit's properties into variables
+	 * @param unit: the hashmap containing the splitted Excel line (Key=column name, value=value)
+	 */
 	private void setUnitPropertiesExcel(Hashtable<String,String> unit){
 		String author = unit.get("author");
 		author=author.replaceAll("None","");
@@ -428,6 +447,13 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return institution;
 	}
 
+	/*
+	 * Look if the Collection does already exists
+	 * @param collectionCode: a string
+	 * @param institution: the current Institution
+	 * @param app
+	 * @return the Collection (existing or new)
+	 */
 	private Collection getCollection(String collectionCode, Institution institution, CdmApplicationController app){
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
@@ -465,6 +491,12 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		return collection;
 	}
 
+	/*
+	 * 
+	 * @param app
+	 * @param derivedThing
+	 * @param sec
+	 */
 	private void setTaxonNameBase(CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
 		TaxonNameBase taxonName = null;
 		String fullScientificNameString;
@@ -474,7 +506,7 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 		String scientificName="";
 		boolean preferredFlag=false;
-		//TODO Botanical Name from ABCD? Zoological? etc etc
+		
 		for (int i = 0; i < this.identificationList.size(); i++) {
 			fullScientificNameString = this.identificationList.get(i);
 			fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
@@ -545,6 +577,9 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 
 	}
 
+	/*
+	 * Store the unit with its Gathering informations in the CDM
+	 */
 	public boolean start(IImportConfigurator config){
 		boolean result = true;
 		boolean withCdm = true;
@@ -692,16 +727,6 @@ public class TestABCD  extends SpecimenIoBase  implements ICdmIO {
 
 	}
 
-//	public boolean check(IImportConfigurator config) {
-//	// TODO Auto-generated method stub
-//	return false;
-//	}
-
-//	public boolean invoke(IImportConfigurator config,
-//	CdmApplicationController app, Map stores) {
-//	invoke(config,stores);
-//	return false;
-//	}
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
 		invoke(config);
