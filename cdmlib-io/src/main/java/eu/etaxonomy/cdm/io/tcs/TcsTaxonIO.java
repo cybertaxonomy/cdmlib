@@ -223,7 +223,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
 			
 			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
 			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
-			NamedArea namedArea = TdwgArea.getAreaByTdwgLabel(strGeoRegion);
+			NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(strGeoRegion);
 			PresenceAbsenceTermBase status = PresenceTerm.PRESENT();
 			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
 			distribution.setFeature(Feature.DISTRIBUTION());
