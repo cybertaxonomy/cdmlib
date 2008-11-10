@@ -80,10 +80,11 @@ public class TcsXmlTestActivator {
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		CdmDefaultImport<TcsImportConfigurator> tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
+		CdmDefaultImport<TcsXmlImportConfigurator> tcsImport = new CdmDefaultImport<TcsXmlImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		tcsImport.invoke(tcsImportConfigurator);
 		
+		logger.info("End");
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}
 
