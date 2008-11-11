@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -156,9 +157,8 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #addDescriptionSource(ReferenceBase)
 	 * @see    #removeDescriptionSource(ReferenceBase)
 	 */
-//	@ManyToMany  //FIXME
-//	@Cascade( { CascadeType.SAVE_UPDATE })
-	@Transient
+	@ManyToMany  //FIXME
+	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<ReferenceBase> getDescriptionSources() {
 		return this.descriptionSources;
 	}
