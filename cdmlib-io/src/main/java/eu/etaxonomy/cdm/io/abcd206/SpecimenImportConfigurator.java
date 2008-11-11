@@ -10,11 +10,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class SpecimenImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
-	
+	private boolean doParsing = false;
+	private boolean reuseMetadata = false;
 
 		
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
+		System.out.println("makeIOClassList");
 		ioClassList = new Class[]{
 			AbcdIO.class,
 		};
@@ -80,6 +82,21 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		}
 	}
 	
+	public void setDoAutomaticParsing(boolean doParsing){
+		this.doParsing=doParsing;
+	}
+	
+	public boolean getDoAutomaticParsing(){
+		return this.doParsing;
+	}
+	
+	public void setReUseExistingMetadata(boolean reuseMetadata){
+		this.reuseMetadata = reuseMetadata;
+	}
+	
+	public boolean getReUseExistingMetadata(){
+		return this.reuseMetadata;
+	}
 	
 	
 }

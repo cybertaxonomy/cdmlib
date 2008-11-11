@@ -1,14 +1,11 @@
 package eu.etaxonomy.cdm.io.synthesys;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -17,9 +14,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+
+import com.sun.tools.jxc.gen.config.Config;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -265,7 +261,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
+	private void setTaxonNameBase(SpecimenImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec){
 		TaxonNameBase taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
@@ -291,6 +287,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
 			}
 
+			if (config.getDoAutomaticParsing()){
 			System.out.println("nomenclature: "+this.nomenclatureCode);
 			if (this.nomenclatureCode == "Zoological"){
 				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICZN(),null);
@@ -321,8 +318,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			}
 			if (taxonName.hasProblem())
 				taxonName = nvnpi.parseFullName(scientificName);
+			}
 			if (true){
-				names = app.getNameService().getNamesByName(scientificName);
+				names = config.getCdmAppController().getNameService().getNamesByName(scientificName);
 				if (names.size() == 0){
 					System.out.println("Name not found: " + scientificName);
 				}else{
@@ -334,7 +332,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 				}
 			}
 
-			app.getNameService().saveTaxonName(taxonName);
+			config.getCdmAppController().getNameService().saveTaxonName(taxonName);
 			taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
 
 			determinationEvent = DeterminationEvent.NewInstance();
@@ -348,21 +346,22 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
-	public boolean start(IImportConfigurator config){
+	public boolean start(SpecimenImportConfigurator config){
 		boolean result = true;
 		boolean withCdm = true;
 		CdmApplicationController app = null;
 		TransactionStatus tx = null;
 
-		try {
-			app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-		} catch (DataSourceNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("DataSourceNotFoundException "+e1);
-		} catch (TermNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("TermNotFoundException " +e1);
-		}
+		app=config.getCdmAppController();
+//		try {
+//			app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
+//		} catch (DataSourceNotFoundException e1) {
+//			e1.printStackTrace();
+//			System.out.println("DataSourceNotFoundException "+e1);
+//		} catch (TermNotFoundException e1) {
+//			e1.printStackTrace();
+//			System.out.println("TermNotFoundException " +e1);
+//		}
 
 		tx = app.startTransaction();
 		try {
@@ -388,7 +387,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			if (derivedThing == null) 
 				derivedThing = Observation.NewInstance();
 
-			this.setTaxonNameBase(app, derivedThing, sec);
+			this.setTaxonNameBase(config, derivedThing, sec);
 
 
 			//set catalogue number (unitID)
@@ -459,7 +458,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 
-	public boolean invoke(IImportConfigurator config){
+	public boolean invoke(SpecimenImportConfigurator config){
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SynthesysIO test = new SynthesysIO();
 		String sourceName = config.getSourceNameString();
@@ -480,7 +479,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
+	public boolean invoke(SpecimenImportConfigurator config, Map stores) {
 		invoke(config);
 		return false;
 	}

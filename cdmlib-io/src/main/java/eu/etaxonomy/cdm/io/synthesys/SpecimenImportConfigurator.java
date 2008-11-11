@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class SpecimenImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
-	
+	private boolean doParsing = false;
 
 		
 	@SuppressWarnings("unchecked")
@@ -78,6 +78,14 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		}else{
 			return this.getSource();
 		}
+	}
+	
+	public void setDoAutomaticParsing(boolean doParsing){
+		this.doParsing=doParsing;
+	}
+	
+	public boolean getDoAutomaticParsing(){
+		return this.doParsing;
 	}
 	
 	

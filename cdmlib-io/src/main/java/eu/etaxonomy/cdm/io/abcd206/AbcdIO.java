@@ -1,9 +1,7 @@
 package eu.etaxonomy.cdm.io.abcd206;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,24 +9,21 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -39,7 +34,8 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -69,12 +65,38 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	protected ArrayList<String> gatheringAgentList;
 	protected ArrayList<String> identificationList;
 	protected ArrayList<String> namedAreaList;
+	protected ArrayList<String> referenceList;
+	protected ArrayList<String> multimediaObjects;
 
-	protected HSSFWorkbook hssfworkbook = null;
+
+	protected ArrayList<String> knownABCDelements = new ArrayList<String>();
 
 
 	public AbcdIO() {
 		super();
+		knownABCDelements.add("Identifications");
+		knownABCDelements.add("Identification");
+		knownABCDelements.add("Result");
+		knownABCDelements.add("TaxonIdentified");
+		knownABCDelements.add("ScientificName");
+		knownABCDelements.add("FullScientificNameString");
+		knownABCDelements.add("NameAtomised");
+		knownABCDelements.add("SourceInstitutionID");
+		knownABCDelements.add("SourceID");
+		knownABCDelements.add("UnitID");
+		knownABCDelements.add("RecordBasis");
+		knownABCDelements.add("AccessionNumber");
+		knownABCDelements.add("LocalityText");
+		knownABCDelements.add("LongitudeDecimal");
+		knownABCDelements.add("Country");
+		knownABCDelements.add("ISO3166Code");
+		knownABCDelements.add("CollectorsFieldNumber");
+		knownABCDelements.add("CollectorsNumber");
+		knownABCDelements.add("AccessionNumber");
+		knownABCDelements.add("Altitude_MeasurementOrFactText");
+		knownABCDelements.add("Depth");
+		knownABCDelements.add("NamedArea_AreaName");
+		knownABCDelements.add("GatheringAgent_Person_FullName");
 	}
 
 	/*
@@ -98,6 +120,39 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 
+	public void afficherInfos(Node noeud, int niv) {
+		short type = noeud.getNodeType();
+		String nom = noeud.getNodeName();
+		String valeur = noeud.getNodeValue();
+
+		indenter(niv, type == Node.TEXT_NODE);
+		if(!knownABCDelements.contains(nom)){
+			System.out.print(nom + " (" + type + ") = '");
+			if(valeur != null && !valeur.matches("^\\s+$")){
+				System.out.print(valeur);
+				System.out.println("'");
+			}
+		}
+		if ((type == Node.DOCUMENT_NODE 
+				|| type == Node.ELEMENT_NODE)
+				&& noeud.hasChildNodes()) {
+			NodeList liste = noeud.getChildNodes();
+			for(int i = 0; i < liste.getLength(); i++)
+				afficherInfos(liste.item(i), niv + 1);
+		}
+	}
+	public void indenter(int n, boolean texte){
+		String tab = "\t";
+		for(int i = 0; i < n; i++){
+			System.out.print(tab);
+		}
+		if(texte){
+			System.out.print(" - ");
+		}
+		else
+			System.out.print(" + ");
+	}
+
 	/*
 	 * Store the unit's properties into variables
 	 * Look which unit is the preferred one
@@ -106,225 +161,290 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	 */
 	private void setUnitPropertiesXML(Element racine){
 		try{
-			NodeList group,childs,identifications,results,taxonsIdentified,person,scnames;
+			NodeList group,childs,person;
 
-			String tmpName = null;
-			try {
-				group = racine.getChildNodes();
-				for (int i=0; i< group.getLength(); i++){
-					if (group.item(i).getNodeName() == "Identifications"){
-						group = group.item(i).getChildNodes();
-						break;
-					}
+//			try{afficherInfos(racine, 0);}catch (Exception e) {System.out.println(e);}
+			group = racine.getChildNodes();
+//			logger.info("ABCD ELEMENT not stored: "+group.item(i).getNodeName().toString()+" - value: "+group.item(i).getTextContent());
+			for (int i=0; i< group.getLength(); i++){
+				if (group.item(i).getNodeName() == "Identifications"){
+					group = group.item(i).getChildNodes();
+					break;
 				}
-//				group = racine.getElementsByTagName("Identifications");
-				this.identificationList = new ArrayList<String>();
-				for (int j=0; j< group.getLength(); j++){
-					if(group.item(j).getNodeName() == "Identification"){
-						this.nomenclatureCode ="";
-						identifications = group.item(j).getChildNodes();
-						for (int m=0; m<identifications.getLength();m++){
-							if(identifications.item(m).getNodeName() == "Result"){
-								results = identifications.item(m).getChildNodes();
-								for(int k=0; k<results.getLength();k++){
-									if (results.item(k).getNodeName() == "TaxonIdentified"){
-										taxonsIdentified = results.item(k).getChildNodes();
-										for (int l=0; l<taxonsIdentified.getLength(); l++){
-											if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
-												scnames = taxonsIdentified.item(l).getChildNodes();
-												for (int n=0;n<scnames.getLength();n++){
-													if (scnames.item(n).getNodeName() == "FullScientificNameString")
-														tmpName = scnames.item(n).getTextContent();
-													if (scnames.item(n).getNodeName() == "NameAtomised"){
-														System.out.println("NamedAtomised");
-														try {
-															if (scnames.item(n).hasChildNodes()){
+			}
+			this.identificationList = new ArrayList<String>();
+			this.referenceList = new ArrayList<String>();
+			this.multimediaObjects = new ArrayList<String>();
 
-																this.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
-																System.out
-																.println(this.nomenclatureCode);
-															}
-														} catch (Exception e) {
-															this.nomenclatureCode ="";
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-							else if(identifications.item(m).getNodeName() == "PreferredFlag"){
-								this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent()+"_code_"+this.nomenclatureCode);
-							}
-							else{
-								if (tmpName != null)
-									this.identificationList.add(tmpName+"_preferred_"+"0"+"_code_"+this.nomenclatureCode);
-							}
+			this.getScientificNames(group);
 
-						}
-					}
-				}
-			} catch (NullPointerException e) {
-				System.out.println(e);
-			}
-			System.out.println("this.identificationList "+this.identificationList.toString());
-			try {
-				group = racine.getElementsByTagName("SourceInstitutionID");
-				this.institutionCode = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.institutionCode= "";
-			}
-			try {
-				group = racine.getElementsByTagName("SourceID");
-				this.collectionCode = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.collectionCode = "";
-			}
-			try {
-				group = racine.getElementsByTagName("UnitID");
-				this.unitID = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.unitID = "";
-			}
-			try {
-				group = racine.getElementsByTagName("RecordBasis");
-				this.recordBasis = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.recordBasis = "";
-			}
-			try {
-				group = racine.getElementsByTagName("AccessionNumber");
-				this.accessionNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.accessionNumber = "";
-			}
-			try {
-				group = racine.getElementsByTagName("LocalityText");
-				this.locality = group.item(0).getTextContent();
-				if (group.item(0).hasAttributes())
-					if (group.item(0).getAttributes().getNamedItem("lang") != null)
-						this.languageIso = group.item(0).getAttributes().getNamedItem("lang").getTextContent();
-			} catch (NullPointerException e) {
-				this.locality = "";
-			}
-			try {
-				group = racine.getElementsByTagName("LongitudeDecimal");
-				this.longitude = Double.valueOf(group.item(0).getTextContent());
-			} catch (NullPointerException e) {
-				this.longitude=0.0;
-			}
-			try {
-				group = racine.getElementsByTagName("LatitudeDecimal");
-				this.latitude = Double.valueOf(group.item(0).getTextContent());
-			} catch (NullPointerException e) {
-				this.latitude=0.0;
-			}
-			try {
-				group = racine.getElementsByTagName("Country");
-				this.country = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.country = "";
-			}
-			try {
-				group = racine.getElementsByTagName("ISO3166Code");
-				this.isocountry = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.isocountry = "";
-			}
+//			System.out.println("this.identificationList "+this.identificationList.toString());
+			this.getIDs(racine);
+			this.getRecordBasis(racine);
+			this.getMultimedia(racine);
+			this.getNumbers(racine);
+			this.getGeolocation(racine);
+			this.getGatheringPeople(racine);
 
-			try {
-				group = racine.getElementsByTagName("CollectorsFieldNumber");
-				this.fieldNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.fieldNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("CollectorsNumber");
-				this.collectorsNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.collectorsNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("AccessionNumber");
-				this.accessionNumber = group.item(0).getTextContent();
-			} catch (NullPointerException e) {
-				this.accessionNumber = "";
-			}
-
-			try {
-				group = racine.getElementsByTagName("Altitude");
-				for (int i=0;i<group.getLength();i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0;j<childs.getLength();j++){
-						if (childs.item(j).getNodeName() == "MeasurementOrFactText")
-							this.altitude = Integer.valueOf(childs.item(j).getTextContent());
-					}
-				}
-			} catch (NullPointerException e) {
-				this.altitude = -9999;
-			}
-
-			try {
-				group = racine.getElementsByTagName("Depth");
-				this.depth = Integer.valueOf(group.item(0).getTextContent());
-			} catch (NullPointerException e) {
-				this.depth = -9999;
-			}
-
-			try{
-				group = racine.getElementsByTagName("NamedArea");
-				this.namedAreaList = new ArrayList<String>();
-				for (int i=0;i<group.getLength();i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0; j<childs.getLength();j++){
-						if (childs.item(j).getNodeName() == "AreaName")
-							this.namedAreaList.add(childs.item(j).getTextContent());
-					}
-				}
-			}catch(NullPointerException e){
-				this.namedAreaList = new ArrayList<String>();
-			}
-
-			try {
-				group = racine.getElementsByTagName("GatheringAgent");
-				this.gatheringAgentList = new ArrayList<String>();
-				for (int i=0; i< group.getLength(); i++){
-					childs = group.item(i).getChildNodes();
-					for (int j=0; j<childs.getLength();j++){
-						if (childs.item(j).getNodeName() == "Person"){
-							person = childs.item(j).getChildNodes();
-							for (int k=0; k<person.getLength(); k++)
-								if (person.item(k).getNodeName() == "FullName")
-									this.gatheringAgentList.add(person.item(k).getTextContent());
-						}
-
-					}
-				}
-			} catch (NullPointerException e) {
-				this.gatheringAgentList = new ArrayList<String>();
-			}
 		} catch (Exception e) {
 			logger.info("Error occured while parsing XML file"+e);
 		}
 	}
 
 
+	private void getScientificNames(NodeList group){
+		NodeList identifications,results;
+		String tmpName = null;
+		for (int j=0; j< group.getLength(); j++){
+			if(group.item(j).getNodeName() == "Identification"){
+				this.nomenclatureCode ="";
+				identifications = group.item(j).getChildNodes();
+				for (int m=0; m<identifications.getLength();m++){
+					if(identifications.item(m).getNodeName() == "Result"){
+						results = identifications.item(m).getChildNodes();
+						for(int k=0; k<results.getLength();k++)
+							if (results.item(k).getNodeName() == "TaxonIdentified")
+								tmpName=this.getScientificName(results.item(k));
+					}
+					else if(identifications.item(m).getNodeName() == "PreferredFlag")
+						this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent()+"_code_"+this.nomenclatureCode);
 
-	private Institution getInstitution(String institutionCode, CdmApplicationController app){
+					else if (identifications.item(m).getNodeName() == "References")
+						this.getReferences(identifications.item(m));
+					else
+						if (tmpName != null)
+							this.identificationList.add(tmpName+"_preferred_"+"0"+"_code_"+this.nomenclatureCode);
+				}
+			}
+		}
+	}
+
+	private void getReferences(Node result){
+		NodeList results,reference;
+		results = result.getChildNodes();
+		for(int k=0; k<results.getLength();k++){
+			if (results.item(k).getNodeName() == "Reference"){
+				reference = results.item(k).getChildNodes();
+				for(int l=0;l<reference.getLength();l++){
+					if (reference.item(l).getNodeName()=="TitleCitation")
+						referenceList.add(reference.item(l).getTextContent());
+				}
+			}
+		}
+	}
+
+	private String getScientificName(Node result){
+		NodeList taxonsIdentified, scnames;
+		String tmpName = "";
+		taxonsIdentified = result.getChildNodes();
+		for (int l=0; l<taxonsIdentified.getLength(); l++){
+			if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
+				scnames = taxonsIdentified.item(l).getChildNodes();
+				for (int n=0;n<scnames.getLength();n++){
+					if (scnames.item(n).getNodeName() == "FullScientificNameString")
+						tmpName = scnames.item(n).getTextContent();
+					if (scnames.item(n).getNodeName() == "NameAtomised"){
+						try {
+							if (scnames.item(n).hasChildNodes()){
+
+								this.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
+							}
+						} catch (Exception e) {
+							this.nomenclatureCode ="";
+						}
+					}
+				}
+			}
+		}
+		return tmpName;
+	}
+	private void getIDs(Element racine){
+		NodeList group;
+		try {
+			group = racine.getElementsByTagName("SourceInstitutionID");
+			this.institutionCode = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.institutionCode= "";
+		}
+		try {
+			group = racine.getElementsByTagName("SourceID");
+			this.collectionCode = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.collectionCode = "";
+		}
+		try {
+			group = racine.getElementsByTagName("UnitID");
+			this.unitID = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.unitID = "";
+		}
+	}
+
+	private void getRecordBasis(Element racine){
+		NodeList group;
+		try {
+			group = racine.getElementsByTagName("RecordBasis");
+			this.recordBasis = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.recordBasis = "";
+		}
+	}
+
+	private void getMultimedia(Element racine){
+		NodeList group, multimedias, multimedia;
+		try {
+			group = racine.getElementsByTagName("MultiMediaObjects");
+			for(int i=0;i<group.getLength();i++){
+				multimedias = group.item(i).getChildNodes();
+				for (int j=0;j<multimedias.getLength();j++){
+					if (multimedias.item(j).getNodeName() == "MultiMediaObject"){	
+						multimedia = multimedias.item(j).getChildNodes();
+						for (int k=0;k<multimedia.getLength();k++){
+							if(multimedia.item(k).getNodeName() == "FileURI")
+								this.multimediaObjects.add(multimedia.item(k).getTextContent());
+						}
+					}
+				}
+			}
+		} catch (NullPointerException e) {
+			System.out.println(e);
+		}
+	}
+
+	private void getNumbers(Element racine){
+		NodeList group;
+		try {
+			group = racine.getElementsByTagName("AccessionNumber");
+			this.accessionNumber = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.accessionNumber = "";
+		}
+		try {
+			group = racine.getElementsByTagName("CollectorsFieldNumber");
+			this.fieldNumber = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.fieldNumber = "";
+		}
+
+		try {
+			group = racine.getElementsByTagName("CollectorsNumber");
+			this.collectorsNumber = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.collectorsNumber = "";
+		}
+
+		try {
+			group = racine.getElementsByTagName("AccessionNumber");
+			this.accessionNumber = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.accessionNumber = "";
+		}
+	}
+
+	private void getGeolocation(Element racine){
+		NodeList group, childs;
+		try {
+			group = racine.getElementsByTagName("LocalityText");
+			this.locality = group.item(0).getTextContent();
+			if (group.item(0).hasAttributes())
+				if (group.item(0).getAttributes().getNamedItem("lang") != null)
+					this.languageIso = group.item(0).getAttributes().getNamedItem("lang").getTextContent();
+		} catch (NullPointerException e) {
+			this.locality = "";
+		}
+		try {
+			group = racine.getElementsByTagName("LongitudeDecimal");
+			this.longitude = Double.valueOf(group.item(0).getTextContent());
+		} catch (NullPointerException e) {
+			this.longitude=0.0;
+		}
+		try {
+			group = racine.getElementsByTagName("LatitudeDecimal");
+			this.latitude = Double.valueOf(group.item(0).getTextContent());
+		} catch (NullPointerException e) {
+			this.latitude=0.0;
+		}
+		try {
+			group = racine.getElementsByTagName("Country");
+			this.country = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.country = "";
+		}
+		try {
+			group = racine.getElementsByTagName("ISO3166Code");
+			this.isocountry = group.item(0).getTextContent();
+		} catch (NullPointerException e) {
+			this.isocountry = "";
+		}
+		try {
+			group = racine.getElementsByTagName("Altitude");
+			for (int i=0;i<group.getLength();i++){
+				childs = group.item(i).getChildNodes();
+				for (int j=0;j<childs.getLength();j++){
+					if (childs.item(j).getNodeName() == "MeasurementOrFactText")
+						this.altitude = Integer.valueOf(childs.item(j).getTextContent());
+				}
+			}
+		} catch (NullPointerException e) {
+			this.altitude = -9999;
+		}
+
+		try {
+			group = racine.getElementsByTagName("Depth");
+			this.depth = Integer.valueOf(group.item(0).getTextContent());
+		} catch (NullPointerException e) {
+			this.depth = -9999;
+		}
+
+		try{
+			group = racine.getElementsByTagName("NamedArea");
+			this.namedAreaList = new ArrayList<String>();
+			for (int i=0;i<group.getLength();i++){
+				childs = group.item(i).getChildNodes();
+				for (int j=0; j<childs.getLength();j++){
+					if (childs.item(j).getNodeName() == "AreaName")
+						this.namedAreaList.add(childs.item(j).getTextContent());
+				}
+			}
+		}catch(NullPointerException e){
+			this.namedAreaList = new ArrayList<String>();
+		}
+	}
+
+	private void getGatheringPeople(Element racine){
+		NodeList group, childs, person;
+		try {
+			group = racine.getElementsByTagName("GatheringAgent");
+			this.gatheringAgentList = new ArrayList<String>();
+			for (int i=0; i< group.getLength(); i++){
+				childs = group.item(i).getChildNodes();
+				for (int j=0; j<childs.getLength();j++){
+					if (childs.item(j).getNodeName() == "Person"){
+						person = childs.item(j).getChildNodes();
+						for (int k=0; k<person.getLength(); k++)
+							if (person.item(k).getNodeName() == "FullName")
+								this.gatheringAgentList.add(person.item(k).getTextContent());
+					}
+
+				}
+			}
+		} catch (NullPointerException e) {
+			this.gatheringAgentList = new ArrayList<String>();
+		}
+	}
+
+	private Institution getInstitution(String institutionCode, SpecimenImportConfigurator config){
 		Institution institution;
 		List<Institution> institutions;
 		try{
 			System.out.println(this.institutionCode);
-			institutions= app.getAgentService().searchInstitutionByCode(this.institutionCode);
+			institutions= config.getCdmAppController().getAgentService().searchInstitutionByCode(this.institutionCode);
 		}catch(Exception e){
 			System.out.println("BLI "+e);
 			institutions=new ArrayList<Institution>();
 		}
-		if (institutions.size() ==0){
-			System.out.println("Institution (agent) unknown");
+		if (institutions.size() ==0 || !config.getReUseExistingMetadata()){
+			System.out.println("Institution (agent) unknown or not allowed to reuse existing metadata");
 			//create institution
 			institution = Institution.NewInstance();
 			institution.setCode(this.institutionCode);				
@@ -343,17 +463,17 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param app
 	 * @return the Collection (existing or new)
 	 */
-	private Collection getCollection(String collectionCode, Institution institution, CdmApplicationController app){
+	private Collection getCollection(String collectionCode, Institution institution, SpecimenImportConfigurator config){
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = app.getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = config.getCdmAppController().getOccurrenceService().searchCollectionByCode(this.collectionCode);
 		}catch(Exception e){
 			System.out.println("BLA"+e);
 			collections=new ArrayList<Collection>();
 		}
-		if (collections.size() ==0){
-			System.out.println("Collection not found "+this.collectionCode);
+		if (collections.size() ==0 || !config.getReUseExistingMetadata()){
+			System.out.println("Collection not found or do not reuse existing metadata  "+this.collectionCode);
 			//create new collection
 			collection.setCode(this.collectionCode);
 			collection.setCodeStandard("GBIF");
@@ -386,13 +506,13 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param derivedThing
 	 * @param sec
 	 */
-	private void setTaxonNameBase(CdmApplicationController app, DerivedUnitBase derivedThing, ReferenceBase sec){
+	private void setTaxonNameBase(SpecimenImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec){
 		TaxonNameBase taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
 		List<TaxonNameBase> names = null;
-		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+
 		String scientificName="";
 		boolean preferredFlag=false;
 
@@ -408,42 +528,17 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 					preferredFlag=false;
 			}
 			else scientificName = fullScientificNameString;
-			if (fullScientificNameString.indexOf("_code_") != -1){
-				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
-			}
 
-			System.out.println("nomenclature: "+this.nomenclatureCode);
-			if (this.nomenclatureCode == "Zoological"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICZN(),null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICZN");}
-			if (this.nomenclatureCode == "Botanical"){
-				taxonName  = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICBN(),null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICBN");}
-			if (this.nomenclatureCode == "Bacterial"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNB(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICNB");
-			}
-			if (this.nomenclatureCode == "Cultivar"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNCP(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICNCP");
-			}
-			if (this.nomenclatureCode == "Viral"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICVCN(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICVCN");
-			}
-			try{taxonName.hasProblem();}
-			catch (Exception e) {
-				taxonName = nvnpi.parseFullName(scientificName);
-			}
-			if (taxonName.hasProblem())
-				taxonName = nvnpi.parseFullName(scientificName);
+			if (fullScientificNameString.indexOf("_code_") != -1)	
+				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
+
+			if (config.getDoAutomaticParsing())	
+				taxonName = this.parseScientificName(scientificName);	
+			else taxonName.setTitleCache(scientificName);
+
+			if (taxonName == null) System.out.println("ARGGGGGGGGGGGGGGGGGGGGG");
 			if (true){
-				names = app.getNameService().getNamesByName(scientificName);
+				names = config.getCdmAppController().getNameService().getNamesByName(scientificName);
 				if (names.size() == 0){
 					System.out.println("Name not found: " + scientificName);
 				}else{
@@ -455,40 +550,84 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				}
 			}
 
-			app.getNameService().saveTaxonName(taxonName);
+			config.getCdmAppController().getNameService().saveTaxonName(taxonName);
 			taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
 
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
+			for (int l=0;l<this.referenceList.size();l++){
+				ReferenceBase reference = new Generic();
+				reference.setTitleCache(this.referenceList.get(l));
+				determinationEvent.addReference(reference);
+			}
 			derivedThing.addDetermination(determinationEvent);
 		}
 
 	}
 
+	private TaxonNameBase parseScientificName(String scientificName){
+		System.out.println("scientificName");
+		TaxonNameBase taxonName = null;
+		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+
+		System.out.println("nomenclature: "+this.nomenclatureCode);
+		if (this.nomenclatureCode == "Zoological"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICZN");}
+		if (this.nomenclatureCode == "Botanical"){
+			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICBN");}
+		if (this.nomenclatureCode == "Bacterial"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICNB");
+		}
+		if (this.nomenclatureCode == "Cultivar"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICNCP");
+		}
+		if (this.nomenclatureCode == "Viral"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICVCN");
+		}
+		try{taxonName.hasProblem();}
+		catch (Exception e) {
+			taxonName = nvnpi.parseFullName(scientificName);
+		}
+		if (taxonName.hasProblem())
+			taxonName = nvnpi.parseFullName(scientificName);
+		return taxonName;
+	}
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
-	public boolean start(IImportConfigurator config){
+	public boolean start(SpecimenImportConfigurator config){
 		boolean result = true;
 		boolean withCdm = true;
 		CdmApplicationController app = null;
 		TransactionStatus tx = null;
 
-		try {
-			app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-		} catch (DataSourceNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("DataSourceNotFoundException "+e1);
-		} catch (TermNotFoundException e1) {
-			e1.printStackTrace();
-			System.out.println("TermNotFoundException " +e1);
-		}
+		app = config.getCdmAppController();
+//		try {
+//		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
+//		} catch (DataSourceNotFoundException e1) {
+//		e1.printStackTrace();
+//		System.out.println("DataSourceNotFoundException "+e1);
+//		} catch (TermNotFoundException e1) {
+//		e1.printStackTrace();
+//		System.out.println("TermNotFoundException " +e1);
+//		}
 
 		tx = app.startTransaction();
 		try {
-			ReferenceBase sec = Database.NewInstance();
-			sec.setTitleCache("XML DATA");
+//			ReferenceBase sec = Database.NewInstance();
+//			sec.setTitleCache("XML DATA");
+			ReferenceBase sec = null;
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -509,7 +648,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if (derivedThing == null) 
 				derivedThing = Observation.NewInstance();
 
-			this.setTaxonNameBase(app, derivedThing, sec);
+			this.setTaxonNameBase(config, derivedThing, sec);
 
 
 			//set catalogue number (unitID)
@@ -522,9 +661,9 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			 * INSTITUTION & COLLECTION
 			 */
 			//manage institution
-			Institution institution = this.getInstitution(this.institutionCode,app);
+			Institution institution = this.getInstitution(this.institutionCode,config);
 			//manage collection
-			Collection collection = this.getCollection(this.collectionCode, institution, app); 
+			Collection collection = this.getCollection(this.collectionCode, institution, config); 
 			//link specimen & collection
 			derivedThing.setCollection(collection);
 
@@ -549,7 +688,21 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			fieldObservation.setFieldNumber(this.fieldNumber);
 			//join gatheringEvent to fieldObservation
 			fieldObservation.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
-
+//			//add Multimedia URLs
+			if(this.multimediaObjects.size()>0){
+				MediaRepresentationPart part;
+				MediaRepresentation representation;
+				Media media;
+				for (int i=0;i<this.multimediaObjects.size();i++){
+					part= MediaRepresentationPart.NewInstance(this.multimediaObjects.get(i),0);
+					//TODO update the Multimedia Object without size :)
+					representation = MediaRepresentation.NewInstance();
+					representation.addRepresentationPart(part);
+					media = Media.NewInstance();
+					media.addRepresentation(representation);
+					fieldObservation.addMedia(media);
+				}
+			}
 //			//link fieldObservation and specimen
 			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
 			derivationEvent.addOriginal(fieldObservation);
@@ -580,7 +733,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 
-	public boolean invoke(IImportConfigurator config){
+	public boolean invoke(SpecimenImportConfigurator config){
 		System.out.println("INVOKE Specimen Import from ABCD2.06 XML File");
 		AbcdIO test = new AbcdIO();
 		String sourceName = config.getSourceNameString();
@@ -601,7 +754,8 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
-		invoke(config);
+		System.out.println("invoke de ABCDio");
+		invoke((SpecimenImportConfigurator)config);
 		return false;
 	}
 
