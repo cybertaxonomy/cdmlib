@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -35,6 +36,7 @@ public class DeterminationEvent extends EventBase {
 	private Taxon taxon;
 	private DeterminationModifier modifier;
 	private boolean preferredFlag;
+	private Set<ReferenceBase> setOfReferences = getNewReferencesSet();
 
 	
 	
@@ -117,6 +119,25 @@ public class DeterminationEvent extends EventBase {
 		this.preferredFlag = preferredFlag;
 	}
 	
+	@Transient
+	private static Set<ReferenceBase> getNewReferencesSet(){
+		return new HashSet<ReferenceBase>();
+	}
+	
+	@ManyToMany
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	public Set<ReferenceBase> getReferences() {
+		return setOfReferences;
+	}
+
+	public void setReferences(Set<ReferenceBase> references) {
+		this.setOfReferences = references;
+	}
+	
+	public void addReference(ReferenceBase reference) {
+		this.setOfReferences.add(reference);
+	}
+	
 //*********** CLONE **********************************/	
 	
 	/** 
@@ -146,5 +167,7 @@ public class DeterminationEvent extends EventBase {
 			return null;
 		}
 	}
+	
+	
 
 }
