@@ -63,7 +63,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = Database.NewInstance();
-			sourceReference.setTitleCache("ABCD specimen import");
+			sourceReference.setTitleCache("SYNTHESYS specimen import");
 		}
 		return sourceReference;
 	}
