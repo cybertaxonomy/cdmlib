@@ -1,17 +1,13 @@
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
@@ -23,18 +19,13 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -58,35 +49,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 		
 		return result;
 	}
-	
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
-		new CdmTextElementMapper("genusPart", "genusOrUninomial") 
-		, new CdmTextElementMapper("uninomial", "genusOrUninomial")  //TODO make it a more specific Mapper for both attributes
-		, new CdmTextElementMapper("specificEpithet", "specificEpithet")
-		, new CdmTextElementMapper("infraspecificEpithet", "infraSpecificEpithet")
-		, new CdmTextElementMapper("infragenericEpithet", "infraGenericEpithet")
-		, new CdmTextElementMapper("microReference", nsTcom, "nomenclaturalMicroReference")		
-		
-	};
 
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
-		new CdmUnclearMapper("basionymAuthorship")
-		, new CdmUnclearMapper("combinationAuthorship")
-		, new CdmUnclearMapper("hasAnnotation")
-		, new CdmUnclearMapper("rank")
-		, new CdmUnclearMapper("nomenclaturalCode")
-		, new CdmUnclearMapper("publishedIn", nsTcom)
-		, new CdmUnclearMapper("year")
-	};
-	
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
-		new CdmUnclearMapper("authorship")
-		, new CdmUnclearMapper("rankString")
-		, new CdmUnclearMapper("nameComplete")
-		, new CdmUnclearMapper("hasBasionym")
-		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
-	};
-	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
@@ -104,7 +67,6 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 		Element elDataSet = getDataSetElement(tcsConfig);
 		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
 		
-		DoubleResult<Element, Boolean> doubleResult;
 		childName = "TaxonNames";
 		obligatory = false;
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
@@ -118,12 +80,9 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
 			List<String> elementList = new ArrayList<String>();
 			
-			Attribute id = elTaxonName.getAttribute("id", tcsNamespace);
-
-			
 			//create TaxonName element
-			String strId = elTaxonName.getAttributeValue("id", tcsNamespace);
-			String strNomenclaturalCode = elTaxonName.getAttributeValue("nomenclaturalCode", tcsNamespace);
+			String strId = elTaxonName.getAttributeValue("id");
+			String strNomenclaturalCode = elTaxonName.getAttributeValue("nomenclaturalCode");
 			
 			childName = "Rank";
 			obligatory = false;
@@ -133,14 +92,18 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 			
 			
 			try {
-				
+				TaxonNameBase<?,?> nameBase;
 				NomenclaturalCode nomCode = TcsXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
-				TaxonNameBase nameBase = nomCode.getNewTaxonNameInstance(rank);
-
+				if (nomCode != null){
+					nameBase = nomCode.getNewTaxonNameInstance(rank);
+				}else{
+					nameBase = NonViralName.NewInstance(rank);
+				}
 				childName = "Simple";
 				obligatory = true;
 				Element elSimple = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
+				nameBase.setTitleCache(simple, false);
 				elementList.add(childName.toString());
 				
 				childName = "CanonicalName";
@@ -202,7 +165,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 				testAdditionalElements(elTaxonName, elementList);
 				
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
-				checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
+				//checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
 				
 				//nameId
 				//TODO
@@ -235,12 +198,12 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 	 * @return 
 	 */
 	private Rank makeRank(Element elRank){
-		Namespace ns = elRank.getNamespace();
 		Rank result;
 		if (elRank == null){
 			return null;
 		}
-		String strRankCode = elRank.getAttributeValue("code", ns);
+		Namespace ns = elRank.getNamespace();
+		String strRankCode = elRank.getAttributeValue("code");
 		String strRankString = elRank.getTextNormalize();
 		if (strRankCode == null || "".equals(strRankCode.trim()) &&
 				strRankString == null || "".equals(strRankString.trim())

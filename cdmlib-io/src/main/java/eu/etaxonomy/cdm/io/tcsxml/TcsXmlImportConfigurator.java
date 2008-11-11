@@ -1,4 +1,4 @@
- package tcsxml;
+ package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.List;
 

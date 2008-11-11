@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
@@ -111,7 +111,7 @@ public class TcsXmlPublicationsIO extends TcsXmlIoBase implements ICdmIO {
 			if ((++i % modCount) == 0){ logger.info("publications handled: " + (i-1));}
 			
 			//create TaxonName element
-			String strId = elPublication.getAttributeValue("id", tcsNamespace);
+			String strId = elPublication.getAttributeValue("id");
 			
 			childName = "Simple";
 			obligatory = true;

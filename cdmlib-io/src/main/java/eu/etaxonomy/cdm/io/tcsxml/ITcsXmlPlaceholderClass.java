@@ -1,4 +1,4 @@
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import org.jdom.Element;
 

@@ -7,16 +7,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,14 +24,11 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
 
-import eu.etaxonomy.cdm.api.service.IReferenceService;
+
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,12 +35,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TcsTaxonRelationsIO extends CdmIoBase implements ICdmIO {
-	private static final Logger logger = Logger.getLogger(TcsTaxonRelationsIO.class);
+public class TcsXmlTaxonRelationsIO extends CdmIoBase implements ICdmIO {
+	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsIO.class);
 
 	private static int modCount = 30000;
 
-	public TcsTaxonRelationsIO(){
+	public TcsXmlTaxonRelationsIO(){
 		super();
 	}
 	

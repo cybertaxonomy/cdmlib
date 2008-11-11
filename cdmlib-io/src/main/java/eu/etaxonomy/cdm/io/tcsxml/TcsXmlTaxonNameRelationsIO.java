@@ -1,4 +1,4 @@
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,16 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -95,7 +92,7 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
 				NameRelationshipType relType = NameRelationshipType.BASIONYM();
 				boolean inverse = false;
 				
-				String id = elTaxonName.getAttributeValue("id", elTaxonName.getNamespace());
+				String id = elTaxonName.getAttributeValue("id");
 //				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 				
 				makeNomenclaturalNoteType(tcsConfig, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
@@ -122,7 +119,7 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
 		String microReference = elRelation.getChildText("MicroReference", ns);
 		Element elRelatedName = elRelation.getChild("RelatedName", ns);
 		//TODO relType
-		String relatedNameId = elRelatedName.getAttributeValue("ref", ns);
+		String relatedNameId = elRelatedName.getAttributeValue("ref");
 		
 		TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 		TaxonNameBase<?,?> toName = taxonNameMap.get(relatedNameId);

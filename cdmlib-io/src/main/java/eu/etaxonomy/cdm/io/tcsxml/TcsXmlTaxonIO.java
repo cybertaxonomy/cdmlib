@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,12 +44,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class TcsTaxonIO  extends TcsXmlIoBase implements ICdmIO {
-	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
+public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
+	private static final Logger logger = Logger.getLogger(TcsXmlTaxonIO.class);
 
 	private static int modCount = 30000;
 	
-	public TcsTaxonIO(){
+	public TcsXmlTaxonIO(){
 		super();
 	}
 	
@@ -63,31 +63,6 @@ public class TcsTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 		
 		return result;
 	}
-	
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
-//		new CdmTextElementMapper("genusPart", "genusOrUninomial")
-	
-	};
-
-	
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
-		 new CdmUnclearMapper("hasName")
-		,new CdmUnclearMapper("hasName")
-		, new CdmUnclearMapper("accordingTo")
-		, new CdmUnclearMapper("hasRelationship")
-		, new CdmUnclearMapper("code", nsTgeo)	
-	};
-	
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
-		new CdmUnclearMapper("primary")
-		, new CdmUnclearMapper("note", nsTcom)	
-		, new CdmUnclearMapper("taxonStatus", nsTpalm)
-		
-		, new CdmUnclearMapper("TaxonName", nsTn)	
-		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
-	};
-	
-	
 	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
@@ -175,10 +150,10 @@ public class TcsTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			}
 			
 			Set<String> omitAttributes = null;
-			makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
+			//makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
 
 			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonAbout, idNamespace);
-			checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
+			//checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
 			
 			taxonMap.put(taxonAbout, taxonBase);
 			

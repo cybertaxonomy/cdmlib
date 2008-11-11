@@ -1,4 +1,4 @@
-package tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml;
 
 import org.apache.log4j.Logger;
 
@@ -124,7 +124,9 @@ public final class TcsXmlTransformer {
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
 	public static NomenclaturalCode nomCodeString2NomCode (String nomCode) throws UnknownCdmTypeException{
-		nomCode = nomCode.trim();
+		if (nomCode != null){
+			nomCode = nomCode.trim();
+		}
 		if (nomCode == null){ return null;
 		}else if (nomCode.equals("Botanical")){return NomenclaturalCode.ICBN();
 		}else if (nomCode.equals("Zoological")){return NomenclaturalCode.ICZN();
