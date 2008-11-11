@@ -76,11 +76,8 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNameList){
 			
-			
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			
-			
-			
+
 			//Basionyms
 			tcsElementName = "Basionym";
 			List<Element> elBasionymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
@@ -96,9 +93,119 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
 //				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 				
 				makeNomenclaturalNoteType(tcsConfig, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
-			}
-		}// end Basionyms
-		
+			}// end Basionyms
+			
+			//SpellingCorrections
+			tcsElementName = "SpellingCorrectionOf";
+			List<Element> elSpellingCorrectionList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			
+			for (Element elSpellingCorrection: elSpellingCorrectionList){
+				nameRelCount++;
+				logger.debug("SpellingCorrectionOf "+  nameRelCount);
+				
+				NameRelationshipType relType = NameRelationshipType.ORTHOGRAPHIC_VARIANT();
+				boolean inverse = true;
+				
+				String id = elTaxonName.getAttributeValue("id");
+				makeNomenclaturalNoteType(tcsConfig, elSpellingCorrection, relType, taxonNameMap, nameStore, id, inverse);
+			}// end SpellingCorrections
+			
+			//LaterHomonymOf
+			tcsElementName = "LaterHomonymOf";
+			List<Element> elLaterHomonymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elLaterHomonym: elLaterHomonymList){
+				nameRelCount++;
+				logger.debug("LaterHomonymOf "+  nameRelCount);
+				
+				NameRelationshipType relType = NameRelationshipType.LATER_HOMONYM();
+				boolean inverse = false;
+				
+				String id = elTaxonName.getAttributeValue("id");
+				makeNomenclaturalNoteType(tcsConfig, elLaterHomonym, relType, taxonNameMap, nameStore, id, inverse);
+			}// end LaterHomonymOf
+			
+			//ReplacementNameFor
+			tcsElementName = "ReplacementNameFor";
+			List<Element> elReplacementNameForList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elReplacementNameFor: elReplacementNameForList){
+				nameRelCount++;
+				logger.debug("LaterHomonymOf "+  nameRelCount);
+				
+				NameRelationshipType relType = NameRelationshipType.REPLACED_SYNONYM();
+				boolean inverse = false;
+				
+				String id = elTaxonName.getAttributeValue("id");
+				makeNomenclaturalNoteType(tcsConfig, elReplacementNameFor, relType, taxonNameMap, nameStore, id, inverse);
+			}// end ReplacementNameFor
+			
+			//ConservedAgainst
+			tcsElementName = "ConservedAgainst";
+			List<Element> elConservedAgainstList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elConservedAgainst: elConservedAgainstList){
+				nameRelCount++;
+				logger.debug("ConservedAgainst "+  nameRelCount);
+				
+				NameRelationshipType relType = NameRelationshipType.CONSERVED_AGAINST();
+				boolean inverse = false;
+				
+				String id = elTaxonName.getAttributeValue("id");
+				makeNomenclaturalNoteType(tcsConfig, elConservedAgainst, relType, taxonNameMap, nameStore, id, inverse);
+			}// end ConservedAgainst
+
+			
+			
+			//Sanctioned
+			tcsElementName = "Sanctioned";
+			List<Element> elSanctionedList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elSanctioned: elSanctionedList){
+				
+				//nameRelCount++;
+				//TODO sanctioned
+				logger.warn("Sanctioned not yet implemented " );
+				
+				///NameRelationshipType relType = NameRelationshipType.XXX
+				//boolean inverse = false;
+				//
+				//String id = elTaxonName.getAttributeValue("id");
+				//makeNomenclaturalNoteType(tcsConfig, elSanctioned, relType, taxonNameMap, nameStore, id, inverse);
+			}// end Sanctioned
+			
+			//PublicationStatus
+			tcsElementName = "PublicationStatus";
+			List<Element> elPublicationStatusList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elPublicationStatus: elPublicationStatusList){
+				
+				//nameRelCount++;
+				//TODO PublicationStatus
+				logger.warn("PublicationStatus not yet implemented " );
+				
+				///NameRelationshipType relType = NameRelationshipType.XXX
+				//boolean inverse = false;
+				//
+				//String id = elTaxonName.getAttributeValue("id");
+				//makeNomenclaturalNoteType(tcsConfig, elPublicationStatus, relType, taxonNameMap, nameStore, id, inverse);
+			}// end PublicationStatus
+			
+			//BasedOn
+			tcsElementName = "BasedOn";
+			List<Element> elBasedOnList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			for (Element elBasedOn: elBasedOnList){
+				
+				//nameRelCount++;
+				//TODO BasedOn
+				logger.warn("BasedOn not yet implemented " );
+				
+				///NameRelationshipType relType = NameRelationshipType.XXX
+				//boolean inverse = false;
+				//
+				//String id = elTaxonName.getAttributeValue("id");
+				//makeNomenclaturalNoteType(tcsConfig, elBasedOn, relType, taxonNameMap, nameStore, id, inverse);
+			}// end BasedOn
+			
+			
+			
+			
+		}	
 		//Other Relations
 		//TODO
 		
