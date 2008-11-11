@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.app.abcdImport;
+package eu.etaxonomy.cdm.app.synthesysImport;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
