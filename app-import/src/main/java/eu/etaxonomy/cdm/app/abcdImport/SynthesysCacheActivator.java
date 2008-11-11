@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.app.synthesysImport;
+package eu.etaxonomy.cdm.app.abcdImport;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;

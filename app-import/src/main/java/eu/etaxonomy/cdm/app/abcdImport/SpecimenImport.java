@@ -1,5 +1,4 @@
-package eu.etaxonomy.cdm.app.synthesysImport;
-
+package eu.etaxonomy.cdm.app.abcdImport;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -14,8 +13,9 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	final static String excelSource ="/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
-//	final static String excelSource ="C:\\localCopy\\eclipse\\cdmlib\\app-import\\src\\main\\resources\\specimenABCD\\CDMtabular9c04a474e2_23_09_08.xls";
+	final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
+//	final static String xmlSource = "C:\\localCopy\\eclipse\\cdmlib\\app-import\\src\\main\\resources\\specimenABCD\\multiABCD.xml";	
+	
 	
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_patricia();
 	//check - import
@@ -25,7 +25,7 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String source =  excelSource;
+		String source = xmlSource;
 		System.out.println(source);
 		System.out.println("Start import from  ABCD Specimen data("+ source.toString() + ") ...");
 		
