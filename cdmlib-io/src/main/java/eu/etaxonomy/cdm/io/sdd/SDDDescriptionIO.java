@@ -1,16 +1,23 @@
 package eu.etaxonomy.cdm.io.sdd;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -20,6 +27,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -29,8 +39,10 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -54,7 +66,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 
 		String value;
-
 		logger.info("start Datasets ...");
 		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
 
@@ -76,6 +87,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		int secondOfMinute = Integer.parseInt(nameCreated.substring(17,19));
 		DateTime created = new DateTime(year,monthOfYear,dayOfMonth,hourOfDay,minuteOfHour,secondOfMinute,0);
 
+		GregorianCalendar updated = null; 
+
 		// <Generator name="n/a, handcrafted instance document" version="n/a"/>
 		Element elGenerator = elTechnicalMetadata.getChild("Generator", sddNamespace);
 		String generatorName = elGenerator.getAttributeValue("name");
@@ -86,13 +99,16 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 		Map<String,State> states = new HashMap<String,State>();
 		Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
+		Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
 		Map<String,Feature> features = new HashMap<String,Feature>();
+		Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
 
-		Rank rank = null; //Rank.getRankByAbbreviation(abbrev);
-		NonViralName taxonNameBase = NonViralName.NewInstance(rank);
-		Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
+		Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
+		Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
 
-		Feature categoricalCharacter = Feature.NewInstance();
+		NonViralName taxonName = null;
+		Taxon taxon = Taxon.NewInstance(taxonName, null);
+		Rights copyright = null;
 
 		int i = 0;
 		//for each Dataset
@@ -107,6 +123,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				if(nameLang.equals("en-us")) {
 					datasetLanguage = Language.ENGLISH();
 				}
+				if(nameLang.equals("en-au")) {
+					datasetLanguage = Language.ENGLISH();
+				}
 			}
 
 			/* <Representation>
@@ -118,10 +137,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 			String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
-			taxonNameBase.setFullTitleCache(label);
-			taxon.setCreated(created);
+			OriginalSource originalSource = OriginalSource.NewInstance(" ", generatorName + " - " + generatorVersion + " - " + label);
+//			originalSource.setCitation(citation)
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-			taxon.addAnnotation(annotation);
 
 			// <RevisionData>
 			Element elRevisionData = elDataset.getChild("RevisionData",sddNamespace);
@@ -155,6 +173,18 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			// <DateModified>2006-04-08T00:00:00</DateModified>
 			String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
 
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+			Date d = null;
+			try {
+				d = sdf.parse(stringDateModified);
+			} catch(Exception e) {
+				System.err.println("Exception :");
+				e.printStackTrace();
+			}
+
+			updated = new java.util.GregorianCalendar(); 
+			updated.setTime(d);
+
 			// <IPRStatements>
 			Element elIPRStatements = elDataset.getChild("IPRStatements",sddNamespace);
 			// <IPRStatement role="Copyright">
@@ -168,6 +198,18 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				Element elLabel = elIPRStatement.getChild("Label",sddNamespace);
 				String lang = elLabel.getAttributeValue("lang",xmlNamespace);
 				label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
+				if (role.equals("Copyright")) {
+					Language iprLanguage = Language.NewInstance();
+					if (!lang.equals("")) {
+						if(lang.equals("en-us")) {
+							iprLanguage = Language.ENGLISH();
+						}
+						if(lang.equals("en-au")) {
+							iprLanguage = Language.ENGLISH();
+						}
+					}
+					copyright = Rights.NewInstance(label, iprLanguage);
+				}
 			}
 
 			// <TaxonNames>
@@ -187,9 +229,11 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				Element elLabel = elRepresentation.getChild("Label",sddNamespace);
 				String lang = elLabel.getAttributeValue("lang",xmlNamespace);
 				label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-				NonViralName tnb = NonViralName.NewInstance(rank);
+				NonViralName tnb = NonViralName.NewInstance(null);
+				tnb.setCreated(created);
+				tnb.setUpdated(updated);
 				if ((lang.equals("la")) || (lang.equals(""))) {
-					tnb.setFullTitleCache(label);
+					tnb.setTitleCache(label);
 				}
 				if (!id.equals("")) {
 					taxonNameBases.put(id,tnb);
@@ -218,17 +262,19 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					elRepresentation = elCategoricalCharacter.getChild("Representation",sddNamespace);
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 
+					Feature categoricalCharacter = null;
 					if (label != null){
 						categoricalCharacter = Feature.NewInstance(label, label, label);
 					}
 					categoricalCharacter.setSupportsQuantitativeData(false);
-					categoricalCharacter.setSupportsTextData(false);
+					categoricalCharacter.setSupportsTextData(true);
 
 					// <States>
 					Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
 
 					// <StateDefinition id="s1">
 					List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
+					TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
 
 					int k = 0;
 					//for each StateDefinition
@@ -244,8 +290,10 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 						State state = new State(label,label,label);
 						states.put(idSD, state);
+						termVocabularyState.addTerm(state);
 					}
 
+					categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
 					features.put(idCC, categoricalCharacter);
 
 				} catch (Exception e) {
@@ -293,11 +341,10 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					MeasurementUnit unit = null;
 					if (!label.equals("")){
 						if (role.equals("Abbrev")){
-							unit = MeasurementUnit.NewInstance("","",label);
+							unit = MeasurementUnit.NewInstance(label,label,label);
 						} else {
 							unit = MeasurementUnit.NewInstance(label,label,label);
 						}
-
 					}
 
 					units.put(idQC, unit);
@@ -307,7 +354,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					//</Default>
 					Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
 					String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
-					Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
 					if (!measurementUnitPrefix.equals("")){
 						defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
 					}
@@ -401,8 +447,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 
 					TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-					annotation = Annotation.NewInstance(label, Language.DEFAULT());
-					taxonDescription.addAnnotation(annotation);
+					taxonDescription.setTitleCache(label);
 
 					// <Scope>
 					//  <TaxonName ref="t1"/>
@@ -412,10 +457,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
 					String ref = elTaxonName.getAttributeValue("ref");
 
-					taxonNameBase = taxonNameBases.get(ref);
+					NonViralName taxonNameBase = taxonNameBases.get(ref);
+					taxon = Taxon.NewInstance(taxonNameBase, null);
+					taxon.setCreated(created);
+					taxon.setUpdated(updated);
 
 					Element elCitation = elScope.getChild("Citation",sddNamespace);
-					ref = elCitation.getAttributeValue("ref");
+					String refCitation = elCitation.getAttributeValue("ref");
 					String location = elCitation.getAttributeValue("location");
 
 					// <SummaryData>
@@ -457,6 +505,10 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						quantitativeData.setFeature(feature);
 
 						MeasurementUnit unit = units.get(ref);
+						String prefix = defaultUnitPrefixes.get(ref);
+						String u = unit.getLabel();
+						u = prefix + u;
+						unit.setLabel(u);
 						quantitativeData.setUnit(unit);
 
 						// <Measure type="Min" value="2.3"/>
@@ -468,11 +520,28 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							String type = elMeasure.getAttributeValue("type");
 							value = elMeasure.getAttributeValue("value");
 							float v = Float.parseFloat(value);
-							StatisticalMeasure t = StatisticalMeasure.NewInstance(type,type,type);
+							StatisticalMeasure t = null;
+							if (type.equals("Min")) {
+								t = StatisticalMeasure.MIN();
+							} else if (type.equals("Mean")) {
+								t = StatisticalMeasure.AVERAGE();
+							} else if (type.equals("Max")) {
+								t = StatisticalMeasure.MAX();
+							} else if (type.equals("SD")) {
+								// Create a new StatisticalMeasure for standard deviation
+								t = StatisticalMeasure.STANDARD_DEVIATION();
+							} else if (type.equals("N")) {
+								t = StatisticalMeasure.SAMPLE_SIZE();
+							} else {
+								t = StatisticalMeasure.NewInstance(type,type,type);
+								statisticalMeasures.add(t);
+							}
+
 							StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
 							statisticalValue.setValue(v);
 							statisticalValue.setType(t);
 							quantitativeData.addStatisticalValue(statisticalValue);
+							featureData.add(statisticalValue);
 						}
 						taxonDescription.addElement(quantitativeData);
 					}
@@ -494,10 +563,11 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						taxonDescription.addElement(textData);
 					}
 
+					taxonDescription.addSource(originalSource);
 					taxon.addDescription(taxonDescription);
-
+					
 					if (!ref.equals("")){
-						citations.put(idCD, ref);
+						citations.put(idCD,refCitation);
 					}
 
 					if (!location.equals("")){
@@ -531,16 +601,61 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					//  <Representation>
 					//   <Label>Kevin Thiele</Label>
+					//   <Detail role="Description">Ali Baba is also known as r.a.m.</Detail>
 					//  </Representation>
 					elRepresentation = elAgent.getChild("Representation",sddNamespace);
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+					Element elDetail = elRepresentation.getChild("Detail",sddNamespace);
 
+					Person person = Person.NewTitledInstance(label);
+					
+					// PROBLEME
+					
+					String role = elDetail.getAttributeValue("role");
+					detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+					annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
+					person.addAnnotation(annotation);
+					
+					person.setCreated(created);
+					person.setUpdated(updated);
+					
+
+					// <Links>
+					Element elLinks = elAgent.getChild("Links",sddNamespace);
+
+					//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
+					List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
+					int k = 0;
+					//for each Link
+					for (Element elLink : listLinks){
+
+						if ((++k % modCount) == 0){ logger.info("elLink handled: " + (k-1));}
+
+						try {
+
+							String rel = elLink.getAttributeValue("rel");
+							String href = elLink.getAttributeValue("href");
+							
+							if (k==1) {
+								OriginalSource source = OriginalSource.NewInstance(rel, href);
+								person.addSource(source);
+							}
+							
+						} catch (Exception e) {
+							//FIXME
+							logger.warn("Import of Link " + k + " failed.");
+							success = false; 
+						}
+
+
+					}
+					
 					if (authors.containsKey(idA)) {
-						authors.put(idA, Person.NewTitledInstance(label));
+						authors.put(idA,person);
 					}
 
 					if (editors.containsKey(idA)) {
-						editors.put(idA, Person.NewTitledInstance(label));
+						editors.put(idA, person);
 					}
 
 				} catch (Exception e) {
@@ -549,6 +664,39 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
+
+			}
+
+			// <Publications>
+			Element elPublications = elDataset.getChild("Publications",sddNamespace);
+
+			// <Publication id="p1">
+			List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
+			j = 0;
+			//for each Publication
+			for (Element elPublication : listPublications){
+
+				if ((++j % modCount) == 0){ logger.info("elAgent handled: " + (j-1));}
+
+				try {
+
+					String idP = elPublication.getAttributeValue("id");
+
+					//  <Representation>
+					//   <Label>Sample Citation</Label>
+					//  </Representation>
+					elRepresentation = elPublication.getChild("Representation",sddNamespace);
+					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+					Article publication = Article.NewInstance();
+					publication.setTitle(label);
+
+					publications.put(idP,publication);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of Agent " + j + " failed.");
+					success = false; 
+				}
 
 			}
 
@@ -577,35 +725,79 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				if (editor.hasNext()){
 					td.setUpdatedBy(editor.next());
 				}
+				
+				if (copyright != null) {
+					td.addRights(copyright);
+				}
+				
+			}
+
+			for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
+				String ref = refCD.next();
+				TaxonDescription td = taxonDescriptions.get(ref);
+				if (citations.containsKey(ref)) {
+					Article publication = (Article) publications.get(citations.get(ref));
+					if (locations.containsKey(ref)) {
+						publication.addAnnotation(Annotation.NewInstance(locations.get(ref), datasetLanguage));
+					}
+					td.addDescriptionSource(publication);
+				}
 			}
 
 		}
 		logger.info(i + " Datasets handled");
 
 		ITermService termService = config.getCdmAppController().getTermService();
+		TransactionStatus ts = config.getCdmAppController().startTransaction();
+		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
+			State state = k.next();
+			state.setCreated(created);
+			state.setUpdated(updated);
+			termService.saveTerm(state); 
+		}
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			Feature feature = k.next();
 			feature.setCreated(created);
+			feature.setUpdated(updated);
 			termService.saveTerm(feature); 
 		}
 		for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
 			MeasurementUnit unit = k.next();
 			unit.setCreated(created);
+			unit.setUpdated(updated);
 			termService.saveTerm(unit); 
 		}
+		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
+			StatisticalMeasure sm = k.next();
+			sm.setCreated(created);
+			sm.setUpdated(updated);
+			termService.saveTerm(sm); 
+		}
 
+		config.getCdmAppController().commitTransaction(ts);
+		
+		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
+		
+		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
+			Article publication = (Article) k.next();
+			publication.setCreated(created);
+			publication.setUpdated(updated);
+			referenceService.saveReference(publication); 
+		}
+		
 		// Returns a CdmApplicationController created by the values of this configuration.
 		IDescriptionService descriptionService = config.getCdmAppController().getDescriptionService();
 
 		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
 			TaxonDescription taxonDescription = k.next();
 			taxonDescription.setCreated(created);
+			taxonDescription.setUpdated(updated);
 			// Persists a Description
 			descriptionService.saveDescription(taxonDescription); 
 		}
 
 		//		makeNameSpecificData(nameMap);
-		logger.info("end makeTaxonNames ...");
+		logger.info("end makeTaxonDescriptions ...");
 		return success;
 
 	}
