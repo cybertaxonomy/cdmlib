@@ -271,6 +271,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDIoBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SpecimenImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SpecimenIoBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SynthesysIO.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/UnitsGatheringArea.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/UnitsGatheringEvent.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
