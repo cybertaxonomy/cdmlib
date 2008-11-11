@@ -138,7 +138,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
 			OriginalSource originalSource = OriginalSource.NewInstance(" ", generatorName + " - " + generatorVersion + " - " + label);
-//			originalSource.setCitation(citation)
+			//			originalSource.setCitation(citation)
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
 
 			// <RevisionData>
@@ -565,7 +565,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					taxonDescription.addSource(originalSource);
 					taxon.addDescription(taxonDescription);
-					
+
 					if (!ref.equals("")){
 						citations.put(idCD,refCitation);
 					}
@@ -608,48 +608,50 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					Element elDetail = elRepresentation.getChild("Detail",sddNamespace);
 
 					Person person = Person.NewTitledInstance(label);
-					
-					// PROBLEME
-					
-					String role = elDetail.getAttributeValue("role");
-					detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-					annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
-					person.addAnnotation(annotation);
-					
+
+					if (elDetail != null) {
+						String role = elDetail.getAttributeValue("role");
+						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
+						person.addAnnotation(annotation);
+					}
+
 					person.setCreated(created);
 					person.setUpdated(updated);
-					
+
 
 					// <Links>
 					Element elLinks = elAgent.getChild("Links",sddNamespace);
 
-					//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
-					List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
-					int k = 0;
-					//for each Link
-					for (Element elLink : listLinks){
+					if (elLinks != null) {
 
-						if ((++k % modCount) == 0){ logger.info("elLink handled: " + (k-1));}
+						//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
+						List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
+						int k = 0;
+						//for each Link
+						for (Element elLink : listLinks){
 
-						try {
+							if ((++k % modCount) == 0){ logger.info("elLink handled: " + (k-1));}
 
-							String rel = elLink.getAttributeValue("rel");
-							String href = elLink.getAttributeValue("href");
-							
-							if (k==1) {
-								OriginalSource source = OriginalSource.NewInstance(rel, href);
-								person.addSource(source);
+							try {
+
+								String rel = elLink.getAttributeValue("rel");
+								String href = elLink.getAttributeValue("href");
+
+								if (k==1) {
+									OriginalSource source = OriginalSource.NewInstance(rel, href);
+									person.addSource(source);
+								}
+
+							} catch (Exception e) {
+								//FIXME
+								logger.warn("Import of Link " + k + " failed.");
+								success = false; 
 							}
-							
-						} catch (Exception e) {
-							//FIXME
-							logger.warn("Import of Link " + k + " failed.");
-							success = false; 
+
+
 						}
-
-
 					}
-					
 					if (authors.containsKey(idA)) {
 						authors.put(idA,person);
 					}
@@ -725,11 +727,11 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				if (editor.hasNext()){
 					td.setUpdatedBy(editor.next());
 				}
-				
+
 				if (copyright != null) {
 					td.addRights(copyright);
 				}
-				
+
 			}
 
 			for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
@@ -775,16 +777,16 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 
 		config.getCdmAppController().commitTransaction(ts);
-		
+
 		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
-		
+
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
 			Article publication = (Article) k.next();
 			publication.setCreated(created);
 			publication.setUpdated(updated);
 			referenceService.saveReference(publication); 
 		}
-		
+
 		// Returns a CdmApplicationController created by the values of this configuration.
 		IDescriptionService descriptionService = config.getCdmAppController().getDescriptionService();
 
