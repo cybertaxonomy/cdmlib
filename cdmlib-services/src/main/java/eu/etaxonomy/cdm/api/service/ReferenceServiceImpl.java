@@ -9,48 +9,63 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+
 
 @Service
 @Transactional(readOnly = true)
-public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements IReferenceService {
+public class ReferenceServiceImpl<T extends ReferenceBase> extends IdentifiableServiceBase<T> implements IReferenceService<T> {
+//public class ReferenceServiceImpl extends ServiceBase<ReferenceBase> implements IReferenceService {
 	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 	
 	private IReferenceDao referenceDao;
 	
 	@Autowired
 	protected void setDao(IReferenceDao dao) {
-		this.dao = dao;
+		this.dao = (ICdmEntityDao)dao;
 		this.referenceDao = dao;
 	}
-	
 
 	public ReferenceBase getReferenceByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
+	public List<T> getReferencesByTitle(String title){
+		return super.findCdmObjectsByTitle(title);
+	}
+	
+//	@Transactional(readOnly = false)
+//	public UUID saveReference(ReferenceBase reference) {
+//		return super.saveCdmObject(reference);
+//	}
+
 	@Transactional(readOnly = false)
-	public UUID saveReference(ReferenceBase reference) {
+	public UUID saveReference(T reference) {
 		return super.saveCdmObject(reference);
 	}
 
+//	@Transactional(readOnly = false)
+//	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection) {
+//		return saveCdmObjectAll(referenceCollection);
+//	}
+
 	@Transactional(readOnly = false)
-	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection) {
+	public Map<UUID, T> saveReferenceAll(Collection<T> referenceCollection){
 		return saveCdmObjectAll(referenceCollection);
 	}
 
-	
 	public List<ReferenceBase> getAllReferences(int limit, int start){
 			return referenceDao.list(limit, start);
 	}

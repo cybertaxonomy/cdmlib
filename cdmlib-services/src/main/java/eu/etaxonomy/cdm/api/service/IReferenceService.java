@@ -17,18 +17,26 @@ import java.util.Map;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
-public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase>{
+public interface IReferenceService<T extends ReferenceBase> extends IIdentifiableEntityService<T> {
+//public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase> {
 	
-	/** find reference by UUID**/
+	/** Finds reference by UUID **/
 	public abstract ReferenceBase getReferenceByUuid(UUID uuid);
 
-	/** save a reference and return its UUID**/
-	public abstract UUID saveReference(ReferenceBase reference);
-
-	/** save a collection of  reference and return its UUID**/
-	public abstract Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection);
-	
+	/** Finds reference by title **/
+	public List<T> getReferencesByTitle(String title);
+		
+	/** Gets all references **/
 	public abstract List<ReferenceBase> getAllReferences(int limit, int start);
 
+//	public abstract UUID saveReference(ReferenceBase reference);
+
+	/** Saves a reference and return its UUID **/
+	public abstract UUID saveReference(T reference);
+
+//	public abstract Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection);
+	
+	/** Saves a collection of references **/
+	public abstract Map<UUID, T> saveReferenceAll(Collection<T> referenceCollection);
 	
 }
