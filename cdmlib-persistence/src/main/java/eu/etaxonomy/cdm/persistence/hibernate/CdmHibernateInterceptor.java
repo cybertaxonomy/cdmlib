@@ -56,7 +56,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 		boolean result = false;
 		if ( entity instanceof CdmBase ) {
 			updates++;
-			result &= checkTransientDefinedTerms(currentState);
+			//result &= checkTransientDefinedTerms(currentState);
 		}
 		return result;
 	}
@@ -81,7 +81,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 		boolean result = false;
 		if ( entity instanceof CdmBase ) {
 			creates++;
-			result &= checkTransientDefinedTerms(state);
+			//result &= checkTransientDefinedTerms(state);
 		}
 		return result;
 	}
