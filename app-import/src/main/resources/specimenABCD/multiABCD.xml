@@ -159,6 +159,11 @@
                 </Result>
               </Identification>
             </Identifications>
+            <MultiMediaObjects>
+              <MultiMediaObject>
+                <FileURI>http://fausseURLjustePourTesterQueCaMarcheAvecMultimedia?Image=119-1911_IMG.JPG</FileURI>
+              </MultiMediaObject>
+            </MultiMediaObjects>
             <HerbariumUnit>
               <Exsiccatum>121963</Exsiccatum>
             </HerbariumUnit>
