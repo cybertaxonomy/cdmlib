@@ -40,6 +40,7 @@ public class StatisticalMeasure extends DefinedTermBase {
 	private static final UUID uuidVariance = UUID.fromString("4d22cf5e-89ff-4de3-a9ae-12dbeda3faba");
 	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
+	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -111,4 +112,8 @@ public class StatisticalMeasure extends DefinedTermBase {
 		return getByUuid(uuidTypicalUpperBoundary);
 	}
 
+	public static final StatisticalMeasure STANDARD_DEVIATION(){
+		return getByUuid(uuidStandardDeviation);
+	}
+	
 }
