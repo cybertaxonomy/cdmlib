@@ -32,13 +32,15 @@ public class PalmaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "palm_pub_ed_999999";
+	//should the taxonX import run as well?
+	static final boolean includeTaxonX = true;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -61,7 +63,8 @@ public class PalmaeActivator {
 	
 
 	
-	private void doImport(){
+	private boolean doImport(){
+		boolean success = true;
 		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
 		//make BerlinModel Source
@@ -91,17 +94,34 @@ public class PalmaeActivator {
 		// invoke import
 		CdmDefaultImport<TcsImportConfigurator> tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
-		tcsImport.invoke(tcsImportConfigurator);
-		
+		success &= tcsImport.invoke(tcsImportConfigurator);
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
+		
+		return success;
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		boolean success = true;
+		
+		logger.debug("start");
 		PalmaeActivator me = new PalmaeActivator();
 		me.doImport();
+		
+		if (includeTaxonX){
+			PalmaeTaxonXImportActivator taxonXimporter = new PalmaeTaxonXImportActivator();
+			PalmaeTaxonXImportActivator.cdmDestination = cdmDestination;
+			PalmaeTaxonXImportActivator.secUuid = secUuid;
+			success &= taxonXimporter.runImport();
+		}
+		
+		String strSuccess = "";
+		if (success == false){
+			strSuccess = "not ";
+		}
+		System.out.println("Import " + strSuccess + "successful");
 		
 	}
 	

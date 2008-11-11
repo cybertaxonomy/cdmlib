@@ -31,29 +31,24 @@ import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
  * @version 1.0
  */
 public class PalmaeTaxonXImportActivator {
-	private static Logger logger = Logger.getLogger(PalmaeTaxonXImportActivator.class);
+	private static final Logger logger = Logger.getLogger(PalmaeTaxonXImportActivator.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String tcsSource = TcsSources.taxonX_local();
-	static final File source  = TcsSources.taxonX_localDir();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static File source  = TcsSources.taxonX_localDir();
+	static ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	
-	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
-	static final int sourceSecId = 7800000;
+	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
 	//check - import
-	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
+	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
-	static final boolean doDescriptions = true;
+	static boolean doDescriptions = true;
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println("Start import from Source("+ source.toString() + ") ...");
-		
-		//make BerlinModel Source
+	public boolean runImport(){
+		boolean success = true;
+		//make destination
 		ICdmDataSource destination = cdmDestination;
 		
 		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance("", destination);
@@ -61,7 +56,6 @@ public class PalmaeTaxonXImportActivator {
 		ICdmImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 		
 		taxonXImportConfigurator.setSecUuid(secUuid);
-		taxonXImportConfigurator.setSourceSecId(sourceSecId);
 		
 		taxonXImportConfigurator.setDoFacts(doDescriptions);
 		
@@ -79,17 +73,29 @@ public class PalmaeTaxonXImportActivator {
 						taxonXImportConfigurator.setSource(url.toString());
 						String originalSourceId = file.getName();
 						originalSourceId =originalSourceId.replace(".xml", "");
-						originalSourceId =originalSourceId.replace("_tn_", "_tc_");
 						taxonXImportConfigurator.setOriginalSourceId(originalSourceId);
-						cdmImport.invoke(taxonXImportConfigurator);
+						success &= cdmImport.invoke(taxonXImportConfigurator);
 					} catch (MalformedURLException e) {
 						logger.warn(e);
 					}
 				}
 			}	
 		}else{
-			cdmImport.invoke(taxonXImportConfigurator);
+			success &= cdmImport.invoke(taxonXImportConfigurator);
 		}
+		return success;
+	}
+	
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println("Start import from Source("+ source.toString() + ") ...");
+		
+		PalmaeTaxonXImportActivator importer = new PalmaeTaxonXImportActivator();
+		importer.runImport();
+		
 		 
 		System.out.println("End import from Source ("+ source.toString() + ")...");
 	}

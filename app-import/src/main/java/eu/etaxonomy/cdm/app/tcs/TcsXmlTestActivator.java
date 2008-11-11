@@ -13,15 +13,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import tcsxml.TcsXmlImportConfigurator;
-
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+import eu.etaxonomy.cdm.io.tcsxml.TcsXmlImportConfigurator;
 
 /**
  * @author a.mueller
@@ -46,10 +44,10 @@ public class TcsXmlTestActivator {
 	//authors
 	static final boolean doMetaData = true;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	//names
-	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = false;
+	static final boolean doTaxonNames = true;
+	static final boolean doRelNames = true;
 	
 	//taxa
 	static final boolean doTaxa = false;
