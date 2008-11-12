@@ -3,6 +3,8 @@ package eu.etaxonomy.cdm.io.excel.distribution;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -23,6 +25,14 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
@@ -96,11 +106,6 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     	 * Literature
     	*/
     	
-    	/*
-    	 * Find taxon by name
-    	 * TdwgArea.getAreaByTdwgAbbreviation()
-    	 */
-    	
         String editName = "";
         String distribution = "";
         ArrayList<String> distributionList = new ArrayList<String>();
@@ -150,16 +155,90 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		ArrayList<String> statusList, String literatureNumber, String literature) {
 
-		try {
-	    	TransactionStatus txStatOne = appCtr.startTransaction();
-	    	
-//			appCtr.getNameService().
-    	
-				
-		} catch (Exception e) {
+    	// Stores already processed descriptions
+    	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
+
+    	try {
+    		TransactionStatus txStatus = appCtr.startTransaction();
+
+    		// get the matching names from the DB
+    		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getNamesByName(taxonName);
+    		if (taxonNameBases.isEmpty()) {
+    			logger.error("Taxon name '" + taxonName + "' not found in DB");
+    		} else {
+    			logger.debug("Taxon found " + taxonName);
+    		}
+
+    		// get the taxa for the matching names
+    		for(TaxonNameBase dbTaxonName: taxonNameBases) {
+
+    			Set<Taxon> taxa = dbTaxonName.getTaxa();
+    			if (taxa.isEmpty()) {
+    				logger.warn("No taxon found for name '" + taxonName + "'");
+    			} else if (taxa.size() > 1) {
+    				logger.warn("More than one taxa found for name '" + taxonName + "'");
+    			}
+
+    			for(Taxon taxon: taxa) {
+
+    				TaxonDescription myDescription = TaxonDescription.NewInstance(taxon);
+
+    				// Get the description of this taxon from the database
+    				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+    				if (!descriptions.isEmpty()) {
+    					logger.debug(descriptions.size() + " description(s) found");
+    				} 
+    				// Check whether we have created a description earlier 
+    				for (TaxonDescription description: descriptions) {
+    					if (myDescriptions.containsKey(taxon)) {
+    						if (myDescriptions.containsValue(description)) {
+    							myDescription = description;
+    						}
+    					} else {
+    						// Add a new description
+    						myDescriptions.put(taxon, myDescription);
+    						taxon.addDescription(myDescription);
+    					}
+    				}
+
+    				// Add the named areas
+    				for (String distribution: distributionList) {
+
+    					NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
+    					myDescription.addGeoScope(namedArea);
+    				}
+    				
+    				appCtr.getTaxonService().saveTaxon(taxon);
+    			}
+
+    		} 	
+			appCtr.commitTransaction(txStatus);
+
+    	} catch (Exception e) {
     		logger.error("Error");
     		e.printStackTrace();
-		}
+    	}
+
+//  	Set<TaxonBase> taxonBases = dbTaxonName.getTaxonBases();
+
+//  	if (taxonBases.isEmpty()) {
+//  	logger.warn("No taxon found for name '" + taxonName + "'");
+//  	} else if (taxonBases.size() > 1) {
+//  	logger.warn("More than one taxa found for name '" + taxonName + "'");
+//  	}
+//  	for(TaxonBase taxonBase: taxonBases) {
+
+//  	if (taxonBase instanceof Synonym) {
+//  	logger.warn("Synonym found for name '" + taxonName + "'");
+//  	} else {
+//  	taxonBase.add
+//  	}
+
+//  	ReferenceBase referenceBase = taxonBase.getSec();
+//  	}
+//  	}
+
+
     }
     
     
@@ -170,7 +249,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
         while (st.hasMoreTokens()) {
         	String listElement = st.nextToken();
             resultList.add(listElement);
-        	logger.debug("Next token = " + listElement);
+//        	logger.debug("Next token = " + listElement);
         }
         return resultList;
     }
