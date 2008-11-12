@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
@@ -381,19 +382,29 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			 */
 			DerivedUnitBase derivedThing = null;
 			//create specimen
+			boolean rbFound=false;
 			if (this.recordBasis != null){
 				if (this.recordBasis.toLowerCase().startsWith("s")) {//specimen
-					derivedThing = Specimen.NewInstance();				
+					derivedThing = Specimen.NewInstance();
+					rbFound = true;
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("o")) {//observation
-					derivedThing = Observation.NewInstance();				
+					derivedThing = Observation.NewInstance();	
+					rbFound = true;
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
 					derivedThing = LivingBeing.NewInstance();
+					rbFound = true;
+				}
+				if (! rbFound){
+					logger.info("The basis of record does not seem to be known: "+this.recordBasis);
+					derivedThing = DerivedUnit.NewInstance();
 				}
 			}
-			if (derivedThing == null) 
-				derivedThing = Observation.NewInstance();
+			else{
+				logger.info("The basis of record is null");
+				derivedThing = DerivedUnit.NewInstance();
+			}
 
 			this.setTaxonNameBase(config, derivedThing, sec);
 
