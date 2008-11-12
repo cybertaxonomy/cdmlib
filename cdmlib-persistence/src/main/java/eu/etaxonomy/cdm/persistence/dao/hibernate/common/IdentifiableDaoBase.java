@@ -61,14 +61,14 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 	public List<T> findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria) {
 
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+		crit.add(Restrictions.ilike("persistentTitleCache", matchmode.queryStringFrom(queryString)));
 		crit.setMaxResults(pagesize);
 		if(criteria != null){
 			for (Criterion criterion : criteria) {
 				crit.add(criterion);
 			}
 		}
-		crit.addOrder(Order.asc("titleCache"));
+		crit.addOrder(Order.asc("persistentTitleCache"));
 		int firstItem = (page - 1) * pagesize;
 		crit.setFirstResult(firstItem);
 		List<T> results = crit.list();
