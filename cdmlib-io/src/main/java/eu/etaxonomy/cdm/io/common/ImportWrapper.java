@@ -50,7 +50,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper Abcd206WrapperInstance(){
 		String label = "ABCD 2.06";
-		Class clazz = AbcdIO.class;
+		Class clazz = CdmDefaultImport.class;
 		IImportConfigurator config = SpecimenImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
