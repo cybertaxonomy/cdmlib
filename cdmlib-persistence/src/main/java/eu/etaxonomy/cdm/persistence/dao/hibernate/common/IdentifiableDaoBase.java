@@ -48,7 +48,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 			session.update(sessionObject);
 		}
 		Criteria crit = session.createCriteria(type);
-		crit.add(Restrictions.ilike("titleCache", queryString));
+		crit.add(Restrictions.ilike("persistentTitleCache", queryString));
 		List<T> results = crit.list();
 		return results;
 	}
