@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
 	
 	private boolean doMetaData = true;

@@ -110,10 +110,7 @@ public interface IImportConfigurator {
 	 */
 	public abstract void setDoOccurrence(boolean doOccurrence);
 
-	//public abstract String getSource();
-
-	//public abstract void setSource(String url);
-
+	
 	public abstract ICdmDataSource getDestination();
 
 	public abstract void setDestination(ICdmDataSource destination);
@@ -138,7 +135,9 @@ public interface IImportConfigurator {
 	 * @return
 	 */
 	public abstract Object getSource();
-	
+
+	//public abstract void setSource(Object url);
+
 	public abstract void setSourceReference(ReferenceBase sourceReference);
 
 	public abstract String getSourceReferenceTitle();

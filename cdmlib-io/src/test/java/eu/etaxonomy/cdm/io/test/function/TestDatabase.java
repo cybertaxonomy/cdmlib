@@ -121,7 +121,7 @@ public class TestDatabase {
 		Person linne = new Person("Carl", "Linné", "L.");
 		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
 		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
-		TimePeriod period = new TimePeriod(birth, death);
+		TimePeriod period = TimePeriod.NewInstance(birth, death);
 		linne.setLifespan(period);
 
 		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");

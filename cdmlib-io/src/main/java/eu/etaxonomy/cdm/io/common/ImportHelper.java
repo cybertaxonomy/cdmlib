@@ -12,6 +12,7 @@ import java.util.Calendar;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -193,37 +194,58 @@ public class ImportHelper {
 			return null;
 		}
 		String[] years = refYear.split("-");
-		Calendar calStart = null;
-		Calendar calEnd = null;
+		DateTime dtStart = null;
+		DateTime dtEnd = null;
 		
 		if (years.length > 2 || years.length <= 0){
 			logger.warn("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX getDatePublished");
 		}else {
-			calStart = getCalendar(years[0]);
+			dtStart = parseSingleDate(years[0]);
+			
 			if (years.length >= 2){
-				calEnd = getCalendar(years[1]);
+				dtEnd = parseSingleDate(years[1]);
 			}
 		}
-		TimePeriod result = TimePeriod.NewInstance(calStart, calEnd);
+		TimePeriod result = TimePeriod.NewInstance(dtStart, dtEnd);
 		return result;
 	}
 	
-	private static Calendar getCalendar(String strYear){
+	private static DateTime parseSingleDate(String singleDateString){
 		//FIXME until now only quick and dirty and wrong
-		Calendar cal = Calendar.getInstance();
-		cal.set(9999, Calendar.DECEMBER, 30, 0, 0, 0);
-		if (CdmUtils.isNumeric(strYear)){
+		DateTime dt = new DateTime(9999, 12, 30, 0,0,0,0);
+		if (CdmUtils.isNumeric(singleDateString)){
 			try {
-				Integer year = Integer.valueOf(strYear.trim());
-				if (year > 1750 && year < 2030){
-					cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+				Integer year = Integer.valueOf(singleDateString.trim());
+				if (year > 1750 && year < 2050){
+					dt = dt.withYear(year);
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
 			}
 		}
-		return cal;
+		return dt;
+
 	}
+
+	
+	//******* old *****************
+	
+//	private static Calendar getCalendar(String strYear){
+//		//FIXME until now only quick and dirty and wrong
+//		Calendar cal = Calendar.getInstance();
+//		cal.set(9999, Calendar.DECEMBER, 30, 0, 0, 0);
+//		if (CdmUtils.isNumeric(strYear)){
+//			try {
+//				Integer year = Integer.valueOf(strYear.trim());
+//				if (year > 1750 && year < 2030){
+//					cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+//				}
+//			} catch (NumberFormatException e) {
+//				logger.debug("Not a Integer format in getCalendar()");
+//			}
+//		}
+//		return cal;
+//	}
 
 
 }
