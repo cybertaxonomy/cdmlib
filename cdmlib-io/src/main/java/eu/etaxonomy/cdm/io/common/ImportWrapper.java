@@ -70,6 +70,18 @@ public class ImportWrapper {
 		wrapper.setConfiguration(config);
 		return wrapper;
 	}
+	
+	
+//	public static ImportWrapper JaxbWrapperInstance(){
+//		String label = "CDM 1.0 XML";
+//		Class clazz = CdmDefaultImport.class;
+//		IImportConfigurator config = TcsXmlImportConfigurator.NewInstance(null, null);
+//		ImportWrapper wrapper = new ImportWrapper();
+//		wrapper.setLabel(label);
+//		wrapper.setImportClass(clazz);
+//		wrapper.setConfiguration(config);
+//		return wrapper;
+//	}
 
 	/**
 	 * 
