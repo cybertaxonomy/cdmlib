@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -82,6 +81,7 @@ public class TestSpecimen {
 		int month = 10;
 		int date = 05;
 		gatheringDate.set(year, month, date);
+		
 		gatheringEvent.setGatheringDate(gatheringDate);
 		
 		logger.info("Create locality");

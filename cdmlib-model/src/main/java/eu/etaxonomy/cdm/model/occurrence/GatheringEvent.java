@@ -29,10 +29,12 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
@@ -148,13 +150,17 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 * @return
 	 */
 	@Transient
-	public Calendar getGatheringDate(){
+	public Partial getGatheringDate(){
 		return this.getTimeperiod().getStart();
 	}
-	public void setGatheringDate(Calendar gatheringDate){
-		this.getTimeperiod().setStart(gatheringDate);
+	public void setGatheringDate(Partial gatheringDate){
+		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}	
-
+	@Transient
+	public void setGatheringDate(Calendar gatheringDate){
+		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
+	}
+	
 	@Transient
 	public Agent getCollector(){
 		return this.getActor();

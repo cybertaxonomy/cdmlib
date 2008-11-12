@@ -8,6 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -304,9 +307,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			//ReferenceBase refBase = 
 		}
 		//make year
-		Calendar start = Calendar.getInstance();
-		start.set(Calendar.YEAR, Integer.valueOf(year));
-		TimePeriod datePublished = TimePeriod.NewInstance(start);
+		TimePeriod datePublished = TimePeriod.NewInstance(Integer.valueOf(year));
 		((StrictReferenceBase)result).setDatePublished(datePublished);
 		return result;
 	}

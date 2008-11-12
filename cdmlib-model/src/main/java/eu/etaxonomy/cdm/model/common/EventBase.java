@@ -101,7 +101,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 		//Actor
 		result.setActor(this.getActor());
 		//time period
-		result.setTimeperiod(this.getTimeperiod().clone());
+		result.setTimeperiod((TimePeriod)this.getTimeperiod().clone());
 		//no changes to: description
 		return result;
 	}

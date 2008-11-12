@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public class TaxonComparatorTest {
-	private static Logger logger = Logger.getLogger(TaxonComparatorTest.class);
+	private static final Logger logger = Logger.getLogger(TaxonComparatorTest.class);
 
 	/**
 	 * @throws java.lang.Exception
@@ -71,6 +71,7 @@ public class TaxonComparatorTest {
 	 */
 	@Test
 	public void testCompare() {
+		logger.debug("start testCompare");
 		ReferenceBase sec = Book.NewInstance();
 		
 		Book ref1 = Book.NewInstance(); 
@@ -82,7 +83,7 @@ public class TaxonComparatorTest {
 		cal1.set(1945, 3, 2);
 		cal2.set(1856, 3, 2);
 		cal3.set(1943, 3, 2);
-		
+
 		ref1.setDatePublished(TimePeriod.NewInstance(cal1));
 //		ref2.setDatePublished(TimePeriod.NewInstance(cal2));
 		ref3.setDatePublished(TimePeriod.NewInstance(cal3));
@@ -118,7 +119,7 @@ public class TaxonComparatorTest {
 		
 		for (TaxonBase taxon : list){
 			String year = "";
-			TaxonNameBase tnb = taxon.getName();
+			TaxonNameBase<?,?> tnb = taxon.getName();
 			if (tnb instanceof ZoologicalName){
 				year = String.valueOf(((ZoologicalName)tnb).getPublicationYear());
 			}else{

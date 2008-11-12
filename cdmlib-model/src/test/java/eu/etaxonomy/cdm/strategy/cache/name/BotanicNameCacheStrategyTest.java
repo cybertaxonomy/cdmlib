@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -115,7 +116,8 @@ public class BotanicNameCacheStrategyTest {
 		citationRef.setEdition("ed. 8");
 		GregorianCalendar testDate = new GregorianCalendar();
 		testDate.set(1768, 1, 1);
-		TimePeriod period = new TimePeriod(testDate);
+		
+		TimePeriod period = TimePeriod.NewInstance(testDate);
 		
 		citationRef.setDatePublished(period);
 		

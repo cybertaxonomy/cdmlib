@@ -5,6 +5,8 @@ package eu.etaxonomy.cdm.test.function.strategy;
 
 import java.util.Calendar;
 
+import org.joda.time.DateTime;
+
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -27,6 +29,7 @@ public class TestBookDefaultCacheStrategies {
 		Book book = Book.NewInstance();
 		book.setTitle("TestTitel eines Buches");
 		Calendar cal = Calendar.getInstance();
+
 		book.setDatePublished(TimePeriod.NewInstance(cal));
 		Person bookAuthor = Person.NewTitledInstance("BuchAuthorTitle");
 		book.setAuthorTeam(bookAuthor);

@@ -10,18 +10,24 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
-
-import java.util.*;
-
-import javax.persistence.*;
 
 /**
  * @author m.doering
@@ -81,7 +87,7 @@ public class DeterminationEvent extends EventBase {
 
 
 	@Transient
-	public Calendar getIdentificationDate(){
+	public Partial getIdentificationDate(){
 		return this.getTimeperiod().getStart();
 	}
 
@@ -89,7 +95,7 @@ public class DeterminationEvent extends EventBase {
 	 * 
 	 * @param identificationDate    identificationDate
 	 */
-	public void setIdentificationDate(Calendar identificationDate){
+	public void setIdentificationDate(Partial identificationDate){
 		this.getTimeperiod().setStart(identificationDate);
 	}
 

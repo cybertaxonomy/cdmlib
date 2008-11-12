@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 
 import junit.framework.Assert;
 
+import org.joda.time.DateMidnight;
+import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +30,7 @@ public class InstitutionalMembershipTest {
 		mship.setPerson(new Person("Steve", "Miller", "Mil."));
 		GregorianCalendar joined = new GregorianCalendar(1967, 4, 23);
 		GregorianCalendar resigned = new GregorianCalendar(1999, 0, 10);
-		mship.setPeriod(new TimePeriod(joined, resigned));
+		mship.setPeriod(TimePeriod.NewInstance(joined, resigned));
 		mship.setInstitute(Institution.NewInstance());
 		mship.setDepartment("Biodiversity");
 		mship.setRole("Head");
