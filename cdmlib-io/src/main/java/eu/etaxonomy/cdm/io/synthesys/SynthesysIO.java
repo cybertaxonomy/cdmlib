@@ -15,15 +15,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
-import com.sun.tools.jxc.gen.config.Config;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.io.synthesys.SpecimenImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -35,7 +32,6 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -142,64 +138,61 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 		try {
 			this.institutionCode = unit.get("institution").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.institutionCode = "";}
 
 		try {this.collectionCode = unit.get("collection").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.collectionCode = "";}
+		
 		try {this.unitID = unit.get("unitID").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.unitID = "";}
+		
 		try {this.recordBasis = unit.get("recordBasis").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.recordBasis = "";}
+		
 		try {this.accessionNumber = null;
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.accessionNumber = "";}
+		
 		try {this.locality = unit.get("locality").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.locality = "";}
+		
 		try {this.longitude = Double.valueOf(unit.get("longitude"));
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.longitude = 0.0;}
+		
 		try {this.latitude = Double.valueOf(unit.get("latitude"));
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.latitude = 0.0;}
+		
 		try {this.country = unit.get("country").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.country = "";}
+		
 		try {this.isocountry = unit.get("isoCountry").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.isocountry = "";}
+		
 		try {this.fieldNumber = unit.get("field number").replaceAll("None", null);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.fieldNumber = "";}
+		
 		try {this.collectorsNumber = unit.get("collector number").replaceAll("None", null);
-		} catch (Exception e) {
-		}
-		try {String coll =unit.get("collector");
-		coll=coll.replaceAll("None", null);
-		this.gatheringAgentList.add(coll);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {this.collectorsNumber = "";}
+		
+		try {
+			String coll =unit.get("collector");		
+			coll=coll.replaceAll("None", null);
+			this.gatheringAgentList.add(coll);
+		} catch (Exception e) {this.gatheringAgentList = new ArrayList<String>();}
+		
 		try {this.identificationList.add(taxonName+" "+author);
-		} catch (Exception e) {System.out.println(e);
-		}
+		} catch (Exception e) {this.identificationList = new ArrayList<String>();}
 	}
 
-	private Institution getInstitution(String institutionCode, CdmApplicationController app){
+	private Institution getInstitution(String institutionCode, SpecimenImportConfigurator config){
 		Institution institution;
 		List<Institution> institutions;
 		try{
-			System.out.println(this.institutionCode);
-			institutions= app.getAgentService().searchInstitutionByCode(this.institutionCode);
+			institutions= config.getCdmAppController().getAgentService().searchInstitutionByCode(this.institutionCode);
 		}catch(Exception e){
-			System.out.println("BLI "+e);
 			institutions=new ArrayList<Institution>();
 		}
-		if (institutions.size() ==0){
-			System.out.println("Institution (agent) unknown");
+		if (institutions.size() ==0 || !config.getReUseExistingMetadata()){
+			System.out.println("Institution (agent) unknown or not allowed to reuse existing metadata");
 			//create institution
 			institution = Institution.NewInstance();
 			institution.setCode(this.institutionCode);				
@@ -218,17 +211,16 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param app
 	 * @return the Collection (existing or new)
 	 */
-	private Collection getCollection(String collectionCode, Institution institution, CdmApplicationController app){
+	private Collection getCollection(String collectionCode, Institution institution, SpecimenImportConfigurator config){
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = app.getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = config.getCdmAppController().getOccurrenceService().searchCollectionByCode(this.collectionCode);
 		}catch(Exception e){
-			System.out.println("BLA"+e);
 			collections=new ArrayList<Collection>();
 		}
-		if (collections.size() ==0){
-			System.out.println("Collection not found "+this.collectionCode);
+		if (collections.size() ==0 || !config.getReUseExistingMetadata()){
+			System.out.println("Collection not found or do not reuse existing metadata  "+this.collectionCode);
 			//create new collection
 			collection.setCode(this.collectionCode);
 			collection.setCodeStandard("GBIF");
@@ -267,7 +259,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
 		List<TaxonNameBase> names = null;
-		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+
 		String scientificName="";
 		boolean preferredFlag=false;
 
@@ -283,42 +275,14 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 					preferredFlag=false;
 			}
 			else scientificName = fullScientificNameString;
-			if (fullScientificNameString.indexOf("_code_") != -1){
-				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
-			}
 
-			if (config.getDoAutomaticParsing()){
-			System.out.println("nomenclature: "+this.nomenclatureCode);
-			if (this.nomenclatureCode == "Zoological"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICZN(),null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICZN");}
-			if (this.nomenclatureCode == "Botanical"){
-				taxonName  = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICBN(),null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICBN");}
-			if (this.nomenclatureCode == "Bacterial"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNB(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICNB");
-			}
-			if (this.nomenclatureCode == "Cultivar"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICNCP(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICNCP");
-			}
-			if (this.nomenclatureCode == "Viral"){
-				taxonName = nvnpi.parseFullName(this.fullScientificNameString,NomenclaturalCode.ICVCN(), null);
-				if (taxonName.hasProblem())
-					System.out.println("pb ICVCN");
-			}
-			try{taxonName.hasProblem();}
-			catch (Exception e) {
-				taxonName = nvnpi.parseFullName(scientificName);
-			}
-			if (taxonName.hasProblem())
-				taxonName = nvnpi.parseFullName(scientificName);
-			}
+			if (fullScientificNameString.indexOf("_code_") != -1)	
+				this.nomenclatureCode = fullScientificNameString.split("_code_")[1];
+
+			if (config.getDoAutomaticParsing())	
+				taxonName = this.parseScientificName(scientificName);	
+			else taxonName.setTitleCache(scientificName);
+
 			if (true){
 				names = config.getCdmAppController().getNameService().getNamesByName(scientificName);
 				if (names.size() == 0){
@@ -333,15 +297,60 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			}
 
 			config.getCdmAppController().getNameService().saveTaxonName(taxonName);
-			taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
+			taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
+//			no reference in the GBIF INDEX
+//			for (int l=0;l<this.referenceList.size();l++){
+//			ReferenceBase reference = new Generic();
+//			reference.setTitleCache(this.referenceList.get(l));
+//			determinationEvent.addReference(reference);
+//			}
 			derivedThing.addDetermination(determinationEvent);
 		}
 
 	}
+
+	private TaxonNameBase parseScientificName(String scientificName){
+		System.out.println("scientificName");
+		TaxonNameBase taxonName = null;
+		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+
+		System.out.println("nomenclature: "+this.nomenclatureCode);
+		if (this.nomenclatureCode == "Zoological"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICZN");}
+		if (this.nomenclatureCode == "Botanical"){
+			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICBN");}
+		if (this.nomenclatureCode == "Bacterial"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICNB");
+		}
+		if (this.nomenclatureCode == "Cultivar"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICNCP");
+		}
+		if (this.nomenclatureCode == "Viral"){
+			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
+			if (taxonName.hasProblem())
+				System.out.println("pb ICVCN");
+		}
+		try{taxonName.hasProblem();}
+		catch (Exception e) {
+			taxonName = nvnpi.parseFullName(scientificName);
+		}
+		if (taxonName.hasProblem())
+			taxonName = nvnpi.parseFullName(scientificName);
+		return taxonName;
+	}
+
 
 	/*
 	 * Store the unit with its Gathering informations in the CDM
@@ -354,19 +363,18 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 		app=config.getCdmAppController();
 //		try {
-//			app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
+//		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 //		} catch (DataSourceNotFoundException e1) {
-//			e1.printStackTrace();
-//			System.out.println("DataSourceNotFoundException "+e1);
+//		e1.printStackTrace();
+//		System.out.println("DataSourceNotFoundException "+e1);
 //		} catch (TermNotFoundException e1) {
-//			e1.printStackTrace();
-//			System.out.println("TermNotFoundException " +e1);
+//		e1.printStackTrace();
+//		System.out.println("TermNotFoundException " +e1);
 //		}
 
 		tx = app.startTransaction();
 		try {
-			ReferenceBase sec = Database.NewInstance();
-			sec.setTitleCache("XML DATA");
+			ReferenceBase sec = null;
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -400,9 +408,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			 * INSTITUTION & COLLECTION
 			 */
 			//manage institution
-			Institution institution = this.getInstitution(this.institutionCode,app);
+			Institution institution = this.getInstitution(this.institutionCode,config);
 			//manage collection
-			Collection collection = this.getCollection(this.collectionCode, institution, app); 
+			Collection collection = this.getCollection(this.collectionCode, institution, config); 
 			//link specimen & collection
 			derivedThing.setCollection(collection);
 
@@ -410,9 +418,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			 * GATHERING EVENT
 			 */
 
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(app, this.locality, this.languageIso, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(config, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,app);
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,config);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);

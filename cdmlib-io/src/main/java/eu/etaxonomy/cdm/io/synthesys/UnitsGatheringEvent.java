@@ -1,11 +1,11 @@
 package eu.etaxonomy.cdm.io.synthesys;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -17,8 +17,8 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 public class UnitsGatheringEvent {
 
+	private static final Logger logger = Logger.getLogger(UnitsGatheringEvent.class);
 	private GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-	CdmApplicationController app;
 
 	/*
 	 * Constructor
@@ -30,11 +30,10 @@ public class UnitsGatheringEvent {
 	 * @param latitude
 	 * @param collectorNames
 	 */
-	public UnitsGatheringEvent(CdmApplicationController app, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
-		this.setLocality(locality, languageIso);
+	public UnitsGatheringEvent(SpecimenImportConfigurator config, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
+		this.setLocality(config, locality, languageIso);
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
-		this.app = app;
 	}
 
 	public GatheringEvent getGatheringEvent(){
@@ -46,16 +45,18 @@ public class UnitsGatheringEvent {
 	 * @param locality
 	 * @param langageIso
 	 */
-	public void setLocality(String locality, String languageIso){
-		System.out.println(locality);
+	public void setLocality(SpecimenImportConfigurator config, String locality, String languageIso){
 		LanguageString loc;
-		if (languageIso == null)
+		if (languageIso == null || config.getCdmAppController().getTermService().getLanguageByIso(languageIso) == null){
+			if (languageIso != null && config.getCdmAppController().getTermService().getLanguageByIso(languageIso) == null )
+				logger.info("unknown iso used for the locality: "+languageIso);
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
+		}
 		else
-			loc = LanguageString.NewInstance(locality,this.app.getTermService().getLanguageByIso(languageIso));
+			loc = LanguageString.NewInstance(locality,config.getCdmAppController().getTermService().getLanguageByIso(languageIso));
 		this.gatheringEvent.setLocality(loc);
 	}
-	
+
 	/*
 	 * return the locality associated to the GatheringEvent
 	 */
@@ -95,7 +96,7 @@ public class UnitsGatheringEvent {
 	 * if not, create a new collector
 	 * NOT USED
 	 */
-	public void setCollector(ArrayList<String> collectorNames,boolean getExisting){
+	public void setCollector(SpecimenImportConfigurator config, ArrayList<String> collectorNames,boolean getExisting){
 		//create collector
 		Agent collector;
 		ListIterator<String> collectors = collectorNames.listIterator();
@@ -105,7 +106,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<Agent> col = this.app.getAgentService().findAgentsByTitle(collName);
+				List<Agent> col = config.getCdmAppController().getAgentService().findAgentsByTitle(collName);
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();

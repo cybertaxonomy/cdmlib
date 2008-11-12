@@ -3,8 +3,6 @@ package eu.etaxonomy.cdm.io.synthesys;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -22,8 +20,8 @@ public class UnitsGatheringArea {
 	 * @param country
 	 * @param app
 	 */
-	public UnitsGatheringArea(String isoCountry, String country, CdmApplicationController app){
-		this.setCountry(isoCountry, country, app);
+	public UnitsGatheringArea(String isoCountry, String country, SpecimenImportConfigurator config){
+		this.setCountry(isoCountry, country, config);
 	}
 	
 	/*
@@ -69,16 +67,16 @@ public class UnitsGatheringArea {
 	 * @param fullName: the country's full name
 	 * @param app: the CDM application controller
 	 */
-	public void setCountry(String iso, String fullName, CdmApplicationController app){
+	public void setCountry(String iso, String fullName, SpecimenImportConfigurator config){
 		WaterbodyOrCountry country=null;
 		List<WaterbodyOrCountry>countries;
 		if (iso != null)
-			country = app.getOccurrenceService().getCountryByIso(iso);
+			country = config.getCdmAppController().getOccurrenceService().getCountryByIso(iso);
 		if (country != null)
 			this.area.addWaterbodyOrCountry(country);
 
 		else{
-			countries = app.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
+			countries = config.getCdmAppController().getOccurrenceService().getWaterbodyOrCountryByName(fullName);
 			if (countries.size() >0)
 				this.area.addWaterbodyOrCountry(countries.get(0));
 			else{
@@ -88,9 +86,5 @@ public class UnitsGatheringArea {
 		}
 	}
 	
-//	public void setAreaName(String areaName, String langIso, CdmApplicationController app){
-//		Language language = app.getTermService().getLanguageByIso(langIso); 
-//		this.area.setLabel(areaName, language);
-//	}
-
 }
+

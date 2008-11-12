@@ -469,7 +469,6 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		try{
 			collections = config.getCdmAppController().getOccurrenceService().searchCollectionByCode(this.collectionCode);
 		}catch(Exception e){
-			System.out.println("BLA"+e);
 			collections=new ArrayList<Collection>();
 		}
 		if (collections.size() ==0 || !config.getReUseExistingMetadata()){
@@ -536,7 +535,6 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				taxonName = this.parseScientificName(scientificName);	
 			else taxonName.setTitleCache(scientificName);
 
-			if (taxonName == null) System.out.println("ARGGGGGGGGGGGGGGGGGGGGG");
 			if (true){
 				names = config.getCdmAppController().getNameService().getNamesByName(scientificName);
 				if (names.size() == 0){
@@ -551,7 +549,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			}
 
 			config.getCdmAppController().getNameService().saveTaxonName(taxonName);
-			taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
+			taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
@@ -671,9 +669,9 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			 * GATHERING EVENT
 			 */
 
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(app, this.locality, this.languageIso, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(config, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,app);
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, config);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);
