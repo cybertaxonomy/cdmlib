@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -167,6 +168,7 @@ public class TermLoader {
 		insertDefaultTerms(NameRelationshipType.class, ORDERED);
 		insertDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		insertDefaultTerms(MarkerType.class, NOT_ORDERED);
+		insertDefaultTerms(AnnotationType.class, NOT_ORDERED);
 		insertDefaultTerms(NamedAreaType.class, NOT_ORDERED);
 		insertDefaultTerms(NamedAreaLevel.class, NOT_ORDERED);
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);

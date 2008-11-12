@@ -84,6 +84,11 @@ public class Annotation extends LanguageStringBase implements Cloneable {
     @XmlSchemaType(name = "IDREF")
 	private AnnotatableEntity annotatedObj;
 	
+    @XmlElement(name = "AnnotationType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private MarkerType annotationType;
+	
 	// for external annotations/comments the URL of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
