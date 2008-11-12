@@ -10,7 +10,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.excel.distribution.DistributionImportConfigurator;
@@ -25,7 +25,7 @@ public class CichorieaeDistributionActivator {
 	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa plus x.xls");
 	private static final String dbName = "cdm_test_jaxb2";
 	
-	private static final ICdmDataSource destinationDb = CdmDestinations.CDM_DB(dbName);
+	private static final ICdmDataSource destinationDb = TestDatabase.CDM_DB(dbName);
     private static final Logger logger = Logger.getLogger(CichorieaeDistributionActivator.class);
     
     public static void main(String[] args) {
