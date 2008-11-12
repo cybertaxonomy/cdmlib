@@ -9,10 +9,12 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -20,6 +22,8 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlImportConfigurator;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.reference.Book;
 
 /**
  * @author a.mueller
@@ -82,6 +86,13 @@ public class TcsXmlTestActivator {
 		//new Test().invoke(tcsImportConfigurator);
 		tcsImport.invoke(tcsImportConfigurator);
 		
+		
+		IReferenceService refService = tcsImportConfigurator.getCdmAppController().getReferenceService();
+		Book book = Book.NewInstance();
+		//book.setDatePublished(TimePeriod.NewInstance(1945));
+		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
+		refService.saveReference(book);
+		tcsImportConfigurator.getCdmAppController().close();
 		logger.info("End");
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}
