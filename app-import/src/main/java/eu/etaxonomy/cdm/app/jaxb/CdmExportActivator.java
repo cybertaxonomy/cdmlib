@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -124,10 +124,10 @@ public class CdmExportActivator {
 		CdmApplicationController appCtrInit = null;
 		
 		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-		appCtrInit = CdmDestinations.initDb(sourceDb, DbSchemaValidation.CREATE, false);
+		appCtrInit = TestDatabase.initDb(sourceDb, DbSchemaValidation.CREATE, false);
 
 		// Load some test data to source DB
-		CdmDestinations.loadTestData(sourceDbName, appCtrInit);
+		TestDatabase.loadTestData(sourceDbName, appCtrInit);
     	
 //    	testMakeTaxonSynonym(appCtrInit);
 //    	testRemoveNameRelationship(appCtrInit);
