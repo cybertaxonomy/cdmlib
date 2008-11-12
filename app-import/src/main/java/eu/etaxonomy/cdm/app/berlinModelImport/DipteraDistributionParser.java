@@ -182,14 +182,14 @@ public class DipteraDistributionParser {
 	private NamedArea[] getDoubleArea(String word){
 		NamedArea[] result = new NamedArea[2];
 		if ("Canary and Madeira Is.".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("");
+			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("CNY");
+			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("MDR");
 		}else if ("southern Europe".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("");
+			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("12");
+			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("13");
 		}else if ("former USSR: North and Central European territory".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("");
+			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("RUN-OO");
+			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("RUC-OO");
 		}else{
 			logger.warn("Double area not recognized");
 		}
@@ -233,45 +233,46 @@ public class DipteraDistributionParser {
 		}
 		word = word.replace("Vera Cruz", "Veracruz");
 		word = word.replace("Turkmenia", "Turkmenistan");
-		word = word.replace("Quebec", "Qu�bec");
+		word = word.replace("Quebec", "Québec");
+		//word = word.replace("Quebec", "Qu+®bec");
+		//word = word.replace("Quebec", "Qu├®bec");
+		
 		word = word.replace("Gambia", "Gambia, The");
 		word = word.replace("Mariana Is.", "Marianas");
 		word = word.replace("Kenia", "Kenya");
 		word = word.replace("Central Africa", "Central African Republic");
-		word = word.replace("Panama", "Panam�");
-		word = word.replace("Wales", "Great Britain");  //?? Problem mit New South Wales??
+		word = word.replace("Canal Zone", "");
+		//word = word.replace("Panama", "PanamÃ¡");
+		word = word.replace("Panama", "Panamá");
+		if (! word.contains("New South Wales")){
+			word = word.replace("Wales", "Great Britain");
+		}
 		word = word.replace("Java", "Jawa");
 		word = word.replace("former USSR: North European territory", "North European Russia");
 		word = word.replace("former USSR: South European territory", "South European Russia");
 		word = word.replace("former USSR: Soviet Middle Asia", "Middle Asia");
 		
 		word = word.replace("oceanian islands", "Pacific");
-		word = word.replace("Primorye", "Ussuri region");
-		word = word.replace("Galapagos Is.", "Gal�pagos");
+		word = word.replace("Ussuri region", "Primorye");
+		word = word.replace("Galapagos Is.", "Galápagos");
+		//word = word.replace("Galapagos Is.", "GalÃ¡pagos");
 		word = word.replace("Malaysia", "Peninsular Malaysia");
-		word = word.replace("Canal Zone", "Panam�");
 		word = word.replace("Polynesic Is.", "South Solomons");
-
+		
 		word = word.replace("Usbek SSR", "Uzbekistan");
 		word = word.replace("Mexican amber", "Mexico");
-		word = word.replace("southern Europe", "Ussuri region");
 		word = word.replace("Marocco", "Morocco");
 		word = word.replace("Trinidad", "Trinidad-Tobago");
-		word = word.replace("Haiti", "Haiti");  //??
+		word = word.replace("Haiti", "Haiti");  
 		word = word.replace("Moluccas", "Maluku");
 		word = word.replace("Belau", "Palau");
 		word = word.replace("Dominican amber", "Dominican Republic");
 		word = word.replace("Far East", "Russian Far East");
 		word = word.replace("Tahiti", "Society Is.");
-
 		
 		
-		unknownAreas.add("Baltic amber");  
-		unknownAreas.add("Arabia"); 
-
-		
-		
-		
+//		unknownAreas.add("Baltic amber");  
+//		unknownAreas.add("Arabia"); 
 						
 		for (String stopWord : stopWords){
 			if (stopWord.equals(word)){
@@ -327,7 +328,7 @@ public class DipteraDistributionParser {
 //		unknownAreas.add("former USSR: North European territory");
 //		unknownAreas.add("former USSR: South European territory");
 //		unknownAreas.add("former USSR: Soviet Middle Asia");
-		unknownAreas.add("former USSR: North and Central European territory");
+//		unknownAreas.add("former USSR: North and Central European territory");
 //		unknownAreas.add("oceanian islands");
 //		unknownAreas.add("Ussuri region");
 //		unknownAreas.add("Galapagos Is.");
