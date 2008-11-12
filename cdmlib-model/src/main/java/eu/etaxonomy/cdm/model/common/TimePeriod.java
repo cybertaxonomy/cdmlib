@@ -256,7 +256,7 @@ public class TimePeriod implements Cloneable{
 		
 	}
 	
-	public TimePeriod setStartYear(int year){
+	public TimePeriod setStartYear(Integer year){
 		return setStartField(year, DateTimeFieldType.year());
 	}
 	
@@ -268,7 +268,7 @@ public class TimePeriod implements Cloneable{
 		return setStartField(day, DateTimeFieldType.dayOfMonth());
 	}
 	
-	public TimePeriod setEndYear(int year){
+	public TimePeriod setEndYear(Integer year){
 		return setEndField(year, DateTimeFieldType.year());
 	}
 
