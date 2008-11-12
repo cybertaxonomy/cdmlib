@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 @XmlType(name = "Agent", propOrder = {
 })
 @Entity
-@Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
+@Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class Agent extends IdentifyableMediaEntity{
 	
 

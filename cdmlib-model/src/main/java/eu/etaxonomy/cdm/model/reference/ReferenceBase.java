@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 })
 @XmlRootElement(name = "RelationshipBase")
 @Entity
-@Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
+@Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase extends IdentifyableMediaEntity implements IParsable{
 	
 	static Logger logger = Logger.getLogger(ReferenceBase.class);

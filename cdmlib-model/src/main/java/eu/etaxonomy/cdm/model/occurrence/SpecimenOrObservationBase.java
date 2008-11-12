@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
+@Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);

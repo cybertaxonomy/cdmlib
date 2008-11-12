@@ -127,7 +127,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends A
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy#getTitleCache()
 	 */
-	@Column(length=255)
+	@Column(length=255, name="titleCache")
 	@Deprecated //for hibernate use only
 	protected String getPersistentTitleCache(){
 		return getTitleCache();

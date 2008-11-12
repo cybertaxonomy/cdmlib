@@ -94,7 +94,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
+@Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 
 	static Logger logger = Logger.getLogger(TaxonNameBase.class);
@@ -279,7 +279,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.setProtectedFullTitleCache(protectCache);
 	}
 	
-	@Column(length=330)
+	@Column(length=330, name="fullTitleCache")
 	@Deprecated //for hibernate use only
 	protected String getPersistentFullTitleCache(){
 		return getFullTitleCache();

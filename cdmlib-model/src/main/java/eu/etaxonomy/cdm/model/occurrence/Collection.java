@@ -44,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Collection")
 @Entity
-@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "persistentTitleCache" }) })
+@Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifyableMediaEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
