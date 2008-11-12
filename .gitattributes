@@ -30,6 +30,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestTransaction.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
+app-import/src/main/resources/SDD-Test-Simple.xml -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/specimenABCD/CDMtabular9c04a474e2_23_09_08.xls -text
