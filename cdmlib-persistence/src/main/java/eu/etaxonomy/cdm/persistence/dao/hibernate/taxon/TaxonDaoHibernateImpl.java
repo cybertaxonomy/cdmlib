@@ -211,7 +211,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
 		
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		crit.setProjection(Projections.rowCount());
 		int result = ((Integer)crit.list().get(0)).intValue();
 		return result;
@@ -221,7 +221,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 		
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		if(criteria != null){
 			for (Criterion criterion : criteria) {
 				crit.add(criterion);
