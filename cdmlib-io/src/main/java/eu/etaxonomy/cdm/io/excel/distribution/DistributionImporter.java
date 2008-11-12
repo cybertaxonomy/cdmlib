@@ -25,6 +25,9 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
@@ -62,17 +65,19 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 		
     	logger.debug("Importing distribution data");
 
-		try {
-			appCtr = 
-				CdmApplicationController.NewInstance(config.getDestination(), DbSchemaValidation.VALIDATE, true);
-
-		} catch (Exception e) {
-			logger.error("Error creating application controller");
-			e.printStackTrace();
-			System.exit(1);
-		}
+    	appCtr = config.getCdmAppController();
+    	
+//    	try {
+//			appCtr = 
+//				CdmApplicationController.NewInstance(config.getDestination(), DbSchemaValidation.VALIDATE, true);
+//
+//		} catch (Exception e) {
+//			logger.error("Error creating application controller");
+//			e.printStackTrace();
+//			System.exit(1);
+//		}
 		
-    	// read and save all rows of the excel worksheet
+		// read and save all rows of the excel worksheet
     	ArrayList<HashMap<String, String>> recordList = parseXLS(config.getSourceNameString());
     	if (recordList != null) {
     		HashMap<String,String> record = null;
@@ -155,18 +160,18 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		ArrayList<String> statusList, String literatureNumber, String literature) {
 
-    	// Stores already processed descriptions
+		TransactionStatus txStatus = appCtr.startTransaction();
+
+		// Stores already processed descriptions
     	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
-    	try {
-    		TransactionStatus txStatus = appCtr.startTransaction();
-
+		try {
     		// get the matching names from the DB
     		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getNamesByName(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
-    			logger.debug("Taxon found " + taxonName);
+    			logger.debug("Taxon found: '" + taxonName + "'");
     		}
 
     		// get the taxa for the matching names
@@ -181,64 +186,45 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
     			for(Taxon taxon: taxa) {
 
-    				TaxonDescription myDescription = TaxonDescription.NewInstance(taxon);
+    				TaxonDescription myDescription = null;
 
     				// Get the description of this taxon from the database
-    				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-    				if (!descriptions.isEmpty()) {
-    					logger.debug(descriptions.size() + " description(s) found");
-    				} 
-    				// Check whether we have created a description earlier 
-    				for (TaxonDescription description: descriptions) {
-    					if (myDescriptions.containsKey(taxon)) {
-    						if (myDescriptions.containsValue(description)) {
-    							myDescription = description;
-    						}
-    					} else {
-    						// Add a new description
-    						myDescriptions.put(taxon, myDescription);
-    						taxon.addDescription(myDescription);
-    					}
+//  				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+//  				if (!descriptions.isEmpty()) {
+//  				logger.debug(descriptions.size() + " description(s) found");
+//  				}
+
+    				// If we have have created a description for this taxon earlier take this one.
+    				// Otherwise, create a new description.
+    				if (myDescriptions.containsKey(taxon)) {
+    					myDescription = myDescriptions.get(taxon);
+    				} else {
+    					myDescription = TaxonDescription.NewInstance(taxon);
+    					myDescriptions.put(taxon, myDescription);
+    					taxon.addDescription(myDescription);
     				}
 
+    				//status
+    				PresenceAbsenceTermBase<?> status = PresenceTerm.NATIVE();
+					
     				// Add the named areas
     				for (String distribution: distributionList) {
 
     					NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
-    					myDescription.addGeoScope(namedArea);
+    					Distribution descDist = Distribution.NewInstance(namedArea, status);
+    					myDescription.addElement(descDist);
     				}
     				
     				appCtr.getTaxonService().saveTaxon(taxon);
+    	    		logger.debug("taxon saved");
     			}
-
-    		} 	
-			appCtr.commitTransaction(txStatus);
-
+    		} 
+    		appCtr.commitTransaction(txStatus);
+    		
     	} catch (Exception e) {
     		logger.error("Error");
     		e.printStackTrace();
     	}
-
-//  	Set<TaxonBase> taxonBases = dbTaxonName.getTaxonBases();
-
-//  	if (taxonBases.isEmpty()) {
-//  	logger.warn("No taxon found for name '" + taxonName + "'");
-//  	} else if (taxonBases.size() > 1) {
-//  	logger.warn("More than one taxa found for name '" + taxonName + "'");
-//  	}
-//  	for(TaxonBase taxonBase: taxonBases) {
-
-//  	if (taxonBase instanceof Synonym) {
-//  	logger.warn("Synonym found for name '" + taxonName + "'");
-//  	} else {
-//  	taxonBase.add
-//  	}
-
-//  	ReferenceBase referenceBase = taxonBase.getSec();
-//  	}
-//  	}
-
-
     }
     
     
