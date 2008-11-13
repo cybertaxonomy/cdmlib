@@ -73,16 +73,20 @@ public class DistributionTest {
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("14"), PresenceTerm.CULTIVATED()));
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("BGM"), AbsenceTerm.ABSENT()));
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("FRA"), AbsenceTerm.ABSENT()));
-		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("NFK-NI"), PresenceTerm.PRESENT()));
+		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("MXC-DF"), PresenceTerm.PRESENT()));
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
 		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
-		String result = Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceColorMap, 600, 0, null);
+		presenceAbsenceColorMap.put(PresenceTerm.CULTIVATED(), Color.YELLOW);
+		presenceAbsenceColorMap.put(AbsenceTerm.ABSENT(), Color.DARK_GRAY);
+		String backLayer ="";
+		presenceAbsenceColorMap = null;
+		String result = Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceColorMap, 600, 300, null,backLayer );
 		//TODO Set semantics is not determined
 		String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
-		assertTrue(result.startsWith("l=tdwg"));
-		assertTrue(result.endsWith("&ms=600"));
+		assertTrue(result.startsWith("l="));
+		assertTrue(result.endsWith("&ms=600x300"));
 		//assertTrue(result.matches("0000ff"));
 		//TODO continue
 	}
