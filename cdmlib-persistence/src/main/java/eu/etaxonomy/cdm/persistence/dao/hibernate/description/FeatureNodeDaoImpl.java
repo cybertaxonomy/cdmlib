@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
  */
 @Repository
 public class FeatureNodeDaoImpl extends CdmEntityDaoBase<FeatureNode> implements IFeatureNodeDao {
-//public class AgentDaoImpl extends IdentifiableDaoBase<Agent> implements IAgentDao{
 
 	public FeatureNodeDaoImpl() {
 		super(FeatureNode.class); 
