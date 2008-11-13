@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -115,7 +117,6 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
         String distribution = "";
         ArrayList<String> distributionList = new ArrayList<String>();
         String status = "";
-        ArrayList<String> statusList = new ArrayList<String>();
         String literatureNumber = "";
         String literature = "";
         
@@ -125,32 +126,31 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     		
     		String value = (String) record.get(key);
     		if (!value.equals("")) {
-    			logger.debug("Key = " + key);
-    			logger.debug("Value = " + value);
+//    			logger.debug("Key = " + key);
+    			logger.debug(key + ": '" + value + "'");
     		}
     		
     		if (key.contains(EDIT_NAME_COLUMN)) {
-    			editName = value;
-//            	logger.debug("Name = " + editName);
+    			editName = (String) removeDuplicateWhitespace(value.trim());
     			
 			} else if(key.contains(TDWG_DISTRIBUTION_COLUMN)) {
 				distributionList =  buildList(value);
 				
 			} else if(key.contains(STATUS_COLUMN)) {
-				statusList = buildList(value);
+				status = (String) removeDuplicateWhitespace(value.trim());
 				
 			} else if(key.contains(LITERATURE_NUMBER_COLUMN)) {
-				literatureNumber = value;
-//            	logger.debug("Literature number = " + literatureNumber);
+				literatureNumber = (String) removeDuplicateWhitespace(value.trim());
 				
 			} else if(key.contains(LITERATURE_COLUMN)) {
-				literature = value;
-//            	logger.debug("Literatur = " + literature);
+				literature = (String) removeDuplicateWhitespace(value.trim());
 			}
     	}
     	
     	// Store the data of this record in the DB
-    	saveRecord(editName, distributionList, statusList, literatureNumber, literature);
+    	if (!editName.equals("")) {
+    		saveRecord(editName, distributionList, status, literatureNumber, literature);
+    	}
     }
     
     
@@ -158,7 +158,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 	 *  Stores distribution data in the DB
 	 */
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
-    		ArrayList<String> statusList, String literatureNumber, String literature) {
+    		String status, String literatureNumber, String literature) {
 
 		TransactionStatus txStatus = appCtr.startTransaction();
 
@@ -167,11 +167,12 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
 		try {
     		// get the matching names from the DB
-    		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getNamesByName(taxonName);
+    		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
-    			logger.debug("Taxon found: '" + taxonName + "'");
+//    			logger.debug("Taxon found: '" + taxonName + "'");
+    			logger.debug("Taxon found");
     		}
 
     		// get the taxa for the matching names
@@ -188,14 +189,9 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
     				TaxonDescription myDescription = null;
 
-    				// Get the description of this taxon from the database
-//  				Set<TaxonDescription> descriptions = taxon.getDescriptions();
-//  				if (!descriptions.isEmpty()) {
-//  				logger.debug(descriptions.size() + " description(s) found");
-//  				}
-
-    				// If we have have created a description for this taxon earlier take this one.
+    				// If we have created a description for this taxon earlier, take this one.
     				// Otherwise, create a new description.
+    				// We don't update any existing descriptions at this point.
     				if (myDescriptions.containsKey(taxon)) {
     					myDescription = myDescriptions.get(taxon);
     				} else {
@@ -204,19 +200,31 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     					taxon.addDescription(myDescription);
     				}
 
-    				//status
-    				PresenceAbsenceTermBase<?> status = PresenceTerm.NATIVE();
+    				// Status
+    				PresenceAbsenceTermBase<?> presenceAbsenceStatus = PresenceTerm.NewInstance();
+    				if (status.equals("")) {
+    					presenceAbsenceStatus = PresenceTerm.NATIVE();
+    				} else {
+    					presenceAbsenceStatus = PresenceTerm.getPresenceTermByAbbreviation(status);
+    				}
+    				// TODO: Handle absence case
 					
-    				// Add the named areas
+    				// TDWG areas
     				for (String distribution: distributionList) {
 
-    					NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
-    					Distribution descDist = Distribution.NewInstance(namedArea, status);
-    					myDescription.addElement(descDist);
+    					// Create a new distribution unless none was specified in the input, as for Genera,
+    					// or unless the input distribution couldn't be resolved as a valid TDWG area.
+    					if(!distribution.equals("")) {
+    						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
+    						if (namedArea != null) {    						
+    							Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
+    							myDescription.addElement(newDistribution);
+    						}
+    					}
     				}
     				
     				appCtr.getTaxonService().saveTaxon(taxon);
-    	    		logger.debug("taxon saved");
+//    	    		logger.debug("Taxon saved");
     			}
     		} 
     		appCtr.commitTransaction(txStatus);
@@ -228,15 +236,34 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     }
     
     
-    private ArrayList<String> buildList(String value) {
+    /** Returns a version of the input where all contiguous
+     * whitespace characters are replaced with a single
+     * space. Line terminators are treated like whitespace.
+     * 
+     * @param inputStr
+     * @return
+     */
+    private static CharSequence removeDuplicateWhitespace(CharSequence inputStr) {
     	
+        String patternStr = "\\s+";
+        String replaceStr = " ";
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(inputStr);
+        return matcher.replaceAll(replaceStr);
+    }
+    
+
+    /** Builds a list of strings by splitting an input string
+     * with delimiters whitespace, comma, or semicolon
+     * @param value
+     * @return
+     */
+    private ArrayList<String> buildList(String value) {
+
     	ArrayList<String> resultList = new ArrayList<String>();
-    	StringTokenizer st = new StringTokenizer(value, SEPARATOR);
-        while (st.hasMoreTokens()) {
-        	String listElement = st.nextToken();
-            resultList.add(listElement);
-//        	logger.debug("Next token = " + listElement);
-        }
+    	for (String tag : value.split("[\\s,;]+")) {
+    		resultList.add(tag);
+    	}
         return resultList;
     }
     
