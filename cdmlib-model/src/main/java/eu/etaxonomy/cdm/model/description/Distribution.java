@@ -175,7 +175,8 @@ public class Distribution extends DescriptionElementBase {
 		String areaStyle = "";
 		String widthStr = "";
 		String heightStr = "";
-		String adLayerSeperator = "/";
+		String adLayerSeparator = "/";
+		String msSeparator = "x";
 		
 		if (presenceAbsenceTermColors == null) {
 			presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>(); 
@@ -190,7 +191,7 @@ public class Distribution extends DescriptionElementBase {
 			widthStr = "" + width;
 		}
 		if (height > 0){
-			heightStr = "," + height;
+			heightStr = msSeparator + height;
 		}
 		String ms = "ms=" + widthStr + heightStr;
 		if (ms.equals("ms=")){
@@ -256,7 +257,7 @@ public class Distribution extends DescriptionElementBase {
 		for (String layerString : layerMap.keySet()){
 			//Set<Distribution> layerDistributions = layerData.get(layerIndex);
 			//int distributionListIndex = 1;
-			areaData += (isFirstLayer? "" : "||") + layerString + adLayerSeperator;
+			areaData += (isFirstLayer? "" : "||") + layerString + adLayerSeparator;
 			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
 			boolean isFirstStyle = true;
 			for (int style: styleMap.keySet()){
