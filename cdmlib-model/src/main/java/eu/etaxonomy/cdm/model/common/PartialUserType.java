@@ -95,7 +95,7 @@ public class PartialUserType implements UserType {
 		if (month != 0){
 			result = result.with(DateTimeFieldType.monthOfYear(), month);
 		}
-		if (day == 0){
+		if (day != 0){
 			result = result.with(DateTimeFieldType.dayOfYear(), day);
 		}
 		return result;
