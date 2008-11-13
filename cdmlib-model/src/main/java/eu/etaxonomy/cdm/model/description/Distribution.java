@@ -164,11 +164,13 @@ public class Distribution extends DescriptionElementBase {
 	 * @param width The maps width
 	 * @param height The maps height
 	 * @param bbox The maps bounding box (e.g. "-180,-90,180,90" for the whole world)
+	 * @param layer The layer that is responsible for background borders and colors. Use the name for the layer.
+	 * If null 'earth' is taken as default. 
 	 * @return
 	 */
 	//TODO move to an other place -> e.g. service layer
 	@Transient
-	public static String getEditGeoServiceUrlParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox){
+	public static String getEditGeoServiceUrlParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer){
 		String result = "";
 		String layer = ""; 
 		String areaData = "";
@@ -177,6 +179,8 @@ public class Distribution extends DescriptionElementBase {
 		String heightStr = "";
 		String adLayerSeparator = "/";
 		String msSeparator = "x";
+		int borderWidth = 1;
+
 		
 		if (presenceAbsenceTermColors == null) {
 			presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>(); 
@@ -187,6 +191,11 @@ public class Distribution extends DescriptionElementBase {
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 		
 		//bbox, width, hight
+		if (bbox == null){
+			bbox ="bbox=-180,-90,180,90";  //earth is default
+		}else{
+			bbox = "bbox=" + bbox;
+		}
 		if (width > 0){
 			widthStr = "" + width;
 		}
@@ -223,11 +232,14 @@ public class Distribution extends DescriptionElementBase {
 		}
 		
 		//layer
-		layer = ""; 
-		for (String layerString : layerMap.keySet()){
-			layer += "|" + layerString;
+		if (backLayer == null || "".equals(layer.trim())){
+			backLayer = "earth"; 
 		}
-		layer = "l=" + layer.substring(1); //remove first |
+		layer = "l="+backLayer;
+//		for (String layerString : layerMap.keySet()){
+//			layer += "," + layerString;
+//		}
+		//layer = "l=" + layer.substring(1); //remove first |
 		
 		
 		//style
@@ -243,8 +255,10 @@ public class Distribution extends DescriptionElementBase {
 			}else{
 				rgb = status.getDefaultColor(); //TODO
 			}
-			
 			areaStyle += "|" + style + ":" + rgb;
+			if (borderWidth >0){
+				areaStyle += ",," + borderWidth;
+			}
 			styleCharMap.put(status, style);
 			i++;
 		}
