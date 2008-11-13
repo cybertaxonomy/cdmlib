@@ -79,6 +79,14 @@ public class TdwgArea {
 		}
 	}
 	
+	public static boolean isTdwgAreaAbbreviation(String abbrev){
+		if (abbrevMap.containsKey(abbrev)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	protected static void addTdwgArea(NamedArea area){
 		if (area == null){
 			logger.warn("tdwg area is null");
