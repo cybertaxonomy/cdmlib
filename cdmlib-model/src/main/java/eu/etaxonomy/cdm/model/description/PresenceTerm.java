@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -109,6 +111,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final UUID uuidIA=UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	private static final UUID uuidIN=UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIF=UUID.fromString("826239f7-45b7-42b5-857c-c1f852cfad6b");
+	private static final UUID uuidIC=UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
 	
@@ -133,9 +136,34 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	public static final PresenceTerm INTRODUCED_DOUBTFULLY_INTRODUCED(){return getByUuid(uuidID);}
 	public static final PresenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){return getByUuid(uuidIP);}
 	public static final PresenceTerm INTRODUCED_ADVENTITIOUS(){return getByUuid(uuidIA);}
+	public static final PresenceTerm INTRODUCED_CULTIVATED(){return getByUuid(uuidIC);}
 	public static final PresenceTerm INTRODUCED_NATURALIZED(){return getByUuid(uuidIN);}
 	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return getByUuid(uuidIF);}
 	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return getByUuid(uuidE);}
+	
+	@Transient
+	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 
-
+		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
+		} else if (abbrev.equalsIgnoreCase("c"))  { return PresenceTerm.CULTIVATED();
+		} else if (abbrev.equalsIgnoreCase("cf")) { return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("i"))  { return PresenceTerm.INTRODUCED();
+		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceTerm.INTRODUCED_ADVENTITIOUS();
+		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceTerm.INTRODUCED_CULTIVATED();
+		} else if (abbrev.equalsIgnoreCase("id")) { return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
+		} else if (abbrev.equalsIgnoreCase("ie")) { return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
+		} else if (abbrev.equalsIgnoreCase("if")) { return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceTerm.INTRODUCED_NATURALIZED();
+		} else if (abbrev.equalsIgnoreCase("ip")) { return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
+		} else if (abbrev.equalsIgnoreCase("iq")) { return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
+		} else if (abbrev.equalsIgnoreCase("n"))  { return PresenceTerm.NATIVE();
+		} else if (abbrev.equalsIgnoreCase("nd")) { return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
+		} else if (abbrev.equalsIgnoreCase("ne")) { return PresenceTerm.NATIVE_FORMERLY_NATIVE();
+		} else if (abbrev.equalsIgnoreCase("nf")) { return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("nq")) { return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
+		} else {
+			logger.warn("Unknown presence status term: " + abbrev);
+			return null;
+		}
+	}
 }

@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Annotation", propOrder = {
     "commentator",
     "annotatedObj",
+    "annotationType",
     "linkbackUrl"
 })
 @Entity
