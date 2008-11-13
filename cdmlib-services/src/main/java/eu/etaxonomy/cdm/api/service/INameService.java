@@ -69,7 +69,13 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 */
 	public abstract List getNamesByName(String name, CdmBase sessionObject);
+	
+	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
 		
+	public abstract List findNamesByTitle(String title);
+	
+	public abstract List findNamesByTitle(String title, CdmBase sessionObject);
+	
 	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
 	/**

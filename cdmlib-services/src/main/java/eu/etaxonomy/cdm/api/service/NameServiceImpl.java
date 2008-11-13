@@ -86,6 +86,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 		return super.findCdmObjectsByTitle(name, sessionObject);
 	}
 
+	public List findNamesByTitle(String title){
+		return super.findCdmObjectsByTitle(title);
+	}
+	
+	public List findNamesByTitle(String title, CdmBase sessionObject){
+		return super.findCdmObjectsByTitle(title, sessionObject);
+	}
+	
 	public TaxonNameBase<?,?> getTaxonNameByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid);
 	}

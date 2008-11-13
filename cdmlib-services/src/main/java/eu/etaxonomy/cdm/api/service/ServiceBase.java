@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -64,6 +65,13 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		return dao.saveOrUpdate(cdmObj);
 	}
 
+	@Transactional(readOnly = false)
+	protected UUID saveCdmObject(T cdmObj, TransactionStatus txStatus){
+		// TODO: Implement with considering txStatus
+		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+		return dao.saveOrUpdate(cdmObj);
+	}
+	
 	@Transactional(readOnly = false)
 	protected <S extends T> Map<UUID, S> saveCdmObjectAll(Collection<S> cdmObjCollection){
 		int types = cdmObjCollection.getClass().getTypeParameters().length;

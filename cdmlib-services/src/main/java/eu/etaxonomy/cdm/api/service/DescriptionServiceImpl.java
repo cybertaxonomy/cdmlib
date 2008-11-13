@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 
 /**
  * @author a.mueller
@@ -47,11 +49,13 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 @Service
 @Transactional(readOnly = true)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase> implements IDescriptionService {
+	
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
 	protected IFeatureTreeDao featureTreeDao;
 	protected IFeatureNodeDao featureNodeDao;
 	protected ITermVocabularyDao vocabularyDao;
+	protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
 	
 	
 	@Autowired
@@ -72,6 +76,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
 		this.vocabularyDao = vocabularyDao;
+	}
+	
+	@Autowired
+	protected void statisticalMeasurementValueDao(IStatisticalMeasurementValueDao statisticalMeasurementValueDao) {
+		this.statisticalMeasurementValueDao = statisticalMeasurementValueDao;
 	}
 	
 	/**
@@ -96,6 +105,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return super.saveCdmObject(description);
 	}
 
+	@Transactional(readOnly = false)
+	public UUID saveStatisticalMeasurementValue(StatisticalMeasurementValue statisticalMeasurementValue) {
+		return statisticalMeasurementValueDao.saveOrUpdate(statisticalMeasurementValue);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#generateTitleCache()
 	 */
