@@ -217,7 +217,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 						Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 						presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
 						presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
-						featureTO.setUrl(distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 780, 390, null));
+						featureTO.setUrl(distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 780, 390, null, null));
 					}catch(Exception e){
 						// pass
 					}
