@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.excel.distribution.DistributionImportConfigurator;
  */
 public class CichorieaeDistributionActivator {
 	
+//	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa 1.xls");
 	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa plus x.xls");
 	private static final String dbName = "cdm_test_jaxb2";
 	
@@ -37,6 +38,7 @@ public class CichorieaeDistributionActivator {
 			new CdmDefaultImport<DistributionImportConfigurator>();
 
 		// invoke import
+		logger.debug("Invoking Cichorieae distribution import");
 		distributionImport.invoke(distributionImportConfigurator);
     	
     }

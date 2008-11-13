@@ -341,12 +341,12 @@ public class TestTransaction {
 		
     	/* Init DB */
 		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
-//		CdmApplicationController appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
+		CdmApplicationController appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
 
 		/* Load test data into DB */
 //    	TestDatabase.loadTestData(dbName, appCtrInit);
 
-		checkTransactionFacets();
+//		checkTransactionFacets();
 //		modifyDisjunctObjects();
 //		modifySharedObjects();
 	}
