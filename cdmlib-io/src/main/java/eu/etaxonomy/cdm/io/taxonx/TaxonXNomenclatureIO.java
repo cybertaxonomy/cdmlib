@@ -4,28 +4,18 @@
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.jdom.Attribute;
-import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.Text;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -33,22 +23,12 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -89,10 +69,13 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
-		Element nomenclature = elTreatment.getChild("nomenclature", nsTaxonx);
+		Element elNomenclature = elTreatment.getChild("nomenclature", nsTaxonx);
 		
-		isChanged |= doCollectionEvent(txConfig, nomenclature, nsTaxonx, taxon);
+		isChanged |= doCollectionEvent(txConfig, elNomenclature, nsTaxonx, taxon);
 		
+		if (taxon != null && taxon.getName() != null){
+			isChanged |= doNomenclaturalType(txConfig, elNomenclature, nsTaxonx, taxon.getName());
+		}
 		if (isChanged){
 			taxonService.saveTaxon(taxon);
 		}
@@ -120,6 +103,126 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	}
 
 	/**
+	 * 
+	 * Reads the collection_event tag, creates the according data and stores it.
+	 * TODO under work
+	 * @param elNomenclature
+	 * @param nsTaxonx
+	 * @param taxonBase
+	 * @return
+	 */
+	private boolean doNomenclaturalType(TaxonXImportConfigurator config, Element elNomenclature, Namespace nsTaxonx, TaxonNameBase taxonName){
+		if (taxonName == null){
+			logger.warn("taxonName is null");
+			return false;
+		}
+		if (elNomenclature == null){
+			logger.warn("elNomenclature is null");
+			return false;
+		}
+		
+		
+		Element elType = elNomenclature.getChild("type", nsTaxonx);
+		Element elTypeLoc = elNomenclature.getChild("type_loc", nsTaxonx);
+
+		if (elType != null || elTypeLoc != null){
+			ReferenceBase citation = null;
+			String citationMicroReference = null;
+			String originalNameString = null;
+			boolean isNotDesignated = true;
+			boolean addToAllHomotypicNames = true;
+			unlazyTypeDesignation(config, taxonName);
+	
+			
+			SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
+			if (elType != null){
+				doElType(elType, simpleSpecimen);
+			}//elType
+			
+			//typeLoc
+			HashMap<Specimen, TypeDesignationStatus> typeLocMap = null; 
+			if (elTypeLoc != null){
+				typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
+			}
+			if (typeLocMap != null && typeLocMap.size() >0){
+				for (Specimen specimen : typeLocMap.keySet()){
+					TypeDesignationStatus status = typeLocMap.get(specimen);
+					taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+				}
+			}else{ // no type_loc
+				TypeDesignationStatus status = null;
+				taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private boolean doElType(Element elType, SimpleSpecimen simpleSpecimen){
+		//type
+		String[] type = elType.getTextNormalize().split(";");
+		if (type.length != 3 ){
+			logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize());
+			simpleSpecimen.setTitleCache(elType.getTextNormalize());
+		}else{
+			String strLocality = type[0].trim();
+			if (! "".equals(strLocality)){
+				simpleSpecimen.setLocality(strLocality);
+			}
+			
+			String strCollector = type[1].trim();
+			if (! "".equals(strCollector)){
+				Agent collector = Person.NewTitledInstance(strCollector);
+				simpleSpecimen.setCollector(collector);
+			}
+			
+			String strCollectorNumber = type[2].trim();
+			if (! "".equals(strCollectorNumber)){
+				simpleSpecimen.setCollectorsNumber(strCollectorNumber);
+			}
+			
+			String title = CdmUtils.concat(" ", new String[]{strLocality, strCollector, strCollectorNumber});
+			simpleSpecimen.setTitleCache(title);
+		}
+		return true;
+	}
+	
+	private HashMap<Specimen, TypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
+			SimpleSpecimen simpleSpecimen, 
+			TaxonNameBase taxonName,
+			TaxonXImportConfigurator config){
+		
+		HashMap<Specimen, TypeDesignationStatus> result = new HashMap<Specimen, TypeDesignationStatus>();
+
+		String typeLocFullString = elTypeLoc.getTextTrim();
+		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
+		String[] typeLocStatusList = typeLocFullString.split(";");
+		
+		Specimen originalSpecimen = simpleSpecimen.getSpecimen();
+		
+		
+		for (String typeLocStatus : typeLocStatusList){
+			typeLocStatus = typeLocStatus.trim();
+			int pos = typeLocStatus.indexOf(" ");
+			if (pos == -1){
+				logger.warn("Unknown format: " + typeLocStatus);
+			}else{
+				String statusString = typeLocStatus.substring(0,pos); 
+				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
+				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
+				for(String collectionString : collectionStrings){
+					Specimen specimen;
+					specimen = (Specimen)originalSpecimen.clone();
+					result.put(specimen, status);
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
 	 * Reads the collection_event tag, creates the according data and stores it.
 	 * TODO under work
 	 * @param elNomenclature
@@ -129,6 +232,9 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	 */
 	private boolean doCollectionEvent(TaxonXImportConfigurator config, Element elNomenclature, Namespace nsTaxonx, TaxonBase taxonBase){
 		boolean result = false;
+		if (elNomenclature == null){
+			return false;
+		}
 		Element elCollectionEvent = elNomenclature.getChild("collection_event", nsTaxonx);
 		if (elCollectionEvent == null){
 			return result;

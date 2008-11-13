@@ -36,6 +36,7 @@ public class SimpleSpecimen {
 	private Specimen specimen;
 	private Collection collection;
 	private TaxonNameBase<?, ?> storedUnderName;
+	private String titleCache;
 
 	
 	public static SimpleSpecimen NewInstance(){
@@ -143,6 +144,20 @@ public class SimpleSpecimen {
 	 */
 	public void setSpecimen(Specimen specimen) {
 		this.specimen = specimen;
+	}
+
+	/**
+	 * @return the titleCache
+	 */
+	public String getTitleCache() {
+		return this.specimen.getTitleCache();
+	}
+
+	/**
+	 * @param titleCache the titleCache to set
+	 */
+	public void setTitleCache(String titleCache) {
+		this.specimen.setTitleCache(titleCache);
 	}
 	
 	
