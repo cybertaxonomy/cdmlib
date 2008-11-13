@@ -187,7 +187,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	
 	
 	private boolean loadProgrammaticallyNeededTerms(){
-		List<DefinedTermBase> list = termDao.list(1000, 0);
+		List<DefinedTermBase> list = termDao.list(1000000, 0);
 		logger.info("Size:" + list.size());
 		for (DefinedTermBase defTerm : list){
 			saveOrUpdate(defTerm);
