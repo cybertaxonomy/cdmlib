@@ -192,7 +192,10 @@ public class Distribution extends DescriptionElementBase {
 		
 		//bbox, width, hight
 		if (bbox == null){
-			bbox ="bbox=-180,-90,180,90";  //earth is default
+			// FIXME uncommented this as it can not be desirable to have default values in this method
+			// we need a parameterString that consists of essential parameters only 
+			// defaults should be implemented in the geoservice itself.
+			//bbox ="bbox=-180,-90,180,90";  //earth is default
 		}else{
 			bbox = "bbox=" + bbox;
 		}
