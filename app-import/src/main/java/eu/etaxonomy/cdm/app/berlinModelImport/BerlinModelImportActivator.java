@@ -15,10 +15,10 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -38,11 +38,11 @@ public class BerlinModelImportActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
-
+	
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
 	
@@ -56,15 +56,15 @@ public class BerlinModelImportActivator {
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
-	static final boolean doNameStatus = false;
-	static final boolean doTypes = false;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = true;
 	static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = true;
 	
 	/**
 	 * @param args

@@ -45,7 +45,7 @@ public class SalvadorActivator {
 	static final int sourceSecId = 7331;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{5,10,11,12}; 
+	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -80,7 +80,7 @@ public class SalvadorActivator {
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = true;
+//	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
@@ -89,7 +89,7 @@ public class SalvadorActivator {
 //	//taxa
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
 	
 	

@@ -56,6 +56,8 @@ public class DipteraActivator {
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN();
 
+	
+	
 	//ignore null
 	static final boolean ignoreNull = true;
 	
@@ -90,7 +92,7 @@ public class DipteraActivator {
 //	//taxa
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
 	
 	

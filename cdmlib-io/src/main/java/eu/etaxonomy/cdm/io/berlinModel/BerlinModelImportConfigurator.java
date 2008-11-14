@@ -36,8 +36,10 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
 	
+	// NameFact stuff
 	private URL mediaUrl;
 	private File mediaPath;
+	private int maximumNumberOfNameFacts;
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -155,6 +157,22 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 		} catch (MalformedURLException e) {
 			logger.error("Could not set mediaUrl because it was malformed: " + mediaUrlString);
 		}
+	}
+
+	/**
+	 * @return the maximumNumberOfNameFacts
+	 */
+	public int getMaximumNumberOfNameFacts() {
+		return maximumNumberOfNameFacts;
+	}
+
+	/**
+	 * set to 0 for unlimited
+	 * 
+	 * @param maximumNumberOfNameFacts the maximumNumberOfNameFacts to set
+	 */
+	public void setMaximumNumberOfNameFacts(int maximumNumberOfNameFacts) {
+		this.maximumNumberOfNameFacts = maximumNumberOfNameFacts;
 	}
 	
 }

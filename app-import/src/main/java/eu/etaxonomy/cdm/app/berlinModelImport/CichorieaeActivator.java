@@ -56,9 +56,11 @@ public class CichorieaeActivator {
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
-	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
+	static final File mediaPath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
+	//static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
+	static final int maximumNumberOfNameFacts = 0;
+	
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -69,50 +71,50 @@ public class CichorieaeActivator {
 	//ignore null
 	static final boolean ignoreNull = true;
 
-//  **************** ALL *********************	
 
-	//authors
-	static final boolean doAuthors = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
-	static final boolean doNameStatus = true;
-	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
-	
-	//taxa
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
-
-	
-// **************** SELECTED *********************
-
+// **************** ALL *********************	
 //	//authors
 //	static final boolean doAuthors = true;
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 //	//names
-//	static final boolean doTaxonNames = false;
-//	static final boolean doRelNames = false;
-//	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
-//	static final boolean doNameFacts = false;
+//	static final boolean doTaxonNames = true;
+//	static final boolean doRelNames = true;
+//	static final boolean doNameStatus = true;
+//	static final boolean doTypes = true;
+//	static final boolean doNameFacts = true;
 //	
 //	//taxa
-//	static final boolean doTaxa = false;
-//	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = true;
+//	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
+
+	
+// **************** SELECTED *********************
+
+	//authors
+	static final boolean doAuthors = false;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	//names
+	static final boolean doTaxonNames = false;
+	static final boolean doRelNames = false;
+	static final boolean doNameStatus = false;
+	static final boolean doTypes = false;
+	static final boolean doNameFacts = true;
+	
+	//taxa 
+	static final boolean doTaxa = false;
+	static final boolean doRelTaxa = false;
+	static final boolean doFacts = false;
+	static final boolean doOccurences = false;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
@@ -147,6 +149,9 @@ public class CichorieaeActivator {
 		}else{
 			logger.warn("Could not configure mediaResourceLocations");
 		}
+		
+		// maximum number of name facts to import
+		bmImportConfigurator.setMaximumNumberOfNameFacts(maximumNumberOfNameFacts);
 		
 		
 		bmImportConfigurator.setCheck(check);

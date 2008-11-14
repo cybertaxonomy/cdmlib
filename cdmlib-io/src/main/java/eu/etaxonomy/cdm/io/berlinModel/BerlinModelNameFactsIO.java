@@ -46,8 +46,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
 
+	/**
+	 * write info message after modCount iterations
+	 */
 	private int modCount = 50;
-	private int maxCount = 200000;
+
 	
 	public BerlinModelNameFactsIO(){
 		super();
@@ -95,7 +98,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 
 			int i = 0;
 			//for each reference
-			while (rs.next() && i < maxCount){
+			while (rs.next() && (bmiConfig.getMaximumNumberOfNameFacts() == 0 || i < bmiConfig.getMaximumNumberOfNameFacts())){
 				
 				if ((i++ % modCount) == 0  && i!= 1 ){ logger.info("NameFacts handled: " + (i-1));}
 				
@@ -161,7 +164,9 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				}
 				//put
 			}
-			if (i >= maxCount - 1){ logger.warn("ONLY " + maxCount + " NAMEFACTS imported !!!" );};
+			if (bmiConfig.getMaximumNumberOfNameFacts() != 0 && i >= bmiConfig.getMaximumNumberOfNameFacts() - 1){ 
+				logger.warn("ONLY " + bmiConfig.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
+			;};
 			logger.info("Names to save: " + taxonNameStore.size());
 			nameService.saveTaxonNameAll(taxonNameStore);	
 			
@@ -296,5 +301,4 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 			e.printStackTrace();
 		}		
 	}
-
 }

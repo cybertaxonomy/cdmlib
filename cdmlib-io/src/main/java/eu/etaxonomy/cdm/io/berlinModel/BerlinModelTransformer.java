@@ -111,8 +111,8 @@ public final class BerlinModelTransformer {
 	public static int FACT_ILLUSTRATION = 7;
 	public static int FACT_IDENTIFICATION = 8;
 	public static int FACT_OBSERVATION = 9;
-	public static int FACT_DISTIRBUTION_EM = 10;
-	public static int FACT_DISTIRBUTION_WORLD = 11;
+	public static int FACT_DISTRIBUTION_EM = 10;
+	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
 	//TypeDesignation
 	public static TypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{

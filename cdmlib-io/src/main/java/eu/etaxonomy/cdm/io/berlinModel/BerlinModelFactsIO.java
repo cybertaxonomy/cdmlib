@@ -4,7 +4,7 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DESCRIPTION;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DISTIRBUTION_EM;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DISTRIBUTION_EM;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_OBSERVATION;
 
 import java.sql.ResultSet;
@@ -93,7 +93,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				try {
 					feature = BerlinModelTransformer.factCategory2Feature(factCategoryId);
 				} catch (UnknownCdmTypeException e) {
-					logger.warn("New Feature");
+					logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
 					feature = Feature.NewInstance(factCategory, factCategory, null);
 					feature.setSupportsTextData(true);
 					//TODO
@@ -224,7 +224,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 						//;
 					}else if (categoryFk == FACT_OBSERVATION){
 						//;
-					}else if (categoryFk == FACT_DISTIRBUTION_EM){
+					}else if (categoryFk == FACT_DISTRIBUTION_EM){
 						//
 					}else {
 						//TODO
@@ -246,6 +246,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				}
 				//put
 			}
+			logger.info("Facts handled: " + (i-1));
 			logger.info("Taxa to save: " + taxonStore.size());
 			taxonService.saveTaxonAll(taxonStore);	
 			
