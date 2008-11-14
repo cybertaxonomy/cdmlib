@@ -175,6 +175,11 @@
 			<id>EditRepository</id>
 			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
 		</repository>
+        <!-- apache incubating repository -->
+		<repository>
+			<id>ApacheIncubating</id>
+			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
+		</repository>
 
 	</repositories>
 
@@ -567,6 +572,11 @@
 				<artifactId>poi</artifactId>
 				<version>3.1-FINAL</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.sanselan</groupId>
+				<artifactId>sanselan</artifactId>
+				<version>0.94-incubator</version>
+			</dependency
 			
 		    <!-- joda-time -->
 			<dependency>
