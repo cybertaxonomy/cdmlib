@@ -167,4 +167,12 @@ public class ImportWrapper {
 		this.importClass = importClass;
 	}
 	
+//******* TEST **************************************//
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		ImportWrapper.list().get(1).invoke("", null, UUID.randomUUID());
+	}
+	
 }
