@@ -576,7 +576,7 @@
 				<groupId>org.apache.sanselan</groupId>
 				<artifactId>sanselan</artifactId>
 				<version>0.94-incubator</version>
-			</dependency
+			</dependency>
 			
 		    <!-- joda-time -->
 			<dependency>
