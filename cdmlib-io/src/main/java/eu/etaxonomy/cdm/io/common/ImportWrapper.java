@@ -93,7 +93,7 @@ public class ImportWrapper {
 	public boolean invoke(Object source, ICdmDataSource destination, UUID secUUID){
 		try {
 			Method methodInvoke = importClass.getDeclaredMethod("invoke", IImportConfigurator.class);
-			Method methodSetSource = configuration.getClass().getDeclaredMethod("setSource", Object.class);
+			Method methodSetSource = configuration.getClass().getMethod("setSource", String.class);
 			methodSetSource.setAccessible(true);
 			
 			this.configuration.setDestination(destination);
@@ -102,7 +102,7 @@ public class ImportWrapper {
 			if (this.importClass == null){
 				return false;
 			}else{
-				return (Boolean)methodInvoke.invoke(importClass, configuration);
+				return (Boolean)methodInvoke.invoke(importClass.newInstance(), configuration);
 			}
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -114,9 +114,14 @@ public class ImportWrapper {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
+	
+	
+	
 	
 // ***************  GETTER / SETTER *******************************************/	
 	
