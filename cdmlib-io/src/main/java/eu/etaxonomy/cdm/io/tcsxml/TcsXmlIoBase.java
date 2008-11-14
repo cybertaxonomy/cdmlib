@@ -137,17 +137,31 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 		return root;
 	}
 	
-	static public boolean checkFirstTwoFunctionElements(List<Object> objList){
-		if (! (objList.get(0) instanceof TcsXmlImportConfigurator)){
-			logger.error("first method object has wrong type. Must be " + TcsXmlImportConfigurator.class.getSimpleName() + " but is " + (objList.get(0) == null ? "null": objList.get(0).getClass().getSimpleName()));
-			return false;
+//	static public boolean checkFirstTwoFunctionElements(List<Object> objList){
+//		if (! (objList.get(0) instanceof TcsXmlImportConfigurator)){
+//			logger.error("first method object has wrong type. Must be " + TcsXmlImportConfigurator.class.getSimpleName() + " but is " + (objList.get(0) == null ? "null": objList.get(0).getClass().getSimpleName()));
+//			return false;
+//		}
+//		if (! (objList.get(1) == null) && ! (objList.get(1) instanceof Element)){
+//			logger.error("first method object has wrong type. Must be " + Element.class.getSimpleName() + " but is " + (objList.get(1) == null ? "null": objList.get(1).getClass().getSimpleName()));
+//			return false;
+//		}
+//		return true;
+//	}
+	
+	
+	protected boolean testAdditionalElements(Element parentElement, List<String> excludeList){
+		boolean result = true;
+		List<Element> list = parentElement.getChildren();
+		for (Element element : list){
+			if (! excludeList.contains(element.getName())){
+				logger.warn("Unknown element (" + element.getName() + ") in parent element (" + parentElement.getName() + ")");
+				result = false;
+			}
 		}
-		if (! (objList.get(1) == null) && ! (objList.get(1) instanceof Element)){
-			logger.error("first method object has wrong type. Must be " + Element.class.getSimpleName() + " but is " + (objList.get(1) == null ? "null": objList.get(1).getClass().getSimpleName()));
-			return false;
-		}
-		return true;
+		return result;
 	}
+
 
 
 }

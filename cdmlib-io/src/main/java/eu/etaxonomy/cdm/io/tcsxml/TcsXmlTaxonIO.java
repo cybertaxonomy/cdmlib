@@ -16,15 +16,18 @@ import org.jdom.Namespace;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import sun.org.mozilla.javascript.internal.IdScriptableObject;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -33,11 +36,13 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 
 /**
@@ -67,102 +72,116 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
+		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		
-		String xmlElementName;
-		String xmlAttributeName;
-		Namespace elementNamespace;
-		Namespace attributeNamespace;
-		
-		logger.info("start makeTaxa ...");
-		
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
-		boolean success =true;
-		
-		Namespace rdfNamespace = null;//tcsConfig.getRdfNamespace();
-		
-		String idNamespace = "TaxonConcept";
-		xmlElementName = "TaxonConcept";
-		elementNamespace = null;//tcsConfig.getTcNamespace();
-		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
-
 		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+
+		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
+		String childName;
+		boolean obligatory;
+		String idNamespace = "TaxonConcept";
+
+		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
+		Element elDataSet = getDataSetElement(tcsConfig);
+		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		
+		childName = "TaxonConcepts";
+		obligatory = false;
+		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+		
+		String tcsElementName = "TaxonConcept";
+		List<Element> elTaxonConceptList = elTaxonConcepts.getChildren(tcsElementName, tcsNamespace);
 		
 		int i = 0;
+		
+		
+		
 		//for each taxonConcept
-		for (Element elTaxonConcept : elTaxonConcepts){
+		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
+			List<String> elementList = new ArrayList<String>();
 			
-			//
-			String taxonAbout = elTaxonConcept.getAttributeValue("about", rdfNamespace);
+			//create TaxonName element
+			String strId = elTaxonConcept.getAttributeValue("id");
+			//TODO
+			String strConceptType = elTaxonConcept.getAttributeValue("type"); //original, revision, incomplete, aggregate, nominal
+			String strPrimary = elTaxonConcept.getAttributeValue("primary"); //If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept.
+			String strForm = elTaxonConcept.getAttributeValue("form");  //anamorph, teleomorph, hybrid
 			
-			//hasName
-			xmlElementName = "hasName";
-			elementNamespace = null;//tcsConfig.getTcNamespace();
-			xmlAttributeName = "resource";
-			attributeNamespace = rdfNamespace;
-			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-			TaxonNameBase taxonNameBase = taxonNameMap.get(strNameResource);
-				
-			//accordingTo
-			xmlElementName = "accordingTo";
-			elementNamespace = null;//tcsConfig.getTcNamespace();
-			xmlAttributeName = "resource";
-			attributeNamespace = rdfNamespace;
-			//String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
-			String strAccordingTo = XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
+			childName = "Name";
+			obligatory = true;
+			Element elName = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			TaxonNameBase<?,?> taxonName = makeName(elName, success);
+			elementList.add(childName.toString());
 			
+			childName = "Rank";
+			obligatory = false;
+			Element elRank = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Rank rank = TcsXmlTaxonNameIO.makeRank(elRank);
+			elementList.add(childName.toString());
 			
-//			//FIXME
-//			String secId = "pub_999999";
-			ReferenceBase sec = referenceMap.get(strAccordingTo);
-			if (sec == null){
-				sec = nomRefMap.get(strAccordingTo);
-			}
-			if (sec == null){
-				logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
-			}
-			
-			//FIXME or synonym
-			TaxonBase taxonBase;
-			Namespace geoNamespace = null;//tcsConfig.getGeoNamespace();
-			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
-				//Synonym
-				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
-				List<DescriptionElementBase> geo = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
-				if (geo.size() > 0){
-					logger.warn("Synonym (" + taxonAbout + ") has geo description!");
-				}
-			}else{
-				//Taxon
-				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
-				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
-				TaxonDescription description = TaxonDescription.NewInstance(taxon);
-				for (DescriptionElementBase geo: geoList){
-					description.addElement(geo);
-				}
-				taxon.addDescription(description);
-				taxonBase = taxon;
-			}
-			
-			Set<String> omitAttributes = null;
-			//makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
+			childName = "AccordingTo";
+			obligatory = false;
+			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
+			elementList.add(childName.toString());
+	
+			//TODO TaxonBase type
+			TaxonBase taxonBase = Taxon.NewInstance(taxonName, sec);
+		
+			childName = "TaxonRelationships";
+			obligatory = false;
+			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			makeTaxonRelationships(taxonBase, elTaxonRelationships, success);
+			elementList.add(childName.toString());
 
-			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonAbout, idNamespace);
-			//checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
+			childName = "SpecimenCircumscription";
+			obligatory = false;
+			Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			makeSpecimenCircumscription(taxonBase, elSpecimenCircumscription, success);
+			elementList.add(childName.toString());
+
+			childName = "CharacterCircumscription";
+			obligatory = false;
+			Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			makeCharacterCircumscription(taxonBase, elCharacterCircumscription, success);
+			elementList.add(childName.toString());
+
 			
-			taxonMap.put(taxonAbout, taxonBase);
+			childName = "ProviderLink";
+			obligatory = false;
+			Element elProviderLink = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			makeProviderLink(taxonBase, elProviderLink, success);
+			elementList.add(childName.toString());
+			
+			childName = "ProviderSpecificData";
+			obligatory = false;
+			Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			makeProviderSpecificData(taxonBase, elProviderSpecificData, success);
+			elementList.add(childName.toString());
+
+//			//FIXME or synonym
+//			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
+//				//Synonym
+//				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
+//			}else{
+//				//Taxon
+//				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
+//				taxonBase = taxon;
+//			}
+			
+			testAdditionalElements(elTaxonConcept, elementList);
+			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
+			taxonMap.put(strId, taxonBase);
 			
 		}
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-		logger.info("saving taxa ...");
+		logger.info(i + " taxa handled. Saving ...");
 		taxonService.saveTaxonAll(taxonMap.objects());
 		logger.info("end makeTaxa ...");
-		return success;
+		return success.getValue();
 	}
 	
 	
@@ -186,28 +205,82 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 		return result;
 	}
 	
-	private List<DescriptionElementBase> makeGeo(Element elConcept, Namespace geoNamespace, Namespace rdfNamespace){
-		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
-		String xmlElementName = "code";
-		List<Element> elGeos = elConcept.getChildren(xmlElementName, geoNamespace);
-
-		int i = 0;
-		//for each geoTag
-		for (Element elGeo : elGeos){
-			//if ((i++ % modCount) == 0){ logger.info("Geocodes handled: " + (i-1));}
-			
-			String strGeoRegion = elGeo.getAttributeValue("resource", rdfNamespace);
-			strGeoRegion = strGeoRegion.replace("http://rs.tdwg.org/ontology/voc/GeographicRegion#", "");
-			NamedArea namedArea = TdwgArea.getAreaByTdwgLabel(strGeoRegion);
-			PresenceAbsenceTermBase status = PresenceTerm.PRESENT();
-			DescriptionElementBase distribution = Distribution.NewInstance(namedArea, status);
-			distribution.setFeature(Feature.DISTRIBUTION());
-			//System.out.println(namedArea);
-			
-			result.add(distribution);
+	
+	/**
+	 * @param elTaxonRelationships
+	 * @param success
+	 */
+	private TaxonNameBase<?, ?> makeName(Element elName, ResultWrapper<Boolean> success){
+		if (elName != null){
+			logger.warn("makeName not yet implemented");
+			success.setValue(false);
 		}
-		return result;
+		return null;
 	}
+	
+	
+	/**
+	 * @param elTaxonRelationships
+	 * @param success
+	 */
+	private void makeTaxonRelationships(TaxonBase name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
+		if (elTaxonRelationships != null){
+			logger.warn("makeTaxonRelationships not yet implemented");
+			success.setValue(false);
+		}
+	}
+	
+	
+	
+	
+	private ReferenceBase makeAccordingTo(Element elAccordingTo, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
+		if (elAccordingTo != null){
+			logger.warn("makeAccordingTo not yet implemented");
+			success.setValue(false);
+		}
+		return null;
+		
+		//		//FIXME
+//		String secId = "pub_999999";
+//		ReferenceBase sec = referenceMap.get(strAccordingTo);
+//		
+//		if (sec == null){
+//			logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
+//		}
+	}
+	
+	
+	private void makeSpecimenCircumscription(TaxonBase name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
+		if (elSpecimenCircumscription != null){
+			logger.warn("makeProviderLink not yet implemented");
+			success.setValue(false);
+		}
+	}
+	
+	
+	private void makeCharacterCircumscription(TaxonBase name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
+		if (elCharacterCircumscription != null){
+			logger.warn("makeProviderLink not yet implemented");
+			success.setValue(false);
+		}
+	}
+	
+	private void makeProviderLink(TaxonBase name, Element elProviderLink, ResultWrapper<Boolean> success){
+		if (elProviderLink != null){
+			logger.warn("makeProviderLink not yet implemented");
+			success.setValue(false);
+		}
+	}
+	
+
+	private void makeProviderSpecificData(TaxonBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+		if (elProviderSpecificData != null){
+			logger.warn("makeProviderLink not yet implemented");
+			success.setValue(false);
+		}
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

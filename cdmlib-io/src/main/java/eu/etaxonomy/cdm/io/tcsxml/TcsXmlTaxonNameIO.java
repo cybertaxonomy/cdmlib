@@ -9,7 +9,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -160,17 +159,8 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 				makeProviderSpecificData(nameBase, elProviderSpecificData, success);
 				elementList.add(childName.toString());
 				
-				//TODO relations 
-				
-				testAdditionalElements(elTaxonName, elementList);
 				
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
-				//checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
-				
-				//nameId
-				//TODO
-				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
-				
 				
 				taxonNameMap.put(strId, nameBase);
 				
@@ -181,7 +171,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 		}
 		logger.info(i + " names handled");
 		nameService.saveTaxonNameAll(taxonNameMap.objects());
-//		makeNameSpecificData(nameMap);
+
 		logger.info("end makeTaxonNames ...");
 		return success.getValue();
 
@@ -197,12 +187,11 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 	 * @param elRank tcs rank element
 	 * @return 
 	 */
-	private Rank makeRank(Element elRank){
+	protected static Rank makeRank(Element elRank){
 		Rank result;
 		if (elRank == null){
 			return null;
 		}
-		Namespace ns = elRank.getNamespace();
 		String strRankCode = elRank.getAttributeValue("code");
 		String strRankString = elRank.getTextNormalize();
 		if (strRankCode == null || "".equals(strRankCode.trim()) &&
@@ -513,18 +502,6 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 		logger.warn("Not yet implemented");
 		success.setValue(false);
 		
-	}
-	
-	private boolean testAdditionalElements(Element parentElement, List<String> excludeList){
-		boolean result = true;
-		List<Element> list = parentElement.getChildren();
-		for (Element element : list){
-			if (! excludeList.contains(element.getName())){
-				logger.warn("Unknown element (" + element.getName() + ") in parent element (" + parentElement.getName() + ")");
-				result = false;
-			}
-		}
-		return result;
 	}
 
 }
