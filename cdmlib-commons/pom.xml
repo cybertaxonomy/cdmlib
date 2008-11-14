@@ -38,6 +38,11 @@
     <version>1.7</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.apache.sanselan</groupId>
+      <artifactId>sanselan</artifactId>
+    </dependency>
+    
 
   </dependencies>
 </project>

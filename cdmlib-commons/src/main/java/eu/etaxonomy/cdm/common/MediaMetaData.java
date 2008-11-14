@@ -1,26 +1,43 @@
 
 package eu.etaxonomy.cdm.common;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
-
-import javax.imageio.ImageIO;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.log4j.Logger;
-import org.devlib.schmidt.imageinfo.ImageInfo;
+import org.apache.sanselan.ImageFormat;
+import org.apache.sanselan.ImageInfo;
+import org.apache.sanselan.ImageReadException;
+import org.apache.sanselan.Sanselan;
 
+/**
+ * 
+ * @author n.hoffmann
+ * @created 13.11.2008
+ * @version 1.0
+ */
 public class MediaMetaData {
 	private static Logger logger = Logger.getLogger(MediaMetaData.class);
 	
+	/**
+	 * 
+	 * 
+	 * @author n.hoffmann
+	 * @created 13.11.2008
+	 * @version 1.0
+	 */
 	public static class ImageMetaData{
 		
 		public ImageMetaData(){};
 		
-		int width, height, bitPerPixel;
-		String formatName, mimeType;
+		private int width, height, bitPerPixel;
+		private String formatName, mimeType;
+		
+		
 		
 		public int getWidth() {
 			return width;
@@ -70,62 +87,58 @@ public class MediaMetaData {
 		public boolean readFrom(File imageFile){
 			return readImageMetaData(imageFile, this) != null;
 		}
+		
+		public boolean readFrom(URL imageUrl){
+			return readImageMetaData(imageUrl, this) != null;
+		}
+	}
+	
+	private static ImageMetaData readImageInfo(ImageInfo imageInfo, ImageMetaData imageMetaData) {
+		
+		//ImageFormat imageFormat = imageInfo.getFormat();
+		
+		imageMetaData.width = imageInfo.getWidth();
+		imageMetaData.height = imageInfo.getHeight();
+		imageMetaData.mimeType = imageInfo.getMimeType();
+		imageMetaData.formatName = imageInfo.getFormatName();
+		imageMetaData.bitPerPixel = imageInfo.getBitsPerPixel();
+		
+		return imageMetaData;
 	}
 	
 	public static ImageMetaData readImageMetaData(File imageFile, ImageMetaData imageMetaData){
-    	FileInputStream in = null;
-        try {
-            ImageInfo ii = new ImageInfo();
-            in = new FileInputStream(imageFile);
-            ii.setInput(in);
-            if (!ii.check()) {
-                // ImageInfo can not handle TIFF, ...
-                // use Java AWT/ImageIO installation of the
-//            	
-//            	FIXME
-//            	the above comment got truncated so i am posting 
-//            	what I found out. Tiff-Images can only be read if an 
-//            	extension to ImageIO is installed. The Extension comes as 
-//            	JAI-IMAGEIO, which is part the JavaAdvancedImage-API and also 
-//            	platform dependant. Maybe include the in our own maven repo
-//            	https://jai-imageio.dev.java.net/binary-builds.html
-//            	linux version comes with jar files which are platform independant 
-//            	but you loose native acceleration
-//            	
-            	
-                ii = null;
-    			BufferedImage bImage = ImageIO.read(imageFile);
-            	if(bImage == null){
-            		in.close();
-            		throw new IOException(" No ImageReader for image type. Is jai-imageio installed?");
-            	}
-            	imageMetaData.width = bImage.getWidth();
-            	imageMetaData.height = bImage.getHeight();
-            	imageMetaData.bitPerPixel = bImage.getColorModel().getPixelSize();
-            	imageMetaData.mimeType = "?";
-            	imageMetaData.formatName = String.valueOf(bImage.getType());
-            	
-            } else {
-                // ImageInfo can analyze:
-                // JPEG, PNG, GIF, BMP, PCX, IFF, RAS, PBM, PGM,
-                // PPM
-                // and PSD
-            	imageMetaData.formatName = ii.getFormatName();
-            	
-            	
-            	imageMetaData.mimeType = ii.getMimeType();
-            	imageMetaData.width = ii.getWidth();
-            	imageMetaData.height = ii.getHeight();
-            	imageMetaData.bitPerPixel = ii.getBitsPerPixel();
-            }
-            in.close();
-            logger.debug("File: " + imageFile.getPath() + " \n"+imageMetaData);
-            return imageMetaData;
+		try{
+			ImageInfo imageInfo = Sanselan.getImageInfo(imageFile);
+			return readImageInfo(imageInfo, imageMetaData);
+		} catch (ImageReadException e) {
+			logger.error("Could not read image information for image file: " + imageFile + ". " + e.getMessage());
+		} catch (IOException e) {
+			logger.error("Could not open file: " + imageFile + ". " + e.getMessage());
+		}
+		
+		return null;
+	}
+	
 
-        } catch (IOException e) {
-        	try {if(in != null) in.close();} catch (IOException e1) {/* IGNORE */}
-            logger.warn("Could not read "+ imageFile.getPath() + "; reason:"+e.getMessage());
-        }
-        return null;
+	public static ImageMetaData readImageMetaData(URL imageUrl, ImageMetaData imageMetaData){
+		InputStream inputStream = null;
+		try {
+			
+			URLConnection connection = imageUrl.openConnection();
+			
+			inputStream = connection.getInputStream();
+			
+			ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
+			
+			return readImageInfo(imageInfo, imageMetaData);
+			
+		} catch (IOException e) {
+			try {if(inputStream != null) inputStream.close();} catch (IOException e1) {/* IGNORE */}
+			logger.warn("Could not read: "+ imageUrl.getPath() + "; reason:"+e.getMessage());
+		} catch (ImageReadException e) {
+			logger.error("Could not open url: " + imageUrl + ". " + e.getMessage());
+		}
+		
+		return null;		
 	}
 }

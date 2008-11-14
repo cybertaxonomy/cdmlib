@@ -221,10 +221,12 @@ cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/site/site.xml -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
+cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/MediaMetaDataTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-commons/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-io/LICENSE.TXT -text
 cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text
