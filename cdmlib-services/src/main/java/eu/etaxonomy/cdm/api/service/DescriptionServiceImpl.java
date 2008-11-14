@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -32,9 +31,6 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
@@ -182,8 +178,8 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getEditGeoServiceUrlParameterString(java.util.Set, java.lang.String)
 	 */
-	public String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox) {
-		return Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, width, height, bbox);
+	public String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer) {
+		return Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer);
 }
 	
 }

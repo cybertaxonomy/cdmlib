@@ -56,5 +56,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 	
-	public abstract String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox);
+	public abstract String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer);
 }
