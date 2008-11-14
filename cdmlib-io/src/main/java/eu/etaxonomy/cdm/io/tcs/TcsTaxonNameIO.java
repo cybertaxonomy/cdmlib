@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.io.tcs;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +9,6 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -144,10 +142,8 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO {
 					if (value != null){
 						try {
 							year = Integer.valueOf(value);
-							Calendar cal = Calendar.getInstance();
-							//FIXME
-							cal.set(year, 1, 1);
-							nomRef.setDatePublished(TimePeriod.NewInstance(cal));
+							TimePeriod timeP = TimePeriod.NewInstance(year);
+							nomRef.setDatePublished(timeP);
 						} catch (RuntimeException e) {
 							logger.warn("year could not be parsed");
 						}
