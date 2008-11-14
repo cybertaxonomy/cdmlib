@@ -8,13 +8,10 @@
 */
 package eu.etaxonomy.cdm.remote.dto;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 
 /**
@@ -34,7 +31,7 @@ public class FeatureTO extends BaseTO{
 	/**
 	 * HACK url to webservice in case this is a distribution feature 
 	 */
-	private String url;
+	private HashMap<String, Object> externalResources = new HashMap<String, Object>();
 
 	/**
 	 * @return the descriptionElements
@@ -95,18 +92,21 @@ public class FeatureTO extends BaseTO{
 	}
 
 	/**
-	 * @return the url
+	 * @return the externalResources
 	 */
-	public String getUrl() {
-		return url;
+	public HashMap<String, Object> getExternalResources() {
+		return externalResources;
 	}
 
 	/**
-	 * @param url the url to set
+	 * @param externalResources the externalResources to set
 	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+	public void setExternalResources(HashMap<String, Object> externalResources) {
+		this.externalResources = externalResources;
+	}	
 	
+	public void addExternalResource(String label, Object resource){
+		this.externalResources.put(label, resource);
+	}
 
 }

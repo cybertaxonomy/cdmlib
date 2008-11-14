@@ -192,16 +192,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				featureTO.setUuid(node.getFeature().getUuid().toString());
 				
 
-				// TODO SUPEREVIL HACK for ultraquick display of distributions in the dataportal.
-				// In my opinion the generation of the webservice URL should not reside
-				// in the cdmlib, because this is not loose coupling anymore. 
-				// the client should consider what should happen with the distribution data it
-				// retrieves from the model. n.hoffmann 
+				// KLUDGE can this be handled more generic?  
 				if(featureTO.getFeature().getTerm().equals("Distribution")){
-					
-					Distribution distribution = Distribution.NewInstance();
-					
-					String webServiceUrl = "http://edit.csic.es/fitxers/EDIT_2.php";
 					
 					Set<Distribution> distributionSet = new HashSet<Distribution>();
 					for (DescriptionElementBase des : description.getElements()){
@@ -217,7 +209,8 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 						Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 						presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
 						presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
-						featureTO.setUrl(distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 780, 390, null, null));
+						featureTO.addExternalResource("geoServiceParameters", Distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 0, 0, null, null));
+
 					}catch(Exception e){
 						// pass
 					}
