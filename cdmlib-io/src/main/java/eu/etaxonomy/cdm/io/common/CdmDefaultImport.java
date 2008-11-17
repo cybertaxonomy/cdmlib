@@ -114,6 +114,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
+		// TODO: For Jaxb import, provide the opportunity to omit term loading
 		cdmApp = config.getCdmAppController();
 //		try {
 			//cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());

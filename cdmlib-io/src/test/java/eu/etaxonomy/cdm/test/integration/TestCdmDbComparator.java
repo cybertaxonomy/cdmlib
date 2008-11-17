@@ -72,8 +72,8 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
  */
 public class TestCdmDbComparator {
 	
-	private static final String sourceDbOne = "cdm_test_jaxb";
-	private static final String sourceDbTwo = "cdm_test_jaxb2";
+	private static final String sourceDbOne = "cdm_test_anahit";
+	private static final String sourceDbTwo = "cdm_test_anahit2";
 	
 	private static final ICdmDataSource sourceOne = TestCdmDbComparator.CDM_DB(sourceDbOne);
 	private static final ICdmDataSource sourceTwo = TestCdmDbComparator.CDM_DB(sourceDbTwo);

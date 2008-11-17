@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 
+// TODO: public interface ICdmIO<T extends IIoConfigurator> {
 public interface ICdmIO<T extends IImportConfigurator> {
 
 	

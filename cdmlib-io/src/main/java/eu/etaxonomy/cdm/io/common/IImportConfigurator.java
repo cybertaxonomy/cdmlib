@@ -10,7 +10,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public interface IImportConfigurator {
+public interface IImportConfigurator extends IIoConfigurator {
 
 	public static enum CHECK{
 		CHECK_ONLY,
@@ -170,4 +170,28 @@ public interface IImportConfigurator {
 	public UUID getSecUuid();
 	public void setSecUuid(UUID secUuid);
 	
+	/* 
+	 * For Jaxb Import
+	 */
+//	public boolean isDoTerms();
+//	public void setDoTerms(boolean doTerms);
+//	
+//	public boolean isDoTermVocabularies();
+//	public void setDoTermVocabularies(boolean doTermVocabularies);
+//	
+//	public boolean isDoHomotypicalGroups();
+//	public void setDoHomotypicalGroups(boolean doHomotypicalGroups);
+//	
+//	public boolean isDoReferencedEntities();
+//	public void setDoReferencedEntities(boolean doReferencedEntities);
+//	
+//	public boolean isDoFeatureData();
+//	public void setDoFeatureData(boolean doFeatureData);
+//	
+//	public boolean isDoMedia();
+//	public void setDoMedia(boolean doMedia);
+//	
+//	public boolean isDoLanguageData();
+//	public void setDoLanguageData(boolean doLanguageData);
+		
 }

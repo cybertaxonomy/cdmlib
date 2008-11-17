@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 20.06.2008
  * @version 1.0
  */
-public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ {
+public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//check
@@ -42,30 +42,40 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	//TODO
 	private boolean deleteAll = false;
 	
-	private boolean doAuthors = true;
-	//references
-	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
-	//names
-	private boolean doTaxonNames = true;
-	private boolean doRelNames = true;
-	private boolean doNameStatus = true;
-	private boolean doTypes = true;
-	private boolean doNameFacts = true;
+//	private boolean doAuthors = true;
+//	//references
+//	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
+//	//names
+//	private boolean doTaxonNames = true;
+//	private boolean doRelNames = true;
+//	private boolean doNameStatus = true;
+//	private boolean doTypes = true;
+//	private boolean doNameFacts = true;
+//	
+//	//taxa
+//	private boolean doTaxa = true;
+//	private boolean doRelTaxa = true;
+//	private boolean doFacts = true;
+//
+//	//occurrence
+//	private boolean doOccurrence = true;
 	
-	//taxa
-	private boolean doTaxa = true;
-	private boolean doRelTaxa = true;
-	private boolean doFacts = true;
-
-	//occurrence
-	private boolean doOccurrence = true;
+	/* For Jaxb import - is defined in JaxbImportConfigurator */
+//	private boolean doTerms = true;
+//	private boolean doTermVocabularies = true;
+//	private boolean doHomotypicalGroups = true;
+//	private boolean doReferencedEntities = true;
+//	private boolean doFeatureData = true;
+//	private boolean doMedia = true;
+//	private boolean doLanguageData = true;
+	/* end for Jaxb import */
 	
 	//nullValues
 	private boolean ignoreNull = false;
 	
 	//Nomenclatural Code
 	private NomenclaturalCode nomenclaturalCode = null;
-	protected Class<ICdmIO>[] ioClassList; 
+//	protected Class<ICdmIO>[] ioClassList; 
 	
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
 	
@@ -79,8 +89,8 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
 	
 	private Language factLanguage = Language.ENGLISH();
-	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	private CdmApplicationController cdmApp = null;
+	protected Class<ICdmIO>[] ioClassList;
 	
 /* *****************CONSTRUCTOR *****************************/
 	
@@ -94,7 +104,7 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/**
 	 * @param source the source to set
 	 */
-	protected void setSource(Object source) {
+	public void setSource(Object source) {
 		this.source = source;
 	}
 	
@@ -102,7 +112,7 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/**
 	 * @param source the source to get
 	 */
-	protected Object getSource() {
+	public Object getSource() {
 		return source;
 	}
 	
@@ -142,28 +152,28 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoAuthors()
 	 */
-	public boolean isDoAuthors() {
-		return doAuthors;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoAuthors(boolean)
-	 */
-	public void setDoAuthors(boolean doAuthors) {
-		this.doAuthors = doAuthors;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getDoReferences()
-	 */
-	public DO_REFERENCES getDoReferences() {
-		return doReferences;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoReferences(eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator.DO_REFERENCES)
-	 */
-	public void setDoReferences(DO_REFERENCES doReferences) {
-		this.doReferences = doReferences;
-	}
+//	public boolean isDoAuthors() {
+//		return doAuthors;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoAuthors(boolean)
+//	 */
+//	public void setDoAuthors(boolean doAuthors) {
+//		this.doAuthors = doAuthors;
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getDoReferences()
+//	 */
+//	public DO_REFERENCES getDoReferences() {
+//		return doReferences;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoReferences(eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator.DO_REFERENCES)
+//	 */
+//	public void setDoReferences(DO_REFERENCES doReferences) {
+//		this.doReferences = doReferences;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getCheck()
@@ -171,6 +181,7 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	public CHECK getCheck() {
 		return this.check;
 	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator.CHECK)
 	 */
@@ -182,111 +193,176 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoTaxonNames()
 	 */
-	public boolean isDoTaxonNames() {
-		return doTaxonNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTaxonNames(boolean)
+//	public boolean isDoTaxonNames() {
+//		return doTaxonNames;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTaxonNames(boolean)
+//	 */
+//	public void setDoTaxonNames(boolean doTaxonNames) {
+//		this.doTaxonNames = doTaxonNames;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoRelNames()
+//	 */
+//	public boolean isDoRelNames() {
+//		return doRelNames;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoRelNames(boolean)
+//	 */
+//	public void setDoRelNames(boolean doRelNames) {
+//		this.doRelNames = doRelNames;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoNameStatus()
+//	 */
+//	public boolean isDoNameStatus() {
+//		return doNameStatus;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoNameStatus(boolean)
+//	 */
+//	public void setDoNameStatus(boolean doNameStatus) {
+//		this.doNameStatus = doNameStatus;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoNameFacts()
+//	 */
+//	public boolean isDoNameFacts() {
+//		return doNameFacts;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoNameFacts(boolean)
+//	 */
+//	public void setDoNameFacts(boolean doNameFacts) {
+//		this.doNameFacts = doNameFacts;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoTypes()
+//	 */
+//	public boolean isDoTypes() {
+//		return doTypes;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTypes(boolean)
+//	 */
+//	public void setDoTypes(boolean doTypes) {
+//		this.doTypes = doTypes;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoTaxa()
+//	 */
+//	public boolean isDoTaxa() {
+//		return doTaxa;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTaxa(boolean)
+//	 */
+//	public void setDoTaxa(boolean doTaxa) {
+//		this.doTaxa = doTaxa;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoRelTaxa()
+//	 */
+//	public boolean isDoRelTaxa() {
+//		return doRelTaxa;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoRelTaxa(boolean)
+//	 */
+//	public void setDoRelTaxa(boolean doRelTaxa) {
+//		this.doRelTaxa = doRelTaxa;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoFacts()
+//	 */
+//	public boolean isDoFacts() {
+//		return doFacts;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoFacts(boolean)
+//	 */
+//	public void setDoFacts(boolean doFacts) {
+//		this.doFacts = doFacts;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoOccurrence()
+//	 */
+//	public boolean isDoOccurrence() {
+//		return doOccurrence;
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoOccurrence(boolean)
+//	 */
+//	public void setDoOccurrence(boolean doOccurrence) {
+//		this.doOccurrence = doOccurrence;
+//	}
+	
+	/* 
+	 * For Jaxb Import
+	 * TODO: Cleanup
 	 */
-	public void setDoTaxonNames(boolean doTaxonNames) {
-		this.doTaxonNames = doTaxonNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoRelNames()
+	
+//	public boolean isDoTerms() {
+//		return doTerms;
+//	}
+//	
+//	public void setDoTerms(boolean doTerms) {
+//		this.doTerms = doTerms;
+//	}
+//	
+//	public boolean isDoTermVocabularies() {
+//		return doTermVocabularies;
+//	}
+//	
+//	public void setDoTermVocabularies(boolean doTermVocabularies) {
+//		this.doTermVocabularies = doTermVocabularies;
+//	}
+//	
+//	public boolean isDoHomotypicalGroups() {
+//		return doHomotypicalGroups;
+//	}
+//	
+//	public void setDoHomotypicalGroups(boolean doHomotypicalGroups) {
+//		this.doHomotypicalGroups = doHomotypicalGroups;		
+//	}
+//	
+//	public boolean isDoReferencedEntities() {
+//		return doReferencedEntities;
+//	}
+//	
+//	public void setDoReferencedEntities(boolean doReferencedEntities) {
+//		this.doReferencedEntities = doReferencedEntities;		
+//	}
+//	
+//	public boolean isDoFeatureData() {
+//		return doFeatureData;
+//	}
+//	
+//	public void setDoFeatureData(boolean doFeatureData) {
+//		this.doFeatureData = doFeatureData;		
+//	}
+//	
+//	public boolean isDoMedia() {
+//		return doMedia;
+//	}
+//	
+//	public void setDoMedia(boolean doMedia) {
+//		this.doMedia = doMedia;		
+//	}
+//	
+//	public boolean isDoLanguageData() {
+//		return doLanguageData;
+//	}
+//	
+//	public void setDoLanguageData(boolean doLanguageData) {
+//		this.doLanguageData = doLanguageData;		
+//	}
+
+	/*
+	 * end for Jaxb import
 	 */
-	public boolean isDoRelNames() {
-		return doRelNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoRelNames(boolean)
-	 */
-	public void setDoRelNames(boolean doRelNames) {
-		this.doRelNames = doRelNames;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoNameStatus()
-	 */
-	public boolean isDoNameStatus() {
-		return doNameStatus;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoNameStatus(boolean)
-	 */
-	public void setDoNameStatus(boolean doNameStatus) {
-		this.doNameStatus = doNameStatus;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoNameFacts()
-	 */
-	public boolean isDoNameFacts() {
-		return doNameFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoNameFacts(boolean)
-	 */
-	public void setDoNameFacts(boolean doNameFacts) {
-		this.doNameFacts = doNameFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoTypes()
-	 */
-	public boolean isDoTypes() {
-		return doTypes;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTypes(boolean)
-	 */
-	public void setDoTypes(boolean doTypes) {
-		this.doTypes = doTypes;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoTaxa()
-	 */
-	public boolean isDoTaxa() {
-		return doTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoTaxa(boolean)
-	 */
-	public void setDoTaxa(boolean doTaxa) {
-		this.doTaxa = doTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoRelTaxa()
-	 */
-	public boolean isDoRelTaxa() {
-		return doRelTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoRelTaxa(boolean)
-	 */
-	public void setDoRelTaxa(boolean doRelTaxa) {
-		this.doRelTaxa = doRelTaxa;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoFacts()
-	 */
-	public boolean isDoFacts() {
-		return doFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoFacts(boolean)
-	 */
-	public void setDoFacts(boolean doFacts) {
-		this.doFacts = doFacts;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoOccurrence()
-	 */
-	public boolean isDoOccurrence() {
-		return doOccurrence;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDoOccurrence(boolean)
-	 */
-	public void setDoOccurrence(boolean doOccurrence) {
-		this.doOccurrence = doOccurrence;
-	}
 	
 	/**
 	 * If true, no errors occurs if objects are not found that should exist. This may
@@ -321,15 +397,15 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getDbSchemaValidation()
 	 */
-	public DbSchemaValidation getDbSchemaValidation() {
-		return dbSchemaValidation;
-	}
+//	public DbSchemaValidation getDbSchemaValidation() {
+//		return dbSchemaValidation;
+//	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDbSchemaValidation(eu.etaxonomy.cdm.database.DbSchemaValidation)
 	 */
-	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
-		this.dbSchemaValidation = dbSchemaValidation;
-	}
+//	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
+//		this.dbSchemaValidation = dbSchemaValidation;
+//	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getSourceReference()
@@ -478,6 +554,28 @@ public abstract class ImportConfiguratorBase /*implements IImportConfigurator*/ 
 		if (cdmApp == null || createNew == true){
 			try {
 				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation());
+			} catch (DataSourceNotFoundException e) {
+				logger.error("could not connect to destination database");
+				return null;
+			}catch (TermNotFoundException e) {
+				logger.error("could not find needed term in destination datasource");
+				return null;
+			}
+		}
+		return cdmApp;
+	}
+	
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
+		if (cdmApp == null || createNew == true){
+			try {
+				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation(), omitTermLoading);
 			} catch (DataSourceNotFoundException e) {
 				logger.error("could not connect to destination database");
 				return null;
