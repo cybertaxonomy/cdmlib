@@ -16,7 +16,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/LIASActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/SDDSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ViolaActivator.java -text
