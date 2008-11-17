@@ -80,7 +80,7 @@ public class EditGeoServiceTest {
 		distributions.add(Distribution.NewInstance(TdwgArea.getAreaByTdwgAbbreviation("IND-AP"), PresenceTerm.PRESENT()));
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 		presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
-		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
+		presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.BLACK);
 		presenceAbsenceColorMap.put(PresenceTerm.CULTIVATED(), Color.YELLOW);
 		presenceAbsenceColorMap.put(AbsenceTerm.ABSENT(), Color.DARK_GRAY);
 		String backLayer ="";

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
@@ -54,7 +55,14 @@ public class EditGeoService {
 	 */
 	//TODO move to an other place -> e.g. service layer
 	@Transient
-	public static String getEditGeoServiceUrlParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer){
+	public static String getEditGeoServiceUrlParameterString(
+			Set<Distribution> distributions, 
+			Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors, 
+			int width, 
+			int height, 
+			String bbox, 
+			String backLayer){
+		
 		String result = "";
 		String layer = ""; 
 		String areaData = "";
@@ -67,7 +75,8 @@ public class EditGeoService {
 
 		
 		if (presenceAbsenceTermColors == null) {
-			presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>(); 
+			//presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+			presenceAbsenceTermColors = makeDefaultColorMap();
 		}
 
 		//List<String> layerStrings = new ArrayList<String>(); 
@@ -183,6 +192,18 @@ public class EditGeoService {
 		return result;
 	}
 	
+	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
+		Map<PresenceAbsenceTermBase<?>,Color> result = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+		result.put(PresenceTerm.NATIVE(), Color.RED);
+		result.put(PresenceTerm.CULTIVATED(), Color.BLUE);
+		result.put(PresenceTerm.INTRODUCED(), Color.GREEN);
+		result.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.YELLOW);
+		result.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.MAGENTA);
+		result.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.ORANGE);
+		result.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.PINK);
+		return result;
+	}
+	
 	
 	private static String getAreaAbbrev(Distribution distribution){
 		NamedArea area = distribution.getArea();
@@ -235,6 +256,8 @@ public class EditGeoService {
 		}
 		distributionSet.add(distribution);
 	}
+	
+	
 	
 	
 	/**
