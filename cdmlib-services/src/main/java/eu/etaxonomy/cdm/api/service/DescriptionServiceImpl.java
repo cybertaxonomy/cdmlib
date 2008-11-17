@@ -175,11 +175,5 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return featureNodeDao.list();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getEditGeoServiceUrlParameterString(java.util.Set, java.lang.String)
-	 */
-	public String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer) {
-		return Distribution.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer);
-	}
 	
 }
