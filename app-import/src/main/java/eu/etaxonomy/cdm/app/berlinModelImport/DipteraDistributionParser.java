@@ -391,7 +391,7 @@ public class DipteraDistributionParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
+		ICdmDataSource cdmDestination = CdmDestinations.localH2();
 		CdmApplicationController app = null;
 		try {
 			DbSchemaValidation val = DbSchemaValidation.UPDATE;
