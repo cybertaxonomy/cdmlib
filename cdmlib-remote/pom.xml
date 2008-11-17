@@ -24,7 +24,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
-			<artifactId>cdmlib-model</artifactId>
+			<artifactId>cdmlib-ext</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.etaxonomy</groupId>
@@ -86,9 +86,9 @@
 
 	<build>
 <!--		<finalName>cdmserver</finalName>-->
-		<finalName>cdmserver-palmae</finalName>
+<!--		<finalName>cdmserver-palmae</finalName>-->
 <!--		<finalName>cdmserver-diptera</finalName>-->
-<!--		<finalName>cdmserver-cichorieae</finalName>-->
+		<finalName>cdmserver-cichorieae</finalName>
 <!--		<finalName>cdmserver-elsalvador</finalName>-->
 <!--		<finalName>cdmserver-erms</finalName>-->
 		<plugins>
@@ -136,9 +136,9 @@
 				<configuration>
 					<!-- Configure the webapp -->
 <!--					<contextPath>/cdmserver/</contextPath>-->
-<!--					<contextPath>/cdmserver-cichorieae/</contextPath>-->
+					<contextPath>/cdmserver-cichorieae/</contextPath>
 <!--					<contextPath>/cdmserver-diptera/</contextPath>-->
-					<contextPath>/cdmserver-palmae/</contextPath>
+<!--					<contextPath>/cdmserver-palmae/</contextPath>-->
 <!--					<contextPath>/cdmserver-elsalvador/</contextPath>-->
 <!--					<contextPath>/cdmserver-erms/</contextPath>-->
 					<!-- configure the container                 -->

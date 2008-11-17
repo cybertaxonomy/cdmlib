@@ -21,15 +21,15 @@
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal_test"/>
         <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
         <property name="url" value="jdbc:h2:C:/Dokumente und Einstellungen/a.mueller/.cdmLibrary/writableResources/h2/LocalH2/CDM"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_cichorieae"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_palmae"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_andreasM2"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_palmae"/>
         <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_diptera"/>        
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_andreasM2"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
         -->
 
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_niels2"/>
+        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_cichorieae"/>
         <property name="username" value="edit"/>
         <property name="password" value="wp5"/>
 

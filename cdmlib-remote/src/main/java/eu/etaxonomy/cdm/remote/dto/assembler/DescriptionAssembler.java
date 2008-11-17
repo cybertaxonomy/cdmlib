@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.ext.EditGeoService;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -206,10 +207,10 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 					try{
 //						featureTO.setUrl(distribution.getWebServiceUrl(distributionSet, webServiceUrl, 780, 390, null));
 						//TODO: fill presenceAbsenceColorMap 
-						Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-						presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
-						presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
-						featureTO.addExternalResource("geoServiceParameters", Distribution.getEditGeoServiceUrlParameterString(distributionSet, presenceAbsenceColorMap, 0, 0, null, null));
+//						Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+//						presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
+//						presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.RED);
+						featureTO.addExternalResource("geoServiceParameters", EditGeoService.getEditGeoServiceUrlParameterString(distributionSet, null, 0, 0, null, null));
 
 					}catch(Exception e){
 						// pass
