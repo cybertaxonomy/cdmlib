@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
