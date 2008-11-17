@@ -4,9 +4,11 @@
 package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -26,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -54,6 +57,53 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 		return result;
 	}
 	
+	/**
+	 * Computes a list of all TaxonConcept ids (ref-attribute) that are related as synonyms
+	 * @param elTaxonConceptList
+	 * @param success
+	 * @return
+	 */
+	private Set<String> makeSynonymIds(List<Element> elTaxonConceptList, ResultWrapper<Boolean> success){
+		//TODO use XPath
+		
+		 Set<String> result =  new HashSet<String>();
+		
+		Namespace tcsNamespace;
+		//for each taxonConcept
+		for (Element elTaxonConcept : elTaxonConceptList){
+			tcsNamespace = elTaxonConcept.getNamespace();
+			
+			String childName = "TaxonRelationships";
+			boolean obligatory = false;
+			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+
+			if (elTaxonRelationships == null){
+				continue;
+			}
+			String tcsElementName = "TaxonRelationship";
+			List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
+			for (Element elTaxonRelationship : elTaxonRelationshipList){
+				
+				String relationshipType = elTaxonRelationship.getAttributeValue("type");
+				if ("has synonym".equalsIgnoreCase(relationshipType)){
+					childName = "ToTaxonConcept";
+					obligatory = true;
+					Element elToTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationship, childName, tcsNamespace, obligatory);
+					
+					String linkType = elToTaxonConcept.getAttributeValue("linkType");
+					if (linkType == null || linkType.equals("local")){
+						String ref = elToTaxonConcept.getAttributeValue("ref");
+						result.add(ref);
+					}else{
+						logger.warn("External link types for synonym not yet implemented");
+					}		
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
@@ -79,9 +129,10 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 		String tcsElementName = "TaxonConcept";
 		List<Element> elTaxonConceptList = elTaxonConcepts.getChildren(tcsElementName, tcsNamespace);
 		
+		Set<String> synonymIdSet = makeSynonymIds(elTaxonConceptList, success);
+		//TODO make the same for the Assertions
+		
 		int i = 0;
-		
-		
 		
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConceptList){
@@ -97,66 +148,61 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			
 			childName = "Name";
 			obligatory = true;
-			Element elName = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elName = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			TaxonNameBase<?,?> taxonName = makeName(elName, success);
 			elementList.add(childName.toString());
 			
+			//TODO how to handle
 			childName = "Rank";
 			obligatory = false;
-			Element elRank = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			Rank rank = TcsXmlTaxonNameIO.makeRank(elRank);
 			elementList.add(childName.toString());
 			
 			childName = "AccordingTo";
 			obligatory = false;
-			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 			elementList.add(childName.toString());
 	
-			//TODO TaxonBase type
-			TaxonBase taxonBase = Taxon.NewInstance(taxonName, sec);
-		
+			TaxonBase taxonBase;
+			if (synonymIdSet.contains(strId)){
+				taxonBase = Synonym.NewInstance(taxonName, sec);
+			}else{
+				taxonBase = Taxon.NewInstance(taxonName, sec);	
+			}
+			
 			childName = "TaxonRelationships";
 			obligatory = false;
-			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			makeTaxonRelationships(taxonBase, elTaxonRelationships, success);
 			elementList.add(childName.toString());
 
 			childName = "SpecimenCircumscription";
 			obligatory = false;
-			Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			makeSpecimenCircumscription(taxonBase, elSpecimenCircumscription, success);
 			elementList.add(childName.toString());
 
 			childName = "CharacterCircumscription";
 			obligatory = false;
-			Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			makeCharacterCircumscription(taxonBase, elCharacterCircumscription, success);
 			elementList.add(childName.toString());
 
 			
 			childName = "ProviderLink";
 			obligatory = false;
-			Element elProviderLink = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			makeProviderLink(taxonBase, elProviderLink, success);
 			elementList.add(childName.toString());
 			
 			childName = "ProviderSpecificData";
 			obligatory = false;
-			Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+			Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			makeProviderSpecificData(taxonBase, elProviderSpecificData, success);
 			elementList.add(childName.toString());
 
-//			//FIXME or synonym
-//			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
-//				//Synonym
-//				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
-//			}else{
-//				//Taxon
-//				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
-//				taxonBase = taxon;
-//			}
-			
 			testAdditionalElements(elTaxonConcept, elementList);
 			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
 			taxonMap.put(strId, taxonBase);

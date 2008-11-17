@@ -39,6 +39,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 			, TcsXmlPublicationsIO.class
 			, TcsXmlTaxonNameIO.class
 			, TcsXmlTaxonNameRelationsIO.class
+			, TcsXmlTaxonIO.class
+			, TcsXmlTaxonRelationsIO.class
 		};
 	};
 	

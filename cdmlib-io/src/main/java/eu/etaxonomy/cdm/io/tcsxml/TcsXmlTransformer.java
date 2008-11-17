@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.tcsxml;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -203,70 +204,45 @@ public final class TcsXmlTransformer {
 	
 	/** Creates an cdm-RelationshipTermBase by the tcsRelationshipCategory
 	 */
-	public static RelationshipTermBase tcsRelationshipCategory2Relationship (String tcsRelationshipCategory) throws UnknownCdmTypeException{
-		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
-		String doesNotInclude  = tcsRoot + "DoesNotInclude";
-		String doesNotOverlap  = tcsRoot + "DoesNotOverlap";
-		String excludes  = tcsRoot + "Excludes";
-		String hasSynonym  = tcsRoot + "HasSynonym";
-		String hasVernacular  = tcsRoot + "HasVernacular";
-		String includes  = tcsRoot + "Includes";
-		String isAmbiregnalOf  = tcsRoot + "IsAmbiregnalOf";
-		String isAnamorphOf  = tcsRoot + "IsAnamorphOf";
-		String isChildTaxonOf  = tcsRoot + "IsChildTaxonOf";
-		String isCongruentTo  = tcsRoot + "IsCongruentTo";
-		String isFemaleParentOf  = tcsRoot + "IsFemaleParentOf";
-		String isFirstParentOf  = tcsRoot + "IsFirstParentOf";
-		String isHybridChildOf  = tcsRoot + "IsHybridChildOf";
-		String isHybridParentOf  = tcsRoot + "IsHybridParentOf";
-		String isIncludedIn  = tcsRoot + "IsIncludedIn";
-		String isMaleParentOf  = tcsRoot + "IsMaleParentOf";
-		String isNotCongruentTo  = tcsRoot + "IsNotCongruentTo";
-		String isNotIncludedIn  = tcsRoot + "IsNotIncludedIn";
-		String isParentTaxonOf  = tcsRoot + "IsParentTaxonOf";
-		String isSecondParentOf  = tcsRoot + "IsSecondParentOf";
-		String isSynonymFor  = tcsRoot + "IsSynonymFor";
-		String isTeleomorphOf  = tcsRoot + "IsTeleomorphOf";
-		String isVernacularFor  = tcsRoot + "IsVernacularFor";
-		String overlaps  = tcsRoot + "Overlaps";
-
-		if (tcsRelationshipCategory == null){ return null;
+	public static RelationshipTermBase tcsRelationshipType2Relationship (String tcsRelationshipType, ResultWrapper<Boolean> inverse) throws UnknownCdmTypeException{
+		if (tcsRelationshipType == null){ return null;
 		
 		//Synonym relationships
-		}else if (isSynonymFor.equals(tcsRelationshipCategory)){return SynonymRelationshipType.SYNONYM_OF(); 
-		}else if (hasSynonym.equals(tcsRelationshipCategory)){/*isReverse = true; */ return SynonymRelationshipType.SYNONYM_OF(); 
+//		}else if (tcsRelationshipType.equals("is synonym for")){return SynonymRelationshipType.SYNONYM_OF(); 
+		}else if (tcsRelationshipType.equals("has synonym")){inverse.setValue(true); return SynonymRelationshipType.SYNONYM_OF(); 
 		
 		//Taxon relationships
-		}else if (isChildTaxonOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
-		}else if (isParentTaxonOf.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
+		}else if (tcsRelationshipType.equals("is child taxon of")){return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
+		}else if (tcsRelationshipType.equals("is parent taxon of")){inverse.setValue(true);  return TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(); 
 		
 		//concept relationships
-		}else if (doesNotOverlap.equals(tcsRelationshipCategory)){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
-		}else if (excludes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.EXCLUDES(); 
-		}else if (includes.equals(tcsRelationshipCategory)){return TaxonRelationshipType.INCLUDES(); 
-		}else if (isCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.CONGRUENT_TO(); 
-		}else if (isNotCongruentTo.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
-		}else if (isNotIncludedIn.equals(tcsRelationshipCategory)){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
-		}else if (overlaps.equals(tcsRelationshipCategory)){return TaxonRelationshipType.OVERLAPS(); 
+		}else if (tcsRelationshipType.equals("does not overlap")){return TaxonRelationshipType.DOES_NOT_OVERLAP(); 
+		}else if (tcsRelationshipType.equals("excludes")){return TaxonRelationshipType.EXCLUDES(); 
+		}else if (tcsRelationshipType.equals("includes")){return TaxonRelationshipType.INCLUDES(); 
+		}else if (tcsRelationshipType.equals("is congruent to")){return TaxonRelationshipType.CONGRUENT_TO(); 
+		}else if (tcsRelationshipType.equals("is not congruent to")){return TaxonRelationshipType.NOT_CONGRUENT_TO(); 
+		}else if (tcsRelationshipType.equals("is not included in")){return TaxonRelationshipType.NOT_INCLUDED_IN(); 
+		}else if (tcsRelationshipType.equals("overlaps")){return TaxonRelationshipType.OVERLAPS(); 
 		//reverse concept relationships
-		}else if (isIncludedIn.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.INCLUDES();
-		}else if (doesNotInclude.equals(tcsRelationshipCategory)){/*isReverse = true; */ return TaxonRelationshipType.NOT_INCLUDED_IN(); 
+		}else if (tcsRelationshipType.equals("is included in")){inverse.setValue(true); return TaxonRelationshipType.INCLUDES();
+		}else if (tcsRelationshipType.equals("does not include")){inverse.setValue(true); return TaxonRelationshipType.NOT_INCLUDED_IN(); 
 		
-	//TODO	
-//		}else if (hasVernacular.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isAmbiregnalOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isAnamorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isFemaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isFirstParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isHybridChildOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isHybridParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isMaleParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isSecondParentOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isTeleomorphOf.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
-//		}else if (isVernacularFor.equals(tcsRelationshipCategory)){return TaxonRelationshipType.X; 
+	//TODO
+		
+//		}else if (tcsRelationshipType.equals("has vernacular")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is vernacular for")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is ambiregnal of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is hybrid child of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is hybrid parent of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is male parent of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is first parent of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is female parent of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is second parent of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is teleomorph of")){return TaxonRelationshipType.X; 
+//		}else if (tcsRelationshipType.equals("is anamorph of")){return TaxonRelationshipType.X; 
 		
 		}else {
-			throw new UnknownCdmTypeException("Unknown RelationshipCategory " + tcsRelationshipCategory);
+			throw new UnknownCdmTypeException("Unknown RelationshipCategory " + tcsRelationshipType);
 		}
 	}
 	
