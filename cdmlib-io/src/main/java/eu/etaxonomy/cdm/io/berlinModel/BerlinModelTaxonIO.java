@@ -12,8 +12,11 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_PA
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+
+import java.sql.ResultSetMetaData;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -107,11 +110,11 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
 		
 		//make not needed maps empty
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<TeamOrPersonBase<?>> authorMap = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.AUTHOR_STORE);
 		authorMap.makeEmpty();
 
 		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -148,8 +151,12 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 				int nameFk = rs.getInt("PTNameFk");
 				int refFk = rs.getInt("PTRefFk");
 				String doubtful = rs.getString("DoubtfulFlag");
+				String uuid = null;
+				if (resultSetHasColumn(rs,"UUID")){
+					uuid = rs.getString("UUID");
+				}
 				
-				TaxonNameBase taxonName = null;
+				TaxonNameBase<?,?> taxonName = null;
 				if (taxonNameMap != null){
 					taxonName  = taxonNameMap.get(nameFk);
 				}
@@ -191,6 +198,9 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 					}else{
 						logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
 						continue;
+					}
+					if (uuid != null){
+						taxonBase.setUuid(UUID.fromString(uuid));
 					}
 					
 					//TODO
@@ -235,6 +245,8 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		}
 
 	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

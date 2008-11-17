@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
@@ -63,6 +64,21 @@ public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 			identifiableEntity.addAnnotation(notesAnnotation);
 		}
 		return success;
+	}
+	
+	
+	protected boolean resultSetHasColumn(ResultSet rs, String columnName){
+		try {
+			ResultSetMetaData metaData = rs.getMetaData();
+			for (int i = 0; i < metaData.getColumnCount(); i++){
+				if (metaData.getColumnName(i).equalsIgnoreCase(columnName)){
+					return true;
+				}
+			}
+			return false;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 	
 }
