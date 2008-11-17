@@ -3,7 +3,9 @@
  */
 package eu.etaxonomy.cdm.io.taxonx;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,10 +25,12 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -75,11 +79,34 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		
 		if (taxon != null && taxon.getName() != null){
 			isChanged |= doNomenclaturalType(txConfig, elNomenclature, nsTaxonx, taxon.getName());
+			List<Element> elSynonymyList = new ArrayList<Element>();
+			elSynonymyList.addAll(elNomenclature.getChildren("synonomy", nsTaxonx));
+			elSynonymyList.addAll(elNomenclature.getChildren("synonymy", nsTaxonx));
+			for (Element elSynonymy : elSynonymyList){
+				String synonymName = elSynonymy.getChildTextTrim("name");
+				Synonym synonym = getSynonym(config, taxon, synonymName);
+				isChanged |= doNomenclaturalType(txConfig, elSynonymy, nsTaxonx, synonym.getName());
+			}
 		}
+		
+		
 		if (isChanged){
 			taxonService.saveTaxon(taxon);
 		}
 		return true;
+	}
+	
+	private Synonym getSynonym(IImportConfigurator config, Taxon taxon, String synName){
+		Synonym result = null;
+		unlazySynonym(config, taxon);
+		Set<Synonym> synList = taxon.getSynonyms();
+		for (Synonym syn : synList){
+			if (syn.getName() != null && ((NonViralName<?>)syn.getName()).getNameCache().equals(synName)){
+				return syn;  //only first synonym is returned
+			}
+		}
+		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache());
+		return null;
 	}
 	
 	private Taxon getTaxon(TaxonXImportConfigurator config){
@@ -342,6 +369,19 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 			typifiedName.getTypeDesignations().size();	
 		}
 		taxonNameService.saveTaxonName(taxonNameBase);
+		config.getCdmAppController().commitTransaction(txStatus);
+	}
+	
+	/**
+	 * TODO Preliminary to avoid laizy loading errors
+	 */
+	private void unlazySynonym(IImportConfigurator config, Taxon taxon){
+		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
+		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		taxonService.saveTaxon(taxon);
+		Set<Synonym> synonyms = taxon.getSynonyms();
+		logger.debug(synonyms.size());
+		//taxonService.saveTaxon(taxon);
 		config.getCdmAppController().commitTransaction(txStatus);
 	}
 

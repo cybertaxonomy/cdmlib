@@ -75,7 +75,7 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
-		logger.warn("not yet fully implemented");
+		logger.debug("not yet fully implemented");
 		
 //		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
 //		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
