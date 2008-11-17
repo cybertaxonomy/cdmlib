@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.app.tcs;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -54,8 +53,8 @@ public class TcsXmlTestActivator {
 	static final boolean doRelNames = true;
 	
 	//taxa
-	static final boolean doTaxa = false;
-	static final boolean doRelTaxa = false;
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
 
 	
 	private void doImport(){
