@@ -442,7 +442,11 @@
 		  		<artifactId>cdmlib-remote</artifactId>
 		  		<version>${project.version}</version>
 		  	</dependency>
-
+		   	<dependency>
+		  		<groupId>eu.etaxonomy</groupId>
+		  		<artifactId>cdmlib-ext</artifactId>
+		  		<version>${project.version}</version>
+		  	</dependency>
 			<!--*********** JAXB********* -->
 			<dependency>
               <groupId>javax.xml.bind</groupId>
