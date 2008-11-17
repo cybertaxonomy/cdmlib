@@ -12,6 +12,13 @@ package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -33,11 +40,23 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  * @created 08-Nov-2007 13:06:17
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "CommonTaxonName", propOrder = {
+    "name",
+    "language"
+})
+@XmlRootElement(name = "CommonTaxonName")
 @Entity
 public class CommonTaxonName extends DescriptionElementBase {
+	
 	static Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
+	@XmlElement(name = "Name")
 	private String name;
+	
+	@XmlElement(name = "Language")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Language language;
 
 	/**

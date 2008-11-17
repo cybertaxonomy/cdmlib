@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.model.common;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data
@@ -22,6 +25,8 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ExtensionType")
 @Entity
 public class ExtensionType extends DefinedTermBase {
 	static Logger logger = Logger.getLogger(ExtensionType.class);

@@ -21,6 +21,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class representing restrictions for the validity of
@@ -31,6 +35,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:50
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Scope")
+@XmlRootElement(name = "Scope")
 @Entity
 public class Scope extends Modifier {
 	private static final Logger logger = Logger.getLogger(Scope.class);

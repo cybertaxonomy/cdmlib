@@ -15,6 +15,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class representing the restriction concerning the life stage for
@@ -27,6 +31,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:53
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Stage")
+@XmlRootElement(name = "Stage")
 @Entity
 public class Stage extends Scope {
 	private static final Logger logger = Logger.getLogger(Stage.class);

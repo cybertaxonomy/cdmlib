@@ -13,6 +13,12 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -25,11 +31,28 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Extension", propOrder = {
+    "value",
+    "type",
+    "extendedObj"
+})
 @Entity
 public class Extension extends VersionableEntity implements Cloneable {
+	
 	private static final  Logger logger = Logger.getLogger(Extension.class);
+	
+    @XmlElement(name = "Value")
 	private String value;
+	
+    @XmlElement(name = "ExtensionType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private ExtensionType type;
+	
+    @XmlElement(name = "ExtendedObject")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private IdentifiableEntity extendedObj;
 	
 	public static Extension NewInstance(){

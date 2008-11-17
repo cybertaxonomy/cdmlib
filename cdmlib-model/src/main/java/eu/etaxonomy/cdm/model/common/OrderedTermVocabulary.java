@@ -11,6 +11,10 @@ import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +22,9 @@ import org.apache.log4j.Logger;
  * @author a.mueller
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "OrderedTermVocabulary")
+@XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);

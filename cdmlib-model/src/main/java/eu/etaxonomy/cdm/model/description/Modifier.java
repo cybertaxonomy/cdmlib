@@ -16,6 +16,10 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents possible modulations for the validity of
@@ -31,6 +35,9 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:35
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Modifier")
+@XmlRootElement(name = "Modifier")
 @Entity
 public class Modifier extends OrderedTermBase<Modifier> {
 	static Logger logger = Logger.getLogger(Modifier.class);

@@ -13,6 +13,10 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +34,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:52
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Sex")
+@XmlRootElement(name = "Sex")
 @Entity
 public class Sex extends Scope {
 	private static final Logger logger = Logger.getLogger(Sex.class);

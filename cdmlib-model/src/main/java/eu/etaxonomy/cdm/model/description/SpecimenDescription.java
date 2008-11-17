@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -26,6 +30,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  * @version 1.0
  * @created 08-Jul-2008
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SpecimenDescription")
+@XmlRootElement(name = "SpecimenDescription")
 @Entity
 public class SpecimenDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(SpecimenDescription.class);

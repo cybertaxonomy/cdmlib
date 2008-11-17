@@ -12,9 +12,18 @@ package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -38,10 +47,24 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  * @created 08-Nov-2007 13:06:57
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TaxonInteraction", propOrder = {
+    "description",
+    "taxon2"
+})
+@XmlRootElement(name = "TaxonInteraction")
 @Entity
 public class TaxonInteraction extends DescriptionElementBase {
+	
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
+	
+	@XmlElement(name = "Description")
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	private MultilanguageText description;
+	
+	@XmlElement(name = "Taxon2")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Taxon taxon2;
 	
 	/** 

@@ -15,6 +15,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The class representing single-access fixed dichotomous or polytomous authored
@@ -28,10 +36,20 @@ import javax.persistence.*;
  * @created 08-Nov-2007 13:06:28
  */
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "IdentificationKey", propOrder = {
+    "coveredTaxa"
+})
+@XmlRootElement(name = "IdentificationKey")
 @Entity
 public class IdentificationKey extends Media {
+	
 	static Logger logger = Logger.getLogger(IdentificationKey.class);
 	
+	@XmlElementWrapper(name = "CoveredTaxa")
+	@XmlElement(name = "CoveredTaxon")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<Taxon> coveredTaxa = new HashSet();
 	
 	/** 

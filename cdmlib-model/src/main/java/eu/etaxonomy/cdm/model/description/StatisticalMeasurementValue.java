@@ -18,6 +18,14 @@ import org.hibernate.annotations.CascadeType;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents the assignment of numerical values to {@link Feature features}
@@ -33,11 +41,26 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:54
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "StatisticalMeasureValue")
+@XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
 public class StatisticalMeasurementValue extends VersionableEntity {
+	
 	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
+	
+	@XmlElement(name = "Value")
 	private float value;
+	
+	@XmlElementWrapper(name = "Modifiers")
+	@XmlElement(name = "Modifier")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<Modifier> modifiers = new HashSet();
+	
+	@XmlElement(name = "StatisticalMeasureType")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private StatisticalMeasure type;
 
 

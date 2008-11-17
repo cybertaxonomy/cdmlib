@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNameDescription", propOrder = {
 })
+@XmlRootElement(name = "TaxonNameDescription")
 @Entity
 public class TaxonNameDescription extends DescriptionBase {
 	static Logger logger = Logger.getLogger(TaxonNameDescription.class);

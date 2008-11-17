@@ -20,6 +20,14 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents information pieces expressed in numerical data
@@ -46,10 +54,26 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:46
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "QuantitativeData", propOrder = {
+    "unit",
+    "statisticalValues"
+})
+@XmlRootElement(name = "QuantitativeData")
 @Entity
 public class QuantitativeData extends DescriptionElementBase {
+	
 	static Logger logger = Logger.getLogger(QuantitativeData.class);
+	
+	@XmlElement(name = "MeasurementUnit")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private MeasurementUnit unit;
+	
+	@XmlElementWrapper(name = "StatisticalValues")
+	@XmlElement(name = "StatisticalValue")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet();
 	
 	/** 

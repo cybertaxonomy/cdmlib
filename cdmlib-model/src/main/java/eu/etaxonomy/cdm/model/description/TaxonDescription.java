@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "scopes",
     "geoScopes"
 })
+@XmlRootElement(name = "TaxonDescription")
 @Entity
 public class TaxonDescription extends DescriptionBase {
 	

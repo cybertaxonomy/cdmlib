@@ -15,6 +15,11 @@ import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -30,12 +35,21 @@ import org.joda.time.ReadableInstant;
  * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "TimePeriod", propOrder = {
+    "start",
+    "end"
+})
+@XmlRootElement(name = "TimePeriod")
 @Embeddable
-public class TimePeriod implements Cloneable{
+public class TimePeriod implements Cloneable {
+	
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
 	
-	
+	@XmlElement(name = "Start")
 	private Partial start;
+	
+	@XmlElement(name = "End")
 	private Partial end;
 
 	

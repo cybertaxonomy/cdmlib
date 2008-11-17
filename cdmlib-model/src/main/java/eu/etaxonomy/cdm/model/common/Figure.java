@@ -15,12 +15,17 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.media.ReferencedMedia;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:25
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Figure")
 @Entity
 public class Figure extends ReferencedMedia {
 	private static final Logger logger = Logger.getLogger(Figure.class);

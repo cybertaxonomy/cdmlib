@@ -18,6 +18,14 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -40,13 +48,25 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:15
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "CategoricalData", propOrder = {
+    "orderRelevant",
+    "states"
+})
+@XmlRootElement(name = "CategoricalData")
 @Entity
 public class CategoricalData extends DescriptionElementBase {
+	
 	static Logger logger = Logger.getLogger(CategoricalData.class);
 
-	
 	//whether the sequence of ordered states is important
+	@XmlElement(name = "OrderRelevant")
 	private boolean orderRelevant;
+	
+	@XmlElementWrapper(name = "States")
+	@XmlElement(name = "State")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private List<State> states = new ArrayList();
 
 	
