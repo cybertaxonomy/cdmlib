@@ -66,6 +66,7 @@ public class DipteraDistributionParser {
 							if (descEl instanceof TextData){
 								String occString = ((TextData)descEl).getText(Language.ENGLISH());
 								parseOccurenceString(occString, description);
+								//app.getTaxonService().saveTaxon(taxon);
 							}
 						}
 					}
@@ -92,11 +93,12 @@ public class DipteraDistributionParser {
 			int i = 0;
 			int countSkip = 0;
 			for (String word: words){
+				if (word.contains("U.S.A")){
+					logger.warn("U.S.A.");
+				}
 				boolean isDoubtful = false;
 				if (countSkip > 0){
 					countSkip--;
-				}else if(word.contains("widesp") || word.equals("in")) {
-					//skip
 				}else if(word.trim().length() == 0){
 					//skip
 				}else{
@@ -111,10 +113,10 @@ public class DipteraDistributionParser {
 						}
 						word = adaptWordsToTdwg(word);
 						
-						if (! "".equals(word) && ! TdwgArea.isTdwgAreaLabel(word) && ! isDoubleArea(word)){
+						if (! "".equals(word) && ! TdwgArea.isTdwgAreaLabel(word) && ! TdwgArea.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
 							for (countSkip = 1; countSkip <= 6; countSkip++){
 								word = word.trim();
-								if (! TdwgArea.isTdwgAreaLabel(word) && ! isDoubleArea(word)){
+								if (! TdwgArea.isTdwgAreaLabel(word) && ! TdwgArea.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
 									if (words.length > i + countSkip){
 										word = word + " " + words[i + countSkip];
 									}
@@ -133,7 +135,7 @@ public class DipteraDistributionParser {
 						}
 						if ("".equals(word)){
 							//countSkip = countSkip;
-						}else if (! TdwgArea.isTdwgAreaLabel(word) && ! isDoubleArea(word)  ){
+						}else if (! TdwgArea.isTdwgAreaLabel(word)  && ! TdwgArea.isTdwgAreaAbbreviation(word) &&  ! isDoubleArea(word)  ){
 							if (word.contains("?")){
 								logger.warn("XXX");
 							}
@@ -150,7 +152,12 @@ public class DipteraDistributionParser {
 									desc.addElement(distr);
 								}
 							}else{
-								NamedArea area = TdwgArea.getAreaByTdwgLabel(word);
+								NamedArea area;
+								if (TdwgArea.isTdwgAreaLabel(word)){
+									area = TdwgArea.getAreaByTdwgLabel(word);
+								}else{
+									area = TdwgArea.getAreaByTdwgAbbreviation(word);
+								}
 								if (isDoubtful){
 									term = PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 								}
@@ -202,8 +209,12 @@ public class DipteraDistributionParser {
 	static List<String> higherAreas = new ArrayList<String>();
 	
 	private String adaptWordsToTdwg(String word){
-		word = word.replace(",", "").replace(".", "").replace(";", "");
-		word = word.replace("Caronlina", "Carolina");
+		word = word.replace(",", "").replace(";", "");
+		if (! word.contains("U.S.A")){
+			word = word.replace(",", "").replace(".", "").replace(";", "");
+		}else{
+			word = word.replace(",", "").replace(";", "");
+		}
 		
 		word = word.trim();
 		if (word.endsWith("Is")){
@@ -233,6 +244,8 @@ public class DipteraDistributionParser {
 		}
 		word = word.replace("Vera Cruz", "Veracruz");
 		word = word.replace("Turkmenia", "Turkmenistan");
+		word = word.replace("Québeck", "Québec");
+		word = word.replace("Quebeck", "Québec");
 		word = word.replace("Quebec", "Québec");
 		//word = word.replace("Quebec", "Qu+®bec");
 		//word = word.replace("Quebec", "Qu├®bec");
@@ -255,20 +268,66 @@ public class DipteraDistributionParser {
 		word = word.replace("oceanian islands", "Pacific");
 		word = word.replace("Ussuri region", "Primorye");
 		word = word.replace("Galapagos Is.", "Galápagos");
+		if (! word.contains("Is.")){
+			word = word.replace("Galapagos", "Galápagos");
+		}
+		
 		//word = word.replace("Galapagos Is.", "GalÃ¡pagos");
-		word = word.replace("Malaysia", "Peninsular Malaysia");
+		if (! word.contains("Peninsular")){
+			word = word.replace("Malaysia", "Peninsular Malaysia");
+		}
 		word = word.replace("Polynesic Is.", "South Solomons");
 		
 		word = word.replace("Usbek SSR", "Uzbekistan");
 		word = word.replace("Mexican amber", "Mexico");
 		word = word.replace("Marocco", "Morocco");
-		word = word.replace("Trinidad", "Trinidad-Tobago");
+		if (! word.contains("Tobago")){
+			word = word.replace("Trinidad", "Trinidad-Tobago");
+		}
+		if (! word.contains("Trinidad")){
+			word = word.replace("Tobago", "Trinidad-Tobago");
+		}
 		word = word.replace("Haiti", "Haiti");  
 		word = word.replace("Moluccas", "Maluku");
 		word = word.replace("Belau", "Palau");
 		word = word.replace("Dominican amber", "Dominican Republic");
-		word = word.replace("Far East", "Russian Far East");
+		if (! word.contains("Russian")){
+			word = word.replace("Far East", "Russian Far East");
+		}
 		word = word.replace("Tahiti", "Society Is.");
+		word = word.replace("Iraque", "Iraq");
+		word = word.replace("Wake Island", "Wake I.");
+		if (! word.contains("I.")){
+			word = word.replace("Johnston I", "Johnston I.");
+			word = word.replace("Wake I", "Wake I.");
+			word = word.replace("Clipperton I", "Clipperton I.");
+		}
+		if (! word.contains("Provinces")){
+			word = word.replace("Cape Province", "Cape Provinces");
+		}
+		word = word.replace("Eastern Cape Provinces", "Eastern Cape Province");
+		if (! word.contains("Barbuda")){
+			word = word.replace("Antigua", "Antigua-Barbuda");
+		}
+		if (! word.contains("St.")){
+			word = word.replace("St Vincent", "St.Vincent");
+			word = word.replace("St Lucia", "St.Lucia");
+			word = word.replace("St Helena", "St.Helena");
+		}
+		word = word.replace("Asia-tropical", "Asia-Tropical");
+		word = word.replace("Society Islands", "Society Is.");
+		word = word.replace("Virgin Islands", "Virgin Is.");
+		word = word.replace("Canary Islands", "Canary Is.");
+		word = word.replace("Rhode Island", "Rhode I.");
+		
+		
+		word = word.replace("Rodriguez", "Rodrigues");
+		word = word.replace("British Colombia", "British Columbia");
+		word = word.replace("Bermudas", "Bermuda");
+		word = word.replace("Tunesia", "Tunisia");
+		word = word.replace("Santos São Paulo", "São Paulo");
+		word = word.replace("Transvaal", "Northern Provinces");
+		word = word.replace("Tucumán", "Tucuman");
 		
 		
 //		unknownAreas.add("Baltic amber");  
@@ -298,59 +357,25 @@ public class DipteraDistributionParser {
 	}
 	
 	private void initStopWords(){
-		stopWords.add("to");
-		stopWords.add("also");
-		stopWords.add("almost");
 		stopWords.add("and");
-		stopWords.add("cosmopolitan");
-		stopWords.add("s");
 		stopWords.add("Is");
 		stopWords.add("Is.");
+		stopWords.add("Islands");
+		stopWords.add("Island");
+		
 		stopWords.add("of");
-		stopWords.add("bordering areas");
 		stopWords.add("areas");
 		stopWords.add("USA");
-		stopWords.add("Australia"); // except for "widesp. in Australia" !!
-		stopWords.add("&");
-		stopWords.add("part");
-		stopWords.add("excl");
-//		stopWords.add("European territory");  //part of Russian distributions
-		stopWords.add("northern part");
-		stopWords.add("Distr:");
-		
-		unknownAreas.add("Argentina");
+		stopWords.add("Australia"); //except for Australia only
+		stopWords.add("Argentina");		
+
 		//unknownAreas.add("Panama");
 		unknownAreas.add("South Africa");
-		unknownAreas.add("Indonesia");
 		unknownAreas.add("Chile");
-//		unknownAreas.add("Wales");
-//		unknownAreas.add("Java");
-//		unknownAreas.add("former USSR: North European territory");
-//		unknownAreas.add("former USSR: South European territory");
-//		unknownAreas.add("former USSR: Soviet Middle Asia");
-//		unknownAreas.add("former USSR: North and Central European territory");
-//		unknownAreas.add("oceanian islands");
-//		unknownAreas.add("Ussuri region");
-//		unknownAreas.add("Galapagos Is.");
-//		unknownAreas.add("Malaysia");  // Malaysia Peninsular exists (level 4)
-		unknownAreas.add("West Indies");  //-> as a whole
-//		unknownAreas.add("Canal Zone");  
-//		unknownAreas.add("Polynesic Is.");  
-//		unknownAreas.add("Usbek SSR");  
-//		unknownAreas.add("Mexican amber");  
-//		unknownAreas.add("southern Europe");  // ->Southeastern Europe, Southwestern Europe
-//		unknownAreas.add("Marocco");  
-//		unknownAreas.add("Trinidad");  //-> Trinidad-Tobago
-//		unknownAreas.add("Haiti");  
-//		unknownAreas.add("Moluccas");  //-> Indonesia  
-//		unknownAreas.add("Belau");  
+
 		unknownAreas.add("Baltic amber");  
 		unknownAreas.add("Arabia"); 
-//		unknownAreas.add("Dominican amber"); 
-//		unknownAreas.add("Canary and Madeira Is.");  //-> Canary Is. / Madeira 
-//		unknownAreas.add("Dominican amber"); 
-//		unknownAreas.add("Far East"); 
-//		unknownAreas.add("Tahiti"); 
+
 			
 		higherAreas.add("AF");
 		higherAreas.add("OR");
@@ -366,7 +391,7 @@ public class DipteraDistributionParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ICdmDataSource cdmDestination = CdmDestinations.localH2();
+		ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 		CdmApplicationController app = null;
 		try {
 			DbSchemaValidation val = DbSchemaValidation.UPDATE;
