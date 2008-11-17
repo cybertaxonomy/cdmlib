@@ -231,7 +231,11 @@ cdmlib-commons/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.j
 cdmlib-ext/LICENSE.TXT -text
 cdmlib-ext/README.TXT -text
 cdmlib-ext/pom.xml -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/EditGeoService.java -text
 cdmlib-ext/src/site/site.xml -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/EditGeoServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm.datasources.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
