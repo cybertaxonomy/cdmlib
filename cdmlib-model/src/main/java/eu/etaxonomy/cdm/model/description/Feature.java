@@ -456,6 +456,9 @@ public class Feature extends DefinedTermBase {
 	private static final UUID uuidCultivation = UUID.fromString("e28965b2-a367-48c5-b954-8afc8ac2c69b");
 	private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
 	private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
+	private static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
+	
+	
 	
 	
 	
@@ -726,6 +729,13 @@ public class Feature extends DefinedTermBase {
 		return getByUuid(uuidCultivation);
 	}
 	
+	
+	/**
+	 * Returns the "cultivation" feature.
+	 */
+	public static final Feature IMAGE(){
+		return getByUuid(uuidImage);
+	}
 	
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
