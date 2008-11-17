@@ -46,7 +46,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public abstract UUID saveFeatureTree(FeatureTree tree);
-	public abstract void saveFeatureDataAll(Collection<VersionableEntity> featureData);
+	public abstract void saveFeatureDataAll(Collection<VersionableEntity<?>> featureData);
 	public abstract Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
 	public abstract Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
 	
@@ -55,6 +55,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	
 	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
-	
-	public abstract String getEditGeoServiceUrlParameterString(Set<Distribution> distributions,	Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox, String backLayer);
+
 }
