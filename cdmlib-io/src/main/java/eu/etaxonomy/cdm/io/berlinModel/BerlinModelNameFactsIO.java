@@ -202,7 +202,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		String sep = File.separator;
 		Integer size = null;
 		
-		logger.warn("Getting media for NameFact: " + nameFact);
+		logger.debug("Getting media for NameFact: " + nameFact);
 		
 		Media media = Media.NewInstance();
 		

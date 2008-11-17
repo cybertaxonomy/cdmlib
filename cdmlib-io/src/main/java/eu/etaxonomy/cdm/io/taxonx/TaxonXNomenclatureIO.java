@@ -61,6 +61,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		logger.info("start make Nomenclature ...");
 		
+		TransactionStatus tx = config.getCdmAppController().startTransaction();
 		TaxonXImportConfigurator txConfig = (TaxonXImportConfigurator)config;
 		Element root = txConfig.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
@@ -75,17 +76,21 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
 		Element elNomenclature = elTreatment.getChild("nomenclature", nsTaxonx);
 		
-		isChanged |= doCollectionEvent(txConfig, elNomenclature, nsTaxonx, taxon);
+		//isChanged |= doCollectionEvent(txConfig, elNomenclature, nsTaxonx, taxon);
 		
-		if (taxon != null && taxon.getName() != null){
+		if (taxon != null && taxon.getName() != null && elNomenclature != null){
 			isChanged |= doNomenclaturalType(txConfig, elNomenclature, nsTaxonx, taxon.getName());
 			List<Element> elSynonymyList = new ArrayList<Element>();
 			elSynonymyList.addAll(elNomenclature.getChildren("synonomy", nsTaxonx));
-			elSynonymyList.addAll(elNomenclature.getChildren("synonymy", nsTaxonx));
+			elSynonymyList.addAll(elNomenclature.getChildren("synonymy", nsTaxonx)); //wrong spelling in TaxonX-Schema
 			for (Element elSynonymy : elSynonymyList){
 				String synonymName = elSynonymy.getChildTextTrim("name");
-				Synonym synonym = getSynonym(config, taxon, synonymName);
-				isChanged |= doNomenclaturalType(txConfig, elSynonymy, nsTaxonx, synonym.getName());
+				if (elSynonymy.getChild("type", nsTaxonx) != null || elSynonymy.getChild("type_loc", nsTaxonx) != null){
+					Synonym synonym = getSynonym(config, taxon, synonymName);
+					if (synonym != null){
+						isChanged |= doNomenclaturalType(txConfig, elSynonymy, nsTaxonx, synonym.getName());
+					}
+				}
 			}
 		}
 		
@@ -93,6 +98,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		if (isChanged){
 			taxonService.saveTaxon(taxon);
 		}
+		config.getCdmAppController().commitTransaction(tx);
 		return true;
 	}
 	
@@ -106,7 +112,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 			}
 		}
 		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache());
-		return null;
+		return result;
 	}
 	
 	private Taxon getTaxon(TaxonXImportConfigurator config){
@@ -162,6 +168,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	
 			
 			SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
+			//elType
 			if (elType != null){
 				doElType(elType, simpleSpecimen);
 			}//elType
@@ -187,27 +194,31 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 
 	private boolean doElType(Element elType, SimpleSpecimen simpleSpecimen){
 		//type
-		String[] type = elType.getTextNormalize().split(";");
+		String text = elType.getTextNormalize();
+		if (text.endsWith(";")){
+			text = text + " ";
+		}
+		String[] type = text.split(";");
 		if (type.length != 3 ){
 			logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize());
 			simpleSpecimen.setTitleCache(elType.getTextNormalize());
 		}else{
 			String strLocality = type[0].trim();
 			if (! "".equals(strLocality)){
-				simpleSpecimen.setLocality(strLocality);
+//				simpleSpecimen.setLocality(strLocality);
 			}
 			
 			String strCollector = type[1].trim();
 			if (! "".equals(strCollector)){
 				Agent collector = Person.NewTitledInstance(strCollector);
-				simpleSpecimen.setCollector(collector);
+//				simpleSpecimen.setCollector(collector);
 			}
 			
 			String strCollectorNumber = type[2].trim();
 			if (! "".equals(strCollectorNumber)){
-				simpleSpecimen.setCollectorsNumber(strCollectorNumber);
+//				simpleSpecimen.setCollectorsNumber(strCollectorNumber);
 			}
-			
+	
 			String title = CdmUtils.concat(" ", new String[]{strLocality, strCollector, strCollectorNumber});
 			simpleSpecimen.setTitleCache(title);
 		}
@@ -236,12 +247,17 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
 				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
-				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
-				for(String collectionString : collectionStrings){
+				//TODO
+				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
+				String tmpCollString = typeLocStatus.substring(pos).trim();
+				//for(String collectionString : collectionStrings){
 					Specimen specimen;
+					String title = originalSpecimen.getTitleCache();
+					title = title + "(" + tmpCollString + ")";
+					originalSpecimen.setTitleCache(title );
 					specimen = (Specimen)originalSpecimen.clone();
 					result.put(specimen, status);
-				}
+				//}
 			}
 		}
 		
@@ -337,7 +353,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		if (statusString == null || "".equals(statusString.trim())){
 			return null;
 		}
-		statusString = statusString.trim();
+		statusString = statusString.trim().toLowerCase();
 		statusString = statusString.replace("typi", "typus");
 		statusString = statusString.replace("typus", "type");
 		statusString = statusString.replace("types", "type");
@@ -346,6 +362,8 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		statusMap.put("holotype", TypeDesignationStatus.HOLOTYPE());
 		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
 		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
+		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
+		
 		//TODO to be continued
 		
 		statusString = statusString.toLowerCase();
@@ -368,7 +386,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		for(TaxonNameBase typifiedName: typifiedNames){
 			typifiedName.getTypeDesignations().size();	
 		}
-		taxonNameService.saveTaxonName(taxonNameBase);
+		//taxonNameService.saveTaxonName(taxonNameBase);
 		config.getCdmAppController().commitTransaction(txStatus);
 	}
 	
