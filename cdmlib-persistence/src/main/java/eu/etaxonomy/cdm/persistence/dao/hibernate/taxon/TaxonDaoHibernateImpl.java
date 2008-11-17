@@ -114,7 +114,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (sec != null){
 			crit.add(Restrictions.eq("sec", sec ) );
 		}
-		crit.createCriteria("name").add(Restrictions.eq("nameCache", name));
+		crit.createCriteria("name").add(Restrictions.like("nameCache", name));
 		List<TaxonBase> results = crit.list();
 		return results;
 	}
