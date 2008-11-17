@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
-	private static int modCount = 10;
+	private static int modCount = 1000;
 
 	public SDDDescriptionIO(){
 		super();
@@ -76,6 +76,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Namespace sddNamespace = sddConfig.getSddNamespace();
 		Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
 
+		logger.info("start TechnicalMetadata ...");
 		// <TechnicalMetadata created="2006-04-20T10:00:00">
 		Element elTechnicalMetadata = root.getChild("TechnicalMetadata", sddNamespace);
 		String nameCreated = elTechnicalMetadata.getAttributeValue("created");
@@ -112,9 +113,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 		int i = 0;
 		//for each Dataset
+		logger.info("start Dataset ...");
 		for (Element elDataset : elDatasets){
-
-			if ((++i % modCount) == 0){ logger.info("Datasets handled: " + (i-1));}
 
 			// <Dataset xml:lang="en-us">
 			String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
@@ -122,10 +122,15 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			if (!nameLang.equals("")) {
 				if(nameLang.equals("en-us")) {
 					datasetLanguage = Language.ENGLISH();
-				}
-				if(nameLang.equals("en-au")) {
+				} else if(nameLang.equals("en-au")) {
+					datasetLanguage = Language.ENGLISH();
+				} else if(nameLang.equals("en")) {
+					datasetLanguage = Language.ENGLISH();
+				} else {
 					datasetLanguage = Language.ENGLISH();
 				}
+			} else {
+				datasetLanguage = Language.ENGLISH();
 			}
 
 			/* <Representation>
@@ -133,15 +138,18 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
       			<Detail>This is an example for a very simple SDD file, representing a single description with categorical, quantitative, and text character. Compare also the "Fragment*" examples, which contain more complex examples in the form of document fragments. Intended for version="SDD 1.1".</Detail>
     		   </Representation>
 			 */
+			logger.info("start Representation ...");
 			Element elRepresentation = elDataset.getChild("Representation",sddNamespace);
 			String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 			String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
 			OriginalSource originalSource = OriginalSource.NewInstance(" ", generatorName + " - " + generatorVersion + " - " + label);
+			// je suis en train de checker tous les strings et leur langage
 			//			originalSource.setCitation(citation)
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
 
 			// <RevisionData>
+			logger.info("start RevisionData ...");
 			Element elRevisionData = elDataset.getChild("RevisionData",sddNamespace);
 
 			// <Creators>
@@ -155,7 +163,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			Map<String,Person> authors = new HashMap<String,Person>();
 			Map<String,Person> editors = new HashMap<String,Person>();
 			for (Element elAgent : listAgents){
-				if ((++j % modCount) == 0){ logger.info("Agents handled: " + (j-1));}
+				
 				String role = elAgent.getAttributeValue("role");
 				String ref = elAgent.getAttributeValue("ref");
 				if (role.equals("aut")) {
@@ -168,6 +176,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						editors.put(ref, null);
 					}
 				}
+				
+				if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
+				
 			}
 
 			// <DateModified>2006-04-08T00:00:00</DateModified>
@@ -186,33 +197,47 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			updated.setTime(d);
 
 			// <IPRStatements>
+			logger.info("start IPRStatements ...");
 			Element elIPRStatements = elDataset.getChild("IPRStatements",sddNamespace);
 			// <IPRStatement role="Copyright">
 			List<Element> listIPRStatements = elIPRStatements.getChildren("IPRStatement", sddNamespace);
 			j = 0;
 			//for each IPRStatement
 			for (Element elIPRStatement : listIPRStatements){
-				if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + (j-1));}
+				
 				String role = elIPRStatement.getAttributeValue("role");
 				// <Label xml:lang="en-au">(c) 2003-2006 Centre for Occasional Botany.</Label>
 				Element elLabel = elIPRStatement.getChild("Label",sddNamespace);
-				String lang = elLabel.getAttributeValue("lang",xmlNamespace);
+				String lang = "";
+				if (elLabel != null) {
+					lang = elLabel.getAttributeValue("lang",xmlNamespace);
+				}
 				label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
 				if (role.equals("Copyright")) {
 					Language iprLanguage = Language.NewInstance();
-					if (!lang.equals("")) {
-						if(lang.equals("en-us")) {
-							iprLanguage = Language.ENGLISH();
-						}
-						if(lang.equals("en-au")) {
-							iprLanguage = Language.ENGLISH();
+					if (lang != null) {
+						if (!lang.equals("")) {
+							if(lang.equals("en-us")) {
+								iprLanguage = Language.ENGLISH();
+							}
+							if(lang.equals("en-au")) {
+								iprLanguage = Language.ENGLISH();
+							} else {
+								iprLanguage = datasetLanguage;
+							}
+						} else {
+							iprLanguage = datasetLanguage;
 						}
 					}
 					copyright = Rights.NewInstance(label, iprLanguage);
 				}
+				
+				if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + j);}
+				
 			}
 
 			// <TaxonNames>
+			logger.info("start TaxonNames ...");
 			Element elTaxonNames = elDataset.getChild("TaxonNames",sddNamespace);
 			// <TaxonName id="t1" uri="urn:lsid:authority:namespace:my-own-id">
 			List<Element> listTaxonNames = elTaxonNames.getChildren("TaxonName", sddNamespace);
@@ -220,7 +245,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 			//for each TaxonName
 			for (Element elTaxonName : listTaxonNames){
-				if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + (j-1));}
+				
 				String id = elTaxonName.getAttributeValue("id");
 				String uri = elTaxonName.getAttributeValue("uri");
 				// <Representation>
@@ -232,16 +257,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				NonViralName tnb = NonViralName.NewInstance(null);
 				tnb.setCreated(created);
 				tnb.setUpdated(updated);
-				if ((lang.equals("la")) || (lang.equals(""))) {
-					tnb.setTitleCache(label);
-				}
+				tnb.setTitleCache(label);
 				if (!id.equals("")) {
 					taxonNameBases.put(id,tnb);
 				}
 
+				if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
+				
 			}
 
 			// <Characters>
+			logger.info("start Characters ...");
 			Element elCharacters = elDataset.getChild("Characters", sddNamespace);
 
 			// <CategoricalCharacter id="c1">
@@ -249,8 +275,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			j = 0;
 			//for each CategoricalCharacter
 			for (Element elCategoricalCharacter : elCategoricalCharacters){
-
-				if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + (j-1));}
 
 				try {
 
@@ -302,6 +326,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
+				if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
+				
 			}
 
 			// <QuantitativeCharacter id="c2">
@@ -309,8 +335,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			j = 0;
 			//for each QuantitativeCharacter
 			for (Element elQuantitativeCharacter : elQuantitativeCharacters){
-
-				if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + (j-1));}
 
 				try {
 
@@ -334,28 +358,38 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					//  <Label role="Abbrev">m</Label>
 					// </MeasurementUnit>
 					Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
-					Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
-					String role = elLabel.getAttributeValue("role");
-					label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
+					label = "";
+					String role = "";
+					if (elMeasurementUnit != null) {
+						Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
+						role = elLabel.getAttributeValue("role");
+						label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
+					}
 
 					MeasurementUnit unit = null;
 					if (!label.equals("")){
-						if (role.equals("Abbrev")){
-							unit = MeasurementUnit.NewInstance(label,label,label);
+						if (role != null) {
+							if (role.equals("Abbrev")){
+								unit = MeasurementUnit.NewInstance(label,label,label);
+							}
 						} else {
 							unit = MeasurementUnit.NewInstance(label,label,label);
 						}
 					}
 
-					units.put(idQC, unit);
+					if (unit != null) {
+						units.put(idQC, unit);
+					}
 
 					//<Default>
 					//  <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
 					//</Default>
 					Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
-					String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
-					if (!measurementUnitPrefix.equals("")){
-						defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
+					if (elDefault != null) {
+						String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
+						if (!measurementUnitPrefix.equals("")){
+							defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
+						}
 					}
 
 					features.put(idQC, quantitativeCharacter);
@@ -366,6 +400,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
+				if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + j);}
+				
 			}
 
 			// <TextCharacter id="c3">
@@ -373,8 +409,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			j = 0;
 			//for each TextCharacter
 			for (Element elTextCharacter : elTextCharacters){
-
-				if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + (j-1));}
 
 				try {
 
@@ -387,30 +421,29 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					Element elLabel = elRepresentation.getChild("Label",sddNamespace);
 					nameLang = elLabel.getAttributeValue("lang",xmlNamespace);
 					Language language = Language.NewInstance();
-					if (!nameLang.equals("")) {
-						if(nameLang.equals("en")) {
-							language = Language.ENGLISH();
+					if (nameLang != null) {
+						if (!nameLang.equals("")) {
+							if(nameLang.equals("en")) {
+								language = Language.ENGLISH();
+							}
 						}
+					} else {
+						language = datasetLanguage;
 					}
+
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 
 					Feature textCharacter = Feature.NewInstance();
 
-					if (!idTC.equals("")){
-						textCharacter = Feature.NewInstance(label, label, label);
+					if (label != null) {
+						if (!label.equals("")){
+							textCharacter = Feature.NewInstance(label, label, label);
+							textCharacter.setLabel(label, language);
+						}
 					}
+
 					textCharacter.setSupportsQuantitativeData(false);
 					textCharacter.setSupportsTextData(true);
-					textCharacter.setLabel(label, language);
-
-					Map<String,String> textCharacters = new HashMap<String,String>();
-					Map<String,Language> textCharactersLang = new HashMap<String,Language>();			
-					if ((!idTC.equals("")) && (!label.equals(""))){
-						textCharacters.put(idTC, label);
-					}
-					if (!idTC.equals("")){
-						textCharactersLang.put(idTC, language);
-					}
 
 					features.put(idTC, textCharacter);
 
@@ -420,9 +453,12 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
+				if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + j);}
+				
 			}
 
 			// <CodedDescriptions>
+			logger.info("start CodedDescriptions ...");
 			Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
 
 			// <CodedDescription id="D101">
@@ -432,8 +468,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			Map<String,String> citations = new HashMap<String,String>();
 			Map<String,String> locations = new HashMap<String,String>();
 			for (Element elCodedDescription : listCodedDescriptions){
-
-				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + (j-1));}
 
 				try {
 
@@ -454,119 +488,138 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					//  <Citation ref="p1" location="p. 30"/>
 					// </Scope>
 					Element elScope = elCodedDescription.getChild("Scope",sddNamespace);
-					Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
-					String ref = elTaxonName.getAttributeValue("ref");
+					String ref = "";
+					if (elScope != null) {
+						Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
+						ref = elTaxonName.getAttributeValue("ref");
 
-					NonViralName taxonNameBase = taxonNameBases.get(ref);
-					taxon = Taxon.NewInstance(taxonNameBase, null);
+						NonViralName taxonNameBase = taxonNameBases.get(ref);
+						taxon = Taxon.NewInstance(taxonNameBase, null);
+					}
+
 					taxon.setCreated(created);
 					taxon.setUpdated(updated);
 
-					Element elCitation = elScope.getChild("Citation",sddNamespace);
-					String refCitation = elCitation.getAttributeValue("ref");
-					String location = elCitation.getAttributeValue("location");
+					String refCitation = "";
+					String location = "";
+
+					if (elScope != null) {
+						Element elCitation = elScope.getChild("Citation",sddNamespace);
+						if (elCitation != null) {
+							refCitation = elCitation.getAttributeValue("ref");
+							location = elCitation.getAttributeValue("location");
+						}
+					}
 
 					// <SummaryData>
 					Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
 
-					// <Categorical ref="c4">
-					List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
-					int k = 0;
-					//for each Categorical
-					for (Element elCategorical : elCategoricals){
-						if ((++k % modCount) == 0){ logger.info("Categorical handled: " + (k-1));}
-						ref = elCategorical.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						CategoricalData categoricalData = CategoricalData.NewInstance();
-						categoricalData.setFeature(feature);
+					if (elSummaryData != null) {
 
-						// <State ref="s3"/>
-						List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
-						int l = 0;
-						//for each State
-						for (Element elState : elStates){
-							if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-							ref = elState.getAttributeValue("ref");
-							State state = states.get(ref);
-							categoricalData.addState(state);
+						// <Categorical ref="c4">
+						List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
+						int k = 0;
+						//for each Categorical
+						for (Element elCategorical : elCategoricals){
+							if ((++k % modCount) == 0){ logger.info("Categorical handled: " + (k-1));}
+							ref = elCategorical.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							CategoricalData categoricalData = CategoricalData.NewInstance();
+							categoricalData.setFeature(feature);
+
+							// <State ref="s3"/>
+							List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
+							int l = 0;
+							//for each State
+							for (Element elState : elStates){
+								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+								ref = elState.getAttributeValue("ref");
+								State state = states.get(ref);
+								categoricalData.addState(state);
+							}
+							taxonDescription.addElement(categoricalData);
 						}
-						taxonDescription.addElement(categoricalData);
-					}
 
-					// <Quantitative ref="c2">
-					List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
-					k = 0;
-					//for each Quantitative
-					for (Element elQuantitative : elQuantitatives){
-						if ((++k % modCount) == 0){ logger.info("Quantitative handled: " + (k-1));}
-						ref = elQuantitative.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						QuantitativeData quantitativeData = QuantitativeData.NewInstance();
-						quantitativeData.setFeature(feature);
+						// <Quantitative ref="c2">
+						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
+						k = 0;
+						//for each Quantitative
+						for (Element elQuantitative : elQuantitatives){
+							if ((++k % modCount) == 0){ logger.info("Quantitative handled: " + (k-1));}
+							ref = elQuantitative.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							QuantitativeData quantitativeData = QuantitativeData.NewInstance();
+							quantitativeData.setFeature(feature);
 
-						MeasurementUnit unit = units.get(ref);
-						String prefix = defaultUnitPrefixes.get(ref);
-						String u = unit.getLabel();
-						u = prefix + u;
-						unit.setLabel(u);
-						quantitativeData.setUnit(unit);
-
-						// <Measure type="Min" value="2.3"/>
-						List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
-						int l = 0;
-						//for each State
-						for (Element elMeasure : elMeasures){
-							if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-							String type = elMeasure.getAttributeValue("type");
-							value = elMeasure.getAttributeValue("value");
-							float v = Float.parseFloat(value);
-							StatisticalMeasure t = null;
-							if (type.equals("Min")) {
-								t = StatisticalMeasure.MIN();
-							} else if (type.equals("Mean")) {
-								t = StatisticalMeasure.AVERAGE();
-							} else if (type.equals("Max")) {
-								t = StatisticalMeasure.MAX();
-							} else if (type.equals("SD")) {
-								// Create a new StatisticalMeasure for standard deviation
-								t = StatisticalMeasure.STANDARD_DEVIATION();
-							} else if (type.equals("N")) {
-								t = StatisticalMeasure.SAMPLE_SIZE();
-							} else {
-								t = StatisticalMeasure.NewInstance(type,type,type);
-								statisticalMeasures.add(t);
+							MeasurementUnit unit = units.get(ref);
+							String prefix = defaultUnitPrefixes.get(ref);
+							if (unit != null) {
+								String u = unit.getLabel();
+								if (prefix != null) {
+									u = prefix + u;
+								}
+								unit.setLabel(u);
+								quantitativeData.setUnit(unit);
 							}
 
-							StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
-							statisticalValue.setValue(v);
-							statisticalValue.setType(t);
-							quantitativeData.addStatisticalValue(statisticalValue);
-							featureData.add(statisticalValue);
+							// <Measure type="Min" value="2.3"/>
+							List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
+							int l = 0;
+							//for each State
+							for (Element elMeasure : elMeasures){
+								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+								String type = elMeasure.getAttributeValue("type");
+								value = elMeasure.getAttributeValue("value");
+								float v = Float.parseFloat(value);
+								StatisticalMeasure t = null;
+								if (type.equals("Min")) {
+									t = StatisticalMeasure.MIN();
+								} else if (type.equals("Mean")) {
+									t = StatisticalMeasure.AVERAGE();
+								} else if (type.equals("Max")) {
+									t = StatisticalMeasure.MAX();
+								} else if (type.equals("SD")) {
+									// Create a new StatisticalMeasure for standard deviation
+									t = StatisticalMeasure.STANDARD_DEVIATION();
+								} else if (type.equals("N")) {
+									t = StatisticalMeasure.SAMPLE_SIZE();
+								} else {
+									t = StatisticalMeasure.NewInstance(type,type,type);
+									statisticalMeasures.add(t);
+								}
+
+								StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
+								statisticalValue.setValue(v);
+								statisticalValue.setType(t);
+								quantitativeData.addStatisticalValue(statisticalValue);
+								featureData.add(statisticalValue);
+							}
+							taxonDescription.addElement(quantitativeData);
 						}
-						taxonDescription.addElement(quantitativeData);
-					}
 
-					// <TextChar ref="c3">
-					List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
-					k = 0;
-					//for each TextChar
-					for (Element elTextChar : elTextChars){
-						if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
-						ref = elTextChar.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						TextData textData = TextData.NewInstance();
-						textData.setFeature(feature);
+						// <TextChar ref="c3">
+						List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
+						k = 0;
+						//for each TextChar
+						for (Element elTextChar : elTextChars){
+							if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
+							ref = elTextChar.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							TextData textData = TextData.NewInstance();
+							textData.setFeature(feature);
 
-						// <Content>Free form text</Content>
-						String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
-						textData.putText(content, datasetLanguage);
-						taxonDescription.addElement(textData);
+							// <Content>Free form text</Content>
+							String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
+							textData.putText(content, datasetLanguage);
+							taxonDescription.addElement(textData);
+						}
+
 					}
 
 					taxonDescription.addSource(originalSource);
 					taxon.addDescription(taxonDescription);
 
-					if (!ref.equals("")){
+					if (!refCitation.equals("")){
 						citations.put(idCD,refCitation);
 					}
 
@@ -582,9 +635,12 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
+				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
+				
 			}
 
 			// <Agents>
+			logger.info("start Agents ...");
 			Element elAgents = elDataset.getChild("Agents",sddNamespace);
 
 			// <Agent id="a1">
@@ -592,8 +648,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			j = 0;
 			//for each Agent
 			for (Element elAgent : listAgents){
-
-				if ((++j % modCount) == 0){ logger.info("elAgent handled: " + (j-1));}
 
 				try {
 
@@ -631,8 +685,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						//for each Link
 						for (Element elLink : listLinks){
 
-							if ((++k % modCount) == 0){ logger.info("elLink handled: " + (k-1));}
-
 							try {
 
 								String rel = elLink.getAttributeValue("rel");
@@ -649,6 +701,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 								success = false; 
 							}
 
+							if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
 
 						}
 					}
@@ -666,41 +719,47 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					success = false; 
 				}
 
-
+				if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
+				
 			}
 
 			// <Publications>
+			logger.info("start Publications ...");
 			Element elPublications = elDataset.getChild("Publications",sddNamespace);
 
-			// <Publication id="p1">
-			List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
-			j = 0;
-			//for each Publication
-			for (Element elPublication : listPublications){
+			if (elPublications != null) {
+				// <Publication id="p1">
+				List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
+				j = 0;
+				//for each Publication
+				for (Element elPublication : listPublications){
 
-				if ((++j % modCount) == 0){ logger.info("elAgent handled: " + (j-1));}
+					try {
 
-				try {
+						String idP = elPublication.getAttributeValue("id");
 
-					String idP = elPublication.getAttributeValue("id");
+						//  <Representation>
+						//   <Label>Sample Citation</Label>
+						//  </Representation>
+						elRepresentation = elPublication.getChild("Representation",sddNamespace);
+						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						Article publication = Article.NewInstance();
+						publication.setTitle(label);
 
-					//  <Representation>
-					//   <Label>Sample Citation</Label>
-					//  </Representation>
-					elRepresentation = elPublication.getChild("Representation",sddNamespace);
-					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-					Article publication = Article.NewInstance();
-					publication.setTitle(label);
+						publications.put(idP,publication);
 
-					publications.put(idP,publication);
+					} catch (Exception e) {
+						//FIXME
+						logger.warn("Import of Publication " + j + " failed.");
+						success = false; 
+					}
 
-				} catch (Exception e) {
-					//FIXME
-					logger.warn("Import of Agent " + j + " failed.");
-					success = false; 
+					if ((++j % modCount) == 0){ logger.info("Publications handled: " + j);}
+					
 				}
-
 			}
+
+			logger.info("MediaObjects to implement still");
 
 			for (Iterator<TaxonDescription> taxonDescription = taxonDescriptions.values().iterator() ; taxonDescription.hasNext() ;){
 				TaxonDescription td = taxonDescription.next();
@@ -746,6 +805,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				}
 			}
 
+			if ((++i % modCount) == 0){ logger.info("Datasets handled: " + i);}
+			
 		}
 		logger.info(i + " Datasets handled");
 
@@ -763,11 +824,15 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			feature.setUpdated(updated);
 			termService.saveTerm(feature); 
 		}
-		for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
-			MeasurementUnit unit = k.next();
-			unit.setCreated(created);
-			unit.setUpdated(updated);
-			termService.saveTerm(unit); 
+		if (units != null) {
+			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
+				MeasurementUnit unit = k.next();
+				if (unit != null) {
+					unit.setCreated(created);
+					unit.setUpdated(updated);
+					termService.saveTerm(unit); 
+				}
+			}
 		}
 		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
 			StatisticalMeasure sm = k.next();
