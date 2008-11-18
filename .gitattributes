@@ -216,6 +216,7 @@ cdmlib-commons/pom.xml -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AccountStore.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DoubleResult.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/MediaMetaData.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/XmlHelp.java -text

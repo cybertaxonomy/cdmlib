@@ -2,10 +2,10 @@ package eu.etaxonomy.cdm.io.synthesys;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -15,10 +15,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
-
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.io.synthesys.SpecimenImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -72,66 +71,10 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 
 	/*
-	 * Store the Excel's data into variables
-	 * @param fileName: the location of the Excel file
-	 * @return the list of units data
-	 */
-	private static ArrayList<Hashtable<String, String>> parseXLS(String fileName) {
-		ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String,String>>();
-
-		try {
-			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName));
-			HSSFWorkbook wb = new HSSFWorkbook(fs);
-			HSSFSheet sheet = wb.getSheetAt(0);
-			HSSFRow row;
-			HSSFCell cell;
-
-			int rows; // No of rows
-			rows = sheet.getPhysicalNumberOfRows();
-
-			int cols = 0; // No of columns
-			int tmp = 0;
-
-			// This trick ensures that we get the data properly even if it doesn't start from first few rows
-			for(int i = 0; i < 10 || i < rows; i++) {
-				row = sheet.getRow(i);
-				if(row != null) {
-					tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-					if(tmp > cols) cols = tmp;
-				}
-			}
-			Hashtable<String, String> headers = null;
-			ArrayList<String> columns = new ArrayList<String>();
-			row = sheet.getRow(0);
-			for (int c =0; c<cols; c++){
-				cell = row.getCell(c);
-				columns.add(cell.toString());
-			}
-			for(int r = 1; r < rows; r++) {
-				row = sheet.getRow(r);
-				headers = new Hashtable<String, String>();
-				if(row != null) {
-					for(int c = 0; c < cols; c++) {
-						cell = row.getCell((short)c);
-						if(cell != null) {
-							headers.put(columns.get(c),cell.toString());
-						}
-					}
-				}
-				units.add(headers);
-			}
-
-		} catch(Exception ioe) {
-			ioe.printStackTrace();
-		}
-		return units;
-	}
-
-	/*
 	 * Store the unit's properties into variables
 	 * @param unit: the hashmap containing the splitted Excel line (Key=column name, value=value)
 	 */
-	private void setUnitPropertiesExcel(Hashtable<String,String> unit){
+	private void setUnitPropertiesExcel(HashMap<String,String> unit){
 		String author = unit.get("author");
 		author=author.replaceAll("None","");
 		String taxonName = unit.get("taxonName");
@@ -482,9 +425,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 		SynthesysIO test = new SynthesysIO();
 		String sourceName = config.getSourceNameString();
 
-		ArrayList<Hashtable<String,String>> unitsList = parseXLS(sourceName);
+		ArrayList<HashMap<String,String>> unitsList = ExcelUtils.parseXLS(sourceName);
 		if (unitsList != null){
-			Hashtable<String,String> unit=null;
+			HashMap<String,String> unit=null;
 			for (int i=0; i<unitsList.size();i++){
 				unit = unitsList.get(i);
 				test.setUnitPropertiesExcel(unit);//and then invoke

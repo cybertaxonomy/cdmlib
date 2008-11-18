@@ -9,22 +9,18 @@
 
 package eu.etaxonomy.cdm.app.synthesysImport;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Agent;
@@ -83,68 +79,7 @@ public class SynthesysCacheActivator {
 	protected HSSFWorkbook hssfworkbook = null;
 
 
-
-	private ArrayList<Hashtable<String, String>> parseXLS() {
-		String filename = "/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
-//		String filename = "/home/patricia/Desktop/synthesys.xls";
-		ArrayList<Hashtable<String, String>> units = new ArrayList<Hashtable<String,String>>();
-		
-		try {
-			POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(filename));
-			HSSFWorkbook wb = new HSSFWorkbook(fs);
-			HSSFSheet sheet = wb.getSheetAt(0);
-			HSSFRow row;
-			HSSFCell cell;
-
-			int rows; // No of rows
-			rows = sheet.getPhysicalNumberOfRows();
-
-			int cols = 0; // No of columns
-			int tmp = 0;
-
-			// This trick ensures that we get the data properly even if it doesn't start from first few rows
-			for(int i = 0; i < 10 || i < rows; i++) {
-				row = sheet.getRow(i);
-				if(row != null) {
-					tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-					if(tmp > cols) cols = tmp;
-				}
-			}
-
-			
-			Hashtable<String, String> headers = null;
-			ArrayList<String> columns = new ArrayList<String>();
-			row = sheet.getRow(0);
-			for (int c =0; c<cols; c++){
-				cell = row.getCell(c);
-				columns.add(cell.toString());
-			}
-			for(int r = 1; r < rows; r++) {
-				row = sheet.getRow(r);
-				headers = new Hashtable<String, String>();
-				if(row != null) {
-					for(int c = 0; c < cols; c++) {
-						cell = row.getCell((short)c);
-						if(cell != null) {
-							headers.put(columns.get(c),cell.toString());
-						}
-					}
-				}
-				units.add(headers);
-			}
-			System.out.println("units: "+units);
-
-			
-
-
-		} catch(Exception ioe) {
-			ioe.printStackTrace();
-		}
-		return units;
-	}
-
-
-	public void saveUnit(Hashtable<String,String> unit){
+	public void saveUnit(HashMap<String,String> unit){
 		String author = unit.get("author");
 		author=author.replaceAll("None","");
 		String taxonName = unit.get("taxonName");
@@ -506,10 +441,12 @@ public class SynthesysCacheActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		String filename = "/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
+		
 		logger.info("main method");
 		SynthesysCacheActivator abcdAct = new SynthesysCacheActivator();
-		ArrayList<Hashtable<String,String>> units = abcdAct.parseXLS();
-		Hashtable<String,String> unit=null;
+		ArrayList<HashMap<String,String>> units = ExcelUtils.parseXLS(filename);
+		HashMap<String,String> unit=null;
 		for (int i=0; i<units.size();i++){
 			unit = units.get(i);
 			System.out.println(unit);

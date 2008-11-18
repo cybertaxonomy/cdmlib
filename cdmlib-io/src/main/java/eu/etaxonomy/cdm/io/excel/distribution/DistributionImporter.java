@@ -20,6 +20,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -80,7 +81,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 //		}
 		
 		// read and save all rows of the excel worksheet
-    	ArrayList<HashMap<String, String>> recordList = parseXLS(config.getSourceNameString());
+    	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
     	if (recordList != null) {
     		HashMap<String,String> record = null;
     		for (int i = 0; i < recordList.size(); i++) {
@@ -265,60 +266,6 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     		resultList.add(tag);
     	}
         return resultList;
-    }
-    
-
-    /** Reads all rows of an Excel worksheet */
-    private static ArrayList<HashMap<String, String>> parseXLS(String fileName) {
-    	
-    	ArrayList<HashMap<String, String>> recordList = new ArrayList<HashMap<String, String>>();
-
-    	try {
-    		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName));
-    		HSSFWorkbook wb = new HSSFWorkbook(fs);
-    		HSSFSheet sheet = wb.getSheetAt(0);
-    		HSSFRow row;
-    		HSSFCell cell;
-
-    		int rows; // No of rows
-    		rows = sheet.getPhysicalNumberOfRows();
-
-    		int cols = 0; // No of columns
-    		int tmp = 0;
-
-    		// This trick ensures that we get the data properly even if it doesn't start from first few rows
-    		for(int i = 0; i < 10 || i < rows; i++) {
-    			row = sheet.getRow(i);
-    			if(row != null) {
-    				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-    				if(tmp > cols) cols = tmp;
-    			}
-    		}
-    		HashMap<String, String> headers = null;
-    		ArrayList<String> columns = new ArrayList<String>();
-    		row = sheet.getRow(0);
-    		for (int c = 0; c < cols; c++){
-    			cell = row.getCell(c);
-    			columns.add(cell.toString());
-    		}
-    		for(int r = 1; r < rows; r++) {
-    			row = sheet.getRow(r);
-    			headers = new HashMap<String, String>();
-    			if(row != null) {
-    				for(int c = 0; c < cols; c++) {
-    					cell = row.getCell((short)c);
-    					if(cell != null) {
-    						headers.put(columns.get(c), cell.toString());
-    					}
-    				}
-    			}
-    			recordList.add(headers);
-    		}
-
-    	} catch(Exception ioe) {
-    		ioe.printStackTrace();
-    	}
-    	return recordList;
     }
 
 	@Override
