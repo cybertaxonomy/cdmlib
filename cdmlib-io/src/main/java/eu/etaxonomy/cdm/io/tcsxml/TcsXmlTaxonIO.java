@@ -255,28 +255,25 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 				if (! scientific){
 					//TODO
 					logger.warn("Non scientific names not yet implemented");
+					success.setValue(false);
 				}
 			} catch (Exception e) {
 				logger.warn("Value for scientific is not boolean");
 			}
-			String language = elName.getAttributeValue("scientific");
+			String language = elName.getAttributeValue("language");
 			//TODO
 			//Language
 			if (language != null){
 				logger.warn("language for name not yet implemented");	
 			}
-			//Rank rank = null;
-			//IdentifiableEntity<?> obj = code.getNewTaxonNameInstance(rank);
 			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity<?>>)NonViralName.class;
 			if (code != null){
 				clazz = code.getCdmClass();
 			}
 			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
-				
-			//if ()
-			
-			logger.warn("makeName not yet implemented");
-			success.setValue(false);
+			if(result == null){
+				success.setValue(false);
+			}
 		}
 		return result;
 	}

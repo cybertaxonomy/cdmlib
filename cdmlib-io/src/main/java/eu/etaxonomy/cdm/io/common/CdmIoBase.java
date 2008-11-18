@@ -9,12 +9,15 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
@@ -69,6 +72,32 @@ public abstract class CdmIoBase implements ICdmIO {
 	
 	protected abstract boolean isIgnore(IImportConfigurator config);
 
-
+	protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){
+		T result = null;
+		try {
+			Constructor<? extends T> constructor = clazz.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			result = constructor.newInstance();
+		} catch (InstantiationException e) {
+			logger.error("Class " + clazz.getSimpleName()+" could not be instantiated. Class = " );
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			logger.error("Constructor of class "+clazz.getSimpleName()+" could not be accessed." );
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			logger.error("SecurityException for Constructor of class "+clazz.getSimpleName()+"." );
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			logger.error("Empty Constructor does not exist for class "+clazz.getSimpleName()+"." );
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			logger.error("Empty Constructor could not be invoked for class "+clazz.getSimpleName()+"." );
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 
 }

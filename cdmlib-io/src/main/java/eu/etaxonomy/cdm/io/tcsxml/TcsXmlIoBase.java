@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,6 +35,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -166,23 +170,17 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 		return result;
 	}
 	
-	//
+	
 	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
 		T result = null;
 		String linkType = element.getAttributeValue("linkType");
 		String ref = element.getAttributeValue("ref");
 		if(ref == null && linkType == null){
-			try {
-				result = clazz.newInstance();
-			} catch (InstantiationException e) {
-				logger.error("Class " + clazz.getSimpleName()+" could not be instantiated. Class = " );
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				logger.error("Constructor of class "+clazz.getSimpleName()+" could not be accessed." );
-				e.printStackTrace();
+			result = getInstance(clazz);
+			if (result != null){
+				String title = element.getTextNormalize();
+				result.setTitleCache(title);
 			}
-			String title = element.getTextNormalize();
-			result.setTitleCache(title);
 		}else if (linkType == null || linkType.equals("local")){
 			//TODO
 			result = objectMap.get(ref);
@@ -195,6 +193,9 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 			logger.warn("Other link types not yet implemented");
 		}else{
 			logger.warn("Unknown link type or missing ref");
+		}
+		if (result == null){
+			success.setValue(false);
 		}
 		return result;
 	}
