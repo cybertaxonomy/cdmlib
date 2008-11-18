@@ -170,7 +170,8 @@ public class DataSet {
     @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
     @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
-    protected List<VersionableEntity> featureData;
+//    protected List<VersionableEntity> featureData;
+    protected List<VersionableEntity<?>> featureData;
 
     @XmlElementWrapper(name = "LanguageData")
     @XmlElements({
@@ -290,7 +291,7 @@ public class DataSet {
     protected Set<RelationshipBase> relationships;
 
     @XmlElementWrapper(name = "Media_")
-    @XmlElement(name = "Media")
+    @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
 //    @XmlElements({
 //    	@XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Media.class),
 //    	@XmlElement(name = "MediaRepresentation", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MediaRepresentation.class),
@@ -308,7 +309,8 @@ public class DataSet {
 		
 		agents = new ArrayList<Agent>(); 
 		agentData = new ArrayList<VersionableEntity>();
-		featureData = new ArrayList<VersionableEntity>();
+//		featureData = new ArrayList<VersionableEntity>();
+		featureData = new ArrayList<VersionableEntity<?>>();
 		languageData = new ArrayList<LanguageStringBase>();
 		terms = new ArrayList<DefinedTermBase>();
 		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
@@ -556,7 +558,8 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public List<VersionableEntity> getFeatureData() {
+//    public List<VersionableEntity> getFeatureData() {
+    public List<VersionableEntity<?>> getFeatureData() {
         return featureData;
     }
 
@@ -568,10 +571,19 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public void setFeatureData(List<? extends VersionableEntity> value) {
-        this.featureData = new ArrayList<VersionableEntity>();
-        featureData.addAll(value);
+    public <T extends VersionableEntity> void setFeatureData(List<T> value) {
+        featureData = new ArrayList<VersionableEntity<?>>();
+    	for (T featureItem: value) {
+    		this.featureData.add(featureItem);
+    	}
     }
+
+//    public void setFeatureData(List<? extends VersionableEntity> value) {
+    //public void setFeatureData(List<? extends VersionableEntity<?>> value) {
+//        this.featureData = new ArrayList<VersionableEntity>();
+    //    this.featureData = new ArrayList<VersionableEntity<?>>();
+    //    featureData.addAll(value);
+    //}
     
     /**
      * Adds the features in value to the language data property list.

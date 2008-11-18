@@ -90,7 +90,8 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 		List<DescriptionBase> descriptions;
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
-		List<VersionableEntity> featureData;
+		List<VersionableEntity<?>> featureData;
+//		List<VersionableEntity> featureData;
 		List<VersionableEntity> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
