@@ -40,7 +40,13 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-public class NomenclaturalCode extends DefinedTermBase {
+public class NomenclaturalCode extends DefinedTermBase<NomenclaturalCode> {
+	
+	/**
+	 * SerialVersionUID
+	 */
+	private static final long serialVersionUID = -1011240079962589681L;
+
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 
 	private static final UUID uuidIcnb = UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e");
@@ -139,8 +145,8 @@ public class NomenclaturalCode extends DefinedTermBase {
 	 * @see 			ViralName#NewInstance(Rank)
 	 */
 	@Transient
-	public TaxonNameBase getNewTaxonNameInstance(Rank rank){
-		TaxonNameBase result;
+	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
+		TaxonNameBase<?,?> result;
 		if (this.equals(NomenclaturalCode.ICBN())){
 			result = BotanicalName.NewInstance(rank);
 		}else if (this.equals(NomenclaturalCode.ICZN())){
@@ -151,6 +157,38 @@ public class NomenclaturalCode extends DefinedTermBase {
 			result = BacterialName.NewInstance(rank);
 		}else if (this.equals(NomenclaturalCode.ICVCN())){
 			result = ViralName.NewInstance(rank);
+		}else {
+			logger.warn("Unknown nomenclatural code: " + this.getUuid());
+			result = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * Creates a new particular {@link TaxonNameBase taxon name} (botanical, zoological,
+	 * cultivar plant, bacterial or viral name) instance depending on <i>this</i>
+	 * nomenclature code only containing the given {@link Rank rank}.
+	 * 
+	 * @param	rank	the rank of the new taxon name instance
+	 * @see 			BotanicalName#NewInstance(Rank)
+	 * @see 			ZoologicalName#NewInstance(Rank)
+	 * @see 			CultivarPlantName#NewInstance(Rank)
+	 * @see 			BacterialName#NewInstance(Rank)
+	 * @see 			ViralName#NewInstance(Rank)
+	 */
+	@Transient
+	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
+		Class<? extends T> result;
+		if (this.equals(NomenclaturalCode.ICBN())){
+			result = (Class<T>)BotanicalName.class;
+		}else if (this.equals(NomenclaturalCode.ICZN())){
+			result = (Class<T>)ZoologicalName.class;
+		}else if (this.equals(NomenclaturalCode.ICNCP())){
+			result = (Class<T>)CultivarPlantName.class;
+		}else if (this.equals(NomenclaturalCode.ICNB())){
+			result = (Class<T>)BacterialName.class;
+		}else if (this.equals(NomenclaturalCode.ICVCN())){
+			result = (Class<T>)ViralName.class;
 		}else {
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
 			result = null;
