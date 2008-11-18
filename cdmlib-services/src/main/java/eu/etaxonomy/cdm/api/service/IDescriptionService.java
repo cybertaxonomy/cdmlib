@@ -9,21 +9,17 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
