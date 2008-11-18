@@ -48,8 +48,8 @@ public class CdmExportImportActivator {
 	private static final Logger logger = Logger.getLogger(CdmExportImportActivator.class);
 
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_anahit";
-	private static final String destinationDbName = "cdm_test_anahit2";
+	private static final String sourceDbName = "cdm_edit_cichorieae";
+	private static final String destinationDbName = "cdm_test_jaxb2";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -141,6 +141,10 @@ public class CdmExportImportActivator {
 		JaxbImportConfigurator jaxbImport = 
 			JaxbImportConfigurator.NewInstance(fileName, destinationDb);
 
+//		jaxbImportConfigurator.setSource(fileName);
+//		jaxbImportConfigurator.setDestination(destinationDb);
+		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
+
 		jaxbImportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
 
 		jaxbImportConfigurator.setDoAuthors(doAgents);
@@ -159,10 +163,6 @@ public class CdmExportImportActivator {
 		jaxbImportConfigurator.setDoTerms(doTerms);
 		jaxbImportConfigurator.setDoTermVocabularies(doTermVocabularies);
 		jaxbImportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
-
-		jaxbImportConfigurator.setSource(fileName);
-//		jaxbImportConfigurator.setDestination(destinationDb);
-//		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
 
 		// invoke import
 		logger.debug("Invoking Jaxb import");
@@ -299,7 +299,7 @@ public class CdmExportImportActivator {
 //		appCtr = sc.initDb(destinationDb);
 //		sc.loadTestData(appCtr);
 		
-		sc.invokeExport();
+//		sc.invokeExport();
 		sc.invokeImport();
 	}
 
