@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -32,6 +33,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -215,10 +218,18 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 						}
 					}else if (isConceptRelationship){
 						//TODO
-						if (relQualifierFk == 11){
-							
+						ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
+						try {
+							TaxonRelationshipType relType = BerlinModelTransformer.taxonRelId2TaxonRelType(relQualifierFk, isInverse);	
+							if (! (taxon1 instanceof Taxon)){
+								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+							}else{
+								Taxon fromTaxon = (Taxon)taxon1;
+								fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
+							}
+						} catch (UnknownCdmTypeException e) {
+							logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
 						}
-						logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
 					}else {
 						//TODO
 						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");

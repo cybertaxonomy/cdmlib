@@ -5,10 +5,12 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 public final class BerlinModelTransformer {
@@ -91,6 +93,7 @@ public final class BerlinModelTransformer {
 	public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
 	public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
 	
+	
 
 	//TaxonStatus
 	public static int T_STATUS_ACCEPTED = 1;
@@ -134,6 +137,37 @@ public final class BerlinModelTransformer {
 			case 22: return TypeDesignationStatus.PHOTOTYPE();
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+			}
+		}
+	}
+	
+	//TypeDesignation
+	public static TaxonRelationshipType taxonRelId2TaxonRelType (int relTaxonTypeId, ResultWrapper<Boolean> isInverse)  throws UnknownCdmTypeException{
+		isInverse.setValue(false);
+		switch (relTaxonTypeId){
+			case 0: return null;
+			case 11: return TaxonRelationshipType.CONGRUENT_TO();
+			case 12: isInverse.setValue(true); return TaxonRelationshipType.INCLUDES();
+			case 13: isInverse.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_INCLUDES();
+			case 14: return TaxonRelationshipType.INCLUDES();
+			case 15: return TaxonRelationshipType.CONGRUENT_OR_INCLUDES();
+			case 16: return TaxonRelationshipType.INCLUDED_OR_INCLUDES();
+			case 17: return TaxonRelationshipType.CONGRUENT_OR_INCLUDED_OR_INCLUDES();
+			case 18: return TaxonRelationshipType.OVERLAPS();
+			case 19: return TaxonRelationshipType.CONGRUENT_OR_OVERLAPS();
+			case 20: isInverse.setValue(true); return TaxonRelationshipType.INCLUDES_OR_OVERLAPS();
+			case 21: isInverse.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS();
+			case 22: return TaxonRelationshipType.INCLUDES_OR_OVERLAPS();
+			case 23: return TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS();
+			case 24: return TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
+			
+			case 26: return TaxonRelationshipType.OVERLAPS();
+			//TODO other relationshipTypes
+			
+			//FIXME doubtful
+			case 43: return TaxonRelationshipType.CONGRUENT_TO();
+			default: {
+				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(relTaxonTypeId).toString() + ")");
 			}
 		}
 	}
