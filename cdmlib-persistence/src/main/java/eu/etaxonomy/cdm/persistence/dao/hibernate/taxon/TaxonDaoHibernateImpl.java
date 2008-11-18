@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
@@ -74,32 +74,32 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
-		
-		
+
+
 //		String query = "from Taxon root ";
 //		query += " where root.taxonomicParentCache is NULL ";
 //		if (sec != null){
-//			query += " AND root.sec.id = :sec "; 
+//		query += " AND root.sec.id = :sec "; 
 //		}		
 //		Query q = getSession().createQuery(query);
 //		if (sec != null){
-//			q.setInteger("sec", sec.getId());
+//		q.setInteger("sec", sec.getId());
 //		}
-		
-		
+
+
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		crit.add(Restrictions.isNull("taxonomicParentCache"));
 		if (sec != null){
 			crit.add(Restrictions.eq("sec", sec) );
 		}
-		
-		
+
+
 		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
 			logger.warn("no child taxa fetch qq");
 			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
 			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
 		}
-		
+
 		List<Taxon> results = new ArrayList<Taxon>();
 		for(Taxon taxon : (List<Taxon>) crit.list()){
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
@@ -112,6 +112,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		if (sec != null){
+			if(sec.getId() == 0){
+				getSession().save(sec);
+			}
 			crit.add(Restrictions.eq("sec", sec ) );
 		}
 		crit.createCriteria("name").add(Restrictions.like("nameCache", name));
@@ -125,25 +128,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO add page & pagesize criteria
 		return results;
 	}
-	
+
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(Synonym.class);
 		List<Synonym> results = crit.list();
 		return results;
 	}
-	
+
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		List<Taxon> results = crit.list();
 		return results;
 	}
-	
+
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(RelationshipBase.class);
 		List<RelationshipBase> results = crit.list();
 		return results;
 	}
-	
+
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		//getSession().update(taxonBase); doesn't work with lazy collections
@@ -199,17 +202,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return super.delete(taxonBase);
 	}
 
-	
+
 	// TODO add generic return type !!
 	public List findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted) {
-			ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-			//TODO ... Restrictions.eq(propertyName, value)
-			return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
-		
+		ArrayList<Criterion> criteria = new ArrayList<Criterion>();
+		//TODO ... Restrictions.eq(propertyName, value)
+		return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
+
 	}
-	
+
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
-		
+
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
 		crit.setProjection(Projections.rowCount());
@@ -217,9 +220,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
-	
+
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
-		
+
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
 		if(criteria != null){
@@ -231,5 +234,5 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		int result = ((Integer)crit.list().get(0)).intValue();
 		return result;
 	}
-	
+
 }
