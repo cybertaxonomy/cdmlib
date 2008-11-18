@@ -39,6 +39,7 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		specimenImportConfigurator.setReUseExistingMetadata(true);
 		specimenImportConfigurator.setReUseTaxon(true);
 		specimenImportConfigurator.setSourceReference(null);
+		specimenImportConfigurator.setTaxonReference(null);
 		
 		// invoke import
 		CdmDefaultImport<SpecimenImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenImportConfigurator>();

@@ -69,13 +69,14 @@ public class UnitsGatheringArea {
 	 */
 	public void setCountry(String iso, String fullName, SpecimenImportConfigurator config){
 		WaterbodyOrCountry country=null;
-		List<WaterbodyOrCountry>countries;
-		if (iso != null)
+		List<WaterbodyOrCountry>countries = new ArrayList<WaterbodyOrCountry>();
+		if (iso != null && iso !="")
 			country = config.getCdmAppController().getOccurrenceService().getCountryByIso(iso);
 		if (country != null)
 			this.area.addWaterbodyOrCountry(country);
 
 		else{
+			if (fullName != "")
 			countries = config.getCdmAppController().getOccurrenceService().getWaterbodyOrCountryByName(fullName);
 			if (countries.size() >0)
 				this.area.addWaterbodyOrCountry(countries.get(0));

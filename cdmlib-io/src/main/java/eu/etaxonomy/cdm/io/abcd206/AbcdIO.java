@@ -665,7 +665,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				try{
 					names = config.getCdmAppController().getTaxonService().searchTaxaByName(scientificName, sec);
 					taxon = (Taxon)names.get(0);
-					}
+				}
 				catch(Exception e){taxon=null;}
 			}
 //			taxonName = NonViralName.NewInstance(null);
@@ -699,7 +699,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
 			if (taxonName.hasProblem())
 				problem=true;
-			}
+		}
 		if (this.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
 			if (taxonName.hasProblem())
@@ -715,9 +715,9 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				problem=true;;
 		}
 //		if (this.nomenclatureCode.toString().equals("Viral")){
-//			ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
-//			if (taxonName.hasProblem())
-//				System.out.println("pb ICVCN");
+//		ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
+//		if (taxonName.hasProblem())
+//		System.out.println("pb ICVCN");
 //		}
 		//TODO: parsing of ViralNames?
 		if(problem){
@@ -725,7 +725,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			taxonName.setTitleCache(scientificName);
 		}
 		return taxonName;
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -830,12 +830,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			else return taxonName;
 		}
 //		if (this.nomenclatureCode.equals("Viral")){
-//			ViralName taxonName = ViralName.NewInstance(null);
-//			taxonName.setFullTitleCache(fullName, true);
-//			taxonName.setAcronym(getFromMap(atomisedMap,"Acronym"));
-//			if (taxonName.hasProblem())
-//				System.out.println("pb ICVCN");
-//			else return taxonName;
+//		ViralName taxonName = ViralName.NewInstance(null);
+//		taxonName.setFullTitleCache(fullName, true);
+//		taxonName.setAcronym(getFromMap(atomisedMap,"Acronym"));
+//		if (taxonName.hasProblem())
+//		System.out.println("pb ICVCN");
+//		else return taxonName;
 //		}
 		//TODO ViralName
 		NonViralName<?>taxonName = NonViralName.NewInstance(null);
@@ -881,7 +881,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		try {
 //			ReferenceBase sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
-			ReferenceBase sec = config.getSourceReference();
+			ReferenceBase sec = config.getTaxonReference();
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -967,12 +967,15 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 						imd = new ImageMetaData();
 						url = new URL(this.multimediaObjects.get(i));
 						imd = mmd.readImageMetaData(url, imd);
-						representation = MediaRepresentation.NewInstance();
-						imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
-						representation.addRepresentationPart(imf);
-						media = Media.NewInstance();
-						media.addRepresentation(representation);
-						fieldObservation.addMedia(media);
+						if (imd != null){
+							System.out.println("image not null");
+							representation = MediaRepresentation.NewInstance();
+							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
+							representation.addRepresentationPart(imf);
+							media = Media.NewInstance();
+							media.addRepresentation(representation);
+							fieldObservation.addMedia(media);
+						}
 					}
 				}
 			}

@@ -13,8 +13,10 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
+	private String taxonReference = null;
 
 		
+
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		System.out.println("makeIOClassList");
@@ -67,6 +69,18 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = Database.NewInstance();
 			sourceReference.setTitleCache("ABCD specimen import");
+		}
+		return sourceReference;
+	}
+	
+	public void setTaxonReference(String taxonReference) {
+		this.taxonReference = taxonReference;
+	}
+	
+	public ReferenceBase getTaxonReference() {
+		//TODO
+		if (this.taxonReference == null){
+			logger.info("getTaxonReference not yet fully implemented");
 		}
 		return sourceReference;
 	}

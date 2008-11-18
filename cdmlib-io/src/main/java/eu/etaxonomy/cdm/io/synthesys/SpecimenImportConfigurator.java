@@ -12,7 +12,9 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
-		
+	private boolean reuseTaxon = false;
+	private String taxonReference = null;
+	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -67,6 +69,18 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		}
 		return sourceReference;
 	}
+	
+	public void setTaxonReference(String taxonReference) {
+		this.taxonReference = taxonReference;
+	}
+	
+	public ReferenceBase getTaxonReference() {
+		//TODO
+		if (this.taxonReference == null){
+			logger.info("getTaxonReference not yet fully implemented");
+		}
+		return sourceReference;
+	}
 
 
 	/* (non-Javadoc)
@@ -94,6 +108,14 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	
 	public boolean getReUseExistingMetadata(){
 		return this.reuseMetadata;
+	}
+	
+	public void setReUseTaxon(boolean reuseTaxon){
+		this.reuseTaxon = reuseTaxon;
+	}
+	
+	public boolean getDoReUseTaxon(){
+		return this.reuseTaxon;
 	}
 	
 	

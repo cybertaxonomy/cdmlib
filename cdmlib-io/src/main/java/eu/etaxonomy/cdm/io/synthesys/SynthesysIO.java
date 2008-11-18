@@ -1,28 +1,29 @@
 package eu.etaxonomy.cdm.io.synthesys;
 
-import java.io.FileInputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.ExcelUtils;
+import eu.etaxonomy.cdm.common.MediaMetaData;
+import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
@@ -61,6 +63,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	protected ArrayList<String> gatheringAgentList;
 	protected ArrayList<String> identificationList;
 	protected ArrayList<String> namedAreaList;
+	protected ArrayList<String> multimediaObjects;
 
 	protected HSSFWorkbook hssfworkbook = null;
 
@@ -86,45 +89,52 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 		try {this.collectionCode = unit.get("collection").replaceAll("None", null);
 		} catch (Exception e) {this.collectionCode = "";}
-		
+
 		try {this.unitID = unit.get("unitID").replaceAll("None", null);
 		} catch (Exception e) {this.unitID = "";}
-		
+
 		try {this.recordBasis = unit.get("recordBasis").replaceAll("None", null);
 		} catch (Exception e) {this.recordBasis = "";}
-		
+
 		try {this.accessionNumber = null;
 		} catch (Exception e) {this.accessionNumber = "";}
-		
+
 		try {this.locality = unit.get("locality").replaceAll("None", null);
 		} catch (Exception e) {this.locality = "";}
-		
+
 		try {this.longitude = Double.valueOf(unit.get("longitude"));
 		} catch (Exception e) {this.longitude = 0.0;}
-		
+
 		try {this.latitude = Double.valueOf(unit.get("latitude"));
 		} catch (Exception e) {this.latitude = 0.0;}
-		
+
 		try {this.country = unit.get("country").replaceAll("None", null);
 		} catch (Exception e) {this.country = "";}
-		
+
 		try {this.isocountry = unit.get("isoCountry").replaceAll("None", null);
 		} catch (Exception e) {this.isocountry = "";}
-		
+
 		try {this.fieldNumber = unit.get("field number").replaceAll("None", null);
 		} catch (Exception e) {this.fieldNumber = "";}
-		
+
 		try {this.collectorsNumber = unit.get("collector number").replaceAll("None", null);
 		} catch (Exception e) {this.collectorsNumber = "";}
-		
+
+		try {
+			String url =unit.get("url");		
+			url=url.replaceAll("None", null);
+			this.multimediaObjects.add(url);
+		} catch (Exception e) {this.multimediaObjects = new ArrayList<String>();}
+
 		try {
 			String coll =unit.get("collector");		
 			coll=coll.replaceAll("None", null);
 			this.gatheringAgentList.add(coll);
 		} catch (Exception e) {this.gatheringAgentList = new ArrayList<String>();}
-		
+
 		try {this.identificationList.add(taxonName+" "+author);
 		} catch (Exception e) {this.identificationList = new ArrayList<String>();}
+
 	}
 
 	private Institution getInstitution(String institutionCode, SpecimenImportConfigurator config){
@@ -198,11 +208,11 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param sec
 	 */
 	private void setTaxonNameBase(SpecimenImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec){
-		TaxonNameBase taxonName = null;
+		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
-		List<TaxonNameBase> names = null;
+		List<TaxonBase> names = null;
 
 		String scientificName="";
 		boolean preferredFlag=false;
@@ -227,21 +237,17 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 				taxonName = this.parseScientificName(scientificName);	
 			else taxonName.setTitleCache(scientificName);
 
-			if (true){
-				names = config.getCdmAppController().getNameService().getNamesByName(scientificName);
-				if (names.size() == 0){
-					System.out.println("Name not found: " + scientificName);
-				}else{
-					if (names.size() > 1){
-						System.out.println("More then 1 name found: " + scientificName);
-					}
-					System.out.println("Name found");
-					taxonName = names.get(0);
+			if (config.getDoReUseTaxon()){
+				try{
+					names = config.getCdmAppController().getTaxonService().searchTaxaByName(scientificName, sec);
+					taxon = (Taxon)names.get(0);
 				}
+				catch(Exception e){taxon=null;}
 			}
-
-			config.getCdmAppController().getNameService().saveTaxonName(taxonName);
-			taxon = Taxon.NewInstance(taxonName, sec); //sec set null
+			if (!config.getDoReUseTaxon() || taxon == null){
+				config.getCdmAppController().getNameService().saveTaxonName(taxonName);
+				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
+			}
 
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
@@ -257,42 +263,51 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 	}
 
-	private TaxonNameBase parseScientificName(String scientificName){
-		System.out.println("scientificName");
-		TaxonNameBase taxonName = null;
+	private NonViralName<?> parseScientificName(String scientificName){
+		System.out.println("parseScientificName");
 		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+		NonViralName<?>taxonName = null;
+		boolean problem=false;
 
 		System.out.println("nomenclature: "+this.nomenclatureCode);
-		if (this.nomenclatureCode == "Zoological"){
+
+		if(this.nomenclatureCode == null){
+			taxonName = NonViralName.NewInstance(null);
+			taxonName.setTitleCache(scientificName);
+			return taxonName;
+		}
+
+		if (this.nomenclatureCode.toString().equals("Zoological")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICZN");}
-		if (this.nomenclatureCode == "Botanical"){
+				problem=true;
+		}
+		if (this.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICBN");}
-		if (this.nomenclatureCode == "Bacterial"){
+				problem=true;;}
+		if (this.nomenclatureCode.toString().equals("Bacterial")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNB");
+				problem=true;
 		}
-		if (this.nomenclatureCode == "Cultivar"){
+		if (this.nomenclatureCode.toString().equals("Cultivar")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNCP");
+				problem=true;;
 		}
-		if (this.nomenclatureCode == "Viral"){
-			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
-			if (taxonName.hasProblem())
-				System.out.println("pb ICVCN");
+//		if (this.nomenclatureCode.toString().equals("Viral")){
+//		ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
+//		if (taxonName.hasProblem())
+//		System.out.println("pb ICVCN");
+//		}
+		//TODO: parsing of ViralNames?
+		if(problem){
+			taxonName = NonViralName.NewInstance(null);
+			taxonName.setTitleCache(scientificName);
 		}
-		try{taxonName.hasProblem();}
-		catch (Exception e) {
-			taxonName = nvnpi.parseFullName(scientificName);
-		}
-		if (taxonName.hasProblem())
-			taxonName = nvnpi.parseFullName(scientificName);
 		return taxonName;
+
 	}
 
 
@@ -318,7 +333,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 
 		tx = app.startTransaction();
 		try {
-			ReferenceBase sec = null;
+			ReferenceBase sec = config.getTaxonReference();
 
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
@@ -377,10 +392,11 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,config);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
-			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);
-			ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
-			for (int i=0; i<nas.size();i++)
-				unitsGatheringEvent.addArea(nas.get(i));
+			//Only for ABCD XML data
+//			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);
+//			ArrayList<NamedArea> nas = unitsGatheringArea.getAreas();
+//			for (int i=0; i<nas.size();i++)
+//				unitsGatheringEvent.addArea(nas.get(i));
 
 
 			//create field/observation
@@ -389,7 +405,32 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			fieldObservation.setFieldNumber(this.fieldNumber);
 			//join gatheringEvent to fieldObservation
 			fieldObservation.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
-
+			//add Multimedia URLs
+			if(this.multimediaObjects.size()>0){
+				MediaRepresentation representation;
+				Media media;
+				MediaMetaData mmd ;
+				ImageMetaData imd ;
+				URL url ;
+				ImageFile imf;
+				for (int i=0;i<this.multimediaObjects.size();i++){
+					if(this.multimediaObjects.get(i) != null){
+						mmd = new MediaMetaData();
+						imd = new ImageMetaData();
+						url = new URL(this.multimediaObjects.get(i));
+						imd = MediaMetaData.readImageMetaData(url, imd);
+						if (imd != null){
+							System.out.println("image not null");
+							representation = MediaRepresentation.NewInstance();
+							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
+							representation.addRepresentationPart(imf);
+							media = Media.NewInstance();
+							media.addRepresentation(representation);
+							fieldObservation.addMedia(media);
+						}
+					}
+				}
+			}
 //			//link fieldObservation and specimen
 			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
 			derivationEvent.addOriginal(fieldObservation);
@@ -400,8 +441,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 			 */			
 
 			app.getTermService().saveTerm(areaCountry);//save it sooner
-			for (int i=0; i<nas.size();i++)
-				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
+			//ONLY FOR ABCD XML DATA
+//			for (int i=0; i<nas.size();i++)
+//				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
 			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 
@@ -424,8 +466,13 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 		System.out.println("INVOKE Specimen Import From Excel File (Synthesys Cache format");
 		SynthesysIO test = new SynthesysIO();
 		String sourceName = config.getSourceNameString();
-
-		ArrayList<HashMap<String,String>> unitsList = ExcelUtils.parseXLS(sourceName);
+		ArrayList<HashMap<String,String>> unitsList = null;
+		try{
+			System.out.println("euhhhhhhhhhh");
+			unitsList = ExcelUtils.parseXLS(sourceName);
+		}
+		catch(Exception e){System.out.println("moui..."+e);}
+		System.out.println("unitsList"+unitsList);
 		if (unitsList != null){
 			HashMap<String,String> unit=null;
 			for (int i=0; i<unitsList.size();i++){
@@ -441,8 +488,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 
-	public boolean invoke(SpecimenImportConfigurator config, Map stores) {
-		invoke(config);
+	@Override
+	public boolean invoke(IImportConfigurator config, Map stores) {
+		invoke((SpecimenImportConfigurator)config);
 		return false;
 	}
 

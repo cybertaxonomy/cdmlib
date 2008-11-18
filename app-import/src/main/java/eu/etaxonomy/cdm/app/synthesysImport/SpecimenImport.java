@@ -13,7 +13,7 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	final static String excelSource = "/home/patricia/Desktop/CDMtabular9c04a474e2_23_09_08.xls";
+	final static String excelSource = "/home/patricia/Desktop/CDMtabular6493890c4d_18_11_08.xls";
 //	final static String xmlSource = "C:\\localCopy\\eclipse\\cdmlib\\app-import\\src\\main\\resources\\specimenABCD\\CDMtabular9c04a474e2_23_09_08.xls";	
 	
 	
@@ -35,6 +35,11 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		specimenImportConfigurator.setSourceSecId("specimen");
 		specimenImportConfigurator.setCheck(check);
 		specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
+		specimenImportConfigurator.setDoAutomaticParsing(true);
+		specimenImportConfigurator.setReUseExistingMetadata(true);
+		specimenImportConfigurator.setReUseTaxon(true);
+		specimenImportConfigurator.setSourceReference(null);
+		specimenImportConfigurator.setTaxonReference(null);
 		
 		// invoke import
 		CdmDefaultImport<SpecimenImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenImportConfigurator>();
