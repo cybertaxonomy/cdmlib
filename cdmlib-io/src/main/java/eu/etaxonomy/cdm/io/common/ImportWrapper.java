@@ -18,8 +18,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.abcd206.AbcdIO;
 import eu.etaxonomy.cdm.io.abcd206.SpecimenImportConfigurator;
+import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlImportConfigurator;
 
 /**
@@ -32,7 +32,7 @@ public class ImportWrapper {
 	
 	private String label;
 	
-	private Class importClass = CdmDefaultImport.class;
+	private Class<? extends ICdmImport> importClass = CdmDefaultImport.class;
 	
 	private IImportConfigurator configuration;
 	
@@ -72,16 +72,16 @@ public class ImportWrapper {
 	}
 	
 	
-//	public static ImportWrapper JaxbWrapperInstance(){
-//		String label = "CDM 1.0 XML";
-//		Class clazz = CdmDefaultImport.class;
-//		IImportConfigurator config = TcsXmlImportConfigurator.NewInstance(null, null);
-//		ImportWrapper wrapper = new ImportWrapper();
-//		wrapper.setLabel(label);
-//		wrapper.setImportClass(clazz);
-//		wrapper.setConfiguration(config);
-//		return wrapper;
-//	}
+	public static ImportWrapper JaxbWrapperInstance(){
+		String label = "CDM 1.0 XML";
+		Class<? extends ICdmImport> clazz = CdmDefaultImport.class;
+		IImportConfigurator config = JaxbImportConfigurator.NewInstance(null, null);
+		ImportWrapper wrapper = new ImportWrapper();
+		wrapper.setLabel(label);
+		wrapper.setImportClass(clazz);
+		wrapper.setConfiguration(config);
+		return wrapper;
+	}
 
 	/**
 	 * 
@@ -156,14 +156,14 @@ public class ImportWrapper {
 	/**
 	 * @return the ioClazz
 	 */
-	public Class getImportClass() {
+	public Class<? extends ICdmImport> getImportClass() {
 		return importClass;
 	}
 
 	/**
 	 * @param ioClazz the ioClazz to set
 	 */
-	public void setImportClass(Class importClass) {
+	public void setImportClass(Class<? extends ICdmImport> importClass) {
 		this.importClass = importClass;
 	}
 	
