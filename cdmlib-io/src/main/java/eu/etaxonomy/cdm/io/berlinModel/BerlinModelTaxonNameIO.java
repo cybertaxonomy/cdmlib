@@ -71,13 +71,23 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 		INameService nameService = config.getCdmAppController().getNameService();
 		
 		try {
-			
+			String facultativCols = "";
+			String strFacTable = "RefDetail";
+			String strFacColumn = "IdInSource";
+			String strColAlias = null;
+			if (checkSqlServerColumnExists(source, strFacTable, strFacColumn)){
+				facultativCols +=  ", " + strFacTable + "." + strFacColumn ;
+				if (! CdmUtils.Nz(strColAlias).equals("") ){
+					facultativCols += " AS " + strColAlias;
+				}
+			}
 			
 			//get data from database
 			String strQuery = 
 					"SELECT Name.* , RefDetail.RefDetailId, RefDetail.RefFk, " +
                       		" RefDetail.FullRefCache, RefDetail.FullNomRefCache, RefDetail.PreliminaryFlag AS RefDetailPrelim, RefDetail.Details, " + 
-                      		" RefDetail.SecondarySources, RefDetail.IdInSource, Rank.RankAbbrev, Rank.Rank " +
+                      		" RefDetail.SecondarySources, Rank.RankAbbrev, Rank.Rank " +
+                      		facultativCols +
                     " FROM Name LEFT OUTER JOIN RefDetail ON Name.NomRefDetailFk = RefDetail.RefDetailId AND  " +
                     	" Name.NomRefFk = RefDetail.RefFk " +
                     	" LEFT OUTER JOIN Rank ON Name.RankFk = Rank.rankID " + 

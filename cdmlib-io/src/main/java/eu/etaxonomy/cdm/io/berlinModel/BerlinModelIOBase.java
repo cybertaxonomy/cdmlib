@@ -10,6 +10,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -79,6 +80,26 @@ public abstract class BerlinModelIOBase extends CdmIoBase implements ICdmIO {
 		} catch (SQLException e) {
 			return false;
 		}
+	}
+	
+	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
+		String strQuery = "SELECT  Count(t.id) as n " +
+				" FROM sysobjects AS t " +
+				" INNER JOIN syscolumns AS c ON t.id = c.id " +
+				" WHERE (t.xtype = 'U') AND " + 
+				" (t.name = '" + tableName + "') AND " + 
+				" (c.name = '" + columnName + "')";
+		ResultSet rs = source.getResultSet(strQuery) ;		
+		int n;
+		try {
+			rs.next();
+			n = rs.getInt("n");
+			return n>0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 	
 }
