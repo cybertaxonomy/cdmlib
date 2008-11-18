@@ -12,6 +12,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
+	private boolean reuseTaxon = false;
 
 		
 	@SuppressWarnings("unchecked")
@@ -96,6 +97,14 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	
 	public boolean getReUseExistingMetadata(){
 		return this.reuseMetadata;
+	}
+	
+	public void setReUseTaxon(boolean reuseTaxon){
+		this.reuseTaxon = reuseTaxon;
+	}
+	
+	public boolean getDoReUseTaxon(){
+		return this.reuseTaxon;
 	}
 	
 	
