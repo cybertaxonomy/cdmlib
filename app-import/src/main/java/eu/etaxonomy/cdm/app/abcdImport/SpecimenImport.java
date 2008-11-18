@@ -37,6 +37,8 @@ private static Logger logger = Logger.getLogger(SpecimenImport.class);
 		specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
 		specimenImportConfigurator.setDoAutomaticParsing(true);
 		specimenImportConfigurator.setReUseExistingMetadata(true);
+		specimenImportConfigurator.setReUseTaxon(true);
+		specimenImportConfigurator.setSourceReference(null);
 		
 		// invoke import
 		CdmDefaultImport<SpecimenImportConfigurator> specimenImport = new CdmDefaultImport<SpecimenImportConfigurator>();

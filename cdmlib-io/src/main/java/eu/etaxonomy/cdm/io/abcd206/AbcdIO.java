@@ -4,8 +4,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +23,12 @@ import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -50,7 +47,6 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -186,7 +182,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			group = racine.getChildNodes();
 //			logger.info("ABCD ELEMENT not stored: "+group.item(i).getNodeName().toString()+" - value: "+group.item(i).getTextContent());
 			for (int i=0; i< group.getLength(); i++){
-				if (group.item(i).getNodeName() == "Identifications"){
+				if (group.item(i).getNodeName().equals("Identifications")){
 					group = group.item(i).getChildNodes();
 					break;
 				}
@@ -216,20 +212,20 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList identifications,results;
 		String tmpName = null;
 		for (int j=0; j< group.getLength(); j++){
-			if(group.item(j).getNodeName() == "Identification"){
+			if(group.item(j).getNodeName().equals("Identification")){
 				this.nomenclatureCode ="";
 				identifications = group.item(j).getChildNodes();
 				for (int m=0; m<identifications.getLength();m++){
-					if(identifications.item(m).getNodeName() == "Result"){
+					if(identifications.item(m).getNodeName().equals("Result")){
 						results = identifications.item(m).getChildNodes();
 						for(int k=0; k<results.getLength();k++)
-							if (results.item(k).getNodeName() == "TaxonIdentified")
+							if (results.item(k).getNodeName().equals("TaxonIdentified"))
 								tmpName=this.getScientificName(results.item(k));
 					}
-					else if(identifications.item(m).getNodeName() == "PreferredFlag")
+					else if(identifications.item(m).getNodeName().equals("PreferredFlag"))
 						this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent()+"_code_"+this.nomenclatureCode);
 
-					else if (identifications.item(m).getNodeName() == "References")
+					else if (identifications.item(m).getNodeName().equals("References"))
 						this.getReferences(identifications.item(m));
 					else
 						if (tmpName != null)
@@ -243,10 +239,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList results,reference;
 		results = result.getChildNodes();
 		for(int k=0; k<results.getLength();k++){
-			if (results.item(k).getNodeName() == "Reference"){
+			if (results.item(k).getNodeName().equals("Reference")){
 				reference = results.item(k).getChildNodes();
 				for(int l=0;l<reference.getLength();l++){
-					if (reference.item(l).getNodeName()=="TitleCitation")
+					if (reference.item(l).getNodeName().equals("TitleCitation"))
 						referenceList.add(reference.item(l).getTextContent());
 				}
 			}
@@ -259,12 +255,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		atomisedStr="";
 		taxonsIdentified = result.getChildNodes();
 		for (int l=0; l<taxonsIdentified.getLength(); l++){
-			if (taxonsIdentified.item(l).getNodeName() == "ScientificName"){
+			if (taxonsIdentified.item(l).getNodeName().equals("ScientificName")){
 				scnames = taxonsIdentified.item(l).getChildNodes();
 				for (int n=0;n<scnames.getLength();n++){
-					if (scnames.item(n).getNodeName() == "FullScientificNameString")
+					if (scnames.item(n).getNodeName().equals("FullScientificNameString"))
 						tmpName = scnames.item(n).getTextContent();
-					if (scnames.item(n).getNodeName() == "NameAtomised"){
+					if (scnames.item(n).getNodeName().equals("NameAtomised")){
 						try {
 							if (scnames.item(n).hasChildNodes()){
 
@@ -283,13 +279,13 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 	private HashMap<String,String> getAtomisedNames(String code, NodeList atomised){
-		if (code == "Botanical")
+		if (code.equals("Botanical"))
 			return this.getAtomisedBotanical(atomised);
-		if (code == "Bacterial")
+		if (code.equals("Bacterial"))
 			return this.getAtomisedBacterial(atomised);
-		if (code == "NameViral")
+		if (code.equals("NameViral"))
 			return this.getAtomisedViral(atomised);
-		if (code == "NameZoological")
+		if (code.equals("NameZoological"))
 			return this.getAtomisedZoological(atomised);
 		return new HashMap<String,String>();
 	}
@@ -297,23 +293,23 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedZoological(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName()=="GenusOrMonomial")
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
 				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="Subgenus")
+			if(atomised.item(i).getNodeName().equals("Subgenus"))
 				atomisedMap.put("Subgenus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="SpeciesEpithet")
+			if(atomised.item(i).getNodeName().equals("SpeciesEpithet"))
 				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="SubspeciesEpithet")
+			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet"))
 				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="AuthorTeamOriginalAndYear")
+			if(atomised.item(i).getNodeName().equals("AuthorTeamOriginalAndYear"))
 				atomisedMap.put("AuthorTeamOriginalAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="AuthorTeamParenthesisAndYear")
+			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesisAndYear"))
 				atomisedMap.put("AuthorTeamParenthesisAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="CombinationAuthorTeamAndYear")
+			if(atomised.item(i).getNodeName().equals("CombinationAuthorTeamAndYear"))
 				atomisedMap.put("CombinationAuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="Breed")
+			if(atomised.item(i).getNodeName().equals("Breed"))
 				atomisedMap.put("Breed",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="NamedIndividual")
+			if(atomised.item(i).getNodeName().equals("NamedIndividual"))
 				atomisedMap.put("NamedIndividual",atomised.item(i).getTextContent());
 		}
 		return atomisedMap;
@@ -323,11 +319,11 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedViral(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName()=="GenusOrMonomial")
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
 				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="ViralSpeciesDesignation")
+			if(atomised.item(i).getNodeName().equals("ViralSpeciesDesignation"))
 				atomisedMap.put("ViralSpeciesDesignation", atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="Acronym")
+			if(atomised.item(i).getNodeName().equals("Acronym"))
 				atomisedMap.put("Acronym",atomised.item(i).getTextContent());
 		}
 		return atomisedMap;
@@ -336,25 +332,25 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedBotanical(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName()=="GenusOrMonomial")
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
 				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="FirstEpithet")
+			if(atomised.item(i).getNodeName().equals("FirstEpithet"))
 				atomisedMap.put("FirstEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="InfraspecificEpithet")
+			if(atomised.item(i).getNodeName().equals("InfraspecificEpithet"))
 				atomisedMap.put("InfraSpeEpithet", atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="Rank")
+			if(atomised.item(i).getNodeName().equals("Rank"))
 				atomisedMap.put("Rank",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="HybridFlag")
+			if(atomised.item(i).getNodeName().equals("HybridFlag"))
 				atomisedMap.put("HybridFlag",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="AuthorTeamParenthesis")
+			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesis"))
 				atomisedMap.put("AuthorTeamParenthesis",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="AuthorTeam")
+			if(atomised.item(i).getNodeName().equals("AuthorTeam"))
 				atomisedMap.put("AuthorTeam",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="CultivarGroupName")
+			if(atomised.item(i).getNodeName().equals("CultivarGroupName"))
 				atomisedMap.put("CultivarGroupName",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="CultivarName")
+			if(atomised.item(i).getNodeName().equals("CultivarName"))
 				atomisedMap.put("CultivarName",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="TradeDesignationNames")
+			if(atomised.item(i).getNodeName().equals("TradeDesignationNames"))
 				atomisedMap.put("Trade",atomised.item(i).getTextContent());
 		}
 		return atomisedMap;
@@ -363,21 +359,21 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedBacterial(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName()=="GenusOrMonomial")
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
 				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="Subgenus")
+			if(atomised.item(i).getNodeName().equals("Subgenus"))
 				atomisedMap.put("SubGenus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="SubgenusAuthorAndYear")
+			if(atomised.item(i).getNodeName().equals("SubgenusAuthorAndYear"))
 				atomisedMap.put("SubgenusAuthorAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="SpeciesEpithet")
+			if(atomised.item(i).getNodeName().equals("SpeciesEpithet"))
 				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="SubspeciesEpithet")
+			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet"))
 				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="ParentheticalAuthorTeamAndYear")
+			if(atomised.item(i).getNodeName().equals("ParentheticalAuthorTeamAndYear"))
 				atomisedMap.put("ParentheticalAuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="AuthorTeamAndYear")
+			if(atomised.item(i).getNodeName().equals("AuthorTeamAndYear"))
 				atomisedMap.put("AuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName()=="NameApprobation")
+			if(atomised.item(i).getNodeName().equals("NameApprobation"))
 				atomisedMap.put("NameApprobation",atomised.item(i).getTextContent());
 		}
 		return atomisedMap;
@@ -422,10 +418,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for(int i=0;i<group.getLength();i++){
 				multimedias = group.item(i).getChildNodes();
 				for (int j=0;j<multimedias.getLength();j++){
-					if (multimedias.item(j).getNodeName() == "MultiMediaObject"){	
+					if (multimedias.item(j).getNodeName().equals("MultiMediaObject")){	
 						multimedia = multimedias.item(j).getChildNodes();
 						for (int k=0;k<multimedia.getLength();k++){
-							if(multimedia.item(k).getNodeName() == "FileURI")
+							if(multimedia.item(k).getNodeName().equals("FileURI"))
 								this.multimediaObjects.add(multimedia.item(k).getTextContent());
 						}
 					}
@@ -506,7 +502,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for (int i=0;i<group.getLength();i++){
 				childs = group.item(i).getChildNodes();
 				for (int j=0;j<childs.getLength();j++){
-					if (childs.item(j).getNodeName() == "MeasurementOrFactText")
+					if (childs.item(j).getNodeName().equals("MeasurementOrFactText"))
 						this.altitude = Integer.valueOf(childs.item(j).getTextContent());
 				}
 			}
@@ -527,7 +523,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for (int i=0;i<group.getLength();i++){
 				childs = group.item(i).getChildNodes();
 				for (int j=0; j<childs.getLength();j++){
-					if (childs.item(j).getNodeName() == "AreaName")
+					if (childs.item(j).getNodeName().equals("AreaName"))
 						this.namedAreaList.add(childs.item(j).getTextContent());
 				}
 			}
@@ -544,10 +540,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for (int i=0; i< group.getLength(); i++){
 				childs = group.item(i).getChildNodes();
 				for (int j=0; j<childs.getLength();j++){
-					if (childs.item(j).getNodeName() == "Person"){
+					if (childs.item(j).getNodeName().equals("Person")){
 						person = childs.item(j).getChildNodes();
 						for (int k=0; k<person.getLength(); k++)
-							if (person.item(k).getNodeName() == "FullName")
+							if (person.item(k).getNodeName().equals("FullName"))
 								this.gatheringAgentList.add(person.item(k).getTextContent());
 					}
 
@@ -631,7 +627,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param sec
 	 */
 	private void setTaxonNameBase(SpecimenImportConfigurator config, DerivedUnitBase derivedThing, ReferenceBase sec){
-		TaxonNameBase<?,?> taxonName = null;
+		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
 		DeterminationEvent determinationEvent = null;
@@ -646,7 +642,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if (fullScientificNameString.indexOf("_preferred_") != -1){
 				scientificName = fullScientificNameString.split("_preferred_")[0];
 				String pTmp = fullScientificNameString.split("_preferred_")[1].split("_code_")[0];
-				if (pTmp == "1" || pTmp.toLowerCase().indexOf("true") != -1)
+				if (pTmp.equals("1") || pTmp.toLowerCase().indexOf("true") != -1)
 					preferredFlag=true;
 				else
 					preferredFlag=false;
@@ -659,21 +655,26 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if (config.getDoAutomaticParsing())	
 				taxonName = this.parseScientificName(scientificName);	
 			else {
-				taxonName = this.setTaxonNameType(this.atomisedIdentificationList.get(i));
-				taxonName.setTitleCache(scientificName);
+				taxonName = this.setTaxonNameByType(this.atomisedIdentificationList.get(i), scientificName);
 			}
-
+			if(taxonName == null){
+				taxonName = NonViralName.NewInstance(null);
+				taxonName.setFullTitleCache(scientificName);
+			}
 			if (config.getDoReUseTaxon()){
 				try{
 					names = config.getCdmAppController().getTaxonService().searchTaxaByName(scientificName, sec);
-					taxon = (Taxon)names.get(0);}
+					taxon = (Taxon)names.get(0);
+					}
 				catch(Exception e){taxon=null;}
 			}
+//			taxonName = NonViralName.NewInstance(null);
+//			taxonName.setFullTitleCache(scientificName);
+
 			if (!config.getDoReUseTaxon() || taxon == null){
 				config.getCdmAppController().getNameService().saveTaxonName(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
-
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
@@ -687,109 +688,181 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 	}
 
-	private TaxonNameBase<?,?> parseScientificName(String scientificName){
-		System.out.println("scientificName");
-		TaxonNameBase<?,?> taxonName = null;
+	private NonViralName<?> parseScientificName(String scientificName){
+		System.out.println("parseScientificName");
 		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
+		NonViralName<?>taxonName = null;
+		boolean problem=false;
 
 		System.out.println("nomenclature: "+this.nomenclatureCode);
-		if (this.nomenclatureCode == "Zoological"){
-			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
+		if (this.nomenclatureCode.toString().equals("Zoological")){
+			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICZN");}
-		if (this.nomenclatureCode == "Botanical"){
-			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
+				problem=true;
+			}
+		if (this.nomenclatureCode.toString().equals("Botanical")){
+			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICBN");}
-		if (this.nomenclatureCode == "Bacterial"){
-			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
+				problem=true;;}
+		if (this.nomenclatureCode.toString().equals("Bacterial")){
+			taxonName = (BacterialName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNB");
+				problem=true;
 		}
-		if (this.nomenclatureCode == "Cultivar"){
-			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
+		if (this.nomenclatureCode.toString().equals("Cultivar")){
+			taxonName = (CultivarPlantName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNCP");
+				problem=true;;
 		}
-		if (this.nomenclatureCode == "Viral"){
-			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
-			if (taxonName.hasProblem())
-				System.out.println("pb ICVCN");
+//		if (this.nomenclatureCode.toString().equals("Viral")){
+//			ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
+//			if (taxonName.hasProblem())
+//				System.out.println("pb ICVCN");
+//		}
+		//TODO: parsing of ViralNames?
+		if(problem){
+			taxonName = NonViralName.NewInstance(null);
+			taxonName.setTitleCache(scientificName);
 		}
-		try{taxonName.hasProblem();}
-		catch (Exception e) {
-			taxonName = nvnpi.parseFullName(scientificName);
-		}
-		if (taxonName.hasProblem())
-			taxonName = nvnpi.parseFullName(scientificName);
 		return taxonName;
+		
 	}
 
 	@SuppressWarnings("unchecked")
-	private TaxonNameBase<?,?> setTaxonNameType(HashMap<String, String> atomisedMap){
+	private NonViralName<?> setTaxonNameByType(HashMap<String, String> atomisedMap,String fullName){
 		System.out.println("nomenclature: "+this.nomenclatureCode);
-		if (this.nomenclatureCode == "Zoological"){
+		if (this.nomenclatureCode.equals("Zoological")){
 			NonViralName<ZoologicalName> taxonName  = ZoologicalName.NewInstance(null); 
-			taxonName.setGenusOrUninomial(atomisedMap.get("Genus"));
-			taxonName.setInfraGenericEpithet(atomisedMap.get("SubGenus"));
-			taxonName.setSpecificEpithet(atomisedMap.get("SpeciesEpithet"));
-			taxonName.setInfraSpecificEpithet(atomisedMap.get("SubspeciesEpithet"));
-			taxonName.setAuthorshipCache(""); //AuthorTeamAndYear? AuthorTeamParenthesis? CombinationAuthorAndYear,?
-//			taxonName.setCombinationAuthorTeam(INomenclaturalAuthor);//AuthorTeamAndYear? AuthorTeamParenthesis? CombinationAuthorAndYear,?
+			taxonName.setFullTitleCache(fullName, true);
+			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
+			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"SubGenus"));
+			taxonName.setSpecificEpithet(getFromMap(atomisedMap,"SpeciesEpithet"));
+			taxonName.setInfraSpecificEpithet(getFromMap(atomisedMap,"SubspeciesEpithet"));
+			Team team = null;
+			if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null){
+				team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+			}else{
+				if (getFromMap(atomisedMap,"AuthorTeamAndYear") != null){
+					team = Team.NewInstance();
+					team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"));
+				}
+			}
+			if(team != null)
+				taxonName.setBasionymAuthorTeam(team);
+			else{
+				if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null)
+					taxonName.setAuthorshipCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+				else if (getFromMap(atomisedMap,"AuthorTeamAndYear") != null)
+					taxonName.setAuthorshipCache(getFromMap(atomisedMap,"AuthorTeamAndYear"));
+			}
+			if(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear") != null){
+				team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
+				taxonName.setCombinationAuthorTeam(team);
+			}
 			if (taxonName.hasProblem())
 				System.out.println("pb ICZN");
 			else return taxonName;
 		}
-		if (this.nomenclatureCode == "Botanical"){
+		if (this.nomenclatureCode.equals("Botanical")){
 			NonViralName<BotanicalName> taxonName  = BotanicalName.NewInstance(null);
-			taxonName.setGenusOrUninomial(atomisedMap.get("Genus"));
-			taxonName.setInfraGenericEpithet(atomisedMap.get("FirstEpithet"));
-			taxonName.setInfraSpecificEpithet(atomisedMap.get("InfraSpeEpithet"));
-			try{taxonName.setRank(Rank.getRankByName(atomisedMap.get("Rank")));
+			taxonName.setFullTitleCache(fullName, true);
+			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
+			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"FirstEpithet"));
+			taxonName.setInfraSpecificEpithet(getFromMap(atomisedMap,"InfraSpeEpithet"));
+			try{taxonName.setRank(Rank.getRankByName(getFromMap(atomisedMap,"Rank")));
 			}catch(Exception e){}
-			taxonName.setAuthorshipCache(atomisedMap.get(""));//AuthorTeam? AuthorTeamParenthesis?
-			
+			Team team = null;
+			if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null){
+				team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+				if(team != null)
+					taxonName.setBasionymAuthorTeam(team);
+			}
+			if (getFromMap(atomisedMap,"AuthorTeam") != null){
+				team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeam"));
+				if(team != null)
+					taxonName.setCombinationAuthorTeam(team);
+			}
+			if (team == null)	{
+				if(getFromMap(atomisedMap,"AuthorTeamParenthesis") != null)
+					taxonName.setAuthorshipCache(getFromMap(atomisedMap,"AuthorTeamParenthesis"));
+				else if (getFromMap(atomisedMap,"AuthorTeam") != null)
+					taxonName.setAuthorshipCache(getFromMap(atomisedMap,"AuthorTeam"));
+			}
+			if(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear") != null){
+				team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
+				taxonName.setCombinationAuthorTeam(team);
+			}
 			if (taxonName.hasProblem())
 				System.out.println("pb ICBN");
 			else return taxonName;
 		}
-		if (this.nomenclatureCode == "Bacterial"){
+		if (this.nomenclatureCode.equals("Bacterial")){
 			NonViralName<BacterialName> taxonName = BacterialName.NewInstance(null);
-			taxonName.setGenusOrUninomial(atomisedMap.get("Genus"));
-			taxonName.setInfraGenericEpithet(atomisedMap.get("SubGenus"));
-//			taxonName.setSpecificEpithet(specificEpithet);//Species??
-//			taxonName.setInfraSpecificEpithet(infraSpecificEpithet)//subspeciesepithet?
-//			taxonName.setAuthorshipCache(authorshipCache);//parenthetical...
-//			taxonName.setCombinationAuthorTeam(combinationAuthorTeam)//authorteamandyear?
+			taxonName.setFullTitleCache(fullName, true);
+			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
+			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"SubGenus"));
+			taxonName.setSpecificEpithet(getFromMap(atomisedMap,"Species"));
+			taxonName.setInfraSpecificEpithet(getFromMap(atomisedMap,"SubspeciesEpithet"));
+			if(getFromMap(atomisedMap,"AuthorTeamAndYear") != null){
+				Team team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"AuthorTeamAndYear"));
+				taxonName.setCombinationAuthorTeam(team);
+			}
+			if(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear") != null){
+				Team team = Team.NewInstance();
+				team.setTitleCache(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear"));
+				taxonName.setBasionymAuthorTeam(team);
+			}
 			if (taxonName.hasProblem())
 				System.out.println("pb ICNB");
 			else return taxonName;
 		}
-		if (this.nomenclatureCode == "Cultivar"){
+		if (this.nomenclatureCode.equals("Cultivar")){
 			NonViralName<CultivarPlantName> taxonName = CultivarPlantName.NewInstance(null);
-			
+
 			if (taxonName.hasProblem())
 				System.out.println("pb ICNCP");
 			else return taxonName;
 		}
-		if (this.nomenclatureCode == "Viral"){
-			ViralName taxonName = ViralName.NewInstance(null);
-//			taxonName.//setGenus?;
-//			taxonName.//setViralSpeciesDesignation
-			taxonName.setAcronym(atomisedMap.get("Acronym"));
-			if (taxonName.hasProblem())
-				System.out.println("pb ICVCN");
-			else return taxonName;
-		}
+//		if (this.nomenclatureCode.equals("Viral")){
+//			ViralName taxonName = ViralName.NewInstance(null);
+//			taxonName.setFullTitleCache(fullName, true);
+//			taxonName.setAcronym(getFromMap(atomisedMap,"Acronym"));
+//			if (taxonName.hasProblem())
+//				System.out.println("pb ICVCN");
+//			else return taxonName;
+//		}
+		//TODO ViralName
 		NonViralName<?>taxonName = NonViralName.NewInstance(null);
+		taxonName.setFullTitleCache(fullName, true);
 		return taxonName;
+	}
+
+	private String getFromMap(HashMap<String, String> atomisedMap, String key){
+		String value = null;
+		if (atomisedMap.containsKey(key))
+			value = atomisedMap.get(key);
+		if (value != null && key.matches(".*Year.*")){
+			value=value.trim();
+			if (value.matches("[a-z A-Z ]*[0-9]{4}$")){
+				String tmp=value.split("[0-9]{4}$")[0];
+				int year = Integer.parseInt(value.split(tmp)[1]);
+				if (year >= 1752)
+					value=tmp;
+			}
+		}
+		return value;
 	}
 	/*
 	 * Store the unit with its Gathering informations in the CDM
 	 */
 	public boolean start(SpecimenImportConfigurator config){
 		boolean result = true;
-		boolean withCdm = true;
 		CdmApplicationController app = null;
 		TransactionStatus tx = null;
 
@@ -882,23 +955,25 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			fieldObservation.setGatheringEvent(unitsGatheringEvent.getGatheringEvent());
 //			//add Multimedia URLs
 			if(this.multimediaObjects.size()>0){
-				MediaRepresentationPart part;
 				MediaRepresentation representation;
 				Media media;
 				MediaMetaData mmd ;
 				ImageMetaData imd ;
 				URL url ;
+				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
-					mmd = new MediaMetaData();
-					imd = new ImageMetaData();
-					url = new URL(this.multimediaObjects.get(i));
-					imd = mmd.readImageMetaData(url, imd);
-					//TODO update the Multimedia Object without size :)
-					representation = MediaRepresentation.NewInstance();
-					representation.addRepresentationPart(ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd));
-					media = Media.NewInstance();
-					media.addRepresentation(representation);
-					fieldObservation.addMedia(media);
+					if(this.multimediaObjects.get(i) != null){
+						mmd = new MediaMetaData();
+						imd = new ImageMetaData();
+						url = new URL(this.multimediaObjects.get(i));
+						imd = mmd.readImageMetaData(url, imd);
+						representation = MediaRepresentation.NewInstance();
+						imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
+						representation.addRepresentationPart(imf);
+						media = Media.NewInstance();
+						media.addRepresentation(representation);
+						fieldObservation.addMedia(media);
+					}
 				}
 			}
 //			//link fieldObservation and specimen
@@ -909,13 +984,11 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			/**
 			 * SAVE AND STORE DATA
 			 */			
-
 			app.getTermService().saveTerm(areaCountry);//save it sooner
 			for (int i=0; i<nas.size();i++)
 				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
 			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
-
 			logger.info("saved new specimen ...");
 
 
