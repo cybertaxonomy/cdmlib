@@ -25,6 +25,10 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -109,7 +113,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 		
 		logger.info("start make TaxonConcepts ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 
@@ -149,7 +153,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			childName = "Name";
 			obligatory = true;
 			Element elName = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			TaxonNameBase<?,?> taxonName = makeName(elName, success);
+			TaxonNameBase<?,?> taxonName = makeName(elName, null, taxonNameMap, success);
 			elementList.add(childName.toString());
 			
 			//TODO how to handle
@@ -241,12 +245,40 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 	 * @param elTaxonRelationships
 	 * @param success
 	 */
-	private TaxonNameBase<?, ?> makeName(Element elName, ResultWrapper<Boolean> success){
+	private TaxonNameBase<?, ?> makeName(Element elName, NomenclaturalCode code, MapWrapper<? extends TaxonNameBase<?,?>> objectMap, ResultWrapper<Boolean> success){
+		TaxonNameBase<?, ?> result = null;
 		if (elName != null){
+			//scientific
+			try {
+				String strScientific = elName.getAttributeValue("scientific");
+				boolean scientific = Boolean.valueOf(strScientific);
+				if (! scientific){
+					//TODO
+					logger.warn("Non scientific names not yet implemented");
+				}
+			} catch (Exception e) {
+				logger.warn("Value for scientific is not boolean");
+			}
+			String language = elName.getAttributeValue("scientific");
+			//TODO
+			//Language
+			if (language != null){
+				logger.warn("language for name not yet implemented");	
+			}
+			//Rank rank = null;
+			//IdentifiableEntity<?> obj = code.getNewTaxonNameInstance(rank);
+			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity<?>>)NonViralName.class;
+			if (code != null){
+				clazz = code.getCdmClass();
+			}
+			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
+				
+			//if ()
+			
 			logger.warn("makeName not yet implemented");
 			success.setValue(false);
 		}
-		return null;
+		return result;
 	}
 	
 	

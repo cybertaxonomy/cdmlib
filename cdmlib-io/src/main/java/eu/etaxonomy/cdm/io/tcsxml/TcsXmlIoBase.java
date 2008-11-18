@@ -25,10 +25,14 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 
 
+import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -158,6 +162,39 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 				logger.warn("Unknown element (" + element.getName() + ") in parent element (" + parentElement.getName() + ")");
 				result = false;
 			}
+		}
+		return result;
+	}
+	
+	//
+	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
+		T result = null;
+		String linkType = element.getAttributeValue("linkType");
+		String ref = element.getAttributeValue("ref");
+		if(ref == null && linkType == null){
+			try {
+				result = clazz.newInstance();
+			} catch (InstantiationException e) {
+				logger.error("Class " + clazz.getSimpleName()+" could not be instantiated. Class = " );
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				logger.error("Constructor of class "+clazz.getSimpleName()+" could not be accessed." );
+				e.printStackTrace();
+			}
+			String title = element.getTextNormalize();
+			result.setTitleCache(title);
+		}else if (linkType == null || linkType.equals("local")){
+			//TODO
+			result = objectMap.get(ref);
+			if (result == null){
+				logger.warn("Object (ref = " + ref + ")could not be found in WrapperMap");
+			}
+		}else if(linkType.equals("external")){
+			logger.warn("External link types not yet implemented");
+		}else if(linkType.equals("other")){
+			logger.warn("Other link types not yet implemented");
+		}else{
+			logger.warn("Unknown link type or missing ref");
 		}
 		return result;
 	}

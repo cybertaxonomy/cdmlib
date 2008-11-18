@@ -12,19 +12,14 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -154,7 +149,8 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 			RelationshipTermBase relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
 			
 			//toTaxon
-			TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, success);
+			boolean isSynonym = relType instanceof SynonymRelationshipType;
+			TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, isSynonym, success);
 			TaxonBase fromTaxon = taxonMap.get(fromTaxonId);
 			if (toTaxon != null && fromTaxon != null){
 				//reverse
@@ -175,7 +171,7 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 					if (relType instanceof SynonymRelationshipType){
 						SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
 						if (! (fromTaxon instanceof Synonym )){
-							logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
+							logger.warn(fromTaxonId + " TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
 							success.setValue(false);
 						}else{
 							Synonym synonym = (Synonym)fromTaxon;
@@ -226,7 +222,7 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 		return;
 	}
 	
-	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, ResultWrapper<Boolean> success){
+	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, boolean isSynonym, ResultWrapper<Boolean> success){
 		TaxonBase result = null;
 		if (elTaxonRelationship == null || map == null){
 			success.setValue(false);
@@ -241,9 +237,13 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 				if (ref != null){
 					result = map.get(ref);
 				}else{
-					String title = elTaxonRelationship.getTextNormalize();
+					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
-					result = Taxon.NewInstance(null, null);
+					if (isSynonym){
+						result = Synonym.NewInstance(null, null);
+					}else{
+						result = Taxon.NewInstance(null, null);	
+					}
 					result.setTitleCache(title);
 				}
 			}else{
