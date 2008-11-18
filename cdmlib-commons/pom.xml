@@ -29,10 +29,16 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
 
 
     <!--  ImageMetadata  -->
     <dependency>
+      <!-- deprecated -->
     <groupId>org.devlib.schmidt</groupId>
     <artifactId>imageinfo</artifactId>
     <version>1.7</version>
