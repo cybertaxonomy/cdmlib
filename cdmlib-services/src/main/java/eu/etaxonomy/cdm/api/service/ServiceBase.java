@@ -86,7 +86,7 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 				if ( ( (i % 5000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
 				S cdmObj = iterator.next();
 				UUID uuid = saveCdmObject(cdmObj);
-				if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
+//				if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 				resultMap.put(uuid, cdmObj);
 				i++;
 				if ( (i % flushAfterNo) == 0){

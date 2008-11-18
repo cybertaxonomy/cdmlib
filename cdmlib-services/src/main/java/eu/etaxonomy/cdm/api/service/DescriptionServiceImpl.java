@@ -122,7 +122,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	}
 	
 	@Transactional(readOnly = false)
-	public void saveFeatureDataAll(Collection<VersionableEntity> featureData) {
+	public void saveFeatureDataAll(Collection<VersionableEntity<?>> featureData) {
 
 		List<FeatureTree> trees = new ArrayList<FeatureTree>();
 		List<FeatureNode> nodes = new ArrayList<FeatureNode>();
