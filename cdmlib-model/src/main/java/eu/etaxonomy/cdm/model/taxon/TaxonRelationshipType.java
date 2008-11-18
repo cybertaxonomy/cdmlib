@@ -49,6 +49,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
+	
 	private static final UUID uuidContradiction = UUID.fromString("a8f03491-2ad6-4fae-a04c-2a4c117a2e9b");
 	private static final UUID uuidCongruentTo = UUID.fromString("60974c98-64ab-4574-bb5c-c110f6db634d");
 	private static final UUID uuidIncludes = UUID.fromString("0501c385-cab1-4fbe-b945-fc747419bb13");
@@ -58,6 +59,27 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidDoesNotOverlap = UUID.fromString("ecd2382b-3d94-4169-9dd2-2c4ea1d24605");
 	private static final UUID uuidNotIncludedIn = UUID.fromString("89dffa4e-e004-4d42-b0d1-ae1827529e43");
 	private static final UUID uuidNotCongruentTo = UUID.fromString("6c16c33b-cfc5-4a00-92bd-a9f9e448f389");
+	
+	
+	private static final UUID uuidCongruentToOrIncludes = UUID.fromString("b55cb3a2-6e20-4ca3-95bc-12b59d3235b0");
+	private static final UUID uuidIncludedInOrIncludes = UUID.fromString("c3ed5089-6779-4051-bb24-f5ea0eca80d5");
+	private static final UUID uuidCongruentIncludedInOrIncludes = UUID.fromString("0170cd83-93ad-43c2-9ad1-7ac879300e2f");
+	private static final UUID uuidCongruentToOrOverlaps = UUID.fromString("78355cfa-5200-432f-8e00-82b97afad0ed");
+	private static final UUID uuidIncludesOrOverlaps = UUID.fromString("f1ec567b-3c73-436b-8625-b4fd53588abb");
+	
+	private static final UUID uuidCongruentToOrIncludesOrOverlaps = UUID.fromString("2d923b1a-6c0f-414c-ac9b-bbc502e18078");
+	private static final UUID uuidIncludedInOrIncludesOrOverlaps = UUID.fromString("43466aa9-e431-4f37-8bca-febfd9f63716");
+	private static final UUID uuidCongruentToOrExcludes = UUID.fromString("758e6cf3-05a0-49ed-9496-d8c4a9fd02ae");
+	private static final UUID uuidIncludesOrExcludes = UUID.fromString("6ee440bc-fd3d-4da2-ad85-906d35a94731");
+	private static final UUID uuidCongruentToOrIncludesOrExcludes = UUID.fromString("d5c6953d-aa53-46f8-aafc-ebc6428ad5d0");
+	private static final UUID uuidIncludedInOrIncludesOrExcludes = UUID.fromString("43d8492c-8bd5-4f38-a633-f1ad910a34dd");
+	private static final UUID uuidOverlapsOrExcludes = UUID.fromString("623ecdeb-ff1f-471d-a8dc-0d75b2fe8d94");
+	private static final UUID uuidCongruentToOrOverlapsOrExcludes = UUID.fromString("6fabef72-5264-44f1-bfc0-8e2e141375f2");
+	private static final UUID uuidIncludesOrOverlapsOrExcludes = UUID.fromString("b7153c89-cc6c-4f8c-bf74-216f10feac46");
+	
+	
+	
+	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -299,6 +321,59 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		return (TaxonRelationshipType)findByUuid(uuidNotCongruentTo);
 	}
 
+	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludes);
+	}
+	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludes);
+	}
+	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDED_OR_INCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentIncludedInOrIncludes);
+	}
+	public static final TaxonRelationshipType CONGRUENT_OR_OVERLAPS(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrOverlaps);
+	}
+	public static final TaxonRelationshipType INCLUDES_OR_OVERLAPS(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludesOrOverlaps);
+	}
+
+	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludesOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType INCLUDES_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludesOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType CONGRUENT_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_OVERLAPS(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludesOrOverlaps);
+	}
+	
+	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_OVERLAPS(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludesOrOverlaps);
+	}
+	
+	public static final TaxonRelationshipType INCLUDES_OR_OVERLAPS_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludesOrOverlapsOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType CONGRUENT_OR_OVERLAPS_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrOverlapsOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType OVERLAPS_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidOverlapsOrExcludes);
+	}
+	
+	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_EXCLUDES(){
+		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludesOrExcludes);
+	}
+
+	
 	//TODO ohter relationshipTypes
 
 }
