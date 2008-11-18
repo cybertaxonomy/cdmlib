@@ -179,7 +179,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 					if ( taxonBase instanceof Taxon ) {
 						taxon = (Taxon) taxonBase;
 					}else{
-						logger.warn("TaxonBase " + taxonId + "for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+						logger.warn("TaxonBase " + taxonId + " for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
 						continue;
 					}
 					
