@@ -147,6 +147,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
 		} else if (abbrev.equalsIgnoreCase("c"))  { return PresenceTerm.CULTIVATED();
 		} else if (abbrev.equalsIgnoreCase("cf")) { return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+		} else if (abbrev.equalsIgnoreCase("e"))  { return PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 		} else if (abbrev.equalsIgnoreCase("i"))  { return PresenceTerm.INTRODUCED();
 		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceTerm.INTRODUCED_CULTIVATED();
@@ -161,6 +162,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		} else if (abbrev.equalsIgnoreCase("ne")) { return PresenceTerm.NATIVE_FORMERLY_NATIVE();
 		} else if (abbrev.equalsIgnoreCase("nf")) { return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("nq")) { return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
+		} else if (abbrev.equalsIgnoreCase("p"))  { return PresenceTerm.PRESENT();
 		} else {
 			logger.warn("Unknown presence status term: " + abbrev);
 			return null;

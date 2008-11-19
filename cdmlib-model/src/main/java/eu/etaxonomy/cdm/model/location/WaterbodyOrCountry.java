@@ -610,7 +610,7 @@ uuidPersianGulf
     @JoinTable(
         name="DefinedTermBase_Continent"
     )
-	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Continent> getContinents() {
 		return continents;
 	}

@@ -71,6 +71,8 @@ public class Distribution extends DescriptionElementBase {
 	private NamedArea area;
 	
 	@XmlElement(name = "PresenceAbsenceStatus")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private PresenceAbsenceTermBase<?> status;
 
 	

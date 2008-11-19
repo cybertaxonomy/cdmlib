@@ -145,7 +145,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
     @JoinTable(
         name="DefinedTermBase_WaterbodyOrCountry"
     )
-	@Cascade({CascadeType.SAVE_UPDATE})
+//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;
 	}
