@@ -24,10 +24,11 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -40,9 +41,11 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -76,12 +79,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 		Namespace sddNamespace = sddConfig.getSddNamespace();
 		Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
-
+		
 		logger.info("start TechnicalMetadata ...");
 		// <TechnicalMetadata created="2006-04-20T10:00:00">
 		Element elTechnicalMetadata = root.getChild("TechnicalMetadata", sddNamespace);
 		String nameCreated = elTechnicalMetadata.getAttributeValue("created");
 		ReferenceBase sourceReference = config.getSourceReference();
+		ReferenceBase sec = Database.NewInstance();
 		if (nameCreated != null) {
 			if (!nameCreated.equals("")) {
 				int year = Integer.parseInt(nameCreated.substring(0,4));
@@ -92,6 +96,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				int secondOfMinute = Integer.parseInt(nameCreated.substring(17,19));
 				DateTime created = new DateTime(year,monthOfYear,dayOfMonth,hourOfDay,minuteOfHour,secondOfMinute,0);
 				sourceReference.setCreated(created);
+				sec.setCreated(created);
 			}
 		}
 
@@ -108,6 +113,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
 		Map<String,Feature> features = new HashMap<String,Feature>();
 		Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
+		Map<String,Media> mediaObjects = new HashMap<String,Media>();
 
 		Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 		Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
@@ -141,7 +147,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
 			sourceReference.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
-
+			sec.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
+			
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
 
 			// <RevisionData>
@@ -195,6 +202,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					updated = new java.util.GregorianCalendar();
 					updated.setTime(d);
 					sourceReference.setUpdated(updated);
+					sec.setUpdated(updated);
 				}
 			}
 
@@ -237,6 +245,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					if (copyright != null) {
 						sourceReference.addRights(copyright);
+						sec.addRights(copyright);
 					}
 
 					if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + j);}
@@ -518,7 +527,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							ref = elTaxonName.getAttributeValue("ref");
 
 							NonViralName taxonNameBase = taxonNameBases.get(ref);
-							taxon = Taxon.NewInstance(taxonNameBase, null);
+							taxon = Taxon.NewInstance(taxonNameBase, sec);
 						}
 
 						String refCitation = "";
@@ -783,7 +792,44 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				}
 			}
 
-			logger.info("MediaObjects to implement still");
+			// <MediaObjects>
+			logger.info("start MediaObjects ...");
+			Element elMediaObjects = elDataset.getChild("MediaObjects",sddNamespace);
+
+			if (elMediaObjects != null) {
+				// <MediaObject id="m1">
+				List<Element> listMediaObjects = elMediaObjects.getChildren("elMediaObject", sddNamespace);
+				j = 0;
+				//for each Publication
+				for (Element elMediaObject : listMediaObjects){
+
+					try {
+
+						String idMO = elMediaObject.getAttributeValue("id");
+
+						//  <Representation>
+				        //   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
+				        //  </Representation>
+						elRepresentation = elMediaObject.getChild("Representation",sddNamespace);
+						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						Media mediaObject = Media.NewInstance();
+						MultilanguageText m = MultilanguageText.NewInstance(LanguageString.NewInstance(label, datasetLanguage));
+						mediaObject.setTitle(m);
+						OriginalSource source = OriginalSource.NewInstance(idMO, "MediaObject");
+						// mediaObject.addSource(source);
+
+						mediaObjects.put(idMO,mediaObject);
+
+					} catch (Exception e) {
+						//FIXME
+						logger.warn("Import of MediaObject " + j + " failed.");
+						success = false; 
+					}
+
+					if ((++j % modCount) == 0){ logger.info("Publications handled: " + j);}
+
+				}
+			}
 
 			/*
 				// when several authors are supported
@@ -802,16 +848,21 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			Iterator<Person> author = authors.values().iterator();
 			if (author.hasNext()){
-				sourceReference.setCreatedBy(author.next());
+				Person a = author.next();
+				sourceReference.setCreatedBy(a);
+				sec.setCreatedBy(a);
 			}
 
 			Iterator<Person> editor = editors.values().iterator();
 			if (editor.hasNext()){
-				sourceReference.setCreatedBy(editor.next());
+				Person e = editor.next();
+				sourceReference.setUpdatedBy(e);
+				sec.setUpdatedBy(e);
 			}
 
 			if (copyright != null) {
 				sourceReference.addRights(copyright);
+				sec.addRights(copyright);
 			}
 
 			for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
