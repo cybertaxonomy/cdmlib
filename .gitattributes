@@ -21,8 +21,12 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.jav
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/PalmaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ErythroneuraActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/FreshwaterAquaticInsectsActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/LIASActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/SDDSources.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ValRosandraFRIDAKeyActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ViolaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SpecimenImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SynthesysCacheActivator.java -text
