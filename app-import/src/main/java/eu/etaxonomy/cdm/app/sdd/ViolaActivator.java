@@ -34,7 +34,7 @@ public class ViolaActivator {
 	static final String sddSource = SDDSources.viola_local();
 	//static final String sddSource = SDDSources.viola_local_andreas();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2_viola();
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
