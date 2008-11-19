@@ -45,11 +45,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class CdmExportImportActivator {
 
-	private static final Logger logger = Logger.getLogger(CdmExportImportActivator.class);
-
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_edit_cichorieae";
-	private static final String destinationDbName = "cdm_test_jaxb2";
+	private static final String sourceDbName = "cdm_test_anahit";
+	private static final String destinationDbName = "cdm_test_anahit2";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -67,6 +65,8 @@ public class CdmExportImportActivator {
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 		return datasource;
 	}
+
+	private static final Logger logger = Logger.getLogger(CdmExportImportActivator.class);
 
 	private static final ICdmDataSource sourceDb = CdmExportImportActivator.CDM_DB(sourceDbName);
 	private static final ICdmDataSource destinationDb = CdmExportImportActivator.CDM_DB(destinationDbName);
@@ -299,7 +299,7 @@ public class CdmExportImportActivator {
 //		appCtr = sc.initDb(destinationDb);
 //		sc.loadTestData(appCtr);
 		
-//		sc.invokeExport();
+		sc.invokeExport();
 		sc.invokeImport();
 	}
 
