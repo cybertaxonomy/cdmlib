@@ -1,14 +1,18 @@
 package eu.etaxonomy.cdm.io.abcd206;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -16,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.MediaMetaData;
@@ -35,8 +40,6 @@ import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -52,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+
 
 public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
@@ -85,33 +89,11 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 
 	protected ArrayList<String> knownABCDelements = new ArrayList<String>();
+	protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
 
 
 	public AbcdIO() {
 		super();
-		knownABCDelements.add("Identifications");
-		knownABCDelements.add("Identification");
-		knownABCDelements.add("Result");
-		knownABCDelements.add("TaxonIdentified");
-		knownABCDelements.add("ScientificName");
-		knownABCDelements.add("FullScientificNameString");
-		knownABCDelements.add("NameAtomised");
-		knownABCDelements.add("SourceInstitutionID");
-		knownABCDelements.add("SourceID");
-		knownABCDelements.add("UnitID");
-		knownABCDelements.add("RecordBasis");
-		knownABCDelements.add("AccessionNumber");
-		knownABCDelements.add("LocalityText");
-		knownABCDelements.add("LongitudeDecimal");
-		knownABCDelements.add("Country");
-		knownABCDelements.add("ISO3166Code");
-		knownABCDelements.add("CollectorsFieldNumber");
-		knownABCDelements.add("CollectorsNumber");
-		knownABCDelements.add("AccessionNumber");
-		knownABCDelements.add("Altitude_MeasurementOrFactText");
-		knownABCDelements.add("Depth");
-		knownABCDelements.add("NamedArea_AreaName");
-		knownABCDelements.add("GatheringAgent_Person_FullName");
 	}
 
 	/*
@@ -128,45 +110,13 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			Document document = constructeur.parse(xml);
 			Element racine = document.getDocumentElement();
 			unitList = racine.getElementsByTagName("Unit");
+
 		}catch(Exception e){
-			System.out.println(e);
+			logger.info(e);
 		}
 		return unitList;
 	}
 
-
-	public void afficherInfos(Node noeud, int niv) {
-		short type = noeud.getNodeType();
-		String nom = noeud.getNodeName();
-		String valeur = noeud.getNodeValue();
-
-		indenter(niv, type == Node.TEXT_NODE);
-		if(!knownABCDelements.contains(nom)){
-			System.out.print(nom + " (" + type + ") = '");
-			if(valeur != null && !valeur.matches("^\\s+$")){
-				System.out.print(valeur);
-				System.out.println("'");
-			}
-		}
-		if ((type == Node.DOCUMENT_NODE 
-				|| type == Node.ELEMENT_NODE)
-				&& noeud.hasChildNodes()) {
-			NodeList liste = noeud.getChildNodes();
-			for(int i = 0; i < liste.getLength(); i++)
-				afficherInfos(liste.item(i), niv + 1);
-		}
-	}
-	public void indenter(int n, boolean texte){
-		String tab = "\t";
-		for(int i = 0; i < n; i++){
-			System.out.print(tab);
-		}
-		if(texte){
-			System.out.print(" - ");
-		}
-		else
-			System.out.print(" + ");
-	}
 
 	/*
 	 * Store the unit's properties into variables
@@ -178,7 +128,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		try{
 			NodeList group;
 
-//			try{afficherInfos(racine, 0);}catch (Exception e) {System.out.println(e);}
+//			try{afficherInfos(racine, 0);}catch (Exception e) {logger.info(e);}
 			group = racine.getChildNodes();
 //			logger.info("ABCD ELEMENT not stored: "+group.item(i).getNodeName().toString()+" - value: "+group.item(i).getTextContent());
 			for (int i=0; i< group.getLength(); i++){
@@ -194,7 +144,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 			this.getScientificNames(group);
 
-//			System.out.println("this.identificationList "+this.identificationList.toString());
+//			logger.info("this.identificationList "+this.identificationList.toString());
 			this.getIDs(racine);
 			this.getRecordBasis(racine);
 			this.getMultimedia(racine);
@@ -207,6 +157,15 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		}
 	}
 
+	String path= "";
+	private void getHierarchie(Node node){
+		while (node != null && node.getNodeName() != "DataSets"){
+//			logger.info(node.getParentNode().getNodeName());
+			path = node.getParentNode().getNodeName()+"/"+path; 
+			node = node.getParentNode();
+		}
+//		logger.info("path: "+path);
+	}
 
 	private void getScientificNames(NodeList group){
 		NodeList identifications,results;
@@ -219,11 +178,16 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 					if(identifications.item(m).getNodeName().equals("Result")){
 						results = identifications.item(m).getChildNodes();
 						for(int k=0; k<results.getLength();k++)
-							if (results.item(k).getNodeName().equals("TaxonIdentified"))
+							if (results.item(k).getNodeName().equals("TaxonIdentified")){
 								tmpName=this.getScientificName(results.item(k));
+							}
 					}
-					else if(identifications.item(m).getNodeName().equals("PreferredFlag"))
+					else if(identifications.item(m).getNodeName().equals("PreferredFlag")){
 						this.identificationList.add(tmpName+"_preferred_"+identifications.item(m).getTextContent()+"_code_"+this.nomenclatureCode);
+						getHierarchie(identifications.item(m));
+						knownABCDelements.add(path);
+						path="";
+					}
 
 					else if (identifications.item(m).getNodeName().equals("References"))
 						this.getReferences(identifications.item(m));
@@ -242,8 +206,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if (results.item(k).getNodeName().equals("Reference")){
 				reference = results.item(k).getChildNodes();
 				for(int l=0;l<reference.getLength();l++){
-					if (reference.item(l).getNodeName().equals("TitleCitation"))
+					if (reference.item(l).getNodeName().equals("TitleCitation")){
 						referenceList.add(reference.item(l).getTextContent());
+						getHierarchie(reference.item(l));
+						knownABCDelements.add(path);
+						path="";
+					}
 				}
 			}
 		}
@@ -258,12 +226,15 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if (taxonsIdentified.item(l).getNodeName().equals("ScientificName")){
 				scnames = taxonsIdentified.item(l).getChildNodes();
 				for (int n=0;n<scnames.getLength();n++){
-					if (scnames.item(n).getNodeName().equals("FullScientificNameString"))
+					if (scnames.item(n).getNodeName().equals("FullScientificNameString")){
 						tmpName = scnames.item(n).getTextContent();
+						getHierarchie(scnames.item(n));
+						knownABCDelements.add(path);
+						path="";
+					}
 					if (scnames.item(n).getNodeName().equals("NameAtomised")){
 						try {
 							if (scnames.item(n).hasChildNodes()){
-
 								this.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
 							}
 						} catch (Exception e) {
@@ -293,24 +264,65 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedZoological(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
-				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("Subgenus"))
-				atomisedMap.put("Subgenus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("SpeciesEpithet"))
-				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet"))
-				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("AuthorTeamOriginalAndYear"))
-				atomisedMap.put("AuthorTeamOriginalAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesisAndYear"))
-				atomisedMap.put("AuthorTeamParenthesisAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("CombinationAuthorTeamAndYear"))
-				atomisedMap.put("CombinationAuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("Breed"))
-				atomisedMap.put("Breed",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("NamedIndividual"))
-				atomisedMap.put("NamedIndividual",atomised.item(i).getTextContent());
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial")){
+				atomisedMap.put("Genus",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";	
+			}
+			if(atomised.item(i).getNodeName().equals("Subgenus")){
+				atomisedMap.put("Subgenus",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("SpeciesEpithet")){
+				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet")){
+				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("AuthorTeamOriginalAndYear")){
+				atomisedMap.put("AuthorTeamOriginalAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";}
+			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesisAndYear")){
+				atomisedMap.put("AuthorTeamParenthesisAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";}
+			if(atomised.item(i).getNodeName().equals("CombinationAuthorTeamAndYear")){
+				atomisedMap.put("CombinationAuthorTeamAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";}
+			if(atomised.item(i).getNodeName().equals("Breed")){
+				atomisedMap.put("Breed",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";}
+			if(atomised.item(i).getNodeName().equals("NamedIndividual")){
+				atomisedMap.put("NamedIndividual",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
 		}
 		return atomisedMap;
 
@@ -319,12 +331,27 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedViral(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
-				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("ViralSpeciesDesignation"))
-				atomisedMap.put("ViralSpeciesDesignation", atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("Acronym"))
-				atomisedMap.put("Acronym",atomised.item(i).getTextContent());
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial")){
+				atomisedMap.put("Genus",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("ViralSpeciesDesignation")){
+				atomisedMap.put("ViralSpeciesDesignation", atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("Acronym")){
+				atomisedMap.put("Acronym",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
 		}
 		return atomisedMap;
 	}
@@ -332,26 +359,76 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedBotanical(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
-				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("FirstEpithet"))
-				atomisedMap.put("FirstEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("InfraspecificEpithet"))
-				atomisedMap.put("InfraSpeEpithet", atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("Rank"))
-				atomisedMap.put("Rank",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("HybridFlag"))
-				atomisedMap.put("HybridFlag",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesis"))
-				atomisedMap.put("AuthorTeamParenthesis",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("AuthorTeam"))
-				atomisedMap.put("AuthorTeam",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("CultivarGroupName"))
-				atomisedMap.put("CultivarGroupName",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("CultivarName"))
-				atomisedMap.put("CultivarName",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("TradeDesignationNames"))
-				atomisedMap.put("Trade",atomised.item(i).getTextContent());
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial")){
+				atomisedMap.put("Genus",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("FirstEpithet")){
+				atomisedMap.put("FirstEpithet",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("InfraspecificEpithet")){
+				atomisedMap.put("InfraSpeEpithet", atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("Rank")){
+				atomisedMap.put("Rank",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("HybridFlag")){
+				atomisedMap.put("HybridFlag",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("AuthorTeamParenthesis")){
+				atomisedMap.put("AuthorTeamParenthesis",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("AuthorTeam")){
+				atomisedMap.put("AuthorTeam",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("CultivarGroupName")){
+				atomisedMap.put("CultivarGroupName",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("CultivarName")){
+				atomisedMap.put("CultivarName",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("TradeDesignationNames")){
+				atomisedMap.put("Trade",atomised.item(i).getTextContent()); 
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
 		}
 		return atomisedMap;
 	}
@@ -359,22 +436,62 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private HashMap<String,String> getAtomisedBacterial(NodeList atomised){
 		HashMap<String,String> atomisedMap = new HashMap<String,String>();
 		for (int i=0;i<atomised.getLength();i++){
-			if(atomised.item(i).getNodeName().equals("GenusOrMonomial"))
-				atomisedMap.put("Genus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("Subgenus"))
-				atomisedMap.put("SubGenus",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("SubgenusAuthorAndYear"))
-				atomisedMap.put("SubgenusAuthorAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("SpeciesEpithet"))
-				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet"))
-				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("ParentheticalAuthorTeamAndYear"))
-				atomisedMap.put("ParentheticalAuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("AuthorTeamAndYear"))
-				atomisedMap.put("AuthorTeamAndYear",atomised.item(i).getTextContent());
-			if(atomised.item(i).getNodeName().equals("NameApprobation"))
-				atomisedMap.put("NameApprobation",atomised.item(i).getTextContent());
+			if(atomised.item(i).getNodeName().equals("GenusOrMonomial")){
+				atomisedMap.put("Genus",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("Subgenus")){
+				atomisedMap.put("SubGenus",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("SubgenusAuthorAndYear")){
+				atomisedMap.put("SubgenusAuthorAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("SpeciesEpithet")){
+				atomisedMap.put("SpeciesEpithet",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("SubspeciesEpithet")){
+				atomisedMap.put("SubspeciesEpithet",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("ParentheticalAuthorTeamAndYear")){
+				atomisedMap.put("ParentheticalAuthorTeamAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("AuthorTeamAndYear")){
+				atomisedMap.put("AuthorTeamAndYear",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
+			if(atomised.item(i).getNodeName().equals("NameApprobation")){
+				atomisedMap.put("NameApprobation",atomised.item(i).getTextContent());  
+				path=atomised.item(i).getNodeName();
+				getHierarchie(atomised.item(i));
+				knownABCDelements.add(path);
+				path="";
+			}
 		}
 		return atomisedMap;
 	}
@@ -383,18 +500,30 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList group;
 		try {
 			group = racine.getElementsByTagName("SourceInstitutionID");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.institutionCode = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.institutionCode= "";
 		}
 		try {
 			group = racine.getElementsByTagName("SourceID");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.collectionCode = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.collectionCode = "";
 		}
 		try {
 			group = racine.getElementsByTagName("UnitID");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.unitID = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.unitID = "";
@@ -405,6 +534,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList group;
 		try {
 			group = racine.getElementsByTagName("RecordBasis");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.recordBasis = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.recordBasis = "";
@@ -421,14 +554,18 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 					if (multimedias.item(j).getNodeName().equals("MultiMediaObject")){	
 						multimedia = multimedias.item(j).getChildNodes();
 						for (int k=0;k<multimedia.getLength();k++){
-							if(multimedia.item(k).getNodeName().equals("FileURI"))
+							if(multimedia.item(k).getNodeName().equals("FileURI")){
 								this.multimediaObjects.add(multimedia.item(k).getTextContent());
+								getHierarchie(multimedia.item(k));
+								knownABCDelements.add(path);
+								path="";	
+							}
 						}
 					}
 				}
 			}
 		} catch (NullPointerException e) {
-			System.out.println(e);
+			logger.info(e);
 		}
 	}
 
@@ -436,12 +573,20 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList group;
 		try {
 			group = racine.getElementsByTagName("AccessionNumber");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";	
 			this.accessionNumber = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.accessionNumber = "";
 		}
 		try {
 			group = racine.getElementsByTagName("CollectorsFieldNumber");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.fieldNumber = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.fieldNumber = "";
@@ -449,6 +594,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 		try {
 			group = racine.getElementsByTagName("CollectorsNumber");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.collectorsNumber = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.collectorsNumber = "";
@@ -456,6 +605,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 		try {
 			group = racine.getElementsByTagName("AccessionNumber");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.accessionNumber = group.item(0).getTextContent();
 		} catch (NullPointerException e) {
 			this.accessionNumber = "";
@@ -466,6 +619,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		NodeList group, childs;
 		try {
 			group = racine.getElementsByTagName("LocalityText");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.locality = group.item(0).getTextContent();
 			if (group.item(0).hasAttributes())
 				if (group.item(0).getAttributes().getNamedItem("lang") != null)
@@ -475,25 +632,51 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		}
 		try {
 			group = racine.getElementsByTagName("LongitudeDecimal");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.longitude = Double.valueOf(group.item(0).getTextContent());
 		} catch (NullPointerException e) {
 			this.longitude=0.0;
 		}
 		try {
 			group = racine.getElementsByTagName("LatitudeDecimal");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.latitude = Double.valueOf(group.item(0).getTextContent());
 		} catch (NullPointerException e) {
 			this.latitude=0.0;
 		}
 		try {
 			group = racine.getElementsByTagName("Country");
-			this.country = group.item(0).getTextContent();
+			childs = group.item(0).getChildNodes();
+			for (int i=0;i<childs.getLength(); i++){
+				if(childs.item(i).getNodeName() == "Name"){
+					path=childs.item(i).getNodeName();
+					getHierarchie(childs.item(i));
+					knownABCDelements.add(path);
+					path="";
+					this.country = childs.item(i).getTextContent();
+				}
+			}
 		} catch (NullPointerException e) {
 			this.country = "";
 		}
 		try {
-			group = racine.getElementsByTagName("ISO3166Code");
-			this.isocountry = group.item(0).getTextContent();
+			group = racine.getElementsByTagName("Country");
+			childs = group.item(0).getChildNodes();
+			for (int i=0;i<childs.getLength(); i++){
+				if(childs.item(i).getNodeName() == "ISO3166Code"){
+					path=childs.item(i).getNodeName();
+					getHierarchie(childs.item(i));
+					knownABCDelements.add(path);
+					path="";
+					this.isocountry = childs.item(i).getTextContent();
+				}
+			}
 		} catch (NullPointerException e) {
 			this.isocountry = "";
 		}
@@ -502,8 +685,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for (int i=0;i<group.getLength();i++){
 				childs = group.item(i).getChildNodes();
 				for (int j=0;j<childs.getLength();j++){
-					if (childs.item(j).getNodeName().equals("MeasurementOrFactText"))
+					if (childs.item(j).getNodeName().equals("MeasurementOrFactText")){
+						getHierarchie(childs.item(j));
+						knownABCDelements.add(path);
+						path="";
 						this.altitude = Integer.valueOf(childs.item(j).getTextContent());
+					}
 				}
 			}
 		} catch (NullPointerException e) {
@@ -512,6 +699,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 		try {
 			group = racine.getElementsByTagName("Depth");
+			path=group.item(0).getNodeName();
+			getHierarchie(group.item(0));
+			knownABCDelements.add(path);
+			path="";
 			this.depth = Integer.valueOf(group.item(0).getTextContent());
 		} catch (NullPointerException e) {
 			this.depth = -9999;
@@ -523,8 +714,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			for (int i=0;i<group.getLength();i++){
 				childs = group.item(i).getChildNodes();
 				for (int j=0; j<childs.getLength();j++){
-					if (childs.item(j).getNodeName().equals("AreaName"))
+					if (childs.item(j).getNodeName().equals("AreaName")){
+						getHierarchie(childs.item(j));
+						knownABCDelements.add(path);
+						path="";
 						this.namedAreaList.add(childs.item(j).getTextContent());
+					}
 				}
 			}
 		}catch(NullPointerException e){
@@ -543,8 +738,12 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 					if (childs.item(j).getNodeName().equals("Person")){
 						person = childs.item(j).getChildNodes();
 						for (int k=0; k<person.getLength(); k++)
-							if (person.item(k).getNodeName().equals("FullName"))
+							if (person.item(k).getNodeName().equals("FullName")){
+								getHierarchie(person.item(k));
+								knownABCDelements.add(path);
+								path="";
 								this.gatheringAgentList.add(person.item(k).getTextContent());
+							}
 					}
 
 				}
@@ -558,20 +757,19 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		Institution institution;
 		List<Institution> institutions;
 		try{
-			System.out.println(this.institutionCode);
+			logger.info(this.institutionCode);
 			institutions= config.getCdmAppController().getAgentService().searchInstitutionByCode(this.institutionCode);
 		}catch(Exception e){
-			System.out.println("BLI "+e);
 			institutions=new ArrayList<Institution>();
 		}
 		if (institutions.size() ==0 || !config.getReUseExistingMetadata()){
-			System.out.println("Institution (agent) unknown or not allowed to reuse existing metadata");
+			logger.info("Institution (agent) unknown or not allowed to reuse existing metadata");
 			//create institution
 			institution = Institution.NewInstance();
 			institution.setCode(this.institutionCode);				
 		}
 		else{
-			System.out.println("Institution (agent) already in the db");
+			logger.info("Institution (agent) already in the db");
 			institution = institutions.get(0);
 		}
 		return institution;
@@ -593,7 +791,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			collections=new ArrayList<Collection>();
 		}
 		if (collections.size() ==0 || !config.getReUseExistingMetadata()){
-			System.out.println("Collection not found or do not reuse existing metadata  "+this.collectionCode);
+			logger.info("Collection not found or do not reuse existing metadata  "+this.collectionCode);
 			//create new collection
 			collection.setCode(this.collectionCode);
 			collection.setCodeStandard("GBIF");
@@ -689,12 +887,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	}
 
 	private NonViralName<?> parseScientificName(String scientificName){
-		System.out.println("parseScientificName");
 		NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
 		NonViralName<?>taxonName = null;
 		boolean problem=false;
 
-		System.out.println("nomenclature: "+this.nomenclatureCode);
 		if (this.nomenclatureCode.toString().equals("Zoological")){
 			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
 			if (taxonName.hasProblem())
@@ -717,7 +913,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 //		if (this.nomenclatureCode.toString().equals("Viral")){
 //		ViralName taxonName = (ViralName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICVCN(), null);
 //		if (taxonName.hasProblem())
-//		System.out.println("pb ICVCN");
+//		logger.info("pb ICVCN");
 //		}
 		//TODO: parsing of ViralNames?
 		if(problem){
@@ -730,7 +926,6 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 	@SuppressWarnings("unchecked")
 	private NonViralName<?> setTaxonNameByType(HashMap<String, String> atomisedMap,String fullName){
-		System.out.println("nomenclature: "+this.nomenclatureCode);
 		if (this.nomenclatureCode.equals("Zoological")){
 			NonViralName<ZoologicalName> taxonName  = ZoologicalName.NewInstance(null); 
 			taxonName.setFullTitleCache(fullName, true);
@@ -762,7 +957,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				taxonName.setCombinationAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())
-				System.out.println("pb ICZN");
+				logger.info("pb ICZN");
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Botanical")){
@@ -798,7 +993,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				taxonName.setCombinationAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())
-				System.out.println("pb ICBN");
+				logger.info("pb ICBN");
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Bacterial")){
@@ -819,14 +1014,14 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				taxonName.setBasionymAuthorTeam(team);
 			}
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNB");
+				logger.info("pb ICNB");
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Cultivar")){
 			NonViralName<CultivarPlantName> taxonName = CultivarPlantName.NewInstance(null);
 
 			if (taxonName.hasProblem())
-				System.out.println("pb ICNCP");
+				logger.info("pb ICNCP");
 			else return taxonName;
 		}
 //		if (this.nomenclatureCode.equals("Viral")){
@@ -834,7 +1029,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 //		taxonName.setFullTitleCache(fullName, true);
 //		taxonName.setAcronym(getFromMap(atomisedMap,"Acronym"));
 //		if (taxonName.hasProblem())
-//		System.out.println("pb ICVCN");
+//		logger.info("pb ICVCN");
 //		else return taxonName;
 //		}
 		//TODO ViralName
@@ -871,10 +1066,10 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 //		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 //		} catch (DataSourceNotFoundException e1) {
 //		e1.printStackTrace();
-//		System.out.println("DataSourceNotFoundException "+e1);
+//		logger.info("DataSourceNotFoundException "+e1);
 //		} catch (TermNotFoundException e1) {
 //		e1.printStackTrace();
-//		System.out.println("TermNotFoundException " +e1);
+//		logger.info("TermNotFoundException " +e1);
 //		}
 
 		tx = app.startTransaction();
@@ -968,7 +1163,6 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 						url = new URL(this.multimediaObjects.get(i));
 						imd = mmd.readImageMetaData(url, imd);
 						if (imd != null){
-							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();
 							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
 							representation.addRepresentationPart(imf);
@@ -992,7 +1186,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
 			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
 			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
-			logger.info("saved new specimen ...");
+			logger.info("saved ABCD specimen ...");
 
 
 		} catch (Exception e) {
@@ -1001,24 +1195,83 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			result = false;
 		}
 		app.commitTransaction(tx);
-		System.out.println("commit done");
 		app.close();
+		
 		return result;
+	}
+
+	private void compareABCDtoCDM(String fileName, ArrayList<String> knownElts){
+
+		try {
+			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
+			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
+			File xml = new File(fileName);
+			Document document = constructeur.parse(xml);
+			Element racine = document.getDocumentElement();
+			traverse(racine);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Set<String> elts = allABCDelements.keySet();
+		Iterator< String>it = elts.iterator();
+		String elt;
+		while (it.hasNext()){
+			elt = it.next();
+			if (knownElts.indexOf(elt) == -1)
+				logger.info("Unsaved ABCD element: "+elt+" - "+allABCDelements.get(elt));
+		}
+
+	}
+
+	private void traverse(Node node){
+		// Extract node info:
+		String test = node.getTextContent();
+		
+		// Print and continue traversing.
+		if(test != null && test != "#text" && node.getNodeName() != "#text" && test.split("\n").length==1 && test.length()>0)
+		{
+			path=node.getNodeName();
+			getHierarchie(node);
+			allABCDelements.put(path,test);
+			path="";
+		}
+		// Now traverse the rest of the tree in depth-first order.
+		if (node.hasChildNodes()) {
+			// Get the children in a list.
+			NodeList nl = node.getChildNodes();
+			// How many of them?
+			int size = nl.getLength();
+			for (int i=0; i<size; i++)
+				// Recursively traverse each of the children.
+				traverse (nl.item(i));
+		}
 	}
 
 
 	public boolean invoke(SpecimenImportConfigurator config){
-		System.out.println("INVOKE Specimen Import from ABCD2.06 XML File");
+		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		AbcdIO test = new AbcdIO();
 		String sourceName = config.getSourceNameString();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null)
 		{
-			System.out.println("nb units to insert: "+unitsList.getLength());
+			logger.info("nb units to insert: "+unitsList.getLength());
 			for (int i=0;i<unitsList.getLength();i++){
 				test.setUnitPropertiesXML((Element)unitsList.item(i));
 				test.start(config);
 				config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
+				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
+				compareABCDtoCDM(sourceName,test.knownABCDelements);
+				//reset the ABCD elements added in CDM
+				//knownABCDelements = new ArrayList<String>();
+				allABCDelements = new HashMap<String,String>();
 			}
 		}
 
@@ -1028,7 +1281,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
-		System.out.println("invoke de ABCDio");
+		logger.info("invoke de ABCDio");
 		invoke((SpecimenImportConfigurator)config);
 		return false;
 	}
