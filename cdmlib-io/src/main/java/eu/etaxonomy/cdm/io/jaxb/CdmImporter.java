@@ -107,6 +107,13 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 		
+		if (jaxbImpConfig.isDoTermVocabularies() == true) {
+			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
+				logger.info("Language data: " + termVocabularies.size());
+				appCtr.getTermService().saveTermVocabulariesAll(termVocabularies);
+			}
+		}
+
 		if (jaxbImpConfig.isDoTerms() == true) {
 			if ((terms = dataSet.getTerms()).size() > 0) {
 				logger.info("Terms: " + terms.size());
@@ -114,10 +121,10 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 			}
 		}
 
-		if (jaxbImpConfig.isDoTermVocabularies() == true) {
-			if ((termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-				logger.info("Language data: " + termVocabularies.size());
-				appCtr.getTermService().saveTermVocabulariesAll(termVocabularies);
+		if (jaxbImpConfig.isDoLanguageData() == true) {
+			if ((languageData = dataSet.getLanguageData()).size() > 0) {
+				logger.info("Language data: " + languageData.size());
+				appCtr.getTermService().saveLanguageDataAll(languageData);
 			}
 		}
 
@@ -189,13 +196,6 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 			if ((media = dataSet.getMedia()).size() > 0) {
 				logger.info("Media: " + media.size());
 				appCtr.getMediaService().saveMediaAll(media);
-			}
-		}
-
-		if (jaxbImpConfig.isDoLanguageData() == true) {
-			if ((languageData = dataSet.getLanguageData()).size() > 0) {
-				logger.info("Language data: " + languageData.size());
-				appCtr.getTermService().saveLanguageDataAll(languageData);
 			}
 		}
 

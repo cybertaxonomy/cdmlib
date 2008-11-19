@@ -168,7 +168,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
 		try {
     		// get the matching names from the DB
-    		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().findNamesByTitle(taxonName);
+    		List<TaxonNameBase<?,?>> taxonNameBases = appCtr.getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
