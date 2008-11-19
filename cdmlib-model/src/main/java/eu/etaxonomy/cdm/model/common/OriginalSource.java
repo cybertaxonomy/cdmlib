@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 /**
  * Other names/labels/titles (abreviated or not) for the same object (person,
  * reference, source, etc.)
@@ -65,9 +67,15 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	}
 
 	public static OriginalSource NewInstance(String id, String idNamespace){
-		OriginalSource result = new OriginalSource();
-		result.setIdInSource(id);
+		OriginalSource result = NewInstance(id);
 		result.setIdNamespace(idNamespace);
+		return result;
+	}
+	
+	public static OriginalSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference){
+		OriginalSource result = NewInstance(id, idNamespace);
+		result.setCitation(citation);
+		result.setCitationMicroReference(microReference);
 		return result;
 	}
 
