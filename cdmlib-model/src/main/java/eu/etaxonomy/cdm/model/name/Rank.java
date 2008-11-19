@@ -516,7 +516,7 @@ public class Rank extends OrderedTermBase<Rank> {
 				abbrev = "(null)";
 			}
 			if (useUnknown){
-				logger.warn("Unknown rank name: " + abbrev+". Rank 'UNKNOWN_RANK' created instead");
+				logger.info("Unknown rank name: " + abbrev+". Rank 'UNKNOWN_RANK' created instead");
 				return Rank.UNKNOWN_RANK();
 			}else{
 				if (abbrev == null){
@@ -600,7 +600,7 @@ public class Rank extends OrderedTermBase<Rank> {
 				rankName = "(null)";
 			}
 			if (useUnknown){
-				logger.warn("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
+				logger.info("Unknown rank name: " + rankName+". Rank 'UNKNOWN_RANK' created instead");
 				return Rank.UNKNOWN_RANK();
 			}else{
 				if (rankName == null){
