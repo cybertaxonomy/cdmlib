@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.cfg.annotations.ResultsetMappingSecondPass;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -88,52 +89,104 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			
-			childName = "TaxonRelationships";
-			obligatory = false;
-			Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			
-			if (elTaxonRelationships != null){
-				//Relationships
-				String tcsElementName = "TaxonRelationship";
-				List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
-	
-				for (Element elTaxonRelationship: elTaxonRelationshipList){
-					taxonRelCount++;
-					logger.debug("TaxonRelationship "+  taxonRelCount);
-					
-					String strId = elTaxonConcept.getAttributeValue("id");
-					//TODO
-	//				String strConceptType = elTaxonConcept.getAttributeValue("type"); //original, revision, incomplete, aggregate, nominal
-	//				String strPrimary = elTaxonConcept.getAttributeValue("primary"); //If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept.
-	//				String strForm = elTaxonConcept.getAttributeValue("form");  //anamorph, teleomorph, hybrid
-					
-					makeRelationshipType(tcsConfig, elTaxonRelationship, taxonMap, taxonStore, strId, success);
-				
-					TaxonBase aboutTaxon = taxonMap.get(strId);
-					if (aboutTaxon instanceof Taxon){
-						makeHomotypicSynonymRelations((Taxon)aboutTaxon);
-					}
-					
-					//TODO idInSource
-				}// end Relationship
-			}				
-			
+			taxonRelCount += makeTaxonConcept(tcsConfig, taxonMap, taxonStore, elTaxonConcept, tcsNamespace, success);	
 		}//elTaxonConcept
+	
+		//TaxonRelationshipAssertions
+		taxonRelCount += makeTaxonRelationshipAssertion(tcsConfig, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
+		
 		logger.info("Taxa to save: " + taxonStore.size());
 		taxonService.saveTaxonAll(taxonStore);
 		
 		logger.info("end make taxon relations ...");
 		return success.getValue();
-
 	}
+	
+	private int makeTaxonConcept(TcsXmlImportConfigurator tcsConfig, MapWrapper<TaxonBase> taxonMap, Set<TaxonBase> taxonStore, Element elTaxonConcept, Namespace tcsNamespace, ResultWrapper<Boolean> success){
+		int taxonRelCount = 0;
+		
+		String childName = "TaxonRelationships";
+		boolean obligatory = false;
+		Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+		
+		if (elTaxonRelationships != null){
+			//Relationships
+			String tcsElementName = "TaxonRelationship";
+			List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
+
+			for (Element elTaxonRelationship: elTaxonRelationshipList){
+				taxonRelCount++;
+				logger.debug("TaxonRelationship "+  taxonRelCount);
+				
+				String strId = elTaxonConcept.getAttributeValue("id");
+				//TODO
+//				String strConceptType = elTaxonConcept.getAttributeValue("type"); //original, revision, incomplete, aggregate, nominal
+//				String strPrimary = elTaxonConcept.getAttributeValue("primary"); //If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept.
+//				String strForm = elTaxonConcept.getAttributeValue("form");  //anamorph, teleomorph, hybrid
+				
+				TaxonBase fromTaxon = taxonMap.get(strId);
+				makeRelationshipType(tcsConfig, elTaxonRelationship, taxonMap, taxonStore, fromTaxon, success);
+			
+				TaxonBase aboutTaxon = taxonMap.get(strId);
+				if (aboutTaxon instanceof Taxon){
+					makeHomotypicSynonymRelations((Taxon)aboutTaxon);
+				}
+			}// end Relationship
+		}
+		return taxonRelCount;
+	}
+
+	private int makeTaxonRelationshipAssertion(
+			TcsXmlImportConfigurator tcsConfig, 
+			MapWrapper<TaxonBase> taxonMap,
+			MapWrapper<ReferenceBase> referenceMap,
+			Set<TaxonBase> taxonStore, 
+			Element elDataSet, 
+			Namespace tcsNamespace, 
+			ResultWrapper<Boolean> success){
+		
+		int i = 0;
+		String childName = "TaxonRelationshipAssertions";
+		boolean obligatory = false;
+		Element elTaxonRelationshipAssertions = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+		if(elTaxonRelationshipAssertions == null){
+			return 0;
+		}
+		
+		childName = "TaxonRelationshipAssertion";
+		List<Element> elTaxonRelationshipAssertionList = elTaxonRelationshipAssertions.getChildren(childName, tcsNamespace);
+		//for each taxon relationship assertion
+		for (Element elTaxonRelationshipAssertion : elTaxonRelationshipAssertionList){
+			if ((i++ % modCount) == 0){ logger.info("TaxonRelationshipAssertions handled: " + (i-1));}
+			String strId = elTaxonRelationshipAssertion.getAttributeValue("id");
+			//TODO id
+			
+			childName = "AccordingTo";
+			obligatory = true;
+			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonRelationshipAssertion, childName, tcsNamespace, obligatory);
+			ReferenceBase ref = makeAccordingTo(elAccordingTo, referenceMap, success);
+			
+			childName = "FromTaxonConcept";
+			obligatory = true;
+			Element elFromTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationshipAssertion, childName, tcsNamespace, obligatory);
+
+			Class<? extends TaxonBase> clazz = Taxon.class;
+			//TODO if synonym
+			TaxonBase fromTaxon = makeReferenceType(elFromTaxonConcept, clazz, taxonMap, success);
+			
+			makeRelationshipType(tcsConfig, elTaxonRelationshipAssertion, taxonMap, taxonStore, fromTaxon, success);
+		}//elTaxonRelationshipAssertion
+		
+		return i;
+	}
+	
 	
 	private void makeRelationshipType(
 			TcsXmlImportConfigurator tcsConfig
 			, Element elRelationship 
 			, MapWrapper<TaxonBase> taxonMap
 			, Set<TaxonBase> taxonStore
-			, String fromTaxonId
+			, TaxonBase fromTaxon
 			, ResultWrapper<Boolean> success
 			){
 	
@@ -146,14 +199,14 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 		try {
 			ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
 			isInverse.setValue(false);
-			RelationshipTermBase relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
+			RelationshipTermBase<?> relType = TcsXmlTransformer.tcsRelationshipType2Relationship(strRelType, isInverse);
 			
-			//toTaxon
-			boolean isSynonym = relType instanceof SynonymRelationshipType;
+			//toTaxon (should be part of relationshipType)
+			boolean isSynonym = (relType instanceof SynonymRelationshipType);
 			TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, isSynonym, success);
-			TaxonBase fromTaxon = taxonMap.get(fromTaxonId);
+			
 			if (toTaxon != null && fromTaxon != null){
-				//reverse
+				//exchange taxa if relationship is inverse
 				if (isInverse.getValue() == true ){
 					TaxonBase tmp = toTaxon;
 					toTaxon = fromTaxon;
@@ -171,7 +224,7 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 					if (relType instanceof SynonymRelationshipType){
 						SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
 						if (! (fromTaxon instanceof Synonym )){
-							logger.warn(fromTaxonId + " TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
+							logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
 							success.setValue(false);
 						}else{
 							Synonym synonym = (Synonym)fromTaxon;
@@ -273,11 +326,10 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 	}
 
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
-		if (true)return false;
-		TaxonNameBase aboutName = aboutTaxon.getName();
+		TaxonNameBase<?,?> aboutName = aboutTaxon.getName();
 		if (aboutName != null){
 			Set<TaxonNameBase> typifiedNames = aboutName.getHomotypicalGroup().getTypifiedNames();
-			for (TaxonNameBase typifiedName : typifiedNames){
+			for (TaxonNameBase<?,?> typifiedName : typifiedNames){
 				//TODO check if name is part of this tcs file
 				if (typifiedName.equals(aboutName)){
 					continue;
@@ -287,8 +339,6 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO {
 					aboutTaxon.addSynonym(syn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 				}
 			}
-			
-			
 		}
 		return true;
 	}

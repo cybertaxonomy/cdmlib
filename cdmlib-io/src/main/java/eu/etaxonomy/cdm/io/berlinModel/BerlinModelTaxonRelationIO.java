@@ -217,7 +217,6 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 							logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
 						}
 					}else if (isConceptRelationship){
-						//TODO
 						ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
 						try {
 							TaxonRelationshipType relType = BerlinModelTransformer.taxonRelId2TaxonRelType(relQualifierFk, isInverse);	
@@ -228,6 +227,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 								fromTaxon.addTaxonRelation(toTaxon, relType, citation, microcitation);
 							}
 						} catch (UnknownCdmTypeException e) {
+							//TODO other relationships
 							logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
 						}
 					}else {

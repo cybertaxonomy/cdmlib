@@ -18,12 +18,14 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -31,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -161,6 +164,9 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			obligatory = false;
 			Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			Rank rank = TcsXmlTaxonNameIO.makeRank(elRank);
+			if (rank != null){
+				logger.warn("Rank in TaxonIO not yet implemented");
+			}
 			elementList.add(childName.toString());
 			
 			childName = "AccordingTo";
@@ -284,31 +290,11 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 	 * @param success
 	 */
 	private void makeTaxonRelationships(TaxonBase name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
-		if (elTaxonRelationships != null){
-			logger.warn("makeTaxonRelationships not yet implemented");
-			success.setValue(false);
-		}
+		//TaxonRelationships are handled in TcsXmlTaxonRelationsIO
+		return;
 	}
 	
-	
-	
-	
-	private ReferenceBase makeAccordingTo(Element elAccordingTo, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
-		if (elAccordingTo != null){
-			logger.warn("makeAccordingTo not yet implemented");
-			success.setValue(false);
-		}
-		return null;
-		
-		//		//FIXME
-//		String secId = "pub_999999";
-//		ReferenceBase sec = referenceMap.get(strAccordingTo);
-//		
-//		if (sec == null){
-//			logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
-//		}
-	}
-	
+
 	
 	private void makeSpecimenCircumscription(TaxonBase name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
 		if (elSpecimenCircumscription != null){

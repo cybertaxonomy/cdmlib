@@ -28,14 +28,19 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -196,6 +201,68 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 		}
 		if (result == null){
 			success.setValue(false);
+		}
+		return result;
+	}
+	
+	
+	protected ReferenceBase makeAccordingTo(Element elAccordingTo, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
+		ReferenceBase result = null;
+		if (elAccordingTo != null){
+			String childName = "AccordingToDetailed";
+			boolean obligatory = false;
+			Element elAccordingToDetailed = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
+
+			childName = "Simple";
+			obligatory = true;
+			Element elSimple = XmlHelp.getSingleChildElement(success, elAccordingTo, childName, elAccordingTo.getNamespace(), obligatory);
+			
+			if (elAccordingToDetailed != null){
+				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
+			}else{
+				result = Generic.NewInstance();
+				String title = elSimple.getTextNormalize();
+				result.setTitleCache(title);
+			}
+		}
+		return result;
+	}
+	
+	
+	private ReferenceBase makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
+		ReferenceBase result = null;
+		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
+		if (elAccordingToDetailed != null){
+			//AuthorTeam
+			String childName = "AuthorTeam";
+			boolean obligatory = false;
+			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+			makeAccordingToAuthorTeam(elAuthorTeam, success);
+			
+			//PublishedIn
+			childName = "PublishedIn";
+			obligatory = false;
+			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+			result = makeReferenceType(elPublishedIn, Generic.class, referenceMap, success);
+			
+			//MicroReference
+			childName = "MicroReference";
+			obligatory = false;
+			Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+			String microReference = elMicroReference.getTextNormalize();
+			if (CdmUtils.Nz(microReference).equals("")){
+				//TODO
+				logger.warn("MicroReference not yet implemented for AccordingToDetailed");	
+			}
+		}
+		return result;
+	}
+
+	private Team makeAccordingToAuthorTeam(Element elAuthorTeam, ResultWrapper<Boolean> succes){
+		Team result = null;
+		if (elAuthorTeam != null){
+			//TODO
+			logger.warn("AuthorTeam not yet implemented for AccordingToDetailed");
 		}
 		return result;
 	}
