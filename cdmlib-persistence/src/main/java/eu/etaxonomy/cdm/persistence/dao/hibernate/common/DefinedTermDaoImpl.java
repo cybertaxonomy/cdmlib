@@ -78,8 +78,11 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	
 
 	public WaterbodyOrCountry getCountryByIso(String iso639) {
-		Query query = getSession().createQuery("from WaterbodyOrCountry where iso3166_A2 = '"+iso639+"'"); 
-		//query.setParameter("isoCode", iso639);
+		// If iso639 = "" query returns non-unique result. We prevent this here:
+		if (iso639.equals("") ) { return null; }
+		
+		Query query = getSession().createQuery("from WaterbodyOrCountry where iso3166_A2 = :isoCode"); 
+		query.setParameter("isoCode", iso639);
 		return (WaterbodyOrCountry) query.uniqueResult();
 	}
 	
@@ -93,7 +96,7 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	 */
 	public Language getLanguageByIso(String iso639) {
 		String isoStandart = "iso639_" + (iso639.length() - 1);
-		Query query = getSession().createQuery("from Language where "+isoStandart+"= :isoCode"); 
+		Query query = getSession().createQuery("from Language where " + isoStandart + "= :isoCode"); 
 		query.setParameter("isoCode", iso639);
 		return (Language) query.uniqueResult();
 	}
