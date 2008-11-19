@@ -298,6 +298,7 @@ public class TimePeriod implements Cloneable {
 		initStart();
 		if (value == null){
 			start = start.without(type);
+			return this;
 		}
 		int max = 9999999;
 		if (type.equals(DateTimeFieldType.monthOfYear())){
