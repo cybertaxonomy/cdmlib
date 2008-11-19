@@ -28,10 +28,44 @@ public class SDDSources {
 */
 	
 	public static String viola_local(){
-		//		SDD xml examples from the SDD v1.1 package
+		//		SDD XML example from the SDD v1.1 package
 		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/SDD-Test-Simple.xml";
 		return sourceUrl;
 		
+	}
+	
+	public static String LIAS_local(){
+		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/LIAS_Main.sdd11/LIAS_Main.sdd11.xml";
+		return sourceUrl;
+		
+	}
+	
+	public static String Erythroneura_local(){
+		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Erythroneura.sdd11/Erythroneura.sdd11.xml";
+		return sourceUrl;
+		
+	}
+	
+	public static String Cicad_local(){
+		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Cicad.sdd11/Cicad.sdd11.xml";
+		return sourceUrl;
+		
+	}
+	
+	public static String ValRosandraFRIDAKey_local(){
+		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Val-Rosandra-FRIDA-Key.sdd11/Val-Rosandra-FRIDA-Key.sdd11.xml";
+		return sourceUrl;
+		
+	}
+	
+	public static String FreshwaterAquaticInsects_local(){
+		//		SDD export from an Xper² application
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Freshwater aquatic insects/export_SDD_freshwater_aquatic_insects_fr - 20080430.sdd.xml";
+		return sourceUrl;
 	}
 	
 	public static String viola_local_andreas(){
@@ -47,5 +81,4 @@ public class SDDSources {
 		return sourceUrl;
 	}
 
-	
 }
