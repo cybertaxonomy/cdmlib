@@ -183,6 +183,30 @@ public class CdmDestinations {
 		return CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 	}
 	
+	public static ICdmDataSource localH2_viola(){
+		return CdmDataSource.NewH2EmbeddedInstance("testViola", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2_LIAS(){
+		return CdmDataSource.NewH2EmbeddedInstance("testLIAS", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2_Erythroneura(){
+		return CdmDataSource.NewH2EmbeddedInstance("testErythroneura", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2_Cicad(){
+		return CdmDataSource.NewH2EmbeddedInstance("testCicad", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2_ValRosandraFRIDAKey(){
+		return CdmDataSource.NewH2EmbeddedInstance("testValRosandraFRIDAKey", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2_FreshwaterAquaticInsects(){
+		return CdmDataSource.NewH2EmbeddedInstance("testFreshwaterAquaticInsects", "sa", "");
+	}
+	
 	public static ICdmDataSource cdm_portal_test_pollux(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.11";
