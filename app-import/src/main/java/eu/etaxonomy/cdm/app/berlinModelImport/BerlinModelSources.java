@@ -69,6 +69,16 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
+	public static Source AlgaTerra(){
+		//	BerlinModel - AlgaTerra
+		String dbms = Source.SQL_SERVER_2005;
+		String strServer = "BGBM17";
+		String strDB = "Algaterra";
+		int port = 1433;
+		String userName = "WebUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
 	public static Source PESI_ERMS(){
 		//	BerlinModel - Pesi-ERMS
 		String dbms = Source.SQL_SERVER_2000;
