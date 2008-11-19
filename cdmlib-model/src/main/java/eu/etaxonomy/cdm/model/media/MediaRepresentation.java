@@ -12,20 +12,14 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.TaxonInteraction;
-import eu.etaxonomy.cdm.model.description.TextData;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -34,9 +28,20 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
+
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+
 /**
- * metadata for an external file such as images, phylogenetic trees, or audio
- * recordings available through the location attribute!
+ * A media representation is basically anything having a <a
+ * href="http://iana.org/assignments/media-types/">MIME Media Type</a>. A media
+ * representation consists of one or more parts. Each of them having the same
+ * MIME Type, file suffix (if existing) and quality (more or less).
+ * E.g. a list of jpg files that represent a scanned article of multiple pages.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:34

@@ -34,6 +34,12 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * A {@link Media media} is any kind of media that represents a media object. 
+ * This media object can have multiple {@link MediaRepresentation media representations} that differ in MIME-type 
+ * and/or quality. 
+ * E.g. 
+ * (1) an image can have a tiff and a jpg media representation. 
+ * (2) an formatted text can have a text/html or an application/pdf representation. 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:34
