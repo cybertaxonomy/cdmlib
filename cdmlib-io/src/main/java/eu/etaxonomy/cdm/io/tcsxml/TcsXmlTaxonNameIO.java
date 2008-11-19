@@ -165,7 +165,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 				makeProviderSpecificData(nameBase, elProviderSpecificData, success);
 				elementList.add(childName.toString());
 				
-				
+			
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
 				
 				taxonNameMap.put(strId, nameBase);
