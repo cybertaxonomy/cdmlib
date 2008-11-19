@@ -119,18 +119,14 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			// <Dataset xml:lang="en-us">
 			String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
-			Language datasetLanguage = Language.NewInstance();
+			Language datasetLanguage = null;
 			if (!nameLang.equals("")) {
-				if(nameLang.equals("en-us")) {
-					datasetLanguage = Language.ENGLISH();
-				} else if(nameLang.equals("en-au")) {
-					datasetLanguage = Language.ENGLISH();
-				} else if(nameLang.equals("en")) {
-					datasetLanguage = Language.ENGLISH();
-				} else {
-					datasetLanguage = Language.ENGLISH();
-				}
+//				config.getCdmAppController().getTermService().getLanguageByIso(nameLang);
+				datasetLanguage = Language.ENGLISH();
 			} else {
+				datasetLanguage = Language.ENGLISH();
+			}
+			if (datasetLanguage == null) {
 				datasetLanguage = Language.ENGLISH();
 			}
 
@@ -224,20 +220,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
 
 					if (role.equals("Copyright")) {
-						Language iprLanguage = Language.NewInstance();
+						Language iprLanguage = null;
 						if (lang != null) {
 							if (!lang.equals("")) {
-								if(lang.equals("en-us")) {
-									iprLanguage = Language.ENGLISH();
-								}
-								if(lang.equals("en-au")) {
-									iprLanguage = Language.ENGLISH();
-								} else {
-									iprLanguage = datasetLanguage;
-								}
+								//iprLanguage = termService.getLanguageByIso(nameLang);
+								iprLanguage = datasetLanguage;
 							} else {
 								iprLanguage = datasetLanguage;
 							}
+						}
+						if (iprLanguage == null) {
+							iprLanguage = datasetLanguage;
 						}
 						copyright = Rights.NewInstance(label, iprLanguage);
 					}
@@ -441,12 +434,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						elRepresentation = elTextCharacter.getChild("Representation",sddNamespace);
 						Element elLabel = elRepresentation.getChild("Label",sddNamespace);
 						nameLang = elLabel.getAttributeValue("lang",xmlNamespace);
-						Language language = Language.NewInstance();
+						Language language = null;
 						if (nameLang != null) {
 							if (!nameLang.equals("")) {
-								if(nameLang.equals("en")) {
-									language = Language.ENGLISH();
-								}
+								// language = termService.getLanguageByIso(nameLang);
+								language = datasetLanguage;
+							} else {
+								language = datasetLanguage;
 							}
 						} else {
 							language = datasetLanguage;
@@ -800,7 +794,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				} else {
 					Team team = Team.NewInstance();
 					for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
-						sourceReference.addTeamMember(author.next());
+						team.addTeamMember(author.next());
 					}
 					sourceReference.setCreatedBy(team);
 				}
@@ -839,8 +833,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 		logger.info(i + " Datasets handled");
 
-		ITermService termService = config.getCdmAppController().getTermService();
 		TransactionStatus ts = config.getCdmAppController().startTransaction();
+		
+		ITermService termService = config.getCdmAppController().getTermService();
 		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
 			State state = k.next();
 			termService.saveTerm(state); 
