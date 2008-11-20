@@ -42,24 +42,18 @@ public class ReferenceServiceImpl<T extends ReferenceBase> extends IdentifiableS
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
-	public List<T> getReferencesByTitle(String title){
+	public List<T> getReferencesByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
 	
-//	@Transactional(readOnly = false)
-//	public UUID saveReference(ReferenceBase reference) {
-//		return super.saveCdmObject(reference);
-//	}
-
+	public List<T> getReferencesByTitle(String title, Class<T> clazz) {
+		return super.findCdmObjectsByTitle(title, clazz);
+	}
+	
 	@Transactional(readOnly = false)
 	public UUID saveReference(T reference) {
 		return super.saveCdmObject(reference);
 	}
-
-//	@Transactional(readOnly = false)
-//	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection) {
-//		return saveCdmObjectAll(referenceCollection);
-//	}
 
 	@Transactional(readOnly = false)
 	public Map<UUID, T> saveReferenceAll(Collection<T> referenceCollection){

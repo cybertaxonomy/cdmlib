@@ -23,9 +23,12 @@ public interface IReferenceService<T extends ReferenceBase> extends IIdentifiabl
 	/** Finds reference by UUID **/
 	public abstract ReferenceBase getReferenceByUuid(UUID uuid);
 
-	/** Finds reference by title **/
+	/** Finds references by title **/
 	public List<T> getReferencesByTitle(String title);
 		
+	/** Finds references of a certain kind by title **/
+	public List<T> getReferencesByTitle(String title, Class<T> clazz);
+	
 	/** Gets all references **/
 	public abstract List<ReferenceBase> getAllReferences(int limit, int start);
 
