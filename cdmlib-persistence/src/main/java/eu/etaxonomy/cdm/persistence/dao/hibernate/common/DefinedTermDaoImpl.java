@@ -62,6 +62,14 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 
 	}
 
+	public List<DefinedTermBase> findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz) {
+		Session session = getSession();
+		Criteria crit = session.createCriteria(clazz);
+		crit.add(Restrictions.ilike("persistentTitleCache", queryString));
+		List<DefinedTermBase> results = crit.list();
+		return results;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE, int, int, java.util.List)
 	 */

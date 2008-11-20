@@ -53,6 +53,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntity
 		return results;
 	}
 	
+	public List<T> findByTitleAndClass(String queryString, Class<T> clazz) {
+		Session session = getSession();
+		Criteria crit = session.createCriteria(clazz);
+		crit.add(Restrictions.ilike("persistentTitleCache", queryString));
+		List<T> results = crit.list();
+		return results;
+	}
 	
 
 	/* (non-Javadoc)
