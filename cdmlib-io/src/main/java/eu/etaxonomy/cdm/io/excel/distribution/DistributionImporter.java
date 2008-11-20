@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -61,25 +62,16 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(DistributionImporter.class);
 	
 	private CdmApplicationController appCtr = null;
+	// Stores already processed descriptions
+	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
     	logger.debug("Importing distribution data");
-
     	appCtr = config.getCdmAppController();
     	
-//    	try {
-//			appCtr = 
-//				CdmApplicationController.NewInstance(config.getDestination(), DbSchemaValidation.VALIDATE, true);
-//
-//		} catch (Exception e) {
-//			logger.error("Error creating application controller");
-//			e.printStackTrace();
-//			System.exit(1);
-//		}
-		
 		// read and save all rows of the excel worksheet
     	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
     	if (recordList != null) {
@@ -164,7 +156,9 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 		TransactionStatus txStatus = appCtr.startTransaction();
 
 		// Stores already processed descriptions
-    	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
+//    	myDescriptions = new HashMap<Taxon, TaxonDescription>();
+		// Stores already processed distributions
+//    	Map<Taxon, Distribution> myDistributions = new HashMap<Taxon, Distribution>();
 
 		try {
     		// get the matching names from the DB
@@ -197,8 +191,8 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     					myDescription = myDescriptions.get(taxon);
     				} else {
     					myDescription = TaxonDescription.NewInstance(taxon);
-    					myDescriptions.put(taxon, myDescription);
     					taxon.addDescription(myDescription);
+    					myDescriptions.put(taxon, myDescription);
     				}
 
     				// Status
@@ -213,13 +207,28 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     				// TDWG areas
     				for (String distribution: distributionList) {
 
-    					// Create a new distribution unless none was specified in the input, as for Genera,
-    					// or unless the input distribution couldn't be resolved as a valid TDWG area.
+    					boolean ignore = false;
+    					
     					if(!distribution.equals("")) {
     						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
-    						if (namedArea != null) {    						
+        					TaxonDescription taxonDescription = myDescriptions.get(taxon);
+    						if (namedArea != null) {    
+            					Set<DescriptionElementBase> myDescriptionElements = taxonDescription.getElements();
+    	    					for(DescriptionElementBase descriptionElement : myDescriptionElements) {
+    	    						if (descriptionElement instanceof Distribution) {
+    	    							if (namedArea == ((Distribution)descriptionElement).getArea()) {
+    	    		    					ignore = true;
+    	    		    					break;
+     	    							}
+    	    						}
+    	    					}
+    	    					if (ignore == true) { 
+    	    						logger.debug("Distribution ignored: " + distribution);
+    	    						break; 
+    	    					}
     							Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
     							myDescription.addElement(newDistribution);
+//    							myDescriptions.put(taxon, myDescription);
     						}
     					}
     				}

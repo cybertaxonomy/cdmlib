@@ -132,7 +132,7 @@ public class TestCdmDbComparator {
 //			"DescriptionBase_Marker", 
 //			"DescriptionBase_OriginalSource", 
 //			"DescriptionBase_Rights", 
-//			"DescriptionElementBase", 
+			"DescriptionElementBase", 
 //			"DescriptionElementBase_Annotation",
 //			"DescriptionElementBase_DefinedTermBase",
 //			"DescriptionElementBase_LanguageString",
