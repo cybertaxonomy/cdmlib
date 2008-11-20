@@ -1042,15 +1042,22 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		String value = null;
 		if (atomisedMap.containsKey(key))
 			value = atomisedMap.get(key);
-		if (value != null && key.matches(".*Year.*")){
-			value=value.trim();
-			if (value.matches("[a-z A-Z ]*[0-9]{4}$")){
-				String tmp=value.split("[0-9]{4}$")[0];
-				int year = Integer.parseInt(value.split(tmp)[1]);
-				if (year >= 1752)
-					value=tmp;
+		try{
+			if (value != null && key.matches(".*Year.*")){
+				value=value.trim();
+				if (value.matches("[a-z A-Z ]*[0-9]{4}$")){
+					String tmp=value.split("[0-9]{4}$")[0];
+					int year = Integer.parseInt(value.split(tmp)[1]);
+					if (year >= 1752)
+						value=tmp;
+					else
+						value=null;
+				}
+				else
+					value=null;
 			}
-		}
+		}catch(Exception e){value=null;}
+
 		return value;
 	}
 	/*
@@ -1196,7 +1203,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 		}
 		app.commitTransaction(tx);
 		app.close();
-		
+
 		return result;
 	}
 
@@ -1233,7 +1240,7 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	private void traverse(Node node){
 		// Extract node info:
 		String test = node.getTextContent();
-		
+
 		// Print and continue traversing.
 		if(test != null && test != "#text" && node.getNodeName() != "#text" && test.split("\n").length==1 && test.length()>0)
 		{
