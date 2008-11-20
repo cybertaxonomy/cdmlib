@@ -27,17 +27,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity> exte
 //		this.dao=dao;
 //	}
 
-	protected List<T> findByTitle(String name) {
-//		return ((IIdentifiableDao)dao).findByName(name);
-		return null;
-	}
-
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
 	}
 	
 	protected List<T> findCdmObjectsByTitle(String title, Class<T> clazz){
-		return null;
+		return ((IIdentifiableDao)dao).findByTitleAndClass(title, clazz);
 	}
 	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
 		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
