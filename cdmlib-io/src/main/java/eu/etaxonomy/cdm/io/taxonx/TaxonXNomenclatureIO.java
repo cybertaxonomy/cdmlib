@@ -304,13 +304,15 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 			String collectorNumber = type[1];
 			simpleSpecimen.setCollectorsNumber(collectorNumber);
 		}
-		
+
 		//typeLoc
 		String typeLocFullString = elTypeLoc.getTextTrim();
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
 		String[] typeLocStatusList = typeLocFullString.split(";");
 		
 		Specimen originalSpecimen = simpleSpecimen.getSpecimen();
+		
+		//TODO special character ?, †, ! 
 		
 		for (String typeLocStatus : typeLocStatusList){
 			typeLocStatus = typeLocStatus.trim();
@@ -363,6 +365,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
 		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
 		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
+		statusMap.put("type", null);
 		
 		//TODO to be continued
 		
