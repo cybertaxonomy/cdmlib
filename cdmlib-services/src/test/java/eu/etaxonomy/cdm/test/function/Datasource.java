@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -179,6 +180,10 @@ public class Datasource {
 		}
 	}
 		
+	private boolean testWritableResourceDirectory(){
+		CdmApplicationUtils.getWritableResourceDir();
+		return true;
+	}
 	
 	private void test(){
 		System.out.println("Start Datasource");
@@ -188,7 +193,8 @@ public class Datasource {
 		//CdmUtils.findLibrary(au.com.bytecode.opencsv.CSVReader.class);
 		//testPostgreServer();
 		//testLocalHsql();
-		testLocalH2();
+		//testLocalH2();
+		testWritableResourceDirectory();
 		System.out.println("\nEnd Datasource");
 	}
 	
