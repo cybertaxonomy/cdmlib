@@ -2,6 +2,8 @@
 app-import/.classpath
 app-import/.project
 app-import/.settings
+app-import/.umlproject
+app-import/app-import.uml
 app-import/src/main/resources/arecaceae.rdf_alt
 app-import/src/main/resources/arecaceae.zip
 app-import/src/main/resources/arecaceae.zip_alt
