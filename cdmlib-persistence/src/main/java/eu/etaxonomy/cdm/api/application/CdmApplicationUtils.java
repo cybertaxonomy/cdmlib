@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.jdom.output.Format;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.FileCopy;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
@@ -27,7 +28,7 @@ public class CdmApplicationUtils {
 	
 	//directory of the resources (configfiles etc.)
 	static File fileResourceDir;
-	static final String MUST_EXIST_FILE = CdmPersistentDataSource.DATASOURCE_FILE_NAME;
+	static final String MUST_EXIST_FILE = CdmPersistentDataSource.DATASOURCE_PATH + CdmPersistentDataSource.DATASOURCE_FILE_NAME;
 
 //	static final String MUST_EXIST_FILE = "persistence.xml";
 //	static final String MUST_EXIST_FILE = "applicationContext.xml";
@@ -41,7 +42,7 @@ public class CdmApplicationUtils {
 		//compute only once
 		if (fileResourceDir == null){
 			//workaround to find out in which environment the library is executed
-			URL url = CdmUtils.class.getResource("/eu/etaxonomy/cdm/"+ MUST_EXIST_FILE);
+			URL url = CdmUtils.class.getResource(MUST_EXIST_FILE);
 			if (url != null){
 				File file = new File(url.getPath()); 
 				if (file.exists()){
@@ -71,16 +72,24 @@ public class CdmApplicationUtils {
 	 * @param directory
 	 * @param resourceFileName
 	 */
-	static private void copyResource(File directory, String resourceFileName){
+	static private boolean copyResource(File directory, String resourceFileName){
 		try {
-			File fileToCopy = new File(directory + File.separator + resourceFileName);
-			if (fileToCopy.createNewFile()){
-				InputStream isDataSource = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
-				XmlHelp.saveToXml(XmlHelp.getBeansRoot(isDataSource).getDocument(), new FileOutputStream(fileToCopy), Format.getPrettyFormat());
+			InputStream isDataSource = CdmUtils.class.getResourceAsStream(CdmPersistentDataSource.DATASOURCE_PATH + resourceFileName);
+			if (isDataSource != null){
+				File fileToCopy = new File(directory + File.separator + resourceFileName);
+				if (fileToCopy.createNewFile()){
+					FileOutputStream outStream = new FileOutputStream(fileToCopy);
+					FileCopy.copy(isDataSource, outStream);
+					//XmlHelp.saveToXml(XmlHelp.getBeansRoot(isDataSource).getDocument(), outStream, Format.getPrettyFormat());
+				}
+				return true;
+			}else{
+				logger.error("Input datasource file "  + resourceFileName + " + could not be found");
 			}
 		} catch (IOException e) {
 			logger.error("File "  + resourceFileName + " + could not be created");
 		}
+		return false;
 	}
 	
 

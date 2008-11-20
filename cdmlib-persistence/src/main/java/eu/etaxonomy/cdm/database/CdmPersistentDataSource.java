@@ -52,6 +52,8 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
 	public final static String DATASOURCE_FILE_NAME = "cdm.datasources.xml";
+	public final static String DATASOURCE_PATH = "/eu/etaxonomy/cdm/";
+	
 	private final static Format format = Format.getPrettyFormat(); 
 
 	public enum DbProperties{
