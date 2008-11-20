@@ -73,7 +73,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 //*************** ANNOTATIONS **********************************************
 	
 	@OneToMany(fetch=FetchType.LAZY) //(mappedBy="AnnotatedObj")
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}
@@ -83,9 +83,12 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 			annotations.add(annotation);
 		}
 	}
+	
 	public void removeAnnotation(Annotation annotation){
+		this.annotations.remove(annotation);
 		annotation.setAnnotatedObj(null);
 	}
+	
 	protected void setAnnotations(Set<Annotation> annotations) {
 		this.annotations = annotations;
 	}
