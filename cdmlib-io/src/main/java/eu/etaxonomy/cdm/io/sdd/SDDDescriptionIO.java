@@ -122,6 +122,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 		Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
 
+		TransactionStatus ts = config.getCdmAppController().startTransaction();
+		
 		int i = 0;
 		//for each Dataset
 		logger.info("start Dataset ...");
@@ -132,8 +134,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			Language datasetLanguage = null;
 			if (!nameLang.equals("")) {
 				String iso = nameLang.substring(0, 2);
-				//datasetLanguage = config.getCdmAppController().getTermService().getLanguageByIso(iso);
-				datasetLanguage = Language.ENGLISH();
+				datasetLanguage = config.getCdmAppController().getTermService().getLanguageByIso(iso);
+				//datasetLanguage = Language.ENGLISH();
 			} else {
 				datasetLanguage = Language.ENGLISH();
 			}
@@ -236,8 +238,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						Language iprLanguage = null;
 						if (lang != null) {
 							if (!lang.equals("")) {
-								//iprLanguage = config.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
-								iprLanguage = datasetLanguage;
+								iprLanguage = config.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
+								//iprLanguage = datasetLanguage;
 							} else {
 								iprLanguage = datasetLanguage;
 							}
@@ -453,8 +455,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						Language language = null;
 						if (nameLang != null) {
 							if (!nameLang.equals("")) {
-								//language = config.getCdmAppController().getTermService().getLanguageByIso(nameLang.substring(0, 2));
-								language = datasetLanguage;
+								language = config.getCdmAppController().getTermService().getLanguageByIso(nameLang.substring(0, 2));
+								//language = datasetLanguage;
 							} else {
 								language = datasetLanguage;
 							}
@@ -891,8 +893,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 		logger.info(i + " Datasets handled");
 
-		TransactionStatus ts = config.getCdmAppController().startTransaction();
-		
 		ITermService termService = config.getCdmAppController().getTermService();
 		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
 			StateData sd = k.next();
