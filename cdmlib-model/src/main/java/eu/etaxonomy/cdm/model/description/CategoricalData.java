@@ -67,7 +67,7 @@ public class CategoricalData extends DescriptionElementBase {
 	@XmlElement(name = "State")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private List<State> states = new ArrayList();
+	private List<StateData> states = new ArrayList();
 
 	
 	/** 
@@ -90,13 +90,13 @@ public class CategoricalData extends DescriptionElementBase {
 	 */
 	@ManyToMany
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public List<State> getStates(){
+	public List<StateData> getStates(){
 		return this.states;
 	}
 	/**
 	 * @see	#getStates() 
 	 */
-	private void setStates(List<State> states){
+	private void setStates(List<StateData> states){
 		this.states = states;
 	}
 	/**
@@ -106,7 +106,7 @@ public class CategoricalData extends DescriptionElementBase {
 	 * @param state	the state to be added to <i>this</i> categorical data
 	 * @see    	   	#getStates()
 	 */
-	public void addState(State state){
+	public void addState(StateData state){
 		this.states.add(state);
 	}
 	/** 
