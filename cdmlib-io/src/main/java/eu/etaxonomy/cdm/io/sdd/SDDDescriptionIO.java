@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -62,6 +64,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
 	private static int modCount = 1000;
+
+	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
+	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
 
 	public SDDDescriptionIO(){
 		super();
@@ -121,8 +126,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
 		Map<String,Feature> features = new HashMap<String,Feature>();
 		Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
-		Map<String,Object> mediaObject_Object = new HashMap<String,Object>();
-		Map<String,String> mediaObject_Role = new HashMap<String,String>();
 
 		Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 		Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
@@ -163,20 +166,24 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
 
-			Element elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-			String ref = null;
-			String role = null;
-			if (elMediaObject != null) {
-				ref = elMediaObject.getAttributeValue("ref");
-				role = elMediaObject.getAttributeValue("role");
-			}
-			if (ref != null) {
-				if (!ref.equals("")) {
-					mediaObject_Object.put(ref,sourceReference);
-					mediaObject_Object.put(ref,sec);
+			List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+			for (Element elMediaObject : listMediaObjects) {
+				String ref = null;
+				String role = null;
+				if (elMediaObject != null) {
+					ref = elMediaObject.getAttributeValue("ref");
+					role = elMediaObject.getAttributeValue("role");
+				}
+				if (ref != null) {
+					if (!ref.equals("")) {
+						this.addCdmBaseWithImage(ref, sourceReference);
+						this.addCdmBaseWithImage(ref,sec);
+						mediaObject_Role.put(ref,role);
+					}
 				}
 			}
-			
+
 			// <RevisionData>
 			logger.info("start RevisionData ...");
 			Element elRevisionData = elDataset.getChild("RevisionData",sddNamespace);
@@ -193,8 +200,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			Map<String,Person> editors = new HashMap<String,Person>();
 			for (Element elAgent : listAgents){
 
-				role = elAgent.getAttributeValue("role");
-				ref = elAgent.getAttributeValue("ref");
+				String role = elAgent.getAttributeValue("role");
+				String ref = elAgent.getAttributeValue("ref");
 				if (role.equals("aut")) {
 					if(!ref.equals("")) {
 						authors.put(ref, null);
@@ -244,7 +251,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 				for (Element elIPRStatement : listIPRStatements){
 
-					role = elIPRStatement.getAttributeValue("role");
+					String role = elIPRStatement.getAttributeValue("role");
 					// <Label xml:lang="en-au">(c) 2003-2006 Centre for Occasional Botany.</Label>
 					Element elLabel = elIPRStatement.getChild("Label",sddNamespace);
 					String lang = "";
@@ -309,19 +316,22 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						taxonNameBases.put(id,tnb);
 					}
 
-					elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-					ref = null;
-					role = null;
-					if (elMediaObject != null) {
-						ref = elMediaObject.getAttributeValue("ref");
-						role = elMediaObject.getAttributeValue("role");
-					}
-					if (ref != null) {
-						if (!ref.equals("")) {
-							mediaObject_Object.put(ref,tnb);
+					listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+					for (Element elMediaObject : listMediaObjects) {
+						String ref = null;
+						String role = null;
+						if (elMediaObject != null) {
+							ref = elMediaObject.getAttributeValue("ref");
+							role = elMediaObject.getAttributeValue("role");
+						}
+						if (ref != null) {
+							if (!ref.equals("")) {
+								this.addCdmBaseWithImage(ref,tnb);
+							}
 						}
 					}
-					
+
 					if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
 
 				}
@@ -354,17 +364,20 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 						categoricalCharacter.setSupportsQuantitativeData(false);
 						categoricalCharacter.setSupportsTextData(true);
-						
-						elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-						ref = null;
-						role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								mediaObject_Object.put(ref,categoricalCharacter);
+
+						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+						for (Element elMediaObject : listMediaObjects) {
+							String ref = null;
+							String role = null;
+							if (elMediaObject != null) {
+								ref = elMediaObject.getAttributeValue("ref");
+								role = elMediaObject.getAttributeValue("role");
+							}
+							if (ref != null) {
+								if (!ref.equals("")) {
+									this.addCdmBaseWithImage(ref,categoricalCharacter);
+								}
 							}
 						}
 
@@ -388,20 +401,26 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							// </Representation>
 							elRepresentation = elStateDefinition.getChild("Representation",sddNamespace);
 							label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-							elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-							ref = null;
-							role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
 
 							State state = new State(label,label,label);
-							if (ref != null) {
-								if (!ref.equals("")) {
-									mediaObject_Object.put(ref,state);
+
+							listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+							for (Element elMediaObject : listMediaObjects) {
+								String ref = null;
+								String role = null;
+								if (elMediaObject != null) {
+									ref = elMediaObject.getAttributeValue("ref");
+									role = elMediaObject.getAttributeValue("role");
+								}
+
+								if (ref != null) {
+									if (!ref.equals("")) {
+										this.addCdmBaseWithImage(ref,state);
+									}
 								}
 							}
+
 							StateData stateData = StateData.NewInstance();
 							stateData.setState(state);
 							termVocabularyState.addTerm(state);
@@ -444,17 +463,20 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 						quantitativeCharacter.setSupportsQuantitativeData(true);
 						quantitativeCharacter.setSupportsTextData(false);
-						
-						elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-						ref = null;
-						role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								mediaObject_Object.put(ref,quantitativeCharacter);
+
+						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+						for (Element elMediaObject : listMediaObjects) {
+							String ref = null;
+							String role = null;
+							if (elMediaObject != null) {
+								ref = elMediaObject.getAttributeValue("ref");
+								role = elMediaObject.getAttributeValue("role");
+							}
+							if (ref != null) {
+								if (!ref.equals("")) {
+									this.addCdmBaseWithImage(ref,quantitativeCharacter);
+								}
 							}
 						}
 
@@ -463,7 +485,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// </MeasurementUnit>
 						Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
 						label = "";
-						role = "";
+						String role = "";
 						if (elMeasurementUnit != null) {
 							Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
 							role = elLabel.getAttributeValue("role");
@@ -551,17 +573,20 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						textCharacter.setSupportsTextData(true);
 
 						features.put(idTC, textCharacter);
-						
-						elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-						ref = null;
-						role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								mediaObject_Object.put(ref,textCharacter);
+
+						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+						for (Element elMediaObject : listMediaObjects) {
+							String ref = null;
+							String role = null;
+							if (elMediaObject != null) {
+								ref = elMediaObject.getAttributeValue("ref");
+								role = elMediaObject.getAttributeValue("role");
+							}
+							if (ref != null) {
+								if (!ref.equals("")) {
+									this.addCdmBaseWithImage(ref,textCharacter);
+								}
 							}
 						}
 
@@ -614,7 +639,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						//  <Citation ref="p1" location="p. 30"/>
 						// </Scope>
 						Element elScope = elCodedDescription.getChild("Scope",sddNamespace);
-						ref = "";
+						String ref = "";
 						Taxon taxon = null;
 						if (elScope != null) {
 							Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
@@ -753,17 +778,27 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 
 						taxonDescriptions.put(idCD, taxonDescription);
-						
-						elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-						ref = null;
-						role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								mediaObject_Object.put(ref,taxonDescription);
+
+						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+						for (Element elMediaObject : listMediaObjects) {
+							ref = null;
+							String role = null;
+							if (elMediaObject != null) {
+								ref = elMediaObject.getAttributeValue("ref");
+								role = elMediaObject.getAttributeValue("role");
+							}
+							if (ref != null) {
+								if (!ref.equals("")) {
+									if (taxonDescription.getDescriptionSources().toArray().length > 0) {
+										this.addCdmBaseWithImage(ref,(ReferenceBase) taxonDescription.getDescriptionSources().toArray()[0]);
+									} else {
+										ReferenceBase descriptionSource = Generic.NewInstance();
+										taxonDescription.addDescriptionSource(descriptionSource);
+										this.addCdmBaseWithImage(ref,descriptionSource);
+									}
+
+								}
 							}
 						}
 
@@ -806,7 +841,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					person.addSource(source);
 
 					if (elDetail != null) {
-						role = elDetail.getAttributeValue("role");
+						String role = elDetail.getAttributeValue("role");
 						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 						annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
 						person.addAnnotation(annotation);
@@ -851,19 +886,22 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						editors.put(idA, person);
 					}
 
-					elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-					ref = null;
-					role = null;
-					if (elMediaObject != null) {
-						ref = elMediaObject.getAttributeValue("ref");
-						role = elMediaObject.getAttributeValue("role");
-					}
-					if (ref != null) {
-						if (!ref.equals("")) {
-							mediaObject_Object.put(ref,person);
+					listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+					for (Element elMediaObject : listMediaObjects) {
+						String ref = null;
+						String role = null;
+						if (elMediaObject != null) {
+							ref = elMediaObject.getAttributeValue("ref");
+							role = elMediaObject.getAttributeValue("role");
+						}
+						if (ref != null) {
+							if (!ref.equals("")) {
+								this.addCdmBaseWithImage(ref,person);
+							}
 						}
 					}
-					
+
 				} catch (Exception e) {
 					//FIXME
 					logger.warn("Import of Agent " + j + " failed.");
@@ -900,17 +938,20 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						publication.addSource(source);
 
 						publications.put(idP,publication);
-						
-						elMediaObject = elRepresentation.getChild("MediaObject",sddNamespace);
-						ref = null;
-						role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								mediaObject_Object.put(ref,publication);
+
+						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+						for (Element elMediaObject : listMediaObjects) {
+							String ref = null;
+							String role = null;
+							if (elMediaObject != null) {
+								ref = elMediaObject.getAttributeValue("ref");
+								role = elMediaObject.getAttributeValue("role");
+							}
+							if (ref != null) {
+								if (!ref.equals("")) {
+									this.addCdmBaseWithImage(ref,publication);
+								}
 							}
 						}
 
@@ -931,7 +972,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			if (elMediaObjects != null) {
 				// <MediaObject id="m1">
-				List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
+				listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
 				j = 0;
 				//for each Publication
 				for (Element elMO : listMediaObjects){
@@ -959,7 +1000,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 						ImageMetaData imageMetaData = new ImageMetaData();
 						ImageFile image = null;
-						
+
 						if (href.substring(0,7).equals("http://")) {
 							try{
 								URL url = new URL(href);
@@ -983,18 +1024,29 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 						Media media = Media.NewInstance();
 						media.addRepresentation(representation);
-						
-						DefinedTermBase dtb = (DefinedTermBase) mediaObject_Object.get(idMO);
-						if (dtb!=null) {
-							dtb.addMedia(media);
+						// media.setTitle(m);
+
+						ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
+						if (lcb != null) {
+							// for (int k = 0; k < lcb.size(); k++) {
+							//	if (lcb.get(k) instanceof DefinedTermBase) {
+							//		DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
+							if (lcb.get(0) instanceof DefinedTermBase) {
+								DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
+								if (dtb!=null) {
+									dtb.addMedia(media);
+								}
+								//} else if (lcb.get(k) instanceof ReferenceBase) {
+								//	ReferenceBase rb = (ReferenceBase) lcb.get(k);
+							} else if (lcb.get(0) instanceof ReferenceBase) {
+								ReferenceBase rb = (ReferenceBase) lcb.get(0);
+								// rb.setTitleCache(label);
+								if (rb!=null) {
+									rb.addMedia(media);
+								}
+							}
 						}
-						
-/*						
-						feature.putText(row.get(CichorieaeImageActivator.URL_APP).trim(), Language.ENGLISH());
-						feature.setType(Feature.IMAGE());
-						TaxonDescription description = TaxonDescription.NewInstance(taxon);
-						description.addElement(feature);
-*/
+
 					} catch (Exception e) {
 						//FIXME
 						logger.warn("Import of MediaObject " + j + " failed.");
@@ -1041,7 +1093,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			}
 
 			for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
-				ref = refCD.next();
+				String ref = refCD.next();
 				TaxonDescription td = taxonDescriptions.get(ref);
 				if (citations.containsKey(ref)) {
 					Article publication = (Article) publications.get(citations.get(ref));
@@ -1109,6 +1161,22 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
 		return false;
+	}
+
+	protected void addCdmBaseWithImage(String refMO, CdmBase cb){
+		if ((refMO != null) && (cb!=null)) {
+			if (!refMO.equals("")) {
+				if (!mediaObject_ListCdmBase.containsKey(refMO)) {
+					List<CdmBase> lcb = new ArrayList<CdmBase>();
+					lcb.add(cb);
+					mediaObject_ListCdmBase.put(refMO,lcb);
+				} else {
+					List<CdmBase> lcb = mediaObject_ListCdmBase.get(refMO);
+					lcb.add(cb);
+					mediaObject_ListCdmBase.put(refMO,lcb);
+				}
+			}
+		}
 	}
 
 }
