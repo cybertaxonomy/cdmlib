@@ -103,6 +103,10 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
 	 */
 	public Language getLanguageByIso(String iso639) {
+		if (iso639.length() < 2 || iso639.length() > 3) {
+			logger.warn("Invalid length " + iso639.length() + " of ISO code. Length must be 2 or 3.");
+			return null;
+		}
 		String isoStandart = "iso639_" + (iso639.length() - 1);
 		Query query = getSession().createQuery("from Language where " + isoStandart + "= :isoCode"); 
 		query.setParameter("isoCode", iso639);

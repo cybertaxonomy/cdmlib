@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.WrongTermTypeException;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -72,5 +73,19 @@ public class DefinedTermDaoImplTest extends CdmUnitTestBase{
 		for (DefinedTermBase dt:terms){
 			logger.debug("Loaded term: "+dt.toString());
 		}
+	}
+	
+	@Test
+	public void getLanguageByIso() {
+		Language lang = dao.getLanguageByIso("arm");
+		logger.debug("Result for 'arm': " + lang.toString());
+		assertEquals(lang.toString(), "arm");
+		lang = dao.getLanguageByIso("hy");
+		logger.debug("Result for 'hy': " + lang.toString());
+		assertEquals(lang.toString(), "arm");
+		lang = dao.getLanguageByIso("a");
+		assertNull(lang);
+		lang = dao.getLanguageByIso("abcd");
+		assertNull(lang);
 	}
 }
