@@ -186,7 +186,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
 
     				// If we have created a description for this taxon earlier, take this one.
     				// Otherwise, create a new description.
-    				// We don't update any existing descriptions at this point.
+    				// We don't update any existing descriptions in the database at this point.
     				if (myDescriptions.containsKey(taxon)) {
     					myDescription = myDescriptions.get(taxon);
     				} else {
@@ -205,10 +205,9 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     				// TODO: Handle absence case
 					
     				// TDWG areas
+    				// Ignore the ones that occur multiple times
     				for (String distribution: distributionList) {
 
-    					boolean ignore = false;
-    					
     					if(!distribution.equals("")) {
     						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
         					TaxonDescription taxonDescription = myDescriptions.get(taxon);
@@ -217,14 +216,10 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     	    					for(DescriptionElementBase descriptionElement : myDescriptionElements) {
     	    						if (descriptionElement instanceof Distribution) {
     	    							if (namedArea == ((Distribution)descriptionElement).getArea()) {
-    	    		    					ignore = true;
+    	    	    						logger.debug("Distribution ignored: " + distribution);
     	    		    					break;
      	    							}
     	    						}
-    	    					}
-    	    					if (ignore == true) { 
-    	    						logger.debug("Distribution ignored: " + distribution);
-    	    						break; 
     	    					}
     							Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
     							myDescription.addElement(newDistribution);
@@ -234,7 +229,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     				}
     				
     				appCtr.getTaxonService().saveTaxon(taxon);
-//    	    		logger.debug("Taxon saved");
+    	    		logger.debug("Taxon saved");
     			}
     		} 
     		appCtr.commitTransaction(txStatus);
