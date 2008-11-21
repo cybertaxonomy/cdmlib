@@ -322,8 +322,9 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return (String)this.getSource();
 		}
 	}
-
 }
+
+   

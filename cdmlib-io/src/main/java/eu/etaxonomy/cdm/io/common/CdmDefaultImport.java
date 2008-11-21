@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -115,18 +116,10 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			return false;
 		}
 		// TODO: For Jaxb import, provide the opportunity to omit term loading
-		cdmApp = config.getCdmAppController();
-//		try {
-			//cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-			
-//		} catch (DataSourceNotFoundException e) {
-//			logger.warn("could not connect to destination database");
-//			return false;
-//		}catch (TermNotFoundException e) {
-//			logger.warn("could not find needed term in destination datasource");
-//			return false;
+//		if (config instanceof JaxbImportConfigurator) {
+//			cdmApp = (JaxbImportConfigurator)config.
 //		}
-		
+		cdmApp = config.getCdmAppController();
 		
 		ReferenceBase sourceReference = config.getSourceReference();
 		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Keyword;
@@ -183,6 +184,7 @@ public class DataSet {
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "AbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = AbsenceTerm.class),
+    	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
     	@XmlElement(name = "BibtexEntryType", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = BibtexEntryType.class),
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Continent.class),
     	@XmlElement(name = "DerivationEventType", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEventType.class),
@@ -207,8 +209,8 @@ public class DataSet {
         @XmlElement(name = "Rank", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = Rank.class),
     	@XmlElement(name = "ReferenceSystem", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = ReferenceSystem.class),
     	@XmlElement(name = "RightsTerm", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = RightsTerm.class),
-    	@XmlElement(name = "Sex", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = Sex.class),
     	@XmlElement(name = "Scope", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = Scope.class),
+    	@XmlElement(name = "Sex", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = Sex.class),
     	@XmlElement(name = "Stage", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = Stage.class),
     	@XmlElement(name = "State", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = State.class),
     	@XmlElement(name = "StatisticalMeasure", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = StatisticalMeasure.class),
