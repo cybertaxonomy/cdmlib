@@ -17,6 +17,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -26,7 +27,8 @@ import javax.xml.bind.annotation.XmlType;
  * @created 12-Nov-2008 15:37:33
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MarkerType")
+@XmlType(name = "AnnotationType")
+@XmlRootElement(name = "AnnotationType")
 @Entity
 public class AnnotationType extends DefinedTermBase {
 	public static final Logger logger = Logger.getLogger(AnnotationType.class);
