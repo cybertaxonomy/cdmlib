@@ -43,10 +43,14 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-	 */
-	public String getSource() {
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
+//	 */
+//	public String getSource() {
+//		return (String)super.getSource();
+//	}
+	
+	public Object getSource(){
 		return (String)super.getSource();
 	}
 	
@@ -93,7 +97,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		if (this.getSource() == null){
 			return null;
 		}else{
-			return this.getSource();
+			return (String)this.getSource();
 		}
 	}
 	
