@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.io.sdd;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -37,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -108,7 +112,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		List<Element> elDatasets = root.getChildren("Dataset",sddNamespace);
 
 		Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
-		Map<String,State> states = new HashMap<String,State>();
+		Map<String,StateData> stateDatas = new HashMap<String,StateData>();
 		Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 		Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
 		Map<String,Feature> features = new HashMap<String,Feature>();
@@ -127,7 +131,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
 			Language datasetLanguage = null;
 			if (!nameLang.equals("")) {
-//				config.getCdmAppController().getTermService().getLanguageByIso(nameLang);
+				String iso = nameLang.substring(0, 2);
+				//datasetLanguage = config.getCdmAppController().getTermService().getLanguageByIso(iso);
 				datasetLanguage = Language.ENGLISH();
 			} else {
 				datasetLanguage = Language.ENGLISH();
@@ -231,7 +236,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						Language iprLanguage = null;
 						if (lang != null) {
 							if (!lang.equals("")) {
-								//iprLanguage = termService.getLanguageByIso(nameLang);
+								//iprLanguage = config.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
 								iprLanguage = datasetLanguage;
 							} else {
 								iprLanguage = datasetLanguage;
@@ -336,8 +341,10 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							elRepresentation = elStateDefinition.getChild("Representation",sddNamespace);
 							label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 							State state = new State(label,label,label);
-							states.put(idSD, state);
+							StateData stateData = StateData.NewInstance();
+							stateData.setState(state);
 							termVocabularyState.addTerm(state);
+							stateDatas.put(idSD,stateData);
 						}
 
 						categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
@@ -446,7 +453,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						Language language = null;
 						if (nameLang != null) {
 							if (!nameLang.equals("")) {
-								// language = termService.getLanguageByIso(nameLang);
+								//language = config.getCdmAppController().getTermService().getLanguageByIso(nameLang.substring(0, 2));
 								language = datasetLanguage;
 							} else {
 								language = datasetLanguage;
@@ -564,8 +571,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 								for (Element elState : elStates){
 									if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
 									ref = elState.getAttributeValue("ref");
-									State state = states.get(ref);
-									categoricalData.addState(state);
+									StateData stateData = stateDatas.get(ref);
+									categoricalData.addState(stateData);
 								}
 								taxonDescription.addElement(categoricalData);
 							}
@@ -887,9 +894,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		TransactionStatus ts = config.getCdmAppController().startTransaction();
 		
 		ITermService termService = config.getCdmAppController().getTermService();
-		for (Iterator<State> k = states.values().iterator() ; k.hasNext() ;){
-			State state = k.next();
-			termService.saveTerm(state); 
+		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
+			StateData sd = k.next();
+			termService.saveTerm(sd.getState()); 
 		}
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			Feature feature = k.next();
