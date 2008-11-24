@@ -49,6 +49,16 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
  * @author a.mueller
  *
  */
+/**
+ * @author a.mueller
+ * @created 24.11.2008
+ * @version 1.0
+ */
+/**
+ * @author a.mueller
+ * @created 24.11.2008
+ * @version 1.0
+ */
 @Repository
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
 	static Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
@@ -65,15 +75,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisaplications) {
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
 		if (onlyWithChildren == null){
 			onlyWithChildren = true;
 		}
-		if (withMisaplications == null){
-			withMisaplications = true;
+		if (withMisapplications == null){
+			withMisapplications = true;
 		}
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
@@ -109,7 +120,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			//childTaxa
 			//TODO create restriction instead
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
-				if (withMisaplications == false || ! taxon.isMisappliedName()){
+				if (withMisapplications == true || ! taxon.isMisappliedName()){
 					results.add(taxon);
 				}
 			}

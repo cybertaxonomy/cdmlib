@@ -42,11 +42,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param sec The concept reference that the taxon belongs to
 	 * @param cdmFetch not used yet !! TODO
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-	 * @param withMisaplications if true only taxa are returned that have no isMisappliedNameFor relationship. 
+	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
 	 * <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisaplications);
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
 	
 	
 	/**
