@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,7 +50,12 @@ public class BacterialName extends NonViralName {
 	@XmlElement(name = "NameApprobation")
 	private String nameApprobation;
 
-	// ************* CONSTRUCTORS *************/	
+	// ************* CONSTRUCTORS *************/
+	
+	protected BacterialName(){
+		super();
+	}
+	
 	/** 
 	 * Class constructor: creates a new bacterial taxon name instance
 	 * only containing its {@link Rank rank},

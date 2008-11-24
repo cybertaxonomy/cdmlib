@@ -12,17 +12,28 @@ package eu.etaxonomy.cdm.model.media;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:11
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "AudioFile", propOrder = {
+    "duration"
+})
+@XmlRootElement(name = "AudioFile")
 @Entity
 public class AudioFile extends MediaRepresentationPart {
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
 	
 	//length of recording in seconds
+	@XmlElement(name = "Duration")
 	private int duration;
 
 

@@ -14,17 +14,34 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:25
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "GenBankAccession", propOrder = {
+    "accessionNumber",
+    "uri"
+})
+@XmlRootElement(name = "GenBankAccession")
 @Entity
 public class GenBankAccession extends VersionableEntity {
+	
 	static Logger logger = Logger.getLogger(GenBankAccession.class);
+	
+	@XmlElement(name = "AccessionNumber")
 	private String accessionNumber;
+	
+	@XmlElement(name = "URI")
 	private String uri;
+	
 	public String getAccessionNumber(){
 		return this.accessionNumber;
 	}

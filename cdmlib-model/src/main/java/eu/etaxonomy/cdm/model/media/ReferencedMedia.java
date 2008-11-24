@@ -16,17 +16,38 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:48
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ReferencedMedia", propOrder = {
+    "citationMicroReference",
+    "citation"
+})
+@XmlRootElement(name = "ReferencedMedia")
 @Entity
 public abstract class ReferencedMedia extends Media implements IReferencedEntity {
+	
 	static Logger logger = Logger.getLogger(ReferencedMedia.class);
+	
+	@XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
+	
+	@XmlElement(name = "Citation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private ReferenceBase citation;
+	
 
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})

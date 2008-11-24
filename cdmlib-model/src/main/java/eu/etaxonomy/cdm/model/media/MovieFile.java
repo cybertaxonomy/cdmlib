@@ -13,17 +13,28 @@ import org.apache.log4j.Logger;
 
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:35
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MovieFile", propOrder = {
+    "duration"
+})
+@XmlRootElement(name = "MovieFile")
 @Entity
-public class MovieFile extends ImageFile {
+public class MovieFile extends MediaRepresentationPart {
 	static Logger logger = Logger.getLogger(MovieFile.class);
 	
 	//Length of movie in seconds
+	@XmlElement(name = "Duration")
 	private int duration;
 
 	public static MovieFile NewInstance(String uri, Integer size){

@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +31,9 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:43
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PersonalCommunication")
+@XmlRootElement(name = "PersonalCommunication")
 @Entity
 public class PersonalCommunication extends StrictReferenceBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PersonalCommunication.class);

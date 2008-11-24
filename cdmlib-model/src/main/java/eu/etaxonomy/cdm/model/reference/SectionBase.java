@@ -12,6 +12,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -26,9 +31,17 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:51
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "SectionBase", propOrder = {
+    "pages"
+})
+@XmlRootElement(name = "SectionBase")
 @Entity
 public abstract class SectionBase extends StrictReferenceBase {
+	
 	static Logger logger = Logger.getLogger(SectionBase.class);
+	
+	@XmlElement(name = "Pages")
 	private String pages;
 
 	/**

@@ -14,6 +14,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * The region name of a DNA string. E.g. 18S, COX, etc.
@@ -21,11 +26,23 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:32
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Locus", propOrder = {
+    "name",
+    "description"
+})
+@XmlRootElement(name = "Locus")
 @Entity
 public class Locus extends VersionableEntity {
+	
 	static Logger logger = Logger.getLogger(Locus.class);
+	
+	@XmlElement(name = "Name")
 	private String name;
+	
+	@XmlElement(name = "Description")
 	private String description;
+	
 	public String getName(){
 		return this.name;
 	}

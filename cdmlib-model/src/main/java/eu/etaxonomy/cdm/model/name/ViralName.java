@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -37,7 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "cacheStrategy",
     "acronym"
 })
 @XmlRootElement(name = "ViralName")
@@ -46,12 +46,18 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
 	
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
-	@XmlElement(name = "CacheStrategy")
+    @XmlTransient
 	protected INameCacheStrategy cacheStrategy;
+	
 	@XmlElement(name = "Acronym")
 	private String acronym;
 
 	// ************* CONSTRUCTORS *************/	
+	
+	protected ViralName(){
+		super();
+	}
+	
 	/** 
 	 * Class constructor: creates a new viral taxon name instance
 	 * only containing its {@link Rank rank}.

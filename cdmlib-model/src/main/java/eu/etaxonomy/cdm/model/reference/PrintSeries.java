@@ -11,6 +11,11 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -25,9 +30,16 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:45
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PrintSeries", propOrder = {
+    "series"
+})
+@XmlRootElement(name = "PrintSeries")
 @Entity
 public class PrintSeries extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
+	
+	@XmlElement(name = "Series")
 	private String series;
 
 	/** 

@@ -17,6 +17,13 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -27,15 +34,34 @@ import javax.persistence.*;
  * @version 1.0
  * @created 08-Nov-2007 13:06:49
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Rights", propOrder = {
+    "uri",
+    "abbreviatedText",
+    "type",
+    "agent"
+})
+@XmlRootElement(name = "Rights")
 @Entity
 public class Rights extends LanguageStringBase {
 	private static final Logger logger = Logger.getLogger(Rights.class);
 	
 	//external location of copyright text
+	@XmlElement(name = "URI")
 	private String uri;
+	
+	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;
+	
+	@XmlElement(name = "Type")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private RightsTerm type;
+	
 	// owner etc as defined by the rightstype
+	@XmlElement(name = "Agent")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Agent agent;
 
 	

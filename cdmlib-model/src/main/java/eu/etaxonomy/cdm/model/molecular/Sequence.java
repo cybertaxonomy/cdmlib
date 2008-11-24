@@ -22,31 +22,86 @@ import org.hibernate.annotations.Table;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:51
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Sequence", propOrder = {
+    "sequence",
+    "length",
+    "dateSequenced",
+    "isBarcode",
+    "citationMicroReference",
+    "publishedIn",
+    "locus",
+    "citations",
+    "genBankAccession",
+    "chromatograms"
+})
+@XmlRootElement(name = "Sequence")
 @Entity
 @Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	
 	//the sequence as a string of base pairs. 5'->3'
+	@XmlElement(name = "Sequence")
 	private String sequence;
+	
 	//should be calculated in case sequence is set
+	@XmlElement(name = "Length")
 	private Integer length;
+	
 	//should be calculated in case sequence is set
+	@XmlElement(name = "DateSequenced")
 	private Calendar dateSequenced;
+	
 	//should be calculated in case sequence is set
+	@XmlAttribute(name = "isBarcode")
 	private boolean isBarcode;
+	
 	//the sequence as a string of base pairs. 5'->3'
+	@XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
+	
+	@XmlElement(name = "IublishedIn")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private ReferenceBase publishedIn;
+	
+	@XmlElementWrapper(name = "Citations")
+	@XmlElement(name = "Citation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<ReferenceBase> citations = new HashSet();
+	
+	@XmlElementWrapper(name = "GenBankAccessions")
+	@XmlElement(name = "GenBankAccession")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<GenBankAccession> genBankAccession = new HashSet();
+	
+	@XmlElement(name = "Locus")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Locus locus;
+	
+	@XmlElementWrapper(name = "Chromatograms")
+	@XmlElement(name = "Chromatogram")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<Media> chromatograms = new HashSet();
 
 	@ManyToOne

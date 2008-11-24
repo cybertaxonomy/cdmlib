@@ -10,6 +10,11 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
@@ -22,10 +27,21 @@ import org.apache.log4j.Logger;
  * @version 1.0
  * @created 08-Nov-2007 13:06:46
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PublicationBase", propOrder = {
+    "publisher",
+    "placePublished"
+})
+@XmlRootElement(name = "PublicationBase")
 @Entity
 public abstract class PublicationBase extends StrictReferenceBase {
+	
 	static Logger logger = Logger.getLogger(PublicationBase.class);
+	
+	@XmlElement(name = "Publisher")
 	private String publisher;
+	
+	@XmlElement(name = "PlacePublished")
 	private String placePublished;
 
 	public PublicationBase(){

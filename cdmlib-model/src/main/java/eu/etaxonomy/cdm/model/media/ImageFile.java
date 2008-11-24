@@ -18,18 +18,34 @@ import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.Agent;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:28
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "ImageFile", propOrder = {
+    "height",
+    "width"
+})
+@XmlRootElement(name = "ImageFile")
 @Entity
 public class ImageFile extends MediaRepresentationPart {
+	
 	static Logger logger = Logger.getLogger(ImageFile.class);
+	
 	//image height in pixel
+	@XmlElement(name = "Height")
 	private int height;
+	
 	//image width in pixel
+	@XmlElement(name = "Width")
 	private int width;
 
 	public static ImageFile NewInstance(String uri, Integer size){

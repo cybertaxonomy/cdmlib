@@ -12,6 +12,13 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -32,9 +39,18 @@ import eu.etaxonomy.cdm.model.agent.Institution;
  * @version 1.0
  * @created 08-Nov-2007 13:06:49
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Report", propOrder = {
+    "institution"
+})
+@XmlRootElement(name = "Report")
 @Entity
 public class Report extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Report.class);
+	
+	@XmlElement(name = "Institution")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	private Institution institution;
 
 	/** 
