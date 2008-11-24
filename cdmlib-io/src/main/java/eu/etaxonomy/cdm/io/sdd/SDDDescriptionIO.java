@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -164,8 +165,11 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			sourceReference.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
 			sec.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
 
-			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-
+			if (detail != null) {
+				Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+				sec.addAnnotation(annotation);
+			}
+			
 			List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
 			for (Element elMediaObject : listMediaObjects) {
@@ -305,11 +309,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					Element elLabel = elRepresentation.getChild("Label",sddNamespace);
 					String lang = elLabel.getAttributeValue("lang",xmlNamespace);
 					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+					detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+					
 					NonViralName tnb = NonViralName.NewInstance(null);
 					if ((lang != null) && (!lang.equals("la")))  {
 						logger.info("TaxonName " + j + " is not specified as a latin name.");
 					}
 					tnb.setTitleCache(label);
+					if (detail != null) {
+						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+						tnb.addAnnotation(annotation);
+					}
 					OriginalSource source = OriginalSource.NewInstance(id, "TaxonName");
 					tnb.addSource(source);
 					if (!id.equals("")) {
@@ -357,10 +367,15 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// </Representation>
 						elRepresentation = elCategoricalCharacter.getChild("Representation",sddNamespace);
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-
+						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						
 						Feature categoricalCharacter = null;
 						if (label != null){
-							categoricalCharacter = Feature.NewInstance(label, label, label);
+							if (detail != null) {
+								categoricalCharacter = Feature.NewInstance(detail, label, label);
+							} else {
+								categoricalCharacter = Feature.NewInstance(label, label, label);
+							}
 						}
 						categoricalCharacter.setSupportsQuantitativeData(false);
 						categoricalCharacter.setSupportsTextData(true);
@@ -401,8 +416,16 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							// </Representation>
 							elRepresentation = elStateDefinition.getChild("Representation",sddNamespace);
 							label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-
-							State state = new State(label,label,label);
+							detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+							
+							State state = null;
+							if (label != null){
+								if (detail != null) {
+									state = new State(detail,label,label);
+								} else {
+									state = new State(label,label,label);
+								}
+							}
 
 							listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
@@ -456,7 +479,16 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						elRepresentation = elQuantitativeCharacter.getChild("Representation",sddNamespace);
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 
-						Feature quantitativeCharacter = Feature.NewInstance();
+						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						
+						Feature quantitativeCharacter = null;
+						if (label != null){
+							if (detail != null) {
+								quantitativeCharacter = Feature.NewInstance(detail,label,label);
+							} else {
+								quantitativeCharacter = Feature.NewInstance(label,label,label);
+							}
+						}
 
 						if (!label.equals("")){
 							quantitativeCharacter = Feature.NewInstance(label, label, label);
@@ -559,8 +591,16 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-
-						Feature textCharacter = Feature.NewInstance();
+						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						
+						Feature textCharacter = null;
+						if (label != null){
+							if (detail != null) {
+								textCharacter = Feature.NewInstance(detail,label,label);
+							} else {
+								textCharacter = Feature.NewInstance(label,label,label);
+							}
+						}
 
 						if (label != null) {
 							if (!label.equals("")){
@@ -628,10 +668,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						elRepresentation = elCodedDescription.getChild("Representation",sddNamespace);
 						Element elLabel = elRepresentation.getChild("Label",sddNamespace);
 						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
 						TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+						
+						if (detail != null) {
+							Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+							taxonDescription.addAnnotation(annotation);
+						}
+						
 						taxonDescription.setTitleCache(label);
-						OriginalSource source = OriginalSource.NewInstance(idCD, "CodedDescription");
+						OriginalSource source = OriginalSource.NewInstance(idCD, "CodedDescription",sec,"");
 						taxonDescription.addSource(source);
 
 						// <Scope>
@@ -843,7 +890,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					if (elDetail != null) {
 						String role = elDetail.getAttributeValue("role");
 						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
+						Annotation annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
 						person.addAnnotation(annotation);
 					}
 
@@ -1058,33 +1105,20 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 				}
 			}
 
-			/*
-				// when several authors are supported
-				if (authors.size()>1) {
-					for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
-						sourceReference.setCreatedBy(author.next());
-					}
-				} else {
+			if (authors != null) {
 					Team team = Team.NewInstance();
 					for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
 						team.addTeamMember(author.next());
 					}
-					sourceReference.setCreatedBy(team);
+					sourceReference.setAuthorTeam(team);
 				}
-			 */
-
-			Iterator<Person> author = authors.values().iterator();
-			if (author.hasNext()){
-				Person a = author.next();
-				sourceReference.setCreatedBy(a);
-				sec.setCreatedBy(a);
-			}
-
-			Iterator<Person> editor = editors.values().iterator();
-			if (editor.hasNext()){
-				Person e = editor.next();
-				sourceReference.setUpdatedBy(e);
-				sec.setUpdatedBy(e);
+			
+			if (editors != null) {
+				Person ed = Person.NewInstance();
+				for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
+					ed = editor.next();
+				}
+				sourceReference.setUpdatedBy(ed);
 			}
 
 			if (copyright != null) {
@@ -1134,7 +1168,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 
 		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
-
+		referenceService.saveReference(sourceReference); 
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
 			Article publication = (Article) k.next();
 			referenceService.saveReference(publication); 
