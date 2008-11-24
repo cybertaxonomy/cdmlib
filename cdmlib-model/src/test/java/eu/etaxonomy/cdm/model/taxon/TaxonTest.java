@@ -31,6 +31,7 @@ public class TaxonTest extends EntityTestBase {
 
 	
 	private ReferenceBase sec;
+	private ReferenceBase misSec;
 	private ZoologicalName name1;
 	private BotanicalName name2;
 	private Taxon rootT;
@@ -41,6 +42,9 @@ public class TaxonTest extends EntityTestBase {
 	private BotanicalName name3;
 	private BotanicalName name4;
 	private Taxon freeT;
+	private Taxon misTaxon1;
+	private Taxon misTaxon2;
+	
 
 	@Before
 	public void setUpBeforeClass() throws Exception {
@@ -48,6 +52,9 @@ public class TaxonTest extends EntityTestBase {
 		sec= Book.NewInstance();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu");
+		misSec = Book.NewInstance();
+		misSec.setTitleCache("Stupid book");
+		
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);
 		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Abies",null,"alba",null,linne,null,"p.317", null);
 		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES(),"Polygala",null,"vulgaris","alpina",linne,null,"p.191", null);
@@ -64,6 +71,11 @@ public class TaxonTest extends EntityTestBase {
 		syn2=Synonym.NewInstance(name2,sec);
 		child1.addSynonym(syn1, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		child2.addSynonym(syn2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+		//misaplication
+		misTaxon1 = Taxon.NewInstance(name4, misSec);
+		misTaxon2 = Taxon.NewInstance(name4, misSec);
+		rootT.addMisappliedName(misTaxon1, null, "99");
+		child1.addMisappliedName(misTaxon2, null, "44");
 	}
 
 	@Test
@@ -112,6 +124,14 @@ public class TaxonTest extends EntityTestBase {
 		assertEquals(1, rootT.getTaxonomicChildrenCount());
 		rootT.removeTaxonomicChild(child2);
 		assertEquals(0, rootT.getTaxonomicChildrenCount());
+	}
+
+	@Test
+	public void testIsMisappliedName() {
+		assertFalse(child2.isMisappliedName());
+		assertFalse(rootT.isMisappliedName());
+		assertTrue(misTaxon1.isMisappliedName());
+		assertTrue(misTaxon2.isMisappliedName());
 	}
 	
 	@Test
