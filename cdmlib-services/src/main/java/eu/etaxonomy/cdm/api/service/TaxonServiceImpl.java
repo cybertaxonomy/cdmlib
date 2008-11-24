@@ -115,8 +115,8 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren,
-			boolean withMisaplications) {
-		return taxonDao.getRootTaxa(sec, null, onlyWithChildren, withMisaplications);
+			boolean withMisapplications) {
+		return taxonDao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
 	}
 
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
