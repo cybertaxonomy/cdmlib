@@ -729,6 +729,32 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	}
 	
 	/**
+	 * Returns the boolean value indicating whether <i>this</i> taxon is a misaplication
+	 * (misapplied name) for at least one other taxon. 
+	 */
+	// TODO cache as for #hasTaxonomicChildren
+	@Transient
+	public boolean isMisappliedName(){
+		return computeMisapliedNameRelations() > 0;
+	}
+	
+	/**
+	 * Counts the number of misaplied names relationships where this taxon represents the
+	 * misaplied name for another taxon.
+	 * @return
+	 */
+	@Transient
+	private int computeMisapliedNameRelations(){
+		int count = 0;
+		for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
+			if (rel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
 	 * Returns the boolean value indicating whether <i>this</i> taxon has at least one
 	 * {@link Synoynm synonym} (true) or not (false). If true the {@link #getSynonymRelations() set of synonym relationships}
 	 * belonging to <i>this</i> ("accepted/correct") taxon is not empty .
