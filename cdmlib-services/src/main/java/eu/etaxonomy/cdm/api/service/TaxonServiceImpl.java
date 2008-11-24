@@ -107,7 +107,16 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
-		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren);
+		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
+	 */
+	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren,
+			boolean withMisaplications) {
+		return taxonDao.getRootTaxa(sec, null, onlyWithChildren, withMisaplications);
 	}
 
 	public List<RelationshipBase> getAllRelationships(int limit, int start){

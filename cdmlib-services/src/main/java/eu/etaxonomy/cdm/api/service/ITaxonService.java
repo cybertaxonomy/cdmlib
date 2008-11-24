@@ -82,6 +82,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return The List<Taxon> of root taxa.
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
+
+	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisaplications);
+
 	
 	/**
 	 * Computes all relationships.
