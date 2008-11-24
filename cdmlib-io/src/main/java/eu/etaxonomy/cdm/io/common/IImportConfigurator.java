@@ -164,6 +164,7 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 * @return
 	 */
 	public CdmApplicationController getCdmAppController();
+	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
 	
 	public Object getSourceSecId();
 

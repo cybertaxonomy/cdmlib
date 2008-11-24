@@ -287,7 +287,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public String getSource() {
+	public Object getSource() {
+//	public String getSource() {
 		return (String)super.getSource();
 	}
 

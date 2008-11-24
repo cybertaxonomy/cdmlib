@@ -118,7 +118,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	 * @return
 	 */
 	public CdmApplicationController getNewCdmAppController(){
-		return getCdmAppController(true);
+		return getCdmAppController(true, false);
 	}
 	
 	/**
@@ -128,9 +128,20 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	 * @return
 	 */
 	public CdmApplicationController getCdmAppController(boolean createNew){
+		return getCdmAppController(createNew, false);
+	}
+	
+	
+	/**
+	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
+	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
+	 * been created before a new controller is returned.
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
 		if (cdmApp == null || createNew == true){
 			try {
-				cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation());
+				cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
 			} catch (DataSourceNotFoundException e) {
 				logger.error("could not connect to destination database");
 				return null;
@@ -141,6 +152,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 		}
 		return cdmApp;
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isValid()

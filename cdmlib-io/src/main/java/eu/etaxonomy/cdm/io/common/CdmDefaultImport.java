@@ -115,11 +115,13 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-		// TODO: For Jaxb import, provide the opportunity to omit term loading
-//		if (config instanceof JaxbImportConfigurator) {
-//			cdmApp = (JaxbImportConfigurator)config.
-//		}
-		cdmApp = config.getCdmAppController();
+		// For Jaxb import, omit term loading
+		if (config instanceof JaxbImportConfigurator) {
+			cdmApp = config.getCdmAppController(true, true);
+//			cdmApp = ((JaxbImportConfigurator)config).getCdmAppController(true, true);
+		} else {
+			cdmApp = config.getCdmAppController(true, false);
+		}
 		
 		ReferenceBase sourceReference = config.getSourceReference();
 		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");

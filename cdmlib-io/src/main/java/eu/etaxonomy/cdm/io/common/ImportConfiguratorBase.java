@@ -541,7 +541,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	 * @return
 	 */
 	public CdmApplicationController getNewCdmAppController(){
-		return getCdmAppController(true);
+		return getCdmAppController(true, false);
 	}
 	
 	/**
@@ -551,18 +551,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	 * @return
 	 */
 	public CdmApplicationController getCdmAppController(boolean createNew){
-		if (cdmApp == null || createNew == true){
-			try {
-				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation());
-			} catch (DataSourceNotFoundException e) {
-				logger.error("could not connect to destination database");
-				return null;
-			}catch (TermNotFoundException e) {
-				logger.error("could not find needed term in destination datasource");
-				return null;
-			}
-		}
-		return cdmApp;
+		return getCdmAppController(createNew, false);
 	}
 	
 	

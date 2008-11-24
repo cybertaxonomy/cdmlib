@@ -46,4 +46,5 @@ public interface IExportConfigurator extends IIoConfigurator {
 	 * @return
 	 */
 	public CdmApplicationController getCdmAppController();
+	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
 }

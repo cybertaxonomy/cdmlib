@@ -9,6 +9,8 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
+import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -79,18 +81,13 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-		cdmApp = config.getCdmAppController();
-//		try {
-			//cdmApp = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
-			
-//		} catch (DataSourceNotFoundException e) {
-//			logger.warn("could not connect to destination database");
-//			return false;
-//		}catch (TermNotFoundException e) {
-//			logger.warn("could not find needed term in destination datasource");
-//			return false;
-//		}
-		
+//		cdmApp = config.getCdmAppController();
+		// For Jaxb import, omit term loading
+		if (config instanceof JaxbExportConfigurator) {
+			cdmApp = config.getCdmAppController(true, true);
+		} else {
+			cdmApp = config.getCdmAppController(true, false);
+		}
 		
 		System.out.println("Start Export from Source (" + config.getDestinationNameString() 
 				+ ") to CDM  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
