@@ -61,15 +61,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
-		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
+		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren) {
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisaplications) {
 		if (onlyWithChildren == null){
 			onlyWithChildren = true;
+		}
+		if (withMisaplications == null){
+			withMisaplications = true;
 		}
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
@@ -95,15 +99,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
-			logger.warn("no child taxa fetch qq");
+			logger.warn("no child taxa fetch");
 			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
 			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
 		}
 
 		List<Taxon> results = new ArrayList<Taxon>();
 		for(Taxon taxon : (List<Taxon>) crit.list()){
+			//childTaxa
+			//TODO create restriction instead
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
-				results.add(taxon);
+				if (withMisaplications == false || ! taxon.isMisappliedName()){
+					results.add(taxon);
+				}
 			}
 		}
 		return results;

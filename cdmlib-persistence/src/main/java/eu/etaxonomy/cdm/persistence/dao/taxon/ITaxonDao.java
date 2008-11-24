@@ -37,16 +37,18 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<Taxon> getRootTaxa(ReferenceBase sec);
 
 	
-	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent.
 	 * @param sec The concept reference that the taxon belongs to
-	 * @param cdmFetch TODO
+	 * @param cdmFetch not used yet !! TODO
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @param withMisaplications if true only taxa are returned that have no isMisappliedNameFor relationship. 
+	 * <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
 	 */
-	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch,  Boolean onlyWithChildren);
-
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisaplications);
+	
+	
 	/**
 	 * TODO necessary? 
 	 * @param pagesize max maximum number of returned taxa
