@@ -3,18 +3,19 @@
  */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+import org.apache.poi.hssf.record.formula.functions.Min;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -27,11 +28,13 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.IVolumeReference;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -41,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl implements INonViralNameParser<NonViralName> {
+public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<?>> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -57,7 +60,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName parseSimpleName(String simpleName, Rank rank){
+	public NonViralName<?> parseSimpleName(String simpleName, Rank rank){
 		//TODO
 		logger.warn("parseSimpleName() not yet implemented. Uses parseFullName() instead");
 		return parseFullName(simpleName, null, rank);
@@ -67,16 +70,16 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericSimpleName(java.lang.String)
 	 */
-	public NonViralName parseSimpleName(String simpleName){
+	public NonViralName<?> parseSimpleName(String simpleName){
 		return parseSimpleName(simpleName, null);
 	}
 	
-	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
+	public NonViralName<?> getNonViralNameInstance(String fullString, NomenclaturalCode code){
 		return getNonViralNameInstance(fullString, code, null);
 	}
 	
-	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
-		NonViralName result = null;
+	public NonViralName<?> getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
+		NonViralName<?> result = null;
 		if (code == null){
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
@@ -117,81 +120,178 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseFullReference(java.lang.String)
 	 */
-	public NonViralName parseFullReference(String fullReferenceString) {
+	public NonViralName<?> parseFullReference(String fullReferenceString) {
 		return parseFullReference(fullReferenceString, null, null);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
+	public NonViralName<?> parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullReferenceString == null){
 			return null;
 		}else{
-			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+			NonViralName<?> result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
 			parseFullReference(result, fullReferenceString, rank, MAKE_EMPTY);
 			return result;
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
-	 */
-	public void parseFullReference(NonViralName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+	private String standardize(NonViralName<?> nameToBeFilled, String fullReferenceString, boolean makeEmpty){
+		//Check null and standardize
 		if (fullReferenceString == null){
 			//return null;
-			return;
+			return null;
 		}
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
 		}
-		fullReferenceString.replaceAll(oWs , " ");
+		fullReferenceString = fullReferenceString.replaceAll(oWs , " ");
 		fullReferenceString = fullReferenceString.trim();
-		
-		String localFullName;
+		if ("".equals(fullReferenceString)){
+			fullReferenceString = null;
+		}
+		return fullReferenceString;
+	}
+
+	/**
+	 * Returns the regEx to be used for the full-name depending on the code
+	 * @param nameToBeFilled
+	 * @return
+	 */
+	private String getLocalFullName(NonViralName<?> nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
-			localFullName = anyZooFullName;
+			return anyZooFullName;
+		}else if (nameToBeFilled instanceof NonViralName) {
+			return anyBotanicFullName;  //TODO ?
+		}else if (nameToBeFilled instanceof BotanicalName) {
+			return anyBotanicFullName;
 		}else{
-			localFullName = anyBotanicFullName;
+			logger.warn("nameToBeFilled class not supported ("+nameToBeFilled.getClass()+")");
+			return null;
 		}
-		//seperate name and reference part
-		String nameAndRefSeperator = "(^" + localFullName + ")("+ referenceSeperator + ")";
-		Pattern nameAndRefSeperatorPattern = Pattern.compile(nameAndRefSeperator);
-		Matcher nameAndRefSeperatorMatcher = nameAndRefSeperatorPattern.matcher(fullReferenceString);
+	}
+	
+	/**
+	 * Returns the regEx to be used for the fsimple-name depending on the code
+	 * @param nameToBeFilled
+	 * @return
+	 */
+	private String getLocalSimpleName(NonViralName<?> nameToBeFilled){
+		if (nameToBeFilled instanceof ZoologicalName){
+			return anyZooName;
+		}else if (nameToBeFilled instanceof NonViralName){
+			return anyZooName;  //TODO ?
+		}else if (nameToBeFilled instanceof BotanicalName) {
+			return anyBotanicName;
+		}else{
+			logger.warn("nameToBeFilled class not supported ("+nameToBeFilled.getClass()+")");
+			return null;
+		}
+	}
+	
+	private Matcher getMatcher(String regEx, String matchString){
+		Pattern pattern = Pattern.compile(regEx);
+		Matcher matcher = pattern.matcher(matchString);
+		return matcher;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
+	 */
+	public void parseFullReference(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+		//standardize
+		fullReferenceString = standardize(nameToBeFilled, fullReferenceString, makeEmpty);
+		if (fullReferenceString == null){
+			return;
+		}
 		
-		Pattern onlyNamePattern = Pattern.compile(localFullName);
-		Matcher onlyNameMatcher = onlyNamePattern.matcher(fullReferenceString);
+		//make nomenclatural status and replace it by empty string 
+	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled);
 		
-		if (nameAndRefSeperatorMatcher.find() ){
-			String nameAndSeperator = nameAndRefSeperatorMatcher.group(0); 
-		    String name = nameAndRefSeperatorMatcher.group(1); 
-		    String referenceString = fullReferenceString.substring(nameAndRefSeperatorMatcher.end());
-		    
-		    // inRef?
-		    String seperator = nameAndSeperator.substring(name.length());
-			boolean isInReference = false;
-		    if (seperator.matches(inReferenceSeperator)){
-		    	isInReference = true;
-		    }
-		   	
-		    //status
-		    referenceString = parseNomStatus(referenceString, nameToBeFilled);
-		    
-		    //parse subparts
-		    parseFullName(nameToBeFilled, name, rank, makeEmpty);
-		    parseReference(nameToBeFilled, referenceString, isInReference); 
-		    INomenclaturalReference ref = nameToBeFilled.getNomenclaturalReference();
-		    if (ref != null && ref.getHasProblem()){
-		    	nameToBeFilled.setHasProblem(true);
-		    }
-		}else if(onlyNameMatcher.find()){
+	    //get full name reg
+		String localFullName = getLocalFullName(nameToBeFilled);
+		//get full name reg
+		String localSimpleName = getLocalSimpleName(nameToBeFilled);
+		
+		//separate name and reference part
+		String nameAndRefSeparator = "(^" + localFullName + ")("+ referenceSeperator + ")";
+		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparator, fullReferenceString);
+		
+		Matcher onlyNameMatcher = getMatcher (localFullName, fullReferenceString);
+		Matcher onlySimpleNameMatcher = getMatcher (localSimpleName, fullReferenceString);
+		
+		if (nameAndRefSeparatorMatcher.find()){  //match?
+			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
+		}else if (onlyNameMatcher.find()){
+			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
+		}else if (onlySimpleNameMatcher.find()){
+			makeEmpty = false;
+			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);	//simpleName not yet implemented
 		}else{
-			//don't parse if name can't be seperated
-			nameToBeFilled.setHasProblem(true);
-			nameToBeFilled.setTitleCache(fullReferenceString);
-			logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
+			makeNoFullRefMatch(nameToBeFilled, fullReferenceString);
 		}
+		//problem handling. Start and end solved in subroutines
+		if (! nameToBeFilled.hasProblem()){
+			makeProblemEmpty(nameToBeFilled);
+		}
+	}
+	
+	private void makeProblemEmpty(IParsable parsable){
+		parsable.setHasProblem(false);
+		parsable.setProblemStarts(-1);
+		parsable.setProblemEnds(-1);
+	}
+	
+	private void makeNoFullRefMatch(TaxonNameBase<?, ?> nameToBeFilled, String fullReferenceString){
+		//don't parse if name can't be separated
+		nameToBeFilled.setHasProblem(true);
+		nameToBeFilled.setTitleCache(fullReferenceString);
+		nameToBeFilled.setFullTitleCache(fullReferenceString);
+		nameToBeFilled.setProblemStarts(0);
+		nameToBeFilled.setProblemEnds(fullReferenceString.length());
+		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
+	}
+	
+	private void makeNameWithReference(NonViralName<?> nameToBeFilled, 
+			String fullReferenceString, 
+			Matcher nameAndRefSeparatorMatcher,
+			Rank rank,
+			boolean makeEmpty){
+		
+		String nameAndSeparator = nameAndRefSeparatorMatcher.group(0); 
+	    String name = nameAndRefSeparatorMatcher.group(1); 
+	    String referenceString = fullReferenceString.substring(nameAndRefSeparatorMatcher.end());
+	    
+	    // is reference an in ref?
+	    String separator = nameAndSeparator.substring(name.length());
+		boolean isInReference = separator.matches(inReferenceSeparator);
+	    
+	    //parse subparts
+	    parseFullName(nameToBeFilled, name, rank, makeEmpty);
+	    parseReference(nameToBeFilled, referenceString, isInReference); 
+	    INomenclaturalReference<?> ref = nameToBeFilled.getNomenclaturalReference();
+
+	    //problem start/end
+	    int start = -1;
+	    int end = -1;
+	    if (ref != null && ref.getHasProblem()){
+	    	String fullTitleCache = nameToBeFilled.getFullTitleCache();
+	    	start = nameToBeFilled.getTitleCache().length();
+	    	end = fullTitleCache.length();
+	    }
+	    if (nameToBeFilled.hasProblem()){
+	    	start = 0;
+	    	end = Math.max(end, nameToBeFilled.getTitleCache().length());
+	    }
+	    nameToBeFilled.setProblemStarts(start);
+	    nameToBeFilled.setProblemEnds(end);
+
+	    //delegate has problem to name
+	    if (ref != null && ref.getHasProblem()){
+	    	nameToBeFilled.setHasProblem(true);
+	    }
 	}
 	
 	//TODO make it an Array of status
@@ -200,10 +300,10 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	private String parseNomStatus(String reference, NonViralName nameToBeFilled) {
+	private String parseNomStatus(String fullString, NonViralName<?> nameToBeFilled) {
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
-		Matcher hasStatusMatcher = hasStatusPattern.matcher(reference);
+		Matcher hasStatusMatcher = hasStatusPattern.matcher(fullString);
 		
 		if (hasStatusMatcher.find()) {
 			String statusPhrase = hasStatusMatcher.group(0);
@@ -217,31 +317,33 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
 				nameToBeFilled.addStatus(nomStatus);
 			    
-			    reference = reference.replace(statusPhrase, "");
+				fullString = fullString.replace(statusPhrase, "");
 			} catch (UnknownCdmTypeException e) {
 				//Do nothing
 			}
 		}
-		return reference;
+		return fullString;
 	}
 	
 	
-	private void parseReference(NonViralName nameToBeFilled, String reference, boolean isInReference){
-			
-		if (referencePattern.matcher(reference).matches() ){
-			//End (just delete, may be ambigous for yearPhrase, but no real information gets lost
-			Pattern endPattern = Pattern.compile( referenceEnd + end);
-			Matcher endMatcher = endPattern.matcher(reference);
-			if (endMatcher.find()){
-				String endPart = endMatcher.group(0);
-				reference = reference.substring(0, reference.length() - endPart.length());
-			}
+	private void parseReference(NonViralName<?> nameToBeFilled, String reference, boolean isInReference){
+		//End (just delete end (e.g. '.', may be ambigous for yearPhrase, but no real information gets lost
+		Matcher endMatcher = getMatcher(referenceEnd + end, reference);
+		if (endMatcher.find()){
+			String endPart = endMatcher.group(0);
+			reference = reference.substring(0, reference.length() - endPart.length());
+		}
+		
+		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + yearPhrase + end;
+		Matcher detailYearMatcher = getMatcher(pDetailYear, reference);
+		
+		//if (referencePattern.matcher(reference).matches() ){
+		if (detailYearMatcher.matches() ){
 			
 			//year
 			String yearPart = null;
 			String pYearPhrase = yearSeperator + yearPhrase + end;
-			Pattern yearPhrasePattern = Pattern.compile(pYearPhrase);
-			Matcher yearPhraseMatcher = yearPhrasePattern.matcher(reference);
+			Matcher yearPhraseMatcher = getMatcher(pYearPhrase, reference);
 			if (yearPhraseMatcher.find()){
 				yearPart = yearPhraseMatcher.group(0);
 				reference = reference.substring(0, reference.length() - yearPart.length());
@@ -249,22 +351,22 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			}
 			
 			//detail
-			String pDetailPhrase = detailSeperator + detail + end;
-			Pattern detailPhrasePattern = Pattern.compile(pDetailPhrase);
-			Matcher detailPhraseMatcher = detailPhrasePattern.matcher(reference);
+			String pDetailPhrase = detailSeparator + detail + end;
+			Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, reference);
 			if (detailPhraseMatcher.find()){
 				String detailPart = detailPhraseMatcher.group(0);
 				reference = reference.substring(0, reference.length() - detailPart.length());
-				detailPart = detailPart.replaceFirst(start + detailSeperator, "").trim();
+				detailPart = detailPart.replaceFirst(start + detailSeparator, "").trim();
 				nameToBeFilled.setNomenclaturalMicroReference(detailPart);
 			}
 			//Title (and author)
-			INomenclaturalReference ref = parseReferenceTitle(reference, yearPart);
+			INomenclaturalReference<?> ref = parseReferenceTitle(reference, yearPart, isInReference);
 			nameToBeFilled.setNomenclaturalReference(ref);
-	    }else{
+	    }else{  //detail and year not parsable
 	    	Generic ref = Generic.NewInstance();
 	    	ref.setTitleCache(reference);
 	    	ref.setHasProblem(true);
+	    	nameToBeFilled.setHasProblem(true);
 	    	nameToBeFilled.setNomenclaturalReference(ref);
 	    }
 	    
@@ -276,39 +378,198 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param year
 	 * @return
 	 */
-	private INomenclaturalReference parseReferenceTitle(String reference, String year){
-		INomenclaturalReference result = null;
-		Pattern bookPattern = Pattern.compile(bookReference);
-		Pattern articlePattern = Pattern.compile(articleReference);
-		Pattern bookSectionPattern = Pattern.compile(bookSectionReference);
+	private INomenclaturalReference<?> parseReferenceTitle(String reference, String year, boolean isInReference){
+		INomenclaturalReference<?> result = null;
+		
+		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(reference);
+		if (! refSineDetailMatcher.matches()){
+			//TODO ?
+		}
+		
+		Matcher articleMatcher = getMatcher(pArticleReference, reference);
+		
+		Matcher softArticleMatcher = getMatcher(pSoftArticleReference, reference);
+		Matcher bookMatcher = getMatcher(pBookReference, reference);
+		Matcher bookSectionMatcher = getMatcher(pBookSectionReference, reference);
 		
 		
-		Matcher articleMatcher = articlePattern.matcher(reference);
-		Matcher bookMatcher = bookPattern.matcher(reference);
-		Matcher bookSectionMatcher = bookSectionPattern.matcher(reference);
-		
-		
-		if (articleMatcher.matches()){
-			//if (articlePatter)
-			//(type, author, title, volume, editor, series;
-			Article article = Article.NewInstance();
-			article.setTitle(reference);
-			result = article;
-		}else if(bookMatcher.matches()){
-			Book book = Book.NewInstance();
-			book .setTitle(reference);
-			result = book;
-		}else if (bookSectionMatcher.matches()){
-			BookSection bookSection = BookSection.NewInstance();
-			bookSection.setTitle(reference);
-			result = bookSection;
-		}else{
-			logger.warn("unknown reference type not yet implemented");
-			//ReferenceBase refBase = 
+		if(isInReference == false){
+			if (bookMatcher.matches() ){
+				result = parseBook(reference);
+			}else{
+				logger.warn("Non-InRef must be book but does not match book");
+				result = Book.NewInstance();
+				makeUnparsableRefTitle(result, reference);
+			}
+		}else{  //inRef
+			if (articleMatcher.matches()){
+				//article without separators like ","
+				result = parseArticle(reference);
+			}else if (softArticleMatcher.matches()){
+				result = parseArticle(reference);
+			}else if (bookSectionMatcher.matches()){
+				result = parseBookSection(reference);
+			}else{
+				logger.warn("unknown reference type not yet implemented");
+				//ReferenceBase refBase = 
+			}
 		}
 		//make year
-		TimePeriod datePublished = TimePeriod.NewInstance(Integer.valueOf(year));
-		((StrictReferenceBase)result).setDatePublished(datePublished);
+		if (makeYear(result, year) == false){
+			//TODO
+			logger.warn("Year could not be parsed");
+		}
+		return result;
+	}
+	
+	private void makeUnparsableRefTitle(INomenclaturalReference<?> result, String reference){
+		result.setTitleCache(reference);
+		result.setHasProblem(true);
+	}
+	
+	/**
+	 * Parses a single date string. If the string is not parsable a StringNotParsableException is thrown
+	 * @param singleDateString
+	 * @return
+	 * @throws StringNotParsableException
+	 */
+	private static Partial parseSingleDate(String singleDateString) 
+			throws StringNotParsableException{
+		Partial dt = new Partial();
+		if (CdmUtils.isNumeric(singleDateString)){
+			try {
+				Integer year = Integer.valueOf(singleDateString.trim());
+				if (year > 1750 && year < 2050){
+					dt = dt.with(DateTimeFieldType.year(), year);
+				}else{
+					dt = null;
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("Not a Integer format in getCalendar()");
+				throw new StringNotParsableException(singleDateString + "is not parsable as a single Date");
+			}
+		}
+		return dt;
+	}
+
+	
+	/**
+	 * Parses the publication date part. 
+	 * @param nomRef
+	 * @param year
+	 * @return If the string is not parsable <code>false</code>
+	 * is returned. <code>True</code> otherwise
+	 */
+	private boolean makeYear(INomenclaturalReference<?> nomRef, String year){
+		boolean result = true;
+		if (year == null){
+			return false;
+		}
+		if ("".equals(year.trim())){
+			return true;
+		}
+		String[] years = year.split("-");
+		Partial startDate = null;
+		Partial endDate = null;
+		try{
+			if (years.length < 1){
+				throw new StringNotParsableException();
+			}else {
+				startDate = parseSingleDate(years[0]);
+				if (years.length > 1){
+					endDate = parseSingleDate(years[1]);
+					if (years.length > 2){
+						throw new StringNotParsableException();
+					}
+				}
+			}
+		}catch(StringNotParsableException npe){
+			result = false;
+		}
+		TimePeriod datePublished = TimePeriod.NewInstance(startDate, endDate);
+		
+		if (nomRef instanceof StrictReferenceBase){
+			((StrictReferenceBase)nomRef).setDatePublished(datePublished);	
+		}else if (nomRef instanceof BibtexReference){
+				((BibtexReference)nomRef).setDatePublished(datePublished);
+				((BibtexReference)nomRef).setYear(year);
+		}else{
+			throw new ClassCastException("nom Ref is not of type StrictReferenceBase");
+		}
+		return result;	
+	}
+	
+	private String makeVolume(IVolumeReference nomRef, String strReference){
+		//volume
+		String volPart = null;
+		String pVolPhrase = volumeSeparator +  volume + end;
+		Matcher volPhraseMatcher = getMatcher(pVolPhrase, strReference);
+		if (volPhraseMatcher.find()){
+			volPart = volPhraseMatcher.group(0);
+			strReference = strReference.substring(0, strReference.length() - volPart.length());
+			volPart = volPart.replaceFirst(start + volumeSeparator, "").trim();
+			nomRef.setVolume(volPart);
+		}
+		return strReference;
+	}
+	
+	private String makeEdition(Book book, String strReference){
+		//volume
+		String editionPart = null;
+		Matcher editionPhraseMatcher = getMatcher(pEditionPart, strReference);
+		
+		Matcher editionVolumeMatcher = getMatcher(pEditionVolPart, strReference);
+		boolean isEditionAndVol = editionVolumeMatcher.find();
+		
+		if (editionPhraseMatcher.find()){
+			editionPart = editionPhraseMatcher.group(0);
+			int pos = strReference.indexOf(editionPart);
+			int posEnd = pos + editionPart.length();
+			if (isEditionAndVol){
+				posEnd++;  //delete also comma
+			}
+			strReference = strReference.substring(0, pos) + strReference.substring(posEnd);
+			editionPart = editionPart.replaceFirst(start + editionSeparator, "").trim();
+			book.setEdition(editionPart);
+		}
+		return strReference;
+	}
+	
+	private Book parseBook(String reference){
+		Book result = Book.NewInstance();
+		reference = makeEdition(result, reference);
+		reference = makeVolume(result, reference);
+		result.setTitle(reference);
+		return result;
+	}
+	
+	
+	private Article parseArticle(String reference){
+		//if (articlePatter)
+		//(type, author, title, volume, editor, series;
+		Article result = Article.NewInstance();
+		reference = makeVolume(result, reference);
+		Journal inJournal = Journal.NewInstance();
+		inJournal.setTitle(reference);
+		result.setInJournal(inJournal);
+		return result;
+	}
+	
+	private BookSection parseBookSection(String reference){
+		BookSection result = BookSection.NewInstance();
+		String[] parts = reference.split(referenceAuthorSeparator, 2);
+		if (parts.length != 2){
+			logger.warn("Unexpected number of parts");
+			result.setTitleCache(reference);
+		}else{
+			String authorString = parts[0];
+			String bookString = parts[1];
+			
+			TeamOrPersonBase<?> authorTeam = author(authorString);
+			Book inBook = parseBook(bookString);
+			inBook.setAuthorTeam(authorTeam);
+			result.setInBook(inBook);
+		}
 		return result;
 	}
 	
@@ -316,7 +577,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericFullName(java.lang.String)
 	 */
-	public NonViralName parseFullName(String fullNameString){
+	public NonViralName<?> parseFullName(String fullNameString){
 		return parseFullName(fullNameString, null, null);
 	}
 	
@@ -324,20 +585,23 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
+	public NonViralName<?> parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullNameString == null){
 			return null;
 		}else{
-			NonViralName result = getNonViralNameInstance(fullNameString, nomCode, rank);
+			NonViralName<?> result = getNonViralNameInstance(fullNameString, nomCode, rank);
 			parseFullName(result, fullNameString, rank, false);
 			return result;
 		}
 	}
 		
 	
-	public void parseFullName(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
+	public void parseFullName(NonViralName<?> nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
 		
+		if (nameToBeFilled == null){
+			logger.warn("name is null!");
+		}
 		String authorString = null;
 		
 		if (fullNameString == null){
@@ -372,6 +636,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				else {
 					nameToBeFilled.setRank(Rank.GENUS());
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
+					nameToBeFilled.setHasProblem(true);
+					nameToBeFilled.setProblemStarts(0);
+					nameToBeFilled.setProblemEnds(epi[0].length());
 				}
 				authorString = fullNameString.substring(epi[0].length());
 			}
@@ -441,10 +708,11 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		    }
 			//authors
 		    if (nameToBeFilled != null && authorString != null && authorString.trim().length() > 0 ){ 
-				TeamOrPersonBase[] authors = new TeamOrPersonBase[4];
+				TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 				Integer[] years = new Integer[4];
 				try {
-					fullAuthors(authorString, authors, years, nameToBeFilled.getClass());
+					Class<? extends NonViralName> clazz = nameToBeFilled.getClass();
+					fullAuthors(authorString, authors, years, clazz);
 				} catch (StringNotParsableException e) {
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setTitleCache(fullNameString);
@@ -464,12 +732,6 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			if (nameToBeFilled != null){
 		    	//return(BotanicalName)result;
 				return;
-			}else{
-				nameToBeFilled.setHasProblem(true);
-				nameToBeFilled.setTitleCache(fullNameString);
-				logger.info("Name string " + fullNameString + " could not be parsed!");
-				//return result;
-				return;
 			}
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.setHasProblem(true);
@@ -488,7 +750,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @return array of Teams containing the Team[0], 
 	 * ExTeam[1], BasionymTeam[2], ExBasionymTeam[3]
 	 */
-	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years, Class clazz)
+	protected void fullAuthors (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years, Class<? extends NonViralName> clazz)
 			throws StringNotParsableException{
 		fullAuthorString = fullAuthorString.trim();
 		if (fullAuthorString == null || clazz == null){
@@ -516,7 +778,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	/*
 	 * like fullTeams but without trim and match check
 	 */
-	protected void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase[] authors, Integer[] years){
+	protected void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years){
 		int authorTeamStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
 		
@@ -527,7 +789,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			basString = basString.replaceAll(basEnd, "").trim();
 			authorTeamStart = basionymMatcher.end(1) + 1;
 			
-			TeamOrPersonBase[] basAuthors = new TeamOrPersonBase[2];
+			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[2];
 			Integer[] basYears = new Integer[2];
 			authorsAndEx(basString, basAuthors, basYears);
 			authors[2]= basAuthors[0];
@@ -535,7 +797,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			authors[3]= basAuthors[1];
 			years[3] = basYears[1];
 		}
-		TeamOrPersonBase[] combinationAuthors = new TeamOrPersonBase[2];;
+		TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
 		Integer[] combinationYears = new Integer[2];
 		authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
 		authors[0]= combinationAuthors[0] ;
@@ -550,7 +812,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param authorTeamString String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	protected void authorsAndEx (String authorTeamString, TeamOrPersonBase[] authors, Integer[] years){
+	protected void authorsAndEx (String authorTeamString, TeamOrPersonBase<?>[] authors, Integer[] years){
 		//TODO noch allgemeiner am anfang durch Replace etc. 
 		authorTeamString = authorTeamString.trim();
 		authorTeamString = authorTeamString.replaceFirst(oWs + "ex" + oWs, " ex. " ); 
@@ -574,7 +836,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param team
 	 * @param year
 	 */
-	protected void zooOrBotanicAuthor(String authorString, TeamOrPersonBase[] team, Integer[] year){
+	protected void zooOrBotanicAuthor(String authorString, TeamOrPersonBase<?>[] team, Integer[] year){
 		if (authorString == null){ 
 			return;
 		}else if ((authorString = authorString.trim()).length() == 0){
@@ -598,7 +860,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param authorTeamString String representing the author team
 	 * @return an Team 
 	 */
-	protected TeamOrPersonBase author (String authorString){
+	protected TeamOrPersonBase<?> author (String authorString){
 		if (authorString == null){ 
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
@@ -703,7 +965,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	}
 
 	
-	private void makeEmpty(NonViralName nameToBeFilled){
+	private void makeEmpty(NonViralName<?> nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);
@@ -767,10 +1029,14 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     
     static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     static String nonCapitalWord = "\\p{javaLowerCase}+";
+    static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
+    
     
     static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
     static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
     static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultativ '.' at the end
+    static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
+    
     //Words used in an epethiton for a TaxonName
     static String nonCapitalEpiWord = "[a-zï\\-]+";   //TODO solve checkin Problem with Unicode character "[a-zï¿½\\-]+";
     static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
@@ -779,17 +1045,17 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
    //years
     static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
     static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits 	      
-    static String yearPhrase = "(" + singleYear + "(-" + singleYear + ")?" + 
-    						"(" + month + ")?)" ;                 // optional month
+    static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
+    								//+ "(" + month + ")?)" ;                 // optional month
     
     //seperator
     static String yearSeperator = "\\." + oWs;
-    static String detailSeperator = ":" + oWs;
-    static String referenceSeperator1 = "," + oWs ;
-    static String inReferenceSeperator = oWs + "in" + oWs;
-    static String referenceSeperator = "(" + referenceSeperator1 +"|" + inReferenceSeperator + ")" ;
-    static String referenceAuthorSeperator = ","+ oWs;
-    static String volumeSeperator = oWs ; // changed from "," + fWs
+    static String detailSeparator = ":" + oWs;
+    static String referenceSeparator1 = "," + oWs ;
+    static String inReferenceSeparator = oWs + "in" + oWs;
+    static String referenceSeperator = "(" + referenceSeparator1 +"|" + inReferenceSeparator + ")" ;
+    static String referenceAuthorSeparator = ","+ oWs;
+    static String volumeSeparator = oWs ; // changed from "," + fWs
     static String referenceEnd = "\\.";
      
     
@@ -832,21 +1098,102 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     
     //details
     //TODO still very simple
-    static String pageNumber = "\\d{1,5}";
-    static String detail = "(" + pageNumber + ")";
+    
+    
+    static String nr2 = "\\d{1,2}";
+    static String nr4 = "\\d{1,4}";
+    static String nr5 = "\\d{1,5}";
+    
+    
+    static String pPage = nr5 + "[a-z]?";
+    static String pStrNo = "n°" + fWs + "(" + nr4 + ")";
+    
+    static String pBracketNr = "\\[" + nr4 + "\\]";
+    static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
+    
+    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|ß|\\(\\d{1,3}\\)))?";
+    static String pFig = "fig." + fWs + nr4 + "[a-z]?";
+    static String pFigs = pFig + "(-" + nr4 + ")?";
+    //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
+    static String pTabFig = "(" + pStrTab + "|" + pFigs + ")";
+    
+    //e.g.: p455; p.455; pp455-456; pp.455-456; pp.455,456; 455, 456; pages 456-457; pages 456,567
+    static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFig +")?";
+    static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + "(-|,)" +fWs + pPage ;
+    //static String pPages = pPage + "(," + fWs + "(" + pPage + "|" + pTabFig + ")" + ")?";
+    static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
+    
+    
+    static String pCouv = "couv\\." + fWs + "\\d{1,3}";
+    
+    static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
+    static String pPageSpecial = nr4 + fWs + "(in obs|, Expl\\. Tab)";
+    static String pSpecialGardDict = capitalWord + oWs + "n°" + oWs + "\\d{1,2}";
+    //TODO
+    // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
+ // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
+    static String pSpecialDetail = "(in err|in tab|sine pag|add\\.)";
+    
+    
+//    Const romI = "[Ii]{0,3}"
+//    	Const romX = "[Xx]{0,3}"
+//    	Const romC = "[Cc]{0,3}"
+//    	Const romM = "[Mm]{0,3}"   
+//    ' roman numbers
+//    ' !! includes empty string: ""
+//    romOne = "([Vv]?" & romI & or_ & "(IV|iv)" & or_ & "(IX|ix)" & ")"
+//    romTen = "([Ll]?" & romX & or_ & "(XL|xl)" & or_ & "(XC|xc)" & ")"
+//    romHun = "([Dd]?" & romC & or_ & "(CD|cd)" & or_ & "(CM|cm)" & ")"
+//    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
+    static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
+    
+    static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
+    			"|" + pTabFig + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" + 
+    			pSpecialGardDict + "|" + pSpecialDetail + ")";
+
+    static String detail = pDetailAlternatives;
     
     //reference
-    static String volume = "\\d{1,4}" + "(\\(\\d{1,4}\\))?"; 	      
+    static String volume = nr4 + "(\\("+ nr4  + "\\))?"; 	      
+    static String anySepChar = "(," + fWs + ")";
     
-    static String referenceTitle = "(" + dotWord + fWs + ")" + "{1,}";
-    static String bookReference = referenceTitle + "(" + volumeSeperator +  volume + ")?";
-    static String bookSectionReference = authorTeam + referenceAuthorSeperator;
-    static String articleReference = inReferenceSeperator + bookReference  ; 
-    static String reference = "(" + articleReference + "|" + bookReference +")" + 
-    				detailSeperator + detail + yearSeperator + yearPhrase +
-    				"(" + referenceEnd + ")?"; 
+    static int authorSeparatorMaxPosition = 4;
+    static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";
+    static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
+    static String referenceTitle = referenceTitleFirstPart + "*" + dotWord;
+    static String referenceTitleWithSepCharacters = "(" + referenceTitle  + anySepChar + "?)" + "{1,}";
+    static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord + 
+    			anySepChar + referenceTitleWithSepCharacters;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
+   
+    static String editionSeparator = oWs + "ed\\.?" + oWs;
+    static String pEdition = nr2;
+    
+    static String pVolPart = volumeSeparator +  volume;
+    static String pEditionPart = editionSeparator +  pEdition;
+    static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator +  volume;
+    static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
+    
+    static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
+    static String softEditionVolRefTitle = referenceTitleWithSepCharacters + pEditionVolAlternative;
+    static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
+    
+    static String pBookReference = softEditionVolRefTitle;
+    static String pBookSectionReference = authorTeam + referenceAuthorSeparator + softEditionVolRefTitle;
+    static String pArticleReference = pVolRefTitle  ; 
+    static String pSoftArticleReference = softVolNoAuthorRefTitle  ; 
+    
+    
+    static String pReferenceSineDetail = "(" + pArticleReference + "|" + pBookSectionReference + "|" + pBookReference + ")"; 
+    
+    static String pReference = pReferenceSineDetail + detailSeparator + detail + 
+					yearSeperator + yearPhrase + "(" + referenceEnd + ")?"; 
 
-    static Pattern referencePattern = Pattern.compile(reference);
+    //static String strictBook = referenc 
+    
+    
+    
+    static Pattern referencePattern = Pattern.compile(pReference);
+    static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
     
     static String pNomStatusNom = "nom\\." + fWs + "(superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.|alternativ\\.|subnud.|"+
     					"rej\\.|rej\\."+ fWs + "prop\\.|provis\\.)";
@@ -883,8 +1230,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
     static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
 					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + ")+";
-    static String anyBotanicFullName = anyBotanicName + oWs + fullBotanicAuthorString;
-    static String anyZooFullName = anyZooName + oWs + fullZooAuthorString;
+    static String anyBotanicFullName = anyBotanicName + oWs + fullBotanicAuthorString ;
+    static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
     
     //Pattern

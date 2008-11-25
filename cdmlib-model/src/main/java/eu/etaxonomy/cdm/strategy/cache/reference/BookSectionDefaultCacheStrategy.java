@@ -95,7 +95,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 		if (book == null){
 			return "";
 		}
-		TeamOrPersonBase team = book.getAuthorTeam();
+		TeamOrPersonBase<?> team = book.getAuthorTeam();
 		String result = CdmUtils.Nz( team == null ? "" : team.getTitleCache());
 		if (! result.trim().equals("")){
 			result = result + seperator;	

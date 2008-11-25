@@ -44,7 +44,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "PrintedUnitBase")
 @Entity
-public abstract class PrintedUnitBase extends PublicationBase {
+public abstract class PrintedUnitBase extends PublicationBase implements IVolumeReference{
 	
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
 	

@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import sun.management.resources.agent;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
@@ -58,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Article")
 @Entity
-public class Article extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
+public class Article extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final Logger logger = Logger.getLogger(Article.class);
 	
     @XmlElement(name = "Series")

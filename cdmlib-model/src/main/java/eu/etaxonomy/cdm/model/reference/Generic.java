@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Generic")
 @Entity
-public class Generic extends StrictReferenceBase implements INomenclaturalReference, Cloneable {
+public class Generic extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
 	
 	static Logger logger = Logger.getLogger(Generic.class);
 	

@@ -70,20 +70,19 @@ public class JournalDefaultCacheStrategy<T extends Journal> extends StrategyBase
 		if (journal == null){
 			return null;
 		}
-		String titel = CdmUtils.Nz(journal.getTitle()).trim();
-		//titelAbbrev
-		String titelAbbrevPart = "";
-		if (!"".equals(titel)){
-			result = titel + blank; 
-		}
-		//delete .
-		while (result.endsWith(".")){
-			result = result.substring(0, result.length()-1);
+		String title = CdmUtils.Nz(journal.getTitle()).trim();
+		if (!"".equals(title) ){
+			result += title;
 		}
 		
+//		//delete .
+//		while (result.endsWith(".")){
+//			result = result.substring(0, result.length()-1);
+//		}
+		
 //		result = addYear(result, journal);
-		TeamOrPersonBase team = journal.getAuthorTeam();
-		String author = CdmUtils.Nz(team == null ? "" : team.getTitleCache());
+		TeamOrPersonBase<?> team = journal.getAuthorTeam();
+		String author = (team == null ? "" : CdmUtils.Nz(team.getTitleCache()));
 		if (! author.equals("")){
 			result = author + afterAuthor + result;
 		}

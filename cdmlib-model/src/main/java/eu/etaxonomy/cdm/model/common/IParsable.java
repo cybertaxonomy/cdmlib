@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+
 /**
  * @author a.mueller
  * @created 21.05.2008
@@ -16,11 +17,59 @@ package eu.etaxonomy.cdm.model.common;
  */
 public interface IParsable {
 
-	/** 
-	 * this flag will be set to true if the parseName method was unable to successfully parse the name
+	/**
+	 * Returns the boolean value of the flag indicating whether the used parser 
+	 * method was able to parse a string successfully into this object (<code>false</code>)
+	 * or not (<code>true</code>). 
+	 *  
+	 * @return  the boolean value of the hasProblem flag
 	 */
 	public boolean getHasProblem();
 	
+	/**
+	 * @see  #getHasProblem()
+	 */
 	public void setHasProblem(boolean hasProblem);
+	
+	/**
+	 * Returns exactly the same boolean value as the {@link #getHasProblem() getHasProblem} method.  
+	 *  
+	 * @see  #getHasProblem()
+	 */
+	public boolean hasProblem();
+	
+	/**
+	 * Returns the integer value of the position where a parsing problem starts.
+	 * If no problem exists -1 is returned.
+	 * This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated.<BR>
+	 * Default: -1
+	 * @see  #getHasProblem()
+	 */
+	@Deprecated
+	public int getProblemStarts();
+	
+	/**
+	 * Returns the integer value of the position where a parsing problem ends.
+	 * If no problem exists -1 is returned.
+	 * This method will be removed by a more sophisticated method in future versions, 
+	 * therefore it is deprecated. <BR>
+	 * Default: -1
+	 * @see  #getHasProblem()
+	 */
+	@Deprecated
+	public int getProblemEnds();
+	
+	/**
+	 * @see  #getProblemStarts()
+	 */
+	@Deprecated
+	public void setProblemStarts(int start);
+	
+	/**
+	 * @see  #getProblemEnds()
+	 */
+	@Deprecated
+	public void setProblemEnds(int end);
 	
 }

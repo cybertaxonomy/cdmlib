@@ -55,7 +55,7 @@ class NomenclaturalReferenceHelper {
 	 * @see 			name.TaxonNameBase#getNomenclaturalReference()
 	 * @see 			strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
-	protected static NomenclaturalReferenceHelper NewInstance(INomenclaturalReference<ReferenceBase> nomRef){
+	protected static NomenclaturalReferenceHelper NewInstance(INomenclaturalReference<? extends ReferenceBase> nomRef){
 		NomenclaturalReferenceHelper result = new NomenclaturalReferenceHelper();
 		result.nomenclaturalReference = (ReferenceBase)nomRef;
 		return result;

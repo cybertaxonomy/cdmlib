@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase extends IdentifyableMediaEntity implements IParsable{
 	
-	static Logger logger = Logger.getLogger(ReferenceBase.class);
+	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
@@ -83,6 +83,12 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	@XmlAttribute
 	private boolean hasProblem = false;
 	
+	@XmlAttribute
+    private int problemStarts = -1;
+    
+    @XmlAttribute
+    private int problemEnds = -1;
+    
 	@XmlTransient
 	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
@@ -161,22 +167,54 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	@Transient
 	public abstract String getYear();
 
-	/**
-	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
-	 * method was able to parse the string designating <i>this</i> reference
-	 * successfully (false) or not (true).
-	 *  
-	 * @return  the boolean value of the hasProblem flag
-	 * @see     #getCitation()
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
-	/**
-	 * @see  #getHasProblem()
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
 	 */
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
+	 */
+	public boolean hasProblem(){
+		return getHasProblem();
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
+	 */
+	public int getProblemStarts(){
+		return this.problemStarts;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
+	 */
+	public void setProblemStarts(int start) {
+		this.problemStarts = start;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
+	 */
+	public int getProblemEnds(){
+		return this.problemEnds;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
+	 */
+	public void setProblemEnds(int end) {
+		this.problemEnds = end;
 	}
 	
 	/**

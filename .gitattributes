@@ -525,6 +525,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/CdDvd.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Database.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Generic.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/INomenclaturalReference.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IVolumeReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/InProceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Journal.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Map.java -text
@@ -652,6 +653,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestUUID.java -text

@@ -97,7 +97,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 
-	static Logger logger = Logger.getLogger(TaxonNameBase.class);
+	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
 	private static Method methodDescriptionSetTaxonName;
 
@@ -121,6 +121,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     @XmlAttribute
 	private boolean hasProblem = false;
 	
+    @XmlAttribute
+    private int problemStarts = -1;
+    
+    @XmlAttribute
+    private int problemEnds = -1;
+    
     @XmlElementWrapper(name = "TypeDesignations")
     @XmlElement(name = "TypeDesignation")
     @XmlIDREF
@@ -154,6 +160,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
     //@XmlElementWrapper(name = "TaxonBases")
     //@XmlElement(name = "TaxonBase")
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
+    
     
     
 
@@ -718,31 +725,55 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 	}
 
-	/**
-	 * Returns the boolean value of the flag indicating whether the used {@link eu.etaxonomy.cdm.strategy.parser.INonViralNameParser parser} 
-	 * method was able to parse the taxon name string successfully (false)
-	 * or not (true). The parser itself may also depend on the {@link NomenclaturalCode nomenclatural code}
-	 * governing the construction of <i>this</i> taxon name.
-	 *  
-	 * @return  the boolean value of the hasProblem flag
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
 	public boolean getHasProblem(){
 		return this.hasProblem;
 	}
-	/**
-	 * @see  #getHasProblem()
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
 	 */
 	public void setHasProblem(boolean hasProblem){
 		this.hasProblem = hasProblem;
 	}
-	/**
-	 * Returns exactly the same boolean value as the {@link #getHasProblem() getHasProblem} method.  
-	 *  
-	 * @see  #getHasProblem()
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
 	 */
 	public boolean hasProblem(){
 		return getHasProblem();
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
+	 */
+	public int getProblemStarts(){
+		return this.problemStarts;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
+	 */
+	public void setProblemStarts(int start) {
+		this.problemStarts = start;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
+	 */
+	public int getProblemEnds(){
+		return this.problemEnds;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
+	 */
+	public void setProblemEnds(int end) {
+		this.problemEnds = end;
+	}
+
 
 	
 	
@@ -750,6 +781,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	
 
 	
+
 	/** 
 	 * Returns the set of {@link TypeDesignationBase type designations} assigned
 	 * to <i>this</i> taxon name.
@@ -964,6 +996,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * @see		#getNomenclaturalMicroReference()
 	 */
 	@Transient
+	@Deprecated
 	public String getCitationString(){
 		logger.warn("getCitationString not yet implemented");
 		return null;
@@ -973,6 +1006,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCach
 	 * Not yet implemented
 	 */
 	@Transient
+	@Deprecated
 	public String[] getProblems(){
 		logger.warn("getProblems not yet implemented");
 		return null;

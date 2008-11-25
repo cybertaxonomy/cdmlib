@@ -19,12 +19,10 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
 
@@ -190,23 +188,28 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	
 	@Override
 	public String getFullTitleCache(T nonViralName) {
+		//null
 		if (nonViralName == null){
 			return null;
 		}
-		String result = "";
-		String titleCache = getTitleCache(nonViralName);
-		if (nonViralName.hasProblem() == true) {
-			return titleCache;
+		//full title cache
+		if (nonViralName.isProtectedFullTitleCache() == true) {
+			return nonViralName.getFullTitleCache();
 		}
+		
+		String result = "";
+		//title cache
+		String titleCache = getTitleCache(nonViralName);
+		
 		String microReference = nonViralName.getNomenclaturalMicroReference();
-		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
+		INomenclaturalReference<?> ref = nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
 		if (ref != null){
 			referenceBaseCache = ref.getNomenclaturalCitation(microReference);
 		}
 		
+		//make nomenclatural status
 		String ncStatusCache = "";
-		
 		Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
 		while (iterator.hasNext()) {
