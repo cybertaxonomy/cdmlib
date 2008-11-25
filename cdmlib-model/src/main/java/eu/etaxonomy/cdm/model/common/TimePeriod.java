@@ -298,19 +298,19 @@ public class TimePeriod implements Cloneable {
 		initStart();
 		if (value == null){
 			start = start.without(type);
-			return this;
+		}else{
+			int max = 9999999;
+			if (type.equals(DateTimeFieldType.monthOfYear())){
+				max = 31;
+			}
+			if (type.equals(DateTimeFieldType.dayOfMonth())){
+				max = 12;
+			}
+			if (value < 1 || value > max ){
+				throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
+			}
+			start = this.start.with(type, value);
 		}
-		int max = 9999999;
-		if (type.equals(DateTimeFieldType.monthOfYear())){
-			max = 31;
-		}
-		if (type.equals(DateTimeFieldType.dayOfMonth())){
-			max = 12;
-		}
-		if (value < 1 || value > max ){
-			throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
-		}
-		start = this.start.with(type, value);
 		return this;
 	}
 
@@ -318,18 +318,19 @@ public class TimePeriod implements Cloneable {
 		initEnd();
 		if (value == null){
 			end = end.without(type);
+		}else{
+			int max = 9999999;
+			if (type.equals(DateTimeFieldType.monthOfYear())){
+				max = 31;
+			}
+			if (type.equals(DateTimeFieldType.dayOfMonth())){
+				max = 12;
+			}
+			if ( (value < 1 || value > max) ){
+				throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
+			}
+			end = this.end.with(type, value);
 		}
-		int max = 9999999;
-		if (type.equals(DateTimeFieldType.monthOfYear())){
-			max = 31;
-		}
-		if (type.equals(DateTimeFieldType.dayOfMonth())){
-			max = 12;
-		}
-		if (value < 1 || value > max ){
-			throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
-		}
-		end = this.end.with(type, value);
 		return this;
 	}
 	
