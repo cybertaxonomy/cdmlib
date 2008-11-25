@@ -76,11 +76,14 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
     	if (recordList != null) {
     		HashMap<String,String> record = null;
+    		TransactionStatus txStatus = appCtr.startTransaction();
+
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			analyzeRecord(config.getDestination(), record);
 //    			config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
     		}
+    		appCtr.commitTransaction(txStatus);
     	}
     	
 		try {
@@ -153,7 +156,7 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
-		TransactionStatus txStatus = appCtr.startTransaction();
+		//TransactionStatus txStatus = appCtr.startTransaction();
 
 		// Stores already processed descriptions
 //    	myDescriptions = new HashMap<Taxon, TaxonDescription>();
@@ -204,35 +207,51 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     				}
     				// TODO: Handle absence case
 					
+    				/* Set to true if taxon needs to be saved if at least one new distribution exists */
+    				boolean save = false;
+    				
     				// TDWG areas
-    				// Ignore the ones that occur multiple times
     				for (String distribution: distributionList) {
 
+                        /* Set to true if this distribution is a new one*/
+        				boolean ignore = false;
+        				
     					if(!distribution.equals("")) {
     						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
         					TaxonDescription taxonDescription = myDescriptions.get(taxon);
-    						if (namedArea != null) {    
+        					//taxonDescription = taxon.getDescriptions()
+        					if (namedArea != null) {    
+    		    				// Check against existing distributions and ignore the ones that occur multiple times
             					Set<DescriptionElementBase> myDescriptionElements = taxonDescription.getElements();
     	    					for(DescriptionElementBase descriptionElement : myDescriptionElements) {
     	    						if (descriptionElement instanceof Distribution) {
     	    							if (namedArea == ((Distribution)descriptionElement).getArea()) {
+    	    								ignore = true;
     	    	    						logger.debug("Distribution ignored: " + distribution);
     	    		    					break;
      	    							}
     	    						}
     	    					}
-    							Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
-    							myDescription.addElement(newDistribution);
-//    							myDescriptions.put(taxon, myDescription);
+    	    					// Create new distribution if not yet exist
+    	    					if (ignore == false) {
+    	    						save = true;
+    	    						Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
+    	    						myDescription.addElement(newDistribution);
+    	    						logger.debug("Distribution created: " + newDistribution.toString());
+//  	    						myDescriptions.put(taxon, myDescription);
+    	    					}
     						}
     					}
     				}
-    				
-    				appCtr.getTaxonService().saveTaxon(taxon);
-    	    		logger.debug("Taxon saved");
+//    				appCtr.getDescriptionService().saveDescription(myDescription);
+    				if (save == true) {
+//    					myDescriptions.put(taxon, myDescription);
+    					appCtr.getTaxonService().saveTaxon(taxon);
+    					logger.debug("Taxon saved");
+    				}
     			}
     		} 
-    		appCtr.commitTransaction(txStatus);
+//    		appCtr.commitTransaction(txStatus);
     		
     	} catch (Exception e) {
     		logger.error("Error");
