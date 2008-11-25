@@ -16,11 +16,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
-import org.jdom.output.Format;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.FileCopy;
-import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
 public class CdmApplicationUtils {
