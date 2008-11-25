@@ -20,23 +20,36 @@ import java.util.ArrayList;
  */
 public class SynonymRelationshipTO {
 	
-	private ArrayList<LocalisedTermSTO> type = new ArrayList<LocalisedTermSTO>();
-	private TaxonSTO synoynm;
+	private ArrayList<LocalisedTermSTO> typeRepresenations = new ArrayList<LocalisedTermSTO>();
+	private String typeUuid;
+	private TaxonSTO synonym;
 	
-	public TaxonSTO getSynoynm() {
-		return synoynm;
+	public TaxonSTO getSynonym() {
+		return synonym;
 	}
-	public void setSynoynm(TaxonSTO synoynm) {
-		this.synoynm = synoynm;
+	public void setSynonym(TaxonSTO synonym) {
+		this.synonym = synonym;
 	}
-	public ArrayList<LocalisedTermSTO> getTypes() {
-		return type;
+	public ArrayList<LocalisedTermSTO> getTypeRepresentations() {
+		return typeRepresenations;
 	}
-	public void setType(ArrayList<LocalisedTermSTO> types) {
-		this.type = types;
+	public void setTypeRepresentations(ArrayList<LocalisedTermSTO> types) {
+		this.typeRepresenations = types;
 	}
-	public void addType(LocalisedTermSTO sto) {
-		type.add(sto);
+	public void addTypeRepresentation(LocalisedTermSTO sto) {
+		typeRepresenations.add(sto);
+	}
+	/**
+	 * @return the uuid
+	 */
+	public String getTypeUuid() {
+		return typeUuid;
+	}
+	/**
+	 * @param uuid the uuid to set
+	 */
+	public void setTypeUuid(String typeUuid) {
+		this.typeUuid = typeUuid;
 	}
 
 }

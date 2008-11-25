@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.dto.assembler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -148,8 +149,19 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		HomotypicTaxonGroupSTO homotypicTaxonGroupSTO = new HomotypicTaxonGroupSTO();
 		homotypicTaxonGroupSTO.setUuid(homotypicalGroup.getUuid().toString());
 		
-		for(TaxonBase tb : homotypicalGroup.getSynonymsInGroup(taxon.getSec())){
-			homotypicTaxonGroupSTO.getTaxa().add(getSTO(tb, locales));
+		for(Synonym synonym : homotypicalGroup.getSynonymsInGroup(taxon.getSec())){
+			//homotypicTaxonGroupSTO.getTaxa().add(getSTO(tb, locales));
+			SynonymRelationshipTO synonymRelationshipTO = new SynonymRelationshipTO();
+			synonymRelationshipTO.setSynonym(getSTO(synonym, locales));
+			
+			
+			for(SynonymRelationshipType relationType : synonym.getRelationType(taxon)){
+				synonymRelationshipTO.addTypeRepresentation(termAssembler.getSTO(relationType, locales));
+				synonymRelationshipTO.setTypeUuid(relationType.getUuid().toString());
+			}		
+			
+			
+			homotypicTaxonGroupSTO.addSynonym(synonymRelationshipTO);
 		}
 		
 		
@@ -220,10 +232,11 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	public SynonymRelationshipTO getSynonymRelationshipTO(Synonym synonym, Taxon taxon, Enumeration<Locale> locales){
 		SynonymRelationshipTO synonymRelationshipTO = new SynonymRelationshipTO();
 		if(synonym != null){
-			synonymRelationshipTO.setSynoynm(getSTO(synonym, locales));
+			synonymRelationshipTO.setSynonym(getSTO(synonym, locales));
 			
 			for(TermBase relationType : synonym.getRelationType(taxon)){
-				synonymRelationshipTO.addType(termAssembler.getSTO(relationType, locales));
+				synonymRelationshipTO.addTypeRepresentation(termAssembler.getSTO(relationType, locales));
+				synonymRelationshipTO.setTypeUuid(relationType.getUuid().toString());
 			}
 		}
 		return synonymRelationshipTO;
@@ -261,17 +274,39 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 	 * @return
 	 */
 	public List<TreeNode> getTreeNodeListSortedByName(Iterable<Taxon> taxa){
-		Map<String, TreeNode> nameMap = new HashMap<String, TreeNode>();
-		for (Taxon t : taxa){
-			nameMap.put(t.getTitleCache()+"  "+t.getUuid().toString(), this.getTreeNode(t));
-		}
 		ArrayList<TreeNode> treeNodeList = new ArrayList<TreeNode>();
-		ArrayList<String> keys = new ArrayList<String>(nameMap.keySet());
-		Collections.sort(keys);
-		for (String name : keys){
-			treeNodeList.add(nameMap.get(name));
+		for (Taxon t : taxa){
+			treeNodeList.add(this.getTreeNode(t));
 		}
+		Collections.sort(treeNodeList, new TreeNodeComparator());
 		return treeNodeList;
+	}
+
+	private class TreeNodeComparator implements Comparator<TreeNode>{
+
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		public int compare(TreeNode node1, TreeNode node2) {
+			
+			// FIXME Hack to have "Inserta sedis" and "Nomina excludenda" sorted to the end 
+			if (node1.getFullname().trim().equals("Incertae sedis")){
+				return 1000;
+			}
+			if (node2.getFullname().trim().equals("Incertae sedis")){
+				return -1000;
+			}
+			if (node1.getFullname().trim().equals("Nomina excludenda")){
+				return 1100;
+			}
+			if (node2.getFullname().trim().equals("Nomina excludenda")){
+				return -1100;
+			}
+			
+			
+			return node1.getFullname().compareTo(node2.getFullname());
+		}
+
 	}
 	
 }

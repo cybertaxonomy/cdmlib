@@ -174,7 +174,7 @@ public class RestController extends AbstractController
 			}else if(action.equalsIgnoreCase("taxonomy")){
 				List results = null; 
 				if(op.equalsIgnoreCase("children")){
-					results = service.getChildrenTaxa(getUuid(uuid));
+					results = service.getChildTaxa(getUuid(uuid));
 				}
 				else if(op.equalsIgnoreCase("parents")){
 					results = service.getParentTaxa(getUuid(uuid));

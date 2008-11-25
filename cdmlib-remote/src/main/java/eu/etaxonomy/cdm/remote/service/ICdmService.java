@@ -194,7 +194,7 @@ public interface ICdmService {
 	 *         in the concept tree.
 	 * @throws CdmObjectNonExisting 
 	 */
-	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting;
+	public List<TreeNode> getChildTaxa(UUID uuid) throws CdmObjectNonExisting;
 
 	/**
 	 * Gets the root nodes of the taxonomic concept tree for the concept

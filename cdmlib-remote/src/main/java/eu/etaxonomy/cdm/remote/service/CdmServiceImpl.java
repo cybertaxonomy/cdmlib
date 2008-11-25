@@ -234,7 +234,7 @@ public class CdmServiceImpl implements ICdmService {
 		return stoTable;
 	}
 
-	public List<TreeNode> getChildrenTaxa(UUID uuid) throws CdmObjectNonExisting {
+	public List<TreeNode> getChildTaxa(UUID uuid) throws CdmObjectNonExisting {
 		Taxon tx = getCdmTaxon(uuid);
 		return taxonAssembler.getTreeNodeListSortedByName(tx.getTaxonomicChildren());
 	}

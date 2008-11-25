@@ -19,26 +19,26 @@ public class MediaRepresenationPartSTO extends BaseSTO {
 	/**
 	 * in bytes
 	 */
-	private Integer size;
+	private Integer size = 0;
 	
 	/**
 	 * The files URI.
 	 */
-	private String uri;
+	private String uri = "";
 
 	/**
 	 * The width of the media in case it is an image or video
 	 */
-	private Integer width;
+	private Integer width = 0;
 	/**
 	 * The height of the media in case it is an image or video
 	 */
-	private Integer heigth;
+	private Integer height = 0;
 
 	/**
 	 * duration of an audio or movie file, this value is of course not valid for images.
 	 */
-	private Integer duration;
+	private Integer duration = 0;
 	
 	
 	public Integer getSize() {
@@ -63,12 +63,16 @@ public class MediaRepresenationPartSTO extends BaseSTO {
 		return width;
 	}
 	public void setWidth(Integer width) {
-		this.width = width;
+		if(width != null){
+			this.width = width;
+		}
 	}
-	public int getHeigth() {
-		return heigth;
+	public int getHeight() {
+		return height;
 	}
-	public void setHeigth(Integer heigth) {
-		this.heigth = heigth;
+	public void setHeight(Integer height) {
+		if(height != null){
+			this.height = height;
+		}
 	}
 }

@@ -44,7 +44,7 @@ public class MediaRepresentationSTO extends BaseSTO {
 		MediaRepresenationPartSTO mi = new MediaRepresenationPartSTO();
 		mi.setUuid(uuid);
 		mi.setUri(uri);
-		mi.setHeigth(heigth);
+		mi.setHeight(heigth);
 		mi.setWidth(width);
 		mi.setDuration(duration);
 		this.representationParts.add(mi);

@@ -86,8 +86,9 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 				} else 	if(part instanceof MovieFile){
 					MovieFile movie = (MovieFile)part;
 					duration = movie.getDuration();
-					height = movie.getHeight();
-					width = movie.getWidth();
+					logger.info("MovieFile not implemented yet");
+					//height = movie.getHeight();
+					//width = movie.getWidth();
 				} else if(part instanceof ImageFile){
 					ImageFile image = (ImageFile)part;
 					logger.info(image.getUri());

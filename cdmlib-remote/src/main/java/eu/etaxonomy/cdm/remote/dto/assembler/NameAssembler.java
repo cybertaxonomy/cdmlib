@@ -94,7 +94,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			}
 			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
-				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales));
+				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
 			}
 			name.setDescriptions(this.getDescriptions(taxonNameBase, locales));		
 			

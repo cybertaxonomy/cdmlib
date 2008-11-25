@@ -31,6 +31,8 @@ public class NameTypeDesignationSTO extends TypeDesignationSTO {
 	private IdentifiedString status;
 	private boolean isRejectedType;
 	private boolean isConservedType;
+	private boolean isLectoType;
+	private boolean isNotDesignated;
 	
 	/**
 	 * @return the typeSpecies
@@ -101,5 +103,29 @@ public class NameTypeDesignationSTO extends TypeDesignationSTO {
 	 */
 	public void setConservedType(boolean isConservedType) {
 		this.isConservedType = isConservedType;
+	}
+	/**
+	 * @return the isLectoType
+	 */
+	public boolean isLectoType() {
+		return isLectoType;
+	}
+	/**
+	 * @param isLectoType the isLectoType to set
+	 */
+	public void setLectoType(boolean isLectoType) {
+		this.isLectoType = isLectoType;
+	}
+	/**
+	 * @return the isNotDesignated
+	 */
+	public boolean isNotDesignated() {
+		return isNotDesignated;
+	}
+	/**
+	 * @param isNotDesignated the isNotDesignated to set
+	 */
+	public void setNotDesignated(boolean isNotDesignated) {
+		this.isNotDesignated = isNotDesignated;
 	}
 }

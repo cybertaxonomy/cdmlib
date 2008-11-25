@@ -19,14 +19,17 @@ import java.util.List;
  */
 public class HomotypicTaxonGroupSTO extends BaseSTO{
 
-	private List<TaxonSTO> taxa = new ArrayList();
+	private List<SynonymRelationshipTO> synonyms = new ArrayList<SynonymRelationshipTO>();
 	private List<TypeDesignationSTO> typeDesignations = new ArrayList<TypeDesignationSTO>();
 	
-	public List<TaxonSTO> getTaxa() {
-		return taxa;
+	public List<SynonymRelationshipTO> getSynonyms() {
+		return synonyms;
 	}
-	public void setTaxa(List<TaxonSTO> taxa) {
-		this.taxa = taxa;
+	public void setSynonyms(List<SynonymRelationshipTO> synonyms) {
+		this.synonyms = synonyms;
+	}
+	public void addSynonym(SynonymRelationshipTO synonym){
+		this.synonyms.add(synonym);
 	}
 
 	public List<TypeDesignationSTO> getTypeDesignations() {
