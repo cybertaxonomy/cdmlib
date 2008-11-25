@@ -50,7 +50,7 @@ public class TestTaxonFunction {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
-		INonViralNameParser<NonViralName> parser = NonViralNameParserImpl.NewInstance();
+		INonViralNameParser<NonViralName<?>> parser = NonViralNameParserImpl.NewInstance();
 		ReferenceBase sec = Book.NewInstance();
 		sec.setTitleCache("ConceptRef");
 		
