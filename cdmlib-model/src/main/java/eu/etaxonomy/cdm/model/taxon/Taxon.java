@@ -756,7 +756,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> taxon has at least one
-	 * {@link Synoynm synonym} (true) or not (false). If true the {@link #getSynonymRelations() set of synonym relationships}
+	 * {@link Synonym synonym} (true) or not (false). If true the {@link #getSynonymRelations() set of synonym relationships}
 	 * belonging to <i>this</i> ("accepted/correct") taxon is not empty .
 	 * 
 	 * @see  #getSynonymRelations()

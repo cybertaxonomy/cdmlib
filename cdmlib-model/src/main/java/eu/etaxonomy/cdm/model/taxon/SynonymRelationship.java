@@ -65,7 +65,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * sets of synonym relationships assigned to the synonym and to the
 	 * "accepted/correct" taxon.
 	 * 
-	 * @param synoynm 					the synonym instance involved in the new synonym relationship
+	 * @param synonym 					the synonym instance involved in the new synonym relationship
 	 * @param taxon						the taxon instance involved in the new synonym relationship
 	 * @param type						the synonym relationship type of the new synonym relationship
 	 * @param citation					the reference source for the new synonym relationship
@@ -168,12 +168,12 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * <i>this</i> synonym relationship will be removed from the set of synonym
 	 * relationships assigned to the "old" synonym.
 	 *  
-	 * @param synoynm	the synonym instance to be set in <i>this</i> synonym relationship
+	 * @param synonym	the synonym instance to be set in <i>this</i> synonym relationship
 	 * @see    			#getSynonym()
 	 * @see   			Synonym#getSynonymRelations()
 	 */
-	protected void setSynonym(Synonym synoynm){
-		super.setRelatedFrom(synoynm);
+	protected void setSynonym(Synonym synonym){
+		super.setRelatedFrom(synonym);
 	}
 
 }
