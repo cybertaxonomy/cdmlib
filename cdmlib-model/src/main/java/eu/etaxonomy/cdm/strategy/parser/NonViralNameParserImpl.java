@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.record.formula.functions.Min;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -205,9 +204,11 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		if (fullReferenceString == null){
 			return;
 		}
+		makeProblemEmpty(nameToBeFilled);
 		
 		//make nomenclatural status and replace it by empty string 
 	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled);
+	    nameToBeFilled.setProblemEnds(fullReferenceString.length());
 		
 	    //get full name reg
 		String localFullName = getLocalFullName(nameToBeFilled);
@@ -221,16 +222,16 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		Matcher onlyNameMatcher = getMatcher (localFullName, fullReferenceString);
 		Matcher onlySimpleNameMatcher = getMatcher (localSimpleName, fullReferenceString);
 		
-		if (nameAndRefSeparatorMatcher.find()){  //match?
+		if (nameAndRefSeparatorMatcher.find()){  
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
-		}else if (onlyNameMatcher.find()){
+		}else if (onlyNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
-		}else if (onlySimpleNameMatcher.find()){
+		}else if (onlySimpleNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);	//simpleName not yet implemented
 		}else{
-			makeNoFullRefMatch(nameToBeFilled, fullReferenceString);
+			makeNoFullRefMatch(nameToBeFilled, fullReferenceString, rank);
 		}
 		//problem handling. Start and end solved in subroutines
 		if (! nameToBeFilled.hasProblem()){
@@ -244,12 +245,33 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		parsable.setProblemEnds(-1);
 	}
 	
-	private void makeNoFullRefMatch(TaxonNameBase<?, ?> nameToBeFilled, String fullReferenceString){
+	private void makeNoFullRefMatch(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank){
+	    //try to parse first part as name, but keep in mind full string is not parsable
+		int start = 0;
+		
+		String localFullName = getLocalFullName(nameToBeFilled);
+		Matcher fullNameMatcher = getMatcher (pStart + localFullName, fullReferenceString);
+		if (fullNameMatcher.find()){
+			String fullNameString = fullNameMatcher.group(0);
+			nameToBeFilled.setProtectedNameCache(false);  //TODO why is is true?
+			parseFullName(nameToBeFilled, fullNameString, rank, false);
+			String sure = nameToBeFilled.getNameCache();
+			start = sure.length();
+		}
+		
+//		String localSimpleName = getLocalSimpleName(nameToBeFilled);
+//		Matcher simpleNameMatcher = getMatcher (start + localSimpleName, fullReferenceString);
+//		if (simpleNameMatcher.find()){
+//			String simpleNameString = simpleNameMatcher.group(0);
+//			parseFullName(nameToBeFilled, simpleNameString, rank, false);
+//			start = simpleNameString.length();
+//		}
+		
 		//don't parse if name can't be separated
 		nameToBeFilled.setHasProblem(true);
 		nameToBeFilled.setTitleCache(fullReferenceString);
 		nameToBeFilled.setFullTitleCache(fullReferenceString);
-		nameToBeFilled.setProblemStarts(0);
+		nameToBeFilled.setProblemStarts(start);
 		nameToBeFilled.setProblemEnds(fullReferenceString.length());
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
 	}
@@ -273,17 +295,31 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	    parseReference(nameToBeFilled, referenceString, isInReference); 
 	    INomenclaturalReference<?> ref = nameToBeFilled.getNomenclaturalReference();
 
-	    //problem start/end
-	    int start = -1;
-	    int end = -1;
+	    //problem start
+	    int start = nameToBeFilled.getProblemStarts();
+	    int nameLength = name.length();
+	    int nameAndSeparatorLength = nameAndSeparator.length();
+	    int fullRefLength = nameToBeFilled.getFullTitleCache().length();
+	    
+	    if (nameToBeFilled.isProtectedTitleCache() ){
+	    	start = Math.max(0, start);
+		}else{
+			if (ref != null && ref.getHasProblem()){
+				start = Math.max(nameAndSeparatorLength, start);
+		    	//TODO search within ref
+			}	
+		}
+	    
+	    //end
+	    int end = nameToBeFilled.getProblemEnds();
+	    
 	    if (ref != null && ref.getHasProblem()){
-	    	String fullTitleCache = nameToBeFilled.getFullTitleCache();
-	    	start = nameToBeFilled.getTitleCache().length();
-	    	end = fullTitleCache.length();
-	    }
-	    if (nameToBeFilled.hasProblem()){
-	    	start = 0;
-	    	end = Math.max(end, nameToBeFilled.getTitleCache().length());
+	    	end = Math.min(nameAndSeparatorLength + ref.getProblemEnds(), end);
+	    }else{
+	    	if (nameToBeFilled.isProtectedTitleCache() ){
+	    		end = Math.min(end, nameAndSeparatorLength);
+	    		//TODO search within name
+			}
 	    }
 	    nameToBeFilled.setProblemStarts(start);
 	    nameToBeFilled.setProblemEnds(end);
@@ -326,16 +362,19 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	}
 	
 	
-	private void parseReference(NonViralName<?> nameToBeFilled, String reference, boolean isInReference){
+	private void parseReference(NonViralName<?> nameToBeFilled, String strReference, boolean isInReference){
+		INomenclaturalReference<?> ref;
+		String originalStrReference = strReference;
+		
 		//End (just delete end (e.g. '.', may be ambigous for yearPhrase, but no real information gets lost
-		Matcher endMatcher = getMatcher(referenceEnd + end, reference);
+		Matcher endMatcher = getMatcher(referenceEnd + end, strReference);
 		if (endMatcher.find()){
 			String endPart = endMatcher.group(0);
-			reference = reference.substring(0, reference.length() - endPart.length());
+			strReference = strReference.substring(0, strReference.length() - endPart.length());
 		}
 		
 		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + yearPhrase + end;
-		Matcher detailYearMatcher = getMatcher(pDetailYear, reference);
+		Matcher detailYearMatcher = getMatcher(pDetailYear, strReference);
 		
 		//if (referencePattern.matcher(reference).matches() ){
 		if (detailYearMatcher.matches() ){
@@ -343,33 +382,38 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			//year
 			String yearPart = null;
 			String pYearPhrase = yearSeperator + yearPhrase + end;
-			Matcher yearPhraseMatcher = getMatcher(pYearPhrase, reference);
+			Matcher yearPhraseMatcher = getMatcher(pYearPhrase, strReference);
 			if (yearPhraseMatcher.find()){
 				yearPart = yearPhraseMatcher.group(0);
-				reference = reference.substring(0, reference.length() - yearPart.length());
-				yearPart = yearPart.replaceFirst(start + yearSeperator, "").trim();
+				strReference = strReference.substring(0, strReference.length() - yearPart.length());
+				yearPart = yearPart.replaceFirst(pStart + yearSeperator, "").trim();
 			}
 			
 			//detail
 			String pDetailPhrase = detailSeparator + detail + end;
-			Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, reference);
+			Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
 			if (detailPhraseMatcher.find()){
 				String detailPart = detailPhraseMatcher.group(0);
-				reference = reference.substring(0, reference.length() - detailPart.length());
-				detailPart = detailPart.replaceFirst(start + detailSeparator, "").trim();
+				strReference = strReference.substring(0, strReference.length() - detailPart.length());
+				detailPart = detailPart.replaceFirst(pStart + detailSeparator, "").trim();
 				nameToBeFilled.setNomenclaturalMicroReference(detailPart);
 			}
-			//Title (and author)
-			INomenclaturalReference<?> ref = parseReferenceTitle(reference, yearPart, isInReference);
+			//parse title and author
+			ref = parseReferenceTitle(strReference, yearPart, isInReference);
+			if (ref.hasProblem()){
+				ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference);
+			}
 			nameToBeFilled.setNomenclaturalReference(ref);
+			int end = Math.min(strReference.length(), ref.getProblemEnds());
+			ref.setProblemEnds(end);
 	    }else{  //detail and year not parsable
-	    	Generic ref = Generic.NewInstance();
-	    	ref.setTitleCache(reference);
+	    	ref = Generic.NewInstance();
+	    	ref.setTitleCache(strReference);
+	    	ref.setProblemEnds(strReference.length());
 	    	ref.setHasProblem(true);
 	    	nameToBeFilled.setHasProblem(true);
 	    	nameToBeFilled.setNomenclaturalReference(ref);
 	    }
-	    
 	}
 		
 	/**
@@ -378,40 +422,40 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * @param year
 	 * @return
 	 */
-	private INomenclaturalReference<?> parseReferenceTitle(String reference, String year, boolean isInReference){
+	private INomenclaturalReference<?> parseReferenceTitle(String strReference, String year, boolean isInReference){
 		INomenclaturalReference<?> result = null;
 		
-		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(reference);
+		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
 		if (! refSineDetailMatcher.matches()){
 			//TODO ?
 		}
 		
-		Matcher articleMatcher = getMatcher(pArticleReference, reference);
+		Matcher articleMatcher = getMatcher(pArticleReference, strReference);
 		
-		Matcher softArticleMatcher = getMatcher(pSoftArticleReference, reference);
-		Matcher bookMatcher = getMatcher(pBookReference, reference);
-		Matcher bookSectionMatcher = getMatcher(pBookSectionReference, reference);
+		Matcher softArticleMatcher = getMatcher(pSoftArticleReference, strReference);
+		Matcher bookMatcher = getMatcher(pBookReference, strReference);
+		Matcher bookSectionMatcher = getMatcher(pBookSectionReference, strReference);
 		
 		
 		if(isInReference == false){
 			if (bookMatcher.matches() ){
-				result = parseBook(reference);
+				result = parseBook(strReference);
 			}else{
 				logger.warn("Non-InRef must be book but does not match book");
 				result = Book.NewInstance();
-				makeUnparsableRefTitle(result, reference);
+				makeUnparsableRefTitle(result, strReference);
 			}
 		}else{  //inRef
 			if (articleMatcher.matches()){
 				//article without separators like ","
-				result = parseArticle(reference);
+				result = parseArticle(strReference);
 			}else if (softArticleMatcher.matches()){
-				result = parseArticle(reference);
+				result = parseArticle(strReference);
 			}else if (bookSectionMatcher.matches()){
-				result = parseBookSection(reference);
+				result = parseBookSection(strReference);
 			}else{
-				logger.warn("unknown reference type not yet implemented");
-				//ReferenceBase refBase = 
+				result =  Generic.NewInstance();
+				makeUnparsableRefTitle(result, "in " + strReference);
 			}
 		}
 		//make year
@@ -419,6 +463,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			//TODO
 			logger.warn("Year could not be parsed");
 		}
+		result.setProblemStarts(0);
+		result.setProblemEnds(strReference.length());
 		return result;
 	}
 	
@@ -494,7 +540,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 				((BibtexReference)nomRef).setDatePublished(datePublished);
 				((BibtexReference)nomRef).setYear(year);
 		}else{
-			throw new ClassCastException("nom Ref is not of type StrictReferenceBase");
+			throw new ClassCastException("nom Ref is not of type StrictReferenceBase but " + (nomRef == null? "(null)" : nomRef.getClass()));
 		}
 		return result;	
 	}
@@ -507,7 +553,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		if (volPhraseMatcher.find()){
 			volPart = volPhraseMatcher.group(0);
 			strReference = strReference.substring(0, strReference.length() - volPart.length());
-			volPart = volPart.replaceFirst(start + volumeSeparator, "").trim();
+			volPart = volPart.replaceFirst(pStart + volumeSeparator, "").trim();
 			nomRef.setVolume(volPart);
 		}
 		return strReference;
@@ -529,7 +575,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 				posEnd++;  //delete also comma
 			}
 			strReference = strReference.substring(0, pos) + strReference.substring(posEnd);
-			editionPart = editionPart.replaceFirst(start + editionSeparator, "").trim();
+			editionPart = editionPart.replaceFirst(pStart + editionSeparator, "").trim();
 			book.setEdition(editionPart);
 		}
 		return strReference;
@@ -634,7 +680,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 				} 
 				//genus
 				else {
-					nameToBeFilled.setRank(Rank.GENUS());
+					rank = null;
+					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setProblemStarts(0);
@@ -1021,7 +1068,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
     static Pattern pattern = Pattern.compile(epiSplitter); 
     
     //some useful non-terminals
-    static String start = "^";
+    static String pStart = "^";
     static String end = "$";
     static String anyEnd = ".*" + end;
     static String oWs = "\\s+"; //obligatory whitespaces
@@ -1241,13 +1288,13 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
     static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
     static Pattern hybridPattern = Pattern.compile(hybrid); 
     
-    static Pattern genusOrSupraGenusPattern = Pattern.compile(start + genusOrSupraGenus + facultFullAuthorString2 + end);
-    static Pattern infraGenusPattern = Pattern.compile(start + infraGenus + facultFullAuthorString2 + end);
-    static Pattern aggrOrGroupPattern = Pattern.compile(start + aggrOrGroup + fWs + end); //aggr. or group has no author string
-    static Pattern speciesPattern = Pattern.compile(start + species + facultFullAuthorString2 + end);
-    static Pattern infraSpeciesPattern = Pattern.compile(start + infraSpecies + facultFullAuthorString2 + end);
-    static Pattern oldInfraSpeciesPattern = Pattern.compile(start + oldInfraSpecies + facultFullAuthorString2 + end);
-    static Pattern autonymPattern = Pattern.compile(start + autonym + fWs + end);
+    static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
+    static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
+    static Pattern aggrOrGroupPattern = Pattern.compile(pStart + aggrOrGroup + fWs + end); //aggr. or group has no author string
+    static Pattern speciesPattern = Pattern.compile(pStart + species + facultFullAuthorString2 + end);
+    static Pattern infraSpeciesPattern = Pattern.compile(pStart + infraSpecies + facultFullAuthorString2 + end);
+    static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);
+    static Pattern autonymPattern = Pattern.compile(pStart + autonym + fWs + end);
 	
     static Pattern botanicBasionymPattern = Pattern.compile(botanicBasionymAuthor);
     static Pattern zooBasionymPattern = Pattern.compile(zooBasionymAuthor);

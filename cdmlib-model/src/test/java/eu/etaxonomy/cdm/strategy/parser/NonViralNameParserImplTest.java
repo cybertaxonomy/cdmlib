@@ -9,7 +9,11 @@
  
 package eu.etaxonomy.cdm.strategy.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,10 +37,7 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -340,6 +341,8 @@ public class NonViralNameParserImplTest {
 		String strNotParsableZoo = "Abies alba M., 1923, Sp. P. xxwer4352, nom. inval.";
 		ZoologicalName nameZooRefNotParsabel = (ZoologicalName)parser.parseFullReference(strNotParsableZoo, null, null);
 		assertTrue(nameZooRefNotParsabel.hasProblem());
+		assertEquals(21, nameZooRefNotParsabel.getProblemStarts());
+		assertEquals(37, nameZooRefNotParsabel.getProblemEnds());
 		assertTrue(nameZooRefNotParsabel.getNomenclaturalReference().hasProblem());
 		assertEquals(NomenclaturalCode.ICZN(), nameZooRefNotParsabel.getNomenclaturalCode());
 		assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
@@ -403,6 +406,9 @@ public class NonViralNameParserImplTest {
 		String strSpecDetail8 = "Abies alba Mill. in Sp. Pl. 4(6): ppp.455-457. 1987";
 		NonViralName<?> nameSpecDet8 = parser.parseFullReference(strSpecDetail8, null, Rank.SPECIES());
 		assertTrue(nameSpecDet8.hasProblem());
+		assertEquals(20, nameSpecDet8.getProblemStarts()); //TODO better start behind :
+		assertEquals(51, nameSpecDet8.getProblemEnds());   //TODO better stop after -457
+		
 
 		//Special MicroRefs
 		String strSpecDetail9 = "Abies alba Mill. in Sp. Pl. 4(6): pp. 455 - 457. 1987";
@@ -422,6 +428,9 @@ public class NonViralNameParserImplTest {
 		String strSpecDetail11 = "Abies alba Mill. in Sp. Pl. 4(6): p. 455 - 457. 1987";
 		NonViralName<?> nameSpecDet11 = parser.parseFullReference(strSpecDetail11, null, Rank.SPECIES());
 		assertTrue(nameSpecDet11.hasProblem());
+		assertEquals(20, nameSpecDet8.getProblemStarts()); //TODO better start behind :
+		assertEquals(51, nameSpecDet8.getProblemEnds());   //TODO better stop after - 457
+		
 		
 		//no volume, no edition
 		String strNoVolume = "Abies alba Mill., Sp. Pl.: 455. 1987";
@@ -454,6 +463,23 @@ public class NonViralNameParserImplTest {
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
 		assertEquals("4(5)", ((Book)nameNoVolume.getNomenclaturalReference()).getVolume());
 		assertEquals("3", ((Book)nameNoVolume.getNomenclaturalReference()).getEdition());
+		
+		String strUnparsableInRef = "Abies alba Mill. in -er46: 455. 1987";
+		NonViralName<?> nameUnparsableInRef = parser.parseFullReference(strUnparsableInRef, null, Rank.SPECIES());
+		assertTrue(nameUnparsableInRef.hasProblem());
+		assertEquals(strUnparsableInRef, nameUnparsableInRef.getFullTitleCache());
+		assertEquals(20, nameUnparsableInRef.getProblemStarts()); 
+		assertEquals(25, nameUnparsableInRef.getProblemEnds());   
+		
+		
+		//volume, edition
+		String strNoSeparator = "Abies alba Mill. Sp. Pl. ed. 3, 4(5): 455. 1987";
+		NonViralName<?> nameNoSeparator = parser.parseFullReference(strNoSeparator, NomenclaturalCode.ICBN(), Rank.SPECIES());
+		assertTrue(nameNoSeparator.hasProblem());
+		assertEquals(strNoSeparator, nameNoSeparator.getFullTitleCache());
+		assertEquals(10, nameNoSeparator.getProblemStarts()); //TODO better start behind Mill. (?)
+		assertEquals(47, nameNoSeparator.getProblemEnds());   //TODO better stop before :
+		
 		
 	}
 
