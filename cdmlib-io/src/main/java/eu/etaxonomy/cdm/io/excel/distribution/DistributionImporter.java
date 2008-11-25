@@ -81,7 +81,6 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			analyzeRecord(config.getDestination(), record);
-//    			config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
     		}
     		appCtr.commitTransaction(txStatus);
     	}
@@ -156,20 +155,12 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
-		//TransactionStatus txStatus = appCtr.startTransaction();
-
-		// Stores already processed descriptions
-//    	myDescriptions = new HashMap<Taxon, TaxonDescription>();
-		// Stores already processed distributions
-//    	Map<Taxon, Distribution> myDistributions = new HashMap<Taxon, Distribution>();
-
 		try {
     		// get the matching names from the DB
     		List<TaxonNameBase<?,?>> taxonNameBases = appCtr.getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
-//    			logger.debug("Taxon found: '" + taxonName + "'");
     			logger.debug("Taxon found");
     		}
 
@@ -219,7 +210,6 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     					if(!distribution.equals("")) {
     						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
         					TaxonDescription taxonDescription = myDescriptions.get(taxon);
-        					//taxonDescription = taxon.getDescriptions()
         					if (namedArea != null) {    
     		    				// Check against existing distributions and ignore the ones that occur multiple times
             					Set<DescriptionElementBase> myDescriptionElements = taxonDescription.getElements();
@@ -238,21 +228,16 @@ public class DistributionImporter extends CdmIoBase implements ICdmIO {
     	    						Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
     	    						myDescription.addElement(newDistribution);
     	    						logger.debug("Distribution created: " + newDistribution.toString());
-//  	    						myDescriptions.put(taxon, myDescription);
     	    					}
     						}
     					}
     				}
-//    				appCtr.getDescriptionService().saveDescription(myDescription);
     				if (save == true) {
-//    					myDescriptions.put(taxon, myDescription);
     					appCtr.getTaxonService().saveTaxon(taxon);
     					logger.debug("Taxon saved");
     				}
     			}
     		} 
-//    		appCtr.commitTransaction(txStatus);
-    		
     	} catch (Exception e) {
     		logger.error("Error");
     		e.printStackTrace();
