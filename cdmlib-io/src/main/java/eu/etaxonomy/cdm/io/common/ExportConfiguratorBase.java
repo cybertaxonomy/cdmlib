@@ -29,7 +29,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 
 	private ICdmDataSource source;
 	private Object destination;
-	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+	//private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	private CdmApplicationController cdmApp = null;
 	protected ReferenceBase sourceReference;
 	// TODO: Replace exportClassList by ioClassList
@@ -100,9 +100,9 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcs.IExportConfigurator#getDbSchemaValidation()
 	 */
-	public DbSchemaValidation getDbSchemaValidation() {
-		return dbSchemaValidation;
-	}
+//	public DbSchemaValidation getDbSchemaValidation() {
+//		return dbSchemaValidation;
+//	}
 	
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
