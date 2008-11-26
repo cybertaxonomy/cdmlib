@@ -18,6 +18,7 @@
 		<module>cdmlib-model</module>
 		<module>cdmlib-persistence</module>
 		<module>cdmlib-services</module>
+    <module>cdmlib-ext</module>
 		<module>cdmlib-remote</module>
 		<module>cdmlib-io</module>
 	</modules>
