@@ -21,7 +21,6 @@ import org.hibernate.criterion.Restrictions;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import static eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE.*;
 
 
 public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntityDaoBase<T> implements IIdentifiableDao<T>{
