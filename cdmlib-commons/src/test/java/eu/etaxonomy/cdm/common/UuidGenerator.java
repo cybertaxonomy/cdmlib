@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.common;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -21,14 +18,16 @@ import org.apache.log4j.Logger;
  */
 public class UuidGenerator {
 	private static final Logger logger = Logger.getLogger(UuidGenerator.class);
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		if (logger.isDebugEnabled()){logger.debug("create UUIDs");}
 		for (int i = 0; i < 10; i++){
 			System.out.println(UUID.randomUUID());
 		}
-		boolean result;
+//		boolean result;
 //		String str =  "file://C:/tmp";
 //		try {
 //			str =  "\\\\Bgbm11\\Edit-WP6";

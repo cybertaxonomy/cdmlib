@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.common;
 
+import org.apache.log4j.Logger;
+
 //import org.apache.log4j.Logger;
 
 /**
@@ -33,11 +35,12 @@ package eu.etaxonomy.cdm.common;
  * @version 1.0
  */
 public class ResultWrapper<T> {
-	//private static final Logger logger = Logger.getLogger(ResultWrapper.class);
+	private static final Logger logger = Logger.getLogger(ResultWrapper.class);
 
 	public static final ResultWrapper<Boolean> NewInstance(Boolean value){
 		ResultWrapper<Boolean> result = new ResultWrapper<Boolean>();
 		result.setValue(value);
+		if (logger.isDebugEnabled()){logger.debug("New Instance");}
 		return result;
 	}
 	

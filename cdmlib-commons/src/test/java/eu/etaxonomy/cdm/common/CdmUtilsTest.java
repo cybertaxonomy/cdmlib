@@ -41,7 +41,7 @@ public class CdmUtilsTest {
 		String resourceFileName = CdmUtils.MUST_EXIST_FILE;
 		try {
 			InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
-			Assert.assertNotNull(inputStream);
+			assertNotNull(inputStream);
 		} catch (IOException e) {
 			Assert.fail("IOException");
 		}

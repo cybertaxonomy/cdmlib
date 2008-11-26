@@ -38,6 +38,7 @@ public class MediaMetaDataTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		if (logger.isDebugEnabled()){logger.debug("setUpBeforeClass");}
 	}
 
 	/**
