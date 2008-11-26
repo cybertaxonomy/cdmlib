@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -151,7 +154,40 @@ public class CdmUtils {
 		String[] strings = {string1, string2};
 		return concat(seperator, strings);
 	}
+
 	
+    /** Returns a version of the input where all contiguous
+     * whitespace characters are replaced with a single
+     * space. Line terminators are treated like whitespace.
+     * 
+     * @param inputStr
+     * @return
+     */
+    public static CharSequence removeDuplicateWhitespace(CharSequence inputStr) {
+    	
+        String patternStr = "\\s+";
+        String replaceStr = " ";
+        Pattern pattern = Pattern.compile(patternStr);
+        Matcher matcher = pattern.matcher(inputStr);
+        return matcher.replaceAll(replaceStr);
+    }
+    
+
+    /** Builds a list of strings by splitting an input string
+     * with delimiters whitespace, comma, or semicolon
+     * @param value
+     * @return
+     */
+    public static ArrayList<String> buildList(String value) {
+
+    	ArrayList<String> resultList = new ArrayList<String>();
+    	for (String tag : value.split("[\\s,;]+")) {
+    		resultList.add(tag);
+    	}
+        return resultList;
+    }
+    
+
 	static public boolean urlExists(String strUrl, boolean withWarning){
 		try {
 		     HttpURLConnection.setFollowRedirects(false);
