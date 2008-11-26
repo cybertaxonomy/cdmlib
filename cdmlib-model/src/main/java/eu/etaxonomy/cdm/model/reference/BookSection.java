@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -41,8 +42,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BookSection", propOrder = {
-    "inBook"
-//    "nomRefBase"
+    "inBook",
+    "nomRefBase"
 })
 @XmlRootElement(name = "BookSection")
 @Entity
@@ -55,8 +56,8 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
     @XmlSchemaType(name = "IDREF")
 	private Book inBook;
 	
-    @XmlTransient
-    //@XmlElement(name = "NomenclaturalReferenceBase")
+    //@XmlTransient
+    @XmlElementRef(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
@@ -188,7 +189,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

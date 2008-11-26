@@ -31,7 +31,7 @@ import org.hibernate.annotations.Table;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @XmlRootElement(name = "RelationshipBase")
 @Entity
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class ReferenceBase extends IdentifyableMediaEntity implements IParsable{
+public abstract class ReferenceBase extends IdentifiableMediaEntity implements IParsable{
 	
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
@@ -249,7 +249,7 @@ public abstract class ReferenceBase extends IdentifyableMediaEntity implements I
 	 * a new instance that differs only slightly from <i>this</i> reference by
 	 * modifying only some of the attributes.
 	 * 
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

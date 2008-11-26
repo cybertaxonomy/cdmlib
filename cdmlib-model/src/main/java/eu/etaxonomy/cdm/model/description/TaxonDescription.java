@@ -100,7 +100,10 @@ public class TaxonDescription extends DescriptionBase {
 	 * data where <i>this</i> taxon description is valid.
 	 */
 	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@JoinTable(
+			name="DescriptionBase_GeoScope"
+	)
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
@@ -139,6 +142,9 @@ public class TaxonDescription extends DescriptionBase {
 	 * of scopes should contain no more than one "sex" and one "life stage".
 	 */
 	@OneToMany
+	@JoinTable(
+			name="DescriptionBase_Scope"
+	)
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}

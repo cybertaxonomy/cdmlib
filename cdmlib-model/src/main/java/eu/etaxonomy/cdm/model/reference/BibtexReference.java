@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -68,7 +69,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
     "year",
     "eprint",
     "note",
-    "crossref"
+    "crossref",
+    "nomRefBase"
 })
 @XmlRootElement(name = "BibtexReference")
 @Entity
@@ -127,7 +129,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	@XmlElement(name = "Address")
 	private String address;
 	
-	@XmlElement(name = "Howpublished")
+	@XmlElement(name = "HowPublished")
 	private String howpublished;
 	
 	@XmlElement(name = "ReportType")
@@ -150,6 +152,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
     @XmlSchemaType(name = "IDREF")
 	private BibtexReference crossref;
 
+    @XmlElementRef(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	

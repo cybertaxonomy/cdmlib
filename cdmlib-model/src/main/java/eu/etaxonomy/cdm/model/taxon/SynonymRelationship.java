@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -41,13 +42,19 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SynonymRelationship")
+@XmlType(name = "SynonymRelationship", propOrder = {
+    "isProParte",
+    "isPartial"
+})
 @XmlRootElement(name = "SynonymRelationship")
 @Entity
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
+    @XmlElement(name = "IsProParte")
 	private boolean isProParte = false;
+    
+    @XmlElement(name = "IsPartial")
 	private boolean isPartial = false;
 
 	

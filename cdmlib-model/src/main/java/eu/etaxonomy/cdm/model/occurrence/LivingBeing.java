@@ -53,7 +53,7 @@ public class LivingBeing extends DerivedUnitBase implements Cloneable {
 	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
 	 * 
 	 * @see DerivedUnitBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

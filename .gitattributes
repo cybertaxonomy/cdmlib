@@ -383,7 +383,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Figure.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ICdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntitiy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
@@ -462,7 +462,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/AudioFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IMediaDocumented.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IMediaEntity.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IdentifyableMediaEntity.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/IdentifiableMediaEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/ImageFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Media.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MediaRepresentation.java -text

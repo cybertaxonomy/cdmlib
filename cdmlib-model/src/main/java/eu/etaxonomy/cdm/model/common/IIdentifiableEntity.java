@@ -10,7 +10,7 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
-public interface IIdentifiableEntitiy<T extends IdentifiableEntity> {
+public interface IIdentifiableEntity<T extends IdentifiableEntity> {
 
 	public abstract String getLsid();
 

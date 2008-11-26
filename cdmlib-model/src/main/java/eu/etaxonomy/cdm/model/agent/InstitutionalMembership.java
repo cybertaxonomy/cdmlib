@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:30
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "InstitutionalMembership", propOrder = {
     "period",
     "department",
     "role",
@@ -114,6 +114,8 @@ public class InstitutionalMembership extends VersionableEntity {
 	 * @see  Person#institutionalMemberships
 	 * @see  Person#addInstitutionalMembership(Institution, TimePeriod, String, String)
 	 */
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getPerson() {
 		return person;
 	}

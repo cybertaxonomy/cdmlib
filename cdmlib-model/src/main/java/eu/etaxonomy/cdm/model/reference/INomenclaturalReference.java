@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import javax.persistence.Transient;
 
-import eu.etaxonomy.cdm.model.common.IIdentifiableEntitiy;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference<T extends ReferenceBase> extends IIdentifiableEntitiy<T>, IParsable{
+public interface INomenclaturalReference<T extends ReferenceBase> extends IIdentifiableEntity<T>, IParsable{
 
 	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
 	

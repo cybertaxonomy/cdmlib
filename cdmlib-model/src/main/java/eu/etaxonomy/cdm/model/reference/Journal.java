@@ -97,7 +97,7 @@ public class Journal extends PublicationBase implements Cloneable {
 	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

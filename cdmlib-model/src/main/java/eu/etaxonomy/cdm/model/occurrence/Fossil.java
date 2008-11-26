@@ -55,7 +55,7 @@ public class Fossil extends Specimen implements Cloneable{
 	 * 
 	 * @see Specimen#clone()
 	 * @see DerivedUnitBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

@@ -45,12 +45,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "WaterbodyOrCountry", propOrder = {
-    "validPeriod",
+//    "validPeriod",
     "continents"
 })
 @XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
-public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
+public class WaterbodyOrCountry extends NamedArea {
+//public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
+
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
 	/**
 	 * 2 character ISO 3166 Country codes
@@ -58,8 +60,8 @@ public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
 	@XmlAttribute(name = "iso3166_A2")
 	private char[] iso3166_A2 = new char[2];
 	
-    @XmlElement(name = "ValidPeriod")
-	private TimePeriod validPeriod;
+//    @XmlElement(name = "ValidPeriod")
+//	private TimePeriod validPeriod;
 	
     @XmlElementWrapper(name = "Continents")
     @XmlElement(name = "Continent")
@@ -643,27 +645,31 @@ uuidPersianGulf
 		this.iso3166_A2 = iso3166_A2.toCharArray();
 	}
 
-	public TimePeriod getValidPeriod(){
-		return this.validPeriod;
-	}
-
-	/**
-	 * 
-	 * @param validPeriod    validPeriod
-	 */
-	public void setValidPeriod(TimePeriod validPeriod){
-		this.validPeriod = validPeriod;
-	}
+//	public TimePeriod getValidPeriod(){
+//		return this.validPeriod;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param validPeriod    validPeriod
+//	 */
+//	public void setValidPeriod(TimePeriod validPeriod){
+//		this.validPeriod = validPeriod;
+//	}
 
 	
-	public ILoadableTerm readCsvLine(List<String> csvLine) {
+	@Override 
+	public ILoadableTerm readCsvLine(List csvLine) {
+	//public ILoadableTerm readCsvLine(List<String> csvLine) {
 		ILoadableTerm result;
 		// read UUID, URI, english label+description
 		result = super.readCsvLine(csvLine);
 		// iso codes extra
-		this.iso3166_A2=csvLine.get(4).trim().toCharArray();
+		this.iso3166_A2 = ((String)csvLine.get(4)).trim().toCharArray();
+		//this.iso3166_A2=csvLine.get(4).trim().toCharArray();
 		String[] continentList;
-		String tmp = csvLine.get(5).trim().toString();
+		String tmp = ((String)csvLine.get(5)).trim().toString();
+		//String tmp = csvLine.get(5).trim().toString();
 		if (tmp.length()>2){
 			tmp=tmp.substring(1, tmp.length()-1);
 

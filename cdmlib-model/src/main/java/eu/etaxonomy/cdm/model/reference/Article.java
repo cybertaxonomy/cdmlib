@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -52,8 +53,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 		"series",
 		"volume",
 		"pages",
-		"inJournal"
-//		"nomRefBase"
+		"inJournal",
+		"nomRefBase"
 })
 @XmlRootElement(name = "Article")
 @Entity
@@ -74,8 +75,8 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
     @XmlSchemaType(name = "IDREF")
 	private Journal inJournal;
 	
-    @XmlTransient
-    //@XmlElement(name = "NomenclaturalReferenceBase")
+    //@XmlTransient
+    @XmlElementRef(name = "NomenclaturalReferenceBase")
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 
@@ -274,7 +275,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * This method overrides the clone method from {@link StrictReferenceBase StrictReferenceBase}.
 	 * 
 	 * @see StrictReferenceBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

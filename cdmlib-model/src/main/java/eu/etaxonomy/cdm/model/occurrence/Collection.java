@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Collection")
 @Entity
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Collection extends IdentifyableMediaEntity implements Cloneable{
+public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
@@ -171,9 +171,9 @@ public class Collection extends IdentifyableMediaEntity implements Cloneable{
 	 * Clones <i>this</i> collection. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> collection
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the clone method from {@link IdentifyableMediaEntity IdentifyableMediaEntity}.
+	 * This method overrides the clone method from {@link IdentifiableMediaEntity IdentifiableMediaEntity}.
 	 * 
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

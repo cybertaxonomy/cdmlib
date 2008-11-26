@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 
 /**
  * The upmost (abstract) class for agents such as persons, teams or institutions.
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
 })
 @Entity
 @Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class Agent extends IdentifyableMediaEntity{
+public abstract class Agent extends IdentifiableMediaEntity{
 	
 
 	

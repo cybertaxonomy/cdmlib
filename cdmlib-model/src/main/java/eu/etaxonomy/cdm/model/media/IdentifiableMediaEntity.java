@@ -22,14 +22,14 @@ import org.hibernate.annotations.CascadeType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "IdentifyableMediaEntity", propOrder = {
+@XmlType(name = "IdentifiableMediaEntity", propOrder = {
     "media"
 })
-@XmlRootElement(name = "IdentifyableMediaEntity")
+@XmlRootElement(name = "IdentifiableMediaEntity")
 @MappedSuperclass
-public abstract class IdentifyableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
 
-	static Logger logger = Logger.getLogger(IdentifyableMediaEntity.class);
+	static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
 
     @XmlElementWrapper(name = "Media")
     @XmlElement(name = "Medium")
@@ -69,7 +69,7 @@ public abstract class IdentifyableMediaEntity extends IdentifiableEntity impleme
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
-		IdentifyableMediaEntity result = (IdentifyableMediaEntity)super.clone();
+		IdentifiableMediaEntity result = (IdentifiableMediaEntity)super.clone();
 		//Media
 		Set<Media> media = getNewMediaSet();
 		media.addAll(this.media);

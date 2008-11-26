@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
-import eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity {
+public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	
@@ -228,7 +228,7 @@ public abstract class SpecimenOrObservationBase extends IdentifyableMediaEntity 
 //******************** CLONE **********************************************/
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */

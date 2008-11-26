@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:18
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "Contact", propOrder = {
     "email",
     "url",
     "phone",

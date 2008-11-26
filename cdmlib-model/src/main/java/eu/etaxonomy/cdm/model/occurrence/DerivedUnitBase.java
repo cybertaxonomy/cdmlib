@@ -200,7 +200,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
 	 * 
 	 * @see SpecimenOrObservationBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifyableMediaEntity#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

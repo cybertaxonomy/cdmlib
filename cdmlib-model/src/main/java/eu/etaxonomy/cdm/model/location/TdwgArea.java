@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 @XmlType(name = "TdwgArea")
 @XmlRootElement(name = "TdwgArea")
 @Entity
-public class TdwgArea {
+public class TdwgArea extends NamedArea {
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
 
 	
