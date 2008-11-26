@@ -81,7 +81,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
 	 * @return
 	 */
-	public T parseFullReference(String fullReference);
+	public T parseReferencedName(String fullReference);
 	
 	/**
 	 * @see INonViralNameParser.parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty)
@@ -90,7 +90,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * @param rank
 	 * @return
 	 */
-	public T parseFullReference(String fullReference, NomenclaturalCode nomCode, Rank rank);
+	public T parseReferencedName(String fullReference, NomenclaturalCode nomCode, Rank rank);
 
 	/**
 	 * Parses a String (fullReference) assuming that it represents a taxonomic name, it's reference,
@@ -118,6 +118,6 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * @param rank
 	 * @param makeEmpty
 	 */
-	public void parseFullReference(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
+	public void parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 	
 }

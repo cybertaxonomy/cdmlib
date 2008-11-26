@@ -264,6 +264,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName == null){
 			return null;
 		}
+		//cache protected
+		if (nonViralName.isProtectedAuthorshipCache() == true) {
+			return nonViralName.getAuthorshipCache();
+		}
+		
 		String result = "";
 		INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorTeam();
 		INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorTeam();

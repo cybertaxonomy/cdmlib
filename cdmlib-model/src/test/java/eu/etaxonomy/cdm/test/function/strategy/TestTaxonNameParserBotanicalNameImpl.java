@@ -116,11 +116,11 @@ public class TestTaxonNameParserBotanicalNameImpl {
 	
 	
 	private int  parseIt(String fullRef1){
-		NonViralName nvName = ZoologicalName.NewInstance(null);
+		NonViralName<?> nvName = ZoologicalName.NewInstance(null);
 		NonViralNameParserImpl parser = new NonViralNameParserImpl();
 		
 		//parser.parseFullName(strNameAbiesBasionymAuthorUe, null);
-		nvName = parser.parseFullReference(fullRef1, null, null);
+		nvName = parser.parseReferencedName(fullRef1, null, null);
 		
 		System.out.println(nvName.hasProblem());
 		System.out.println("  Name: " + nvName.getTitleCache());

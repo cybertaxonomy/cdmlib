@@ -119,19 +119,19 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseFullReference(java.lang.String)
 	 */
-	public NonViralName<?> parseFullReference(String fullReferenceString) {
-		return parseFullReference(fullReferenceString, null, null);
+	public NonViralName<?> parseReferencedName(String fullReferenceString) {
+		return parseReferencedName(fullReferenceString, null, null);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName<?> parseFullReference(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
+	public NonViralName<?> parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullReferenceString == null){
 			return null;
 		}else{
 			NonViralName<?> result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
-			parseFullReference(result, fullReferenceString, rank, MAKE_EMPTY);
+			parseReferencedName(result, fullReferenceString, rank, MAKE_EMPTY);
 			return result;
 		}
 	}
@@ -198,7 +198,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
 	 */
-	public void parseFullReference(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+	public void parseReferencedName(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
 		//standardize
 		fullReferenceString = standardize(nameToBeFilled, fullReferenceString, makeEmpty);
 		if (fullReferenceString == null){

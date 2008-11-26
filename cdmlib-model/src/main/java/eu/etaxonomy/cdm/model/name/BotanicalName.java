@@ -282,7 +282,7 @@ public class BotanicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseFullReference(fullNameAndReferenceString, NomenclaturalCode.ICBN(), rank);
+		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN(), rank);
 	}
 	
 	

@@ -31,7 +31,7 @@ public class TestFullReferenceParser {
 		String fullReference = "Abies alba Mill.,  Sp.   Pl. 4: 455. 1987.";
 		boolean makeEmpty = false;
 		Rank rank = null;
-		parser.parseFullReference(nameToBeFilled, fullReference, rank, makeEmpty);
+		parser.parseReferencedName(nameToBeFilled, fullReference, rank, makeEmpty);
 		return true;
 	}
 	
