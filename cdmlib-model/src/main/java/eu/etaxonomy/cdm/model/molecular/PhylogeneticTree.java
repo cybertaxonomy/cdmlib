@@ -38,17 +38,18 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity
 public class PhylogeneticTree extends ReferencedMedia {
-	
-	static Logger logger = Logger.getLogger(PhylogeneticTree.class);
+	private static final long serialVersionUID = -7020182117362324067L;
+	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	
 	@XmlElementWrapper(name = "UsedSequences")
 	@XmlElement(name = "UsedSequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<Sequence> usedSequences = new HashSet();
+	private Set<Sequence> usedSequences = new HashSet<Sequence>();
 	
 	@OneToMany
 	public Set<Sequence> getUsedSequences() {
+		logger.debug("getUsedSequences");
 		return usedSequences;
 	}
 	protected void setUsedSequences(Set<Sequence> usedSequences) {

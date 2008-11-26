@@ -10,16 +10,12 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import org.apache.log4j.Logger;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +24,13 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author m.doering
@@ -41,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "DnaSample")
 @Entity
 public class DnaSample extends Specimen implements Cloneable {
-	
+	private static final long serialVersionUID = -2978411330023671805L;
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
 	
 //	@XmlElement(name = "BankNumber")
@@ -70,6 +73,7 @@ public class DnaSample extends Specimen implements Cloneable {
 
 	@Transient
 	public Collection getStoredAt(){
+		logger.debug("getStoredAt");
 		return this.getCollection();
 	}
 	public void setStoredAt(Collection storedAt){

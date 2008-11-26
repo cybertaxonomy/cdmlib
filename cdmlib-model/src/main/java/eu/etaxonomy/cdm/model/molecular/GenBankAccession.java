@@ -32,9 +32,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "GenBankAccession")
 @Entity
-public class GenBankAccession extends VersionableEntity {
-	
-	static Logger logger = Logger.getLogger(GenBankAccession.class);
+public class GenBankAccession extends VersionableEntity<GenBankAccession> {
+	private static final long serialVersionUID = -8179493118062601585L;
+	private static final Logger logger = Logger.getLogger(GenBankAccession.class);
 	
 	@XmlElement(name = "AccessionNumber")
 	private String accessionNumber;
@@ -43,6 +43,7 @@ public class GenBankAccession extends VersionableEntity {
 	private String uri;
 	
 	public String getAccessionNumber(){
+		logger.debug("getAccessionNumber");
 		return this.accessionNumber;
 	}
 

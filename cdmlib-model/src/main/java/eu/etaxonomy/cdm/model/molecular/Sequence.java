@@ -53,7 +53,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Sequence")
 @Entity
 @Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
+public class Sequence extends IdentifiableEntity<Sequence> implements IReferencedEntity, IMediaDocumented{
+	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	
 	//the sequence as a string of base pairs. 5'->3'
@@ -85,13 +86,13 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 	@XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<ReferenceBase> citations = new HashSet();
+	private Set<ReferenceBase> citations = new HashSet<ReferenceBase>();
 	
 	@XmlElementWrapper(name = "GenBankAccessions")
 	@XmlElement(name = "GenBankAccession")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<GenBankAccession> genBankAccession = new HashSet();
+	private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
 	
 	@XmlElement(name = "Locus")
     @XmlIDREF
@@ -102,10 +103,11 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 	@XmlElement(name = "Chromatogram")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<Media> chromatograms = new HashSet();
+	private Set<Media> chromatograms = new HashSet<Media>();
 
 	@ManyToOne
 	public Locus getLocus(){
+		logger.debug("getLocus");
 		return this.locus;
 	}
 	public void setLocus(Locus locus){

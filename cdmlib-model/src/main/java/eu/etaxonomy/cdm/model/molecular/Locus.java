@@ -33,9 +33,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Locus")
 @Entity
-public class Locus extends VersionableEntity {
-	
-	static Logger logger = Logger.getLogger(Locus.class);
+public class Locus extends VersionableEntity<Locus> {
+	private static final long serialVersionUID = 3907156009866200988L;
+	private static final Logger logger = Logger.getLogger(Locus.class);
 	
 	@XmlElement(name = "Name")
 	private String name;
@@ -44,6 +44,7 @@ public class Locus extends VersionableEntity {
 	private String description;
 	
 	public String getName(){
+		logger.debug("getName");
 		return this.name;
 	}
 
