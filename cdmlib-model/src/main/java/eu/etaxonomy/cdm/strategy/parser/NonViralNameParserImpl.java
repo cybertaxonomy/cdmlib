@@ -1016,7 +1016,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);
-		nameToBeFilled.setNameCache(null);
+		nameToBeFilled.setNameCache(null, false);
 				
 		nameToBeFilled.setAppendedPhrase(null);
 		//TODO ??
@@ -1025,7 +1025,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		nameToBeFilled.setCombinationAuthorTeam(null);
 		nameToBeFilled.setExBasionymAuthorTeam(null);
 		nameToBeFilled.setExCombinationAuthorTeam(null);
-		nameToBeFilled.setAuthorshipCache(null);
+		nameToBeFilled.setAuthorshipCache(null, false);
 		
 		
 		nameToBeFilled.setHasProblem(false);

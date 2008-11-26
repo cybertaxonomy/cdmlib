@@ -541,14 +541,28 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 
 	/**
 	 * Assigns a nameCache string to <i>this</i> non viral taxon name and protects it from being overwritten.
+	 * Sets the protectedNameCache flag to <code>true</code>.
 	 *  
 	 * @param  nameCache  the string which identifies <i>this</i> non viral taxon name (without authors or year)
 	 * @see	   #getNameCache()
 	 */
 	public void setNameCache(String nameCache){
+		setNameCache(nameCache, true);
+	}
+	
+	/**
+	 * Assigns a nameCache string to <i>this</i> non viral taxon name and protects it from being overwritten.
+	 * Sets the protectedNameCache flag to <code>true</code>.
+	 *  
+	 * @param  nameCache  the string which identifies <i>this</i> non viral taxon name (without authors or year)
+	 * @param  protectedNameCache if true teh protectedNameCache is set to <code>true</code> or otherwise set to
+	 * <code>false</code>
+	 * @see	   #getNameCache()
+	 */
+	public void setNameCache(String nameCache, boolean protectedNameCache){
 		this.nameCache = nameCache;
 		this.setProtectedTitleCache(false);
-		this.setProtectedNameCache(true);
+		this.setProtectedNameCache(protectedNameCache);
 	}
 	
 	/**
@@ -615,13 +629,31 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	}
 
 	/**
-	 * Assigns an authorshipCache string to <i>this</i> non viral taxon name.
+	 * Assigns an authorshipCache string to <i>this</i> non viral taxon name. Sets the isProtectedAuthorshipCache
+	 * flag to <code>true</code>.
 	 *  
 	 * @param  authorshipCache  the string which identifies the complete authorship of <i>this</i> non viral taxon name
 	 * @see	   #getAuthorshipCache()
 	 */
 	public void setAuthorshipCache(String authorshipCache) {
+		setAuthorshipCache(authorshipCache, true);
+	}
+	
+	/**
+	 * Assigns an authorshipCache string to <i>this</i> non viral taxon name.
+	 *  
+	 * @param  authorshipCache  the string which identifies the complete authorship of <i>this</i> non viral taxon name
+	 * @param  protectedAuthorshipCache if true the isProtectedAuthorshipCache flag is set to <code>true</code>, otherwise 
+	 * the flag is set to <code>false</code>.
+	 * @see	   #getAuthorshipCache()
+	 */
+	public void setAuthorshipCache(String authorshipCache, boolean protectedAuthorshipCache) {
 		this.authorshipCache = authorshipCache;
+		//TODO hibernate safe?
+		if (! this.isProtectedFullTitleCache()){
+			this.setFullTitleCache(null, false);
+		}
+		this.setProtectedAuthorshipCache(protectedAuthorshipCache);
 	}
 
 	
@@ -688,6 +720,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 */
 	public void setProtectedAuthorshipCache(boolean protectedAuthorshipCache) {
 		this.protectedAuthorshipCache = protectedAuthorshipCache;
+		if (protectedAuthorshipCache == false){
+			if (! this.isProtectedFullTitleCache()){
+				this.setFullTitleCache(null, false);
+			}
+		}
 	}
 
 	

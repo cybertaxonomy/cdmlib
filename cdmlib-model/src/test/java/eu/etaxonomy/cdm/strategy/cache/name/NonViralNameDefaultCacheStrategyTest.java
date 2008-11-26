@@ -142,10 +142,18 @@ public class NonViralNameDefaultCacheStrategyTest {
 		String expected = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+author.getNomenclaturalTitle();
 		assertEquals(expected, speciesName.getAuthorshipCache());
 		String authorshipcache = "authorshipcache";
-//		speciesName.setAuthorshipCache(authorshipcache);
-//		assertEquals(authorshipcache, speciesName.getAuthorshipCache());
-//		speciesName.setCombinationAuthorTeam(exAuthor);
-//		assertEquals(authorshipcache, speciesName.getAuthorshipCache()); //cache is protected
+		speciesName.setAuthorshipCache(authorshipcache);
+		assertEquals(authorshipcache, speciesName.getAuthorshipCache());
+		speciesName.setCombinationAuthorTeam(exAuthor);
+		assertEquals(authorshipcache, speciesName.getAuthorshipCache()); //cache is protected
+		assertEquals(speciesNameString + " " + authorshipcache, speciesName.getFullTitleCache());
+		//unprotected
+		speciesName.setProtectedAuthorshipCache(false);
+		String atomizedAuthorCache = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
+		assertEquals(atomizedAuthorCache, speciesName.getAuthorshipCache());
+		String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
+		assertEquals(atomizedTitleCache, speciesName.getTitleCache());
+		assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());
 		
 	}
 	
