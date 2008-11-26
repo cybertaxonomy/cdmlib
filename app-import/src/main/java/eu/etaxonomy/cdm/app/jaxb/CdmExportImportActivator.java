@@ -100,6 +100,10 @@ public class CdmExportImportActivator {
 		CdmDefaultExport<JaxbExportConfigurator> jaxbExport = 
 			new CdmDefaultExport<JaxbExportConfigurator>();
 		
+//		jaxbExportConfigurator.setSource(sourceDb);
+//		jaxbExportConfigurator.setDestination(fileName);
+		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+
 		jaxbExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
 
 		jaxbExportConfigurator.setDoAuthors(doAgents);
@@ -118,10 +122,6 @@ public class CdmExportImportActivator {
 		jaxbExportConfigurator.setDoTerms(doTerms);
 		jaxbExportConfigurator.setDoTermVocabularies(doTermVocabularies);
 		jaxbExportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
-
-		jaxbExportConfigurator.setSource(sourceDb);
-		jaxbExportConfigurator.setDestination(fileName);
-		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
 
 		// invoke export
 		logger.debug("Invoking Jaxb export");
