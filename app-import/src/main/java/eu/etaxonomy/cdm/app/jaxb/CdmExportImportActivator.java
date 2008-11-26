@@ -169,102 +169,6 @@ public class CdmExportImportActivator {
 
 	}
 
-
-	// TODO: move to cdmlib-services: cdm.test.integration
-	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
-
-		logger.info("Testing makeTaxonSynonym()");
-		TransactionStatus txStatus = appCtr.startTransaction();
-
-		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
-		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
-		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-
-		ReferenceBase citation;
-		citation = Book.NewInstance();
-		Agent linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
-		citation.setAuthorTeam((TeamOrPersonBase)linne);
-		citation.setTitleCache("Make Taxon Synonym Test");
-		String microRef = "123";
-		appCtr.getReferenceService().saveReference(citation);
-
-		appCtr.getTaxonService().makeTaxonSynonym(oldTaxon, newAcceptedTaxon, synonymType, citation, microRef);
-
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
-
-	}
-
-	// TODO: move to cdmlib-services: cdm.test.integration
-	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
-
-		logger.info("Testing testRemoveNameRelationship()");
-		TransactionStatus txStatus = appCtr.startTransaction();
-
-		BotanicalName name1, name2;
-		Agent linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
-		name1 = BotanicalName.NewInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
-		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
-
-		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo");
-		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom");
-
-		appCtr.getNameService().saveTaxonName(name1);
-		appCtr.getNameService().saveTaxonName(name2);
-
-		logger.info("Removing Name Relationships");
-
-		Set<NameRelationship> name1FromRelations = name1.getRelationsFromThisName();
-		NameRelationship nameRel = null;
-
-		for (NameRelationship name1Rel: name1FromRelations) {
-			nameRel = name1Rel;
-		}
-
-		name1.removeNameRelationship(nameRel);
-//		name1.removeTaxonName(name2);
-		appCtr.getNameService().saveTaxonName(name1);
-
-		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("6a8be65b-94b6-4136-919a-02002e409158"));
-		Set<Synonym> synonyms = taxon.getSynonyms();
-
-//		List<TaxonBase> taxa = appCtr.getTaxonService().getAllTaxa(100, 0);
-//		Set<Synonym> synonyms = null;
-//		for (TaxonBase taxonBase: taxa) {
-//		synonyms = taxonBase.getSynonyms();
-//		}
-
-		Synonym syn = null;
-		for (Synonym synonym: synonyms) {
-			if (synonym.getUuid().toString().equals("f7ad5713-70ce-42af-984f-865c1f126460")) {
-				syn = synonym;
-			}
-		}
-		taxon.removeSynonym(syn);
-		appCtr.getTaxonService().saveTaxon(taxon);
-
-//		name1FromRelations.removeAll(name1FromRelations);
-
-//		Set<NameRelationship> name2ToRelations = name2.getRelationsToThisName();
-//		for (NameRelationship name2Rel: name2ToRelations) {
-//		name2.removeNameRelationship(name2Rel);
-//		}
-
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
-
-	}
-
-	// TODO: move to cdmlib-services: cdm.test.integration
-	private void createNameRelationship(CdmApplicationController appCtr) {
-
-		TransactionStatus txStatus = appCtr.startTransaction();
-
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
-
-	}
-
 	
 	private CdmApplicationController initDb(ICdmDataSource db) {
 
@@ -293,7 +197,7 @@ public class CdmExportImportActivator {
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
 //		CdmApplicationController appCtr = null;
-//		appCtr = sc.initDb(destinationDb);
+//		appCtr = sc.initDb(sourceDb);
 //		sc.loadTestData(appCtr);
 		
 		sc.invokeExport();
