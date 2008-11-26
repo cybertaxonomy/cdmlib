@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary.source;singleton:=true
-Bundle-Version: 1.2.1.00
+Bundle-Version: 2.00.00.00
 Bundle-Vendor: EDIT
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.pde.source

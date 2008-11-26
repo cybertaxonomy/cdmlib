@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="eu.etaxonomy.cdmLibrary.source"
-      label="CdmLibrary Feature"
-      version="1.2.1.00"
+      label="CdmLibrary Feature sources"
+      version="2.00.00.00"
       provider-name="EDIT">
 
    <description url="http://www.example.com/description">
