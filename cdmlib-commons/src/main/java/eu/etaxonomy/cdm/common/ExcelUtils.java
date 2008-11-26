@@ -76,6 +76,7 @@ public class ExcelUtils {
     		}
 
     	} catch(Exception ioe) {
+    		if (logger.isDebugEnabled()){logger.debug("Exception");}
     		ioe.printStackTrace();
     	}
     	return recordList;

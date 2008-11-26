@@ -72,7 +72,8 @@ public class XmlHelp {
 	
 	static public Element getFirstAttributedChild(Element parent, String elementName, String attributeName, String attributeValue){
 		Namespace ns = parent.getNamespace();
-		List<Element> elList = parent.getChildren(elementName, ns);
+		
+		List<Element> elList = getChildren(parent, elementName, ns);
 		for (Element el : elList){
 			Attribute attr =  el.getAttribute(attributeName);
 			if (attr != null && attr.getValue().equalsIgnoreCase(attributeValue)){
@@ -85,7 +86,7 @@ public class XmlHelp {
 	static public List<Element> getAttributedChildList(Element parent, String elementName, String attributeName){
 		List<Element> resultList = new ArrayList<Element>();
 		Namespace ns = parent.getNamespace();
-		List<Element> elList = parent.getChildren(elementName, ns);
+		List<Element> elList = getChildren(parent, elementName, ns);
 		for (Element el : elList){
 			Attribute attr =  el.getAttribute(attributeName);
 			if (attr != null){
@@ -93,6 +94,11 @@ public class XmlHelp {
 			}
 		}
 		return resultList;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<Element> getChildren(Element parent, String elementName,Namespace ns) {
+		return parent.getChildren(elementName, ns);
 	}
 	
 	public static String getChildAttributeValue(Element element, String childElementName, Namespace childElementNamespace, String childAttributeName, Namespace childAttributeNamespace){
@@ -249,7 +255,7 @@ public class XmlHelp {
 			logger.warn("Parent element is null");
 			return result;
 		}
-		List<Element> elList = parentElement.getChildren(childName, nsChild);
+		List<Element> elList = getChildren(parentElement, childName, nsChild);
 		if (elList.size() > 1){
 			logger.error("Multiple '" + childName + "' elements.");
 			return result;		
@@ -273,7 +279,7 @@ public class XmlHelp {
 			success.setValue(false);
 			return null;
 		}
-		List<Element> elList = parentElement.getChildren(childName, nsChild);
+		List<Element> elList = getChildren(parentElement, childName, nsChild);
 		if (elList.size() > 1){
 			logger.error("Multiple '" + childName + "' elements.");
 			success.setValue(false);

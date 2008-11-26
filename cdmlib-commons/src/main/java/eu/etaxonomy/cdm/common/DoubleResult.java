@@ -25,6 +25,7 @@ public class DoubleResult<S extends Object, T extends Object> {
 	
 	public DoubleResult() {
 		super();
+		if (logger.isDebugEnabled()){logger.debug("Constructor");}
 	}
 
 	

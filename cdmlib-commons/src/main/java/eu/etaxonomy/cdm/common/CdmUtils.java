@@ -78,7 +78,7 @@ public class CdmUtils {
 	 * @param clazz
 	 * @return
 	 */
-	static public String findLibrary(Class clazz){
+	static public String findLibrary(Class<?> clazz){
 		String result = null;
 		if (clazz != null){
 			String fullPackageName = clazz.getCanonicalName();
