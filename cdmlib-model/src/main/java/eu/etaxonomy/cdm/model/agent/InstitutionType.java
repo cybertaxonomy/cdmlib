@@ -30,8 +30,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InstitutionType")
 @Entity
-public class InstitutionType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(InstitutionType.class);
+public class InstitutionType extends DefinedTermBase<InstitutionType> {
+	private static final long serialVersionUID = 8714866112728127219L;
+	public static final Logger logger = Logger.getLogger(InstitutionType.class);
 
 	// ************* CONSTRUCTORS *************/	
 	/** 

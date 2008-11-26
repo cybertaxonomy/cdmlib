@@ -53,7 +53,8 @@ import eu.etaxonomy.cdm.model.media.Rights;
     "sources"
 })
 @MappedSuperclass
-public abstract class IdentifiableEntity<T extends IdentifiableEntity> extends AnnotatableEntity<T> implements ISourceable, IIdentifiableEntity<T> {
+public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extends AnnotatableEntity<T> implements ISourceable, IIdentifiableEntity {
+	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
 	@XmlTransient

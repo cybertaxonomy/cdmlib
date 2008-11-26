@@ -46,9 +46,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "InstitutionalMembership")
 @Entity
-public class InstitutionalMembership extends VersionableEntity {
-	
-	static Logger logger = Logger.getLogger(InstitutionalMembership.class);
+public class InstitutionalMembership extends VersionableEntity<InstitutionalMembership> {
+	private static final long serialVersionUID = -800814712134999042L;
+	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
 	
 	/*Time period a person belonged to the institution*/
     @XmlElement(name = "Period")

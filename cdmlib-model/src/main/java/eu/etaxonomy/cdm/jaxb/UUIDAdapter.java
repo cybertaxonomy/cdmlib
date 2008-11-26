@@ -27,11 +27,13 @@ public class UUIDAdapter extends XmlAdapter<String, String> {
 
 	@Override
 	public String marshal(String uuidStr) throws Exception {
+		if (logger.isDebugEnabled()){logger.debug("marshal");}
 		return UUIDAdapter.UUID_URN_PREFIX + uuidStr;
 	}
 
 	@Override
 	public String unmarshal(String string) throws Exception {
+		if (logger.isDebugEnabled()){logger.debug("unmarshal");}
 		if(string.startsWith(UUIDAdapter.UUID_URN_PREFIX)) {
 			String uuidPart = string.substring(UUIDAdapter.UUID_URN_PREFIX.length());
 			return uuidPart;

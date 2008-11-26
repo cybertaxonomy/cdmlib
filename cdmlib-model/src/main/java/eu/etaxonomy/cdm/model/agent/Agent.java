@@ -38,6 +38,13 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 @Entity
 @Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class Agent extends IdentifiableMediaEntity{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7732768617469448829L;
+
+
 	
 
 	

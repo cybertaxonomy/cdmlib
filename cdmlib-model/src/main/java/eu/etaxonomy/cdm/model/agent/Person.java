@@ -60,8 +60,9 @@ import javax.xml.bind.annotation.XmlType;
 	})
 @XmlRootElement(name = "Person")
 @Entity
-public class Person extends TeamOrPersonBase {
-	static Logger logger = Logger.getLogger(Person.class);
+public class Person extends TeamOrPersonBase<Person> {
+	private static final long serialVersionUID = 4153566493065539763L;
+	public static final Logger logger = Logger.getLogger(Person.class);
 
     @XmlElement(name = "Prefix")
 	private String prefix;

@@ -9,16 +9,12 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import java.util.ArrayList;
+import java.util.List;
 
-import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +23,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * This class represents teams of {@link Person persons}. A team exists either for itself
@@ -54,9 +56,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement
 @Entity
-public class Team extends TeamOrPersonBase {
-	
-	static Logger logger = Logger.getLogger(Team.class);
+public class Team extends TeamOrPersonBase<Team> {
+	private static final long serialVersionUID = 97640416905934622L;
+	public static final Logger logger = Logger.getLogger(Team.class);
 	
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache;

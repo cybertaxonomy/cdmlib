@@ -95,7 +95,12 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4530368639601532116L;
 
 	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 

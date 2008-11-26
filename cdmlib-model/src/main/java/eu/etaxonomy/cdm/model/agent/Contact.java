@@ -9,13 +9,10 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.Set;
 
-import java.util.*;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +21,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
@@ -49,16 +52,19 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Contact")
 @Entity
-public class Contact extends VersionableEntity {
+public class Contact extends VersionableEntity<Contact> {
+	private static final long serialVersionUID = -1851305307069277625L;
+	private static final Logger logger = Logger.getLogger(Contact.class);
+	
+
 	/** 
 	 * Class constructor.
 	 */
 	public Contact() {
 		super();
-		// TODO Auto-generated constructor stub
+		logger.debug("Constructor call");
 	}
 
-	static Logger logger = Logger.getLogger(Contact.class);
 	
 	@XmlElement(name = "EmailAddress")
 	private String email;

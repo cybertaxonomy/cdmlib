@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 @XmlRootElement(name = "Article")
 @Entity
 public class Article extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
+	private static final long serialVersionUID = -1528079480114388117L;
 	private static final Logger logger = Logger.getLogger(Article.class);
 	
     @XmlElement(name = "Series")

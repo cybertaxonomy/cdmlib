@@ -50,8 +50,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Institution")
 @Entity
 public class Institution extends Agent {
-	
-	static Logger logger = Logger.getLogger(Institution.class);
+	private static final long serialVersionUID = -951321271656955808L;
+	public static final Logger logger = Logger.getLogger(Institution.class);
 	
     @XmlElement(name = "Code")
 	private String code;

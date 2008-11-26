@@ -27,7 +27,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 })
 @XmlRootElement(name = "IdentifiableMediaEntity")
 @MappedSuperclass
-public abstract class IdentifiableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity extends IdentifiableEntity<IdentifiableMediaEntity> implements IMediaDocumented, IMediaEntity{
+
+	private static final long serialVersionUID = 4038647011021908313L;
 
 	static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
 
