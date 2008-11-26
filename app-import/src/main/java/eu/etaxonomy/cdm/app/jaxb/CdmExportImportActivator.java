@@ -95,7 +95,7 @@ public class CdmExportImportActivator {
 	private void invokeExport() {
 		
 		JaxbExportConfigurator jaxbExportConfigurator = 
-			JaxbExportConfigurator.NewInstance(destinationDb, fileName);
+			JaxbExportConfigurator.NewInstance(sourceDb, fileName);
 		
 		CdmDefaultExport<JaxbExportConfigurator> jaxbExport = 
 			new CdmDefaultExport<JaxbExportConfigurator>();
