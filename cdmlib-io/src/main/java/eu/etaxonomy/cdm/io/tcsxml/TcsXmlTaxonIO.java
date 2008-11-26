@@ -271,7 +271,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			if (language != null){
 				logger.warn("language for name not yet implemented");	
 			}
-			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity<?>>)NonViralName.class;
+			Class<? extends IdentifiableEntity> clazz = (Class<? extends IdentifiableEntity>)NonViralName.class;
 			if (code != null){
 				clazz = code.getCdmClass();
 			}
