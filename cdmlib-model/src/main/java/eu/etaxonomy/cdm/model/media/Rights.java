@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Rights")
 @Entity
 public class Rights extends LanguageStringBase {
+	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
 	
 	//external location of copyright text
@@ -70,6 +71,7 @@ public class Rights extends LanguageStringBase {
 	 * @return
 	 */
 	public static Rights NewInstance() {
+		logger.debug("NewInstance");
 		return new Rights();
 	}
 

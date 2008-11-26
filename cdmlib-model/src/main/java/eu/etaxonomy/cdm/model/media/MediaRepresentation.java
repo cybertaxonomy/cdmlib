@@ -54,8 +54,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaRepresentation extends VersionableEntity {
-	
+public class MediaRepresentation extends VersionableEntity<MediaRepresentation> {
+	private static final long serialVersionUID = -1520078266008619806L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
 	
 	//http://www.iana.org/assignments/media-types
@@ -95,6 +95,7 @@ public class MediaRepresentation extends VersionableEntity {
 	 * @return
 	 */
 	public static MediaRepresentation NewInstance(){
+		logger.debug("NewInstance");
 		return new MediaRepresentation();
 	}
 	
@@ -153,12 +154,14 @@ public class MediaRepresentation extends VersionableEntity {
 	protected void setParts(List<MediaRepresentationPart> mediaRepresentationParts){
 		this.mediaRepresentationParts = mediaRepresentationParts;
 	}
+	@SuppressWarnings("deprecation")
 	public void addRepresentationPart(MediaRepresentationPart mediaRepresentationPart){
 		if (mediaRepresentationPart != null){
 			this.getParts().add(mediaRepresentationPart);
 			mediaRepresentationPart.setMediaRepresentation(this);
 		}
 	}
+	@SuppressWarnings("deprecation")
 	public void removeRepresentationPart(MediaRepresentationPart representationPart){
 		this.getParts().remove(representationPart);
 		if (representationPart != null){

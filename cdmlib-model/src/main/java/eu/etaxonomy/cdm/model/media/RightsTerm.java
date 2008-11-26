@@ -28,8 +28,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "RightsTerm")
 @XmlRootElement(name = "RightsTerm")
 @Entity
-public class RightsTerm extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(RightsTerm.class);
+public class RightsTerm extends DefinedTermBase<RightsTerm> {
+	private static final long serialVersionUID = -5823263624000932116L;
+	private static final Logger logger = Logger.getLogger(RightsTerm.class);
 
 	
 	/**
@@ -37,6 +38,7 @@ public class RightsTerm extends DefinedTermBase {
 	 * @return
 	 */
 	public static RightsTerm NewInstance(){
+		logger.debug("NewInstance");
 		return new RightsTerm();
 	}
 

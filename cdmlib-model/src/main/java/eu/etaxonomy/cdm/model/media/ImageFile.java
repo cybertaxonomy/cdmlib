@@ -37,8 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "ImageFile")
 @Entity
 public class ImageFile extends MediaRepresentationPart {
-	
-	static Logger logger = Logger.getLogger(ImageFile.class);
+	private static final long serialVersionUID = 5451418445009559953L;
+	private static final Logger logger = Logger.getLogger(ImageFile.class);
 	
 	//image height in pixel
 	@XmlElement(name = "Height")
@@ -49,6 +49,7 @@ public class ImageFile extends MediaRepresentationPart {
 	private int width;
 
 	public static ImageFile NewInstance(String uri, Integer size){
+		logger.debug("NewInstance");
 		return new ImageFile(uri, size);
 	}
 	

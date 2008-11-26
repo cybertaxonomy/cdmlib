@@ -56,8 +56,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "Media")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends AnnotatableEntity {
-	
+public class Media extends AnnotatableEntity<Media> {
+	private static final long serialVersionUID = -1927421567263473658L;
 	private static final Logger logger = Logger.getLogger(Media.class);
 
 	@XmlElement(name = "MediaTitle")
@@ -92,6 +92,7 @@ public class Media extends AnnotatableEntity {
 	 * @return
 	 */
 	public static Media NewInstance(){
+		logger.debug("NewInstance");
 		return new Media();
 	}
 	
@@ -111,12 +112,14 @@ public class Media extends AnnotatableEntity {
 	protected void setRepresentations(Set<MediaRepresentation> representations){
 		this.representations = representations;
 	}
+	@SuppressWarnings("deprecation")
 	public void addRepresentation(MediaRepresentation representation){
 		if (representation != null){
 			this.getRepresentations().add(representation);
 			representation.setMedia(this);
 		}
 	}
+	@SuppressWarnings("deprecation")
 	public void removeRepresentation(MediaRepresentation representation){
 		this.getRepresentations().remove(representation);
 		if (representation != null){

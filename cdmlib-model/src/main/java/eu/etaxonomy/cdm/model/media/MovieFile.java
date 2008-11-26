@@ -31,13 +31,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "MovieFile")
 @Entity
 public class MovieFile extends MediaRepresentationPart {
-	static Logger logger = Logger.getLogger(MovieFile.class);
+	private static final long serialVersionUID = 8650308822737671731L;
+	private static final Logger logger = Logger.getLogger(MovieFile.class);
 	
 	//Length of movie in seconds
 	@XmlElement(name = "Duration")
 	private int duration;
 
 	public static MovieFile NewInstance(String uri, Integer size){
+		logger.debug("NewInstance");
 		return new MovieFile(uri, size);
 	}
 	

@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AudioFile")
 @Entity
 public class AudioFile extends MediaRepresentationPart {
+	private static final long serialVersionUID = 2327736023969971196L;
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
 	
 	//length of recording in seconds
@@ -38,6 +39,7 @@ public class AudioFile extends MediaRepresentationPart {
 
 
 	public static AudioFile NewInstance(String uri, Integer size){
+		logger.debug("NewInstance");
 		return new AudioFile(uri, size);
 	}
 

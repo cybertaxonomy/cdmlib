@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.media;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,9 +19,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -38,9 +34,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentationPart", propOrder = { "uri", "size" })
 @Entity
-public class MediaRepresentationPart extends VersionableEntity {
-	private static final Logger logger = Logger
-			.getLogger(MediaRepresentationPart.class);
+public class MediaRepresentationPart extends VersionableEntity<MediaRepresentationPart> {
+	private static final long serialVersionUID = -1674422508643785796L;
+	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
 
 	// where the media file is stored
 	@XmlElement(name = "URI")
@@ -60,6 +56,7 @@ public class MediaRepresentationPart extends VersionableEntity {
 	 * @return
 	 */
 	public static MediaRepresentationPart NewInstance(String uri, Integer size) {
+		logger.debug("NewInstance");
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
