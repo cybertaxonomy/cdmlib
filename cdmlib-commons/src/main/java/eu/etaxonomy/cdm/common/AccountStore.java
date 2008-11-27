@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -88,7 +87,6 @@ public class AccountStore {
 	}
 	
 	public void removePassword(String dbms, String strServer, String userName){
-		FileWriter out;
 		String key = strServer+'.'+dbms+'.'+userName;
 		Properties accounts = loadAccounts();
 		accounts.remove(key);
@@ -111,12 +109,12 @@ public class AccountStore {
 			// on success store userName, pwd in property file
 			if(doStore){
 				accounts.setPassword(dbms, strServer, userName, pwd);
-				logger.info("password stored in " + accounts.getAccountsFileName());
+				logger.info("password stored in " + AccountStore.getAccountsFileName());
 			}
 		} catch (Exception e) {
 			if(doStore){
 				accounts.removePassword(dbms, strServer, userName);
-				logger.info("password removed from " + accounts.getAccountsFileName());
+				logger.info("password removed from " + AccountStore.getAccountsFileName());
 			}
 			logger.error(e);
 			return null;
@@ -129,8 +127,6 @@ public class AccountStore {
 //		BerlinModel - EditWp6
 		String dbms = "SQLServer";
 		String strServer = "BGBM111";
-		String strDB = "EditWP6";
-		int port = 1247;
 		String userName = "webUser";
 		a.setPassword(dbms, strServer, userName, "psst");
 		logger.info(a.getPassword(dbms, strServer, userName));
