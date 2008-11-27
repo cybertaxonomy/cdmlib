@@ -275,7 +275,18 @@ public class NonViralNameParserImplTest {
 			assertTrue(false);
 		}
 		
-
+		//null
+		String strNull = null;
+		NonViralName<?> nameNull = parser.parseReferencedName(strNull, null, Rank.SPECIES());
+		assertNull(nameNull);
+				
+		//Empty
+		String strEmpty = "";
+		NonViralName<?> nameEmpty = parser.parseReferencedName(strEmpty, null, Rank.SPECIES());
+		assertFalse(nameEmpty.hasProblem());
+		assertEquals(strEmpty, nameEmpty.getFullTitleCache());
+		assertNull(nameEmpty.getNomenclaturalMicroReference());
+		
 		
 		//Book
 		String fullReference = "Abies alba Mill., Sp.   Pl. 4: 455. 1987.";
@@ -487,6 +498,29 @@ public class NonViralNameParserImplTest {
 		assertEquals(23, nameUnparsableInRef2.getProblemStarts()); 
 		assertEquals(41, nameUnparsableInRef2.getProblemEnds());   
 	
+		
+		String strUnparsableInRef3 = "Hieracium pespcim N., My Bookkkk 1. 1902";
+		NonViralName<?> nameUnparsableInRef3 = parser.parseReferencedName(strUnparsableInRef3, null, null);
+		assertTrue(nameUnparsableInRef3.hasProblem());
+		assertEquals(strUnparsableInRef3, nameUnparsableInRef3.getFullTitleCache());
+		assertEquals(22, nameUnparsableInRef3.getProblemStarts()); 
+		assertEquals(40, nameUnparsableInRef3.getProblemEnds());   
+	
+		String strUnparsableInRef4 = "Hieracium pepsicum (Hsllreterto) L., My Bookkkk 1. 1903";
+		NonViralName<?> nameUnparsableInRef4 = parser.parseReferencedName(strUnparsableInRef4, null, null);
+		assertTrue(nameUnparsableInRef4.hasProblem());
+		assertEquals(strUnparsableInRef4, nameUnparsableInRef4.getFullTitleCache());
+		assertEquals(37, nameUnparsableInRef4.getProblemStarts()); 
+		assertEquals(55, nameUnparsableInRef4.getProblemEnds());   
+		
+		String strSameName = "Hieracium pepcum (Hsllreterto) L., My Bokkk 1. 1903";
+		NonViralName<?> nameSameName = nameUnparsableInRef4;
+		parser.parseReferencedName(nameSameName, strSameName, null, true);
+		assertTrue(nameSameName.hasProblem());
+		assertEquals(strSameName, nameSameName.getFullTitleCache());
+		assertEquals(35, nameSameName.getProblemStarts()); 
+		assertEquals(51, nameSameName.getProblemEnds());   
+		
 		
 		
 	}
