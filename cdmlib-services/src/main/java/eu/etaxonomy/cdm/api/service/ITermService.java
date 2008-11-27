@@ -49,7 +49,7 @@ public interface ITermService extends IService<DefinedTermBase> {
 	 */
 	public abstract UUID saveTerm(DefinedTermBase termBase);
 
-	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<DefinedTermBase> termBaseCollection);
+	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<? extends DefinedTermBase> termBaseCollection);
 
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start);
 

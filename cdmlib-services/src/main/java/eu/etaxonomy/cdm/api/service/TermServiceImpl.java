@@ -86,7 +86,7 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<DefinedTermBase> termBaseCollection){
+	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<? extends DefinedTermBase> termBaseCollection){
 		return saveCdmObjectAll(termBaseCollection);
 	}
 
