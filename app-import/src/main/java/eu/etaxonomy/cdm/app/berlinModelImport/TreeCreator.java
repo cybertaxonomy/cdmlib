@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @version 1.0
  */
 public class TreeCreator {
-	private static Logger logger = Logger.getLogger(TreeCreator.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TreeCreator.class);
 
 	public static FeatureTree flatTree(UUID featureTreeUuid, MapWrapper<Feature> featureMap, Object[] featureKeyList){
 		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
