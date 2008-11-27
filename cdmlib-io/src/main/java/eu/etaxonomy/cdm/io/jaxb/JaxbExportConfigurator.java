@@ -183,8 +183,8 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 		if (this.getDestination() == null) {
 			return null;
 		} else {
-			return this.getDestination();
+			return (String)this.getDestination();
 		}
 	}
-	
+		
 }

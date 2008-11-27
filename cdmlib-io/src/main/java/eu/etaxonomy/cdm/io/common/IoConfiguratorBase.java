@@ -16,7 +16,8 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 public class IoConfiguratorBase {
 
 //	protected Class<ICdmIO>[] ioClassList;
-
+	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+	
 	private boolean doAuthors = true;
 	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
@@ -35,8 +36,6 @@ public class IoConfiguratorBase {
 	//occurrence
 	private boolean doOccurrence = true;
 
-	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-	
 	public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}

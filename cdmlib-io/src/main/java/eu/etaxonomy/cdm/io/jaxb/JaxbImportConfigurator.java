@@ -161,6 +161,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		super();
 		setSource(url);
 		setDestination(destination);
+		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 
 

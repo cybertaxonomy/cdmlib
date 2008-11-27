@@ -89,9 +89,9 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			cdmApp = config.getCdmAppController(true, false);
 		}
 		
-		System.out.println("Start Export from Source (" + config.getDestinationNameString() 
-				+ ") to CDM  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
-		
+		System.out.println("Start export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
+				") to Destination (" + config.getDestinationNameString() + ") ...");
+				
 		//do invoke for each class
 		// TODO: Replace ICdmIoExport by ICdmIO
 		for (Class<ICdmIoExport> ioClass: config.getIoClassList()){
@@ -106,8 +106,8 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 		}
 		
 		//return
-		System.out.println("End Export from Source ("+ config.getDestinationNameString() 
-				+ ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("End export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
+				") to Destination (" + config.getDestinationNameString() + ") ...");
 		return true;
 	}
 	

@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
+	
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//check
@@ -67,6 +68,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	
 	public ImportConfiguratorBase(){
 		super();
+		setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
 	}
 	

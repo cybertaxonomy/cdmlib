@@ -96,7 +96,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		}
 		
 		//return
-		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to CDM");
+		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
 		return result;
 
 	}
@@ -124,7 +124,9 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		}
 		
 		ReferenceBase sourceReference = config.getSourceReference();
-		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		
+		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
+				+ cdmApp.getDatabaseService().getUrl() + ") ...");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -138,8 +140,8 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			}
 		}
 		
-		//return
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
+				+ cdmApp.getDatabaseService().getUrl() + ") ...");
 		return true;
 	}
 	
