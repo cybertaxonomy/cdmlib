@@ -27,25 +27,6 @@ public class UuidGenerator {
 		for (int i = 0; i < 10; i++){
 			System.out.println(UUID.randomUUID());
 		}
-//		boolean result;
-//		String str =  "file://C:/tmp";
-//		try {
-//			str =  "\\\\Bgbm11\\Edit-WP6";
-//			File file = null;
-//			file = new File(str);
-//			if (file.exists()){
-//				result = true;
-//			}else{
-//				result = false;
-//			}
-//			logger.warn(result);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-
-
 	}
 
 }
