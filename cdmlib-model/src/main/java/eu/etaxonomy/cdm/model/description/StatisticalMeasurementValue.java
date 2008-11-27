@@ -10,14 +10,12 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,6 +24,10 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * This class represents the assignment of numerical values to {@link Feature features}
@@ -45,9 +47,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
-public class StatisticalMeasurementValue extends VersionableEntity {
-	
-	static Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
+public class StatisticalMeasurementValue extends VersionableEntity<StatisticalMeasurementValue> {
+	private static final long serialVersionUID = -3576311887760351982L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 	
 	@XmlElement(name = "Value")
 	private float value;
@@ -56,7 +59,7 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<Modifier> modifiers = new HashSet();
+	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "StatisticalMeasureType")
 	@XmlIDREF

@@ -10,17 +10,14 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +25,13 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This class represents descriptions that delimit or circumscribe a real taxon.
@@ -50,8 +54,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "TaxonDescription")
 @Entity
 public class TaxonDescription extends DescriptionBase {
-	
-	static Logger logger = Logger.getLogger(TaxonDescription.class);
+	private static final long serialVersionUID = 8065879180505546803L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonDescription.class);
 
 	@XmlElementWrapper(name = "Scopes")
 	@XmlElement(name = "Scope")

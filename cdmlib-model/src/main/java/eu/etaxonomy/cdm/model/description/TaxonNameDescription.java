@@ -39,10 +39,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @XmlRootElement(name = "TaxonNameDescription")
 @Entity
 public class TaxonNameDescription extends DescriptionBase {
-	static Logger logger = Logger.getLogger(TaxonNameDescription.class);
+	private static final long serialVersionUID = -7349160369642038687L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonNameDescription.class);
 	
 	@XmlTransient
-	private TaxonNameBase taxonName;
+	private TaxonNameBase<?,?> taxonName;
 
 
 	/**

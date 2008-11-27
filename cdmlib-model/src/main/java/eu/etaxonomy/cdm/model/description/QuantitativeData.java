@@ -9,17 +9,13 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +24,10 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * This class represents information pieces expressed in numerical data
@@ -62,8 +62,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "QuantitativeData")
 @Entity
 public class QuantitativeData extends DescriptionElementBase {
-	
-	static Logger logger = Logger.getLogger(QuantitativeData.class);
+	private static final long serialVersionUID = -2755806455420051488L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(QuantitativeData.class);
 	
 	@XmlElement(name = "MeasurementUnit")
 	@XmlIDREF
@@ -74,7 +75,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	@XmlElement(name = "StatisticalValue")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet();
+	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 	
 	/** 
 	 * Class constructor: creates a new empty quantitative data instance.

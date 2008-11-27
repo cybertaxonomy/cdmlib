@@ -17,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
-
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,18 +30,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -69,8 +60,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionBase extends IdentifiableEntity {
-	
+public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase> {
+	private static final long serialVersionUID = 5504218413819040193L;
 	private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 	
 	@XmlElementWrapper(name = "DescribedSpecimenOrObservations")
@@ -130,6 +121,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    	   								SpecimenOrObservationBase#addDescription(DescriptionBase)
 	 */
 	public void addDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
+		logger.debug("addDescribedSpecimenOrObservations");
 		this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
 	}
 	

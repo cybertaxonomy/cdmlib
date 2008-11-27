@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -48,8 +47,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
 public class CommonTaxonName extends DescriptionElementBase {
-	
-	static Logger logger = Logger.getLogger(CommonTaxonName.class);
+	private static final long serialVersionUID = 2643808051976643339L;
+	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
 	@XmlElement(name = "Name")
 	private String name;
@@ -76,6 +75,7 @@ public class CommonTaxonName extends DescriptionElementBase {
 	 * @param language	the language of the name string
 	 */
 	public static CommonTaxonName NewInstance(String name, Language language){
+		logger.debug("NewInstance");
 		CommonTaxonName result = new CommonTaxonName();
 		result.setName(name);
 		result.setLanguage(language);

@@ -11,16 +11,16 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-
-import org.apache.log4j.Logger;
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
 /**
@@ -36,8 +36,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "StatisticalMeasure")
 @XmlRootElement(name = "StatisticalMeasure")
 @Entity
-public class StatisticalMeasure extends DefinedTermBase {
-	
+public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
+	private static final long serialVersionUID = 9168097283660941430L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasure.class);
 	
 	private static final UUID uuidMin = UUID.fromString("2c8b42e5-154c-42bd-a301-03b483275dd6");

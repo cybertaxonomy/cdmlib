@@ -10,17 +10,15 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-
-
-import org.apache.log4j.Logger;
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
  * The class representing kinds of formats used for structuring text
@@ -34,8 +32,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "TextFormat")
 @XmlRootElement(name = "TextFormat")
 @Entity
-public class TextFormat extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(TextFormat.class);
+public class TextFormat extends DefinedTermBase<TextFormat> {
+	private static final long serialVersionUID = 2063382669537212917L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TextFormat.class);
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 

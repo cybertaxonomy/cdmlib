@@ -10,21 +10,15 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * The class representing restrictions for the validity of
@@ -40,6 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Scope")
 @Entity
 public class Scope extends Modifier {
+	private static final long serialVersionUID = 4479960075363470677L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Scope.class);
 	
 	// ************* CONSTRUCTORS *************/	

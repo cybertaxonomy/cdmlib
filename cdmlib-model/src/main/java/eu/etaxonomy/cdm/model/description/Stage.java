@@ -36,6 +36,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Stage")
 @Entity
 public class Stage extends Scope {
+	private static final long serialVersionUID = 2338810516765894760L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Stage.class);
 
 	// ************* CONSTRUCTORS *************/	

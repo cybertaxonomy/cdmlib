@@ -14,21 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-import org.apache.log4j.Logger;
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * This (abstract) class represents terms describing the {@link AbsenceTerm absence}
@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "PresenceAbsenceTermBase")
 @Entity
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase> extends OrderedTermBase<PresenceAbsenceTermBase> {
+	private static final long serialVersionUID = 1596291470042068880L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
 	private static Map<String, UUID> map = new HashMap<String, UUID>();

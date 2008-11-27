@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AbsenceTerm")
 @Entity
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
+	private static final long serialVersionUID = -7145360212307512860L;
 	private static final Logger logger = Logger.getLogger(AbsenceTerm.class);
 	
 	/** 
@@ -45,6 +46,7 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	 * @see #NewInstance(String, String, String)
 	 */
 	public static AbsenceTerm NewInstance(){
+		logger.debug("NewInstance");
 		return new AbsenceTerm();
 	}
 	

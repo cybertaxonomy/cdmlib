@@ -10,18 +10,16 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-import org.apache.log4j.Logger;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 
 /**
  * This class represents terms describing different states (like "oval" or
@@ -37,7 +35,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "State")
 @Entity
 public class State extends OrderedTermBase<State> {
-	static Logger logger = Logger.getLogger(State.class);
+	private static final long serialVersionUID = -4816292463790262516L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(State.class);
 
 	// ************* CONSTRUCTORS *************/	
 	/** 

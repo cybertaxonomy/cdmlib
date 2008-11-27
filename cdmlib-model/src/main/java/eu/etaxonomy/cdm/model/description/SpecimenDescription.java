@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -35,7 +34,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
 public class SpecimenDescription extends DescriptionBase {
-	static Logger logger = Logger.getLogger(SpecimenDescription.class);
+	private static final long serialVersionUID = -8506790426682192703L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
 	
 
 	/**

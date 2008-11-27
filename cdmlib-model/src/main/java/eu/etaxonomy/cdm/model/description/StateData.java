@@ -50,8 +50,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "StateData")
 @Entity
-public class StateData extends VersionableEntity {
-	
+public class StateData extends VersionableEntity<StateData> {
+	private static final long serialVersionUID = -4380314126624505415L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);
 	
 	@XmlElement(name = "State")
@@ -106,6 +107,7 @@ public class StateData extends VersionableEntity {
 	/**
 	 * @see	#getModifiers() 
 	 */
+	@SuppressWarnings("unused")
 	private void setModifiers(Set<Modifier> modifiers) {
 		this.modifiers = modifiers;
 	}
@@ -149,6 +151,7 @@ public class StateData extends VersionableEntity {
 	/**
 	 * @see	#getModifyingText() 
 	 */
+	@SuppressWarnings("unused")
 	private void setModifyingText(MultilanguageText modifyingText) {
 		this.modifyingText = modifyingText;
 	}

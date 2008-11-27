@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
+@SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
 	"feature",
@@ -54,8 +55,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
-public class FeatureNode extends VersionableEntity {
-	static Logger logger = Logger.getLogger(FeatureNode.class);
+public class FeatureNode extends VersionableEntity<FeatureNode> {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
     @XmlElement(name = "Feature")
     @XmlIDREF

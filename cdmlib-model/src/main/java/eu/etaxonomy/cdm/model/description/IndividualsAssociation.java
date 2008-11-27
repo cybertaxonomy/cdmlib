@@ -10,14 +10,8 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-
-import org.apache.log4j.Logger;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,6 +19,13 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * This class represents associations between the described
@@ -48,8 +49,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "IndividualsAssociation")
 @Entity
 public class IndividualsAssociation extends DescriptionElementBase {
-	
-	static Logger logger = Logger.getLogger(IndividualsAssociation.class);
+	private static final long serialVersionUID = -4117554860254531809L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	
 	@XmlElement(name = "Description")
 	private MultilanguageText description;

@@ -32,8 +32,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "MeasurementUnit")
 @XmlRootElement(name = "MeasurementUnit")
 @Entity
-public class MeasurementUnit extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(MeasurementUnit.class);
+public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
+	private static final long serialVersionUID = 4904519152652248312L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(MeasurementUnit.class);
 	
 	/** 
 	 * Class constructor: creates a new empty measurement unit instance.

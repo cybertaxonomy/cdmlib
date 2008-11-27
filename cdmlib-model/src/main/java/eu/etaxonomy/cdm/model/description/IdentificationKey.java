@@ -43,14 +43,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "IdentificationKey")
 @Entity
 public class IdentificationKey extends Media {
-	
-	static Logger logger = Logger.getLogger(IdentificationKey.class);
+	private static final long serialVersionUID = -29095811051894471L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(IdentificationKey.class);
 	
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<Taxon> coveredTaxa = new HashSet();
+	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 	
 	/** 
 	 * Class constructor: creates a new empty identification key instance.

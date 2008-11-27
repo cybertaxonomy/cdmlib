@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlRootElement(name = "Sex")
 @Entity
 public class Sex extends Scope {
+	private static final long serialVersionUID = 3463642992193419657L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Sex.class);
 
 	private static final UUID uuidMale = UUID.fromString("600a5212-cc02-431d-8a80-2bf595bd1eab");

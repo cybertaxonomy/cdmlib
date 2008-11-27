@@ -40,7 +40,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Modifier")
 @Entity
 public class Modifier extends OrderedTermBase<Modifier> {
-	static Logger logger = Logger.getLogger(Modifier.class);
+	private static final long serialVersionUID = -2491833848163461951L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Modifier.class);
 	
 	/** 
 	 * Class constructor: creates a new empty modifier instance.

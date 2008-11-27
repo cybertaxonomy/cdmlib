@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 // FIXME
@@ -55,7 +53,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "TaxonInteraction")
 @Entity
 public class TaxonInteraction extends DescriptionElementBase {
-	
+	private static final long serialVersionUID = -5014025677925668627L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
 	
 	@XmlElement(name = "Description")
@@ -109,6 +108,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 	/**
 	 * @see	#getDescription() 
 	 */
+	@SuppressWarnings("unused")
 	private void setDescription(MultilanguageText description){
 		this.description = description;
 	}

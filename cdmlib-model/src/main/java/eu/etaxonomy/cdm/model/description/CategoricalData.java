@@ -9,15 +9,11 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-
-import java.util.*;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,6 +22,10 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -56,8 +56,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "CategoricalData")
 @Entity
 public class CategoricalData extends DescriptionElementBase {
-	
-	static Logger logger = Logger.getLogger(CategoricalData.class);
+	private static final long serialVersionUID = -6298361966947668998L;
+	private static final Logger logger = Logger.getLogger(CategoricalData.class);
 
 	//whether the sequence of ordered states is important
 	@XmlElement(name = "OrderRelevant")
@@ -67,7 +67,7 @@ public class CategoricalData extends DescriptionElementBase {
 	@XmlElement(name = "State")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private List<StateData> states = new ArrayList();
+	private List<StateData> states = new ArrayList<StateData>();
 
 	
 	/** 
@@ -81,6 +81,7 @@ public class CategoricalData extends DescriptionElementBase {
 	 * Creates a new empty categorical data instance.
 	 */
 	public static CategoricalData NewInstance(){
+		logger.debug("NewInstance");
 		return new CategoricalData();
 	}
 	
@@ -96,6 +97,7 @@ public class CategoricalData extends DescriptionElementBase {
 	/**
 	 * @see	#getStates() 
 	 */
+	@SuppressWarnings("unused")
 	private void setStates(List<StateData> states){
 		this.states = states;
 	}

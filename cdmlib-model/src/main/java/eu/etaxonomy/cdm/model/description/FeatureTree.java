@@ -59,7 +59,13 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @XmlRootElement(name = "FeatureTree")
 @Entity
 public class FeatureTree extends TermBase {
-	static Logger logger = Logger.getLogger(FeatureTree.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6713834139003172735L;
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FeatureTree.class);
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	
 	@XmlElement(name = "Root")
