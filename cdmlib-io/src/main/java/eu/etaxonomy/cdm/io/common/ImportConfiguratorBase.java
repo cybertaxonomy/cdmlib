@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
+	
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//check
@@ -67,6 +67,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	
 	public ImportConfiguratorBase(){
 		super();
+		setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
 	}
 	

@@ -25,7 +25,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
-	private CHECK check = CHECK.CHECK_AND_EXPORT;
+	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
 	private ICdmDataSource source;
 	private Object destination;
@@ -38,6 +38,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	
 	public ExportConfiguratorBase(){
 		super();
+		setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
 	}
 	

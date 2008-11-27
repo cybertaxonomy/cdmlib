@@ -16,11 +16,9 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -120,11 +118,13 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			cdmApp = config.getCdmAppController(true, true);
 //			cdmApp = ((JaxbImportConfigurator)config).getCdmAppController(true, true);
 		} else {
-			cdmApp = config.getCdmAppController(true, false);
+			cdmApp = config.getCdmAppController(false, false);
 		}
 		
 		ReferenceBase sourceReference = config.getSourceReference();
-		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		
+		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
+				+ cdmApp.getDatabaseService().getUrl() + ") ...");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -138,8 +138,8 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			}
 		}
 		
-		//return
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
+				+ cdmApp.getDatabaseService().getUrl() + ") ...");
 		return true;
 	}
 	

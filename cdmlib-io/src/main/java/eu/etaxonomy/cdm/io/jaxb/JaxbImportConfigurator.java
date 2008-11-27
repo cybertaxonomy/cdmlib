@@ -8,15 +8,10 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.excel.distribution.DistributionImportConfigurator;
-import eu.etaxonomy.cdm.io.excel.distribution.DistributionImporter;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -161,6 +156,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		super();
 		setSource(url);
 		setDestination(destination);
+		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 
 
