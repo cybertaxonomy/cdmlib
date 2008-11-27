@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  */
 public class DefaultVocabularyStore implements IVocabularyStore {
-	static Logger logger = Logger.getLogger(DefaultVocabularyStore.class);
+	private static final Logger logger = Logger.getLogger(DefaultVocabularyStore.class);
 	
 	private static boolean isInitialized = false;
 
