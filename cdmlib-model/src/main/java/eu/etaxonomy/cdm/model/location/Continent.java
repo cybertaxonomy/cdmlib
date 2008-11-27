@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @XmlType(name = "Continent")
 @XmlRootElement(name = "Continent")
 @Entity
-public class Continent extends DefinedTermBase<Continent> {
+public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;
 	private static final Logger logger = Logger.getLogger(Continent.class);
 
