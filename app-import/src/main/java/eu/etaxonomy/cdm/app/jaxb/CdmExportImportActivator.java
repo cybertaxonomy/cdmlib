@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_jaxb";
-	private static final String destinationDbName = "cdm_test_jaxb2";
+	private static final String sourceDbName = "cdm_test_anahit";
+	private static final String destinationDbName = "cdm_test_anahit2";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -102,7 +102,7 @@ public class CdmExportImportActivator {
 		
 //		jaxbExportConfigurator.setSource(sourceDb);
 //		jaxbExportConfigurator.setDestination(fileName);
-		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+//		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 
 		jaxbExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
 
@@ -140,7 +140,7 @@ public class CdmExportImportActivator {
 		
 //		jaxbImportConfigurator.setSource(fileName);
 //		jaxbImportConfigurator.setDestination(destinationDb);
-		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
+//		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
 
 		jaxbImportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
 
