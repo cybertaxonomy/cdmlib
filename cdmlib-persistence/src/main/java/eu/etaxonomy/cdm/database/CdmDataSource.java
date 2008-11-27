@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  *
  */
 public class CdmDataSource implements ICdmDataSource {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 	
 	private DatabaseTypeEnum dbType;
@@ -117,6 +118,7 @@ public class CdmDataSource implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getDatasourceBean()
 	 */
+	@SuppressWarnings("unchecked")
 	public BeanDefinition getDatasourceBean(){
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDriverManagerDataSourceClass());
 		//attributes

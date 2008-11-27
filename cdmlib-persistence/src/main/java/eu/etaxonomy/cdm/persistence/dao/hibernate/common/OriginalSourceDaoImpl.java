@@ -21,7 +21,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
 /**

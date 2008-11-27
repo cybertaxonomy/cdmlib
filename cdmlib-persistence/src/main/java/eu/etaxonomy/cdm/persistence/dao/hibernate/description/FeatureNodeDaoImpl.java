@@ -8,18 +8,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 /**
  * @author a.babadshanjan

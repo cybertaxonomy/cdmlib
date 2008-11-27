@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  */
 @Component
 public class CdmHibernateInterceptor extends EmptyInterceptor {
+	private static final long serialVersionUID = 2536017420460052854L;
 	private static final Logger logger = Logger.getLogger(CdmHibernateInterceptor.class);
 	
 	//FIXME problem is circular dependency (see VocabularyStoreImpl.staticInitialized

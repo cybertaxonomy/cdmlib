@@ -39,9 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  */
 @Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
-//public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
-
-	static Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
+	private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
 	int flushAfterNo = 2000;
 	protected Class<T> type;

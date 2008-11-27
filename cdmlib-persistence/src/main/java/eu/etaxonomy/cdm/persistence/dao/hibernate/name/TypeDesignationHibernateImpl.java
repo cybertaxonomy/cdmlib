@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 @Repository
 public class TypeDesignationHibernateImpl<T extends TypeDesignationBase> 
 			extends ReferencedEntityDaoImpl<TypeDesignationBase> implements ITypeDesignationDao {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationHibernateImpl.class);
 
 	public TypeDesignationHibernateImpl() {

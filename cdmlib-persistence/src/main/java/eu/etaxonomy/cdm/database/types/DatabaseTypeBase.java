@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.database.types;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -21,6 +20,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 abstract class DatabaseTypeBase implements IDatabaseType {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DatabaseTypeBase.class);
 	
 	//typeName

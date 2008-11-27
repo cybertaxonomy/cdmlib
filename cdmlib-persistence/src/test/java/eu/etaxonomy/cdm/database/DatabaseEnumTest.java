@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -21,6 +20,7 @@ import org.junit.Test;
  *
  */
 public class DatabaseEnumTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DatabaseEnumTest.class);
 	private static DatabaseTypeEnum dbEnum;
 	private static DatabaseTypeEnum dbEnumSql2005;
@@ -47,7 +47,7 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetName() {
-		assertEquals("MySQL", this.dbEnum.getName());
+		assertEquals("MySQL", DatabaseEnumTest.dbEnum.getName());
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetDriverClassName() {
-		assertEquals("com.mysql.jdbc.Driver", this.dbEnum.getDriverClassName());
+		assertEquals("com.mysql.jdbc.Driver", DatabaseEnumTest.dbEnum.getDriverClassName());
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetUrl() {
-		assertEquals("jdbc:mysql://", this.dbEnum.getUrl());
+		assertEquals("jdbc:mysql://", DatabaseEnumTest.dbEnum.getUrl());
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetDefaultPort() {
-		assertEquals(9001, this.dbEnum.HSqlDb.getDefaultPort());
+		assertEquals(9001, DatabaseTypeEnum.HSqlDb.getDefaultPort());
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetConnectionStringStringStringInt() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", 1234, null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test", this.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
 	}
 
 	/**
@@ -91,9 +91,9 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetConnectionStringStringString() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", this.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
 		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", null, null);
-		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", this.dbEnumSql2005.getConnectionString(sqlServerDataSource));
+		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseEnumTest.dbEnumSql2005.getConnectionString(sqlServerDataSource));
 	}
 
 	/**
@@ -101,15 +101,15 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetAllTypes() {
-		List<DatabaseTypeEnum> typeList = dbEnum.getAllTypes();
+		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
 		assertEquals(7, typeList.size());
-		assertEquals(dbEnum.HSqlDb, typeList.get(0));
-		assertEquals(dbEnum.MySQL, typeList.get(1));
-		assertEquals(dbEnum.ODBC, typeList.get(2));
-		assertEquals(dbEnum.PostgreSQL, typeList.get(3));
-		assertEquals(dbEnum.SqlServer2000, typeList.get(4));
-		assertEquals(dbEnum.SqlServer2005, typeList.get(5));
-		assertEquals(dbEnum.H2, typeList.get(6));
+		assertEquals(DatabaseTypeEnum.HSqlDb, typeList.get(0));
+		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(1));
+		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(2));
+		assertEquals(DatabaseTypeEnum.PostgreSQL, typeList.get(3));
+		assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(4));
+		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(5));
+		assertEquals(DatabaseTypeEnum.H2, typeList.get(6));
 	}
 	
 
@@ -118,9 +118,9 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetDatabaseEnumByDriverClass() {
-		assertEquals(dbEnum.SqlServer2000, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
-		assertEquals(dbEnum.SqlServer2005, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
-		assertEquals(null, dbEnum.getDatabaseEnumByDriverClass("com.microsoft.xxx"));	
+		assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
+		assertEquals(DatabaseTypeEnum.SqlServer2005, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+		assertEquals(null, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.xxx"));	
 	}
 
 }

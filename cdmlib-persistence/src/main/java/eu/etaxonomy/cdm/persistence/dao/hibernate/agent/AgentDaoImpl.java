@@ -18,15 +18,13 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 
 @Repository
 public class AgentDaoImpl extends IdentifiableDaoBase<Agent> implements IAgentDao{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentDaoImpl.class);
 
 	public AgentDaoImpl() {

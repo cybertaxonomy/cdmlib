@@ -9,13 +9,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 /**

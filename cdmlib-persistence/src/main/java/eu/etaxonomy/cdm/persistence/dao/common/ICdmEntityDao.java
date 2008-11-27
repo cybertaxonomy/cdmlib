@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

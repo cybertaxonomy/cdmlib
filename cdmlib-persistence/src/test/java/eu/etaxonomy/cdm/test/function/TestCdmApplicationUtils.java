@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
  * @version 1.0
  */
 public class TestCdmApplicationUtils {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TestCdmApplicationUtils.class);
 
 	private boolean testWritableResourceDirectory(){

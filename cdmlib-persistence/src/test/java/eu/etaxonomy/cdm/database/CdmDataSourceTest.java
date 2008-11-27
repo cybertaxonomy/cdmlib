@@ -280,6 +280,7 @@ public class CdmDataSourceTest {
 		String dataSourceString = "tmp";
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 		
+		@SuppressWarnings("unused")
 		String servername = "server";
 		String db = "testHsqlDb";
 		String username = "username";

@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
  *
  */
 public class DaoBaseTest  extends CdmUnitTestBase{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DaoBaseTest.class);
 	
 	@Autowired

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 @Repository
 public class LanguageStringDaoImpl 
 extends LanguageStringBaseDaoImpl<LanguageString> implements ILanguageStringDao {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageStringDaoImpl.class);
 
 	public LanguageStringDaoImpl() {

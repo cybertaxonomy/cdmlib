@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 public class HomotypicalGroupDaoHibernateImpl
 extends CdmEntityDaoBase<HomotypicalGroup> implements IHomotypicalGroupDao {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HomotypicalGroupDaoHibernateImpl.class);
 
 	public HomotypicalGroupDaoHibernateImpl() {

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 @Repository
 public class RepresentationDaoImpl 
 extends LanguageStringBaseDaoImpl<Representation> implements IRepresentationDao {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RepresentationDaoImpl.class);
 
 	public RepresentationDaoImpl() {

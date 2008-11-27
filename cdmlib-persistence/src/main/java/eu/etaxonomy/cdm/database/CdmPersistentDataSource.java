@@ -9,11 +9,15 @@
 
 package eu.etaxonomy.cdm.database;
 
+import static eu.etaxonomy.cdm.common.XmlHelp.getBeansRoot;
+import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
+import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
+import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -37,11 +41,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-
-import static eu.etaxonomy.cdm.common.XmlHelp.getBeansRoot;
-import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
-import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
-import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 
 
 /**
@@ -232,6 +231,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 * Returns the list of properties that are defined in the datasource    
 	 * @return 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Attribute> getDatasourceAttributes(){
 		List<Attribute> result = new ArrayList<Attribute>();
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
@@ -291,6 +291,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 * datsource properties (url, username, password, ...)
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public BeanDefinition getDatasourceBean(){
 		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDatasourceProperty(DbProperties.DRIVER_CLASS));
 		
@@ -502,6 +503,7 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 * Returns a list of all datasources stored in the datasource config file
 	 * @return all existing data sources
 	 */
+	@SuppressWarnings("unchecked")
 	static public List<CdmPersistentDataSource> getAllDataSources(){
 		List<CdmPersistentDataSource> dataSources = new ArrayList<CdmPersistentDataSource>();
 		
@@ -600,16 +602,6 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 			logger.warn("File " + (file == null?"null":file.getAbsolutePath()) + " does not exist in the file system");
 			return null;
 		}
-	}
-	
-	
-	/**
-	 * Filter class to define datasource file format
-	 */
-	private static class DataSourceFileNameFilter implements FilenameFilter{
-		public boolean accept(File dir, String name) {
-	        return (name.endsWith(DATASOURCE_FILE_NAME));
-	    }
 	}
 	
 	public boolean equals(Object obj){

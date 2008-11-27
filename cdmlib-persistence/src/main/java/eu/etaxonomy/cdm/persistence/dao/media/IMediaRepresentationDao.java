@@ -6,8 +6,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.media;
 
-import java.util.List;
-
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 

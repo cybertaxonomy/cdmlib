@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 @Repository
 public class NomenclaturalStatusDaoHibernateImpl 
 			extends ReferencedEntityDaoImpl<NomenclaturalStatus> implements INomenclaturalStatusDao {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NomenclaturalStatusDaoHibernateImpl.class);
 
 	public NomenclaturalStatusDaoHibernateImpl() {

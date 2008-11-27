@@ -3,12 +3,12 @@ package eu.etaxonomy.cdm.test.function;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
 
 
 
 public class TestSessionFactory {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TestSessionFactory.class);
 
 

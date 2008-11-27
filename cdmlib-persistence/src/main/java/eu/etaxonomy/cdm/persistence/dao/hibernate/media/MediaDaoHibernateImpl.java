@@ -8,9 +8,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 

@@ -9,13 +9,17 @@
 
 package eu.etaxonomy.cdm.database;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author a.mueller
  *
  */
 public class DataSourceNotFoundException extends Exception {
-
-
+	private static final long serialVersionUID = 5269129655671736295L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DataSourceNotFoundException.class);
+	
 	/**
 	 * @param message
 	 */

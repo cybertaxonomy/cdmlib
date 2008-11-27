@@ -37,35 +37,35 @@ public class TestPersistence {
 	
 	public void testAppController(){
 		
-//		logger.info("Create name objects...");
-//		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
-//		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
-//		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
-//		
-//		logger.info("Create reference objects...");
-//		ReferenceBase sec = Journal.NewInstance();
-//		sec.setTitleCache("TestJournal");
-//		
-//		logger.info("Create taxon objects...");
-//		Taxon childTaxon = Taxon.NewInstance(tn, sec);
-//		Synonym syn = Synonym.NewInstance(tn3, sec);
-//		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
-//		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
-//		parentTaxon.setUuid(TEST_TAXON_UUID);
-//		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
-//		
-//		
-//		// test 
-//		tn.setGenusOrUninomial("tn1-Genus1");
-//		tn3.setGenusOrUninomial("tn3-genus");
-//		
-//		logger.info("Create new Author agent...");
-//		Person team= Person.NewInstance();
-//		team.setTitleCache("AuthorAgent1");
-//		tn.setCombinationAuthorTeam(team);
-//		
-//		logger.info("Save objects ...");
-// 		
+		logger.info("Create name objects...");
+		NonViralName tn = NonViralName.NewInstance(Rank.SPECIES());
+		BotanicalName tn3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
+		
+		logger.info("Create reference objects...");
+		ReferenceBase sec = Journal.NewInstance();
+		sec.setTitleCache("TestJournal");
+		
+		logger.info("Create taxon objects...");
+		Taxon childTaxon = Taxon.NewInstance(tn, sec);
+		Synonym syn = Synonym.NewInstance(tn3, sec);
+		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
+		Taxon parentTaxon = Taxon.NewInstance(parentName, sec);
+		parentTaxon.setUuid(TEST_TAXON_UUID);
+		parentTaxon.addTaxonomicChild(childTaxon, sec, null);
+		
+		
+		// test 
+		tn.setGenusOrUninomial("tn1-Genus1");
+		tn3.setGenusOrUninomial("tn3-genus");
+		
+		logger.info("Create new Author agent...");
+		Person team= Person.NewInstance();
+		team.setTitleCache("AuthorAgent1");
+		tn.setCombinationAuthorTeam(team);
+		
+		logger.info("Save objects ...");
+ 		
 //		appCtr.getTaxonService().saveTaxon(parentTaxon);
 //		
 //		// load Name list 
@@ -96,7 +96,7 @@ public class TestPersistence {
 	private void test(){
 		System.out.println("Start ...");
 		TestPersistence sc = new TestPersistence();
-    	//testAppController();
+    	sc.testAppController();
     	System.out.println("\nEnd ...");
 	}
 	

@@ -769,7 +769,6 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
-cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

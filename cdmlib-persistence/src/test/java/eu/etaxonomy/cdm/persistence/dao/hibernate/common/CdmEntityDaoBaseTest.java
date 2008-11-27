@@ -36,10 +36,7 @@ import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
 public class CdmEntityDaoBaseTest extends CdmUnitTestBase{
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBaseTest.class);
 	
-
-	
 	private static UUID taxonUUID;
-	private static boolean isInitialized;
 	
 	@Autowired
 	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
