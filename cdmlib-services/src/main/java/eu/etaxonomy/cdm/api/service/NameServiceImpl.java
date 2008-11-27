@@ -104,7 +104,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<TaxonNameBase> taxonNameCollection){
+	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonNameCollection){
 		return saveCdmObjectAll(taxonNameCollection);
 	}
 	

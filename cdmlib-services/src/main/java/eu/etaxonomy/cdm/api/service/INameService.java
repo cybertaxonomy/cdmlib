@@ -38,7 +38,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * Saves a collection of  TaxonNames and return its UUID@param taxonCollection
 	 * @return
 	 */
-	public abstract Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<TaxonNameBase> taxonCollection);
+	public abstract Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonCollection);
 
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
