@@ -30,15 +30,18 @@ import javax.persistence.*;
  */
 @Entity(name="CDM_VIEW")
 public class View extends CdmBase implements IReferencedEntity{
-	static Logger logger = Logger.getLogger(View.class);
+	private static final long serialVersionUID = 3668860188614455213L;
+	private static final Logger logger = Logger.getLogger(View.class);
+	
 	private String name;
 	private String description;
 	private ReferenceBase reference;
-	private Set<View> superViews = new HashSet();
-	private Set<CdmBase> members = new HashSet();
-	private Set<CdmBase> nonMembers = new HashSet();
+	private Set<View> superViews = new HashSet<View>();
+	private Set<CdmBase> members = new HashSet<CdmBase>();
+	private Set<CdmBase> nonMembers = new HashSet<CdmBase>();
 	
 	public String getName(){
+		logger.debug("getName");
 		return this.name;
 	}
 	public void setName(String name){
