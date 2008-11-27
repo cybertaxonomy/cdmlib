@@ -189,6 +189,8 @@ public class EditGeoService {
 		
 		//result
 		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
+		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
+		
 		return result;
 	}
 	
