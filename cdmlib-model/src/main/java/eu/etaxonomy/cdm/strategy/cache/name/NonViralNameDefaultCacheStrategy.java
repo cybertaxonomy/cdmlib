@@ -361,10 +361,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		protected String getRanklessNameCache(NonViralName nonViralName){
 			String result = "";
-			result = (result + (nonViralName.getGenusOrUninomial())).trim().replace("null", "-");
+			result = (result + (nonViralName.getGenusOrUninomial())).trim().replace("null", "");
 			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet())).trim();
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim();
-			result = result.trim().replace("null", "-");
+			result = result.trim().replace("null", "");
 			//result += " (rankless)";
 			result = addAppendedPhrase(result, nonViralName);
 			return result;			
