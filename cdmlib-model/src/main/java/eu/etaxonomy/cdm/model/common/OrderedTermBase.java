@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.annotation.XmlAccessType;
