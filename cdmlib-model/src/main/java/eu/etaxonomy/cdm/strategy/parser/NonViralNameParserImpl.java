@@ -291,8 +291,11 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		boolean isInReference = separator.matches(inReferenceSeparator);
 	    
 	    //parse subparts
-	    parseFullName(nameToBeFilled, name, rank, makeEmpty);
-	    parseReference(nameToBeFilled, referenceString, isInReference); 
+	    
+		int oldProblemEnds = nameToBeFilled.getProblemEnds();
+		parseFullName(nameToBeFilled, name, rank, makeEmpty);
+	    nameToBeFilled.setProblemEnds(oldProblemEnds);
+		parseReference(nameToBeFilled, referenceString, isInReference); 
 	    INomenclaturalReference<?> ref = nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
@@ -301,7 +304,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	    int nameAndSeparatorLength = nameAndSeparator.length();
 	    int fullRefLength = nameToBeFilled.getFullTitleCache().length();
 	    
-	    if (nameToBeFilled.isProtectedTitleCache() ){
+	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getRank() == null ){
 	    	start = Math.max(0, start);
 		}else{
 			if (ref != null && ref.getHasProblem()){
@@ -674,7 +677,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		    }
 		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
-				if (rank != null && rank.isSupraGeneric()){
+				if (rank != null && (rank.isSupraGeneric()|| rank.isGenus())){
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 				} 
