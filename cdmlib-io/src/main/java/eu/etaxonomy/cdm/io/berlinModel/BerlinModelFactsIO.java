@@ -108,7 +108,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 				result.put(factCategoryId, feature);
 	
 			}
-			Collection col = result.getAllValues();
+			Collection<Feature> col = result.getAllValues();
 			termService.saveTermsAll(col);
 			return result;
 		} catch (SQLException e) {
