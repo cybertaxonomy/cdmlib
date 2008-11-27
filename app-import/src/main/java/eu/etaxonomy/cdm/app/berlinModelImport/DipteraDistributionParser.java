@@ -46,6 +46,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class DipteraDistributionParser {
 	private static final Logger logger = Logger.getLogger(DipteraDistributionParser.class);
 	
+	private static ICdmDataSource cdmDestination = CdmDestinations.cdm_v1_diptera();
+	
+	
 	final static String epiSplitter = "(\\s+|\\[|\\]|\\(|\\))"; //( ' '+| '(' | ')'| '[' | ']' )
 	static Pattern pattern = null;
 	
@@ -391,7 +394,6 @@ public class DipteraDistributionParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ICdmDataSource cdmDestination = CdmDestinations.localH2();
 		CdmApplicationController app = null;
 		try {
 			DbSchemaValidation val = DbSchemaValidation.UPDATE;
