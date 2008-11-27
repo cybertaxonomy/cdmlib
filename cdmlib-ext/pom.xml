@@ -12,7 +12,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cdmlib-ext</artifactId>
-  <name>CDM Services</name>
+  <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-extern/</connection>
