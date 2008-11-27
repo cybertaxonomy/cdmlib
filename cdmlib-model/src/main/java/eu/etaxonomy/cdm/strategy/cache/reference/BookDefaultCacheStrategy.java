@@ -41,7 +41,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 	 * @return
 	 */
 	public static BookDefaultCacheStrategy NewInstance(){
-		return new BookDefaultCacheStrategy();
+		return new BookDefaultCacheStrategy<Book>();
 	}
 	
 	/**
