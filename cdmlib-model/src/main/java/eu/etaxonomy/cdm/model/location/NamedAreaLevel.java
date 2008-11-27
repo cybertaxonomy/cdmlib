@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "NamedAreaLevel")
 @Entity
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
+	private static final long serialVersionUID = -7977901140330659208L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NamedAreaLevel.class);
 
 	private static final UUID uuidTdwgLevel1 = UUID.fromString("cd7771b2-7427-4a01-9057-7d7a897dddaf");

@@ -9,22 +9,15 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import au.com.bytecode.opencsv.CSVWriter;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -34,6 +27,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.common.ILoadableTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -51,17 +50,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
 public class WaterbodyOrCountry extends NamedArea {
-//public class WaterbodyOrCountry extends DefinedTermBase<WaterbodyOrCountry> {
-
+	private static final long serialVersionUID = -6791671976199722843L;
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
+
 	/**
 	 * 2 character ISO 3166 Country codes
 	 */
 	@XmlAttribute(name = "iso3166_A2")
 	private char[] iso3166_A2 = new char[2];
-	
-//    @XmlElement(name = "ValidPeriod")
-//	private TimePeriod validPeriod;
 	
     @XmlElementWrapper(name = "Continents")
     @XmlElement(name = "Continent")

@@ -49,7 +49,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "NamedArea")
 @Entity
 public class NamedArea extends OrderedTermBase<NamedArea> {
-	static Logger logger = Logger.getLogger(NamedArea.class);
+	private static final long serialVersionUID = 6248434369557403036L;
+	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
 	//description of time valid context of this area. e.g. year range
     @XmlElement(name = "ValidPeriod")
@@ -85,6 +86,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * @return
 	 */
 	public static NamedArea NewInstance(){
+		logger.debug("NewInstance");
 		return new NamedArea();
 	}
 
@@ -192,6 +194,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 			TdwgArea.addTdwgArea(this);
 		}
 	}
+
+
 
 	
 	

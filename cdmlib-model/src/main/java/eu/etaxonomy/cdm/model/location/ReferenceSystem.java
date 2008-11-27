@@ -30,8 +30,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReferenceSystem")
 @XmlRootElement(name = "ReferenceSystem")
 @Entity
-public class ReferenceSystem extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(ReferenceSystem.class);
+public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
+	private static final long serialVersionUID = 2704455299046749175L;
+	private static final Logger logger = Logger.getLogger(ReferenceSystem.class);
 
 	/**
 	 * Factory method

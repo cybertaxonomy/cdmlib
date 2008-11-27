@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 
@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 @XmlRootElement(name = "TdwgArea")
 @Entity
 public class TdwgArea extends NamedArea {
+	private static final long serialVersionUID = 4662215686356109015L;
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
 
 	

@@ -30,8 +30,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @XmlType(name = "Continent")
 @XmlRootElement(name = "Continent")
 @Entity
-public class Continent extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(Continent.class);
+public class Continent extends DefinedTermBase<Continent> {
+	private static final long serialVersionUID = 4650684072484353151L;
+	private static final Logger logger = Logger.getLogger(Continent.class);
 
 	private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
@@ -48,6 +49,7 @@ public class Continent extends DefinedTermBase {
 	 * @return
 	 */
 	public static Continent NewInstance(){
+		logger.debug("NewInstance");
 		return new Continent();
 	}
 

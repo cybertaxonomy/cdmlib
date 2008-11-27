@@ -32,8 +32,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NamedAreaType")
 @XmlRootElement(name = "NamedAreaType")
 @Entity
-public class NamedAreaType extends DefinedTermBase {
-	public static final Logger logger = Logger.getLogger(NamedAreaType.class);
+public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
+	private static final long serialVersionUID = 8280172429797206548L;
+	private static final Logger logger = Logger.getLogger(NamedAreaType.class);
 
 	private static final UUID uuidNaturalArea = UUID.fromString("cc33167c-d366-4030-b984-6b14e4f5fd22");
 	private static final UUID uuidAdministrationArea = UUID.fromString("1799f581-f425-40d6-a4db-ec2c638c0e92");
@@ -45,6 +46,7 @@ public class NamedAreaType extends DefinedTermBase {
 	 * @return
 	 */
 	public static NamedAreaType NewInstance(String term, String label, String labelAbbrev){
+		logger.debug("NewInstance");
 		return new NamedAreaType(term, label, labelAbbrev);
 	}
 	
