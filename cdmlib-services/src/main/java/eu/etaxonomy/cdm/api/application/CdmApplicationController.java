@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 
@@ -188,7 +189,7 @@ public class CdmApplicationController {
 	 */
 	public boolean testDefinedTermsAreMissing(){
 		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		DefinedTermBase english = this.getTermService().getTermByUri(englishUuid.toString());
+		DefinedTermBase<?> english = this.getTermService().getTermByUri(englishUuid.toString());
 		if ( english == null || ! english.getUuid().equals(englishUuid)){
 			return true;
 		}else{

@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -45,8 +44,6 @@ public class TestDatabase {
 	public void testNewDatabaseConnection(){
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
-			IDatabaseService dbService = appCtr.getDatabaseService();
-			INameService nameService = appCtr.getNameService();
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
@@ -84,7 +81,7 @@ public class TestDatabase {
 			homotypName.setGenusOrUninomial("Subgenus");
 			homotypName.setInfraGenericEpithet("homotyp");
 			
-			Synonym synonym = Synonym.NewInstance(homotypName, journal);
+			//Synonym synonym = Synonym.NewInstance(homotypName, journal);
 			
 			System.out.println("Taxa of " + botanicalName + ": " + botanicalName.getTaxonBases());
 			System.out.println("Synonyms of " + homotypName + ": " + homotypName.getSynonyms());
@@ -97,8 +94,6 @@ public class TestDatabase {
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);
 			
-			IDatabaseService dbService = appCtr.getDatabaseService();
-			INameService nameService = appCtr.getNameService();
 			appCtr.close();
 
 		} catch (DataSourceNotFoundException e) {
@@ -196,8 +191,6 @@ public class TestDatabase {
 	}
 	
 	public void testPaddie(){
-		 UUID taxonUUID;
-		 boolean isInitialized;
 		
 
 		try {
@@ -225,8 +218,6 @@ public class TestDatabase {
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);
 			
-			IDatabaseService dbService = appCtr.getDatabaseService();
-			INameService nameService = appCtr.getNameService();
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 @Service
 @Transactional
 public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T> implements IAgentService<T> {
-    private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
 	private IAgentDao agentDao;
 	@Autowired

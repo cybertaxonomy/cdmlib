@@ -79,7 +79,7 @@ public class CreateDataTest {
 	
 	//just temporarly
 	public static ICdmDataSource cdm_test(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		//DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM"; 
 		String cdmUserName = "edit";
@@ -89,7 +89,7 @@ public class CreateDataTest {
 	
 	//just temporarly
 	public static ICdmDataSource paddie(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+//		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
 		String cdmServer = "PADDIE";
 		String cdmDB = "edit_test"; 
 		String cdmUserName = "andreas";
@@ -128,7 +128,7 @@ public class CreateDataTest {
 		genusTaxon.setUuid(UUID.fromString(genusUuid));
 		genusTaxon.getName().setUuid(UUID.fromString(genusNameUuid));
 		
-		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
+//		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
 		
 		app.getTaxonService().saveTaxon(genusTaxon);
 		//app.getTaxonService().saveTaxon(syn2);
@@ -140,7 +140,7 @@ public class CreateDataTest {
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		
 		
-		TaxonNameBase genusName2 = (TaxonNameBase)app.getNameService().getTaxonNameByUuid(UUID.fromString(genusNameUuid));
+		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().getTaxonNameByUuid(UUID.fromString(genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
 		for (TaxonBase tb : set){

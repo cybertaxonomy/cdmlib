@@ -3,7 +3,8 @@
  */
 package eu.etaxonomy.cdm.test.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
@@ -15,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class TermLoaderIntegrationTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermLoaderIntegrationTest.class);
 
 	/**
@@ -32,8 +33,8 @@ public class TermLoaderIntegrationTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		//CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		//CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
+//		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
+//		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
 	}
 
 	/**

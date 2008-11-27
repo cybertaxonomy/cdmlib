@@ -66,6 +66,7 @@ public class ReferenceServiceImpl<T extends ReferenceBase> extends IdentifiableS
 
 
 	public void generateTitleCache() {
+		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub
 		
 	}

@@ -153,22 +153,4 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 
 
 
-//	public void createDatabase(){
-//		this.connectToDatabase(databaseTypeEnum, server, database, username, password)
-//		
-//		
-//		loader.loadDefaultTerms(WaterbodyOrCountry.class);
-//		loader.loadDefaultTerms(Language.class);
-//		loader.loadDefaultTerms(Continent.class);
-//		loader.loadDefaultTerms(Rank.class);
-//		loader.loadDefaultTerms(TypeDesignationStatus.class);
-//		loader.loadDefaultTerms(NomenclaturalStatusType.class);
-//		loader.loadDefaultTerms(SynonymRelationshipType.class);
-//		loader.loadDefaultTerms(HybridRelationshipType.class);
-//		loader.loadDefaultTerms(NameRelationshipType.class);
-//		loader.loadDefaultTerms(ConceptRelationshipType.class);
-//	
-//	}
-
-
 }

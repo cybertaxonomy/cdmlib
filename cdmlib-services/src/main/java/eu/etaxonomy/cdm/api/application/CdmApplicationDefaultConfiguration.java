@@ -33,7 +33,8 @@ import eu.etaxonomy.cdm.api.service.ITermService;
  */
 @Component
 public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration {
-	private static Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
 
 	@Autowired
 	private INameService nameService;

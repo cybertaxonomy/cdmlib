@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 @Service
 @Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonService {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	
 	@Autowired

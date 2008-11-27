@@ -20,7 +20,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity> extends ServiceBase<T> 
 						implements IIdentifiableEntityService<T>{
-	static Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
+	@SuppressWarnings("unused")
+	private static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 //	protected IIdentifiableDao<T> dao;
 //
 //	protected void setEntityDao(IIdentifiableDao<T> dao){

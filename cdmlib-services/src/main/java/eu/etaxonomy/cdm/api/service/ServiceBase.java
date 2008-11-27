@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 
 public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
-	static Logger logger = Logger.getLogger(ServiceBase.class);
+	private static final Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	//flush after saving this number of objects
 	int flushAfterNo = 2000;

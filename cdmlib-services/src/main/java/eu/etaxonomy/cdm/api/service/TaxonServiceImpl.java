@@ -40,7 +40,7 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
-	static Logger logger = Logger.getLogger(TaxonServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 	
 	private ITaxonDao taxonDao;
 	
@@ -133,7 +133,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		}
 		
 		// Move oldTaxon to newTaxon
-		TaxonNameBase synonymName = oldTaxon.getName();
+		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
 		if (synonymType == null){
 			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
