@@ -176,7 +176,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
 			}
 		}
 		logger.info(i + " names handled");
-		Collection col = taxonNameMap.objects();
+		Collection<? extends TaxonNameBase<?,?>> col = taxonNameMap.objects();
 		nameService.saveTaxonNameAll(col);
 
 		logger.info("end makeTaxonNames ...");

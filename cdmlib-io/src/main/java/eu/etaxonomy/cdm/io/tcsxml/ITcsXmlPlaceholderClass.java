@@ -4,8 +4,6 @@ import org.jdom.Element;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-import org.apache.log4j.Logger;
-
 public interface ITcsXmlPlaceholderClass {
 
 	public abstract boolean makeMetaDataDetailed(

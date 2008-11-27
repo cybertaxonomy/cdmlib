@@ -117,8 +117,6 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		String dbAttrName;
-		String cdmAttrName;
 		
 		logger.info("start makeTaxa ...");
 		

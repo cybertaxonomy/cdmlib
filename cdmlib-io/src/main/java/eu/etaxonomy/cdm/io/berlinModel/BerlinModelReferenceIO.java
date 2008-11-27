@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -264,7 +265,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			}
 			//save and store in map
 			logger.info("Save nomenclatural preliminary references (" + refCounter.nomRefCount + ")");
-			referenceService.saveReferenceAll(nomRefDetailMap.objects());
+			Collection<ReferenceBase> col = nomRefDetailMap.objects();
+			referenceService.saveReferenceAll(col);
 			logger.info("Save bibliographical preliminary references (" + refCounter.referenceCount +")");
 			referenceService.saveReferenceAll(refDetailMap.objects());
 			

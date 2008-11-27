@@ -99,10 +99,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	}
 	
 	private boolean makeNamespaces(Element root){
-		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
-		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
-
-		String prefix;
 		tcsXmlNamespace = root.getNamespace();
 		if (tcsXmlNamespace == null 
 				/**|| tcNamespace == null 

@@ -77,8 +77,6 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		INameService nameService = config.getCdmAppController().getNameService();
 		
 		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
-		String dbAttrName;
-		String cdmAttrName;
 		
 		logger.info("start makeTypes ...");
 		
@@ -115,7 +113,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 				//PublishFlag xxx
 				
 				
-				TaxonNameBase taxonNameBase = taxonNameMap.get(nameId);
+				TaxonNameBase<?,?> taxonNameBase = taxonNameMap.get(nameId);
 				
 				if (taxonNameBase != null){
 					try{

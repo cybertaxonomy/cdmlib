@@ -12,9 +12,6 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +24,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
 
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -38,10 +34,8 @@ import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -103,7 +97,6 @@ public abstract class TcsXmlIoBase  extends CdmIoBase {
 		for(Content content: contentList){
 			boolean contentExists = false;
 			if (content instanceof Element){
-				Element elementContent = (Element)content;
 				for (CdmIoXmlMapperBase mapper : mapperList){
 					if (mapper.mapsSource(content, parentElement)){
 						contentExists = true;

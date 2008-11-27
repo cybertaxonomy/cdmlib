@@ -115,7 +115,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
 					
-					TaxonNameBase taxonNameBase;
+					TaxonNameBase<?,?> taxonNameBase;
 					if (bmiConfig.getNomenclaturalCode() != null){
 						taxonNameBase = bmiConfig.getNomenclaturalCode().getNewTaxonNameInstance(rank);
 					}else{
@@ -173,7 +173,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){
-						NonViralName nonViralName = (NonViralName)taxonNameBase;
+						NonViralName<?> nonViralName = (NonViralName<?>)taxonNameBase;
 						
 						//authorTeams
 						if (authorMap != null ){

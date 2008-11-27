@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.cfg.annotations.ResultsetMappingSecondPass;
 import org.jdom.Element;
 import org.jdom.Namespace;
 

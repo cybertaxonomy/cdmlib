@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.io.common;
 
 public class SourceConnectionException extends Exception {
+	private static final long serialVersionUID = -3846939002083939654L;
 
 	public SourceConnectionException() {
 		super();

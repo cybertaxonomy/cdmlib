@@ -5,13 +5,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class SpecimenIoBase  extends CdmIoBase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 
 	@Override

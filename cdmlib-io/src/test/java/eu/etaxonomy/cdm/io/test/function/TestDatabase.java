@@ -137,8 +137,7 @@ public class TestDatabase {
 
 		//Contact contact1 = new Contact();
 		//contact1.setEmail("someone@somewhere.org");
-		InstitutionalMembership membership 
-		= new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
+		InstitutionalMembership membership = new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
 		//agentData.add(contact1);
 
 		agentData.add(membership);

@@ -138,8 +138,6 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		String dbAttrName;
-		String cdmAttrName;
 		
 		logger.info("start makeTaxonRelationships ...");
 		
