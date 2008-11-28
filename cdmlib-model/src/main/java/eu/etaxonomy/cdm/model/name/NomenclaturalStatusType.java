@@ -652,20 +652,32 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	@Transient
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation) throws UnknownCdmTypeException{
 		if (statusAbbreviation == null){ throw new NullPointerException("statusAbbreviation is 'null' in getNomenclaturalStatusTypeByAbbreviation");
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. dub.")) { return NomenclaturalStatusType.DOUBTFUL();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. confus.")) { return NomenclaturalStatusType.CONFUSUM();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. illeg.")){return NomenclaturalStatusType.ILLEGITIMATE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. superfl.")){ return NomenclaturalStatusType.SUPERFLUOUS();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej.")) { return NomenclaturalStatusType.REJECTED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej.")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons. prop.")) { return NomenclaturalStatusType.CONSERVED_PROP();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons. prop.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. leg.")) { return NomenclaturalStatusType.LEGITIMATE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. nov.")) { return NomenclaturalStatusType.NOVUM();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej. prop.")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. rej. prop.")) { return NomenclaturalStatusType.REJECTED_PROP();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons.")) { return NomenclaturalStatusType.CONSERVED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. sanct.")) { return NomenclaturalStatusType.SANCTIONED();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. inval.")) { return NomenclaturalStatusType.INVALID();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. nud.")){ return NomenclaturalStatusType.NUDUM();
+		}else if (statusAbbreviation.equalsIgnoreCase("comb. inval.")){ return NomenclaturalStatusType.COMBINATION_INVALID();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. provis.")) { return NomenclaturalStatusType.PROVISIONAL();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. valid")) { return NomenclaturalStatusType.VALID();
+		}else if (statusAbbreviation.equalsIgnoreCase("opus. utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. subnud.")) { return NomenclaturalStatusType.SUBNUDUM();
-		}else if (statusAbbreviation.equalsIgnoreCase("opus utique oppr.")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
-
-		//TODO
+		//TODO make generic, use labels for map
 		}else {
 			if (statusAbbreviation == null){
 				statusAbbreviation = "(null)";
