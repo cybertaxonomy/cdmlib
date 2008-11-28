@@ -66,7 +66,6 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		
 //		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
 		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
-		IDescriptionService descriptionService = cdmApp.getDescriptionService();
 		ITermService termService = cdmApp.getTermService();
 
 		Source source = bmiConfig.getSource();
