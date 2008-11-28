@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -37,7 +38,7 @@ public class PalmaeTaxonXImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String tcsSource = TcsSources.taxonX_local();
 	static File source  = TcsSources.taxonX_localDir();
-	static ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae();
+	static ICdmDataSource cdmDestination = CdmDestinations.cdm_v1_palmae();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
@@ -62,6 +63,8 @@ public class PalmaeTaxonXImportActivator {
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
+		TransactionStatus tx = taxonXImportConfigurator.getCdmAppController().startTransaction();
+				
 		//new Test().invoke(tcsImportConfigurator);
 		if (source.isDirectory()){
 			
@@ -83,6 +86,7 @@ public class PalmaeTaxonXImportActivator {
 		}else{
 			success &= cdmImport.invoke(taxonXImportConfigurator);
 		}
+		taxonXImportConfigurator.getCdmAppController().commitTransaction(tx);		
 		return success;
 	}
 	
