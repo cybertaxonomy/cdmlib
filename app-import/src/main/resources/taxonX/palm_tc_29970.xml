@@ -2,14 +2,14 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
-<mods:name>Basu, Shyamal K.</mods:name>
+<mods:name><mods:namePart>Basu, Shyamal K.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus tenuis</name>
 <author>Roxb.</author>
@@ -17,17 +17,17 @@
 <bibref>Becc. in Hook. f. Fl. Brit. Ind. 6:447. 1892</bibref>
 <bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 262. 1908 and Appendix PI. 94. 1913</bibref>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"></div>
-<div type="vernacular">Jati bet, Pani bet, Sanchibet.</div>
-<div type="description">A thicket forming slender climber; stem cluster-forming, with leafsheath 1 - 2.5 cm in diameter, without leafsheath 5-15 mm in diameter. Leaves ecirrate, 60 cm - 1 m long; leafsheath with conspicuous knee, armed with small broad based spines confluent at their bases, developing from transverse crests; petiole to 15cm long; rachis armed on upper side with 2-2.5 cm long curved spines and along both sides with 2 - 2.5 cm long straight needle-like spines; leaflets linear-ensiform or narrowly lanceolate, to 35 cm long, to 15 mm broad at middle, equidistant, gradually smaller towards the apex; uppermost leaflets smallest. Male inflorescence slender, flagelliform, ultra decompound; rachillae 2 - 3 cm long with 2 series of 6 -10 male flowers; each 4 mm long. Female inflorescence slender, flagelliform, simply decompound, partial inflorescences 15 - 25 cm long with? -10 incurved rachillae on each side. Female flowers distinctly 4-seriate in young inflore. ice, with a well developed neuter flower in each flower cluster. Fruit globose, 10-11 mm in diameter, straw coloured, shortly and acutely beaked; fruit scales in 15 longitudinal series, narrowly channelled at middle; 1-seeded; seed globose, deep red to blackish, rough and pitted on outer surface; fruiting perianth distinctly pedicelliform.</div>
-<div type="distribution">INDIA (Uttar Pradesh, eastward to West Bengal , Assam, Meghalaya, Manipur, Tripura, Nagaland), BANGLADESH, BURMA, SOUTH VIETNAM.</div>
-<div type="biology_ecology">Common in the lower hill valleys and seasonal swamps. Common associated climbers are Cissus and Toddelia.</div>
-<div type="cultivation">Experimental cultivation exists in the Indian Botanic Garden, Howrah and Forest Research Institute, Dehra Dun. It is also cultivated in trial plots of the Kerala Forest Research Institute, Peechi, Kerala and Forest Research Institute, Chittagong, Bangladesh</div>
-<div type="conservation"></div>
-<div type="uses">Cane is used for making rough baskets and various other items for local use. Ripe fruits are edible and sold in the village markets of lower Bengal. The Mikir tribe of Assam plains eat the roasted young shoot of Calamus tenuis.</div>
-<div type="discussion"></div>
-<div type="materials_examined"></div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Jati bet, Pani bet, Sanchibet.</p></div>
+<div type="description"><p>A thicket forming slender climber; stem cluster-forming, with leafsheath 1 - 2.5 cm in diameter, without leafsheath 5-15 mm in diameter. Leaves ecirrate, 60 cm - 1 m long; leafsheath with conspicuous knee, armed with small broad based spines confluent at their bases, developing from transverse crests; petiole to 15cm long; rachis armed on upper side with 2-2.5 cm long curved spines and along both sides with 2 - 2.5 cm long straight needle-like spines; leaflets linear-ensiform or narrowly lanceolate, to 35 cm long, to 15 mm broad at middle, equidistant, gradually smaller towards the apex; uppermost leaflets smallest. Male inflorescence slender, flagelliform, ultra decompound; rachillae 2 - 3 cm long with 2 series of 6 -10 male flowers; each 4 mm long. Female inflorescence slender, flagelliform, simply decompound, partial inflorescences 15 - 25 cm long with? -10 incurved rachillae on each side. Female flowers distinctly 4-seriate in young inflore. ice, with a well developed neuter flower in each flower cluster. Fruit globose, 10-11 mm in diameter, straw coloured, shortly and acutely beaked; fruit scales in 15 longitudinal series, narrowly channelled at middle; 1-seeded; seed globose, deep red to blackish, rough and pitted on outer surface; fruiting perianth distinctly pedicelliform.</p></div>
+<div type="distribution"><p>INDIA (Uttar Pradesh, eastward to West Bengal , Assam, Meghalaya, Manipur, Tripura, Nagaland), BANGLADESH, BURMA, SOUTH VIETNAM.</p></div>
+<div type="biology_ecology"><p>Common in the lower hill valleys and seasonal swamps. Common associated climbers are Cissus and Toddelia.</p></div>
+<div type="cultivation"><p>Experimental cultivation exists in the Indian Botanic Garden, Howrah and Forest Research Institute, Dehra Dun. It is also cultivated in trial plots of the Kerala Forest Research Institute, Peechi, Kerala and Forest Research Institute, Chittagong, Bangladesh</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane is used for making rough baskets and various other items for local use. Ripe fruits are edible and sold in the village markets of lower Bengal. The Mikir tribe of Assam plains eat the roasted young shoot of Calamus tenuis.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

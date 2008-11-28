@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name><mods:namePart>Dransfield, J.</mods:namePart></mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ceratolobus subangulatus</name>
+<author>(Miq.) Becc.</author>
+<citation>Ann. Roy. Bot. Gard. Calcutta 11 (Suppl.): iii (1913)</citation>
+<bibref>Dransfield, Malay. Forester 41: 335 (1978)</bibref>
+<bibref>Dransfield, Kew Bull. 34: 12 (1979)</bibref>
+<bibref>Dransfield, Man. Ratt. Malay Pen. 251 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 171 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 199 (1992)</bibref>
+<synonymy>
+<name>Calamus subangulatus</name>
+<author>Miq.</author>
+<bibref>Miq., Prodr. Fl. Sum. 256, 594 (1861)</bibref>
+</synonymy>
+<synonymy>
+<name>Ceratolobus laevigatus</name>
+<author>Becc.</author>
+<bibref>Becc. in Hooker f., Fl. Br. India 6: 477 (1894)</bibref>
+<bibref>Furtado, Gard. Bull. Singapore 13: 354 (1951)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Faintly angled</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan to 10 m tall. Stem without leaf sheaths c. 4-7.5 mm diam., with sheaths to c. 6-17 mm diam., internodes 10-20 cm long. Leaf sheath dull to dark green with paler longitudinal lines when fresh, drying dull brown, armed with sparse triangular broad-based spines and chocolate-coloured scales; knee present; ocrea inconspicuous. Leaf to 70 cm including the cirrus to 35 cm; petiole absent or, rarely, short; leaflets lanceolate, c. 14 on each side of the rachis, to 25 &#215; 1 cm, arranged regularly or grouped, distant, stiff and &#177; divaricate, often with long drip-tips. Inflorescences erect, &#177; sessile; bract to 13 &#215; 2 cm, covered in deciduous chocolatecoloured scales. Fruit rounded or slightly beaked, to 1.5 &#215; 1.2 cm. Seed somewhat depressed; endosperm ruminate. Seedling leaf with four lanceolate leaflets. (Fig. 73, Pl. 14A).</p></div>
+<div type="distribution"><p>Widespread throughout Brunei at altitudes up to 250 m above sea level. Elsewhere throughout Borneo, Peninsular Malaysia, rare in Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>In Brunei C. subangulatus can often produce extensive entanglements in kerangas forest and on podsolised ridge tops. It is also found in mixed dipterocarp forest. Very variable in Peninsular Malaysia and Sumatra, in Borneo the commonest form has divaricate more or less regular leaflets. 
+Few other rattans have such divaricate leaflets; Calamus divaricatus is ecirrate and bears a well developed flagellum while Pogonotium divaricatum lacks cirri and bears auricles at the base of the petiole.</p></div>
+<div type="materials_examined"><p>BEL: Melilas, Bt.Batu Patam, Dransfield J. 6576; Sungai Liang, Andulau F.R, Wong 322. TEM: Amo, Wong 1739; Amo, K.Belalong, Wong 1186; Amo, K.Belalong, Stockdale 52; Batu Apoi, Bt.Gelagas (Bt.Suang), Simpson 2364. Without prov.: BRUN 15143; BRUN 15408.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

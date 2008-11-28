@@ -2,29 +2,29 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
-<mods:name>Dransfield, J.</mods:name>
+<mods:name><mods:namePart>Dransfield, J.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus divaricatus Becc. var. contrarius J.Dransf.</name>
 <author>J.Dransf.</author>
 <citation>Kew Bull. 45: 89 (1990)</citation>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"><lang>Latin</lang> - contrary</div>
-<div type="vernacular"></div>
-<div type="description">Slender montane rattan, similar in all respects to C. divaricatus var. divaricatus but differing in the much smaller leaf, not exceeding 25 cm long, bearing regular, lanceolate close leaflets, not at all divaricate, to 15 x 2 cm.</div>
-<div type="distribution">Known only from G Dulit. Endemic.</div>
-<div type="biology_ecology"></div>
-<div type="conservation"></div>
-<div type="uses">Not known.</div>
-<div type="discussion">C. divaricatus var. contrarius was collected in a shady moss forest near the edge of a cliff ate. 1,200m altitude.</div>
-<div type="materials_examined"></div>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Contrary</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender montane rattan, similar in all respects to C. divaricatus var. divaricatus but differing in the much smaller leaf, not exceeding 25 cm long, bearing regular, lanceolate close leaflets, not at all divaricate, to 15 x 2 cm.</p></div>
+<div type="distribution"><p>Known only from G Dulit. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>C. divaricatus var. contrarius was collected in a shady moss forest near the edge of a cliff ate. 1,200m altitude.</p></div>
+<div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

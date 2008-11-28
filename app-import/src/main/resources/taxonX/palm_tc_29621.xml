@@ -2,30 +2,30 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
-<mods:name>Basu, Shyamal K.</mods:name>
+<mods:name><mods:namePart>Basu, Shyamal K.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus kingianus</name>
 <author>Becc.</author>
 <citation>Ann. Roy. Bot. Gard. Calcutta 11:197. 1908 and Appendix PI. 53. 1913.</citation>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"></div>
-<div type="vernacular"></div>
-<div type="description">A slender cluster-forming climber; stem with leafsheath 10 - 12 mm in diameter. Leaves ecirrate to 70 cm long; leafsheath with slender flagellum and distinct knee, armed outside with closely packed short, straight spines; ocrea hairy, caducous; petiole about 16cm long, armed all along with solitary claws; leaflets about 12 in number; basal leaflets paired, alternate, middle leaflets opposite, distantly disposed, 20-26 cm long, 3-3.5 cm wide at middle, 5-nerved; uppermost leaflets digitate, shorter than others; terminal leaflets connate at base. Male inflorescence rigid, simply branched; primary bracts tubular, elongate, closely sheathing, flattened on both sides, obliquely truncate at mouth, armed with straight spines intermingled with short hooks; axial part of male inflorescence armed with small scattered hooks: partial inflorescences with longer terminal rachillae and 4-5 pendulous rachillae on each side below; rachillae 4- 9 cm long, attached on distinct cushion just outside the mouth of the respective basal bracts; male flowers ovate, acute, 5 mm long, 20 - 22 in number on each side of the rachilla; calyx more or less cylindrical with 3-broadly triangular; acute lobes; corolla twice longer than calyx. Female inflorescence twice branched; partial inflorescences delicate, with a few spines scattered on the tubular primary bracts; first order branches distinctly adnate to main axis; female rachillae 10-12 in number, alternate, attached above the mouth of the respective basal bracts. Fruit globose, about 1 cm in diameter, with small stigmatic remains, sessile; fruit scales greenish-yellow in colour, margins deep brown, shallowly channelled at middle. Seed not examined.</div>
-<div type="distribution">INDIA (Assam). Endemic.</div>
-<div type="biology_ecology">This thin stemmed bushy rattan prefers to grow prostrate on moist alluvium. Infrequent in its natural habitat.</div>
-<div type="cultivation">Not cultivated.</div>
-<div type="conservation"></div>
-<div type="uses">The cane is thin and delicate and therefore has no commercial value. Fruit pulp is eaten by the local people of Kokoi Reserve Forest, North Lakhimpore, Assam.</div>
-<div type="discussion"></div>
-<div type="materials_examined">Assam: Tangeli Bam, Oct. 1892, Prain's Collector 89 (CAL); North Lakhimpore, Kokoi Reserve Forest, 22.11.1957, Panigrahi 397 (CAL) ; Nowgong from Guahaty, 29.9.1957, Rao 9721 (CAL).</div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A slender cluster-forming climber; stem with leafsheath 10 - 12 mm in diameter. Leaves ecirrate to 70 cm long; leafsheath with slender flagellum and distinct knee, armed outside with closely packed short, straight spines; ocrea hairy, caducous; petiole about 16cm long, armed all along with solitary claws; leaflets about 12 in number; basal leaflets paired, alternate, middle leaflets opposite, distantly disposed, 20-26 cm long, 3-3.5 cm wide at middle, 5-nerved; uppermost leaflets digitate, shorter than others; terminal leaflets connate at base. Male inflorescence rigid, simply branched; primary bracts tubular, elongate, closely sheathing, flattened on both sides, obliquely truncate at mouth, armed with straight spines intermingled with short hooks; axial part of male inflorescence armed with small scattered hooks: partial inflorescences with longer terminal rachillae and 4-5 pendulous rachillae on each side below; rachillae 4- 9 cm long, attached on distinct cushion just outside the mouth of the respective basal bracts; male flowers ovate, acute, 5 mm long, 20 - 22 in number on each side of the rachilla; calyx more or less cylindrical with 3-broadly triangular; acute lobes; corolla twice longer than calyx. Female inflorescence twice branched; partial inflorescences delicate, with a few spines scattered on the tubular primary bracts; first order branches distinctly adnate to main axis; female rachillae 10-12 in number, alternate, attached above the mouth of the respective basal bracts. Fruit globose, about 1 cm in diameter, with small stigmatic remains, sessile; fruit scales greenish-yellow in colour, margins deep brown, shallowly channelled at middle. Seed not examined.</p></div>
+<div type="distribution"><p>INDIA (Assam). Endemic.</p></div>
+<div type="biology_ecology"><p>This thin stemmed bushy rattan prefers to grow prostrate on moist alluvium. Infrequent in its natural habitat.</p></div>
+<div type="cultivation"><p>Not cultivated.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The cane is thin and delicate and therefore has no commercial value. Fruit pulp is eaten by the local people of Kokoi Reserve Forest, North Lakhimpore, Assam.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Assam: Tangeli Bam, Oct. 1892, Prain's Collector 89 (CAL); North Lakhimpore, Kokoi Reserve Forest, 22.11.1957, Panigrahi 397 (CAL) ; Nowgong from Guahaty, 29.9.1957, Rao 9721 (CAL).</p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

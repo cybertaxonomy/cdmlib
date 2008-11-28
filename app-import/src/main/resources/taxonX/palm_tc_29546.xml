@@ -2,14 +2,14 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
-<mods:name>Basu, Shyamal K.</mods:name>
+<mods:name><mods:namePart>Basu, Shyamal K.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus gracilis</name>
 <author>Roxb.</author>
@@ -17,17 +17,17 @@
 <bibref>Beccari in Hook. f. Fl. Brit. Ind. 6:453. 1893</bibref>
 <bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 11: 318. 1908 and Appendix Pl. 124. 1913.</bibref>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"></div>
-<div type="vernacular"></div>
-<div type="description">A slender climber; stem cluster-forming, with leaf sheath 15-20 mm in diameter. Leaves ecirrate to 70 cm long; leafsheath with flagellum, armed with long and short needle-like spines; longest spines about 3 cm long; ocrea with distinct hairy projection; petiole to 3 cm long, concave-convex, armed with straight spines along the margins; rachis armed below with bulbous-based straight spines; leaflets in groups with 2-4 leaflets in each opposite groups, deflected in one plane, narrowly oblanceolatc, longer leaflets to 50 cm long, 1 cm wide at broadest part; lowermost leaflets to 25 cm long, 3-5 nerved on upper side; nerves more or less smooth on upper side, bristly on lower side; terminal leaflets two-third connate from base. Male and female inflorescences flagclli-form, delicately branched, axial part aculeate; male rachillac 3 - 5 cm long; male flowers distichous, 5 mm x 2 mm; female flowers horizontally projected from the rachilla. Fruits broadly ovoid, elliptic, 2.6-3 cm long, 1.4-1.7 cm broad, equally rounded on both sides; fruit scales straw-yellow in colour, deeply channelled at middle, arranged in 21 longitudinal series; seed ovoid; endosperm ruminate; embryo lateral in the middle of the outer face.</div>
-<div type="distribution">INDIA (Meghalaya, Arunachal Pradesh, Assam), BANGLADESH.</div>
-<div type="biology_ecology">In evergreen forests, mostly at 1000-1500 m, in lower to middle hill forests of the Eastern Himalaya.</div>
-<div type="cultivation">Cultivated in the Indian Botanic Garden, Howrah.</div>
-<div type="conservation"></div>
-<div type="uses">Unknown.</div>
-<div type="discussion">Its present availability in Bangladesh could not be confirmed due to non-availability of recent collections in any of the Bangladesh herbaria.</div>
-<div type="materials_examined"></div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A slender climber; stem cluster-forming, with leaf sheath 15-20 mm in diameter. Leaves ecirrate to 70 cm long; leafsheath with flagellum, armed with long and short needle-like spines; longest spines about 3 cm long; ocrea with distinct hairy projection; petiole to 3 cm long, concave-convex, armed with straight spines along the margins; rachis armed below with bulbous-based straight spines; leaflets in groups with 2-4 leaflets in each opposite groups, deflected in one plane, narrowly oblanceolatc, longer leaflets to 50 cm long, 1 cm wide at broadest part; lowermost leaflets to 25 cm long, 3-5 nerved on upper side; nerves more or less smooth on upper side, bristly on lower side; terminal leaflets two-third connate from base. Male and female inflorescences flagclli-form, delicately branched, axial part aculeate; male rachillac 3 - 5 cm long; male flowers distichous, 5 mm x 2 mm; female flowers horizontally projected from the rachilla. Fruits broadly ovoid, elliptic, 2.6-3 cm long, 1.4-1.7 cm broad, equally rounded on both sides; fruit scales straw-yellow in colour, deeply channelled at middle, arranged in 21 longitudinal series; seed ovoid; endosperm ruminate; embryo lateral in the middle of the outer face.</p></div>
+<div type="distribution"><p>INDIA (Meghalaya, Arunachal Pradesh, Assam), BANGLADESH.</p></div>
+<div type="biology_ecology"><p>In evergreen forests, mostly at 1000-1500 m, in lower to middle hill forests of the Eastern Himalaya.</p></div>
+<div type="cultivation"><p>Cultivated in the Indian Botanic Garden, Howrah.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Unknown.</p></div>
+<div type="discussion"><p>Its present availability in Bangladesh could not be confirmed due to non-availability of recent collections in any of the Bangladesh herbaria.</p></div>
+<div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

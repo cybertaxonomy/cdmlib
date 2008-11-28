@@ -1,0 +1,33 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name><mods:namePart>Dransfield, J.</mods:namePart></mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ceratolobus concolor</name>
+<author>Bl.</author>
+<citation>Rumphia 2: 165 (1843)</citation>
+<bibref>Dransfield, Kew Bull. 34: 22 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 175 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 204 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Concolorous</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Slender clustering rattan climbing to 15 m; stem without sheaths to c. 8 mm, with sheaths to 15 mm diam; internodes c. 15 cm. Leaf sheath grey at first, then becoming light green, armed with numerous minute, erect ,easily detached black spicules arranged in close low lateral ridges; knee conspicuous; ocrea poorly developed, tattering. Leaf to 1.5 m, including the cirrus to 70 cm; petiole rarely exceeding 5 cm; leaflets up to 7 on each side of the rachis, rhomboid with jagged upper margins, to 20 &#215; 6 cm, rarely larger, dark green on both surfaces. Inflorescences male and female superficially similar, sessile, erect; bract to 30 &#215; 5 cm, usually less, covered in scattered pale tomentum. Fruit rounded, c. 1.5 cm diam., covered in 12 vertical rows of orange-brown scales. Seed somewhat flattened, c. 12 &#215; 7 mm; endosperm deeply ruminate. Seedling leaf with 4 slightly praemorse, concolorous leaflets. (Fig. 75, Pl. 14B).</p></div>
+<div type="distribution"><p>Scattered throughout Brunei. Elsewhere found throughout Borneo, rare in Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>Ceratolobus concolor is usually found on gentle slopes in mixed dipterocarp forest at elevations up to about 850 m above sea level, apparently avoiding kerangas and waterlogged sites. It is easily distinguished from C. discolor by its concolorous leaflets. It could be confused with species of Korthalsia (but see notes under C. discolor).</p></div>
+<div type="materials_examined"><p>TEM: Amo, Bt.Belalong, Dransfield J. 7149; Amo, Kuala Belalong, Stockdale 22; Amo, Kuala Belalong, Stockdale 33; Amo, Kuala Belalong, Stockdale 40. TUT: Lamunin, Ladan Hills F.R., Wong 511.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

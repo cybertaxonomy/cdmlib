@@ -1,0 +1,34 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
+<mods:name><mods:namePart>Dransfield, J.</mods:namePart></mods:name>
+<mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
+<mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ceratolobus discolor</name>
+<author>Becc.</author>
+<citation>Malesia 3: 63 (1886)</citation>
+<bibref>Beccari, Ann. Roy. Bot. Gard. Calcutta 12(2): 7 (1918)</bibref>
+<bibref>Dransfield, Kew Bull. 34: 25 (1979)</bibref>
+<bibref>Dransfield, Ratt. Sabah 173 (1984)</bibref>
+<bibref>Dransfield, Ratt. Sarawak 201 (1992)</bibref>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology" lang="la"><p>Discolorous</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Moderate clustering rattan climbing to 15 m; stem without sheaths 6-11 mm diam., with sheaths to 30 mm diam., internodes to 35 cm long. Leaf sheath pinkish-grey green when fresh, rather densely covered with scurfy grey tomentum and armed with partial whorls of blackish spicules and longer paler spines to 2 cm; knee conspicuous; ocrea to 10 mm, tattering. Leaf to 2.5 m including the petiole to 35 cm and cirrus to 1.5 m; petiole armed with distant pale lateral spines to 25 mm. Leaflets 7-8 on each side of the rachis, to 35 &#215; 16 cm, rhomboid with coarse somewhat rounded lobing on the upper margins, dark green on the upper surface, chalky-white beneath. Inflorescences sessile, erect; bract to 80 &#215; 9 cm, usually less, dark brown, tough and almost woody, covered with dense deciduous chocolate-coloured scales. Fruit rounded, c. 1.5 cm diam., covered in 12 vertical rows of orange-brown scales. Seed rounded, c. 1.2 cm diam.; endosperm ruminate. Seedling leaf with 4 praemorse discolorous leaflets.</p></div>
+<div type="distribution"><p>Widespread in Brunei at altitudes up to 200 m above sea level. Elsewhere in W Kalimantan, Sarawak, very rare in Sabah, Sumatra.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None known.</p></div>
+<div type="discussion"><p>Ceratolobus discolor grows in a variety of forest types on hill slopes and in valley bottoms in the lowlands and up to c. 200 m above sea level. It is easily distinguished from C. concolor by its more robust size and conspicuously discolorous leaflets; it could be confused with species of Korthalsia but species of the latter genus have no knee, the leaflets are frequently stalked, the ocrea highly developed and, of course, the inflorescence is totally different.</p></div>
+<div type="materials_examined"><p>BEL: Labi, Labi Hills F. R., Coode 6830; Sungai Liang, Andulau F.R, Wong  489. Without prov.: BRUN 15120.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

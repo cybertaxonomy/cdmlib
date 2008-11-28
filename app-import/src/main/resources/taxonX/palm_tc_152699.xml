@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+		<mods:mods>
+		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
+		<mods:name><mods:namePart>Dransfield, J and Beentje, H.</mods:namePart></mods:name>
+		<mods:originInfo>
+			<mods:dateIssued>1995</mods:dateIssued>
+			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+		</mods:originInfo>
+		</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix reclinata</name>
+<author>Jacq.</author>
+<citation>Fragm. Bot. 1: 27, t. 24 (1801)</citation>
+<bibref>Jum. &amp; H. Perrier, Fl. Madagascar 30: 19, fig. 3 (1945)</bibref>
+<bibref>J.Dransf., Fl. Trop. E. Africa, Palmae: 15 (1986)</bibref>
+<type>T. 24, Jacq., Fragm. Bot.;;</type>
+<type_loc></type_loc>
+<synonymy>
+<name>Phoenix reclinata var. madagascariensis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 38, Beibl. 87: 4 (1906)</bibref>
+<bibref>Jum. &amp; H. Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille s&#233;r. 3, 1 (1): 60 (1913)
+</bibref>
+<bibref>Jum., Cat. Pl. Madagascar, Palmae: 23 (1938)</bibref>
+<type>Without locality; Baron; 2319b</type>
+<type_loc>Syntype K</type_loc>
+<type>Nosy Be, Mananara Avaratra, Lokobe forest; Hildebrandt; 3304</type>
+<type_loc>Syntypes K, P</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix comorensis</name>
+<author>Becc.</author>
+<bibref>Becc. in Bot. Jahrb. Syst. 38, Beibl. 87: 5 (1906)</bibref>
+<bibref>Becc., Palme del Madagascar 54 (1914)</bibref>
+</synonymy>
+<synonymy>
+<name>Phoenix reclinata var. comorensis</name>
+<author>(Becc.) Jum. &amp; H. Perrier</author>
+<bibref>(Becc.) Jum. &amp; H. Perrier, Fl. Madagascar 30: 20 (1945)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p>The wild date palm is widespread throughout the continent of Africa. It is one of the very few native palms of Madagascar that also occurs outside the island. On the basis of the very limited material available to him, Beccari considered the form occurring in Madagascar sufficiently distinct as to be recognized as a variety. However, in our view the Madagascar plants fit within the range of variation of the wild date in Africa, so that recognition of a separate variety does notseem justified.</p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Dara, Taratra, Taratsy (Jumelle &amp; On the basis of the very limited material available to Perrier 1913, 1945).</p></div>
+<div type="description"><p>Clustering dioecious palm, often thicket-forming. TRUNK 3 m tall, usually oblique, rarely erect, slender, to 15 cm diam., dull brown, with persistent leaf sheaths in 1-2 m below crown, irregularly marked with oblique circular leaf scars, cracked vertically; injured stem exuding clear yellowish gum. LEAVES 2-3 m long, arcuate; leaflets with the proximal ones modified as sharp spine-like acanthophylls, the distal regularly arranged in a single plane, median leaflets in groups of 2-5, 25-45 x 2.0-3.6 cm, lower leaflets often fanned, abaxial leaf surface with white scurfy indumentum. INFLORESCENCES with prophyll c. 70 cm long, greenish-yellow, covered with brown tomentum when young, two-keeled, splitting ventrally to reveal inflorescence. STAMINATE INFLORESCENCE erect in bud, arching when dead, peduncle not greatly elongating; rachillae to 20 cm long, to 1.5 mm diam., numerous, flexuous, arranged in irregular groups and spirals. STAMINATE FLOWERS creamy-white, musty scented; calyx cupule three-lobed, 1 mm high; petals 6-7 x 2-3 mm, apex thickened, acute-acuminate, margin minutely ciliate-dentate; stamens 6, sessile, 3-4 mm, linear-latrorse; pistillodes 3, minute. PISTILLATE INFLORESCENCE elongating beyond prophyll on fruit maturity; prophyll as in staminate; rachillae 9-26 cm long, c. 2 mm diam., thicker than those of the staminate inflorescence. PISTILLATE FLOWERS globose, 3-4 mm; carpels 3, usually only one reaching maturity. FRUIT ovoid-ellipsoid or almost obovoid, 18-20 x 9-12 mm, minutely mucronate, at the base with persistent perianth, ripening orange; mesocarp dry, becoming sweet. SEED 12-14 x 6 mm, deeply grooved (raphe) along ventral side; embryo centrally positioned on opposite side to raphe.</p></div>
+<div type="distribution"><p>NW and NE Madagascar, with reported stands in isolated sites in the SW; also in the Manakara area. P. reclinata is a widely distributed species growing throughout sub-tropical Africa, mostly restricted to dry, open areas, from sea-level to c.1500 m.</p></div>
+<div type="biology_ecology"><p>Riverine vegetation; seasonally inundated continent of Africa.</p></div>
+<div type="conservation"><p>Not threatened.</p></div>
+<div type="uses"><p>Leaflets used in basketry; fruits more or less edible.</p></div>
+<div type="discussion"><p>The vegetatively polymor phic nature of P. reclinata has led to the recognition of certain extreme forms as distinct species or varieties. A host of intermedi ate forms make it very difficult to delimit infraspecific taxa within the total range of variation. Despite the variation in gross veg etative morphology, all forms of P.  reclinata are grouped together by floral and fruit characters which vary very little within the species. Phoenix reclinata in Madagascar shows variation consistent with that of the species in Africa. It was first described from Madagascar by Beccari (1890), who later (1906, 1914) recorded it as P. recli nata var. madagascariensis Becc. on the basis of very minor differ ences in persistent fruit perianth. Jumelle &amp; Perrier (1913, 1945) considered this variety as synonymous with the species. Beccari (1906) separated P. comorensis from P. reclinata using the same characters. Jumelle &amp; Perrier (1945) considered this a variety of the species, but the differences are too small for the taxon to be upheld, and it is put into synonymy here.</p></div>
+<div type="materials_examined"><p>Comoro Is.: Mayotte, (y. fr.), Boivin 3100 (K, P); Moheli, June 1967 (fl., fr.), L. Bernardi 11792 (K); without any locality, Dec. 1848 (ster.), Boivin 2289 (K, P). Nosy Be: Lokobe forest, Dec. 1879 (fl.), Hildebrandt 3304 (BM, K, P)(syntype of P. reclinata var. madagascariensis). Iharana: 2 km S. of Iharana, June 1992 (infr.), Beentje &amp; Andriampaniry 4691 (K, MO, TAN), (fl.) 4692 (K, MO, TAN). Belo-Tsiribihina: Belo-Tsiribihina, (fl.), Decary 15535 (P). Mangoky: Isahaina, near Beroroha, Oct. 1933 (infr.), Humbert 11298 (K, P, TAN). Mananjary: without precise locality, March/April 1909 (fl.), Geay 8055 (P). Morondava: Morondava, sine die, Greve 154 (P); Sakondry plain, July 1898 (lvs.), Grandidier s.n. (P). Beroha: Mangoky R basin near Beroha, Perrier s.n. (P).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

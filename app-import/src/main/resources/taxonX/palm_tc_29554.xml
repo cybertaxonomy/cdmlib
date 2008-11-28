@@ -2,14 +2,14 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
-<mods:name>Basu, Shyamal K.</mods:name>
+<mods:name><mods:namePart>Basu, Shyamal K.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus guruba</name>
 <author>Buch-Ham</author>
@@ -17,17 +17,17 @@
 <bibref>Beccari in Hook. f. Fl. Brit. Ind. 6: 449. 1892</bibref>
 <bibref>Beccari in Ann. Roy. Bot. Gard.Calcutta 11: 299. 1908 and Appendix PI. 114. 1913.</bibref>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"></div>
-<div type="vernacular">Sundi bet, Orna bet, Jali bet, Jai bet, Jati bet</div>
-<div type="description">A slender thicket-forming climber; stem cluster-forming; with leafsheath to 2.5 cm in diameter; internodes to 30 cm long. Leaves ecirrate, to 120 cm long; leafsheath with prominent knee and delicate about 2.5 m long flagellum armed with subulate spines; leaflets numerous, equidistant, alternate to opposite, linear, prominently 3-nerved, to 60 cm long, to 2.5 cm broad at middle, green on both sides. Male and female inflorescences flagelliform, 2-3 m long, with many remote partial inflorescences; primary bracts conspicuous, split longitudinally into long free laminar appendages longer than the respective partial inflorescence. Fruit rounded pea-like, to 7 mm in diameter; fruiting perianth shortly pedicelliform; seed hard, deep red to blackish, surface rough and pitted, flat on one side.</div>
-<div type="distribution">INDIA (West Bengal, Assam, Meghalaya), BANGLADESH, BURMA, THAILAND.</div>
-<div type="biology_ecology">A component of the moist forest of eastern Himalaya up to an altitude of 3100 m. Frequent along village out-skirts. In the Chittagong hill tracts of Bangladesh this cane was found to grow taller in association with Licula peltata, the beautiful fan-palm, under a canopy of forest such as Tectona grandis, Lagerstroemia speciosa, Alstonia sp.</div>
-<div type="cultivation">Experimental cultivation exists in north Bengal under Silvicuhurist North Division, Jalpaiguri, arid in the Indian Botanic Garden, Howrah. Experimental cultivation also exists in the Forest Research Institute of Bangladesh, Chittagong, Bangladesh.</div>
-<div type="conservation"></div>
-<div type="uses">Cane is largely used for making rough baskets. Split canes are good material for making chair-bottoms. One of the most commercially exploited cane species in India.</div>
-<div type="discussion"></div>
-<div type="materials_examined"></div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Sundi bet, Orna bet, Jali bet, Jai bet, Jati bet</p></div>
+<div type="description"><p>A slender thicket-forming climber; stem cluster-forming; with leafsheath to 2.5 cm in diameter; internodes to 30 cm long. Leaves ecirrate, to 120 cm long; leafsheath with prominent knee and delicate about 2.5 m long flagellum armed with subulate spines; leaflets numerous, equidistant, alternate to opposite, linear, prominently 3-nerved, to 60 cm long, to 2.5 cm broad at middle, green on both sides. Male and female inflorescences flagelliform, 2-3 m long, with many remote partial inflorescences; primary bracts conspicuous, split longitudinally into long free laminar appendages longer than the respective partial inflorescence. Fruit rounded pea-like, to 7 mm in diameter; fruiting perianth shortly pedicelliform; seed hard, deep red to blackish, surface rough and pitted, flat on one side.</p></div>
+<div type="distribution"><p>INDIA (West Bengal, Assam, Meghalaya), BANGLADESH, BURMA, THAILAND.</p></div>
+<div type="biology_ecology"><p>A component of the moist forest of eastern Himalaya up to an altitude of 3100 m. Frequent along village out-skirts. In the Chittagong hill tracts of Bangladesh this cane was found to grow taller in association with Licula peltata, the beautiful fan-palm, under a canopy of forest such as Tectona grandis, Lagerstroemia speciosa, Alstonia sp.</p></div>
+<div type="cultivation"><p>Experimental cultivation exists in north Bengal under Silvicuhurist North Division, Jalpaiguri, arid in the Indian Botanic Garden, Howrah. Experimental cultivation also exists in the Forest Research Institute of Bangladesh, Chittagong, Bangladesh.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane is largely used for making rough baskets. Split canes are good material for making chair-bottoms. One of the most commercially exploited cane species in India.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

@@ -2,30 +2,30 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans (canes) in India. A Monographic Revision</mods:title></mods:titleInfo>
-<mods:name>Basu, Shyamal K.</mods:name>
+<mods:name><mods:namePart>Basu, Shyamal K.</mods:namePart></mods:name>
 <mods:originInfo><mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Forest Research Institute, Malaysia</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>
-<treatment type="species">
+<treatment rank="species">
 <nomenclature>
 <name>Calamus nambariensis</name>
 <author>Becc.</author>
 <citation>Ann. Roy. Bot. Gard. Calcutta 11:433.  1908 &amp;Appendix PI. 193, 194. 1913</citation>
 </nomenclature>
-<div type="introduction"></div>
-<div type="etymology"></div>
-<div type="vernacular"></div>
-<div type="description">A robust climber; stem cluster forming, with leafsheath to 4 cm in diameter. Leaves cirrate, to 3 m long; leafsheath with distinct knee, armed with broadly subulate, subseriate, horizontal to deflexed spines; petiole about 30 cm long, flattened upper, armed at margins with 2 - 3 cm long subulate spines; rachis with strong digitate claws on lowerr side; leaflets lanceolate, ensiform, variously spreading, remotely subequidistant; each about 50 cm long, 4 cm broad at middle, usually 5-nerved, nerves more or less smooth. Male inflorescence simply decompound; partial inflorescences with alternatre, 3 - 4 cm long rachillae; each with distinct cushion at the base, arching above; male flowers 3 mm long, 14-15 male flowers on each side of the rachillae; female rachillae sinuous, incurved, about 6-10 cm long, attached at the mouth of the basal bract. Fruit globose, 2.5 cm in diameter; fruit scales in 21 series; fruiting perianth pedicelliform.</div>
-<div type="distribution">INDIA (Assam). Endemic.</div>
-<div type="biology_ecology">Infrequent in the moist forests of Assam Valley.</div>
-<div type="cultivation">Not cultivated.</div>
-<div type="conservation"></div>
-<div type="uses">Cane is strong, exported from Assam to other states for making furniture frames.</div>
-<div type="discussion"></div>
-<div type="materials_examined">Assam : Jeypore, Feb. 1877, Nambar forest, Silviculturist (CAL); Assam : Jeypore, 15.12.1896, Silviculture Range (one sheet in DD). No recent collection available.</div>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>A robust climber; stem cluster forming, with leafsheath to 4 cm in diameter. Leaves cirrate, to 3 m long; leafsheath with distinct knee, armed with broadly subulate, subseriate, horizontal to deflexed spines; petiole about 30 cm long, flattened upper, armed at margins with 2 - 3 cm long subulate spines; rachis with strong digitate claws on lowerr side; leaflets lanceolate, ensiform, variously spreading, remotely subequidistant; each about 50 cm long, 4 cm broad at middle, usually 5-nerved, nerves more or less smooth. Male inflorescence simply decompound; partial inflorescences with alternatre, 3 - 4 cm long rachillae; each with distinct cushion at the base, arching above; male flowers 3 mm long, 14-15 male flowers on each side of the rachillae; female rachillae sinuous, incurved, about 6-10 cm long, attached at the mouth of the basal bract. Fruit globose, 2.5 cm in diameter; fruit scales in 21 series; fruiting perianth pedicelliform.</p></div>
+<div type="distribution"><p>INDIA (Assam). Endemic.</p></div>
+<div type="biology_ecology"><p>Infrequent in the moist forests of Assam Valley.</p></div>
+<div type="cultivation"><p>Not cultivated.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Cane is strong, exported from Assam to other states for making furniture frames.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Assam : Jeypore, Feb. 1877, Nambar forest, Silviculturist (CAL); Assam : Jeypore, 15.12.1896, Silviculture Range (one sheet in DD). No recent collection available.</p></div>
 </treatment>
 </taxonxBody>
 </taxonx>
