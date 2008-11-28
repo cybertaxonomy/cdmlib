@@ -227,7 +227,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	
 	private HashMap<Specimen, TypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
 			SimpleSpecimen simpleSpecimen, 
-			TaxonNameBase taxonName,
+			TaxonNameBase<?,?> taxonName,
 			TaxonXImportConfigurator config){
 		
 		HashMap<Specimen, TypeDesignationStatus> result = new HashMap<Specimen, TypeDesignationStatus>();
@@ -243,7 +243,8 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 			typeLocStatus = typeLocStatus.trim();
 			int pos = typeLocStatus.indexOf(" ");
 			if (pos == -1){
-				logger.warn("Unknown format: " + typeLocStatus);
+				logger.warn("Unknown format for type_loc : " + typeLocStatus);
+				result.put(originalSpecimen, null);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
 				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
@@ -345,6 +346,18 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	
+	private static Map<String, TypeDesignationStatus> statusMap;
+	private static void fillTypeStatusMap(){
+		statusMap = new HashMap<String, TypeDesignationStatus>();
+		statusMap.put("holotype", TypeDesignationStatus.HOLOTYPE());
+		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
+		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
+		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
+		statusMap.put("type", null);
+		//TODO to be continued
+	}
+	
+	
 	//TODO move to TypeDesignation class
 	/**
 	 * Returns the typeDesignationStatus according to a type designation status string
@@ -352,6 +365,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 	 * @return TypeDesignationStatus
 	 */
 	private static TypeDesignationStatus getStatusByStatusString(String statusString){
+		TypeDesignationStatus result = null;
 		if (statusString == null || "".equals(statusString.trim())){
 			return null;
 		}
@@ -359,19 +373,15 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		statusString = statusString.replace("typi", "typus");
 		statusString = statusString.replace("typus", "type");
 		statusString = statusString.replace("types", "type");
-		TypeDesignationStatus result = null;
-		Map<String, TypeDesignationStatus> statusMap = new HashMap<String, TypeDesignationStatus>();
-		statusMap.put("holotype", TypeDesignationStatus.HOLOTYPE());
-		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
-		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
-		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
-		statusMap.put("type", null);
-		
-		//TODO to be continued
-		
 		statusString = statusString.toLowerCase();
+		
+		if (statusMap == null){
+			fillTypeStatusMap();
+		}
 		result = statusMap.get(statusString);
-		if (result == null){
+		if (statusString.equals("type")){
+			logger.info("No type designation type");
+		}else if (result == null){
 			logger.warn("Unknown type status string: " + statusString);
 		}
 		return result;

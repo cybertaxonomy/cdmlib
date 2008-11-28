@@ -67,10 +67,10 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	public Map<Integer, Feature> fillFactCategories(IImportConfigurator config, CdmApplicationController cdmApp){
 		logger.warn("not yet implemented");
 		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
-		IDescriptionService descriptionService = cdmApp.getDescriptionService();
-		ITermService termService = cdmApp.getTermService();
-
-		Object source = config.getSource();
+//		IDescriptionService descriptionService = cdmApp.getDescriptionService();
+//		ITermService termService = cdmApp.getTermService();
+//
+//		Object source = config.getSource();
 		return featureMap;
 	}
 	
@@ -163,11 +163,12 @@ public class TaxonXDescriptionIO extends CdmIoBase implements ICdmIO {
 	}
 	
 	private void unlazyDescription(TaxonXImportConfigurator config, Taxon taxon){
-		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
-		taxonService.saveTaxon(taxon);
-		taxon.getDescriptions().size();
-		config.getCdmAppController().commitTransaction(txStatus);
+//		logger.warn("Preliminary commented");  //used single Transaction for all import instead !
+//		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
+//		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+//		taxonService.saveTaxon(taxon);
+//		taxon.getDescriptions().size();
+//		config.getCdmAppController().commitTransaction(txStatus);
 	}
 	
 	/* (non-Javadoc)
