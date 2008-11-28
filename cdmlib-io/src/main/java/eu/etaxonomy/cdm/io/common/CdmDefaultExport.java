@@ -10,8 +10,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
-import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.babadshanjan
