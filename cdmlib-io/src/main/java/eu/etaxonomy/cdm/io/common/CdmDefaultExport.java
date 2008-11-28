@@ -82,9 +82,9 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 //		cdmApp = config.getCdmAppController();
 		// For Jaxb import, omit term loading
 		if (config instanceof JaxbExportConfigurator) {
-			cdmApp = config.getCdmAppController(true, true);
+			cdmApp = config.getCdmAppController(false, true);
 		} else {
-			cdmApp = config.getCdmAppController(true, false);
+			cdmApp = config.getCdmAppController();
 		}
 		
 		System.out.println("Start export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
