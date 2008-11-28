@@ -520,9 +520,23 @@ public class NonViralNameParserImplTest {
 		assertEquals(strSameName, nameSameName.getFullTitleCache());
 		assertEquals(35, nameSameName.getProblemStarts()); 
 		assertEquals(51, nameSameName.getProblemEnds());   
-	
 		
+		String strGenusUnparse = "Hieracium L., jlklk";
+		NonViralName<?> nameGenusUnparse = 
+			parser.parseReferencedName(strGenusUnparse, null, null);
+		assertTrue(nameGenusUnparse.hasProblem());
+		assertEquals(strGenusUnparse, nameGenusUnparse.getFullTitleCache());
+		assertEquals(0, nameGenusUnparse.getProblemStarts()); 
+		assertEquals(19, nameGenusUnparse.getProblemEnds());   
 		
+		String strGenusUnparse2 = "Hieracium L., Per Luigi: 44. 1987";
+		NonViralName<?> nameGenusUnparse2 = 
+			parser.parseReferencedName(strGenusUnparse2, null, Rank.FAMILY());
+		assertFalse(nameGenusUnparse2.hasProblem());
+		assertEquals(strGenusUnparse2, nameGenusUnparse2.getFullTitleCache());
+		assertEquals(-1, nameGenusUnparse2.getProblemStarts()); 
+		assertEquals(-1, nameGenusUnparse2.getProblemEnds());   
+
 	}
 
 	private void assertFullRefNameStandard(NonViralName<?> name){
