@@ -123,7 +123,8 @@ public class CdmExporter implements ICdmIoExport {
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
+		CdmApplicationController appCtr = config.getCdmAppController();
+		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		TransactionStatus txStatus = appCtr.startTransaction(true);
 		DataSet dataSet = new DataSet();
@@ -171,7 +172,8 @@ public class CdmExporter implements ICdmIoExport {
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = jaxbExpConfig.getMaxRows();
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
+		CdmApplicationController appCtr = config.getCdmAppController();
+		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
