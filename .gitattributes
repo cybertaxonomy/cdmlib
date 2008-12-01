@@ -15,11 +15,13 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/EuroMedActivator
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/common/FeatureTreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/CichorieaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/PalmaeImageActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/images/PalmaeProtologueActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text

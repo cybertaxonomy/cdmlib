@@ -321,7 +321,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		List<Object> tags = new ArrayList<Object>();
 		tags.add(nonViralName.getGenusOrUninomial());
 		if (nonViralName.isSpecies() || nonViralName.isInfraSpecific()){
-			tags.add(nonViralName.getSpecificEpithet());			
+			tags.add(nonViralName.getSpecificEpithet());	
 		}
 		
 		// No autonym 

@@ -66,7 +66,7 @@ public class DipteraDistributionParser {
 							if (descEl instanceof TextData){
 								String occString = ((TextData)descEl).getText(Language.ENGLISH());
 								parseOccurenceString(occString, description);
-								//app.getTaxonService().saveTaxon(taxon);
+								app.getTaxonService().saveTaxon(taxon);
 							}
 						}
 					}

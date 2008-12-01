@@ -61,7 +61,7 @@ public class CichorieaeActivator {
 	//Windows
 	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
 	// set to zero for unlimited nameFacts
-	static final int maximumNumberOfNameFacts = 0;
+	static final int maximumNumberOfNameFacts = 1;
 	
 	
 	//check - import

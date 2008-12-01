@@ -6,8 +6,6 @@
 
 package eu.etaxonomy.cdm.app.excelImport.distribution;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.util.TestDatabase;
@@ -23,8 +21,9 @@ import eu.etaxonomy.cdm.io.excel.distribution.DistributionImportConfigurator;
 public class CichorieaeDistributionActivator {
 	
 	private static final String dbName = "cdm_test_anahit";
-	private static String fileName = 
-		new String( System.getProperty("user.home") + "\\workspaces\\cdmlib\\app-import\\src\\main\\resources\\distribution\\Africa plus x.xls");
+	private static String fileName =
+		"src/main/resources/distribution/Africa plus x.xls";
+//		new String( System.getProperty("user.home") + "\\workspaces\\cdmlib\\app-import\\src\\main\\resources\\distribution\\Africa plus x.xls");
 //	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa plus x.xls");
 	
 	private static final ICdmDataSource destinationDb = TestDatabase.CDM_DB(dbName);

@@ -49,7 +49,32 @@ public class DipteraActivator {
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
+	
+	/*
+	 * Desired
+	 * 	Introduction
+	 * 	Diagnosis
+	 * 	Description 1
+	 * 	Distribution 10 + 11
+	 * 	(DISTRIBUTION MAP)
+	 * 	Biology & Ecology
+	 * 	Conservation
+	 * 	Etymology
+	 * 	Common name (Vernacular in taxonX) 12
+	 * 	Uses
+	 * 	Cultivation
+	 * 	Discussion
+	 * 	Materials Examined
+	 * 
+	 * Additional
+	 *  Ecology 4
+	 *  Phenology 5
+	 *  Citation 99
+	 * 
+	 * Ommitting
+	 *  Occurrence 13
+	 */
+	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12, 13,99}; 
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
