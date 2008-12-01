@@ -68,7 +68,7 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
 	public String getSource() {
-		return (String)super.getSource();
+		return super.getSource().toString();
 	}
 
 	/* (non-Javadoc)

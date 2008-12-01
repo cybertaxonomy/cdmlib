@@ -20,6 +20,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java 
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/CichorieaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/PalmaeImageActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/images/PalmaeProtologueActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
@@ -43,6 +44,11 @@ app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/SDD-Test-Simple.xml -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/distribution/Africa[!!-~]plus[!!-~]x.xls -text
+app-import/src/main/resources/images/images_cich.xls -text
+app-import/src/main/resources/images/palmae/KPALM00000001.jpg -text
+app-import/src/main/resources/images/palmae/KPALM00000043.jpg -text
+app-import/src/main/resources/images/palmae/KPALM00000073.jpg -text
+app-import/src/main/resources/images/protologue_links_palmae.xls -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
