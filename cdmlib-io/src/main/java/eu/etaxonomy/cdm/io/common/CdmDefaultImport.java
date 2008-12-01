@@ -115,8 +115,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		}
 		// For Jaxb import, omit term loading
 		if (config instanceof JaxbImportConfigurator) {
-			cdmApp = config.getCdmAppController(true, true);
-//			cdmApp = ((JaxbImportConfigurator)config).getCdmAppController(true, true);
+			cdmApp = config.getCdmAppController(false, true);
 		} else {
 			cdmApp = config.getCdmAppController(false, false);
 		}

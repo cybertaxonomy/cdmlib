@@ -79,12 +79,12 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-//		cdmApp = config.getCdmAppController();
+		
 		// For Jaxb import, omit term loading
 		if (config instanceof JaxbExportConfigurator) {
-			cdmApp = config.getCdmAppController(true, true);
+			cdmApp = config.getCdmAppController(false, true);
 		} else {
-			cdmApp = config.getCdmAppController(true, false);
+			cdmApp = config.getCdmAppController(false, false);
 		}
 		
 		System.out.println("Start export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
