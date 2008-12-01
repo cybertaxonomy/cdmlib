@@ -3,7 +3,7 @@
    <description url="file:///P:\eclipse\cdmlib\eclipse-updateSite">
       This is the EDIT cdmlib eclipse plugin updateSite
    </description>
-   <feature url="features/eu.etaxonomy.cdmLibrary_1.4.1.08.jar" id="eu.etaxonomy.cdmLibrary" version="1.4.1.08">
+   <feature url="features/eu.etaxonomy.cdmLibrary_1.4.1.10.jar" id="eu.etaxonomy.cdmLibrary" version="1.4.1.10">
       <category name="cdmLibrary"/>
    </feature>
    <category-def name="cdmLibrary" label="cdmLibrary">
