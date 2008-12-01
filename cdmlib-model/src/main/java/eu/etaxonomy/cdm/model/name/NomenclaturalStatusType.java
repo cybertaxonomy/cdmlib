@@ -661,7 +661,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. utique rej.")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. cons. prop.")) { return NomenclaturalStatusType.CONSERVED_PROP();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. orth. cons. prop.")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
-		}else if (statusAbbreviation.equalsIgnoreCase("nom. leg.")) { return NomenclaturalStatusType.LEGITIMATE();
+		}else if (statusAbbreviation.equalsIgnoreCase("nom. legit.")) { return NomenclaturalStatusType.LEGITIMATE();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. altern.")) { return NomenclaturalStatusType.ALTERNATIVE();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. alternativ.")) { return NomenclaturalStatusType.ALTERNATIVE();
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. nov.")) { return NomenclaturalStatusType.NOVUM();
