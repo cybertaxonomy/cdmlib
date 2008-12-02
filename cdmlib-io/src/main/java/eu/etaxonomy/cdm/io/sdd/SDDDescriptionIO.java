@@ -33,10 +33,13 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -69,6 +72,12 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
 
+	private ReferenceBase sec = Database.NewInstance();
+
+	private Language datasetLanguage = null;
+
+	private Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
+
 	public SDDDescriptionIO(){
 		super();
 	}
@@ -92,14 +101,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		boolean success =true;
 
 		Namespace sddNamespace = sddConfig.getSddNamespace();
-		Namespace xmlNamespace = Namespace.getNamespace("xml","http://www.w3.org/XML/1998/namespace");
 
 		logger.info("start TechnicalMetadata ...");
 		// <TechnicalMetadata created="2006-04-20T10:00:00">
 		Element elTechnicalMetadata = root.getChild("TechnicalMetadata", sddNamespace);
 		String nameCreated = elTechnicalMetadata.getAttributeValue("created");
 		ReferenceBase sourceReference = config.getSourceReference();
-		ReferenceBase sec = Database.NewInstance();
+
 		if (nameCreated != null) {
 			if (!nameCreated.equals("")) {
 				int year = Integer.parseInt(nameCreated.substring(0,4));
@@ -140,7 +148,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			// <Dataset xml:lang="en-us">
 			String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
-			Language datasetLanguage = null;
+
 			if (!nameLang.equals("")) {
 				String iso = nameLang.substring(0, 2);
 				datasetLanguage = config.getCdmAppController().getTermService().getLanguageByIso(iso);
@@ -157,36 +165,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
       			<Detail>This is an example for a very simple SDD file, representing a single description with categorical, quantitative, and text character. Compare also the "Fragment*" examples, which contain more complex examples in the form of document fragments. Intended for version="SDD 1.1".</Detail>
     		   </Representation>
 			 */
-			logger.info("start Representation ...");
-			Element elRepresentation = elDataset.getChild("Representation",sddNamespace);
-			String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-			String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
-			sourceReference.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
-			sec.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
-
-			if (detail != null) {
-				Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-				sec.addAnnotation(annotation);
-			}
-			
-			List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-			for (Element elMediaObject : listMediaObjects) {
-				String ref = null;
-				String role = null;
-				if (elMediaObject != null) {
-					ref = elMediaObject.getAttributeValue("ref");
-					role = elMediaObject.getAttributeValue("role");
-				}
-				if (ref != null) {
-					if (!ref.equals("")) {
-						this.addCdmBaseWithImage(ref, sourceReference);
-						this.addCdmBaseWithImage(ref,sec);
-						mediaObject_Role.put(ref,role);
-					}
-				}
-			}
+			importDatasetRepresentation(elDataset, sddNamespace, sourceReference, generatorName, generatorVersion);
 
 			// <RevisionData>
 			logger.info("start RevisionData ...");
@@ -262,7 +242,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					if (elLabel != null) {
 						lang = elLabel.getAttributeValue("lang",xmlNamespace);
 					}
-					label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
+					String label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
 
 					if (role.equals("Copyright")) {
 						Language iprLanguage = null;
@@ -303,44 +283,18 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					String id = elTaxonName.getAttributeValue("id");
 					String uri = elTaxonName.getAttributeValue("uri");
-					// <Representation>
-					elRepresentation = elTaxonName.getChild("Representation",sddNamespace);
-					// <Label xml:lang="la">Viola hederacea Labill.</Label>
-					Element elLabel = elRepresentation.getChild("Label",sddNamespace);
-					String lang = elLabel.getAttributeValue("lang",xmlNamespace);
-					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-					detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-					
-					NonViralName tnb = NonViralName.NewInstance(null);
-					if ((lang != null) && (!lang.equals("la")))  {
-						logger.info("TaxonName " + j + " is not specified as a latin name.");
-					}
-					tnb.setTitleCache(label);
-					if (detail != null) {
-						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-						tnb.addAnnotation(annotation);
-					}
-					OriginalSource source = OriginalSource.NewInstance(id, "TaxonName");
-					tnb.addSource(source);
+
+					NonViralName tnb = null;
 					if (!id.equals("")) {
+						tnb = NonViralName.NewInstance(null);
+						OriginalSource source = OriginalSource.NewInstance(id, "TaxonName");
+						tnb.addSource(source);
 						taxonNameBases.put(id,tnb);
 					}
 
-					listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-					for (Element elMediaObject : listMediaObjects) {
-						String ref = null;
-						String role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								this.addCdmBaseWithImage(ref,tnb);
-							}
-						}
-					}
+					// <Representation>
+					// <Label xml:lang="la">Viola hederacea Labill.</Label>
+					importRepresentation(elTaxonName, sddNamespace, tnb, id, config);
 
 					if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
 
@@ -365,36 +319,12 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// <Representation>
 						//  <Label> Leaf complexity</Label>
 						// </Representation>
-						elRepresentation = elCategoricalCharacter.getChild("Representation",sddNamespace);
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						
-						Feature categoricalCharacter = null;
-						if (label != null){
-							if (detail != null) {
-								categoricalCharacter = Feature.NewInstance(detail, label, label);
-							} else {
-								categoricalCharacter = Feature.NewInstance(label, label, label);
-							}
-						}
+
+						Feature categoricalCharacter = Feature.NewInstance();
+						importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, config);
+
 						categoricalCharacter.setSupportsQuantitativeData(false);
 						categoricalCharacter.setSupportsTextData(true);
-
-						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-						for (Element elMediaObject : listMediaObjects) {
-							String ref = null;
-							String role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
-							if (ref != null) {
-								if (!ref.equals("")) {
-									this.addCdmBaseWithImage(ref,categoricalCharacter);
-								}
-							}
-						}
 
 						// <States>
 						Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
@@ -414,35 +344,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							//  <Label>Simple</Label>
 							//  <MediaObject ref="ib" role="Primary"/>
 							// </Representation>
-							elRepresentation = elStateDefinition.getChild("Representation",sddNamespace);
-							label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-							detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-							
-							State state = null;
-							if (label != null){
-								if (detail != null) {
-									state = new State(detail,label,label);
-								} else {
-									state = new State(label,label,label);
-								}
-							}
-
-							listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-							for (Element elMediaObject : listMediaObjects) {
-								String ref = null;
-								String role = null;
-								if (elMediaObject != null) {
-									ref = elMediaObject.getAttributeValue("ref");
-									role = elMediaObject.getAttributeValue("role");
-								}
-
-								if (ref != null) {
-									if (!ref.equals("")) {
-										this.addCdmBaseWithImage(ref,state);
-									}
-								}
-							}
+							State state = State.NewInstance();
+							importRepresentation(elStateDefinition, sddNamespace, state, idSD, config);
 
 							StateData stateData = StateData.NewInstance();
 							stateData.setState(state);
@@ -476,47 +379,17 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// <Representation>
 						//  <Label>Leaf length</Label>
 						// </Representation>
-						elRepresentation = elQuantitativeCharacter.getChild("Representation",sddNamespace);
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						Feature quantitativeCharacter = Feature.NewInstance();
+						importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, config);
 
-						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						
-						Feature quantitativeCharacter = null;
-						if (label != null){
-							if (detail != null) {
-								quantitativeCharacter = Feature.NewInstance(detail,label,label);
-							} else {
-								quantitativeCharacter = Feature.NewInstance(label,label,label);
-							}
-						}
-
-						if (!label.equals("")){
-							quantitativeCharacter = Feature.NewInstance(label, label, label);
-						}
 						quantitativeCharacter.setSupportsQuantitativeData(true);
 						quantitativeCharacter.setSupportsTextData(false);
-
-						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-						for (Element elMediaObject : listMediaObjects) {
-							String ref = null;
-							String role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
-							if (ref != null) {
-								if (!ref.equals("")) {
-									this.addCdmBaseWithImage(ref,quantitativeCharacter);
-								}
-							}
-						}
 
 						// <MeasurementUnit>
 						//  <Label role="Abbrev">m</Label>
 						// </MeasurementUnit>
 						Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
-						label = "";
+						String label = "";
 						String role = "";
 						if (elMeasurementUnit != null) {
 							Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
@@ -575,60 +448,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// <Representation>
 						//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
 						// </Representation>
-						elRepresentation = elTextCharacter.getChild("Representation",sddNamespace);
-						Element elLabel = elRepresentation.getChild("Label",sddNamespace);
-						nameLang = elLabel.getAttributeValue("lang",xmlNamespace);
-						Language language = null;
-						if (nameLang != null) {
-							if (!nameLang.equals("")) {
-								language = config.getCdmAppController().getTermService().getLanguageByIso(nameLang.substring(0, 2));
-								//language = datasetLanguage;
-							} else {
-								language = datasetLanguage;
-							}
-						} else {
-							language = datasetLanguage;
-						}
-
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						
-						Feature textCharacter = null;
-						if (label != null){
-							if (detail != null) {
-								textCharacter = Feature.NewInstance(detail,label,label);
-							} else {
-								textCharacter = Feature.NewInstance(label,label,label);
-							}
-						}
-
-						if (label != null) {
-							if (!label.equals("")){
-								textCharacter = Feature.NewInstance(label, label, label);
-								textCharacter.setLabel(label, language);
-							}
-						}
+						Feature textCharacter = Feature.NewInstance();
+						importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, config);
 
 						textCharacter.setSupportsQuantitativeData(false);
 						textCharacter.setSupportsTextData(true);
 
 						features.put(idTC, textCharacter);
-
-						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-						for (Element elMediaObject : listMediaObjects) {
-							String ref = null;
-							String role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
-							if (ref != null) {
-								if (!ref.equals("")) {
-									this.addCdmBaseWithImage(ref,textCharacter);
-								}
-							}
-						}
 
 					} catch (Exception e) {
 						//FIXME
@@ -665,21 +491,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						// <Representation>
 						//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
 						// </Representation>
-						elRepresentation = elCodedDescription.getChild("Representation",sddNamespace);
-						Element elLabel = elRepresentation.getChild("Label",sddNamespace);
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-
 						TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-						
-						if (detail != null) {
-							Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-							taxonDescription.addAnnotation(annotation);
-						}
-						
-						taxonDescription.setTitleCache(label);
-						OriginalSource source = OriginalSource.NewInstance(idCD, "CodedDescription",sec,"");
-						taxonDescription.addSource(source);
+						importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
 
 						// <Scope>
 						//  <TaxonName ref="t1"/>
@@ -826,29 +639,6 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 						taxonDescriptions.put(idCD, taxonDescription);
 
-						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-						for (Element elMediaObject : listMediaObjects) {
-							ref = null;
-							String role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
-							if (ref != null) {
-								if (!ref.equals("")) {
-									if (taxonDescription.getDescriptionSources().toArray().length > 0) {
-										this.addCdmBaseWithImage(ref,(ReferenceBase) taxonDescription.getDescriptionSources().toArray()[0]);
-									} else {
-										ReferenceBase descriptionSource = Generic.NewInstance();
-										taxonDescription.addDescriptionSource(descriptionSource);
-										this.addCdmBaseWithImage(ref,descriptionSource);
-									}
-
-								}
-							}
-						}
-
 					} catch (Exception e) {
 						//FIXME
 						logger.warn("Import of CodedDescription " + j + " failed.");
@@ -879,8 +669,8 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 					//   <Label>Kevin Thiele</Label>
 					//   <Detail role="Description">Ali Baba is also known as r.a.m.</Detail>
 					//  </Representation>
-					elRepresentation = elAgent.getChild("Representation",sddNamespace);
-					label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+					Element elRepresentation = elAgent.getChild("Representation",sddNamespace);
+					String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 					Element elDetail = elRepresentation.getChild("Detail",sddNamespace);
 
 					Person person = Person.NewTitledInstance(label);
@@ -889,7 +679,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 					if (elDetail != null) {
 						String role = elDetail.getAttributeValue("role");
-						detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 						Annotation annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
 						person.addAnnotation(annotation);
 					}
@@ -933,7 +723,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						editors.put(idA, person);
 					}
 
-					listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+					List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
 					for (Element elMediaObject : listMediaObjects) {
 						String ref = null;
@@ -944,7 +734,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						}
 						if (ref != null) {
 							if (!ref.equals("")) {
-								this.addCdmBaseWithImage(ref,person);
+								this.associateImageWithCdmBase(ref,person);
 							}
 						}
 					}
@@ -977,16 +767,19 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						//  <Representation>
 						//   <Label>Sample Citation</Label>
 						//  </Representation>
-						elRepresentation = elPublication.getChild("Representation",sddNamespace);
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						Element elRepresentation = elPublication.getChild("Representation",sddNamespace);
+						String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 						Article publication = Article.NewInstance();
 						publication.setTitle(label);
+						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+						publication.addAnnotation(annotation);
 						OriginalSource source = OriginalSource.NewInstance(idP, "Publication");
 						publication.addSource(source);
 
 						publications.put(idP,publication);
 
-						listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+						List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
 						for (Element elMediaObject : listMediaObjects) {
 							String ref = null;
@@ -997,7 +790,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 							}
 							if (ref != null) {
 								if (!ref.equals("")) {
-									this.addCdmBaseWithImage(ref,publication);
+									this.associateImageWithCdmBase(ref,publication);
 								}
 							}
 						}
@@ -1019,7 +812,7 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 			if (elMediaObjects != null) {
 				// <MediaObject id="m1">
-				listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
+				List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
 				j = 0;
 				//for each Publication
 				for (Element elMO : listMediaObjects){
@@ -1031,9 +824,12 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 						//  <Representation>
 						//   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
 						//  </Representation>
-						elRepresentation = elMO.getChild("Representation",sddNamespace);
-						label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+						Element elRepresentation = elMO.getChild("Representation",sddNamespace);
+						String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 						MultilanguageText m = MultilanguageText.NewInstance(LanguageString.NewInstance(label, datasetLanguage));
+						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+
 						// mediaObjects.get(idMO).setTitle(m);
 						OriginalSource originalSource = OriginalSource.NewInstance(idMO, "MediaObject");
 						// NO MEDIA SOURCE AVAILABLE
@@ -1071,29 +867,40 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 
 						Media media = Media.NewInstance();
 						media.addRepresentation(representation);
+						media.addAnnotation(annotation);
 						// media.setTitle(m);
 
 						ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
 						if (lcb != null) {
-							// for (int k = 0; k < lcb.size(); k++) {
-							//	if (lcb.get(k) instanceof DefinedTermBase) {
-							//		DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
-							if (lcb.get(0) instanceof DefinedTermBase) {
-								DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
-								if (dtb!=null) {
-									dtb.addMedia(media);
-								}
-								//} else if (lcb.get(k) instanceof ReferenceBase) {
-								//	ReferenceBase rb = (ReferenceBase) lcb.get(k);
-							} else if (lcb.get(0) instanceof ReferenceBase) {
-								ReferenceBase rb = (ReferenceBase) lcb.get(0);
-								// rb.setTitleCache(label);
-								if (rb!=null) {
-									rb.addMedia(media);
+							for (int k = 0; k < lcb.size(); k++) {
+								if (lcb.get(k) instanceof DefinedTermBase) {
+									DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
+									// if (lcb.get(0) instanceof DefinedTermBase) {
+									// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
+									if (dtb!=null) {
+										if (k == 0) {
+											dtb.addMedia(media);
+										} else {
+											Media me = (Media) media.clone();
+											dtb.addMedia(me);
+										}
+									}
+								} else if (lcb.get(k) instanceof ReferenceBase) {
+									ReferenceBase rb = (ReferenceBase) lcb.get(k);
+									//} else if (lcb.get(0) instanceof ReferenceBase) {
+									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
+									// rb.setTitleCache(label);
+									if (rb!=null) {
+										if (k == 0) {
+											rb.addMedia(media);
+										} else {
+											Media me = (Media) media.clone();
+											rb.addMedia(me);
+										}
+									}
 								}
 							}
 						}
-
 					} catch (Exception e) {
 						//FIXME
 						logger.warn("Import of MediaObject " + j + " failed.");
@@ -1106,13 +913,13 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 			}
 
 			if (authors != null) {
-					Team team = Team.NewInstance();
-					for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
-						team.addTeamMember(author.next());
-					}
-					sourceReference.setAuthorTeam(team);
+				Team team = Team.NewInstance();
+				for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
+					team.addTeamMember(author.next());
 				}
-			
+				sourceReference.setAuthorTeam(team);
+			}
+
 			if (editors != null) {
 				Person ed = Person.NewInstance();
 				for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
@@ -1197,7 +1004,9 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		return false;
 	}
 
-	protected void addCdmBaseWithImage(String refMO, CdmBase cb){
+
+	// associates the reference of a media object in SDD with a CdmBase Object
+	protected void associateImageWithCdmBase(String refMO, CdmBase cb){
 		if ((refMO != null) && (cb!=null)) {
 			if (!refMO.equals("")) {
 				if (!mediaObject_ListCdmBase.containsKey(refMO)) {
@@ -1213,4 +1022,113 @@ public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
 		}
 	}
 
+	// imports information about the Dataset
+	protected void importDatasetRepresentation(Element parent, Namespace sddNamespace, ReferenceBase sourceReference, String generatorName, String generatorVersion){
+		logger.info("start Representation ...");
+		Element elRepresentation = parent.getChild("Representation",sddNamespace);
+		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+
+		sourceReference.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
+		sec.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
+
+		if (detail != null) {
+			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
+			sec.addAnnotation(annotation);
+		}
+
+		List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+		for (Element elMediaObject : listMediaObjects) {
+			String ref = null;
+			String role = null;
+			if (elMediaObject != null) {
+				ref = elMediaObject.getAttributeValue("ref");
+				role = elMediaObject.getAttributeValue("role");
+			}
+			if (ref != null) {
+				if (!ref.equals("")) {
+					this.associateImageWithCdmBase(ref, sourceReference);
+					this.associateImageWithCdmBase(ref,sec);
+					mediaObject_Role.put(ref,role);
+				}
+			}
+		}
+	}
+
+	// imports the representation (label, detail, lang) of a particular SDD element
+	protected void importRepresentation(Element parent, Namespace sddNamespace, VersionableEntity ve, String id, IImportConfigurator config){
+		Element elRepresentation = parent.getChild("Representation",sddNamespace);
+		// <Label xml:lang="la">Viola hederacea Labill.</Label>
+		Element elLabel = elRepresentation.getChild("Label",sddNamespace);
+		String lang = elLabel.getAttributeValue("lang",xmlNamespace);
+		Language language = null;
+		if (lang != null) {
+			if (!lang.equals("")) {
+				language = config.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
+			} else {
+				language = datasetLanguage;
+			}
+		} else {
+			language = datasetLanguage;
+		}
+		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
+		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
+
+		if ((lang != null) && (!lang.equals("la")) && (ve instanceof NonViralName))  {
+			logger.info("TaxonName " + label + " is not specified as a latin name.");
+		}
+
+		if (ve instanceof IdentifiableEntity) {
+			IdentifiableEntity ie = (IdentifiableEntity) ve;
+			ie.setTitleCache(label);
+			if (detail != null) {
+				Annotation annotation = Annotation.NewInstance(detail, language);
+				ie.addAnnotation(annotation);
+			}
+			ve = ie;
+		} else if (ve instanceof TermBase) {
+			TermBase tb = (TermBase) ve;
+			if (label != null){
+				if (detail != null) {
+					tb.addRepresentation(Representation.NewInstance(detail, label, label, language));
+				} else {
+					tb.addRepresentation(Representation.NewInstance(label, label, label, language));
+				}
+			}
+			ve = tb;
+		}
+
+		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+
+		for (Element elMediaObject : listMediaObjects) {
+			String ref = null;
+			String role = null;
+			if (elMediaObject != null) {
+				ref = elMediaObject.getAttributeValue("ref");
+				role = elMediaObject.getAttributeValue("role");
+			}
+			if (ref != null) {
+				if (!ref.equals("")) {
+					if (ref != null) {
+						if (ve instanceof TaxonDescription) {
+							TaxonDescription td = (TaxonDescription) ve;
+							//TODO: ensure that all images are imported
+							if (td.getDescriptionSources().toArray().length > 0) {
+								this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
+							} else {
+								ReferenceBase descriptionSource = Generic.NewInstance();
+								td.addDescriptionSource(descriptionSource);
+								this.associateImageWithCdmBase(ref,descriptionSource);
+							}
+						} else {
+							this.associateImageWithCdmBase(ref,ve);
+						}
+					}
+
+				}
+			}
+		}
+
+	}
 }
