@@ -52,13 +52,6 @@ public class CdmExporter implements ICdmIoExport {
 		this.ioName = this.getClass().getSimpleName();
 	}
 
-//	protected abstract boolean doInvoke(IExportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores);
-//	protected abstract boolean doCheck(IExportConfigurator config);
-//	protected abstract boolean isIgnore(IExportConfigurator config);
-
-
-	
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the taxonomic tree are not found.
@@ -78,7 +71,9 @@ public class CdmExporter implements ICdmIoExport {
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
+		CdmApplicationController appCtr = config.getCdmAppController();
+		// TODO: 
+		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		TransactionStatus txStatus = appCtr.startTransaction(true);
 		DataSet dataSet = new DataSet();
@@ -126,7 +121,9 @@ public class CdmExporter implements ICdmIoExport {
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = jaxbExpConfig.getMaxRows();
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
+		CdmApplicationController appCtr = config.getCdmAppController();
+		// TODO: 
+		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
@@ -270,20 +267,7 @@ public class CdmExporter implements ICdmIoExport {
 		}
 	}
 	
-//	public boolean invoke(IExportConfigurator config) {
-//		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
-//			return doCheck(config);
-//		}else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
-//			doCheck(config);
-//			return doExport(config);
-//		}else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
-//			return doExport(config);
-//		}else{
-//			logger.error("Unknown CHECK type");
-//			return false;
-//		}
-//	}
-	
+
 	public boolean invoke(IExportConfigurator config) {
 		
 		if (isIgnore(config)){
@@ -294,42 +278,4 @@ public class CdmExporter implements ICdmIoExport {
 		}
 	}
 	
-	
-	/**
-	 * Executes the whole 
-	 */
-//	protected boolean doExport(IExportConfigurator config) {
-//		
-//		JaxbExportConfigurator jaxbExport = (JaxbExportConfigurator)config;
-//		CdmApplicationController cdmApp;
-//		boolean result = true;
-//		if (config == null){
-//			logger.warn("Configuration is null");
-//			return false;
-//		}else if (! config.isValid()){
-//			logger.warn("Configuration is not valid");
-//			return false;
-//		}
-//		cdmApp = config.getCdmAppController();
-//		
-//		System.out.println("Start Export from Source (" + config.getDestinationNameString() 
-//				+ ") to CDM  (" + cdmApp.getDatabaseService().getUrl() + ") ...");
-//		
-//		//do invoke for each class
-//		for (Class<ICdmIoExport> ioClass: jaxbExport.getIoClassList()) {
-//			ICdmIoExport cdmIo = null;
-//			try {
-//				cdmIo = ioClass.newInstance();
-//				result &= cdmIo.invoke(config);
-//			} catch (Exception e) {
-//				logger.error(e);
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		//return
-//		System.out.println("End Export from Source ("+ config.getDestinationNameString() + ") to CDM  (" 
-//				+ cdmApp.getDatabaseService().getUrl() + ") ...");
-//		return true;
-//	}
 }
