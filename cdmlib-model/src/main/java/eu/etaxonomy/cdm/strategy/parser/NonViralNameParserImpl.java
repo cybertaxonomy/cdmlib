@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.SectionBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -376,7 +377,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			strReference = strReference.substring(0, strReference.length() - endPart.length());
 		}
 		
-		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + yearPhrase + end;
+		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + fWs + yearPhrase + fWs + end;
 		Matcher detailYearMatcher = getMatcher(pDetailYear, strReference);
 		
 		//if (referencePattern.matcher(reference).matches() ){
@@ -384,7 +385,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			
 			//year
 			String yearPart = null;
-			String pYearPhrase = yearSeperator + yearPhrase + end;
+			String pYearPhrase = yearSeperator + fWs + yearPhrase + fWs + end;
 			Matcher yearPhraseMatcher = getMatcher(pYearPhrase, strReference);
 			if (yearPhraseMatcher.find()){
 				yearPart = yearPhraseMatcher.group(0);
@@ -393,7 +394,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			}
 			
 			//detail
-			String pDetailPhrase = detailSeparator + detail + end;
+			String pDetailPhrase = detailSeparator + fWs + detail + fWs + end;
 			Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
 			if (detailPhraseMatcher.find()){
 				String detailPart = detailPhraseMatcher.group(0);
@@ -537,7 +538,10 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		}
 		TimePeriod datePublished = TimePeriod.NewInstance(startDate, endDate);
 		
-		if (nomRef instanceof StrictReferenceBase){
+		if (nomRef instanceof BookSection){
+			((BookSection)nomRef).getInBook().setDatePublished(datePublished);
+			((BookSection)nomRef).setDatePublished(datePublished);
+		}else if (nomRef instanceof StrictReferenceBase){
 			((StrictReferenceBase)nomRef).setDatePublished(datePublished);	
 		}else if (nomRef instanceof BibtexReference){
 				((BibtexReference)nomRef).setDatePublished(datePublished);
