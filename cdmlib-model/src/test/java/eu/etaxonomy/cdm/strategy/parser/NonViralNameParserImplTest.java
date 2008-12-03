@@ -288,17 +288,26 @@ public class NonViralNameParserImplTest {
 		assertNull(nameEmpty.getNomenclaturalMicroReference());
 		
 		
+		
+		//Whitespaces
+		String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
+		NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, Rank.SPECIES());
+		assertFullRefStandard(namefullWhiteSpcaceAndDot);
+		assertTrue(namefullWhiteSpcaceAndDot.getNomenclaturalReference() instanceof Book);
+		assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
+
 		//Book
-		String fullReference = "Abies alba Mill., Sp.   Pl. 4: 455. 1987.";
+		String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
 		NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
 		assertFullRefStandard(name1);
 		assertTrue(name1.getNomenclaturalReference() instanceof Book);
+		assertEquals(fullReference, name1.getFullTitleCache());
 		
 		//Book Section
 		fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
 		NonViralName<?> name2 = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
 		assertFullRefNameStandard(name2);
-		//assertEquals(fullReference, name2.getFullTitleCache());
+		assertEquals(fullReference, name2.getFullTitleCache());
 		assertFalse(name2.hasProblem());
 		INomenclaturalReference<?> ref = name2.getNomenclaturalReference();
 		assertEquals(BookSection.class, ref.getClass());
@@ -307,9 +316,10 @@ public class NonViralNameParserImplTest {
 		assertNotNull(inBook);
 		assertNotNull(inBook.getAuthorTeam());
 		assertEquals("Otto", inBook.getAuthorTeam().getTitleCache());
-		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
+		assertEquals("Otto, Sp. Pl. 4(6). 1987", inBook.getTitleCache());
 		assertEquals("Sp. Pl.", inBook.getTitle());
 		assertEquals("4(6)", inBook.getVolume());
+
 		
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -535,7 +545,16 @@ public class NonViralNameParserImplTest {
 		assertFalse(nameGenusUnparse2.hasProblem());
 		assertEquals(strGenusUnparse2, nameGenusUnparse2.getFullTitleCache());
 		assertEquals(-1, nameGenusUnparse2.getProblemStarts()); 
-		assertEquals(-1, nameGenusUnparse2.getProblemEnds());   
+		assertEquals(-1, nameGenusUnparse2.getProblemEnds());
+		
+		String strBookSection = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz, ed. 2, 2: 288. 1905";
+		NonViralName<?> nameBookSection = 
+			parser.parseReferencedName(strBookSection, null, null);
+		assertFalse(nameBookSection.hasProblem());
+		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
+		assertEquals(-1, nameBookSection.getProblemStarts()); 
+		assertEquals(-1, nameBookSection.getProblemEnds());   
+
 
 	}
 
