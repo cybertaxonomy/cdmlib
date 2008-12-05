@@ -724,5 +724,34 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	public String generateTitle(){
 		return nomRefBase.generateTitle();
 	}
+	
+	
+//****************** clone ********************** //
+
+	
+	/** 
+	 * Clones <i>this</i> bibtex reference. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> bibtext
+	 * by modifying only some of the attributes.<BR>
+	 * This method overrides the clone method from {@link ReferenceBase ReferenceBase}.
+	 * 
+	 * @see ReferenceBase#clone()
+	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public BibtexReference clone(){
+		try{
+			BibtexReference result = (BibtexReference)super.clone();
+			result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+			result.setCrossref(this.getCrossref());
+			//no changes to: crossref, type
+			return result;
+		} catch (CloneNotSupportedException e) {
+			logger.warn("Object does not implement cloneable");
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

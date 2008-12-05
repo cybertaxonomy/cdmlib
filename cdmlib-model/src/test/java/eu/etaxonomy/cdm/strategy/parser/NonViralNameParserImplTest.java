@@ -274,19 +274,19 @@ public class NonViralNameParserImplTest {
 			e.printStackTrace();
 			assertTrue(false);
 		}
+
 		
 		//null
 		String strNull = null;
 		NonViralName<?> nameNull = parser.parseReferencedName(strNull, null, Rank.SPECIES());
 		assertNull(nameNull);
-		
+				
 		//Empty
 		String strEmpty = "";
 		NonViralName<?> nameEmpty = parser.parseReferencedName(strEmpty, null, Rank.SPECIES());
 		assertFalse(nameEmpty.hasProblem());
 		assertEquals(strEmpty, nameEmpty.getFullTitleCache());
 		assertNull(nameEmpty.getNomenclaturalMicroReference());
-		
 		
 		
 		//Whitespaces
@@ -316,10 +316,9 @@ public class NonViralNameParserImplTest {
 		assertNotNull(inBook);
 		assertNotNull(inBook.getAuthorTeam());
 		assertEquals("Otto", inBook.getAuthorTeam().getTitleCache());
-		assertEquals("Otto, Sp. Pl. 4(6). 1987", inBook.getTitleCache());
+		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
 		assertEquals("Sp. Pl.", inBook.getTitle());
 		assertEquals("4(6)", inBook.getVolume());
-
 		
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -546,6 +545,17 @@ public class NonViralNameParserImplTest {
 		assertEquals(strGenusUnparse2, nameGenusUnparse2.getFullTitleCache());
 		assertEquals(-1, nameGenusUnparse2.getProblemStarts()); 
 		assertEquals(-1, nameGenusUnparse2.getProblemEnds());
+
+		String strBookSection2 = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz, ed. 2, 2: 288. 1905-1907";
+		NonViralName<?> nameBookSection2 = 
+			parser.parseReferencedName(strBookSection2, null, null);
+		assertFalse(nameBookSection2.hasProblem());
+		assertEquals(strBookSection2, nameBookSection2.getFullTitleCache());
+		assertEquals(-1, nameBookSection2.getProblemStarts()); 
+		assertEquals(-1, nameBookSection2.getProblemEnds());
+		assertNull(((BookSection)nameBookSection2.getNomenclaturalReference()).getDatePublished());
+		assertEquals("1905-1907", ((BookSection)nameBookSection2.getNomenclaturalReference()).getInBook().getDatePublished().getYear());
+
 		
 		String strBookSection = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz, ed. 2, 2: 288. 1905";
 		NonViralName<?> nameBookSection = 
@@ -553,8 +563,9 @@ public class NonViralNameParserImplTest {
 		assertFalse(nameBookSection.hasProblem());
 		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
 		assertEquals(-1, nameBookSection.getProblemStarts()); 
-		assertEquals(-1, nameBookSection.getProblemEnds());   
-
+		assertEquals(-1, nameBookSection.getProblemEnds());
+		assertNull(((BookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished());
+		assertEquals("1905", ((BookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
 
 	}
 

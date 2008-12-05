@@ -28,6 +28,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 
 /**
@@ -160,6 +161,22 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
+	
+	 /** 
+	  * If the publication date of a book section and it's inBook do differ this is usually 
+	 * caused by the fact that a book has been published during a period, because originally 
+	 * it consisted of several parts that only later where put together to one book.
+	 * If so, the book section's publication date may be a point in time (year or month of year)
+	 * whereas the books publication date may be a period of several years.
+	 * Therefore a valid nomenclatural reference string should use the book sections 
+	 * publication date rather then the book's publication date.
+	 * 
+	 * @see 	StrictReferenceBase#getDatePublished()
+	 **/
+	 @Override
+	public TimePeriod getDatePublished(){
+		return super.getDatePublished();
+	}
 
 
 	/**
@@ -195,6 +212,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	@Override
 	public BookSection clone(){
 		BookSection result = (BookSection)super.clone();
+		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: inBook
 		return result;
 	}
