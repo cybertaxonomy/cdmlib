@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Calendar;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,7 +24,6 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
-import org.joda.time.Months;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
@@ -43,8 +40,11 @@ import org.joda.time.ReadableInstant;
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
 public class TimePeriod implements Cloneable {
-	
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
+	private static final DateTimeFieldType monthType = DateTimeFieldType.monthOfYear();
+	private static final DateTimeFieldType yearType = DateTimeFieldType.year();
+	private static final DateTimeFieldType dayType = DateTimeFieldType.dayOfMonth();
+	
 	
 	@XmlElement(name = "Start")
 	private Partial start;
@@ -97,10 +97,10 @@ public class TimePeriod implements Cloneable {
 		Partial startDate = null;
 		Partial endDate = null;
 		if (startYear != null){
-			startDate = new Partial().with(DateTimeFieldType.year(), startYear);
+			startDate = new Partial().with(yearType, startYear);
 		}
 		if (endYear != null){
-			endDate = new Partial().with(DateTimeFieldType.year(), endYear);
+			endDate = new Partial().with(yearType, endYear);
 		}
 		return new TimePeriod(startDate, endDate);
 	}
@@ -195,6 +195,20 @@ public class TimePeriod implements Cloneable {
 		end=endDate;
 	}
 
+	/**
+	 * True, if this time period represents a period not a single point in time.
+	 * This is by definition, that the time period has a start and an end value,
+	 * and both have a year value that is not null
+	 * @return
+	 */
+	public boolean isPeriod(){
+		if (getStartYear() != null && getEndYear() != null ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	//@Temporal(TemporalType.TIMESTAMP)
 	@Type(type="partialUserType")
 	public Partial getStart() {
@@ -231,32 +245,32 @@ public class TimePeriod implements Cloneable {
 	
 	@Transient
 	public Integer getStartYear(){
-		return getPartialValue(start, DateTimeFieldType.year());
+		return getPartialValue(start, yearType);
 	}
 	
 	@Transient
 	public Integer getStartMonth(){
-		return getPartialValue(start, DateTimeFieldType.monthOfYear());
+		return getPartialValue(start, monthType);
 	}
 
 	@Transient
 	public Integer getStartDay(){
-		return getPartialValue(start, DateTimeFieldType.dayOfMonth());
+		return getPartialValue(start, dayType);
 	}
 
 	@Transient
 	public Integer getEndYear(){
-		return getPartialValue(end, DateTimeFieldType.year());
+		return getPartialValue(end, yearType);
 	}
 
 	@Transient
 	public Integer getEndMonth(){
-		return getPartialValue(end, DateTimeFieldType.monthOfYear());
+		return getPartialValue(end, monthType);
 	}
 
 	@Transient
 	public Integer getEndDay(){
-		return getPartialValue(end, DateTimeFieldType.dayOfMonth());
+		return getPartialValue(end, dayType);
 	}
 	
 	
@@ -271,67 +285,83 @@ public class TimePeriod implements Cloneable {
 	}
 	
 	public TimePeriod setStartYear(Integer year){
-		return setStartField(year, DateTimeFieldType.year());
+		return setStartField(year, yearType);
 	}
 	
 	public TimePeriod setStartMonth(Integer month) throws IndexOutOfBoundsException{
-		return setStartField(month, DateTimeFieldType.monthOfYear());
+		return setStartField(month, monthType);
 	}
 
 	public TimePeriod setStartDay(Integer day) throws IndexOutOfBoundsException{
-		return setStartField(day, DateTimeFieldType.dayOfMonth());
+		return setStartField(day, dayType);
 	}
 	
 	public TimePeriod setEndYear(Integer year){
-		return setEndField(year, DateTimeFieldType.year());
+		return setEndField(year, yearType);
 	}
 
 	public TimePeriod setEndMonth(Integer month) throws IndexOutOfBoundsException{
-		return setEndField(month, DateTimeFieldType.monthOfYear());
+		return setEndField(month, monthType);
 	}
 
 	public TimePeriod setEndDay(Integer day) throws IndexOutOfBoundsException{
-		return setEndField(day, DateTimeFieldType.dayOfMonth());
+		return setEndField(day, dayType);
 	}
 	
-	private TimePeriod setStartField(Integer value, DateTimeFieldType type) throws IndexOutOfBoundsException{
+	private TimePeriod setStartField(Integer value, DateTimeFieldType type) 
+			throws IndexOutOfBoundsException{
 		initStart();
 		if (value == null){
 			start = start.without(type);
 		}else{
-			int max = 9999999;
-			if (type.equals(DateTimeFieldType.monthOfYear())){
-				max = 31;
-			}
-			if (type.equals(DateTimeFieldType.dayOfMonth())){
-				max = 12;
-			}
-			if (value < 1 || value > max ){
-				throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
-			}
+			checkFieldValues(value, type, start);
 			start = this.start.with(type, value);
 		}
 		return this;
 	}
 
-	private TimePeriod setEndField(Integer value, DateTimeFieldType type){
+	private TimePeriod setEndField(Integer value, DateTimeFieldType type)
+			throws IndexOutOfBoundsException{
 		initEnd();
 		if (value == null){
 			end = end.without(type);
 		}else{
-			int max = 9999999;
-			if (type.equals(DateTimeFieldType.monthOfYear())){
-				max = 31;
-			}
-			if (type.equals(DateTimeFieldType.dayOfMonth())){
-				max = 12;
-			}
-			if ( (value < 1 || value > max) ){
-				throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
-			}
+			checkFieldValues(value, type, end);
 			end = this.end.with(type, value);
 		}
 		return this;
+	}
+	
+	/**
+	 * Throws an IndexOutOfBoundsException if the value does not have a valid value
+	 * (e.g. month > 12, month < 1, day > 31, etc.)
+	 * @param value
+	 * @param type
+	 * @throws IndexOutOfBoundsException
+	 */
+	private void checkFieldValues(Integer value, DateTimeFieldType type, Partial partial)
+			throws IndexOutOfBoundsException{
+		int max = 9999999;
+		if (type.equals(monthType)){
+			max = 12;
+		}
+		if (type.equals(dayType)){
+			max = 31;
+			Integer month = null;
+			if (partial.isSupported(monthType)){
+				month = partial.get(monthType);
+			}
+			if (month != null){
+				if (month == 2){
+					max = 29;
+				}else if (month == 4 ||month == 6 ||month == 9 ||month == 11){
+					max = 30; 
+				}
+			}
+		}
+		if ( (value < 1 || value > max) ){
+			throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
+		}
 	}
 	
 	private void initStart(){

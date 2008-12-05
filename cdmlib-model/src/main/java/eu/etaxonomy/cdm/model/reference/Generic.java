@@ -303,6 +303,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	@Override
 	public Generic clone(){
 		Generic result = (Generic)super.clone();
+		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: editor, pages, placePublished,publisher, series, volume
 		return result;
 	}

@@ -281,6 +281,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	@Override
 	public Article clone(){
 		Article result = (Article)super.clone();
+		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: inJournal, pages, series, volume
 		return result;
 	}

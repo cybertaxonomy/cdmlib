@@ -195,6 +195,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	@Override
 	public BookSection clone(){
 		BookSection result = (BookSection)super.clone();
+		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: inBook
 		return result;
 	}

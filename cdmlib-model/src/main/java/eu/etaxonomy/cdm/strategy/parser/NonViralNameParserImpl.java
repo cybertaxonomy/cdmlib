@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.SectionBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -539,8 +538,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		TimePeriod datePublished = TimePeriod.NewInstance(startDate, endDate);
 		
 		if (nomRef instanceof BookSection){
-			((BookSection)nomRef).getInBook().setDatePublished(datePublished);
-			((BookSection)nomRef).setDatePublished(datePublished);
+			handleBookSectionYear((BookSection)nomRef, datePublished);
 		}else if (nomRef instanceof StrictReferenceBase){
 			((StrictReferenceBase)nomRef).setDatePublished(datePublished);	
 		}else if (nomRef instanceof BibtexReference){
@@ -624,6 +622,32 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 			result.setInBook(inBook);
 		}
 		return result;
+	}
+	
+	/**
+	 * If the publication date of a book section and it's inBook do differ this is usually 
+	 * caused by the fact that a book has been published during a period, because originally 
+	 * it consisted of several parts that only later where put together to one book.
+	 * If so, the book section's publication date may be a point in time (year or month of year)
+	 * whereas the books publication date may be a period of several years.
+	 * Therefore a valid nomenclatural reference string should use the book sections 
+	 * publication date rather then the book's publication date.<BR>
+	 * This method in general adds the publication date to the book section.
+	 * An exception exists if the publication date is a period. Then the parser
+	 * assumes that the nomenclatural reference string does not follow the above rule but
+	 * the books publication date is set.
+	 * @param bookSection
+	 * @param datePublished
+	 */
+	private void handleBookSectionYear(BookSection bookSection, TimePeriod datePublished){
+		if (datePublished == null || bookSection == null){
+			return;
+		}
+		if (datePublished.isPeriod() && bookSection.getInBook() != null){
+			bookSection.getInBook().setDatePublished(datePublished);
+		}else{
+			bookSection.setDatePublished(datePublished);	
+		}
 	}
 	
 	

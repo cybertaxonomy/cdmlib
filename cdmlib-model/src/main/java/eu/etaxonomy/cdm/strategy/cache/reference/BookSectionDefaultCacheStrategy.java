@@ -59,10 +59,15 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 	 */
 	@Override
 	public String getTokenizedNomenclaturalTitel(T bookSection) {
-		if (bookSection.getInBook() == null){
+		if (bookSection == null || bookSection.getInBook() == null){
 			return null;
 		}
-		String result = bookSection.getInBook().getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		//use booksection's publication date if it exists
+		Book inBook = bookSection.getInBook().clone();
+		if (bookSection.getDatePublished() != null){
+			inBook.setDatePublished(bookSection.getDatePublished());
+		}
+		String result = inBook.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 		result = getBookAuthorPart(bookSection.getInBook(), afterNomRefBookAuthor) + result;
 		//TODO beforeMicroReference should be the bookstrategy one's
 		result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);

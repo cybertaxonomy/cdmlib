@@ -191,6 +191,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	@Override
 	public Book clone(){
 		Book result = (Book)super.clone();
+		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: edition, isbn
 		return result;
 	}
