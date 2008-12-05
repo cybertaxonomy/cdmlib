@@ -225,6 +225,14 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		return true;
 	}
 	
+	/**
+	 * Reads the typeLoc element split in parts for eacht type (holo, iso,...)
+	 * @param elTypeLoc
+	 * @param simpleSpecimen
+	 * @param taxonName
+	 * @param config
+	 * @return
+	 */
 	private HashMap<Specimen, TypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
 			SimpleSpecimen simpleSpecimen, 
 			TaxonNameBase<?,?> taxonName,
@@ -252,11 +260,14 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				String tmpCollString = typeLocStatus.substring(pos).trim();
 				//for(String collectionString : collectionStrings){
+					if (tmpCollString.contains("typ")){
+						logger.warn("Is this really only a collection string?");
+					}
 					Specimen specimen;
+					specimen = (Specimen)originalSpecimen.clone();
 					String title = originalSpecimen.getTitleCache();
 					title = title + "(" + tmpCollString + ")";
-					originalSpecimen.setTitleCache(title );
-					specimen = (Specimen)originalSpecimen.clone();
+					specimen.setTitleCache(title );
 					result.put(specimen, status);
 				//}
 			}
@@ -353,6 +364,7 @@ public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
 		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
 		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
 		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
+		statusMap.put("isolectotype", TypeDesignationStatus.ISOLECTOTYPE());
 		statusMap.put("type", null);
 		//TODO to be continued
 	}
