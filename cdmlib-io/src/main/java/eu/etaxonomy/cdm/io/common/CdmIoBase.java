@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmIoBase implements ICdmIO {
+public abstract class CdmIoBase<T extends IIoConfigurator> implements ICdmIO<T> {
 	private static Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	protected String ioName = null;
@@ -39,9 +39,9 @@ public abstract class CdmIoBase implements ICdmIO {
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
 	 */
-	public boolean check(IImportConfigurator config) {
+	public boolean check(T config) {
 		if (isIgnore(config)){
 			logger.warn("No check for " + ioName + " (ignored)");
 			return true;
@@ -50,13 +50,14 @@ public abstract class CdmIoBase implements ICdmIO {
 		}
 	}
 	
-	protected abstract boolean doCheck(IImportConfigurator config);
+	protected abstract boolean doCheck(T config);
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
-	public boolean invoke(IImportConfigurator config,
+	public boolean invoke(T config,
+//	public boolean invoke(IIoConfigurator config,
 			Map stores) {
 		if (isIgnore(config)){
 			logger.warn("No invoke for " + ioName + " (ignored)");
@@ -66,11 +67,11 @@ public abstract class CdmIoBase implements ICdmIO {
 		}
 	}
 	
-	protected abstract boolean doInvoke(IImportConfigurator config,
+	protected abstract boolean doInvoke(T config,
 			Map<String, MapWrapper<? extends CdmBase>> stores);
 
 	
-	protected abstract boolean isIgnore(IImportConfigurator config);
+	protected abstract boolean isIgnore(T config);
 
 	protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){
 		T result = null;

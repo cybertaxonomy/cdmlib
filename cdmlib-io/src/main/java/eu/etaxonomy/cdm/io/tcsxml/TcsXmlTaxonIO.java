@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
+public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonIO.class);
 
 	private static int modCount = 30000;

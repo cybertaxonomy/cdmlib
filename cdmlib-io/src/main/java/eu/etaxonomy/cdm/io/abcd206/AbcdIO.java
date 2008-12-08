@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
-public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
+public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator> {
 
 
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);

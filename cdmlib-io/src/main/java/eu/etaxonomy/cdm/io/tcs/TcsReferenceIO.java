@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class TcsReferenceIO extends TcsIoBase implements ICdmIO {
+public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
 
 	private static int modCount = 1000;

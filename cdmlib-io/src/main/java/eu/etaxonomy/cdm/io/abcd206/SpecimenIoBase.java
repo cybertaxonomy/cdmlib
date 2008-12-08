@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
-public class SpecimenIoBase  extends CdmIoBase {
+public class SpecimenIoBase  extends CdmIoBase<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 
 	@Override

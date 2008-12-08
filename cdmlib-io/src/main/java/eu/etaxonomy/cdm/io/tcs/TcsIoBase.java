@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsIoBase  extends CdmIoBase {
+public abstract class TcsIoBase  extends CdmIoBase<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsIoBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");

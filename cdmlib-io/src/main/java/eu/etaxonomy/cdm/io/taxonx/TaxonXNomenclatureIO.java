@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class TaxonXNomenclatureIO extends CdmIoBase implements ICdmIO {
+public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureIO.class);
 
 	private static int modCount = 10000;

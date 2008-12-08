@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
-public class SDDDescriptionIO  extends SDDIoBase implements ICdmIO {
+public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
 	private static int modCount = 1000;

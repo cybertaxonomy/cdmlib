@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  *
  */
-public class TcsXmlMetaDataIO extends TcsXmlIoBase implements ICdmIO {
+public class TcsXmlMetaDataIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlMetaDataIO.class);
 
 	private static int modCount = 1000;

@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
-public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO {
+public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameRelationsIO.class);
 
 	private static int modCount = 5000;

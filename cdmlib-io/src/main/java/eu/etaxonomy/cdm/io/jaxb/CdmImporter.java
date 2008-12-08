@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.babadshanjan
  * @created 13.11.2008
  */
-public class CdmImporter extends CdmIoBase implements ICdmIO {
+public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 
 	private static final Logger logger = Logger.getLogger(CdmImporter.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;

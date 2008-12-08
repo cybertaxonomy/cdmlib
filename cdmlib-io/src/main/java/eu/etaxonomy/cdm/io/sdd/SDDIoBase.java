@@ -12,13 +12,14 @@ package eu.etaxonomy.cdm.io.sdd;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 
 /**
  * @author h.fradin
  * @created 24.10.2008
  * @version 1.0
  */
-public abstract class SDDIoBase  extends CdmIoBase {
+public abstract class SDDIoBase  extends CdmIoBase<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(SDDIoBase.class);
 
 }

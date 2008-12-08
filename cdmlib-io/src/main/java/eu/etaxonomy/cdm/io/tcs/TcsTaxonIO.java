@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.mueller
  *
  */
-public class TcsTaxonIO  extends TcsIoBase implements ICdmIO {
+public class TcsTaxonIO  extends TcsIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
 
 	private static int modCount = 30000;

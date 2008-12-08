@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO {
+public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfigurator> {
 
 
 	private static final Logger logger = Logger.getLogger(SynthesysIO.class);

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcs.CdmIoXmlMapperBase;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsXmlIoBase  extends CdmIoBase {
+public abstract class TcsXmlIoBase  extends CdmIoBase<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlIoBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");

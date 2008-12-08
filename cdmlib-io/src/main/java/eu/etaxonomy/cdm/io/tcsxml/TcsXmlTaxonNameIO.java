@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
-public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO {
+public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameIO.class);
 
 	private static int modCount = 5000;

@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
-public class DistributionImporter extends CdmIoBase implements ICdmIO {
+public class DistributionImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 
     /* used */
     private static String EDIT_NAME_COLUMN = "EDIT";

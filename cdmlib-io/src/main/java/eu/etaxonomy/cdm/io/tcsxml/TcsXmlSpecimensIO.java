@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  * @author a.mueller
  *
  */
-public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO {
+public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlSpecimensIO.class);
 
 	private static int modCount = 1000;
