@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.11.2008
  * @version 1.0
  */
-public abstract class AbstractImageImporter extends CdmIoBase implements ICdmIO {
+public abstract class AbstractImageImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	private static Logger logger = Logger.getLogger(AbstractImageImporter.class);
 	
 	protected CdmApplicationController appCtr;
