@@ -202,6 +202,7 @@ public class TimePeriod implements Cloneable {
 	 * and both have a year value that is not null
 	 * @return
 	 */
+	@Transient
 	public boolean isPeriod(){
 		if (getStartYear() != null && getEndYear() != null ){
 			return true;
