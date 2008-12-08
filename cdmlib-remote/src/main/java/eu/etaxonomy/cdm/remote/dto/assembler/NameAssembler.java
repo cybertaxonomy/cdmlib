@@ -170,7 +170,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	}
 	
 	
-	public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase){
+	public List<TaggedText> getTaggedName(TaxonNameBase<?, INameCacheStrategy> taxonNameBase){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		//FIXME rude hack:
 		if(!(taxonNameBase instanceof NonViralName)){
