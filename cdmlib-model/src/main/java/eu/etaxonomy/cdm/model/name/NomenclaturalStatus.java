@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @Entity
 public class NomenclaturalStatus extends ReferencedEntityBase {
-	
+	private static final long serialVersionUID = -2451270405173131900L;
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
 	
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in

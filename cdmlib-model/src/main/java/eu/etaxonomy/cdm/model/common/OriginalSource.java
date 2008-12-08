@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "OriginalSource")
 @Entity
 public class OriginalSource extends ReferencedEntityBase implements Cloneable{
-	
+	private static final long serialVersionUID = -1972959999261181462L;
 	static Logger logger = Logger.getLogger(OriginalSource.class);
 	
 	//The object's ID in the source, where the alternative string comes from
