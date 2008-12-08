@@ -11,16 +11,20 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.io.common.ICdmIoExport;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -34,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.babadshanjan
  * @created 25.09.2008
  */
-public class CdmExporter implements ICdmIoExport {
+public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
 // public class CdmExporter extends CdmIoBase implements ICdmIoExport {
 // TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {
 
@@ -60,10 +64,9 @@ public class CdmExporter implements ICdmIoExport {
 	 * @param dbname
 	 * @param filename
 	 */
-//	@Override
-	protected boolean doInvoke(IExportConfigurator config) {
-//		protected boolean doInvoke(IExportConfigurator config,
-//				Map<String, MapWrapper<? extends CdmBase>> stores) {
+	@Override
+	protected boolean doInvoke(IExportConfigurator config,
+			Map<String, MapWrapper<? extends CdmBase>> stores) {
 
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
 		String dbname = jaxbExpConfig.getSource().getName();
@@ -245,7 +248,7 @@ public class CdmExporter implements ICdmIoExport {
 	}
 
 
-//	@Override
+	@Override
 	protected boolean doCheck(IExportConfigurator config) {
 		boolean result = true;
 		logger.warn("No check implemented for Jaxb export");
@@ -253,29 +256,9 @@ public class CdmExporter implements ICdmIoExport {
 	}
 
 
-//	@Override
+	@Override
 	protected boolean isIgnore(IExportConfigurator config) {
 		return false;
-	}
-	
-	public boolean check(IExportConfigurator config) {
-		if (isIgnore(config)){
-			logger.warn("No check for " + ioName + " (ignored)");
-			return true;
-		}else{
-			return doCheck(config);
-		}
-	}
-	
-
-	public boolean invoke(IExportConfigurator config) {
-		
-		if (isIgnore(config)){
-			logger.warn("No invoke for " + ioName + " (ignored)");
-			return true;
-		}else{
-			return doInvoke(config);
-		}
 	}
 	
 }

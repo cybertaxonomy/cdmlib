@@ -6,10 +6,14 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.babadshanjan
@@ -17,6 +21,7 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
  */
 public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExport<T> {
 	
+	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
 
 	public boolean invoke(IExportConfigurator config){
@@ -48,8 +53,8 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 		}
 		
 		//do check for each class
-		for (Class<ICdmIoExport> ioClass: config.getIoClassList()){
-			ICdmIoExport cdmIo = null;
+		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+			ICdmIO cdmIo = null;
 			try {
 				cdmIo = ioClass.newInstance();
 				result &= cdmIo.check(config);
@@ -91,12 +96,11 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 				") to Destination (" + config.getDestinationNameString() + ") ...");
 				
 		//do invoke for each class
-		// TODO: Replace ICdmIoExport by ICdmIO
-		for (Class<ICdmIoExport> ioClass: config.getIoClassList()){
-			ICdmIoExport cdmIo = null;
+		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+			ICdmIO cdmIo = null;
 			try {
 				cdmIo = ioClass.newInstance();
-				result &= cdmIo.invoke(config);
+				result &= cdmIo.invoke(config, stores);
 			} catch (Exception e) {
 				logger.error(e);
 				e.printStackTrace();

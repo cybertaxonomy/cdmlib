@@ -38,7 +38,7 @@ public interface IExportConfigurator extends IIoConfigurator {
 
 	public abstract CHECK getCheck();
 	
-	public Class<ICdmIoExport>[] getIoClassList();
+	public Class<ICdmIO>[] getIoClassList();
 
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.

@@ -32,8 +32,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	//private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	private CdmApplicationController cdmApp = null;
 	protected ReferenceBase sourceReference;
-	// TODO: Replace exportClassList by ioClassList
-	protected Class<ICdmIoExport>[] exportClassList; 
+	protected Class<ICdmIO>[] ioClassList;
 
 	
 	public ExportConfiguratorBase(){
@@ -80,8 +79,8 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 		return sourceReference;
 	}
 	
-	public Class<ICdmIoExport>[] getIoClassList(){
-		return exportClassList;
+	public Class<ICdmIO>[] getIoClassList(){
+		return ioClassList;
 	}
 
 	/* (non-Javadoc)
