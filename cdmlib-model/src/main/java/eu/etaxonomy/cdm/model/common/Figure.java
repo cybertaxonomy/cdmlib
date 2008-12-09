@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Figure")
 @Entity
 public class Figure extends ReferencedMedia {
+	private static final long serialVersionUID = -1712467725277327725L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Figure.class);
 	
 	/**

@@ -39,7 +39,8 @@ import org.apache.log4j.Logger;
 })
 @Entity
 public class Extension extends VersionableEntity implements Cloneable {
-	
+	private static final long serialVersionUID = -857207737641432202L;
+	@SuppressWarnings("unused")
 	private static final  Logger logger = Logger.getLogger(Extension.class);
 	
     @XmlElement(name = "Value")

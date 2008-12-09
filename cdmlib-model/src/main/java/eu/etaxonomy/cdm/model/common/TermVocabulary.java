@@ -48,7 +48,9 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
-	static Logger logger = Logger.getLogger(TermVocabulary.class);
+	private static final long serialVersionUID = 1925052321596648672L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
 	
 	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
 

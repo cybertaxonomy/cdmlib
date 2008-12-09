@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @Entity
 public class Annotation extends LanguageStringBase implements Cloneable {
+	private static final long serialVersionUID = -4484677078599520233L;
 	private static final Logger logger = Logger.getLogger(Annotation.class);
 	
 	

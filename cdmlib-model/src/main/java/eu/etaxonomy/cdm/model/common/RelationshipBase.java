@@ -39,7 +39,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @MappedSuperclass
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
 	private static final long serialVersionUID = -5030154633820061997L;
-	static Logger logger = Logger.getLogger(RelationshipBase.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(RelationshipBase.class);
 
 	protected RelationshipBase(){
 		super();

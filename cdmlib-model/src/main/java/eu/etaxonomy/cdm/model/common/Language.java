@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Component
 public class Language extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(Language.class);
+	private static final long serialVersionUID = -5030610079904074217L;
+	private static final Logger logger = Logger.getLogger(Language.class);
 
 	private static final UUID uuidChinese = UUID.fromString("a9fc2782-5b2a-466f-b9c3-64d9ca6614c4");
 	public static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");

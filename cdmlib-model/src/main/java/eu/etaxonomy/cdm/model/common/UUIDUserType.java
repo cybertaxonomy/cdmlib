@@ -27,6 +27,7 @@ import org.hibernate.usertype.UserType;
  * @version 1.0
  */
 public class UUIDUserType implements UserType {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(UUIDUserType.class);
 
 	private static final int[] TYPES = { Types.VARCHAR };

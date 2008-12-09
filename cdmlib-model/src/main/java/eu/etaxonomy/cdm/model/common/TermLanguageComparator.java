@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class TermLanguageComparator<T extends TermBase> implements Comparator<T> {
-	private static Logger logger = Logger
-			.getLogger(TermLanguageComparator.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(TermLanguageComparator.class);
 
 	private Language defaultLanguage = Language.DEFAULT();
 	private Language compareLanguage = Language.DEFAULT();

@@ -6,9 +6,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

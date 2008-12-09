@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 public class WrongTermTypeException extends Exception {
+	private static final long serialVersionUID = 8691753260804787067L;
 
 	public WrongTermTypeException() {
 		// TODO Auto-generated constructor stub

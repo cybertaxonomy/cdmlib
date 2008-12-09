@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -57,6 +58,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @XmlRootElement(name = "CdmBase")
 @MappedSuperclass
 public abstract class CdmBase implements Serializable, ICdmBase{
+	private static final long serialVersionUID = -3053225700018294809L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmBase.class);
 
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	private int id;

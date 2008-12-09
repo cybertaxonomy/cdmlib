@@ -33,8 +33,9 @@ import au.com.bytecode.opencsv.CSVWriter;
 @XmlRootElement(name = "RelationshipTermBase")
 @Entity
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
-	
-	static Logger logger = Logger.getLogger(RelationshipTermBase.class);
+	private static final long serialVersionUID = 5497187985269083971L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	@XmlElement(name = "Symmetric")
 	private boolean symmetric;

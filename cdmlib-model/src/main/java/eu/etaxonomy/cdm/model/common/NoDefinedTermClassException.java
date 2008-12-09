@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 public class NoDefinedTermClassException extends Exception {
+	private static final long serialVersionUID = 2472032524968009235L;
 
 	public NoDefinedTermClassException() {
 		// TODO Auto-generated constructor stub

@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "AnnotationType")
 @Entity
 public class AnnotationType extends DefinedTermBase {
-	public static final Logger logger = Logger.getLogger(AnnotationType.class);
+	private static final long serialVersionUID = 49629121282854575L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(AnnotationType.class);
 
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	private static final UUID uuidEditorial = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");

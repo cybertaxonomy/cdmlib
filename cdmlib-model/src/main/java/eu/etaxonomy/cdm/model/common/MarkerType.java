@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "MarkerType")
 @Entity
 public class MarkerType extends DefinedTermBase {
+	private static final long serialVersionUID = -9117424749919907396L;
 	public static final Logger logger = Logger.getLogger(MarkerType.class);
 
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");

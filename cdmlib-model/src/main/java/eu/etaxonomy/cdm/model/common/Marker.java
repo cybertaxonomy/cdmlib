@@ -33,6 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Marker")
 @Entity
 public class Marker extends VersionableEntity implements Cloneable{
+	private static final long serialVersionUID = -7474489691871404610L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Marker.class);
 	
     @XmlElement(name = "Flag")

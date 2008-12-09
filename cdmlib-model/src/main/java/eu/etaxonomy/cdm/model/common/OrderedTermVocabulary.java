@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
+	private static final long serialVersionUID = 7871741306306371242L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
 	
 	/**

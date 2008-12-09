@@ -30,8 +30,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @MappedSuperclass
 public abstract class LanguageStringBase extends VersionableEntity{
-	
-	static Logger logger = Logger.getLogger(LanguageStringBase.class);
+	private static final long serialVersionUID = -1892526642162438277L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(LanguageStringBase.class);
 
 	@XmlElement(name = "Text")
 	protected String text;

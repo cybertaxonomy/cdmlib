@@ -27,7 +27,9 @@ import org.apache.log4j.Logger;
 @XmlRootElement(name = "LanguageString")
 @Entity
 public class LanguageString  extends LanguageStringBase{
-	static Logger logger = Logger.getLogger(LanguageString.class);
+	private static final long serialVersionUID = -1502298496073201104L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(LanguageString.class);
 
 	public static LanguageString NewInstance(String text, Language language){
 		return new LanguageString(text, language);

@@ -15,8 +15,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EventBase", propOrder = {
@@ -27,8 +25,9 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 @XmlRootElement(name = "EventBase")
 @MappedSuperclass
 public abstract class EventBase extends AnnotatableEntity implements IEvent {
-	
-	static Logger logger = Logger.getLogger(EventBase.class);
+	private static final long serialVersionUID = -1859035632758446593L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(EventBase.class);
 
 	@XmlElement(name = "TimePeriod")
 	private TimePeriod timeperiod = new TimePeriod();

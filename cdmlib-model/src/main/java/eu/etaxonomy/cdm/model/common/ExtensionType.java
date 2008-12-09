@@ -29,7 +29,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ExtensionType")
 @Entity
 public class ExtensionType extends DefinedTermBase {
-	static Logger logger = Logger.getLogger(ExtensionType.class);
+	private static final long serialVersionUID = -7761963794004133427L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(ExtensionType.class);
 
 	public ExtensionType() {
 		super();

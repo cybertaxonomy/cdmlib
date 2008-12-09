@@ -27,7 +27,9 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Keyword")
 @Entity
 public class Keyword extends OrderedTermBase<Keyword> {
-	static Logger logger = Logger.getLogger(Keyword.class);
+	private static final long serialVersionUID = -4907208557010483263L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Keyword.class);
 
 	public static Keyword NewInstance(){
 		return new Keyword();

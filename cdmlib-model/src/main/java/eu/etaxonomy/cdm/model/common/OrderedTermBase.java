@@ -30,7 +30,9 @@ import javax.persistence.*;
 @XmlRootElement(name = "OrderedTermBase")
 @Entity
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
-	static Logger logger = Logger.getLogger(OrderedTermBase.class);
+	private static final long serialVersionUID = 8000797926720467399L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
 	
 	//Order index, value < 1 means that this Term is not in order yet
 	@XmlElement(name = "OrderIndex")

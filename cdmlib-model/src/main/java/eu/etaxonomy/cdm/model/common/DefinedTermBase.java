@@ -54,7 +54,9 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm{
-	static Logger logger = Logger.getLogger(DefinedTermBase.class);
+	private static final long serialVersionUID = 2931811562248571531L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 	
 	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
 

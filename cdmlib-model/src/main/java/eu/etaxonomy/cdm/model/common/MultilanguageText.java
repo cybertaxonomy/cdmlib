@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 
 /**
@@ -32,9 +30,8 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 @XmlType(name = "MultilanguageText")
 @XmlRootElement(name = "MultilanguageText")
 public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable{
-	
 	private static final long serialVersionUID = 7876604337076705862L;
-	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
 		
 	/**
