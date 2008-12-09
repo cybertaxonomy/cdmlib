@@ -12,10 +12,15 @@ package eu.etaxonomy.cdm.model.name;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -36,8 +41,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationship", propOrder = {
-    "ruleConsidered",
-    "type"
+	"relatedFrom",
+	"relatedTo",
+	"type",
+    "ruleConsidered"
 })
 @Entity
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
@@ -48,8 +55,18 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	//the note property.
     @XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
+    
+    @XmlElement(name = "RelatedFrom")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private TaxonNameBase relatedFrom;
+
+	@XmlElement(name = "RelatedTo")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private TaxonNameBase relatedTo;
 	
-    @XmlElement(name = "NameRelationshipType")
+    @XmlElement(name = "Type")
 	private NameRelationshipType type;
 
 	//for hibernate, don't use
@@ -110,13 +127,13 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 */
 	@Transient
 	public TaxonNameBase getFromName(){
-		return super.getRelatedFrom();
+		return this.getRelatedFrom();
 	}
 	/**
 	 * @see  #getFromName()
 	 */
 	void setFromName(TaxonNameBase fromName){
-		super.setRelatedFrom(fromName);
+		this.setRelatedFrom(fromName);
 	}
 
 	/** 
@@ -128,13 +145,13 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 */
 	@Transient
 	public TaxonNameBase getToName(){
-		return super.getRelatedTo();
+		return this.getRelatedTo();
 	}
 	/**
 	 * @see  #getToName()
 	 */
 	void setToName(TaxonNameBase toName){
-		super.setRelatedTo(toName);
+		this.setRelatedTo(toName);
 	}
 
 	/** 
@@ -154,6 +171,38 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 */
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})	
+	protected TaxonNameBase getRelatedFrom() {
+		return relatedFrom;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected TaxonNameBase getRelatedTo() {
+		return relatedTo;
+	}
+
+	@ManyToOne
+	public NameRelationshipType getType() {
+		return type;
+	}
+
+
+	protected void setRelatedFrom(TaxonNameBase relatedFrom) {
+		this.relatedFrom = relatedFrom;
+	}
+
+
+	protected void setRelatedTo(TaxonNameBase relatedTo) {
+		this.relatedTo = relatedTo;
+	}
+
+
+	protected void setType(NameRelationshipType type) {
+		this.type = type;
 	}
 
 }

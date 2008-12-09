@@ -15,11 +15,15 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -43,6 +47,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SynonymRelationship", propOrder = {
+	"relatedFrom",
+	"relatedTo",
+	"type",
     "isProParte",
     "isPartial"
 })
@@ -57,6 +64,20 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlElement(name = "IsPartial")
 	private boolean isPartial = false;
 
+	@XmlElement(name = "RelatedFrom")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private Synonym relatedFrom;
+
+	@XmlElement(name = "RelatedTo")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private Taxon relatedTo;
+
+	@XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private SynonymRelationshipType type;
 	
 	//for hibernate, don't use
 	@Deprecated
@@ -135,7 +156,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 */
 	@Transient
 	public Taxon getAcceptedTaxon(){
-		return super.getRelatedTo();
+		return this.getRelatedTo();
 	}
 
 	/** 
@@ -151,7 +172,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see   				Taxon#getSynonymRelations()
 	 */
 	protected void setAcceptedTaxon(Taxon acceptedTaxon){
-		super.setRelatedTo(acceptedTaxon);
+		this.setRelatedTo(acceptedTaxon);
 	}
 
 	/** 
@@ -165,7 +186,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 */
 	@Transient
 	public Synonym getSynonym(){
-		return super.getRelatedFrom();
+		return this.getRelatedFrom();
 	}
 	/** 
 	 * Sets the given {@link Synonym synonym} to <i>this</i> synonym relationship.
@@ -180,7 +201,35 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see   			Synonym#getSynonymRelations()
 	 */
 	protected void setSynonym(Synonym synonym){
-		super.setRelatedFrom(synonym);
+		this.setRelatedFrom(synonym);
 	}
 
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Synonym getRelatedFrom() {
+		return relatedFrom;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Taxon getRelatedTo() {
+		return relatedTo;
+	}
+
+	@ManyToOne
+	public SynonymRelationshipType getType() {
+		return type;
+	}
+
+	protected void setRelatedFrom(Synonym relatedFrom) {
+		this.relatedFrom = relatedFrom;
+	}
+	
+	protected void setRelatedTo(Taxon relatedTo) {
+		this.relatedTo = relatedTo;
+	}
+
+	protected void setType(SynonymRelationshipType type) {
+		this.type = type;
+	}
 }

@@ -11,11 +11,17 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -38,6 +44,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "HybridRelationship", propOrder = {
+	"relatedFrom",
+	"relatedTo",
+	"type",
     "ruleConsidered"
 })
 @Entity
@@ -49,6 +58,21 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	//the note property.
 	@XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
+	
+	@XmlElement(name = "RelatedFrom")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private BotanicalName relatedFrom;
+
+	@XmlElement(name = "RelatedTo")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private BotanicalName relatedTo;
+	
+    @XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private HybridRelationshipType type;
 
 	//for hibernate use only, don't use
 	@Deprecated
@@ -104,13 +128,13 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 */
 	@Transient
 	public BotanicalName getParentName(){
-		return super.getRelatedFrom();
+		return this.getRelatedFrom();
 	}
 	/**
 	 * @see  #getParentName()
 	 */
 	public void setParentName(BotanicalName parentName){
-		super.setRelatedFrom(parentName);
+		this.setRelatedFrom(parentName);
 	}
 
 	/** 
@@ -122,13 +146,13 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 */
 	@Transient
 	public BotanicalName getHybridName(){
-		return super.getRelatedTo();
+		return this.getRelatedTo();
 	}
 	/**
 	 * @see  #getHybridName()
 	 */
 	public void setHybridName(BotanicalName hybridName){
-		super.setRelatedTo(hybridName);
+		this.setRelatedTo(hybridName);
 	}
 
 	/** 
@@ -145,6 +169,38 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 */
 	public void setRuleConsidered(String ruleConsidered){
 		this.ruleConsidered = ruleConsidered;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected BotanicalName getRelatedFrom() {
+		return relatedFrom;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected BotanicalName getRelatedTo() {
+		return relatedTo;
+	}
+
+	@ManyToOne
+	public HybridRelationshipType getType() {
+		return type;
+	}
+
+
+	protected void setRelatedFrom(BotanicalName relatedFrom) {
+		this.relatedFrom = relatedFrom;
+	}
+
+
+	protected void setRelatedTo(BotanicalName relatedTo) {
+		this.relatedTo = relatedTo;
+	}
+
+
+	protected void setType(HybridRelationshipType type) {
+		this.type = type;
 	}
 
 }

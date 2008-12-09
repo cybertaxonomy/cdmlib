@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -30,7 +31,7 @@ import au.com.bytecode.opencsv.CSVWriter;
     "inverseRepresentations"
 })
 @XmlRootElement(name = "RelationshipTermBase")
-@MappedSuperclass
+@Entity
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	
 	static Logger logger = Logger.getLogger(RelationshipTermBase.class);

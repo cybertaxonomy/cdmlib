@@ -13,6 +13,9 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -38,7 +41,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationship", propOrder = {
-    "type"		
+	"relatedFrom",
+	"relatedTo",
+	"type",		
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
@@ -46,7 +51,17 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
 
-    @XmlElement(name = "TaxonRelationshipType")
+	@XmlElement(name = "RelatedFrom")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private Taxon relatedFrom;
+
+	@XmlElement(name = "RelatedTo")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	private Taxon relatedTo;
+	
+    @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private TaxonRelationshipType type;
@@ -130,6 +145,35 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 */
 	public void setToTaxon(Taxon toTaxon){
 		setRelatedTo(toTaxon);
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Taxon getRelatedFrom() {
+		return relatedFrom;
+	}
+
+	@ManyToOne(fetch=FetchType.EAGER)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Taxon getRelatedTo() {
+		return relatedTo;
+	}
+
+	@ManyToOne
+	public TaxonRelationshipType getType() {
+		return type;
+	}
+
+	protected void setRelatedFrom(Taxon relatedFrom) {
+		this.relatedFrom = relatedFrom;
+	}
+
+	protected void setRelatedTo(Taxon relatedTo) {
+		this.relatedTo = relatedTo;
+	}
+
+	protected void setType(TaxonRelationshipType type) {
+		this.type = type;
 	}
 
 }
