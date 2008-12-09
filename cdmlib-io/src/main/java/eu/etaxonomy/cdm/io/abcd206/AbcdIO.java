@@ -59,8 +59,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
-
-
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);
 
 	protected String fullScientificNameString;
