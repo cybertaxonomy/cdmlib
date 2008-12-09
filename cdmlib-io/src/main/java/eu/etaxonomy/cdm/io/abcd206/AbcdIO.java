@@ -59,8 +59,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator> {
-
-
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);
 
 	protected String fullScientificNameString;
@@ -103,12 +101,11 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	 * @return the list of root nodes ("Unit")
 	 */
 	private static NodeList getUnitsNodeList(String urlFileName){
-		URL url;
 		NodeList unitList = null;
 		try {
 			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
-			url = new URL(urlFileName);
+			URL url = new URL(urlFileName);
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
 			Document document = constructeur.parse(is);
@@ -1245,13 +1242,15 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		return result;
 	}
 
-	private void compareABCDtoCDM(String fileName, ArrayList<String> knownElts){
+	private void compareABCDtoCDM(String urlFileName, ArrayList<String> knownElts){
 
 		try {
 			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
-			File xml = new File(fileName);
-			Document document = constructeur.parse(xml);
+			URL url = new URL(urlFileName);
+			Object o = url.getContent();
+			InputStream is = (InputStream)o;
+			Document document = constructeur.parse(is);
 			Element racine = document.getDocumentElement();
 			traverse(racine);
 		} catch (ParserConfigurationException e) {
@@ -1272,8 +1271,9 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			if (knownElts.indexOf(elt) == -1)
 				logger.info("Unsaved ABCD element: "+elt+" - "+allABCDelements.get(elt));
 		}
-
 	}
+	
+	
 
 	private void traverse(Node node){
 		// Extract node info:
