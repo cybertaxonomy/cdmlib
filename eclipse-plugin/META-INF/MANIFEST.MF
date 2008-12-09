@@ -53,7 +53,8 @@ Bundle-ClassPath: aspectjrt-1.5.4.jar,
  cdmlib-io-1.4.jar,
  cdmlib-model-1.4.jar,
  cdmlib-persistence-1.4.jar,
- cdmlib-services-1.4.jar
+ cdmlib-services-1.4.jar,
+ sanselan-0.94-incubator.jar
 Export-Package: eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.application.eclipse,
  eu.etaxonomy.cdm.api.service,
