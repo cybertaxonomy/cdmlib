@@ -50,7 +50,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 //		return (String)super.getSource();
 //	}
 	
-	public Object getSource(){
+	public String getSource(){
 		return (String)super.getSource();
 	}
 	

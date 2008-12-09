@@ -139,7 +139,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		
 		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
 				+ cdmApp.getDatabaseService().getUrl() + ") ...");
-		return true;
+		return result;
 	}
 	
 

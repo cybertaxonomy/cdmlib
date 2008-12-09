@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.io.abcd206;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,18 +102,21 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 	 * @param fileName: the file's location
 	 * @return the list of root nodes ("Unit")
 	 */
-	private static NodeList getUnitsNodeList(String fileName){
+	private static NodeList getUnitsNodeList(String urlFileName){
+		URL url;
 		NodeList unitList = null;
 		try {
 			DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 			DocumentBuilder constructeur = fabrique.newDocumentBuilder();
-			File xml = new File(fileName);
-			Document document = constructeur.parse(xml);
+			url = new URL(urlFileName);
+			Object o = url.getContent();
+			InputStream is = (InputStream)o;
+			Document document = constructeur.parse(is);
 			Element racine = document.getDocumentElement();
 			unitList = racine.getElementsByTagName("Unit");
 
 		}catch(Exception e){
-			logger.info(e);
+			logger.warn(e);
 		}
 		return unitList;
 	}
@@ -1195,16 +1199,14 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			if(this.multimediaObjects.size()>0){
 				MediaRepresentation representation;
 				Media media;
-				MediaMetaData mmd ;
 				ImageMetaData imd ;
 				URL url ;
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
-						mmd = new MediaMetaData();
 						imd = new ImageMetaData();
 						url = new URL(this.multimediaObjects.get(i));
-						imd = mmd.readImageMetaData(url, imd);
+						imd = MediaMetaData.readImageMetaData(url, imd);
 						if (imd != null){
 							representation = MediaRepresentation.NewInstance();
 							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);
@@ -1300,15 +1302,16 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 
 	public boolean invoke(SpecimenImportConfigurator config){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
+		boolean result = true;
 		AbcdIO test = new AbcdIO();
-		String sourceName = config.getSourceNameString();
+		String sourceName = config.getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null)
 		{
 			logger.info("nb units to insert: "+unitsList.getLength());
 			for (int i=0;i<unitsList.getLength();i++){
 				test.setUnitPropertiesXML((Element)unitsList.item(i));
-				test.start(config);
+				result &= test.start(config);
 				config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName,test.knownABCDelements);
@@ -1318,15 +1321,13 @@ public class AbcdIO  extends SpecimenIoBase  implements ICdmIO {
 			}
 		}
 
-		return false;
-
+		return result;
 	}
 
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
 		logger.info("invoke de ABCDio");
-		invoke((SpecimenImportConfigurator)config);
-		return false;
+		return invoke((SpecimenImportConfigurator)config);
 	}
 
 
