@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="sanselan-0.94-incubator.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-commons-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-io-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-model-1.4.jar"/>
