@@ -35,8 +35,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -92,13 +90,13 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 
-		String value;
+		
 		logger.info("start Datasets ...");
 		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
 
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
 		Element root = sddConfig.getSourceRoot();
-		boolean success =true;
+		boolean success = true;
 
 		Namespace sddNamespace = sddConfig.getSddNamespace();
 
@@ -578,7 +576,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 								for (Element elMeasure : elMeasures){
 									if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
 									String type = elMeasure.getAttributeValue("type");
-									value = elMeasure.getAttributeValue("value");
+									String value = elMeasure.getAttributeValue("value");
 									float v = Float.parseFloat(value);
 									StatisticalMeasure t = null;
 									if (type.equals("Min")) {
@@ -669,20 +667,8 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 					//   <Label>Kevin Thiele</Label>
 					//   <Detail role="Description">Ali Baba is also known as r.a.m.</Detail>
 					//  </Representation>
-					Element elRepresentation = elAgent.getChild("Representation",sddNamespace);
-					String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-					Element elDetail = elRepresentation.getChild("Detail",sddNamespace);
-
-					Person person = Person.NewTitledInstance(label);
-					OriginalSource source = OriginalSource.NewInstance(idA, "Agent");
-					person.addSource(source);
-
-					if (elDetail != null) {
-						String role = elDetail.getAttributeValue("role");
-						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						Annotation annotation = Annotation.NewInstance(role + " - " + detail, datasetLanguage);
-						person.addAnnotation(annotation);
-					}
+					Person person = Person.NewInstance();
+					importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
 
 					// <Links>
 					Element elLinks = elAgent.getChild("Links",sddNamespace);
@@ -701,7 +687,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 								String href = elLink.getAttributeValue("href");
 
 								if (k==1) {
-									source = OriginalSource.NewInstance(rel, href);
+									OriginalSource  source = OriginalSource.NewInstance(rel, href);
 									person.addSource(source);
 								}
 
@@ -721,22 +707,6 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 
 					if (editors.containsKey(idA)) {
 						editors.put(idA, person);
-					}
-
-					List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-					for (Element elMediaObject : listMediaObjects) {
-						String ref = null;
-						String role = null;
-						if (elMediaObject != null) {
-							ref = elMediaObject.getAttributeValue("ref");
-							role = elMediaObject.getAttributeValue("role");
-						}
-						if (ref != null) {
-							if (!ref.equals("")) {
-								this.associateImageWithCdmBase(ref,person);
-							}
-						}
 					}
 
 				} catch (Exception e) {
@@ -767,33 +737,10 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 						//  <Representation>
 						//   <Label>Sample Citation</Label>
 						//  </Representation>
-						Element elRepresentation = elPublication.getChild("Representation",sddNamespace);
-						String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 						Article publication = Article.NewInstance();
-						publication.setTitle(label);
-						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-						publication.addAnnotation(annotation);
-						OriginalSource source = OriginalSource.NewInstance(idP, "Publication");
-						publication.addSource(source);
-
+						importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
+						
 						publications.put(idP,publication);
-
-						List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
-
-						for (Element elMediaObject : listMediaObjects) {
-							String ref = null;
-							String role = null;
-							if (elMediaObject != null) {
-								ref = elMediaObject.getAttributeValue("ref");
-								role = elMediaObject.getAttributeValue("role");
-							}
-							if (ref != null) {
-								if (!ref.equals("")) {
-									this.associateImageWithCdmBase(ref,publication);
-								}
-							}
-						}
 
 					} catch (Exception e) {
 						//FIXME
@@ -824,83 +771,76 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 						//  <Representation>
 						//   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
 						//  </Representation>
-						Element elRepresentation = elMO.getChild("Representation",sddNamespace);
-						String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
-						MultilanguageText m = MultilanguageText.NewInstance(LanguageString.NewInstance(label, datasetLanguage));
-						String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
-						Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
-
-						// mediaObjects.get(idMO).setTitle(m);
-						OriginalSource originalSource = OriginalSource.NewInstance(idMO, "MediaObject");
-						// NO MEDIA SOURCE AVAILABLE
-						// media.addSource();
+						Media media = Media.NewInstance();
+						importRepresentation(elMO, sddNamespace, media, idMO, sddConfig);
 
 						// <Type>Image</Type>
 						// <Source href="http://test.edu/test.jpg"/>
 						String type = (String)ImportHelper.getXmlInputValue(elMO,"Type",sddNamespace);
-						Element elSource = elMO.getChild("Source",sddNamespace);
-						String href = elSource.getAttributeValue("href");
+						
+						if ((type != null) && (type.equals("Image"))) {
+							Element elSource = elMO.getChild("Source",sddNamespace);
+							String href = elSource.getAttributeValue("href");
 
-						ImageMetaData imageMetaData = new ImageMetaData();
-						ImageFile image = null;
+							ImageMetaData imageMetaData = new ImageMetaData();
+							ImageFile image = null;
 
-						if (href.substring(0,7).equals("http://")) {
-							try{
-								URL url = new URL(href);
-								imageMetaData.readFrom(url);
-								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
-							} catch (MalformedURLException e) {
-								logger.error("Malformed URL", e);
+							if (href.substring(0,7).equals("http://")) {
+								try{
+									URL url = new URL(href);
+									imageMetaData.readFrom(url);
+									image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+								} catch (MalformedURLException e) {
+									logger.error("Malformed URL", e);
+								}
+							} else {
+								String sns = config.getSourceNameString();
+								File f = new File(sns);
+								File parent = f.getParentFile();
+								String fi = parent.toString() + File.separator + href;
+								File file = new File(fi);
+								imageMetaData.readFrom(file);
+								image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
 							}
-						} else {
-							String sns = config.getSourceNameString();
-							File f = new File(sns);
-							File parent = f.getParentFile();
-							String fi = parent.toString() + File.separator + href;
-							File file = new File(fi);
-							imageMetaData.readFrom(file);
-							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
-						}
 
-						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
-						representation.addRepresentationPart(image);
+							MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+							representation.addRepresentationPart(image);
 
-						Media media = Media.NewInstance();
-						media.addRepresentation(representation);
-						media.addAnnotation(annotation);
-						// media.setTitle(m);
+							media.addRepresentation(representation);
 
-						ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
-						if (lcb != null) {
-							for (int k = 0; k < lcb.size(); k++) {
-								if (lcb.get(k) instanceof DefinedTermBase) {
-									DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
-									// if (lcb.get(0) instanceof DefinedTermBase) {
-									// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
-									if (dtb!=null) {
-										if (k == 0) {
-											dtb.addMedia(media);
-										} else {
-											Media me = (Media) media.clone();
-											dtb.addMedia(me);
+							ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
+							if (lcb != null) {
+								for (int k = 0; k < lcb.size(); k++) {
+									if (lcb.get(k) instanceof DefinedTermBase) {
+										DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
+										// if (lcb.get(0) instanceof DefinedTermBase) {
+										// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
+										if (dtb!=null) {
+											if (k == 0) {
+												dtb.addMedia(media);
+											} else {
+												Media me = (Media) media.clone();
+												dtb.addMedia(me);
+											}
 										}
-									}
-								} else if (lcb.get(k) instanceof ReferenceBase) {
-									ReferenceBase rb = (ReferenceBase) lcb.get(k);
-									//} else if (lcb.get(0) instanceof ReferenceBase) {
-									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
-									// rb.setTitleCache(label);
-									if (rb!=null) {
-										if (k == 0) {
-											rb.addMedia(media);
-										} else {
-											Media me = (Media) media.clone();
-											rb.addMedia(me);
+									} else if (lcb.get(k) instanceof ReferenceBase) {
+										ReferenceBase rb = (ReferenceBase) lcb.get(k);
+										//} else if (lcb.get(0) instanceof ReferenceBase) {
+										//ReferenceBase rb = (ReferenceBase) lcb.get(0);
+										// rb.setTitleCache(label);
+										if (rb!=null) {
+											if (k == 0) {
+												rb.addMedia(media);
+											} else {
+												Media me = (Media) media.clone();
+												rb.addMedia(me);
+											}
 										}
 									}
 								}
 							}
 						}
+						
 					} catch (Exception e) {
 						//FIXME
 						logger.warn("Import of MediaObject " + j + " failed.");
@@ -1061,6 +1001,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
 		// <Label xml:lang="la">Viola hederacea Labill.</Label>
 		Element elLabel = elRepresentation.getChild("Label",sddNamespace);
+		Element elDetail = elRepresentation.getChild("Detail",sddNamespace);
 		String lang = elLabel.getAttributeValue("lang",xmlNamespace);
 		Language language = null;
 		if (lang != null) {
@@ -1082,13 +1023,25 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		if (ve instanceof IdentifiableEntity) {
 			IdentifiableEntity ie = (IdentifiableEntity) ve;
 			ie.setTitleCache(label);
-			if (detail != null) {
-				Annotation annotation = Annotation.NewInstance(detail, language);
+
+			if (elDetail != null) {
+				String role = elDetail.getAttributeValue("role");
+				Annotation annotation = null;
+				if (detail != null) {
+					if (role != null) {
+						annotation = Annotation.NewInstance(role + " - " + detail, language);
+					} else {
+						annotation = Annotation.NewInstance(detail, language);
+					}
+				}
 				ie.addAnnotation(annotation);
 			}
+			
 			ve = ie;
+			
 		} else if (ve instanceof TermBase) {
 			TermBase tb = (TermBase) ve;
+			
 			if (label != null){
 				if (detail != null) {
 					tb.addRepresentation(Representation.NewInstance(detail, label, label, language));
