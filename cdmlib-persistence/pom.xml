@@ -19,7 +19,41 @@
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-persistence/</developerConnection>
     <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-persistence/</url>
   </scm>
-
+  <build>
+    <plugins>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2ddl</name>
+              <implementation>annotationconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <namingstrategy>org.hibernate.cfg.DefaultComponentSafeNamingStrategy</namingstrategy>
+            <propertyfile>/src/test/resources/dbscripts/hibernate.properties</propertyfile>
+            <outputfilename>001_cdm.ddl</outputfilename>
+            <configurationfile>/src/test/resources/dbscripts/hibernate.cfg.xml</configurationfile> <!-- Should use common system file, but I don't want to mess with your hibernate setup at the moment -->
+          </componentProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.4</version> <!-- This should be externalized = ${hsqldb.version} -->
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.3.0.ga</version> <!-- This should be externalized = ${hibernate.annotations.version}? -->
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
   	 <dependency>
   		<groupId>eu.etaxonomy</groupId>
@@ -50,6 +84,12 @@
         <artifactId>unitils</artifactId>
         <version>1.0</version>
         <!--<scope>test</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>org.dbunit</groupId>
+      <artifactId>dbunit</artifactId>
+      <version>2.2</version>
+      <!--<scope>test</scope>-->
     </dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
@@ -118,4 +158,5 @@
 	
   	
   </dependencies>
+  
 </project>
