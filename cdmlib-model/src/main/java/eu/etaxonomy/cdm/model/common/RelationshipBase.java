@@ -11,9 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,13 +19,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author m.doering
@@ -42,6 +32,8 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipBase.class);
 
+	private boolean isDoubtful;
+	
 	protected RelationshipBase(){
 		super();
 	}
@@ -79,6 +71,23 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	protected abstract TO getRelatedTo();
 	
 	protected abstract void setRelatedTo(TO relatedTo);
+	
+	/**
+	 * A boolean flag that marks the relationship between two objects as doubtful
+	 * Please be aware that this flag should not be used to mark any status of the 
+	 * objects themselfs. E.g. when marking a synonym relationship as doubtful
+	 * this means that it is doubtful that the synonym is really a synonym to the
+	 * taxon. It does not mean that the synonym is doubtfully a synonym.
+	 * @return true, if the relationship is doubtful, false otherwise
+	 */
+	public boolean isDoubtful(){
+		return this.isDoubtful;
+	}
+	
+	public void setDoubtful(boolean isDoubtful){
+		this.isDoubtful = isDoubtful;
+	}
+	
 	
 // TODO
 //	UUID toUuid; 
