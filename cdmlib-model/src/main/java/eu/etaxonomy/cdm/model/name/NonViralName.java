@@ -30,6 +30,7 @@ import org.hibernate.annotations.Target;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 
@@ -68,8 +69,10 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
-public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName, INonViralNameCacheStrategy> {
+public class NonViralName<T extends NonViralName<?>> extends TaxonNameBase<T, INonViralNameCacheStrategy<NonViralName<?>>> {
 	
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
 	@XmlElement(name = "NameCache")
@@ -117,7 +120,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	protected boolean protectedNameCache;
 
     @XmlTransient
-	protected INonViralNameCacheStrategy cacheStrategy;
+	protected INameCacheStrategy<T> cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
 	
@@ -263,14 +266,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 */
 	@Transient
 	@Override
-	public INonViralNameCacheStrategy getCacheStrategy() {
+	public INameCacheStrategy<T> getCacheStrategy() {
 		return cacheStrategy;
 	}
 	/**
 	 * @see  #getCacheStrategy()
 	 */
 	@Override
-	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
+	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
 	}
 	
@@ -485,7 +488,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
 			return null;
 		}else{
-			return cacheStrategy.getTitleCache(this);
+			return cacheStrategy.getTitleCache((T)this);
 		}
 	}
 	
@@ -495,7 +498,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
 			return null;
 		}else{
-			return cacheStrategy.getFullTitleCache(this);
+			return cacheStrategy.getFullTitleCache((T)this);
 		}
 	}
 	
@@ -514,7 +517,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 			logger.warn("No CacheStrategy defined for taxonName: " + this.toString());
 			return null;
 		}else{
-			return cacheStrategy.getNameCache(this);
+			return ((INonViralNameCacheStrategy<NonViralName<?>>) cacheStrategy).getNameCache(this);
 		}
 	}
 	

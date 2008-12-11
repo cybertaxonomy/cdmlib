@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
     "annotations"
 })
 @MappedSuperclass
-public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends VersionableEntity<T> {
+public abstract class AnnotatableEntity<T extends AnnotatableEntity<?>> extends VersionableEntity<T> {
 	private static final long serialVersionUID = 9151211842542443102L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotatableEntity.class);

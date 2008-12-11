@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface INameCacheStrategy<T extends TaxonNameBase<?,?>> extends IIdentifiableEntityCacheStrategy<T> {
 
 
 	/**
@@ -36,5 +36,6 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	public List<Object> getTaggedName(T taxonNameBase);
 	
 	public String getFullTitleCache(T taxonNameBase);
+
 
 }

@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "VersionableEntity")
 @MappedSuperclass
-public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
+public abstract class VersionableEntity<T extends VersionableEntity<?>> extends CdmBase {
 	private static final long serialVersionUID = 1409299200302758513L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);

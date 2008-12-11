@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "TaxonRelationship", propOrder = {
 	"relatedFrom",
 	"relatedTo",
-	"type",		
+	"type"
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
