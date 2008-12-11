@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -107,6 +108,12 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 	}
 	
 	
+	protected static final ReferenceBase unknownSec(){
+		ReferenceBase result = Generic.NewInstance();
+		result.setTitleCache("UNKNOWN");
+		return result;
+	}
+	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
@@ -170,7 +177,11 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 			elementList.add(childName.toString());
-	
+			// TODO may sec be null?
+			if (sec == null){
+				sec = unknownSec();
+			}
+			
 			TaxonBase taxonBase;
 			if (synonymIdSet.contains(strId)){
 				taxonBase = Synonym.NewInstance(taxonName, sec);
@@ -274,8 +285,11 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 			}
 			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
 			if(result == null){
+				logger.warn("Name not found");
 				success.setValue(false);
 			}
+		}else{
+			logger.warn("Name element is null");
 		}
 		return result;
 	}

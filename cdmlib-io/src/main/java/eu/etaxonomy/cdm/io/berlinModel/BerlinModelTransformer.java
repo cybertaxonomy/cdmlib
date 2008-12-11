@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
@@ -185,6 +187,37 @@ public final class BerlinModelTransformer {
 			}
 		}
 	}
+	
+	//TypeDesignation
+	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence (int occStatusId)  throws UnknownCdmTypeException{
+		switch (occStatusId){
+			case 0: return null;
+			case 110: return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+			case 120: return PresenceTerm.CULTIVATED();
+			case 210: return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+			case 220: return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
+			case 230: return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
+			case 240: return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
+			case 250: return PresenceTerm.INTRODUCED();
+			case 260: return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
+			case 270: return PresenceTerm.INTRODUCED_ADVENTITIOUS();
+			case 280: return PresenceTerm.INTRODUCED_NATURALIZED();
+			case 310: return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
+			case 320: return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
+			case 330: return PresenceTerm.NATIVE_FORMERLY_NATIVE();
+			case 340: return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
+			case 350: return PresenceTerm.NATIVE();
+			case 999: {
+					logger.warn("endemic for EM can not be transformed in legal status");
+					//TODO preliminary
+					return PresenceTerm.PRESENT();
+				}
+			default: {
+				throw new UnknownCdmTypeException("Unknown occurrence status  (id=" + Integer.valueOf(occStatusId).toString() + ")");
+			}
+		}
+	}
+	
 	
 	//TypeDesignation
 	public static Feature factCategory2Feature (int factCategoryId)  throws UnknownCdmTypeException{

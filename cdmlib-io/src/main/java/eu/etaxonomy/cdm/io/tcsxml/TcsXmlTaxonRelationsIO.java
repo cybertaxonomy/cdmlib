@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -126,9 +128,8 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 				TaxonBase fromTaxon = taxonMap.get(strId);
 				makeRelationshipType(tcsConfig, elTaxonRelationship, taxonMap, taxonStore, fromTaxon, success);
 			
-				TaxonBase aboutTaxon = taxonMap.get(strId);
-				if (aboutTaxon instanceof Taxon){
-					makeHomotypicSynonymRelations((Taxon)aboutTaxon);
+				if (fromTaxon instanceof Taxon){
+					makeHomotypicSynonymRelations((Taxon)fromTaxon);
 				}
 			}// end Relationship
 		}
@@ -180,6 +181,15 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 	}
 	
 	
+	/**
+	 * Handles the TCS RelationshipType element.
+	 * @param tcsConfig
+	 * @param elRelationship
+	 * @param taxonMap
+	 * @param taxonStore
+	 * @param fromTaxon
+	 * @param success
+	 */
 	private void makeRelationshipType(
 			TcsXmlImportConfigurator tcsConfig
 			, Element elRelationship 
@@ -291,10 +301,13 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 				}else{
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
+					TaxonNameBase<?,?> taxonName = NonViralName.NewInstance(null);
+					taxonName.setTitleCache(title);
+					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
-						result = Synonym.NewInstance(null, null);
+						result = Synonym.NewInstance(taxonName, TcsXmlTaxonIO.unknownSec());
 					}else{
-						result = Taxon.NewInstance(null, null);	
+						result = Taxon.NewInstance(taxonName, TcsXmlTaxonIO.unknownSec());	
 					}
 					result.setTitleCache(title);
 				}
@@ -304,6 +317,8 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 		}
 		return result;
 	}
+	
+
 	
 	
 	

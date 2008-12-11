@@ -24,8 +24,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -36,12 +34,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceIO.class);
+public class BerlinModelCommonNamesIO  extends BerlinModelIOBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelCommonNamesIO.class);
 
 	private static int modCount = 10000;
 
-	public BerlinModelOccurrenceIO(){
+	public BerlinModelCommonNamesIO(){
 		super();
 	}
 	
@@ -69,12 +67,21 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		
+		if (true){
+			return false;
+		}
+		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
 		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
+		String dbAttrName;
+		String cdmAttrName;
+		
 		logger.info("start make occurrences ...");
 		
+		boolean delete = bmiConfig.isDeleteAll();
+
 		try {
 			//get data from database
 			String strQuery = 
@@ -86,60 +93,80 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
                       	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " +
                         " emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " + 
                         " emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " + 
-                    " WHERE (1=1)" + 
-                    " ORDER BY PTaxon.RIdentifier";
+                    " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
-			
-			int oldTaxonId = -1;
-			TaxonDescription oldDescription = null;
 			int i = 0;
-			int countDescriptions = 0;
-			int countDistributions = 0;
 			//for each reference
 			while (rs.next()){
 				
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
 				
 				int occurrenceId = rs.getInt("OccurrenceId");
-				int newTaxonId = rs.getInt("RIdentifier");
+				int taxonId = rs.getInt("RIdentifier");
 				String tdwgCode = rs.getString("TDWGCode");
 				Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
 				
-				try {
-				
-					PresenceAbsenceTermBase<?> status = null;
-					if (emStatusId != null){
-							status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
-					}
 					
-					NamedArea tdwgArea = null;
-					if (tdwgCode != null){
-						tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
-					}
+				TaxonBase taxonBase = taxonMap.get(taxonId);
+				if (taxonBase != null){
+					try {
 					
-					TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId);
-					if (tdwgArea != null){
-						Distribution distribution = Distribution.NewInstance(tdwgArea, status);
-						taxonDescription.addElement(distribution);
-						countDistributions++;
-						if (taxonDescription != oldDescription){
-							taxonStore.add(taxonDescription.getTaxon());
-							oldDescription = taxonDescription;
-							countDescriptions++;
+						PresenceAbsenceTermBase<?> status = null;
+						if (emStatusId != null){
+								status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
 						}
-					}
-				} catch (UnknownCdmTypeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+						
+						NamedArea tdwgArea = TdwgArea.getAreaByTdwgLabel(tdwgCode);
+						
+							Taxon taxon;
+							if ( taxonBase instanceof Taxon ) {
+								taxon = (Taxon) taxonBase;
+							}else{
+								logger.warn("TaxonBase for Occurrence " + occurrenceId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+								continue;
+							}
+							
+							if (tdwgArea != null){
+								Distribution distribution = Distribution.NewInstance(tdwgArea, status);
+								//TODO only one description per taxon (for all EM distributions)
+								TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+								
+								taxon.addDescription(taxonDescription);
+								taxonStore.add(taxon);
+							}
+							
+						} catch (UnknownCdmTypeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 
-//				TODO
-//				sources
-//				references
+//						TODO
+//						sources
+//						references
+				
+					
+						
+//					//commonNames -> TODO move to separate IO
+//					String commonNameString;
+//					if (taxon.getName() != null){
+//						commonNameString = "Common " + taxon.getName().getTitleCache(); 
+//					}else{
+//						commonNameString = "Common (null)";
+//					}
+//					Language language = bmiConfig.getFactLanguage();
+//					language = null;
+//					CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
+//					taxonDescription.addElement(commonName);
+					
+					
+					
+				}else{
+					//TODO
+					logger.warn("Taxon for Fact " + occurrenceId + " does not exist in store");
+				}
+				//put
 			}
-			logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
-			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
 			logger.info("Taxa to save: " + taxonStore.size());
 			taxonService.saveTaxonAll(taxonStore);	
 			
@@ -150,39 +177,6 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			return false;
 		}
 
-	}
-	
-	
-	/**
-	 * Use same TaxonDescription if two records belong to the same taxon 
-	 * @param newTaxonId
-	 * @param oldTaxonId
-	 * @param oldDescription
-	 * @param taxonMap
-	 * @return
-	 */
-	private TaxonDescription getTaxonDescription(int newTaxonId, int oldTaxonId, TaxonDescription oldDescription, MapWrapper<TaxonBase> taxonMap, int occurrenceId){
-		TaxonDescription result = null;
-		if (oldDescription == null || newTaxonId != oldTaxonId){
-			TaxonBase taxonBase = taxonMap.get(newTaxonId);
-			//TODO for testing
-			//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-			Taxon taxon;
-			if ( taxonBase instanceof Taxon ) {
-				taxon = (Taxon) taxonBase;
-			}else{
-				logger.warn("TaxonBase for Occurrence " + occurrenceId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
-				return null;
-			}
-			
-			result = TaxonDescription.NewInstance();
-			taxon.addDescription(result);
-			//TODO add source title as title (or reference at least)
-			//result.setTitleCache("");
-		}else{
-			result = oldDescription;
-		}
-		return result;
 	}
 
 	/* (non-Javadoc)
