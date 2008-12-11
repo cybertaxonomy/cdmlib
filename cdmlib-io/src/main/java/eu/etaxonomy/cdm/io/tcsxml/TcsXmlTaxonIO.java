@@ -18,14 +18,12 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -110,6 +108,12 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 	}
 	
 	
+	protected static final ReferenceBase unknownSec(){
+		ReferenceBase result = Generic.NewInstance();
+		result.setTitleCache("UNKNOWN");
+		return result;
+	}
+	
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
@@ -173,7 +177,11 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
 			ReferenceBase sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 			elementList.add(childName.toString());
-	
+			// TODO may sec be null?
+			if (sec == null){
+				sec = unknownSec();
+			}
+			
 			TaxonBase taxonBase;
 			if (synonymIdSet.contains(strId)){
 				taxonBase = Synonym.NewInstance(taxonName, sec);
@@ -277,8 +285,11 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO {
 			}
 			result = (TaxonNameBase<?,?>)makeReferenceType (elName, clazz , objectMap, success);
 			if(result == null){
+				logger.warn("Name not found");
 				success.setValue(false);
 			}
+		}else{
+			logger.warn("Name element is null");
 		}
 		return result;
 	}
