@@ -242,16 +242,17 @@
 	<xsd:complexType name="TAXONRELATIONSHIP__type">
 		<xsd:attribute name="UPDATED" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
-		<xsd:attribute name="RELATEDTO_ID" use="optional" />
-		<xsd:attribute name="TYPE_ID" use="optional" />
-		<xsd:attribute name="CITATIONMICROREFERENCE" use="optional" />
-		<xsd:attribute name="UUID" use="optional" />
-		<xsd:attribute name="RELATEDFROM_ID" use="optional" />
 		<xsd:attribute name="CITATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="ORIGINALNAMESTRING" use="optional" />
-		<xsd:attribute name="CREATED" use="optional" />
+		<xsd:attribute name="DOUBTFUL" use="optional" />
+		<xsd:attribute name="TYPE_ID" use="optional" />
+		<xsd:attribute name="RELATEDTO_ID" use="optional" />
+		<xsd:attribute name="UUID" use="optional" />
+		<xsd:attribute name="CITATIONMICROREFERENCE" use="optional" />
+		<xsd:attribute name="RELATEDFROM_ID" use="optional" />
 		<xsd:attribute name="ID" use="optional" />
+		<xsd:attribute name="CREATED" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="DESCRIPTIONBASE_ANNOTATION__type">
 		<xsd:attribute name="ANNOTATIONS_ID" use="optional" />
@@ -288,12 +289,12 @@
 		<xsd:attribute name="DTYPE" use="optional" />
 		<xsd:attribute name="LSID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
-		<xsd:attribute name="COLLECTION_ID" use="optional" />
 		<xsd:attribute name="PRESERVATION_ID" use="optional" />
+		<xsd:attribute name="COLLECTION_ID" use="optional" />
 		<xsd:attribute name="DEFINITION" use="optional" />
 		<xsd:attribute name="TITLECACHE" use="optional" />
-		<xsd:attribute name="SEX_ID" use="optional" />
 		<xsd:attribute name="DERIVATIONEVENT_ID" use="optional" />
+		<xsd:attribute name="SEX_ID" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
 		<xsd:attribute name="PROTECTEDTITLECACHE" use="optional" />
 		<xsd:attribute name="ACCESSIONNUMBER" use="optional" />
@@ -308,8 +309,8 @@
 	</xsd:complexType>
 	<xsd:complexType name="DETERMINATIONEVENT__type">
 		<xsd:attribute name="UPDATED" use="optional" />
-		<xsd:attribute name="PREFERREDFLAG" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
+		<xsd:attribute name="PREFERREDFLAG" use="optional" />
 		<xsd:attribute name="TIMEPERIOD_END" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="ACTOR_ID" use="optional" />
@@ -350,6 +351,7 @@
 		<xsd:attribute name="CITATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="ORIGINALNAMESTRING" use="optional" />
+		<xsd:attribute name="DOUBTFUL" use="optional" />
 		<xsd:attribute name="TYPE_ID" use="optional" />
 		<xsd:attribute name="RELATEDTO_ID" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
@@ -467,9 +469,9 @@
 	</xsd:complexType>
 	<xsd:complexType name="TAXONBASE__type">
 		<xsd:attribute name="UPDATED" use="optional" />
+		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="DTYPE" use="optional" />
 		<xsd:attribute name="LSID" use="optional" />
-		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="SEC_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="TAXONOMICCHILDRENCOUNT" use="optional" />
@@ -606,8 +608,8 @@
 		<xsd:attribute name="PROBLEMSTARTS" use="optional" />
 		<xsd:attribute name="ID" use="optional" />
 		<xsd:attribute name="UPDATED" use="optional" />
-		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="LSID" use="optional" />
+		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="JOURNAL" use="optional" />
 		<xsd:attribute name="SERIESPART" use="optional" />
 		<xsd:attribute name="YEAR" use="optional" />
@@ -642,8 +644,8 @@
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="ABSOLUTEELEVATIONERROR" use="optional" />
 		<xsd:attribute name="TIMEPERIOD_END" use="optional" />
-		<xsd:attribute name="EXACTLOCATION_REFERENCESYSTEM_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="EXACTLOCATION_REFERENCESYSTEM_ID" use="optional" />
 		<xsd:attribute name="EXACTLOCATION_LATITUDE" use="optional" />
 		<xsd:attribute name="LOCALITY_ID" use="optional" />
 		<xsd:attribute name="EXACTLOCATION_LONGITUDE" use="optional" />
@@ -758,9 +760,9 @@
 		<xsd:attribute name="UUID" use="optional" />
 		<xsd:attribute name="LOCATION_REFERENCESYSTEM_ID" use="optional" />
 		<xsd:attribute name="COUNTRY_ID" use="optional" />
+		<xsd:attribute name="CONTACT_ID" use="optional" />
 		<xsd:attribute name="ID" use="optional" />
 		<xsd:attribute name="CREATED" use="optional" />
-		<xsd:attribute name="CONTACT_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="MEDIA_MARKER__type">
 		<xsd:attribute name="MEDIA_ID" use="optional" />
@@ -769,8 +771,8 @@
 	<xsd:complexType name="COLLECTION__type">
 		<xsd:attribute name="INSTITUTE_ID" use="optional" />
 		<xsd:attribute name="UPDATED" use="optional" />
-		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="LSID" use="optional" />
+		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="TOWNORLOCATION" use="optional" />
 		<xsd:attribute name="CODESTANDARD" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
@@ -796,8 +798,8 @@
 		<xsd:attribute name="TYPESTATUS_ID" use="optional" />
 		<xsd:attribute name="UPDATED" use="optional" />
 		<xsd:attribute name="LECTOTYPE" use="optional" />
-		<xsd:attribute name="DTYPE" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
+		<xsd:attribute name="DTYPE" use="optional" />
 		<xsd:attribute name="CONSERVEDTYPE" use="optional" />
 		<xsd:attribute name="CITATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
@@ -887,8 +889,9 @@
 		<xsd:attribute name="CITATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="ORIGINALNAMESTRING" use="optional" />
-		<xsd:attribute name="TYPE_ID" use="optional" />
+		<xsd:attribute name="DOUBTFUL" use="optional" />
 		<xsd:attribute name="RELATEDTO_ID" use="optional" />
+		<xsd:attribute name="TYPE_ID" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
 		<xsd:attribute name="CITATIONMICROREFERENCE" use="optional" />
 		<xsd:attribute name="RELATEDFROM_ID" use="optional" />
@@ -990,8 +993,8 @@
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="DURATION" use="optional" />
 		<xsd:attribute name="SORTINDEX" use="optional" />
-		<xsd:attribute name="REPRESENTATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="REPRESENTATION_ID" use="optional" />
 		<xsd:attribute name="SIZE" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
 		<xsd:attribute name="HEIGHT" use="optional" />
@@ -1138,8 +1141,8 @@
 		<xsd:attribute name="TAXONNAMEBASE_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="DESCRIPTIONELEMENTBASE__type">
-		<xsd:attribute name="TAXON2_ID" use="optional" />
 		<xsd:attribute name="ASSOCIATEDSPECIMENOROBSERVATION_ID" use="optional" />
+		<xsd:attribute name="TAXON2_ID" use="optional" />
 		<xsd:attribute name="UPDATED" use="optional" />
 		<xsd:attribute name="UNIT_ID" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
@@ -1168,6 +1171,7 @@
 		<xsd:attribute name="CITATION_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
 		<xsd:attribute name="ORIGINALNAMESTRING" use="optional" />
+		<xsd:attribute name="DOUBTFUL" use="optional" />
 		<xsd:attribute name="TYPE_ID" use="optional" />
 		<xsd:attribute name="RELATEDTO_ID" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />

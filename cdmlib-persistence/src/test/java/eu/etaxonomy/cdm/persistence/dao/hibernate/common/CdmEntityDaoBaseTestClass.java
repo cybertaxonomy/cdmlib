@@ -10,6 +10,4 @@ public class  CdmEntityDaoBaseTestClass extends CdmEntityDaoBase {
 	public  CdmEntityDaoBaseTestClass() {
 		super(TaxonBase.class);
 	}
-
-
 }

@@ -1054,6 +1054,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicati
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestSessionFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmIntegrationTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/CdmTransactionalIntegrationTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HSQLDialect.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/integration/HsqldbDataTypeFactory.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
@@ -1066,6 +1067,11 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -t
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/PUBLIC.xsd -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testDelete-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSave-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdate-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testUpdate-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplIntegration.testSaveTaxon-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplIntegration.xml -text
