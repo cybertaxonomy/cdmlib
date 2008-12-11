@@ -103,7 +103,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 		return name;
 	}
 	
-	public Set<DescriptionTO> getDescriptions(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase, Enumeration<Locale> locales){
+	public Set<DescriptionTO> getDescriptions(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){
 		Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
 
 		for(TaxonNameDescription nameDescription : (Set<TaxonNameDescription>)taxonNameBase.getDescriptions()){
@@ -170,7 +170,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	}
 	
 	
-	public List<TaggedText> getTaggedName(TaxonNameBase<?, INameCacheStrategy> taxonNameBase){
+public List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy> taxonNameBase){
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		//FIXME rude hack:
 		if(!(taxonNameBase instanceof NonViralName)){
