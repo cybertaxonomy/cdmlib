@@ -67,6 +67,16 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public List<T> list(int limit, int start) throws DataAccessException;
+	
+	/**
+	 * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
+	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
+	 * @param limit
+	 * @param start
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit, int start) throws DataAccessException;
 
 	public List<T> rows(String tableName, int limit, int start) throws DataAccessException;
 
@@ -93,7 +103,13 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	
 	public int count();
 
-	public int count(Class clazz);
+	/**
+	 * Returns the number of objects of type <TYPE> - which must extend T
+	 * @param <TYPE>
+	 * @param clazz
+	 * @return
+	 */
+	public <TYPE extends T> int count(Class<TYPE> clazz);
 
 	/**
 	 * 

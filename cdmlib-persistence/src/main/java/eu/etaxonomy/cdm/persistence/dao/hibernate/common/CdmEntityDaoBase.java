@@ -158,7 +158,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return count(type);
 	}
 	
-	public int count(Class type) {
+	public <TYPE extends T> int count(Class<TYPE> type) {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
 		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
@@ -172,6 +172,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		crit.setMaxResults(limit);
 		return crit.list(); 
 	}
+	
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit, int start) {
+		Criteria crit = getSession().createCriteria(type); 
+		crit.setFirstResult(start);
+		crit.setMaxResults(limit);
+		return crit.list(); 
+	}
+
 
 	public List<T> rows(String tableName, int limit, int start) {
 		Query query = getSession().createQuery("from " + tableName + " order by uuid");

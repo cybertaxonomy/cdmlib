@@ -57,4 +57,13 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertEquals("findByTitle should return an entity with uuid " + uuid,uuid, results.get(0).getUuid());
 	}
 
+//	@Test
+//	TODO - implement this later
+//	public void testGetByLSID() throws Exception {
+//		LSID lsid = new LSID("urn:lsid:cate-project.org:taxonconcepts:1");
+//		TaxonBase result = taxonDAO.find(lsid);
+//		
+//		Assert.assertNotNull(result);
+//	}
+//	
 }

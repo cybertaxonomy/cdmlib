@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.LazyInitializationException;
+import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -27,12 +28,15 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -245,6 +249,183 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		crit.setProjection(Projections.rowCount());
 		int result = ((Integer)crit.list().get(0)).intValue();
 		return result;
+	}
+
+	public int countRelatedTaxa(Taxon taxon, TaxonRelationshipType type) {
+		Query query = null;
+		
+		if(type == null) {
+			query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo");
+		} else {
+			query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
+			query.setParameter("type",type);
+		}
+		
+		query.setParameter("relatedTo", taxon);
+		
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
+        Query query = null;
+		
+		if(type == null) {
+			query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo");
+		} else {
+			query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
+			query.setParameter("type",type);
+		}
+		
+		query.setParameter("relatedTo", taxon);
+		
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public int countTaxa(String queryString, Boolean accepted) {
+		throw new UnsupportedOperationException("Free text searching isn't implemented yet, sorry!");
+	}
+
+	public int countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+        Criteria criteria = null;
+		
+		if(accepted == null) {
+			criteria = getSession().createCriteria(TaxonBase.class);
+		} else {
+			if(accepted) {
+				criteria = getSession().createCriteria(Taxon.class);
+			} else {
+				criteria = getSession().createCriteria(Synonym.class);
+			}
+		}
+		
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if(genusOrUninomial != null) {
+			criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
+		}
+		
+		if(infraGenericEpithet != null) {
+			criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
+		}
+		
+		if(specificEpithet != null) {
+			criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
+		}
+		
+		if(infraSpecificEpithet != null) {
+			criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
+		}
+		
+		if(rank != null) {
+			criteria.add(Restrictions.eq("name.rank", rank));
+		}
+		
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+	
+		return (Integer)criteria.uniqueResult();
+	}
+
+	public List<TaxonBase> findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
+		Criteria criteria = null;
+		
+		if(accepted == null) {
+			criteria = getSession().createCriteria(TaxonBase.class);
+		} else {
+			if(accepted) {
+				criteria = getSession().createCriteria(Taxon.class);
+			} else {
+				criteria = getSession().createCriteria(Synonym.class);
+			}
+		}
+		
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if(genusOrUninomial != null) {
+			criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
+		}
+		
+		if(infraGenericEpithet != null) {
+			criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
+		} else {
+			criteria.add(Restrictions.isNull("name.infraGenericEpithet"));
+		}
+		
+		if(specificEpithet != null) {
+			criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
+		}
+		
+		if(infraSpecificEpithet != null) {
+			criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
+		}
+		
+		if(rank != null) {
+			criteria.add(Restrictions.eq("name.rank", rank));
+		}
+		
+		if(pageSize != null) {
+	    	criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	criteria.setFirstResult(0);
+		    }
+		}
+	
+		return (List<TaxonBase>)criteria.list();
+	}
+
+	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Query query = null;
+		
+		if(type == null) {
+			query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo");
+		} else {
+			query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
+			query.setParameter("type",type);
+		}
+		
+		query.setParameter("relatedTo", taxon);
+		
+		if(pageSize != null) {
+		    query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		        query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		
+		return (List<TaxonRelationship>)query.list();
+	}
+
+	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Query query = null;
+		
+		if(type == null) {
+			query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo");
+		} else {
+			query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
+			query.setParameter("type",type);
+		}
+		
+		query.setParameter("relatedTo", taxon);
+		
+		if(pageSize != null) {
+		    query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		        query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		
+		return (List<SynonymRelationship>)query.list();
+	}
+
+	public List<Taxon> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
+		throw new UnsupportedOperationException("Free text searching isn't implemented yet, sorry!");
 	}
 
 }

@@ -14,10 +14,15 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -116,4 +121,95 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 	
+	/**
+	 * Returns a count of the TaxonRelationships (of where relationship.type == type,
+	 *  if this arguement is supplied) where the supplied taxon is relatedFrom.
+	 * 
+	 * @param taxon The taxon that is relatedFrom
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @return the number of TaxonRelationship instances
+	 */
+	public int countRelatedTaxa(Taxon taxon, TaxonRelationshipType type);
+	
+	/**
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of TaxonRelationship instances
+	 */
+	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a count of the SynonymRelationships (of where relationship.type == type,
+	 *  if this arguement is supplied) where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @return the number of SynonymRelationship instances
+	 */
+	public int countSynonyms(Taxon taxon, SynonymRelationshipType type);
+	
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of SynonymRelationship instances
+	 */
+	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
+	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param queryString
+	 * @param accepted
+	 * @return a count of the matching taxa
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public int countTaxa(String queryString, Boolean accepted);
+	
+	/**
+	 * Returns a List of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
+	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param queryString
+	 * @param accepted
+	 * @return a List Taxon instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public List<Taxon> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param uninomial
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @return a count of TaxonBase instances
+	 */
+	public int countTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+	
+	/**
+	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param uninomial
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @return a list of TaxonBase instances
+	 */
+	public List<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 }
