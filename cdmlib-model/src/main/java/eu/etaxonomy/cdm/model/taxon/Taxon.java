@@ -1290,9 +1290,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
 		result.add(this.getHomotypicGroup());
 		for (TaxonNameBase taxonNameBase :this.getSynonymNames()){
-			if (!result.contains(taxonNameBase.getHomotypicalGroup())){
-				result.add(taxonNameBase.getHomotypicalGroup());
-			}
+			if (taxonNameBase != null) {
+				if (!result.contains(taxonNameBase.getHomotypicalGroup())){
+					result.add(taxonNameBase.getHomotypicalGroup());
+				}
+			} // TODO: give error message to user
 		}
 		// TODO: sort list according to date of first published name within each group
 		return result;
@@ -1327,10 +1329,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		//sort
 		Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
 		for (HomotypicalGroup homoGroup: list){
-			List<Synonym> synonymList = homoGroup.getSynonymsInGroup(getSec());
-			if (synonymList.size() > 0){
-				map.put(synonymList.get(0), homoGroup);
-			}
+			if (homoGroup != null) {
+				List<Synonym> synonymList = homoGroup.getSynonymsInGroup(getSec());
+				if (synonymList.size() > 0){
+					map.put(synonymList.get(0), homoGroup);
+				}
+			} // else { TODO: error message
 		}
 		List<Synonym> keyList = new ArrayList<Synonym>();
 		keyList.addAll(map.keySet());
