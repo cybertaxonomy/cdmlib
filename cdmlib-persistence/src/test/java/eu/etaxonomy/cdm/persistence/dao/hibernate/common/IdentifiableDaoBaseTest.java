@@ -3,57 +3,37 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
-import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  *
  */
-public class IdentifiableDaoBaseTest extends CdmUnitTestBase {
-	private static final Logger logger = Logger.getLogger(IdentifiableDaoBaseTest.class);
+public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 	
-	@Autowired
-	private  TaxonDaoHibernateImpl identifiableDaoBaseTester;
+	@SpringBeanByType
+	private  TaxonDaoHibernateImpl identifiableDao;	
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
+	private UUID uuid;
+	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
+		uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-	
 /************ TESTS ********************************/
 
 
@@ -62,15 +42,19 @@ public class IdentifiableDaoBaseTest extends CdmUnitTestBase {
 	 */
 	@Test
 	public void testIdentifiableDaoBase() {
-		logger.warn("testIdentifiableDaoBase - Not yet implemented");
+		assertNotNull(identifiableDao);
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#findByTitle(java.lang.String)}.
 	 */
 	@Test
+	@DataSet
 	public void testFindByTitle() {
-		logger.warn("testFindByTitle - Not yet implemented");
+		List<TaxonBase> results = identifiableDao.findByTitle("Lorem");
+		assertNotNull("findByTitle should return a list",results);
+		assertEquals("findByTitle should return one entity", 1, results.size());
+		assertEquals("findByTitle should return an entity with uuid " + uuid,uuid, results.get(0).getUuid());
 	}
 
 }

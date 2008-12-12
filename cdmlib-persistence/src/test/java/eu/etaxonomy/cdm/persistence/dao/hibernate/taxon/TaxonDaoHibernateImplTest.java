@@ -1,97 +1,85 @@
-/**
- * 
- */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
+import junit.framework.Assert;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
-import eu.etaxonomy.cdm.test.unit.CdmUnitTestBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
+ * @author ben.clark
  *
  */
-@TransactionConfiguration(defaultRollback=false)
-public class TaxonDaoHibernateImplTest extends CdmUnitTestBase {
-	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImplTest.class);
+public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	
-	@Autowired
-	private  TaxonDaoHibernateImpl taxonDao;
-	private static TaxonGenerator taxGen;
+	@SpringBeanByType	
+	private ITaxonDao taxonDao;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		taxGen = new TaxonGenerator();
-	}
+	@SpringBeanByType	
+	private IReferenceDao referenceDao;
+	
+	private Taxon taxon;
+	private ReferenceBase sec;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
+	public void setUp() {
+		sec = referenceDao.findById(1);
+		taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), sec);
 	}
 	
-/************ TESTS ********************************/
-
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
 	@Test
-	public void testTaxonDaoHibernateImpl() {
-		logger.warn("testTaxonDaoHibernateImpl - Not yet implemented"); // TODO
+	public void testInit() {
+		Assert.assertNotNull("Instance of ITaxonDao expected",taxonDao);
 	}
-
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
 	 */
 	@Test
-	public void testGetRootTaxa() {
-		//taxonDao.getRootTaxa(null);
+	@DataSet
+	public void testGetRootTaxa() { 
+		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec);
+		Assert.assertNotNull("getRootTaxa should return a List",rootTaxa);
+		Assert.assertFalse("The list should not be empty",rootTaxa.isEmpty());
+		Assert.assertEquals("There should be one root taxon",1, rootTaxa.size());
 	}
-
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
 	 */
 	@Test
+	@DataSet
 	public void testGetTaxaByName() {
-		//taxonDaoHibernateImplTester.getTaxaByName();
-		logger.warn("testGetTaxaByName - Not yet implemented");//TODO
+		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
+		Assert.assertNotNull("getTaxaByName should return a List",results);
+		Assert.assertFalse("The list should not be empty",results.isEmpty());
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#save(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
+	 */
 	@Test
+	@DataSet
+	@ExpectedDataSet
 	public void testSaveTaxon() {
-		Taxon t = taxGen.getTestTaxon();
-		taxonDao.save(t);
+		taxonDao.save(taxon);
 	}
 }
