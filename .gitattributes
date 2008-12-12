@@ -1240,6 +1240,7 @@ eclipse-plugin/.classpath -text
 eclipse-plugin/.project -text
 eclipse-plugin/META-INF/MANIFEST.MF -text
 eclipse-plugin/_makeSources.bat -text
+eclipse-plugin/_makeSources.sh -text
 eclipse-plugin/antlr-2.7.6.jar -text
 eclipse-plugin/aopalliance-1.0.jar -text
 eclipse-plugin/asm-attrs.jar -text
