@@ -50,6 +50,7 @@ app-import/src/main/resources/images/palmae/KPALM00000001.jpg -text
 app-import/src/main/resources/images/palmae/KPALM00000043.jpg -text
 app-import/src/main/resources/images/palmae/KPALM00000073.jpg -text
 app-import/src/main/resources/images/protologue_links_palmae.xls -text
+app-import/src/main/resources/jaxb/cdm_test_jaxb.xml -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
