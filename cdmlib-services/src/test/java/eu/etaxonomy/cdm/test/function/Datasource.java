@@ -184,6 +184,36 @@ public class Datasource {
 		CdmApplicationUtils.getWritableResourceDir();
 		return true;
 	}
+
+	private boolean testH2(){
+		testLocalH2();
+		try{
+			DbSchemaValidation validation = DbSchemaValidation.VALIDATE;
+			ICdmDataSource ds = 
+				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+	//		ds =
+	//			 CdmPersistentDataSource.NewInstance("localH2");
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
+			try {
+				List l = appCtr.getNameService().getAllNames(5, 1);
+				System.out.println(l);
+				//Agent agent = new Agent();
+				//appCtr.getAgentService().saveAgent(agent);
+				appCtr.close();
+				return true;
+			} catch (RuntimeException e) {
+				logger.error("Runtime Exception");
+				e.printStackTrace();
+				appCtr.close();
+				
+			}
+		} catch (DataSourceNotFoundException e) {
+			logger.error("Error in LOCAL HSQL");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+		return false;
+	}
 	
 	private void test(){
 		System.out.println("Start Datasource");
@@ -194,7 +224,8 @@ public class Datasource {
 		//testPostgreServer();
 		//testLocalHsql();
 		//testLocalH2();
-		testWritableResourceDirectory();
+		//testWritableResourceDirectory();
+		testH2();
 		System.out.println("\nEnd Datasource");
 	}
 	
