@@ -962,9 +962,9 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	}
 
 	@SuppressWarnings("unchecked")
-	private NonViralName setTaxonNameByType(HashMap<String, String> atomisedMap,String fullName){
+	private NonViralName<?> setTaxonNameByType(HashMap<String, String> atomisedMap,String fullName){
 		if (this.nomenclatureCode.equals("Zoological")){
-			NonViralName taxonName  = ZoologicalName.NewInstance(null); 
+			NonViralName<ZoologicalName> taxonName  = ZoologicalName.NewInstance(null); 
 			taxonName.setFullTitleCache(fullName, true);
 			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
 			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"SubGenus"));
@@ -998,7 +998,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Botanical")){
-			NonViralName taxonName  = BotanicalName.NewInstance(null);
+			NonViralName<BotanicalName> taxonName  = BotanicalName.NewInstance(null);
 			taxonName.setFullTitleCache(fullName, true);
 			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
 			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"FirstEpithet"));
@@ -1034,7 +1034,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Bacterial")){
-			NonViralName taxonName = BacterialName.NewInstance(null);
+			NonViralName<BacterialName> taxonName = BacterialName.NewInstance(null);
 			taxonName.setFullTitleCache(fullName, true);
 			taxonName.setGenusOrUninomial(getFromMap(atomisedMap,"Genus"));
 			taxonName.setInfraGenericEpithet(getFromMap(atomisedMap,"SubGenus"));
@@ -1055,7 +1055,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Cultivar")){
-			NonViralName taxonName = CultivarPlantName.NewInstance(null);
+			NonViralName<CultivarPlantName> taxonName = CultivarPlantName.NewInstance(null);
 
 			if (taxonName.hasProblem())
 				logger.info("pb ICNCP");

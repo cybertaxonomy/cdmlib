@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface INonViralNameCacheStrategy<T extends NonViralName<?>> extends INameCacheStrategy<T> {
+public interface INonViralNameCacheStrategy<T extends NonViralName> extends INameCacheStrategy<T> {
 	
 	
 	/**
@@ -25,7 +25,7 @@ public interface INonViralNameCacheStrategy<T extends NonViralName<?>> extends I
 	 * @param object
 	 * @return
 	 */
-	public String getNameCache(T nonViralName);
+	public String getNameCache(T taxonNameBase);
 	
 	/**
 	 * returns the composed author string 

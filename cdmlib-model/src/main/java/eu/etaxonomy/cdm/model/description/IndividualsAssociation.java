@@ -106,7 +106,6 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	/**
 	 * @see	#getDescription() 
 	 */
-	@SuppressWarnings("unused")
 	private void setDescription(MultilanguageText description){
 		this.description = description;
 	}

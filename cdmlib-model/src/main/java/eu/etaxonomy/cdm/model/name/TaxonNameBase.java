@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
@@ -93,7 +95,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity implements IReferencedEntity, IParsable, IRelated {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
 
 	/**
 	 * 
@@ -645,11 +647,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	@Transient
-	public abstract INameCacheStrategy<T> getCacheStrategy();
+	public abstract S getCacheStrategy();
 	/** 
 	 * @see 	#getCacheStrategy()
 	 */
-	public abstract void setCacheStrategy(INameCacheStrategy<T> cacheStrategy);
+	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
 	 * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
