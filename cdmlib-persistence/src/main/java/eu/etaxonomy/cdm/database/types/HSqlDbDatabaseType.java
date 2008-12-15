@@ -34,7 +34,7 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
     private int defaultPort = 9001;
     
     //hibernate dialect
-    private String hibernateDialect = "HSQLCorrectDialect";
+    private String hibernateDialect = "HSQLCorrectedDialect";
     
     //init method
     private String initMethod = "init";
