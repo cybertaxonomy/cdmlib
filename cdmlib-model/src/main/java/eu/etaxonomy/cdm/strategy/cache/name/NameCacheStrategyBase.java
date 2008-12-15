@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  */
 public abstract class NameCacheStrategyBase<T extends TaxonNameBase> extends StrategyBase implements INameCacheStrategy<T> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameCacheStrategyBase.class);
 
 	final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
