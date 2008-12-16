@@ -120,9 +120,8 @@ public class PalmaeActivator {
 		FeatureTree result = FeatureTree.NewInstance(featureTreeUuid);
 		FeatureNode root = result.getRoot();
 		
-		FeatureNode newNode = FeatureNode.NewInstance(Feature.DIAGNOSIS());
-		root.addChild(newNode);
-		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
+		FeatureNode newNode;
+		newNode = FeatureNode.NewInstance(Feature.INTRODUCTION());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 		root.addChild(newNode);
@@ -130,15 +129,21 @@ public class PalmaeActivator {
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.CONSERVATION());
 		root.addChild(newNode);
-		newNode = FeatureNode.NewInstance(Feature.ETYMOLOGY());
-		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.COMMON_NAME());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.ETYMOLOGY());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.USES());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.CULTIVATION());
 		root.addChild(newNode);
+		// "anatomy", "fossil record" "relationships"
+		//for future
 		newNode = FeatureNode.NewInstance(Feature.DISCUSSION());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.DIAGNOSIS());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.MATERIALS_EXAMINED());
 		root.addChild(newNode);
