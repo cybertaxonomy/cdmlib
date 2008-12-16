@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 @XmlRootElement(name = "BibtexReference")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class BibtexReference extends ReferenceBase implements INomenclaturalReference {
+public class BibtexReference extends ReferenceBase implements INomenclaturalReference, Cloneable {
 	private static final Logger logger = Logger.getLogger(BibtexReference.class);
 	
 	@XmlElement(name = "BibtexEntryType")
