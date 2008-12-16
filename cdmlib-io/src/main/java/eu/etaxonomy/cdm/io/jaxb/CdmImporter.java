@@ -54,6 +54,7 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
+		boolean success = true;
         URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)config;
     	String dbname = jaxbImpConfig.getDestination().getDatabase();
@@ -65,6 +66,7 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 			logger.debug("uri: " + uri.toString());
     	} catch (URISyntaxException ex) {
 			logger.error("File not found");
+			return false;
     	}
 
 		logger.info("Deserializing file " + urlFileName + " to DB " + dbname);
@@ -87,9 +89,9 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 		
 		// save data in DB
 		logger.info("Saving data to DB: " + dbname);
-		boolean ret = saveData(jaxbImpConfig, dataSet);
+		success = saveData(jaxbImpConfig, dataSet);
 		
-		return ret;
+		return success;
 	}
 
 	
@@ -117,6 +119,9 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 		//TransactionStatus txStatus = appCtr.startTransaction();
 		TransactionStatus txStatus = null;
 
+		// Have single transactions per service save call. Otherwise, getting
+		// H2 HYT00 error (timeout locking table DEFINEDTERMBASE) when running from editor.
+
 		// If data of a certain type, such as terms, are not saved here explicitly, 
 		// then only those data of this type that are referenced by other objects are saved implicitly.
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
@@ -136,8 +141,6 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 			appCtr.commitTransaction(txStatus);
 		}
 		
-		// TODO: Remove the single transactions per service save call since it doesn't solve
-		// the H2 HYT00 error (timeout locking table DEFINEDTERMBASE)
 		// TODO: Have separate data save methods
 
 		txStatus = appCtr.startTransaction();
@@ -297,6 +300,7 @@ public class CdmImporter extends CdmIoBase implements ICdmIO {
 		}
 		appCtr.commitTransaction(txStatus);
 
+//		appCtr.commitTransaction(txStatus);
 		logger.info("All data saved");
 
 		appCtr.close();
