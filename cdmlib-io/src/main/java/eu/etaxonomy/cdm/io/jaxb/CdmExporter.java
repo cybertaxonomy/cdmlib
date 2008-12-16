@@ -74,7 +74,8 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
-		CdmApplicationController appCtr = config.getCdmAppController();
+		//CdmApplicationController appCtr = config.getCdmAppController();
+		CdmApplicationController appCtr = config.getCdmAppController(false, true);
 		// TODO: 
 		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
@@ -124,7 +125,8 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = jaxbExpConfig.getMaxRows();
-		CdmApplicationController appCtr = config.getCdmAppController();
+		//CdmApplicationController appCtr = config.getCdmAppController();
+		CdmApplicationController appCtr = config.getCdmAppController(false, true);
 		// TODO: 
 		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
