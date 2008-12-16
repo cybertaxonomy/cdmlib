@@ -158,7 +158,7 @@ public class CdmApplicationController {
 			appContext.refresh();
 			appContext.start();
 			
-			CdmTermInitializer.omit = false;
+//			CdmTermInitializer.omit = false;
 
 		} catch (BeanCreationException e) {
 			// create new schema
@@ -176,9 +176,13 @@ public class CdmApplicationController {
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
 		//TODO not necessary any more
-		if (testDefinedTermsAreMissing()){
-			throw new TermNotFoundException("Some needed Terms are Missing.");
+		if (CdmTermInitializer.omit == false) {
+			if (testDefinedTermsAreMissing()){
+				throw new TermNotFoundException("Some needed Terms are Missing.");
+			}
 		}
+		
+		CdmTermInitializer.omit = false;
 		return true;
 	}
 	
