@@ -117,7 +117,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		if (config instanceof JaxbImportConfigurator) {
 			cdmApp = config.getCdmAppController(false, true);
 		} else {
-			cdmApp = config.getCdmAppController(false, false);
+			cdmApp = config.getCdmAppController();
 		}
 		
 		ReferenceBase sourceReference = config.getSourceReference();
