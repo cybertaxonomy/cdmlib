@@ -47,7 +47,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 	
     /** Reads data from an XML file and stores them into a CDM DB.
      * 
-     * @param exImpConfig
+     * @param config
      * @param stores (not used)
      */
 	@Override
