@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.Map;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
