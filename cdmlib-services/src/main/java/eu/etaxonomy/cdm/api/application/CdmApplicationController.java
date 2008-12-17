@@ -205,7 +205,7 @@ public class CdmApplicationController {
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(CdmPersistentDataSource dataSource) throws TermNotFoundException {
+	public boolean changeDataSource(ICdmDataSource dataSource) throws TermNotFoundException {
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false);
 	}
@@ -215,7 +215,7 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 */
-	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation dbSchemaValidation)  throws TermNotFoundException {
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation)  throws TermNotFoundException {
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, false);
 	}
@@ -226,7 +226,7 @@ public class CdmApplicationController {
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	public boolean changeDataSource(CdmPersistentDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)  
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)  
 	throws TermNotFoundException {
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
