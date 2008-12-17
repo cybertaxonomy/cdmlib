@@ -21,15 +21,16 @@
     
     <menu ref="parent" inherit="top" />
     
-    <menu name="CDM Library">
-      <item name="Home" href="http://dev.e-taxonomy.eu/wiki/CdmLibrary"/>        
-      <item name="CDM Commons" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-commons/"/>        
-      <item name="CDM Model" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-model/"/>        
-      <item name="CDM Persistence" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-persistence/"/>        
-      <item name="CDM Service" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-services/"/>        
-      <item name="CDM Import/Export" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-io/"/>        
-      <item name="CDM Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>        
-    </menu>
+	<menu name="CDM Library">
+		<item name="Home" href="http://dev.e-taxonomy.eu/wiki/CdmLibrary"/>        
+		<item name="CDM Commons" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-commons/"/>        
+		<item name="CDM Model" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-model/"/>        
+		<item name="CDM Persistence" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-persistence/"/>        
+		<item name="CDM Service" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-services/"/>        
+		<item name="CDM External" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-ext/"/>        
+		<item name="CDM Import/Export" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-io/"/>        
+		<item name="CDM Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>        
+	</menu>
     
     ${reports}
     
