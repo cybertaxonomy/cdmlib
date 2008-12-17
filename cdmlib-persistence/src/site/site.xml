@@ -32,7 +32,7 @@
 		<item name="CDM Server" href="http://wp5.e-taxonomy.eu/cdmlib/site/cdmlib-remote/"/>        
 	</menu>
     
-    ${reports}
+    <menu ref="reports"/>
     
   </body>
   
