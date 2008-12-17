@@ -36,6 +36,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
 	
+	private boolean isOmmit0Authors = false;
+	
 	// NameFact stuff
 	private URL mediaUrl;
 	private File mediaPath;
@@ -173,6 +175,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	 */
 	public void setMaximumNumberOfNameFacts(int maximumNumberOfNameFacts) {
 		this.maximumNumberOfNameFacts = maximumNumberOfNameFacts;
+	}
+	
+	
+	/**
+	 * If true foreign keys to authorTeam having an authorTeamId = 0 will be handeled as null.
+	 * This is a special case for data in the Salvador database
+	 * @return
+	 */
+	public boolean isOmmit0Authors() {
+		return isOmmit0Authors;
+	}
+
+	public void setOmmit0Authors(boolean isOmmit0Authors) {
+		this.isOmmit0Authors = isOmmit0Authors;
 	}
 	
 }

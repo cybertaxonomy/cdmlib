@@ -83,25 +83,28 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 				//create Agent element
 				int teamId = rs.getInt("AuthorTeamId");
 				
-				TeamOrPersonBase team = new Team();
+				if (teamId != 0 || bmiConfig.isOmmit0Authors()){
 				
-				dbAttrName = "AuthorTeamCache";
-				cdmAttrName = "nomenclaturalTitle";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
-
-				dbAttrName = "AuthorTeamCache";
-				cdmAttrName = "titleCache";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
-
-				//TODO
-				//FullAuthorTeamCache
-				//preliminaryFlag
-				//title cache or nomenclaturalTitle?
-
-				//created, notes
-				doIdCreatedUpdatedNotes(config, team, rs, teamId, namespace);
-
-				teamMap.put(teamId, team);
+					TeamOrPersonBase team = new Team();
+					
+					dbAttrName = "AuthorTeamCache";
+					cdmAttrName = "nomenclaturalTitle";
+					success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+	
+					dbAttrName = "AuthorTeamCache";
+					cdmAttrName = "titleCache";
+					success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+	
+					//TODO
+					//FullAuthorTeamCache
+					//preliminaryFlag
+					//title cache or nomenclaturalTitle?
+	
+					//created, notes
+					doIdCreatedUpdatedNotes(config, team, rs, teamId, namespace);
+	
+					teamMap.put(teamId, team);
+				}
 			} //while rs.hasNext()
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

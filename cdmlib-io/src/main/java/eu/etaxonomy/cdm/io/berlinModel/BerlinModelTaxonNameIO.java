@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -111,11 +110,18 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
 				
+				if (bmiConfig.isOmmit0Authors()){
+					if (authorFk.equals(0)){authorFk = null;};
+					if (exAuthorFk.equals(0)){exAuthorFk = null;};
+					if (basAuthorFk.equals(0)){basAuthorFk = null;};
+					if (exBasAuthorFk.equals(0)){exBasAuthorFk = null;};
+				}
+				
 				try {
 					boolean useUnknownRank = true;
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
 					
-					TaxonNameBase taxonNameBase;
+					TaxonNameBase<?,?> taxonNameBase;
 					if (bmiConfig.getNomenclaturalCode() != null){
 						taxonNameBase = bmiConfig.getNomenclaturalCode().getNewTaxonNameInstance(rank);
 					}else{

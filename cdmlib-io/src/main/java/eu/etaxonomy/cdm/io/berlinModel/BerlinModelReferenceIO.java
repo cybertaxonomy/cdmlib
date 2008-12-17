@@ -406,7 +406,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 						
 						//
 						success &= makeNomAndBiblioReference(rs, refId, referenceBase, refCounter, 
-								referenceStore, nomRefStore, authorMap, stores );
+								referenceStore, nomRefStore, authorMap, stores, bmiConfig );
 
 					} catch (Exception e) {
 						logger.warn("Reference with BM refId " + refId +  " threw Exception and could not be saved");
@@ -449,7 +449,8 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 				MapWrapper<ReferenceBase> referenceStore, 
 				MapWrapper<ReferenceBase> nomRefStore, 
 				MapWrapper<TeamOrPersonBase> authorMap,
-				Map<String, MapWrapper<? extends CdmBase>> stores				
+				Map<String, MapWrapper<? extends CdmBase>> stores,
+				BerlinModelImportConfigurator bmiConfig
 				) throws SQLException{
 		
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
@@ -463,7 +464,10 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 		String refAuthorString = rs.getString("refAuthorString");
 		int nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
-		TeamOrPersonBase nomAuthor = authorMap.get(nomAuthorTeamFk);
+		TeamOrPersonBase nomAuthor = null;
+		if (nomAuthorTeamFk != 0 && ! bmiConfig.isOmmit0Authors()){
+			nomAuthor = authorMap.get(nomAuthorTeamFk);
+		}
 		
 		boolean hasNomRef = false;
 		//is Nomenclatural Reference
