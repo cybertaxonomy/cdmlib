@@ -153,7 +153,7 @@ public class Person extends TeamOrPersonBase<Person> {
 	 *
 	 * @see     InstitutionalMembership
 	 */
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;

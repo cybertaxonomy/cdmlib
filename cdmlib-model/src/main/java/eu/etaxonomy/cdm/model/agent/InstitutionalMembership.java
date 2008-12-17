@@ -137,6 +137,7 @@ public class InstitutionalMembership extends VersionableEntity<InstitutionalMemb
 	 * Returns the {@link Institution institution} corresponding to <i>this</i> institutional membership.
 	 */
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Institution getInstitute(){
 		return this.institute;
 	}

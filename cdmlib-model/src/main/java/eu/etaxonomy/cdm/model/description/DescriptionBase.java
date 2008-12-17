@@ -194,7 +194,7 @@ public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase
 	 * @see    #addElement(DescriptionElementBase)
 	 * @see    #removeElement(DescriptionElementBase)
 	 */
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DescriptionElementBase> getElements() {
 		return this.descriptionElements;
@@ -220,6 +220,7 @@ public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase
 	 * @see    	   		#getDescriptionSources()
 	 */
 	public void addElement(DescriptionElementBase element) {
+		element.setInDescription(this);
 		this.descriptionElements.add(element);
 	}
 
@@ -233,6 +234,7 @@ public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase
 	 */
 	public void removeElement(DescriptionElementBase element) {
 		this.descriptionElements.remove(element);
+		element.setInDescription(null);
 	}
 	
 	/**

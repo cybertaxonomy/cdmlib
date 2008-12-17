@@ -23,36 +23,64 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>aspectj-maven-plugin</artifactId>
+        <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <id>aspectj-main</id>
             <goals>
-              <goal>compile</goal>
-              <goal>test-compile</goal>
+              <goal>run</goal>
             </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <includes>
-            <include>**/cdm/**/*.java</include>
-            <include>**/*.aj</include>
-          </includes>
-        </configuration>
+            <phase>process-sources</phase>
+            <configuration>
+              <tasks>
+                <taskdef name="iajc" classname="org.aspectj.tools.ant.taskdefs.AjcTask">
+                  <classpath refid="maven.plugin.classpath"/>
+                </taskdef>
+                <iajc destDir="target/classes" verbose="false" source="1.5">
+                  <classpath refid="maven.plugin.classpath"/>
+                  <classpath refid="maven.compile.classpath"/>
+                  <sourceroots>		
+  	  				<pathelement location="src/main/java"/>
+  	  			  </sourceroots>
+                </iajc>
+              </tasks>
+          </configuration>
+        </execution>
+        <execution>
+            <id>aspectj-test</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>process-test-sources</phase>
+            <configuration>
+              <tasks>
+                <taskdef name="iajc" classname="org.aspectj.tools.ant.taskdefs.AjcTask">
+                  <classpath refid="maven.plugin.classpath"/>
+                </taskdef>
+                <iajc destDir="target/test-classes" verbose="false" source="1.5">
+                  <classpath refid="maven.plugin.classpath"/>
+                  <classpath refid="maven.compile.classpath"/>
+                  <classpath refid="maven.test.classpath"/>
+                  <sourceroots>		
+  	  				<pathelement location="src/test/java"/>
+  	  			  </sourceroots>
+                </iajc>
+              </tasks>
+          </configuration>
+        </execution>
+      </executions>
         <dependencies>
-					<dependency>
-						<groupId>aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-						<version>1.6.1</version>
-					</dependency>
           <dependency>
-						<groupId>aspectj</groupId>
-						<artifactId>aspectjweaver</artifactId>
-						<version>1.6.1</version>
-					</dependency>
-				</dependencies>
+            <groupId>org.aspectj</groupId>
+			<artifactId>aspectjtools</artifactId>
+			<version>1.5.4</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.5.4</version>
+          </dependency>
+        </dependencies>
       </plugin>
       
     <!-- JAXB Schema compiler task (xjc) not used at this point -->
@@ -88,7 +116,6 @@
   </build>
   
   <dependencies>
-
 	<dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-commons</artifactId>
@@ -122,7 +149,7 @@
       <artifactId>jaxb-xjc</artifactId>
     </dependency>
     <dependency>
-      <groupId>aspectj</groupId>
+      <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
     <dependency>

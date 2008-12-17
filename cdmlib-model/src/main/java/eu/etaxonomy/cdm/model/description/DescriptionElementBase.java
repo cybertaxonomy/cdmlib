@@ -62,7 +62,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 	    "feature",
 	    "modifiers",
 	    "modifyingText",
-	    "media"
+	    "media",
+	    "inDescription"
 })
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -114,6 +115,11 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	private Set<Media> media = new HashSet<Media>();
+	
+	@XmlElement(name = "InDescription")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    private DescriptionBase inDescription;
 
 
 	/** 
@@ -151,6 +157,28 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 */
 	public void removeMedia(Media media){
 		this.media.remove(media);
+	}
+	
+	/**
+	 * Returns the {@link DescriptionBase description} that <i>this</i> DescriptionElement is
+	 * part of. 
+	 * @return
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected DescriptionBase getInDescription() {
+		return this.inDescription;
+	}
+	
+	/**
+	 * Sets the {@link DescriptionBase description} that <i>this</i> DescriptionElement
+	 * is part of 
+	 * 
+	 * @param description the {@link DescriptionBase description} that <i>this</i> 
+	 *        DescriptionElement is part of
+	 */
+	protected void setInDescription(DescriptionBase inDescription) {
+		this.inDescription = inDescription;
 	}
 
 
