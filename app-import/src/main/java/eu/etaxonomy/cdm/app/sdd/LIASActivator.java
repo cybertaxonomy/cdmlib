@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @version 1.0
  */
 public class LIASActivator {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(LIASActivator.class);
 
 	//database validation status (create, update, validate ...)

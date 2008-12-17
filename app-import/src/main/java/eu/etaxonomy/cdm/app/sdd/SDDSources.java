@@ -41,6 +41,13 @@ public class SDDSources {
 		
 	}
 	
+	public static String LIAS_local_Andreas(){
+		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
+		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib14/app-import/src/main/resources/sdd/LIAS_Main.sdd11.xml";
+		return sourceUrl;
+		
+	}
+	
 	public static String Erythroneura_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
 		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Erythroneura.sdd11/Erythroneura.sdd11.xml";
