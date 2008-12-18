@@ -65,17 +65,26 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 	
 	@XmlElement(name = "KindOf")
-	private DefinedTermBase<T> kindOf;
-	
+	private T kindOf;
+	/**
+	 * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects 
+	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
+	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
+	 */
 	@XmlElement(name = "GeneralizationOf")
-	private Set<DefinedTermBase<T>> generalizationOf = new HashSet<DefinedTermBase<T>>();
+	private Set<T> generalizationOf = new HashSet<T>();
 	
 	@XmlElement(name = "PartOf")
-	private DefinedTermBase<T> partOf;
+	private T partOf;
 	
+	/**
+	 * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects 
+	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
+	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
+	 */
 	@XmlElementWrapper(name = "Includes")
 	@XmlElement(name = "Include")
-	private Set<DefinedTermBase<T>> includes = new HashSet<DefinedTermBase<T>>();
+	private Set<T> includes = new HashSet<T>();
 	
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
@@ -131,31 +140,32 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase<T> getKindOf(){
+	public T getKindOf(){
 		return this.kindOf;
 	}
-	public void setKindOf(DefinedTermBase<T> kindOf){
+	
+	public void setKindOf(T kindOf){
 		this.kindOf = kindOf;
 	}
 
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<DefinedTermBase<T>> getGeneralizationOf(){
+	public Set<T> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
 	
-	public void setGeneralizationOf(Set<DefinedTermBase<T>> generalizationOf) {
+	public void setGeneralizationOf(Set<T> generalizationOf) {
 		this.generalizationOf = generalizationOf;
 	}
 	
-	public void addGeneralizationOf(DefinedTermBase<T> generalization) {
+	public void addGeneralizationOf(T generalization) {
 		generalization.setKindOf(this);
 		this.generalizationOf.add(generalization);
 	}
 	
-	public void removeGeneralization(DefinedTermBase<T> generalization) {
+	public void removeGeneralization(T generalization) {
 		if(generalizationOf.contains(generalization)){
 			generalization.setKindOf(null);
 		    this.generalizationOf.remove(generalization);
@@ -163,29 +173,29 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase<T> getPartOf(){
+	public T getPartOf(){
 		return this.partOf;
 	}
-	public void setPartOf(DefinedTermBase<T> partOf){
+	public void setPartOf(T partOf){
 		this.partOf = partOf;
 	}
 
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<DefinedTermBase<T>> getIncludes(){
+	public Set<T> getIncludes(){
 		return this.includes;
 	}
-	public void setIncludes(Set<DefinedTermBase<T>> includes) {
+	public void setIncludes(Set<T> includes) {
 		this.includes = includes;
 	}
-	public void addIncludes(DefinedTermBase<T> includes) {
+	public void addIncludes(T includes) {
 		includes.setPartOf(this);
 		this.includes.add(includes);
 	}
-	public void removeIncludes(DefinedTermBase<T> includes) {
+	public void removeIncludes(T includes) {
 		if(this.includes.contains(includes)) {
 			includes.setPartOf(null);
 		    this.includes.remove(includes);
@@ -213,13 +223,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 */
 	@Transient
 	@XmlTransient
-	public TermVocabulary getVocabulary() {
+	public TermVocabulary<T> getVocabulary() {
 		return this.vocabulary;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
-	public void setVocabulary(TermVocabulary newVocabulary) {
+	public void setVocabulary(TermVocabulary<T> newVocabulary) {
 		// Hibernate bidirectional cascade hack: 
 		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
 		if(this.vocabulary == newVocabulary){ return;}
@@ -227,7 +237,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 			this.vocabulary.terms.remove(this);
 		}
 		if (newVocabulary!= null) { 
-			newVocabulary.terms.add(this);
+			newVocabulary.terms.add((T)this);
 		}
 		this.vocabulary = newVocabulary;		
 	}
@@ -238,7 +248,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
-	protected TermVocabulary getPersistentVocabulary() {
+	protected TermVocabulary<T> getPersistentVocabulary() {
 		return this.vocabulary;
 	}
 	/* (non-Javadoc)
