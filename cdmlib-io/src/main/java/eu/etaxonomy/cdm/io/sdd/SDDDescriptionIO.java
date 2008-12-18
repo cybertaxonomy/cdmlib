@@ -162,7 +162,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	}
 
 	// imports information about the Dataset
-	protected void importDatasetRepresentation(Element parent, Namespace sddNamespace, ReferenceBase sourceReference, String generatorName, String generatorVersion){
+	protected void importDatasetRepresentation(Element parent, Namespace sddNamespace){
 		logger.info("start Representation ...");
 		/* <Representation>
 			<Label>The Genus Viola</Label>
@@ -173,8 +173,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
 
-		sourceReference.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
-		sec.setTitleCache(generatorName + " - " + generatorVersion + " - " + label);
+		sec.setTitleCache(label);
 
 		if (detail != null) {
 			Annotation annotation = Annotation.NewInstance(detail, datasetLanguage);
@@ -192,7 +191,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			}
 			if (ref != null) {
 				if (!ref.equals("")) {
-					this.associateImageWithCdmBase(ref, sourceReference);
+					this.associateImageWithCdmBase(ref,sourceReference);
 					this.associateImageWithCdmBase(ref,sec);
 					mediaObject_Role.put(ref,role);
 				}
@@ -313,6 +312,9 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		Element elGenerator = elTechnicalMetadata.getChild("Generator", sddNamespace);
 		generatorName = elGenerator.getAttributeValue("name");
 		generatorVersion = elGenerator.getAttributeValue("version");
+		
+		sec.addAnnotation(Annotation.NewDefaultLanguageInstance(generatorName + " - " + generatorVersion));
+		sourceReference.addAnnotation(Annotation.NewDefaultLanguageInstance(generatorName + " - " + generatorVersion));
 
 	}
 
@@ -320,7 +322,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	protected void importDataset(Element elDataset, Namespace sddNamespace, boolean success, SDDImportConfigurator sddConfig){			// <Dataset xml:lang="en-us">
 
 		importDatasetLanguage(elDataset,sddConfig);
-		importDatasetRepresentation(elDataset, sddNamespace, sourceReference, generatorName, generatorVersion);
+		importDatasetRepresentation(elDataset, sddNamespace);
 		importRevisionData(elDataset, sddNamespace);
 		importIPRStatements(elDataset, sddNamespace, sddConfig);
 		importTaxonNames(elDataset, sddNamespace, sddConfig);
@@ -335,6 +337,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			for (Iterator<Person> author = authors.values().iterator() ; author.hasNext() ;){
 				team.addTeamMember(author.next());
 			}
+			sec.setAuthorTeam(team);
 			sourceReference.setAuthorTeam(team);
 		}
 
@@ -343,6 +346,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
 				ed = editor.next();
 			}
+			sec.setUpdatedBy(ed);
 			sourceReference.setUpdatedBy(ed);
 		}
 
@@ -354,6 +358,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		for (Iterator<String> refCD = taxonDescriptions.keySet().iterator() ; refCD.hasNext() ;){
 			String ref = refCD.next();
 			TaxonDescription td = taxonDescriptions.get(ref);
+			td.addDescriptionSource(sec);
 			if (citations.containsKey(ref)) {
 				Article publication = (Article) publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
@@ -390,7 +395,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		}
 
 		IReferenceService referenceService = sddConfig.getCdmAppController().getReferenceService();
-		referenceService.saveReference(sourceReference); 
+		// referenceService.saveReference(sourceReference); 
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
 			Article publication = (Article) k.next();
 			referenceService.saveReference(publication); 
