@@ -90,7 +90,7 @@ public class CichorieaeActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = true;
 
 	
 // **************** SELECTED *********************
@@ -104,7 +104,7 @@ public class CichorieaeActivator {
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
-//	static final boolean doNameFacts = true;
+//	static final boolean doNameFacts = false;
 //	
 //	//taxa 
 //	static final boolean doTaxa = false;
