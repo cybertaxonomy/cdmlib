@@ -112,4 +112,26 @@ public class TdwgAreaTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testLoadingOfPartOfRelationships() {
+		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
+		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
+		assert britain != null : "NamedArea must exist";
+		assert northernEurope != null : "NamedArea must exist";
+		
+		assertTrue("Northern Europe should include Britain",northernEurope.getIncludes().contains(britain));
+		assertEquals("Britain should be part of Northern Europe",britain.getPartOf(),northernEurope);
+	}
+	
+	@Test
+	public void testNamedAreaLevelAssignment() {
+		NamedArea britain = TdwgArea.getAreaByTdwgAbbreviation("GRB");
+		NamedArea northernEurope = TdwgArea.getAreaByTdwgAbbreviation("10");
+		assert britain != null : "NamedArea must exist";
+		assert northernEurope != null : "NamedArea must exist";
+		
+		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
+		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
+	}
 }

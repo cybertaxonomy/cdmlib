@@ -53,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "DefinedTermBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm{
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T> {
 	private static final long serialVersionUID = 2931811562248571531L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
@@ -65,17 +65,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 	
 	@XmlElement(name = "KindOf")
-	private DefinedTermBase kindOf;
+	private DefinedTermBase<T> kindOf;
 	
 	@XmlElement(name = "GeneralizationOf")
-	private Set<DefinedTermBase> generalizationOf = new HashSet<DefinedTermBase>();
+	private Set<DefinedTermBase<T>> generalizationOf = new HashSet<DefinedTermBase<T>>();
 	
 	@XmlElement(name = "PartOf")
-	private DefinedTermBase partOf;
+	private DefinedTermBase<T> partOf;
 	
 	@XmlElementWrapper(name = "Includes")
 	@XmlElement(name = "Include")
-	private Set<DefinedTermBase> includes = new HashSet<DefinedTermBase>();
+	private Set<DefinedTermBase<T>> includes = new HashSet<DefinedTermBase<T>>();
 	
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
@@ -130,51 +130,66 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		writer.writeNext(line);
 	}
 	
-	@Transient
-	//@ManyToOne
-	//@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase getKindOf(){
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public DefinedTermBase<T> getKindOf(){
 		return this.kindOf;
 	}
-	public void setKindOf(DefinedTermBase kindOf){
+	public void setKindOf(DefinedTermBase<T> kindOf){
 		this.kindOf = kindOf;
 	}
 
-	@Transient
-	//@OneToMany(fetch=FetchType.LAZY)
-	//@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<DefinedTermBase> getGeneralizationOf(){
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<DefinedTermBase<T>> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
-	public void setGeneralizationOf(Set<DefinedTermBase> generalizationOf) {
+	
+	public void setGeneralizationOf(Set<DefinedTermBase<T>> generalizationOf) {
 		this.generalizationOf = generalizationOf;
 	}
+	
+	public void addGeneralizationOf(DefinedTermBase<T> generalization) {
+		generalization.setKindOf(this);
+		this.generalizationOf.add(generalization);
+	}
+	
+	public void removeGeneralization(DefinedTermBase<T> generalization) {
+		if(generalizationOf.contains(generalization)){
+			generalization.setKindOf(null);
+		    this.generalizationOf.remove(generalization);
+		}
+	}
 
 
-	@Transient
-	//@ManyToOne
-	//@Cascade({CascadeType.SAVE_UPDATE})
-	public DefinedTermBase getPartOf(){
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public DefinedTermBase<T> getPartOf(){
 		return this.partOf;
 	}
-	public void setPartOf(DefinedTermBase partOf){
+	public void setPartOf(DefinedTermBase<T> partOf){
 		this.partOf = partOf;
 	}
 
-	@Transient
-	//@OneToMany(fetch=FetchType.LAZY)
-	//@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<DefinedTermBase> getIncludes(){
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	public Set<DefinedTermBase<T>> getIncludes(){
 		return this.includes;
 	}
-	public void setIncludes(Set<DefinedTermBase> includes) {
+	public void setIncludes(Set<DefinedTermBase<T>> includes) {
 		this.includes = includes;
 	}
-	public void addIncludes(DefinedTermBase includes) {
+	public void addIncludes(DefinedTermBase<T> includes) {
+		includes.setPartOf(this);
 		this.includes.add(includes);
 	}
-	public void removeIncludes(TermBase includes) {
-		this.includes.remove(includes);
+	public void removeIncludes(DefinedTermBase<T> includes) {
+		if(this.includes.contains(includes)) {
+			includes.setPartOf(null);
+		    this.includes.remove(includes);
+		}
 	}
 
 

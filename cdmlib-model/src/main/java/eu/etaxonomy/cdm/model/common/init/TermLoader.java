@@ -158,6 +158,8 @@ public class TermLoader {
 		
 		logger.info("load terms");
 		insertDefaultTerms(Language.class, NOT_ORDERED);
+		insertDefaultTerms(NamedAreaType.class, NOT_ORDERED);
+		insertDefaultTerms(NamedAreaLevel.class, NOT_ORDERED);
 		insertDefaultTerms(Continent.class, NOT_ORDERED);
 		insertDefaultTerms(WaterbodyOrCountry.class, NOT_ORDERED);
 		insertDefaultTerms(Rank.class, ORDERED);
@@ -169,8 +171,6 @@ public class TermLoader {
 		insertDefaultTerms(TaxonRelationshipType.class, ORDERED);
 		insertDefaultTerms(MarkerType.class, NOT_ORDERED);
 		insertDefaultTerms(AnnotationType.class, NOT_ORDERED);
-		insertDefaultTerms(NamedAreaType.class, NOT_ORDERED);
-		insertDefaultTerms(NamedAreaLevel.class, NOT_ORDERED);
 		insertDefaultTerms(NomenclaturalCode.class, NOT_ORDERED);
 		insertDefaultTerms(Feature.class, NOT_ORDERED);
 		insertDefaultTerms(NamedArea.class, "TdwgArea.csv", ORDERED);

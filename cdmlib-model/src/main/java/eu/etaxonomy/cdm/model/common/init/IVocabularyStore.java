@@ -22,7 +22,7 @@ public interface IVocabularyStore {
 	 * TODO
 	 * @param vocabulary
 	 */
-	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary);
+	public void saveOrUpdate(TermVocabulary vocabulary);
 	
 	
 	
@@ -39,13 +39,15 @@ public interface IVocabularyStore {
 	 * @param uuid the definedTermBases UUID
 	 * @return the DefinedTermBase to return
 	 */
-	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid);
+	public DefinedTermBase  getTermByUuid(UUID uuid);
+	
+	public <T extends DefinedTermBase> T  getTermByUuid(UUID uuid, Class<T> clazz);
 	
 	/**
 	 * @param uuid
 	 * @return
 	 */
-	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid);
+	public TermVocabulary getVocabularyByUuid(UUID uuid);
 	
 	/** Initializes the IVocabularStore by making sure that all basic terms that are
 	 * loaded by the TermLoader are available afterwards.

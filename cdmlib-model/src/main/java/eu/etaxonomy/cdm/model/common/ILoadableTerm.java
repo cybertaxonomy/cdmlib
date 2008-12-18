@@ -9,7 +9,7 @@ import org.hibernate.annotations.CascadeType;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public interface ILoadableTerm extends ICdmBase{
+public interface ILoadableTerm<T extends DefinedTermBase> extends ICdmBase{
 
 	/**
 	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine represents the default language
@@ -23,8 +23,8 @@ public interface ILoadableTerm extends ICdmBase{
 
 	@ManyToOne
 	@Cascade( { CascadeType.SAVE_UPDATE })
-	public abstract TermVocabulary getVocabulary();
+	public abstract TermVocabulary<T> getVocabulary();
 
-	public abstract void setVocabulary(TermVocabulary newVocabulary);
+	public abstract void setVocabulary(TermVocabulary<T> newVocabulary);
 
 }

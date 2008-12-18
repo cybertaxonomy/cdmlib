@@ -181,6 +181,19 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		super.readCsvLine(csvLine, lang);
 		String abbreviatedLabel = (String)csvLine.get(4);
 		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
+		String levelString = (String)csvLine.get(6);
+		if(levelString != null && levelString.length() != 0) {
+			UUID levelUuid = UUID.fromString(levelString);
+			NamedAreaLevel level = this.vocabularyStore.getTermByUuid(levelUuid,NamedAreaLevel.class);
+			this.level = level;
+		}
+		
+		String partOfString = (String)csvLine.get(7);
+		if(partOfString != null && partOfString.length() != 0) {
+			UUID partOfUuid = UUID.fromString(partOfString);
+			NamedArea partOf = this.vocabularyStore.getTermByUuid(partOfUuid, NamedArea.class);
+			partOf.addIncludes(this);
+		}
 		return this;
 	}
 

@@ -35,23 +35,23 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	
 	
 	static protected Map<UUID, ILoadableTerm> definedTermsMap = null;
-	static protected Map<UUID, TermVocabulary<DefinedTermBase>> termVocabularyMap = null;
+	static protected Map<UUID, TermVocabulary> termVocabularyMap = null;
 
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getTermByUuid(java.util.UUID)
 	 */
-	public DefinedTermBase<DefinedTermBase> getTermByUuid(UUID uuid) {
+	public DefinedTermBase getTermByUuid(UUID uuid) {
 		if (!isInitialized  &&  ! initialize()){ 
 			return null;
 		}
-		return (DefinedTermBase<DefinedTermBase>)definedTermsMap.get(uuid);
+		return (DefinedTermBase)definedTermsMap.get(uuid);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#getVocabularyByUuid(java.util.UUID)
 	 */
-	public TermVocabulary<DefinedTermBase> getVocabularyByUuid(UUID uuid) {
+	public TermVocabulary getVocabularyByUuid(UUID uuid) {
 		if (!isInitialized  &&  ! initialize()){ 
 			return null;
 		}
@@ -62,7 +62,7 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularyStore#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
-	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
+	public void saveOrUpdate(TermVocabulary vocabulary) {
 		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
 		while (termIterator.hasNext()){
@@ -104,11 +104,23 @@ public class DefaultVocabularyStore implements IVocabularyStore {
 		}
 		if (termVocabularyMap == null){
 			logger.info("initVocabularyMap start ...");
-			termVocabularyMap = new HashMap<UUID, TermVocabulary<DefinedTermBase>>();
+			termVocabularyMap = new HashMap<UUID, TermVocabulary>();
 			logger.debug("initVocabularyMap end ...");
 		}
 		isInitialized =true;
 		return true;
+	}
+
+	public <T extends DefinedTermBase> T getTermByUuid(UUID uuid, Class<T> clazz) {
+		DefinedTermBase d = this.getTermByUuid(uuid);
+		if(d == null){
+			return null;
+		} else {
+		  if(!clazz.isAssignableFrom(d.getClass())) {
+			 throw new ClassCastException(clazz + " is not assignable from " + d.getClass());
+		  }
+		  return (T)d;
+		}
 	}
 
 }
