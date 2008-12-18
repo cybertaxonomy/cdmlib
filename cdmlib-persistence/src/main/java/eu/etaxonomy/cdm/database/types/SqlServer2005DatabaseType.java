@@ -46,6 +46,42 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
 		}
     	return urlString + ds.getServer() + instance + ":" + port + ";databaseName=" + ds.getDatabase() +";SelectMethod=cursor";
     }
+    
+    
+    /* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+	 */
+	@Override
+	public String getServerNameByConnectionString(String connectionString) {
+		String dbSeparator = ";";
+		return super.getServerNameByConnectionString(connectionString, urlString, dbSeparator);
+	}
+    
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)
+	 */
+	@Override
+	public int getPortByConnectionString(String connectionString) {
+		String dbSeparator = ";";
+		return getPortByConnectionString(connectionString, urlString, dbSeparator);
+	}
+	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+     */
+    @Override
+    public String getDatabaseNameByConnectionString(String connectionString){
+    	String result;
+    	String dbStart = ";databaseName=";
+    	int posDbStart = connectionString.indexOf(dbStart);
+    	result = connectionString.substring(posDbStart + dbStart.length());
+    	int posNextAttr = result.indexOf(";");
+    	if (posNextAttr != 0){
+    		result = result.substring(0, posNextAttr);
+    	}
+     	return result;
+    }
 	
 	//Constructor
     public SqlServer2005DatabaseType() {

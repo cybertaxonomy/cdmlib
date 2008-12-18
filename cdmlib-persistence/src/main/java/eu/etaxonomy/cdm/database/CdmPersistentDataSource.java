@@ -41,12 +41,13 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.database.types.IDatabaseType;
 
 
 /**
  * class to access an CdmDataSource
  */
-public class CdmPersistentDataSource implements ICdmDataSource {
+public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
@@ -151,7 +152,6 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 
 	
 	public String getDatabase() {
-		//TODO null
 		return getDatabaseProperty("database");
 	}
 
@@ -173,13 +173,12 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 			return -1;
 		}else{
 			//TODO exception if non integer
-			return Integer.getInteger(getDatabaseProperty("port"));
+			return Integer.valueOf(port);
 		}
 	}
 
 
 	public String getServer() {
-		//TODO null
 		return getDatabaseProperty("server");
 	}
 
@@ -211,17 +210,36 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 	 */
 	protected String getDatabaseProperty(String property){
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
-			if (driverProp == null){
-				logger.warn("Unknown property" + property);
-		    	return null;
-			}else{
-				String strProperty = driverProp.getAttributeValue("value");
-				return strProperty;
+		String url;
+		String result = null;
+		if (bean != null){
+			result = getPropertyValue(bean, property);
+			if (result == null){  //test if property is database, server or port which are included in the url
+				url = getPropertyValue(bean, "url");
+				DatabaseTypeEnum dbTypeEnum = getDatabaseType();
+				if (dbTypeEnum != null){
+					IDatabaseType dbType = dbTypeEnum.getDatabaseType();
+					if (property.equals("database")){
+						result = dbType.getDatabaseNameByConnectionString(url);
+					}else if(property.equals("server")){
+						result = dbType.getServerNameByConnectionString(url);
+					}else if(property.equals("port")){
+						result = String.valueOf(dbType.getPortByConnectionString(url));
+					}
+				}
 			}
+		}
+		return result;	
+	}
+	
+	private String getPropertyValue(Element bean, String property){
+		Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
+		if (driverProp == null){
+			logger.warn("Unknown property" + property);
+	    	return null;
+		}else{
+			String strProperty = driverProp.getAttributeValue("value");
+			return strProperty;
 		}
 	}
 	
@@ -524,7 +542,15 @@ public class CdmPersistentDataSource implements ICdmDataSource {
 		return dataSources;
 	}
 	
+	public String getUserName(){
+		return getDatasourceProperty(DbProperties.USERNAME);
+	}
 	
+	public String getPassword(){
+		return getDatasourceProperty(DbProperties.PASSWORD);
+	}
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

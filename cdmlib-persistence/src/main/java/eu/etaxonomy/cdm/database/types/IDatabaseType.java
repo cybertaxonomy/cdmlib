@@ -13,6 +13,11 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
+/**
+ * @author a.mueller
+ * @created 17.12.2008
+ * @version 1.0
+ */
 public interface IDatabaseType {
 	/**
 	 * @return
@@ -63,5 +68,29 @@ public interface IDatabaseType {
 	 */
 	public String getDestroyMethod();
 
+	/**
+	 * Returns the server name for a given connection string. Null or empty string is returned if the 
+	 * connection string is invalid
+	 * @param connectionString the connection string
+	 * @return string representing the server
+	 */
+	public String getServerNameByConnectionString(String connectionString);
 	
+	
+	/**
+	 * Returns the port for a given connection string. If no port is defined the default port is returned.
+	 * If connection string is <code>null</code> or unvalid -1 is returned 
+	 * @param connectionString the connection string
+	 * @return int representing the port number
+	 */
+	public int getPortByConnectionString(String connectionString);
+	
+	
+	/**
+	 * Returns the database name for a given connection string. Null or empty string is returned if the 
+	 * connection string is invalid
+	 * @param connectionString the connection string
+	 * @return string representing the database
+	 */
+	public abstract String getDatabaseNameByConnectionString(String connectionString);
 }

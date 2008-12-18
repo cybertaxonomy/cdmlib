@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  * @author a.mueller
  *
  */
-public class CdmDataSource implements ICdmDataSource {
+public class CdmDataSource extends CdmDataSourceBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 	
@@ -241,6 +241,24 @@ public class CdmDataSource implements ICdmDataSource {
 
 	public H2Mode getMode() {
 		return mode;
-	}	
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getPassword()
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getUserName()
+	 */
+	public String getUserName() {
+		return username;
+	}
+
+	
+	
+	
 }
 

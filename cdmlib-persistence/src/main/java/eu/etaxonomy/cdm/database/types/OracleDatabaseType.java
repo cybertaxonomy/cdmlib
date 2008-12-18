@@ -35,11 +35,28 @@ public class OracleDatabaseType extends DatabaseTypeBase {
         return urlString + ds.getServer() + ":" + port + ":" + ds.getDatabase();
     }  
     
-    public OracleDatabaseType() {
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+     */
+    public String getDatabaseNameByConnectionString(String connectionString){
+    	String result;
+    	result = getDatabasePartOfConnectionString(connectionString);
+    	//TODO
+//    	int posParams = result.indexOf("?");
+//    	if (posParams != -1){
+//    		result = result.substring(0, posParams);
+//    	}
+     	return result;
+    }
+
+	
+    /**
+     * Constructor
+     */
+	public OracleDatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
-
-
 
 
 }

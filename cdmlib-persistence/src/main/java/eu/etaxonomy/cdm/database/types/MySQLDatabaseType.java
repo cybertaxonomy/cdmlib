@@ -41,8 +41,26 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
         //return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
     }  
     
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+     */
+    @Override
+    public String getDatabaseNameByConnectionString(String connectionString){
+    	String result;
+    	result = getDatabasePartOfConnectionString(connectionString);
+    	int posParams = result.indexOf("?");
+    	if (posParams != -1){
+    		result = result.substring(0, posParams);
+    	}
+     	return result;
+    }
+    
+    /**
+     * Constructor
+     */
     public MySQLDatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
+
 
 }

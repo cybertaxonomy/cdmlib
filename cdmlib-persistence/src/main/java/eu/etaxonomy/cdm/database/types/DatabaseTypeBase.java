@@ -115,4 +115,89 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	public String getDestroyMethod() {
 		return destroyMethod;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getServerNameByConnectionString(java.lang.String)
+	 */
+	public String getServerNameByConnectionString(String connectionString){
+    	return getServerNameByConnectionString(connectionString, urlString, "/");
+    }
+	
+	protected String getServerNameByConnectionString(String connectionString, String strUrl, String dbSeparator){
+    	String result;
+    	if (connectionString == null){
+    		return null;
+    	}
+    	connectionString = connectionString.substring(strUrl.length());
+    	int posPort = connectionString.indexOf(":");
+    	int posDb = connectionString.indexOf(dbSeparator);
+    	if (posPort != -1 && posPort < posDb){
+    		result = connectionString.substring(0, posPort);
+    	}else if (posDb != -1){
+    		result = connectionString.substring(0, posDb);
+    	}else{
+    		logger.warn("No database defined or override for getServerNameByConnectionString() needed for this database type");
+    		result = connectionString;
+    	}
+    	return result;
+    }
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getPortByConnectionString(java.lang.String)
+	 */
+	public int getPortByConnectionString(String connectionString){
+		String dbSeparator = "/";
+    	return getPortByConnectionString(connectionString, urlString, dbSeparator);
+    }
+	
+	protected int getPortByConnectionString(String connectionString, String strUrl, String dbSeparator){
+		if (connectionString == null){
+    		return -1;
+    	}
+		int result;
+    	connectionString = connectionString.substring(strUrl.length());
+    	int posPort = connectionString.indexOf(":");
+    	int posDb = connectionString.indexOf(dbSeparator);
+    	if (posPort == -1){
+    		result = defaultPort;
+    	}else{
+    		if (posDb != -1){
+    			connectionString = connectionString.substring(posPort + 1, posDb);
+    			try {
+					result = Integer.valueOf(connectionString);
+				} catch (NumberFormatException e) {
+					logger.warn("Port is not an Integer in connection string: " + connectionString);
+					return -1;
+				}
+        	}else{
+        		logger.warn("No database defined or override for getPortByConnectionString() needed for this database type");	
+        		result = -1;
+        	}
+    	}
+     	return result;
+	}
+	
+	
+	protected String getDatabasePartOfConnectionString(String connectionString){
+    	String result;
+    	if (connectionString == null){
+    		return null;
+    	}
+    	connectionString = connectionString.substring(urlString.length()); //delete prefix
+    	int posDb = connectionString.indexOf("/");
+    	if (posDb != -1){
+    		result = connectionString.substring(posDb + 1 );
+    	}else{
+    		logger.warn("No database defined or override for getServerNameByConnectionString() needed for this database type");
+    		result = connectionString;
+    	}
+    	return result;
+    }
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDatabaseNameByConnectionString(java.lang.String)
+	 */
+	public abstract String getDatabaseNameByConnectionString(String connectionString);
+
+	
 }

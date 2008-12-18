@@ -71,7 +71,20 @@ public interface ICdmDataSource {
 	/**
 	 * @return
 	 */
-	public H2Mode getMode();	
+	public H2Mode getMode();
+	
+	
+	/**
+	 * Tests, if a database connection can be established.
+	 * @return true if test was successful, false otherwise
+	 */
+	public boolean testConnection();
+	
+	public String getUserName();
+	
+	public String getPassword();
+	
+	
 //
 //	public void setFilePath(String filePath);
 //	
