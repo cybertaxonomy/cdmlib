@@ -37,6 +37,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	private String urlString = "jdbc:h2:";
     
 	//path
+	@SuppressWarnings("unused")
 	private String path = getDefaultPath();
 	
     //port
@@ -70,8 +71,78 @@ public class H2DatabaseType extends DatabaseTypeBase {
         }
     }
 	
+	
+	
     
-    public H2DatabaseType() {
+    /* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+	 */
+	@Override
+	public String getServerNameByConnectionString(String connectionString) {
+		String result;
+		if (connectionString.startsWith("file:")){
+			result = null; 
+		}else if (connectionString.startsWith("tcp://")){
+			String prefix = "tcp://";
+			String dbSeparator = "/";
+			result = getServerNameByConnectionString(connectionString, prefix, dbSeparator);
+		}else if (connectionString.startsWith("mem:")){
+			result = null;
+		}else{
+			logger.warn("Unknown conncection string format");
+			result = null;
+		}
+		return result;
+	}
+
+
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getDatabaseNameByConnectionString(java.lang.String)
+	 */
+	@Override
+	public String getDatabaseNameByConnectionString(String connectionString) {
+		int pos = -1;
+		String result;
+		if (connectionString.startsWith("file:")){
+			pos = connectionString.lastIndexOf("/");
+			result = connectionString.substring(pos + 1);
+		}else if (connectionString.startsWith("tcp://")){
+			pos = connectionString.lastIndexOf("/");
+			result = connectionString.substring(pos + 1);
+		}else if (connectionString.startsWith("mem:")){
+			return null;
+		}else{
+			logger.warn("Unknown conncection string format");
+			return null;
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)
+	 */
+	@Override
+	public int getPortByConnectionString(String connectionString) {
+		int result;
+		if (connectionString.startsWith("file:")){
+			result = -1; 
+		}else if (connectionString.startsWith("tcp://")){
+			String prefix = "tcp://";
+			String dbSeparator = "/";
+	    	result = getPortByConnectionString(connectionString, prefix, dbSeparator);
+		}else if (connectionString.startsWith("mem:")){
+			result = -1;
+		}else{
+			logger.warn("Unknown conncection string format");
+			result = -1;
+		}
+		return result;
+	}
+
+
+	public H2DatabaseType() {
 		init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
 

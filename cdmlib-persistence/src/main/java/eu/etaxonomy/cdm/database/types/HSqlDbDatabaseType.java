@@ -47,6 +47,20 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
         return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase();
     }
 	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+     */
+    public String getDatabaseNameByConnectionString(String connectionString){
+    	String result;
+    	result = getDatabasePartOfConnectionString(connectionString);
+    	//TODO
+//    	int posParams = result.indexOf("?");
+//    	if (posParams != -1){
+//    		result = result.substring(0, posParams);
+//    	}
+     	return result;
+    }
+	
     
     public HSqlDbDatabaseType() {
 		init (typeName, classString, urlString, defaultPort,  hibernateDialect );

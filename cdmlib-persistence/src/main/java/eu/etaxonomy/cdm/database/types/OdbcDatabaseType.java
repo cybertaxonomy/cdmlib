@@ -39,7 +39,36 @@ public class OdbcDatabaseType extends DatabaseTypeBase {
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
         return urlString + ds.getServer() ;
-    }  
+    }
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getPortByConnectionString(java.lang.String)
+	 */
+	public int getPortByConnectionString(String connectionString){
+		return -1;  //ODBC does not have any port
+	}
+	
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
+     */
+    @Override
+    public String getDatabaseNameByConnectionString(String connectionString){
+    	//TODO does ODBC have a database name?
+    	return null;
+    }
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getServerNameByConnectionString(java.lang.String)
+	 */
+	public String getServerNameByConnectionString(String connectionString){
+    	String result = null;
+    	if (connectionString != null){
+    		result = connectionString.substring(urlString.length());
+        		
+    	}
+    	return result;
+    }
+    
 	
 	//constructor
     public OdbcDatabaseType() {
