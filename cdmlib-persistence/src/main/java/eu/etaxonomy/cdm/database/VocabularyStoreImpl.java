@@ -69,7 +69,7 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.init.IVocabularySaver#saveOrUpdate(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
-	public void saveOrUpdate(TermVocabulary<DefinedTermBase> vocabulary) {
+	public void saveOrUpdate(TermVocabulary vocabulary) {
 		logger.info("vocabulary save or update start ...");
 		initialize();
 		Iterator<DefinedTermBase> termIterator = vocabulary.iterator();
@@ -114,6 +114,18 @@ public class VocabularyStoreImpl implements IVocabularyStore {
 		}else{
 			logger.error("Vocabulary Store could not be initialized");
 			throw new RuntimeException("Vocabulary Store could not be initialized");
+		}
+	}
+	
+	public <T extends DefinedTermBase> T getTermByUuid(UUID uuid, Class<T> clazz) {
+		DefinedTermBase d = this.getTermByUuid(uuid);
+		if(d == null){
+			return null;
+		} else {
+		  if(!clazz.isAssignableFrom(d.getClass())) {
+			 throw new ClassCastException(clazz + " is not assignable from " + d.getClass());
+		  }
+		  return (T)d;
 		}
 	}
 	

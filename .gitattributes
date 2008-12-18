@@ -1047,6 +1047,7 @@ cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTestClass.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBaseTest.java -text
@@ -1072,6 +1073,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -t
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/PUBLIC.xsd -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSave-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdate-result.xml -text
@@ -1080,7 +1082,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/TaxonDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-remote/LICENSE.TXT -text

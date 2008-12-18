@@ -7,7 +7,6 @@
 				<xsd:element name="AGENT_ORIGINALSOURCE" type="dflt:AGENT_ORIGINALSOURCE__type" />
 				<xsd:element name="TAXONRELATIONSHIP_MARKER" type="dflt:TAXONRELATIONSHIP_MARKER__type" />
 				<xsd:element name="TAXONNAMEBASE" type="dflt:TAXONNAMEBASE__type" />
-				<xsd:element name="AGENT_INSTITUTIONALMEMBERSHIP" type="dflt:AGENT_INSTITUTIONALMEMBERSHIP__type" />
 				<xsd:element name="REFERENCEBASE_MARKER" type="dflt:REFERENCEBASE_MARKER__type" />
 				<xsd:element name="DETERMINATIONEVENT_REFERENCEBASE" type="dflt:DETERMINATIONEVENT_REFERENCEBASE__type" />
 				<xsd:element name="GATHERINGEVENT_ANNOTATION" type="dflt:GATHERINGEVENT_ANNOTATION__type" />
@@ -44,8 +43,8 @@
 				<xsd:element name="SEQUENCE_MEDIA" type="dflt:SEQUENCE_MEDIA__type" />
 				<xsd:element name="SEQUENCE_REFERENCEBASE" type="dflt:SEQUENCE_REFERENCEBASE__type" />
 				<xsd:element name="DEFINEDTERMBASE_SUPPORTEDCATEGORICALENUMERATION" type="dflt:DEFINEDTERMBASE_SUPPORTEDCATEGORICALENUMERATION__type" />
-				<xsd:element name="DESCRIPTIONELEMENTBASE_MEDIA" type="dflt:DESCRIPTIONELEMENTBASE_MEDIA__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE_MODIFIER" type="dflt:DESCRIPTIONELEMENTBASE_MODIFIER__type" />
+				<xsd:element name="DESCRIPTIONELEMENTBASE_MEDIA" type="dflt:DESCRIPTIONELEMENTBASE_MEDIA__type" />
 				<xsd:element name="SPECIMENOROBSERVATIONBASE_MEDIA" type="dflt:SPECIMENOROBSERVATIONBASE_MEDIA__type" />
 				<xsd:element name="GENBANKACCESSION" type="dflt:GENBANKACCESSION__type" />
 				<xsd:element name="AGENT_MARKER" type="dflt:AGENT_MARKER__type" />
@@ -103,9 +102,8 @@
 				<xsd:element name="TAXONBASE_RIGHTS" type="dflt:TAXONBASE_RIGHTS__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE" type="dflt:DESCRIPTIONELEMENTBASE__type" />
 				<xsd:element name="HOMOTYPICALGROUP" type="dflt:HOMOTYPICALGROUP__type" />
-				<xsd:element name="REFERENCEBASE_MEDIA" type="dflt:REFERENCEBASE_MEDIA__type" />
 				<xsd:element name="DESCRIPTIONBASE_RIGHTS" type="dflt:DESCRIPTIONBASE_RIGHTS__type" />
-				<xsd:element name="DESCRIPTIONBASE_DESCRIPTIONELEMENTBASE" type="dflt:DESCRIPTIONBASE_DESCRIPTIONELEMENTBASE__type" />
+				<xsd:element name="REFERENCEBASE_MEDIA" type="dflt:REFERENCEBASE_MEDIA__type" />
 				<xsd:element name="COLLECTION" type="dflt:COLLECTION__type" />
 				<xsd:element name="TAXONBASE_ANNOTATION" type="dflt:TAXONBASE_ANNOTATION__type" />
 				<xsd:element name="TAXONRELATIONSHIP" type="dflt:TAXONRELATIONSHIP__type" />

@@ -53,6 +53,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
 	@Test
+	@DataSet
 	public void testInit() {
 		assertNotNull("Instance of ITaxonDao expected",taxonDao);
 	}
@@ -87,6 +88,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}	
 	
 	@Test
+	@DataSet
 	public void testFindByUuid() {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(uuid);
 		assertNotNull("findByUuid should return a taxon",taxon);
@@ -94,6 +96,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testCountRelatedTaxa()	{
 		Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
 		assert taxon != null : "taxon must exist"; 
@@ -103,6 +106,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testRelatedTaxa() {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
 		assert taxon != null : "taxon must exist"; 
@@ -114,6 +118,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testGetRelatedTaxaPaged()	{
 		Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
 		assert taxon != null : "taxon must exist";
@@ -131,6 +136,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testCountSynonymRelationships() {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
@@ -140,6 +146,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testSynonymRelationships()	{
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
@@ -152,6 +159,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testCountSynonymRelationshipsByType()	{
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
@@ -161,6 +169,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testSynonymRelationshipsByType() {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
@@ -172,6 +181,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testPageSynonymRelationships(){
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
@@ -186,6 +196,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testGetTaxonMatchingUninomial() {
 		List<TaxonBase> result = taxonDao.findTaxaByName(true, "Smerinthus", null, null, null,null,null,null);
 		
@@ -195,6 +206,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testGetTaxonMatchingSpeciesBinomial() {
 		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Smerinthus", null, "kindermannii", null,null,null,null);
 		
@@ -204,6 +216,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	  
 	@Test
+	@DataSet
 	public void testGetTaxonMatchingTrinomial() {
 		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Cryptocoryne", null,"purpurea","borneoensis",null,null,null);
 		
@@ -213,6 +226,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testNegativeMatch() {
 		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Acherontia", null,"atropos","dehli",null,null,null);
 		
@@ -221,12 +235,14 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@DataSet
 	public void testCountAllTaxa() {
 		int numberOfTaxa = taxonDao.count(Taxon.class);
 		assertEquals("count should return 33 taxa",33, numberOfTaxa);
 	}
 	
 	@Test
+	@DataSet
 	public void testListAllTaxa() {
 		List<Taxon> taxa = taxonDao.list(Taxon.class,100, 0);
 		assertNotNull("list should return a List",taxa);

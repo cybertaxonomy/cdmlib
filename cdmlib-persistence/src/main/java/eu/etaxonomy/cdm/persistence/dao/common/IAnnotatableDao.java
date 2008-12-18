@@ -17,5 +17,4 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
  * @version 1.0
  */
 public interface IAnnotatableDao<T extends AnnotatableEntity> extends ICdmEntityDao<T>{
-
 }

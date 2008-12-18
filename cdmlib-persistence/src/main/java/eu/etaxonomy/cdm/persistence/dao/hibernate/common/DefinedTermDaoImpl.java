@@ -13,19 +13,25 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 
@@ -92,9 +98,9 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return (WaterbodyOrCountry) query.uniqueResult();
 	}
 	
-	public List<? extends DefinedTermBase> getDefinedTermByRepresentationText(String text, Class clazz ) {
+	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz ) {
 		Query query = getSession().createQuery("from "+ clazz.getName()+" as wc where wc.representations.text like '"+text+"'"); 
-		return (List<? extends DefinedTermBase>) query.list();
+		return (List<T>) query.list();
 	}
 	
 	/* (non-Javadoc)
@@ -126,6 +132,124 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 			languages.add(getLanguageByIso(locale.getLanguage()));		
 		}
 		return languages;
+	}
+
+	public int count(NamedAreaLevel level, NamedAreaType type) {
+		Criteria criteria = getSession().createCriteria(NamedArea.class);
+		
+		if(level != null) {
+			criteria.add(Restrictions.eq("level",level));
+		}
+		
+		if(type != null) {
+			criteria.add(Restrictions.eq("type", type));
+		}
+		
+		criteria.setProjection(Projections.rowCount());
+		
+		return (Integer)criteria.uniqueResult();
+	}
+
+	public int countMedia(DefinedTermBase definedTerm) {
+		Query query = getSession().createQuery("select count(media) from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
+	    query.setParameter("definedTerm", definedTerm);
+	    
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
+		Query query = getSession().createQuery("select media from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
+		query.setParameter("definedTerm", definedTerm);
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<Media>)query.list();
+	}
+
+	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber) {
+        Criteria criteria = getSession().createCriteria(NamedArea.class);
+		
+		if(level != null) {
+			criteria.add(Restrictions.eq("level",level));
+		}
+		
+		if(type != null) {
+			criteria.add(Restrictions.eq("type", type));
+		}
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<NamedArea>)criteria.list();
+	}
+
+	public <T extends DefinedTermBase> int countGeneralizationOf(T definedTerm) {
+		Query query = getSession().createQuery("select count(specialization) from DefinedTermBase generalization join generalization.generalizationOf specialization where generalization = :generalization");
+		query.setParameter("generalization", definedTerm);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public <T extends DefinedTermBase> int countIncludes(Set<T> definedTerms) {
+		Query query = getSession().createQuery("select count(included) from DefinedTermBase definedTerm join definedTerm.includes included where definedTerm in (:definedTerms)");
+		query.setParameterList("definedTerms", definedTerms);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public <T extends DefinedTermBase> List<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
+		Query query = getSession().createQuery("select specialization from DefinedTermBase generalization join generalization.generalizationOf specialization where generalization = :generalization");
+		query.setParameter("generalization", definedTerm);
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<T>)query.list();
+	}
+
+	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> definedTerms,	Integer pageSize, Integer pageNumber) {
+		Query query = getSession().createQuery("select included from DefinedTermBase definedTerm join definedTerm.includes included where definedTerm in (:definedTerms)");
+		query.setParameterList("definedTerms", definedTerms);
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<T>)query.list();
+	}
+	
+	public <T extends DefinedTermBase> int countPartOf(Set<T> definedTerms) {
+		Query query = getSession().createQuery("select count(distinct partOf) from DefinedTermBase definedTerm join definedTerm.partOf partOf where definedTerm in (:definedTerms)");
+		query.setParameterList("definedTerms", definedTerms);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber) {
+		Query query = getSession().createQuery("select distinct partOf from DefinedTermBase definedTerm join definedTerm.partOf partOf where definedTerm in (:definedTerms)");
+		query.setParameterList("definedTerms", definedTerms);
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<T>)query.list();
 	}
 
 
