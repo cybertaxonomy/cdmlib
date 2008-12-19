@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -20,6 +21,8 @@ import org.hibernate.criterion.Restrictions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 
@@ -80,6 +83,50 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		crit.setFirstResult(firstItem);
 		List<T> results = crit.list();
 		return results;
+	}
+
+	public int countRights(T identifiableEntity) {
+		Query query = getSession().createQuery("select count(rights) from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
+		query.setParameter("identifiableEntity",identifiableEntity);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public int countSources(T identifiableEntity) {
+		Query query = getSession().createQuery("select count(source) from OriginalSource source where source.sourcedObj = :identifiableEntity");
+		query.setParameter("identifiableEntity",identifiableEntity);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber) {
+		Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
+		query.setParameter("identifiableEntity",identifiableEntity);
+		
+		if(pageSize != null) {
+	    	query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		
+		return (List<Rights>)query.list();
+	}
+
+	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber) {
+		Query query = getSession().createQuery("select source from OriginalSource source where source.sourcedObj = :identifiableEntity");
+		query.setParameter("identifiableEntity",identifiableEntity);
+		
+		if(pageSize != null) {
+	    	query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		
+		return (List<OriginalSource>)query.list();
 	}
 	
 	
