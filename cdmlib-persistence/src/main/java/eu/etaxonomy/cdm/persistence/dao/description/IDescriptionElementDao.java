@@ -5,9 +5,9 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
-public interface IDescriptionElementDao extends ICdmEntityDao<DescriptionElementBase> {
+public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionElementBase> {
 	/**
 	 * This query is designed to search the the descriptions. 
 	 * This is complicated somewhat by the 1 ... n relation between
@@ -37,9 +37,29 @@ public interface IDescriptionElementDao extends ICdmEntityDao<DescriptionElement
 	 */
 	public List<TextData> searchTextData(String queryString, Integer pageSize, Integer pageNumber);
 	
+	/**
+	 * Return a count of TextData elements who's content matches the query string
+	 * 
+	 * @param queryString a query string following Lucene Query Parser syntax
+	 * @return a count of matching TextData elements
+	 */
 	public int countTextData(String queryString);
 	
+    /**
+     * Returns a List of Media that are associated with a given description element
+     * 
+	 * @param descriptionElement the description element associated with these media
+	 * @param pageSize The maximum number of media returned (can be null for all related media)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @return a List of media instances
+     */
     public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber);
 	
+    /**
+     * Returns a count of Media that are associated with a given description element
+     * 
+	 * @param descriptionElement the description element associated with these media
+     * @return a count of media instances
+     */
 	public int countMedia(DescriptionElementBase descriptionElement);
 }
