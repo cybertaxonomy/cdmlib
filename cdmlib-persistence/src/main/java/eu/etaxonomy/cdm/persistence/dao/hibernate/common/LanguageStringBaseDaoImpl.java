@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
  * @created 10.09.2008
  */
 @Repository(value="langStrBaseDao")
-public class LanguageStringBaseDaoImpl<T extends LanguageStringBase> extends CdmEntityDaoBase<T> 
+public class LanguageStringBaseDaoImpl<T extends LanguageStringBase> extends AnnotatableDaoImpl<T> 
 implements ILanguageStringBaseDao<T>{
 
 	public LanguageStringBaseDaoImpl() {

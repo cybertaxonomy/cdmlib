@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 
-public class IdentifiableDaoBase<T extends IdentifiableEntity> extends CdmEntityDaoBase<T> implements IIdentifiableDao<T>{
+public class IdentifiableDaoBase<T extends IdentifiableEntity> extends AnnotatableDaoImpl<T> implements IIdentifiableDao<T>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
 

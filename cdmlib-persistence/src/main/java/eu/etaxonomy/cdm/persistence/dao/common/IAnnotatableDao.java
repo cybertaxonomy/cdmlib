@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 
 /**
  * @author n.hoffmann
@@ -17,4 +21,24 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
  * @version 1.0
  */
 public interface IAnnotatableDao<T extends AnnotatableEntity> extends ICdmEntityDao<T>{
+	
+	/**
+	 * Returns a List of Annotations belonging to the supplied AnnotatableEntity
+	 * 
+	 * @param annotatableEntity the entity which is annotated
+	 * @param status The status of the annotations (null to return annotations regardless of status)
+	 * @param pageSize The maximum number of annotations returned (can be null for all annotations)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of Annotation instances
+	 */
+    public List<Annotation> getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber);
+	
+    /**
+	 * Returns a count of Annotations belonging to the supplied AnnotatableEntity
+	 * 
+	 * @param annotatableEntity the entity which is annotated
+	 * @param status The status of the annotations (null to count all annotations regardless of status)
+	 * @return a count of Annotation instances
+	 */
+	public int countAnnotations(T annotatableEntity, MarkerType status);
 }

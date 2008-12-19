@@ -976,6 +976,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/agent/IAgentDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnotatableDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IAnnotationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmEntityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ICdmGenericDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IDefinedTermDao.java -text
@@ -996,6 +997,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IF
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IStatisticalMeasurementValueDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotatableDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotationDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBase.java -text
@@ -1048,6 +1050,7 @@ cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotationDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTestClass.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DaoBaseTest.java -text
@@ -1075,6 +1078,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/PUBLIC.xsd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotationDaoTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSave-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdate-result.xml -text
