@@ -9,11 +9,13 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import java.util.*;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,6 +24,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -38,7 +41,9 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentificationKey", propOrder = {
-    "coveredTaxa"
+    "coveredTaxa",
+    "taxonomicScope",
+    "geoScopes"
 })
 @XmlRootElement(name = "IdentificationKey")
 @Entity
@@ -52,6 +57,16 @@ public class IdentificationKey extends Media {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
+	
+	@XmlElementWrapper( name = "GeoScopes")
+	@XmlElement( name = "GeoScope")
+	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+	
+	@XmlElementWrapper(name = "TaxonomicScope")
+	@XmlElement(name = "Taxon")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 	
 	/** 
 	 * Class constructor: creates a new empty identification key instance.
@@ -71,8 +86,10 @@ public class IdentificationKey extends Media {
 	/** 
 	 * Returns the set of possible {@link Taxon taxa} corresponding to
 	 * <i>this</i> identification key.
+	 * FIXME - shouldn't this be @ManyToMany - i.e. many keys can refer to the
+	 * same taxon and some taxa will be covered by multiple keys?
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Taxon> getCoveredTaxa() {
 		return coveredTaxa;
 	}
@@ -82,6 +99,7 @@ public class IdentificationKey extends Media {
 	protected void setCoveredTaxa(Set<Taxon> coveredTaxa) {
 		this.coveredTaxa = coveredTaxa;
 	}
+	
 	/**
 	 * Adds a {@link Taxon taxa} to the set of {@link #getCoveredTaxa() covered taxa}
 	 * corresponding to <i>this</i> identification key.
@@ -92,6 +110,7 @@ public class IdentificationKey extends Media {
 	public void addCoveredTaxon(Taxon taxon) {
 		this.coveredTaxa.add(taxon);
 	}
+	
 	/** 
 	 * Removes one element from the set of {@link #getCoveredTaxa() covered taxa}
 	 * corresponding to <i>this</i> identification key.
@@ -104,5 +123,85 @@ public class IdentificationKey extends Media {
 		this.coveredTaxa.remove(taxon);
 	}
 
+	/** 
+	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
+	 * data where <i>this</i> identification key is valid.
+	 */
+	@ManyToMany(fetch = FetchType.LAZY)
+	public Set<NamedArea> getGeoScopes() {
+		return geoScopes;
+	}
 
+	/**
+	 * @see	#getGeoScopes() 
+	 */
+	public void setGeoScopes(Set<NamedArea> geoScopes) {
+		this.geoScopes = geoScopes;
+	}
+	
+	/**
+	 * Adds a {@link NamedArea geoScope} to the set of {@link #getGeoScopes() geogspatial scopes}
+	 * corresponding to <i>this</i> identification key.
+	 * 
+	 * @param	geoScope	the named area to be added to <i>this</i> identification key
+	 * @see    	   		 	#getGeoScopes()
+	 */
+	public void addGeoScope(NamedArea geoScope) {
+		this.geoScopes.add(geoScope);
+	}
+	/** 
+	 * Removes one element from the set of {@link #getGeoScopes() geogspatial scopes}
+	 * corresponding to <i>this</i> identification key.
+	 *
+	 * @param	geoScope	the named area which should be removed
+	 * @see     			#getGeoScopes()
+	 * @see     			#addGeoScope(NamedArea)
+	 */
+	public void removeGeoScope(NamedArea geoScope) {
+		this.geoScopes.remove(geoScope);
+	}
+
+	/** 
+	 * Returns the set of {@link Taxon taxa} that define the taxonomic
+	 * scope of <i>this</i> identification key 
+	 */
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+	        name="IdentificationKey_Taxon",
+	        joinColumns=@JoinColumn(name="identificationKey_fk"),
+	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
+	)
+	public Set<Taxon> getTaxonomicScope() {
+		return taxonomicScope;
+	}
+
+	/**
+	 * @see	#getTaxonomicScope() 
+	 */
+	public void setTaxonomicScope(Set<Taxon> taxonomicScope) {
+		this.taxonomicScope = taxonomicScope;
+	}
+	
+	/**
+	 * Adds a {@link Taxon taxa} to the set of {@link #getTaxonomicScope() taxonomic scopes}
+	 * corresponding to <i>this</i> identification key.
+	 * 
+	 * @param	taxon	the taxon to be added to <i>this</i> identification key
+	 * @see    	   		#getTaxonomicScope()
+	 */
+	public void addTaxonomicScope(Taxon taxon) {
+		this.taxonomicScope.add(taxon);
+	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getTaxonomicScope() taxonomic scopes}
+	 * corresponding to <i>this</i> identification key.
+	 *
+	 * @param	taxon	the taxon which should be removed
+	 * @see     		#getTaxonomicScope()
+	 * @see     		#addTaxonomicScope(Taxon)
+	 */
+	public void removeTaxonomicScope(Taxon taxon) {
+		this.taxonomicScope.remove(taxon);
+	}
 }
