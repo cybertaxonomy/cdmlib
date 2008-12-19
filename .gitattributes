@@ -1054,6 +1054,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
@@ -1083,6 +1084,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-remote/LICENSE.TXT -text

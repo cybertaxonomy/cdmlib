@@ -42,6 +42,7 @@
 				<xsd:element name="TAXONNAMEBASE_NOMENCLATURALSTATUS" type="dflt:TAXONNAMEBASE_NOMENCLATURALSTATUS__type" />
 				<xsd:element name="SEQUENCE_MEDIA" type="dflt:SEQUENCE_MEDIA__type" />
 				<xsd:element name="SEQUENCE_REFERENCEBASE" type="dflt:SEQUENCE_REFERENCEBASE__type" />
+				<xsd:element name="IDENTIFICATIONKEY_TAXON" type="dflt:IDENTIFICATIONKEY_TAXON__type" />
 				<xsd:element name="DEFINEDTERMBASE_SUPPORTEDCATEGORICALENUMERATION" type="dflt:DEFINEDTERMBASE_SUPPORTEDCATEGORICALENUMERATION__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE_MODIFIER" type="dflt:DESCRIPTIONELEMENTBASE_MODIFIER__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE_MEDIA" type="dflt:DESCRIPTIONELEMENTBASE_MEDIA__type" />
@@ -102,8 +103,8 @@
 				<xsd:element name="TAXONBASE_RIGHTS" type="dflt:TAXONBASE_RIGHTS__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE" type="dflt:DESCRIPTIONELEMENTBASE__type" />
 				<xsd:element name="HOMOTYPICALGROUP" type="dflt:HOMOTYPICALGROUP__type" />
-				<xsd:element name="DESCRIPTIONBASE_RIGHTS" type="dflt:DESCRIPTIONBASE_RIGHTS__type" />
 				<xsd:element name="REFERENCEBASE_MEDIA" type="dflt:REFERENCEBASE_MEDIA__type" />
+				<xsd:element name="DESCRIPTIONBASE_RIGHTS" type="dflt:DESCRIPTIONBASE_RIGHTS__type" />
 				<xsd:element name="COLLECTION" type="dflt:COLLECTION__type" />
 				<xsd:element name="TAXONBASE_ANNOTATION" type="dflt:TAXONBASE_ANNOTATION__type" />
 				<xsd:element name="TAXONRELATIONSHIP" type="dflt:TAXONRELATIONSHIP__type" />
@@ -139,6 +140,7 @@
 				<xsd:element name="MEDIAREPRESENTATIONPART" type="dflt:MEDIAREPRESENTATIONPART__type" />
 				<xsd:element name="SYNONYMRELATIONSHIP" type="dflt:SYNONYMRELATIONSHIP__type" />
 				<xsd:element name="CONTACT" type="dflt:CONTACT__type" />
+				<xsd:element name="MEDIA_DEFINEDTERMBASE" type="dflt:MEDIA_DEFINEDTERMBASE__type" />
 				<xsd:element name="TYPEDESIGNATIONBASE" type="dflt:TYPEDESIGNATIONBASE__type" />
 				<xsd:element name="LANGUAGESTRING" type="dflt:LANGUAGESTRING__type" />
 				<xsd:element name="HOMOTYPICALGROUP_ANNOTATION" type="dflt:HOMOTYPICALGROUP_ANNOTATION__type" />
