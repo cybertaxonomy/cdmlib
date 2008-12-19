@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 
 /**
@@ -42,7 +43,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	private IDefinedTermDao definedTermDao;
 	
 	@Autowired
-	private IOccurrenceDao daotest;
+	private IOccurrenceDao occurenceDao;
+	
+	@Autowired
+	private ICollectionDao collectionDao;
 	
 
 	public OccurrenceServiceImpl() {
@@ -96,7 +100,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	}
 	
 	public List<eu.etaxonomy.cdm.model.occurrence.Collection> searchCollectionByCode(String code) {
-		return this.daotest.getCollectionByCode(code);
+		return this.collectionDao.getCollectionByCode(code);
 	}
 	
 }
