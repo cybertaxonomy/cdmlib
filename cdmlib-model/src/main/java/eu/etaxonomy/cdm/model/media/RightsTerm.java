@@ -9,9 +9,12 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -64,20 +67,36 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 		super(term, label, labelAbbrev);
 	}
 
+	/**
+	 * Returns the rights term identified through its immutable universally
+	 * unique identifier (UUID).
+	 * 
+	 * @param	uuid	the universally unique identifier
+	 * @return  		the rights term corresponding to the given
+	 * 					universally unique identifier
+	 */
+	public static final RightsTerm getByUuid(UUID uuid){
+		return (RightsTerm)findByUuid(uuid);
+	}
+	
 
 	/**
 	 * http://purl.org/dc/terms/accessRights
 	 */
 	public static final RightsTerm ACCESS_RIGHTS(){
-		return null;
+		return getByUuid(uuidAccessRights);
 	}
 
 	public static final RightsTerm COPYRIGHT(){
-		return null;
+		return getByUuid(uuidCopyright);
 	}
 
 	public static final RightsTerm LICENSE(){
-		return null;
+		return getByUuid(uuidLicense);
 	}
+	
+	private static final UUID uuidLicense = UUID.fromString("67c0d47e-8985-1014-8845-c84599f9992c");
+	private static final UUID uuidCopyright = UUID.fromString("d1ef838e-b195-4f28-b8eb-0d3be080bd37");
+	private static final UUID uuidAccessRights = UUID.fromString("a50b4def-b3ac-4508-b50a-e0f249e3a1d7");
 
 }

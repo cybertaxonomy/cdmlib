@@ -879,6 +879,7 @@ cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/PreservationMethod.csv -text
 cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
+cdmlib-model/src/main/resources/terms/RightsTerm.csv -text
 cdmlib-model/src/main/resources/terms/Sex.csv -text
 cdmlib-model/src/main/resources/terms/StatisticalMeasure.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text

@@ -98,7 +98,7 @@ public class Rights extends LanguageStringBase {
 	}
 
 	
-	@Transient
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public RightsTerm getType(){
 		return this.type;

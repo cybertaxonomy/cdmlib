@@ -10,7 +10,7 @@
 	@org.hibernate.annotations.TypeDef(name="partialUserType", typeClass=eu.etaxonomy.cdm.model.common.PartialUserType.class),
 	@org.hibernate.annotations.TypeDef(name="uuidUserType", typeClass=eu.etaxonomy.cdm.model.common.UUIDUserType.class)
 })
-@org.hibernate.annotations.AnyMetaDef(name = "AnnotatableEntity" ,
+@org.hibernate.annotations.AnyMetaDef(name = "CdmBase" ,
 		                              metaType="string", 
 		                              idType="integer",
 		                              metaValues={

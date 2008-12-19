@@ -87,7 +87,7 @@ public class Marker extends VersionableEntity implements Cloneable{
 	/**
 	 * @return
 	 */
-	@Any(metaDef = "AnnotatableEntity",
+	@Any(metaDef = "CdmBase",
 		     fetch=FetchType.LAZY, 
 		     metaColumn = @Column(name="markedObj_type"),
 		     optional = false)

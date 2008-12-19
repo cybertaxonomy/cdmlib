@@ -10,7 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,6 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -119,12 +123,15 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	}
 
 
-//	@ManyToOne
-//	@Cascade(CascadeType.SAVE_UPDATE)
-	@Transient //beacause IdentifiableEntity is MappedSuperclass
+	@Any(metaDef = "CdmBase",
+	    	 metaColumn=@Column(name = "sourcedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "sourcedObj_id")
 	public IdentifiableEntity getSourcedObj() {
 		return sourcedObj;
 	}
+	
 	public void setSourcedObj(IdentifiableEntity sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}

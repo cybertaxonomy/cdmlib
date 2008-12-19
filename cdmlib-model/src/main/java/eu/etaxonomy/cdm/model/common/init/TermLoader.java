@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -181,6 +182,7 @@ public class TermLoader {
 		insertDefaultTerms(PreservationMethod.class, NOT_ORDERED);
 		insertDefaultTerms(DeterminationModifier.class, ORDERED);
 		insertDefaultTerms(StatisticalMeasure.class, NOT_ORDERED);
+		insertDefaultTerms(RightsTerm.class, NOT_ORDERED);
 		logger.debug("terms loaded");
 		return true;
 	}

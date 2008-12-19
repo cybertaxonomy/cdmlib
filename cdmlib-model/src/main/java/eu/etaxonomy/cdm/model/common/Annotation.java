@@ -98,7 +98,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@XmlElement(name = "LinkbackURL")
 	private URL linkbackUrl;
 	
-	@Any(metaDef = "AnnotatableEntity",
+	@Any(metaDef = "CdmBase",
 	    	 metaColumn=@Column(name = "annotatedObj_type"),
 	    	 fetch = FetchType.LAZY,
 	    	 optional = false)
