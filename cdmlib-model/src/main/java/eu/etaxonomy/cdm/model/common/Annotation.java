@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -97,7 +98,11 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@XmlElement(name = "LinkbackURL")
 	private URL linkbackUrl;
 	
-	@Transient
+	@Any(metaDef = "AnnotatableEntity",
+	    	 metaColumn=@Column(name = "annotatedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "annotatedObj_id")
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}

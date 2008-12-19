@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -86,7 +87,11 @@ public class Marker extends VersionableEntity implements Cloneable{
 	/**
 	 * @return
 	 */
-	@Transient
+	@Any(metaDef = "AnnotatableEntity",
+		     fetch=FetchType.LAZY, 
+		     metaColumn = @Column(name="markedObj_type"),
+		     optional = false)
+	@JoinColumn(name = "markedObj_id")
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
 	}

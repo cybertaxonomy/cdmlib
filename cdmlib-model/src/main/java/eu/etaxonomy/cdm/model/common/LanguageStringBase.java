@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
     "language"
 })
 @MappedSuperclass
-public abstract class LanguageStringBase extends VersionableEntity{
+public abstract class LanguageStringBase extends AnnotatableEntity{
 	private static final long serialVersionUID = -1892526642162438277L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageStringBase.class);
