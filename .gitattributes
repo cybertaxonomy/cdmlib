@@ -1051,8 +1051,14 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/site.xml -text
-cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmPersistentDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/ODBCDatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/OracleDatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotationDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.java -text

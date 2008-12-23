@@ -30,10 +30,11 @@ public class SybaseDatabaseType extends DatabaseTypeBase {
     //hibernate dialect
     private String hibernateDialect = "SybaseDialect";
 
+    private static String dbSeparator = "/";
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer()+ ":" + port + "/" + ds.getDatabase();
+        return urlString + ds.getServer()+ ":" + port + dbSeparator + ds.getDatabase();
     }
 	
     /* (non-Javadoc)
@@ -42,7 +43,7 @@ public class SybaseDatabaseType extends DatabaseTypeBase {
 	@Override
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
-    	result = getDatabasePartOfConnectionString(connectionString);
+    	result = getDatabasePartOfConnectionString(connectionString, dbSeparator);
     	//TODO
 //    	int posParams = result.indexOf("?");
 //    	if (posParams != -1){

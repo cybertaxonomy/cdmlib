@@ -44,15 +44,17 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase();
+        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase();
     }
+	
+	private static String dbSeparator = "/";
 	
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
      */
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
-    	result = getDatabasePartOfConnectionString(connectionString);
+    	result = getDatabasePartOfConnectionString(connectionString, dbSeparator);
     	//TODO
 //    	int posParams = result.indexOf("?");
 //    	if (posParams != -1){

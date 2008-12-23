@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
 /**
  * class to access an CdmDataSource
  */
-public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmDataSource {
+public class CdmPersistentDataSource extends CdmDataSourceBase{
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
@@ -225,6 +225,8 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmDa
 						result = dbType.getServerNameByConnectionString(url);
 					}else if(property.equals("port")){
 						result = String.valueOf(dbType.getPortByConnectionString(url));
+					}else{
+						logger.warn("unknown property: " + property);
 					}
 				}
 			}
@@ -235,7 +237,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmDa
 	private String getPropertyValue(Element bean, String property){
 		Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
 		if (driverProp == null){
-			logger.warn("Unknown property" + property);
+			logger.info("Unknown property" + property);
 	    	return null;
 		}else{
 			String strProperty = driverProp.getAttributeValue("value");
@@ -542,7 +544,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmDa
 		return dataSources;
 	}
 	
-	public String getUserName(){
+	public String getUsername(){
 		return getDatasourceProperty(DbProperties.USERNAME);
 	}
 	

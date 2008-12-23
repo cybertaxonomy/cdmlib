@@ -110,6 +110,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getName()
+	 * A CdmDataSource does not have a name representation therefor the database name is returned
 	 */
 	public String getName() {
 		return database;
@@ -253,7 +254,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getUserName()
 	 */
-	public String getUserName() {
+	public String getUsername() {
 		return username;
 	}
 

@@ -43,11 +43,11 @@ public interface IDatabaseType {
 	
 	/**
 	 * Returns the connection String for the given parameters, using default port
-	 * @param server the server, e.g. IP-Address
-	 * @param database the database name on the server (e.g. "testDB")
+	 * @param cdmDataSource represents a datasource
 	 * @return the connection String
 	 */
 	public String getConnectionString(ICdmDataSource cdmDataSource);
+
 
 	/**
 	 * Returns the DriverManagerDataSource class that that the datasource needs to create a spring bean

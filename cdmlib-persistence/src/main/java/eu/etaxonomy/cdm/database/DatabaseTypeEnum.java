@@ -20,9 +20,11 @@ import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
+import eu.etaxonomy.cdm.database.types.OracleDatabaseType;
 import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.SqlServer2005DatabaseType;
 import eu.etaxonomy.cdm.database.types.SqlServer2000DatabaseType;
+import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
 
 /**
  * @author a.mueller
@@ -33,9 +35,11 @@ public enum DatabaseTypeEnum {
 	MySQL(2),
 	ODBC(3),
 	PostgreSQL(4),
-	SqlServer2000(5),
-	SqlServer2005(6),
-	H2(7)
+	Oracle(5),
+	SqlServer2000(6),
+	SqlServer2005(7),
+	Sybase(8),
+	H2(9)
 	;
 
 	/**
@@ -53,11 +57,15 @@ public enum DatabaseTypeEnum {
         		this.dbType = new OdbcDatabaseType(); break;
         	case 4:
             	this.dbType = new PostgreSQLDatabaseType(); break;
-            case 5:
-            	this.dbType = new SqlServer2000DatabaseType(); break;
+        	case 5:
+             	this.dbType = new OracleDatabaseType(); break;
             case 6:
-            	this.dbType = new SqlServer2005DatabaseType(); break;
+            	this.dbType = new SqlServer2000DatabaseType(); break;
             case 7:
+            	this.dbType = new SqlServer2005DatabaseType(); break;
+            case 8:
+            	this.dbType = new SybaseDatabaseType(); break;
+            case 9:
             	this.dbType = new H2DatabaseType(); break;
             default:
                 //TODO Exception

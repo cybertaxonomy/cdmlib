@@ -29,19 +29,43 @@ public class OracleDatabaseType extends DatabaseTypeBase {
     //hibernate dialect
     private String hibernateDialect = "OracleDialect";
 
+    private String dbSeparator = ":";
+    
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getServerNameByConnectionString(java.lang.String)
+	 */
+	public String getServerNameByConnectionString(String connectionString){
+    	return getServerNameByConnectionString(connectionString, urlString, dbSeparator);
+    }
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + ":" + ds.getDatabase();
+        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase();
     }  
     
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)
+	 */
+	@Override
+	public int getPortByConnectionString(String connectionString) {
+		return getPortByConnectionString(connectionString, urlString, dbSeparator);
+	}
+	
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)
      */
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
-    	result = getDatabasePartOfConnectionString(connectionString);
+    	result = getDatabasePartOfConnectionString(connectionString, dbSeparator);
+    	//returns port also because port separator == db separator
+    	if (result != null){
+	    	int pos = result.indexOf(dbSeparator);
+    		if (pos != -1 ){
+	    		result = result.substring(pos+ dbSeparator.length());
+	    	}
+    	}
+	    	
     	//TODO
 //    	int posParams = result.indexOf("?");
 //    	if (posParams != -1){

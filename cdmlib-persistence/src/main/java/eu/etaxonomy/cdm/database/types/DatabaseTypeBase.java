@@ -157,7 +157,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 		int result;
     	connectionString = connectionString.substring(strUrl.length());
     	int posPort = connectionString.indexOf(":");
-    	int posDb = connectionString.indexOf(dbSeparator);
+    	int posDb = connectionString.indexOf(dbSeparator, posPort+1);
     	if (posPort == -1){
     		result = defaultPort;
     	}else{
@@ -178,15 +178,15 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	}
 	
 	
-	protected String getDatabasePartOfConnectionString(String connectionString){
+	protected String getDatabasePartOfConnectionString(String connectionString, String dbSeparator){
     	String result;
     	if (connectionString == null){
     		return null;
     	}
     	connectionString = connectionString.substring(urlString.length()); //delete prefix
-    	int posDb = connectionString.indexOf("/");
+    	int posDb = connectionString.indexOf(dbSeparator);
     	if (posDb != -1){
-    		result = connectionString.substring(posDb + 1 );
+    		result = connectionString.substring(posDb + dbSeparator.length() );
     	}else{
     		logger.warn("No database defined or override for getServerNameByConnectionString() needed for this database type");
     		result = connectionString;

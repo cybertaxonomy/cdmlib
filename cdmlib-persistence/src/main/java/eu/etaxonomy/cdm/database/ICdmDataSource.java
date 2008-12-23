@@ -40,7 +40,7 @@ public interface ICdmDataSource {
 
 	
 	/**
-	 * The name representation of thie Datasource
+	 * The name representation of thie Datasource.
 	 * @return
 	 */
 	public String getName();
@@ -80,7 +80,7 @@ public interface ICdmDataSource {
 	 */
 	public boolean testConnection();
 	
-	public String getUserName();
+	public String getUsername();
 	
 	public String getPassword();
 	

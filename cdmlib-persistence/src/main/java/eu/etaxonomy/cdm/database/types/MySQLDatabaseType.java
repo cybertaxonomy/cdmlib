@@ -30,6 +30,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     //port
     private int defaultPort = 3306;
     
+    private static String dbSeparator = "/";
     
     //hibernate dialect
     //private String hibernateDialect = "MySQLInnoDBUtf8Dialect";
@@ -37,7 +38,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8";
+        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8";
         //return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
     }  
     
@@ -47,7 +48,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     @Override
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
-    	result = getDatabasePartOfConnectionString(connectionString);
+    	result = getDatabasePartOfConnectionString(connectionString, dbSeparator);
     	int posParams = result.indexOf("?");
     	if (posParams != -1){
     		result = result.substring(0, posParams);
