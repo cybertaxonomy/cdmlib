@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -340,6 +342,8 @@ public class SDDDocumentBuilder {
 			}
 			revisionData.appendChild(creators);
 		}
+		
+		buildDateModified(revisionData, database);
 
 		dataset.appendChild(revisionData);
 	}
@@ -412,6 +416,27 @@ public class SDDDocumentBuilder {
 				element.appendChild(agent);
 			}
 		}
+	}
+
+	/**
+	 * Builds ModifiedDate associated with RevisionData
+	 */
+	public void buildDateModified(ElementImpl revisionData, Database database) throws ParseException {
+	
+		//  <DateModified>2006-04-08T00:00:00</DateModified>
+	
+		if (database.getUpdated() != null) {
+			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
+			
+			java.util.Calendar c = database.getUpdated();
+			Date d = c.getTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+			String date = sdf.format(d);
+			dateModified.appendChild(document.createTextNode(date));
+		
+			revisionData.appendChild(dateModified);
+		}
+		
 	}
 
 
