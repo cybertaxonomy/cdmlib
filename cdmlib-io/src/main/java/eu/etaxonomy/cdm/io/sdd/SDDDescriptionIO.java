@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Article;
@@ -939,6 +941,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 				//  </Representation>
 				Person person = Person.NewInstance();
 				importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
+				person.addSource(OriginalSource.NewInstance(idA, "Agent"));
 
 				// <Links>
 				Element elLinks = elAgent.getChild("Links",sddNamespace);
@@ -956,10 +959,11 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 							String rel = elLink.getAttributeValue("rel");
 							String href = elLink.getAttributeValue("href");
 
-							if (k==1) {
-								OriginalSource  source = OriginalSource.NewInstance(rel, href);
-								person.addSource(source);
-							}
+							Media link = Media.NewInstance();
+							MediaRepresentation mr = MediaRepresentation.NewInstance();
+							mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+							link.addRepresentation(mr);
+							person.addMedia(link);
 
 						} catch (Exception e) {
 							//FIXME
