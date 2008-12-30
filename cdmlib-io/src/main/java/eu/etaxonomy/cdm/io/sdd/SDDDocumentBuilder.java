@@ -127,6 +127,7 @@ public class SDDDocumentBuilder {
 	private String TAXON_NAMES = "TaxonNames";
 	private String TECHNICAL_METADATA = "TechnicalMetadata";
 	private String TEXT = "Text";
+	private String TEXT_CHARACTER = "TextCharacter";
 	private String TYPE = "Type";
 	private String URI = "uri";
 
@@ -297,7 +298,7 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < rm.size(); i++) {
 				mediaObject = new ElementImpl(document, MEDIA_OBJECT);
-				buildReference((Media) rm.toArray()[i], medias, REF, mediaObject, "m", mediasCount);
+				mediasCount = buildReference((Media) rm.toArray()[i], medias, REF, mediaObject, "m", mediasCount);
 				representation.appendChild(mediaObject);
 			}
 		}
@@ -343,7 +344,7 @@ public class SDDDocumentBuilder {
 				ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
 				TaxonNameBase tnb = cdmSource.getTaxonomicNames().get(i);
 
-				buildReference(tnb, taxonNames, REF, elTaxonName, "t", taxonNamesCount);
+				taxonNamesCount = buildReference(tnb, taxonNames, REF, elTaxonName, "t", taxonNamesCount);
 
 				buildRepresentation(elTaxonName, tnb);
 
@@ -363,7 +364,7 @@ public class SDDDocumentBuilder {
 			Person p = (Person) ag;
 			ElementImpl agent = new ElementImpl(document, AGENT);
 			agent.setAttribute(ROLE, role);
-			buildReference(p, agents, REF, agent, "a", agentsCount);
+			agentsCount = buildReference(p, agents, REF, agent, "a", agentsCount);
 			element.appendChild(agent);
 		}
 
@@ -528,7 +529,7 @@ public class SDDDocumentBuilder {
 					Feature character = (Feature) cdmSource.getTerms().get(i);
 					if (character.isSupportsQuantitativeData()) {
 						ElementImpl elQuantitativeCharacter = new ElementImpl(document, QUANTITATIVE_CHARACTER);
-						buildReference(character, characters, ID, elQuantitativeCharacter, "c", charactersCount);
+						charactersCount = buildReference(character, characters, ID, elQuantitativeCharacter, "c", charactersCount);
 						// TODO if the character also supports text, add to the label a short tag to distinguish
 						// it as the quantitative version and create a unique label
 						buildRepresentation(elQuantitativeCharacter, character);
@@ -540,7 +541,7 @@ public class SDDDocumentBuilder {
 						if (enumerations != null) {
 							if (enumerations.size()>0) {
 								ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
-								buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
+								charactersCount = buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
 								buildRepresentation(elCategoricalCharacter, character);
 								ElementImpl elStates = new ElementImpl(document, STATES);
 								TermVocabulary tv = (TermVocabulary) enumerations.toArray()[0];
@@ -548,13 +549,20 @@ public class SDDDocumentBuilder {
 								for (int j = 0; j < stateList.size(); j++) {
 									ElementImpl elStateDefinition = new ElementImpl(document, STATE_DEFINITION);
 									State state = (State) stateList.toArray()[j];
-									buildReference(state, states, ID, elStateDefinition, "s", statesCount);
+									statesCount = buildReference(state, states, ID, elStateDefinition, "s", statesCount);
 									buildRepresentation(elStateDefinition, state);
 									elStates.appendChild(elStateDefinition);
 								}
 								elCategoricalCharacter.appendChild(elStates);
 								elCharacters.appendChild(elCategoricalCharacter);
 							}
+						}
+						if ((enumerations == null) || (enumerations.size() <= 0)) {
+							ElementImpl elTextCharacter = new ElementImpl(document, TEXT_CHARACTER);
+							charactersCount = buildReference(character, characters, ID, elTextCharacter, "c", charactersCount);
+							buildRepresentation(elTextCharacter, character);
+							// TODO <MeasurementUnit> and <Default>
+							elCharacters.appendChild(elTextCharacter);
 						}
 					}
 				}
@@ -568,7 +576,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds an element Agent referring to Agent defined later in the SDD file
 	 */
-	public void buildReference(VersionableEntity ve, Map references, String refOrId, ElementImpl element, String prefix, int count) throws ParseException {
+	public int buildReference(VersionableEntity ve, Map references, String refOrId, ElementImpl element, String prefix, int count) throws ParseException {
 		if (ve instanceof IdentifiableEntity) {
 			IdentifiableEntity ie = (IdentifiableEntity) ve;
 			if (ie.getSources() != null) {
@@ -609,6 +617,7 @@ public class SDDDocumentBuilder {
 			count++;
 		}
 		references.put(ve, element.getAttribute(refOrId));
+		return count;
 	}
 
 	/**
@@ -641,7 +650,7 @@ public class SDDDocumentBuilder {
 
 				for (int i = 0; i < rm.size(); i++) {
 					mediaObject = new ElementImpl(document, MEDIA_OBJECT);
-					buildReference((Media) rm.toArray()[i], medias, REF, mediaObject, "m", mediasCount);
+					mediasCount = buildReference((Media) rm.toArray()[i], medias, REF, mediaObject, "m", mediasCount);
 					representation.appendChild(mediaObject);
 				}
 			}
