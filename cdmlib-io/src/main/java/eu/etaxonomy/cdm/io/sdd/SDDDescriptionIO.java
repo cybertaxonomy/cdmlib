@@ -551,7 +551,14 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 				NonViralName tnb = null;
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
-					OriginalSource source = OriginalSource.NewInstance(id, "TaxonName");
+					OriginalSource source = null;
+					if (uri != null) {
+						if (!uri.equals("")) {
+							source = OriginalSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+						}
+					} else {
+						source = OriginalSource.NewInstance(id, "TaxonName");
+					}
 					tnb.addSource(source);
 					taxonNameBases.put(id,tnb);
 				}
