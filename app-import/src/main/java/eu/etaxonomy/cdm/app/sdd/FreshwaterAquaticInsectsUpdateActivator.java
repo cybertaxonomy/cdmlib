@@ -26,12 +26,12 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @created 24.10.2008
  * @version 1.0
  */
-public class ValRosandraFRIDAKeyActivator {
-	private static Logger logger = Logger.getLogger(ValRosandraFRIDAKeyActivator.class);
+public class FreshwaterAquaticInsectsUpdateActivator {
+	private static Logger logger = Logger.getLogger(FreshwaterAquaticInsectsUpdateActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
-	static final String sddSource = SDDSources.ValRosandraFRIDAKey_local();
+	static final String sddSource = SDDSources.FreshwaterAquaticInsects_local();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();

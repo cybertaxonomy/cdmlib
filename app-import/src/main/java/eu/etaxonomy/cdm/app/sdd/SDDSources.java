@@ -64,7 +64,7 @@ public class SDDSources {
 	
 	public static String FreshwaterAquaticInsects_local(){
 		//		SDD export from an Xper² application
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Freshwater aquatic insects/export_SDD_freshwater_aquatic_insects_fr - 20080430.sdd.xml";
+		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Freshwater aquatic insects/test v2.sdd.xml";
 		return sourceUrl;
 	}
 	

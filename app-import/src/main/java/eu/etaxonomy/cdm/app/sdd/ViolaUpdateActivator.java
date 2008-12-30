@@ -26,18 +26,20 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @created 24.10.2008
  * @version 1.0
  */
-public class ValRosandraFRIDAKeyActivator {
-	private static Logger logger = Logger.getLogger(ValRosandraFRIDAKeyActivator.class);
+public class ViolaUpdateActivator {
+	private static Logger logger = Logger.getLogger(ViolaUpdateActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
-	static final String sddSource = SDDSources.ValRosandraFRIDAKey_local();
+	static final String sddSource = SDDSources.viola_local();
+	//static final String sddSource = SDDSources.viola_local_andreas();
+	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
-	static final UUID secUuid = UUID.fromString("e3eba460-5055-4fb6-a6a3-89ddc7077002");
-	static final String sourceSecId = "ValRosandraFRIDAKey_pub_ed_999999";
+	static final UUID secUuid = UUID.fromString("fc98e890-e487-4664-ac9b-8a60fda6244c");
+	static final String sourceSecId = "viola_pub_ed_999999";
 
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
