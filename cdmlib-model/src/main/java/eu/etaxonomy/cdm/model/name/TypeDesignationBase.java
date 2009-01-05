@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -137,7 +138,7 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 * type designation. This is a subset of the taxon names belonging to the
 	 * corresponding {@link #getHomotypicalGroup() homotypical group}.
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;

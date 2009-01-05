@@ -791,7 +791,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<TypeDesignationBase> getTypeDesignations() {
