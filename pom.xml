@@ -152,6 +152,23 @@
 			</roles>
 			<url></url>
 		</developer>
+		<developer>
+			<!-- your SVN account id please! -->
+			<id>ben.clark</id>
+			<name>
+				Ben Clark
+			</name>
+			<email>b.clark [at] kew.org</email>
+			<organization>
+				Royal Botanic Gardens, Kew
+			</organization>
+			<organizationUrl>http://www.kew.org/computing/</organizationUrl>
+			<timezone>0</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<url></url>
+		</developer>
 	</developers>
 	<contributors>
 		<contributor>
