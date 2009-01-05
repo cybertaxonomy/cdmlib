@@ -17,8 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
@@ -30,14 +36,9 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase> implements IOccurrenceService {
+public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase,IOccurrenceDao> implements IOccurrenceService {
 
 	static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
-
-	@Autowired
-	protected void setDao(IOccurrenceDao dao) {
-		this.dao = dao;
-	}
 	
 	@Autowired
 	private IDefinedTermDao definedTermDao;
@@ -101,6 +102,44 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	
 	public List<eu.etaxonomy.cdm.model.occurrence.Collection> searchCollectionByCode(String code) {
 		return this.collectionDao.getCollectionByCode(code);
+	}
+
+	@Autowired
+	protected void setDao(IOccurrenceDao dao) {
+		this.dao = dao;
+	}
+
+	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber) {
+        Integer numberOfResults = dao.countDerivationEvents(occurence);
+		
+		List<DerivationEvent> results = new ArrayList<DerivationEvent>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getDerivationEvents(occurence, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber) {
+        Integer numberOfResults = dao.countDeterminations(occurence);
+		
+		List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getDeterminations(occurence, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<Media> getMedia(SpecimenOrObservationBase occurence,Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countMedia(occurence);
+		
+		List<Media> results = new ArrayList<Media>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getMedia(occurence, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
 }

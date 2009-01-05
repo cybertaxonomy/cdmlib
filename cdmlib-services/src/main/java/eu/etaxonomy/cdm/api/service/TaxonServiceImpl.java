@@ -9,14 +9,26 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -29,26 +41,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 
 @Service
 @Transactional(readOnly = true)
-public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonService {
+public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService {
 	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
-	
-	private ITaxonDao taxonDao;
-	
-	@Autowired
-	protected void setDao(ITaxonDao dao) {
-		this.dao = dao;
-		this.taxonDao = dao;
-	}
 
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
@@ -78,19 +75,19 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	}
 
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
-		return taxonDao.getTaxaByName(name, sec);
+		return dao.getTaxaByName(name, sec);
 	}
 
 	public List<TaxonBase> getAllTaxonBases(int limit, int start){
-		return taxonDao.list(limit, start);
+		return dao.list(limit, start);
 	}
 
 	public List<Taxon> getAllTaxa(int limit, int start){
-		return taxonDao.getAllTaxa(limit, start);
+		return dao.getAllTaxa(limit, start);
 	}
 	
 	public List<Synonym> getAllSynonyms(int limit, int start) {
-		return taxonDao.getAllSynonyms(limit, start);
+		return dao.getAllSynonyms(limit, start);
 	}
 	
 	/* (non-Javadoc)
@@ -107,7 +104,7 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
-		return taxonDao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
+		return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
 	}
 
 	
@@ -116,11 +113,11 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren,
 			boolean withMisapplications) {
-		return taxonDao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
+		return dao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
 	}
 
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
-		return taxonDao.getAllRelationships(limit, start);
+		return dao.getAllRelationships(limit, start);
 	}
 	
 	/* (non-Javadoc)
@@ -229,5 +226,54 @@ public class TaxonServiceImpl extends ServiceBase<TaxonBase> implements ITaxonSe
 //			}
 //		}
 		
+	}
+
+	@Autowired
+	protected void setDao(ITaxonDao dao) {
+		this.dao = dao;
+	}
+
+	public Pager<TaxonBase> findTaxaByName(Boolean accepted, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+        Integer numberOfResults = dao.countTaxaByName(accepted, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
+		
+		List<TaxonBase> results = new ArrayList<TaxonBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.findTaxaByName(accepted, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countRelatedTaxa(taxon, type);
+		
+		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getRelatedTaxa(taxon, type, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<SynonymRelationship> getSynonyms(Taxon taxon,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countSynonyms(taxon, type);
+		
+		List<SynonymRelationship> results = new ArrayList<SynonymRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getSynonyms(taxon, type, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countTaxa(queryString, accepted);
+		
+		List<TaxonBase> results = new ArrayList<TaxonBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.searchTaxa(queryString, accepted, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

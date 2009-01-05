@@ -13,18 +13,21 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
 
 @Service
 @Transactional(readOnly = true)
-public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonService {
+public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourceDao> implements ICommonService {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	
@@ -44,6 +47,11 @@ public class CommonServiceImpl extends ServiceBase<CdmBase> implements ICommonSe
 		if (! list.isEmpty()){
 			result = list.get(0);
 		}return result;
+	}
+
+	@Autowired
+	protected void setDao(IOriginalSourceDao dao) {
+		this.dao = dao;
 	}
 	
 }

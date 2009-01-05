@@ -9,68 +9,32 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 27.05.2008
  * @version 1.0
  */
-public class TermServiceImplTest {
+public class TermServiceImplTest extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(TermServiceImplTest.class);
 
-	//@Autowired
-	static ITermService service;
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
-		service = app.getTermService();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
+	@SpringBeanByType
+	private ITermService service;
 
 /* ************************* TESTS *************************************************/
 	
@@ -121,7 +85,6 @@ public class TermServiceImplTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#listTerms(java.util.UUID)}.
 	 */
 	@Ignore
-	@Transactional
 	@Test
 	public void testGetVocabularyUUID() {
 		//Rank

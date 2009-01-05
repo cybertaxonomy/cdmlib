@@ -9,11 +9,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 
 
-public interface ICommonService extends IService<CdmBase>{
+public interface ICommonService extends IService<OriginalSource>{
 //	
 //	/** find cdmBase by UUID**/
 //	public abstract CdmBase getCdmBaseByUuid(UUID uuid);

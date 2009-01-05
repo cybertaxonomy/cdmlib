@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +21,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -42,32 +51,22 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 @Service
 @Transactional(readOnly = true)
-public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> implements INameService {
+public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
-	private ITaxonNameDao nameDao;
-	@Autowired
+//	@Autowired
 	protected ITermVocabularyDao vocabularyDao;
-	@Autowired
+//	@Autowired
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
-	@Autowired
+//	@Autowired
 	@Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
-	@Autowired
+//	@Autowired
 	private INomenclaturalStatusDao nomStatusDao;
-	@Autowired
+//	@Autowired
 	private ITypeDesignationDao typeDesignationDao;
-	@Autowired
+//	@Autowired
 	private IHomotypicalGroupDao homotypicalGroupDao;
-
-	
-	@Autowired
-	protected void setDao(ITaxonNameDao dao) {
-		//set the base class dao
-		super.dao = dao;
-		this.nameDao = dao;
-	}
-
 
 	/**
 	 * Constructor
@@ -129,7 +128,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	}
 
 	public List<TaxonNameBase> getAllNames(int limit, int start){
-		return nameDao.list(limit, start);
+		return dao.list(limit, start);
 	}
 
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
@@ -175,6 +174,55 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase> impl
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub
+	}
+
+	@Autowired
+	protected void setDao(ITaxonNameDao dao) {
+		this.dao = dao;
+	}
+
+	public Pager<HybridRelationship> getHybridNames(BotanicalName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countHybridNames(name, type);
+		
+		List<HybridRelationship> results = new ArrayList<HybridRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getHybridNames(name, type, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,NameRelationshipType type, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countRelatedNames(name, type);
+		
+		List<NameRelationship> results = new ArrayList<NameRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getRelatedNames(name, type, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,TypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countTypeDesignations(name, status);
+		
+		List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getTypeDesignations(name, status, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
+        Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
+		
+		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 }

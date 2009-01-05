@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 
 
@@ -32,46 +38,68 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
  */
 @Service
 @Transactional
-public class AgentServiceImpl<T extends Agent> extends IdentifiableServiceBase<T> implements IAgentService<T> {
+public class AgentServiceImpl extends IdentifiableServiceBase<Agent,IAgentDao> implements IAgentService {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
+	
 
-	private IAgentDao agentDao;
-	@Autowired
-	protected void setDao(IAgentDao dao) {
-		this.dao = (ICdmEntityDao)dao;
-		this.agentDao = dao;
-	}
-
-	public List<T> findAgentsByTitle(String title) {
+	public List<Agent> findAgentsByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
 
-	public T getAgentByUuid(UUID uuid) {
-		return super.getCdmObjectByUuid(uuid);
+	public Agent getAgentByUuid(UUID uuid) {
+		return dao.findByUuid(uuid);
 	}
 
-	public UUID saveAgent(T agent) {
+	public UUID saveAgent(Agent agent) {
 		return super.saveCdmObject(agent);
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, T> saveAgentAll(Collection<T> agentCollection){
+	public Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection){
 		return saveCdmObjectAll(agentCollection);
 	}
 
 	
 	public List<? extends Agent> getAllAgents(int limit, int start){
-		return agentDao.list(limit, start);
+		return dao.list(limit, start);
 	}
 	
 	public List<Institution> searchInstitutionByCode(String code) {
-		return agentDao.getInstitutionByCode(code);
+		return dao.getInstitutionByCode(code);
 	}
 
 	public void generateTitleCache() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Autowired
+	protected void setDao(IAgentDao dao) {
+		assert dao != null;
+		this.dao = dao;
+	}
+
+	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countInstitutionalMemberships(person);
+		
+		List<InstitutionalMembership> results = new ArrayList<InstitutionalMembership>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<InstitutionalMembership>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber) {
+		Integer numberOfResults = dao.countMembers(team);
+			
+		List<Person> results = new ArrayList<Person>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getMembers(team, pageSize, pageNumber); 
+		}
+			
+		return new DefaultPagerImpl<Person>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	

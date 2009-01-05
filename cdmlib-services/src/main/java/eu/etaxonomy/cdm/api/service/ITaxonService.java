@@ -16,35 +16,55 @@ import java.util.UUID;
 
 //import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
-	/** */
+	/**
+	 * FIXME candidate for harmonization? 
+	 */
 	public abstract TaxonBase getTaxonByUuid(UUID uuid);
 
-	/** save a taxon and return its UUID**/
+	/**
+	 * FIXME candidate for harmonization? 
+	 * save a taxon and return its UUID
+	 */
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
-	/** save a taxon and return its UUID**/
+	/**
+	 * FIXME candidate for harmonization?
+	 *  save a taxon and return its UUID
+	 */
 	//public abstract UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus);
 	
-	/** save a collection of taxa and return its UUID**/
+	/**
+	 * FIXME candidate for harmonization?
+	 * save a collection of taxa and return its UUID
+	 */
 	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
 	
-	/** delete a taxon and return its UUID**/
+	/**
+	 * FIXME candidate for harmonization?
+	 * delete a taxon and return its UUID
+	 */
 	public abstract UUID removeTaxon(TaxonBase taxon);
 	
 	/**
 	 * Computes all taxon bases.
+	 * FIXME could substitute with list(Synonym.class, limit, start)
 	 * @param limit
 	 * @param start
 	 * @return
@@ -53,6 +73,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * Computes all taxon bases.
+	 * FIXME could substitute with list(Taxon.class, limit,start)
 	 * @param limit
 	 * @param start
 	 * @return
@@ -61,6 +82,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * Computes all taxon bases.
+	 * FIXME could substitute with list(limit,start) from superclass
 	 * @param limit
 	 * @param start
 	 * @return
@@ -107,4 +129,56 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 		
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
+	/**
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager of TaxonRelationship instances
+	 */
+	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager of SynonymRelationship instances
+	 */
+	public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a List of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
+	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param queryString
+	 * @param accepted
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager Taxon instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public Pager<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param accepted Whether the taxon is accepted (true) a synonym (false), or either (null)
+	 * @param uninomial 
+	 * @param infragenericEpithet
+	 * @param specificEpithet
+	 * @param infraspecificEpithet
+	 * @param rank
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager of TaxonBase instances
+	 */
+	public Pager<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 }

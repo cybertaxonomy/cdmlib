@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  */
 @Service
 @Transactional
-public class DatabaseServiceHibernateImpl extends ServiceBase implements IDatabaseService, ApplicationContextAware {
+public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	
 	private static final String TMP_DATASOURCE = "tmp"; 
@@ -42,9 +43,6 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	
 	@Autowired
 	protected ApplicationContext appContext;
-//	public void setApplicationContext(ApplicationContext appContext){
-//		this.appContext = appContext;
-//	}
 	
 	private CdmApplicationController application;
 	public void setApplicationController(CdmApplicationController cdmApplicationController){
@@ -149,6 +147,12 @@ public class DatabaseServiceHibernateImpl extends ServiceBase implements IDataba
 	private DriverManagerDataSource getDataSource(){
 		DriverManagerDataSource ds = (DriverManagerDataSource)SessionFactoryUtils.getDataSource(factory);
 		return ds;
+	}
+
+
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.appContext = applicationContext;
 	}
 
 

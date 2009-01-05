@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 @Service
 @Transactional(readOnly = true)
-public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITermService{
+public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	static Logger logger = Logger.getLogger(TermServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
@@ -47,18 +47,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	private IRepresentationDao representationDao;
 	@Autowired
 	private ILanguageStringDao languageStringDao;
-	@Autowired
-	private IDefinedTermDao definedTermDao;
 	
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
 		this.vocabularyDao = vocabularyDao;
-	}
-	
-	@Autowired
-	protected void setDao(IDefinedTermDao dao) {
-		this.dao = dao;
-		this.definedTermDao = dao;
 	}
 	
 	/* (non-Javadoc)
@@ -144,13 +136,18 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase> implements ITe
 	}
 	
 	public Language getLanguageByIso(String iso639) {
-		return definedTermDao.getLanguageByIso(iso639);
+		return dao.getLanguageByIso(iso639);
 	}
 	
 	@Transactional(readOnly = false)
 	public UUID saveLanguageData(
 			LanguageStringBase languageData) {
 			return languageStringBaseDao.save(languageData);
+	}
+
+	@Autowired
+	protected void setDao(IDefinedTermDao dao) {
+		this.dao = dao;
 	}
 	
 }

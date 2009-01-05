@@ -29,9 +29,11 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 	public abstract DefinedTermBase getTermByUri(String uri);
 
+	// FIXME candidate for harmonization?
 	public abstract DefinedTermBase getTermByUuid(UUID uuid);
 
 	/**
+	 * FIXME candidate for harmonization?
 	 * @param limit
 	 * @param start
 	 * @return
@@ -44,11 +46,17 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 
 	/**
+	 * FIXME candidate for harmonization?
 	 * @param termBase
 	 * @return
 	 */
 	public abstract UUID saveTerm(DefinedTermBase termBase);
 
+	/**
+	 * FIXME candidate for harmonization?
+	 * @param termBaseCollection
+	 * @return
+	 */
 	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<? extends DefinedTermBase> termBaseCollection);
 
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start);

@@ -9,24 +9,47 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
-public abstract class IdentifiableServiceBase<T extends IdentifiableEntity> extends ServiceBase<T> 
+public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
 	@SuppressWarnings("unused")
 	private static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
-//	protected IIdentifiableDao<T> dao;
-//
-//	protected void setEntityDao(IIdentifiableDao<T> dao){
-//		this.dao=dao;
-//	}
+
+	
+	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countRights(t);
+		
+		List<Rights> results = new ArrayList<Rights>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getRights(t, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<OriginalSource> getSources(T t, Integer pageSize, Integer pageNumber) {
+		 Integer numberOfResults = dao.countSources(t);
+			
+			List<OriginalSource> results = new ArrayList<OriginalSource>();
+			if(numberOfResults > 0) { // no point checking again
+				results = dao.getSources(t, pageSize, pageNumber); 
+			}
+			
+			return new DefaultPagerImpl<OriginalSource>(pageNumber, numberOfResults, pageSize, results);
+	}
 
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
@@ -39,4 +62,18 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity> exte
 		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
 	}
 	
+	/*
+	 * TODO - Migrated from CommonServiceBase
+	 *  (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
+	 */
+	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
+		ISourceable result = null;
+
+		List<T> list = dao.findOriginalSourceByIdInSource(idInSource, idNamespace);
+		if (! list.isEmpty()){
+			result = list.get(0);
+		}
+		return result;
+	}
 }

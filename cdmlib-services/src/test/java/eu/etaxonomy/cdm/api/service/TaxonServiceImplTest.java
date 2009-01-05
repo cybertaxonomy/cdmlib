@@ -3,68 +3,30 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
-import javax.persistence.Entity;
-
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  *
  */
-@Entity
-public class TaxonServiceImplTest {
+public class TaxonServiceImplTest extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
 	
-	//@Autowired
-	static ITaxonService service;
+	@SpringBeanByType
+	private ITaxonService service;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
-		service = app.getTaxonService();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 /****************** TESTS *****************************/
 	
 	/**

@@ -3,63 +3,28 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  *
  */
-public class NameServiceImplTest2 {
+public class NameServiceImplTest2 extends CdmIntegrationTest {
 	private static final Logger logger = Logger.getLogger(NameServiceImplTest2.class);
 
-	//@Autowired
-	static INameService service;
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		CdmPersistentDataSource defaultSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationController app = CdmApplicationController.NewInstance(defaultSource, DbSchemaValidation.CREATE);
-		service = app.getNameService();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	@SpringBeanByType
+	private INameService service;
 	
 /* ******************** TESTS ********************************************/
 	

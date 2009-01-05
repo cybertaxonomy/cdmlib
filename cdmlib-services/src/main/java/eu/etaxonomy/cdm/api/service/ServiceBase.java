@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.TransactionStatus;
@@ -27,21 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
-
-public abstract class ServiceBase<T extends CdmBase> implements IService<T>, ApplicationContextAware {
+public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(ServiceBase.class);
 	
 	//flush after saving this number of objects
 	int flushAfterNo = 2000;
 	protected ApplicationContext appContext;
 
-	@Autowired
-	@Qualifier("cdmDao")
-	protected ICdmEntityDao<T> dao;
-	
-	protected void setEntityDao(ICdmEntityDao<T> dao){
-		this.dao=dao;
-	}
+	protected DAO dao;
+
+	protected abstract void setDao(DAO dao);
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.Iyyy#setApplicationContext(org.springframework.context.ApplicationContext)
@@ -50,21 +43,37 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		this.appContext = appContext;
 	}
 
-	protected T getCdmObjectByUuid(UUID uuid){
+	public T getCdmObjectByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 	
-
-	public int count(Class<T> clazz) {
+	@Transactional(readOnly = true)
+	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		return dao.count(clazz);
 	}
+	
+	@Transactional(readOnly = true)
+	public int count() {
+		return dao.count();
+	}
 
+	/**
+	 * FIXME harmonise with saveOrUpdate
+	 * @param cdmObj
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	protected UUID saveCdmObject(T cdmObj){
 		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 		return dao.saveOrUpdate(cdmObj);
 	}
+	
 
+	/**
+	 * FIXME harmonise with saveOrUpdate
+	 * @param cdmObj
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	protected UUID saveCdmObject(T cdmObj, TransactionStatus txStatus){
 		// TODO: Implement with considering txStatus
@@ -72,6 +81,12 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		return dao.saveOrUpdate(cdmObj);
 	}
 	
+	/**
+	 * FIXME harmonise with saveAll
+	 * @param <S>
+	 * @param cdmObjCollection
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	protected <S extends T> Map<UUID, S> saveCdmObjectAll(Collection<? extends S> cdmObjCollection){
 		int types = cdmObjCollection.getClass().getTypeParameters().length;
@@ -103,17 +118,64 @@ public abstract class ServiceBase<T extends CdmBase> implements IService<T>, App
 		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
 		return resultMap;
 	}
+
+	@Transactional(readOnly = false)
+	public UUID delete(T persistentObject) {
+		return dao.delete(persistentObject);
+	}
+
+	@Transactional(readOnly = true)
+	public boolean exists(UUID uuid) {
+		return dao.exists(uuid);
+	}
+
+	@Transactional(readOnly = true)
+	public T findByUuid(UUID uuid) {
+		return dao.findByUuid(uuid);
+	}
+
+	@Transactional(readOnly = true)
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {
+		return dao.list(type, limit, start);
+	}
+
+	@Transactional(readOnly = false)
+	public UUID save(T newInstance) {
+		return dao.save(newInstance);
+	}
 	
+	@Transactional(readOnly = false)
+	public Map<UUID, T> saveAll(Collection<T> newInstances) {
+		return dao.saveAll(newInstances);
+	}
+
+	@Transactional(readOnly = false)
+	public UUID saveOrUpdate(T transientObject) {
+		return dao.saveOrUpdate(transientObject);
+	}
+
+	@Transactional(readOnly = false)
+	public UUID update(T transientObject) {
+		return dao.update(transientObject);
+	}
+
+	/**
+	 * FIXME harmonise with delete()
+	 * @param cdmObj
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	protected UUID removeCdmObject(T cdmObj){
 		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 		return dao.delete(cdmObj);
 	}
 	
+	@Transactional(readOnly = true)
 	public List<T> list(int limit, int start) {
 		return dao.list(limit, start);
 	}
 
+	@Transactional(readOnly = true)
 	public List<T> rows(String tableName, int limit, int start) {
 		return dao.rows(tableName, limit, start);
 	}

@@ -17,29 +17,47 @@ import java.util.Map;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
-public interface IReferenceService<T extends ReferenceBase> extends IIdentifiableEntityService<T> {
-//public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase> {
+public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase> {
 	
-	/** Finds reference by UUID **/
+	/**
+	 * FIXME candidate for harmonization?
+	 *  
+	 * Finds reference by UUID 
+	 */
 	public abstract ReferenceBase getReferenceByUuid(UUID uuid);
 
-	/** Finds references by title **/
-	public List<T> getReferencesByTitle(String title);
+	/**
+	 * FIXME candidate for harmonization?
+	 * Finds references by title 
+	 */
+	public List<ReferenceBase> getReferencesByTitle(String title);
 		
-	/** Finds references of a certain kind by title **/
-	public List<T> getReferencesByTitle(String title, Class<T> clazz);
+	/**
+	 * FIXME candidate for harmonization?
+	 * Finds references of a certain kind by title 
+	 */
+	public List<ReferenceBase> getReferencesByTitle(String title, Class<ReferenceBase> clazz);
 	
-	/** Gets all references **/
+	/**
+	 * FIXME candidate for harmonization? 
+	 * Gets all references 
+	 */
 	public abstract List<ReferenceBase> getAllReferences(int limit, int start);
 
 //	public abstract UUID saveReference(ReferenceBase reference);
 
-	/** Saves a reference and return its UUID **/
-	public abstract UUID saveReference(T reference);
+	/** 
+	 * FIXME candidate for harmonization?
+	 * Saves a reference and return its UUID 
+	 */
+	public abstract UUID saveReference(ReferenceBase reference);
 
 //	public abstract Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection);
 	
-	/** Saves a collection of references **/
-	public abstract Map<UUID, T> saveReferenceAll(Collection<T> referenceCollection);
+	/**
+	 * FIXME candidate for harmonization? 
+	 * Saves a collection of references
+	 */
+	public abstract Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection);
 	
 }

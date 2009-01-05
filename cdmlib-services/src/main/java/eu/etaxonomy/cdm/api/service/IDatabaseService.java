@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  * @author a.mueller
  *
  */
-public interface IDatabaseService extends IService {
+public interface IDatabaseService {
 
 	/**
 	 * Returns the databaseTypeEnum
