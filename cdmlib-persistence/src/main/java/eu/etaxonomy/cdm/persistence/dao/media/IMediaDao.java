@@ -13,13 +13,14 @@ import eu.etaxonomy.cdm.model.description.IdentificationKey;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.babadshanjan
  * @created 08.09.2008
  */
-public interface IMediaDao extends ICdmEntityDao<Media> {
+public interface IMediaDao extends IAnnotatableDao<Media> {
 	
 	/**
 	 * Return a count of IdentificationKeys, optionally filtered by the parameters passed.

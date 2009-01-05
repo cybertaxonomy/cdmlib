@@ -29,11 +29,39 @@ public interface IAgentDao extends IIdentifiableDao<Agent> {
 //	List<Address> getAddresses(Agent agent, Integer pageSize, Integer pageNumber);
 //  int countAddresses(Agent agent);
 	
+	/**
+	 * Return a List of the institutional memberships of a given person
+	 * 
+	 * @param person the person
+	 * @param pageSize The maximum number of institutional memberships returned (can be null for all memberships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of InstitutionalMembership instances
+	 */
 	public List<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber);
 	
+	/**
+	 * Return a count of institutional memberships held by a person
+	 *  
+	 * @param person the person
+	 * @return a count of InstitutionalMembership instances
+	 */
 	public int countInstitutionalMemberships(Person person);
 	
+	/**
+	 * Return a List of members of a given team
+	 * 
+	 * @param team the team
+	 * @param pageSize The maximum number of people returned (can be null for all members)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of Person instances
+	 */
 	public List<Person> getMembers(Team team, Integer pageSize, Integer pageNumber);
 	
+	/**
+	 * Return a count of members of a given team
+	 * 
+	 * @param team the team
+	 * @return a count of Person instances
+	 */
 	public int countMembers(Team team);
 }

@@ -424,7 +424,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<SynonymRelationship>)query.list();
 	}
 
-	public List<Taxon> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
+	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
 		throw new UnsupportedOperationException("Free text searching isn't implemented yet, sorry!");
 	}
 

@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 
-public interface IIdentifiableDao <T extends IdentifiableEntity> extends ICdmEntityDao<T>, ITitledDao<T>{
+public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnotatableDao<T>, ITitledDao<T>{
 	
 	/**
 	 * Return a count of the sources for this identifiable entity
@@ -52,4 +52,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends ICdmEnt
 	 * @return a List of Rights instances
 	 */
 	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber);
+	
+	// TODO Migrated from IOriginalSourceDao
+	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
 }

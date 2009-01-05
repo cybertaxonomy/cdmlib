@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.description.IdentificationKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 
 /**
@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
  * @created 08.09.2008
  */
 @Repository
-public class MediaDaoHibernateImpl extends CdmEntityDaoBase<Media> 
+public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> 
 	implements IMediaDao {
 
 	public MediaDaoHibernateImpl() {

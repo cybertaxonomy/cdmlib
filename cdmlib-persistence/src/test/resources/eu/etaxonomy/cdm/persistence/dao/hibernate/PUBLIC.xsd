@@ -22,6 +22,7 @@
 	<xsd:element name="TYPEDESIGNATIONBASE_MARKER" type="TYPEDESIGNATIONBASE_MARKER__type" />
 	<xsd:element name="HYBRIDRELATIONSHIP" type="HYBRIDRELATIONSHIP__type" />
 	<xsd:element name="DESCRIPTIONBASE_EXTENSION" type="DESCRIPTIONBASE_EXTENSION__type" />
+	<xsd:element name="USER_PERMISSIONGROUP" type="USER_PERMISSIONGROUP__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE_ORIGINALSOURCE" type="SPECIMENOROBSERVATIONBASE_ORIGINALSOURCE__type" />
 	<xsd:element name="CDM_VIEW_CDM_VIEW" type="CDM_VIEW_CDM_VIEW__type" />
 	<xsd:element name="DESCRIPTIONELEMENTBASE_MARKER" type="DESCRIPTIONELEMENTBASE_MARKER__type" />
@@ -29,6 +30,7 @@
 	<xsd:element name="AGENT_RIGHTS" type="AGENT_RIGHTS__type" />
 	<xsd:element name="DESCRIPTIONBASE_SCOPE" type="DESCRIPTIONBASE_SCOPE__type" />
 	<xsd:element name="COLLECTION_MEDIA" type="COLLECTION_MEDIA__type" />
+	<xsd:element name="USER_GRANTEDAUTHORITYIMPL" type="USER_GRANTEDAUTHORITYIMPL__type" />
 	<xsd:element name="TAXONNAMEBASE_HYBRIDRELATIONSHIP" type="TAXONNAMEBASE_HYBRIDRELATIONSHIP__type" />
 	<xsd:element name="TAXONBASE_MARKER" type="TAXONBASE_MARKER__type" />
 	<xsd:element name="ORIGINALSOURCE" type="ORIGINALSOURCE__type" />
@@ -56,9 +58,11 @@
 	<xsd:element name="AGENT_EXTENSION" type="AGENT_EXTENSION__type" />
 	<xsd:element name="LANGUAGESTRING_MARKER" type="LANGUAGESTRING_MARKER__type" />
 	<xsd:element name="TAXONBASE_ORIGINALSOURCE" type="TAXONBASE_ORIGINALSOURCE__type" />
+	<xsd:element name="PERMISSIONGROUP" type="PERMISSIONGROUP__type" />
 	<xsd:element name="SEQUENCE" type="SEQUENCE__type" />
 	<xsd:element name="DESCRIPTIONBASE_REFERENCEBASE" type="DESCRIPTIONBASE_REFERENCEBASE__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE_MARKER" type="SPECIMENOROBSERVATIONBASE_MARKER__type" />
+	<xsd:element name="PERMISSIONGROUP_GRANTEDAUTHORITYIMPL" type="PERMISSIONGROUP_GRANTEDAUTHORITYIMPL__type" />
 	<xsd:element name="COLLECTION_ANNOTATION" type="COLLECTION_ANNOTATION__type" />
 	<xsd:element name="MEDIAREPRESENTATION" type="MEDIAREPRESENTATION__type" />
 	<xsd:element name="MEDIA_RIGHTS" type="MEDIA_RIGHTS__type" />
@@ -67,6 +71,7 @@
 	<xsd:element name="STATISTICALMEASUREMENTVALUE_DEFINEDTERMBASE" type="STATISTICALMEASUREMENTVALUE_DEFINEDTERMBASE__type" />
 	<xsd:element name="AGENT_AGENT" type="AGENT_AGENT__type" />
 	<xsd:element name="NOMENCLATURALSTATUS_ANNOTATION" type="NOMENCLATURALSTATUS_ANNOTATION__type" />
+	<xsd:element name="USER" type="USER__type" />
 	<xsd:element name="DEFINEDTERMBASE_MEDIA" type="DEFINEDTERMBASE_MEDIA__type" />
 	<xsd:element name="AGENT" type="AGENT__type" />
 	<xsd:element name="DESCRIPTIONELEMENTBASE_STATEDATA" type="DESCRIPTIONELEMENTBASE_STATEDATA__type" />
@@ -114,12 +119,13 @@
 	<xsd:element name="RELATIONSHIPTERMBASE_INVERSEREPRESENTATION" type="RELATIONSHIPTERMBASE_INVERSEREPRESENTATION__type" />
 	<xsd:element name="RIGHTS" type="RIGHTS__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE" type="SPECIMENOROBSERVATIONBASE__type" />
-	<xsd:element name="MEDIA_SEQUENCE" type="MEDIA_SEQUENCE__type" />
 	<xsd:element name="PERSON_KEYWORD" type="PERSON_KEYWORD__type" />
+	<xsd:element name="MEDIA_SEQUENCE" type="MEDIA_SEQUENCE__type" />
 	<xsd:element name="TAXONBASE" type="TAXONBASE__type" />
 	<xsd:element name="REFERENCEBASE_ANNOTATION" type="REFERENCEBASE_ANNOTATION__type" />
 	<xsd:element name="GATHERINGEVENT_DEFINEDTERMBASE" type="GATHERINGEVENT_DEFINEDTERMBASE__type" />
 	<xsd:element name="MEDIA_MARKER" type="MEDIA_MARKER__type" />
+	<xsd:element name="GRANTEDAUTHORITYIMPL" type="GRANTEDAUTHORITYIMPL__type" />
 	<xsd:element name="DB_VERSION" type="DB_VERSION__type" />
 	<xsd:element name="REPRESENTATION_MARKER" type="REPRESENTATION_MARKER__type" />
 	<xsd:element name="REPRESENTATION_ANNOTATION" type="REPRESENTATION_ANNOTATION__type" />
@@ -324,6 +330,10 @@
 		<xsd:attribute name="DESCRIPTIONBASE_ID" use="optional" />
 		<xsd:attribute name="EXTENSIONS_ID" use="optional" />
 	</xsd:complexType>
+	<xsd:complexType name="USER_PERMISSIONGROUP__type">
+		<xsd:attribute name="GROUPS_ID" use="optional" />
+		<xsd:attribute name="MEMBERS_ID" use="optional" />
+	</xsd:complexType>
 	<xsd:complexType name="SPECIMENOROBSERVATIONBASE_ORIGINALSOURCE__type">
 		<xsd:attribute name="SPECIMENOROBSERVATIONBASE_ID" use="optional" />
 		<xsd:attribute name="SOURCES_ID" use="optional" />
@@ -351,6 +361,10 @@
 	<xsd:complexType name="COLLECTION_MEDIA__type">
 		<xsd:attribute name="COLLECTION_ID" use="optional" />
 		<xsd:attribute name="MEDIA_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="USER_GRANTEDAUTHORITYIMPL__type">
+		<xsd:attribute name="USER_ID" use="optional" />
+		<xsd:attribute name="GRANTEDAUTHORITIES_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="TAXONNAMEBASE_HYBRIDRELATIONSHIP__type">
 		<xsd:attribute name="TAXONNAMEBASE_ID" use="optional" />
@@ -509,6 +523,13 @@
 		<xsd:attribute name="TAXONBASE_ID" use="optional" />
 		<xsd:attribute name="SOURCES_ID" use="optional" />
 	</xsd:complexType>
+	<xsd:complexType name="PERMISSIONGROUP__type">
+		<xsd:attribute name="NAME" use="optional" />
+		<xsd:attribute name="UUID" use="optional" />
+		<xsd:attribute name="ID" use="optional" />
+		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="CREATED" use="optional" />
+	</xsd:complexType>
 	<xsd:complexType name="SEQUENCE__type">
 		<xsd:attribute name="SEQUENCE" use="optional" />
 		<xsd:attribute name="CITATIONMICROREFERENCE" use="optional" />
@@ -534,6 +555,10 @@
 	<xsd:complexType name="SPECIMENOROBSERVATIONBASE_MARKER__type">
 		<xsd:attribute name="SPECIMENOROBSERVATIONBASE_ID" use="optional" />
 		<xsd:attribute name="MARKERS_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="PERMISSIONGROUP_GRANTEDAUTHORITYIMPL__type">
+		<xsd:attribute name="PERMISSIONGROUP_ID" use="optional" />
+		<xsd:attribute name="GRANTEDAUTHORITIES_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="COLLECTION_ANNOTATION__type">
 		<xsd:attribute name="ANNOTATIONS_ID" use="optional" />
@@ -623,6 +648,19 @@
 	<xsd:complexType name="NOMENCLATURALSTATUS_ANNOTATION__type">
 		<xsd:attribute name="ANNOTATIONS_ID" use="optional" />
 		<xsd:attribute name="NOMENCLATURALSTATUS_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="USER__type">
+		<xsd:attribute name="CREDENTIALSNONEXPIRED" use="optional" />
+		<xsd:attribute name="ENABLED" use="optional" />
+		<xsd:attribute name="ACCOUNTNONLOCKED" use="optional" />
+		<xsd:attribute name="UUID" use="optional" />
+		<xsd:attribute name="ID" use="optional" />
+		<xsd:attribute name="USERNAME" use="optional" />
+		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="ACCOUNTNONEXPIRED" use="optional" />
+		<xsd:attribute name="PASSWORD" use="optional" />
+		<xsd:attribute name="CREATED" use="optional" />
+		<xsd:attribute name="EMAILADDRESS" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="DEFINEDTERMBASE_MEDIA__type">
 		<xsd:attribute name="DEFINEDTERMBASE_ID" use="optional" />
@@ -962,13 +1000,13 @@
 		<xsd:attribute name="ACCESSIONNUMBER" use="optional" />
 		<xsd:attribute name="PROTECTEDTITLECACHE" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="MEDIA_SEQUENCE__type">
-		<xsd:attribute name="MEDIA_ID" use="optional" />
-		<xsd:attribute name="USEDSEQUENCES_ID" use="optional" />
-	</xsd:complexType>
 	<xsd:complexType name="PERSON_KEYWORD__type">
 		<xsd:attribute name="PERSON_FK" use="optional" />
 		<xsd:attribute name="KEYWORD_FK" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="MEDIA_SEQUENCE__type">
+		<xsd:attribute name="MEDIA_ID" use="optional" />
+		<xsd:attribute name="USEDSEQUENCES_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="TAXONBASE__type">
 		<xsd:attribute name="UUID" use="optional" />
@@ -998,6 +1036,13 @@
 	<xsd:complexType name="MEDIA_MARKER__type">
 		<xsd:attribute name="MARKERS_ID" use="optional" />
 		<xsd:attribute name="MEDIA_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="GRANTEDAUTHORITYIMPL__type">
+		<xsd:attribute name="AUTHORITY" use="optional" />
+		<xsd:attribute name="UUID" use="optional" />
+		<xsd:attribute name="ID" use="optional" />
+		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="CREATED" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="DB_VERSION__type">
 		<xsd:attribute name="VERSION_TIMESTAMP" use="optional" />

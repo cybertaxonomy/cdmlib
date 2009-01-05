@@ -128,7 +128,20 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		
 		return (List<OriginalSource>)query.list();
 	}
-	
-	
 
+	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
+		Session session = getSession();
+		Query q = session.createQuery(
+                "Select c from " + type.getSimpleName() + " as c " +
+                "inner join c.sources as source " +
+                "where source.idInSource = :idInSource " + 
+                	" AND source.idNamespace = :idNamespace"
+            );
+		q.setString("idInSource", idInSource);
+		q.setString("idNamespace", idNamespace);
+		//TODO integrate reference in where 
+		List<T> results = (List<T>)q.list();
+		
+		return results;
+	}
 }

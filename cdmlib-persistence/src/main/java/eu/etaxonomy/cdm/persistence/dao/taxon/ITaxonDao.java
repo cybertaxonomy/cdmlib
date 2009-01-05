@@ -182,15 +182,18 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * 
 	 * @param queryString
 	 * @param accepted
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a List Taxon instances
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
-	public List<Taxon> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
+	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
 	
 	/**
 	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
 	 * taxon.name properties match the parameters passed.
 	 * 
+	 * @param accepted
 	 * @param uninomial
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -204,11 +207,14 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
 	 * taxon.name properties match the parameters passed.
 	 * 
-	 * @param uninomial
+	 * @param accepted Whether the taxon is accepted (true) a synonym (false), or either (null)
+	 * @param uninomial 
 	 * @param infragenericEpithet
 	 * @param specificEpithet
 	 * @param infraspecificEpithet
 	 * @param rank
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a list of TaxonBase instances
 	 */
 	public List<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
