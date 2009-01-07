@@ -196,12 +196,12 @@ public class CdmExportImportActivator {
 
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
-		CdmApplicationController appCtr = null;
-		appCtr = sc.initDb(sourceDb);
-		sc.loadTestData(appCtr);
+//		CdmApplicationController appCtr = null;
+//		appCtr = sc.initDb(sourceDb);
+//		sc.loadTestData(appCtr);
 		
-//		sc.invokeExport();
-//		sc.invokeImport();
+		sc.invokeExport();
+		sc.invokeImport();
 	}
 
 }
