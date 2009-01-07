@@ -56,7 +56,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<Agent,IAgentDao> i
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection){
+	public Map<UUID, Agent> saveAgentAll(Collection<? extends Agent> agentCollection){
 		return saveCdmObjectAll(agentCollection);
 	}
 

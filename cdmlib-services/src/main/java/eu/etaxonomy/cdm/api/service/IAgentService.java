@@ -30,7 +30,7 @@ public interface IAgentService extends IIdentifiableEntityService<Agent> {
 	public abstract UUID saveAgent(Agent agent);
 	
 	// FIXME Candidate for harmonization
-	public abstract Map<UUID, Agent> saveAgentAll(Collection<Agent> agentCollection);
+	public abstract Map<UUID, Agent> saveAgentAll(Collection<? extends Agent> agentCollection);
 	
 	// FIXME Candidate for harmonization
 	public abstract List<Agent> findAgentsByTitle(String title);
