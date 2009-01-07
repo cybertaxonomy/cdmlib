@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -100,7 +101,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 
 		boolean ret = true;
 		Collection<TaxonBase> taxonBases;
-		List<Agent> agents;
+		List<? extends Agent> agents;
 		List<DefinedTermBase> terms;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
@@ -108,7 +109,8 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity<?>> featureData;
-		List<VersionableEntity> media;
+		List<Media> media;
+		//List<VersionableEntity> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;

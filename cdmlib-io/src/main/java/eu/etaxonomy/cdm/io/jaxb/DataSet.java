@@ -158,7 +158,7 @@ public class DataSet {
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
     })
-    protected List<Agent> agents;
+    protected List<? extends Agent> agents;
     
     @XmlElementWrapper(name = "AgentData")
     @XmlElements({
@@ -298,7 +298,8 @@ public class DataSet {
 
     @XmlElementWrapper(name = "Media_")
     @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
-    protected List<VersionableEntity> media;
+    protected List<Media> media;
+    //protected List<VersionableEntity> media;
     
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
@@ -322,7 +323,8 @@ public class DataSet {
 		taxa = new ArrayList<Taxon>();
 		synonyms = new ArrayList<Synonym>();
 		relationships = new HashSet<RelationshipBase>();
-		media = new ArrayList<VersionableEntity>();
+		media = new ArrayList<Media>();
+		//media = new ArrayList<VersionableEntity>();
 		homotypicalGroups = new ArrayList<HomotypicalGroup>();
 	}
 
@@ -334,7 +336,7 @@ public class DataSet {
      *     {@link List<Agent> }
      *     
      */
-    public List<Agent> getAgents() {
+    public List<? extends Agent> getAgents() {
         return agents;
     }
 
@@ -346,7 +348,7 @@ public class DataSet {
      *     {@link List<Agent> }
      *     
      */
-    public void setAgents(List<Agent> value) {
+    public void setAgents(List<? extends Agent> value) {
         this.agents = value;
     }
 
@@ -797,7 +799,8 @@ public class DataSet {
      *     {@link Collection<VersionableEntity> }
      *     
      */
-    public <T extends VersionableEntity> void addMedia(Collection<T> value) {
+    public <T extends Media> void addMedia(Collection<T> value) {
+    //public <T extends VersionableEntity> void addMedia(Collection<T> value) {
     	for (T medium: value) {
     		this.media.add(medium);
     	}
@@ -811,7 +814,8 @@ public class DataSet {
      *     {@link List<ReferencedEntityBase> }
      *     
      */
-    public List<VersionableEntity> getMedia() {
+    public List<Media> getMedia() {
+    //public List<VersionableEntity> getMedia() {
         return media;
     }
 
@@ -823,8 +827,10 @@ public class DataSet {
      *     {@link List<ReferencedEntityBase> }
      *     
      */
-    public void setMedia(List<? extends VersionableEntity> value) {
-        this.media = new ArrayList<VersionableEntity>();
+    public void setMedia(List<? extends Media> value) {
+    //public void setMedia(List<? extends VersionableEntity> value) {
+        this.media = new ArrayList<Media>();
+        //this.media = new ArrayList<VersionableEntity>();
         media.addAll(value);
     }
     

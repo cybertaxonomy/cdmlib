@@ -20,8 +20,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 
 public interface ICdmIO<T extends IIoConfigurator> {
-//public interface ICdmIO<T extends IImportConfigurator> {
-
 	
 	final String AUTHOR_STORE = "author";
 	final String REFERENCE_STORE = "reference";

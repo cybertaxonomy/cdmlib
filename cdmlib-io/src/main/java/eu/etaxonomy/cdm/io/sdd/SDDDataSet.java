@@ -158,7 +158,7 @@ public class SDDDataSet {
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
     })
-    protected List<Agent> agents;
+    protected List<? extends Agent> agents;
     
     @XmlElementWrapper(name = "AgentData")
     @XmlElements({
@@ -334,7 +334,7 @@ public class SDDDataSet {
      *     {@link List<Agent> }
      *     
      */
-    public List<Agent> getAgents() {
+    public List<? extends Agent> getAgents() {
         return agents;
     }
 
@@ -346,7 +346,7 @@ public class SDDDataSet {
      *     {@link List<Agent> }
      *     
      */
-    public void setAgents(List<Agent> value) {
+    public void setAgents(List<? extends Agent> value) {
         this.agents = value;
     }
 

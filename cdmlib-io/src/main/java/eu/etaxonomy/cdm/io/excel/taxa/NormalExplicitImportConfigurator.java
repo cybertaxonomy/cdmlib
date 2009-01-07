@@ -1,4 +1,4 @@
- package eu.etaxonomy.cdm.io.excel.distribution;
+ package eu.etaxonomy.cdm.io.excel.taxa;
 
 
 import org.apache.log4j.Logger;
@@ -9,20 +9,20 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public class DistributionImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class NormalExplicitImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 
-	private static final Logger logger = Logger.getLogger(DistributionImportConfigurator.class);
+	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
 	
 //	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				DistributionImporter.class
+				NormalExplicitImporter.class
 		};
 	};
 	
-	public static DistributionImportConfigurator NewInstance(String url,
+	public static NormalExplicitImportConfigurator NewInstance(String url,
 			ICdmDataSource destination){
-		return new DistributionImportConfigurator(url, destination);
+		return new NormalExplicitImportConfigurator(url, destination);
 	}
 	
 	
@@ -30,7 +30,7 @@ public class DistributionImportConfigurator extends ImportConfiguratorBase imple
 	 * @param url
 	 * @param destination
 	 */
-	private DistributionImportConfigurator(String url, ICdmDataSource destination) {
+	private NormalExplicitImportConfigurator(String url, ICdmDataSource destination) {
 		super();
 		setSource(url);
 		setDestination(destination);
