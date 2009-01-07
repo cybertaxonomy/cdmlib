@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_anahit";
-	private static final String destinationDbName = "cdm_test_anahit2";
+	private static final String sourceDbName = "cdm_test_jaxb";
+	private static final String destinationDbName = "cdm_test_jaxb2";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -104,24 +104,24 @@ public class CdmExportImportActivator {
 //		jaxbExportConfigurator.setDestination(fileName);
 //		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 
-		jaxbExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
-
-		jaxbExportConfigurator.setDoAuthors(doAgents);
-		jaxbExportConfigurator.setDoAgentData(doAgentData);
-		jaxbExportConfigurator.setDoLanguageData(doLanguageData);
-		jaxbExportConfigurator.setDoFeatureData(doFeatureData);
-		jaxbExportConfigurator.setDoDescriptions(doDescriptions);
-		jaxbExportConfigurator.setDoMedia(doMedia);
-		jaxbExportConfigurator.setDoOccurrence(doOccurrences);
-		jaxbExportConfigurator.setDoReferences(doReferences);
-		jaxbExportConfigurator.setDoReferencedEntities(doReferencedEntities);
-		jaxbExportConfigurator.setDoRelTaxa(doRelationships);
-		jaxbExportConfigurator.setDoSynonyms(doSynonyms);
-		jaxbExportConfigurator.setDoTaxonNames(doTaxonNames);
-		jaxbExportConfigurator.setDoTaxa(doTaxa);
-		jaxbExportConfigurator.setDoTerms(doTerms);
-		jaxbExportConfigurator.setDoTermVocabularies(doTermVocabularies);
-		jaxbExportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
+//		jaxbExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
+//
+//		jaxbExportConfigurator.setDoAuthors(doAgents);
+//		jaxbExportConfigurator.setDoAgentData(doAgentData);
+//		jaxbExportConfigurator.setDoLanguageData(doLanguageData);
+//		jaxbExportConfigurator.setDoFeatureData(doFeatureData);
+//		jaxbExportConfigurator.setDoDescriptions(doDescriptions);
+//		jaxbExportConfigurator.setDoMedia(doMedia);
+//		jaxbExportConfigurator.setDoOccurrence(doOccurrences);
+//		jaxbExportConfigurator.setDoReferences(doReferences);
+//		jaxbExportConfigurator.setDoReferencedEntities(doReferencedEntities);
+//		jaxbExportConfigurator.setDoRelTaxa(doRelationships);
+//		jaxbExportConfigurator.setDoSynonyms(doSynonyms);
+//		jaxbExportConfigurator.setDoTaxonNames(doTaxonNames);
+//		jaxbExportConfigurator.setDoTaxa(doTaxa);
+//		jaxbExportConfigurator.setDoTerms(doTerms);
+//		jaxbExportConfigurator.setDoTermVocabularies(doTermVocabularies);
+//		jaxbExportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
 
 		// invoke export
 		logger.debug("Invoking Jaxb export");
@@ -142,24 +142,24 @@ public class CdmExportImportActivator {
 //		jaxbImportConfigurator.setDestination(destinationDb);
 //		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
 
-		jaxbImportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
-
-		jaxbImportConfigurator.setDoAuthors(doAgents);
-		jaxbImportConfigurator.setDoAgentData(doAgentData);
-		jaxbImportConfigurator.setDoLanguageData(doLanguageData);
-		jaxbImportConfigurator.setDoFeatureData(doFeatureData);
-		jaxbImportConfigurator.setDoDescriptions(doDescriptions);
-		jaxbImportConfigurator.setDoMedia(doMedia);
-		jaxbImportConfigurator.setDoOccurrence(doOccurrences);
-		jaxbImportConfigurator.setDoReferences(doReferences);
-		jaxbImportConfigurator.setDoReferencedEntities(doReferencedEntities);
-		jaxbImportConfigurator.setDoRelTaxa(doRelationships);
-		jaxbImportConfigurator.setDoSynonyms(doSynonyms);
-		jaxbImportConfigurator.setDoTaxonNames(doTaxonNames);
-		jaxbImportConfigurator.setDoTaxa(doTaxa);
-		jaxbImportConfigurator.setDoTerms(doTerms);
-		jaxbImportConfigurator.setDoTermVocabularies(doTermVocabularies);
-		jaxbImportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
+//		jaxbImportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
+//
+//		jaxbImportConfigurator.setDoAuthors(doAgents);
+//		jaxbImportConfigurator.setDoAgentData(doAgentData);
+//		jaxbImportConfigurator.setDoLanguageData(doLanguageData);
+//		jaxbImportConfigurator.setDoFeatureData(doFeatureData);
+//		jaxbImportConfigurator.setDoDescriptions(doDescriptions);
+//		jaxbImportConfigurator.setDoMedia(doMedia);
+//		jaxbImportConfigurator.setDoOccurrence(doOccurrences);
+//		jaxbImportConfigurator.setDoReferences(doReferences);
+//		jaxbImportConfigurator.setDoReferencedEntities(doReferencedEntities);
+//		jaxbImportConfigurator.setDoRelTaxa(doRelationships);
+//		jaxbImportConfigurator.setDoSynonyms(doSynonyms);
+//		jaxbImportConfigurator.setDoTaxonNames(doTaxonNames);
+//		jaxbImportConfigurator.setDoTaxa(doTaxa);
+//		jaxbImportConfigurator.setDoTerms(doTerms);
+//		jaxbImportConfigurator.setDoTermVocabularies(doTermVocabularies);
+//		jaxbImportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
 
 		// invoke import
 		logger.debug("Invoking Jaxb import");
@@ -196,12 +196,12 @@ public class CdmExportImportActivator {
 
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
-//		CdmApplicationController appCtr = null;
-//		appCtr = sc.initDb(sourceDb);
-//		sc.loadTestData(appCtr);
+		CdmApplicationController appCtr = null;
+		appCtr = sc.initDb(sourceDb);
+		sc.loadTestData(appCtr);
 		
-		sc.invokeExport();
-		sc.invokeImport();
+//		sc.invokeExport();
+//		sc.invokeImport();
 	}
 
 }
