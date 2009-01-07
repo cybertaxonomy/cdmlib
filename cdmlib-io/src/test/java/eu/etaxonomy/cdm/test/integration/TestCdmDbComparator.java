@@ -283,9 +283,9 @@ public class TestCdmDbComparator {
     	
     }
 	
-	private Map<String, List<OriginalSource>> doLoadDataFromDb_(String dbname) {
+	private Map<String, List<CdmBase>> doLoadDataFromDb_(String dbname) {
     	
-		Map<String, List<OriginalSource>> dbTables = new HashMap<String, List<OriginalSource>>();
+		Map<String, List<CdmBase>> dbTables = new HashMap<String, List<CdmBase>>();
 		
 		logger.info("Loading data from DB " + dbname);
 
@@ -341,9 +341,9 @@ public class TestCdmDbComparator {
     	
     }
 	
-    private Map<String, List<OriginalSource>> retrieveAllTables_(CdmApplicationController appCtr) {
+    private Map<String, List<CdmBase>> retrieveAllTables_(CdmApplicationController appCtr) {
     	
-		Map<String, List<OriginalSource>> tables_ = new HashMap<String, List<OriginalSource>>(table_list.length);
+		Map<String, List<CdmBase>> tables_ = new HashMap<String, List<CdmBase>>(table_list.length);
 		
 		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
 			
@@ -356,9 +356,9 @@ public class TestCdmDbComparator {
 	    		logger.debug("Retrieving table '" + table_list[i] + "'");
 	    		System.out.println("Retrieving table '" + table_list[i] + "'");
 	    		
-				List<OriginalSource> rows = new ArrayList<OriginalSource>(MAX_ROWS);
+				List<CdmBase> rows = new ArrayList<CdmBase>(MAX_ROWS);
 
-				rows = appCtr.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
+				rows = appCtr.getMainService().rows(table_list[i], MAX_ROWS, 0);	
 				
     			tables_.put(table_list[i], rows);
 
