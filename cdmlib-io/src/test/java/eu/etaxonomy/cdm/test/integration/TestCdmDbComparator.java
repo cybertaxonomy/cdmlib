@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -282,9 +283,9 @@ public class TestCdmDbComparator {
     	
     }
 	
-	private Map<String, List<CdmBase>> doLoadDataFromDb_(String dbname) {
+	private Map<String, List<OriginalSource>> doLoadDataFromDb_(String dbname) {
     	
-		Map<String, List<CdmBase>> dbTables = new HashMap<String, List<CdmBase>>();
+		Map<String, List<OriginalSource>> dbTables = new HashMap<String, List<OriginalSource>>();
 		
 		logger.info("Loading data from DB " + dbname);
 
@@ -340,10 +341,9 @@ public class TestCdmDbComparator {
     	
     }
 	
-    private Map<String, List<CdmBase>> retrieveAllTables_(CdmApplicationController appCtr) {
+    private Map<String, List<OriginalSource>> retrieveAllTables_(CdmApplicationController appCtr) {
     	
-//		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
-		Map<String, List<CdmBase>> tables_ = new HashMap<String, List<CdmBase>>(table_list.length);
+		Map<String, List<OriginalSource>> tables_ = new HashMap<String, List<OriginalSource>>(table_list.length);
 		
 		List<String> tableRows = new ArrayList<String>(MAX_ROWS);
 			
@@ -356,7 +356,7 @@ public class TestCdmDbComparator {
 	    		logger.debug("Retrieving table '" + table_list[i] + "'");
 	    		System.out.println("Retrieving table '" + table_list[i] + "'");
 	    		
-				List<CdmBase> rows = new ArrayList<CdmBase>(MAX_ROWS);
+				List<OriginalSource> rows = new ArrayList<OriginalSource>(MAX_ROWS);
 
 				rows = appCtr.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
 				
@@ -444,7 +444,7 @@ public class TestCdmDbComparator {
 		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
 		
 		List<String> agentTableContent = new ArrayList<String>(MAX_ROWS);
-		List<Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
+		List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
 		for (Agent agent: agents ) {
 			//TODO: Want the entire row as string not just toString() of the object.
 			agentTableContent.add(agent.toString());
@@ -607,8 +607,8 @@ public class TestCdmDbComparator {
 
 				List<CdmBase> rowsDbOne = new ArrayList<CdmBase>(MAX_ROWS);
 				List<CdmBase> rowsDbTwo = new ArrayList<CdmBase>(MAX_ROWS);
-				rowsDbOne = appCtrOne.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
-				rowsDbTwo = appCtrTwo.getCommonService().rows(table_list[i], MAX_ROWS, 0);	
+				rowsDbOne = appCtrOne.getMainService().rows(table_list[i], MAX_ROWS, 0);
+				rowsDbTwo = appCtrTwo.getMainService().rows(table_list[i], MAX_ROWS, 0);	
 				compareTables(table_list[i], rowsDbOne, rowsDbTwo);
 			}
 	    	appCtrTwo.commitTransaction(txStatTwo);
