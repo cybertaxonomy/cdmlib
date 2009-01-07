@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -80,6 +82,11 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public ICommonService getCommonService();
 	
+	
+	/**
+	 * @return
+	 */
+	public IService<CdmBase> getMainService();
 	
 	/**
 	 * @return

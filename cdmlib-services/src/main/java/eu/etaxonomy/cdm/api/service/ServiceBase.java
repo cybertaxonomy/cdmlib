@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.TransactionStatus;
@@ -32,6 +33,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	int flushAfterNo = 2000;
 	protected ApplicationContext appContext;
 
+	@Qualifier("baseDao")
 	protected DAO dao;
 
 	protected abstract void setDao(DAO dao);

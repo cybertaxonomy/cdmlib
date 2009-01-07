@@ -51,27 +51,27 @@ public class UserService implements UserDetailsManager, GroupManager {
 		this.userCache = userCache;
 	}
 	
-	@Autowired
+	//@Autowired
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	@Autowired
+	//@Autowired
 	public void setSaltSource(SaltSource saltSource) {
 		this.saltSource = saltSource;
 	}
 	
-	@Autowired
+	//@Autowired
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
 	
-	@Autowired
+	//@Autowired
 	public void setUserDao(IUserDao userDao) {
 		this.userDao = userDao;
 	}
 	
-	@Autowired
+	//@Autowired
 	public void setGroupDao(IGroupDao groupDao) {
 		this.groupDao = groupDao;
 	}

@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -40,8 +41,8 @@ import eu.etaxonomy.cdm.database.CdmTermInitializer;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 
@@ -326,6 +327,9 @@ public class CdmApplicationController {
 		return configuration.getCommonService();
 	}
 	
+	public final IService<CdmBase> getMainService(){
+		return configuration.getMainService();
+	}
 	
 	/* **** flush ***********/
 	public void flush() {

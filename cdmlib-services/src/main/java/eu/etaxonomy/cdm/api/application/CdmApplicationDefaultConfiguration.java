@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.application;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,8 +24,10 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -37,27 +40,40 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
 
 	@Autowired
+	//@Qualifier("nameService")
 	private INameService nameService;
 	@Autowired
+	//@Qualifier("taxonService")
 	private ITaxonService taxonService;
 	@Autowired
+	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
 	@Autowired
+	//@Qualifier("agentService")
 	private IAgentService agentService;
 	@Autowired
+	//@Qualifier("databaseService")
 	private IDatabaseService databaseService;
 	@Autowired
+	//@Qualifier("termService")
 	private ITermService termService;
 	@Autowired
 	private HibernateTransactionManager transactionManager;
 	@Autowired
+	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
 	@Autowired
+	//@Qualifier("occurrenceService")
 	private IOccurrenceService occurrenceService;
 	@Autowired
+	//@Qualifier("mediaService")
 	private IMediaService mediaService;
 	@Autowired
+	//@Qualifier("commonService")
 	private ICommonService commonService;
+	//@Autowired
+	//@Qualifier("mainService")
+	private IService<CdmBase> mainService;
 
 	
 	/**
@@ -128,6 +144,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public ICommonService getCommonService(){
 		return this.commonService;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
+	 */
+	public IService<CdmBase> getMainService(){
+		return this.mainService;
 	}
 	
 	/* (non-Javadoc)

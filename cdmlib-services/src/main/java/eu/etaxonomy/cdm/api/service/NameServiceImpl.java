@@ -54,18 +54,18 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
-//	@Autowired
+	@Autowired
 	protected ITermVocabularyDao vocabularyDao;
-//	@Autowired
+	@Autowired
 	protected IOrderedTermVocabularyDao orderedVocabularyDao;
-//	@Autowired
+	@Autowired
 	@Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
-//	@Autowired
+	@Autowired
 	private INomenclaturalStatusDao nomStatusDao;
-//	@Autowired
+	@Autowired
 	private ITypeDesignationDao typeDesignationDao;
-//	@Autowired
+	@Autowired
 	private IHomotypicalGroupDao homotypicalGroupDao;
 
 	/**
