@@ -118,8 +118,9 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
-	    	TeamOrPersonBase author = agents.get(0);
+	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
 	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
@@ -195,8 +196,9 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
-	    	TeamOrPersonBase author = agents.get(0);
+	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
 	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
@@ -295,8 +297,10 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
-	    	TeamOrPersonBase author = agents.get(0);
+	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	//Agent author = agents.get(0);
+	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
 	    	ReferenceBase sec = references.get(0);
 
