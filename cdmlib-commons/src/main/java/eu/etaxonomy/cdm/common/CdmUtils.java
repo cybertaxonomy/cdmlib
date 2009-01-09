@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -207,6 +209,18 @@ public class CdmUtils {
 		return false;
 	}
 	
+	static public URI string2Uri(String string) {
+        URI uri = null;
+		try {
+			uri = new URI(string);
+			logger.debug("uri: " + uri.toString());
+		} catch (URISyntaxException ex) {
+			logger.error("Problem converting string " + string + " to URI " + uri);
+			return null;
+		}
+		return uri;
+	}
+    	
 	static public boolean isNumeric(String string){
 		if (string == null){
 			return false;
