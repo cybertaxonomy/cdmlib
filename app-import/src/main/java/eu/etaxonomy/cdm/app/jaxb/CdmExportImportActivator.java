@@ -49,6 +49,13 @@ public class CdmExportImportActivator {
 	private static final String sourceDbName = "cdm_test_jaxb";
 	private static final String destinationDbName = "cdm_test_jaxb2";
 
+	// Import:
+	private static String importFileName = 
+		"file:/C:/Dokumente%20und%20Einstellungen/a.babadshanjan/Eigene%20Dateien/archive/dbExport/jaxb/export_test_app_import.xml";
+    // Export:
+	private static String exportFileName = 
+		"C:\\Dokumente und Einstellungen\\a.babadshanjan\\Eigene Dateien\\archive\\dbExport\\jaxb\\export_test_app_import.xml";
+
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
 	 *  as many rows as specified for agents, references, etc. 
@@ -89,19 +96,19 @@ public class CdmExportImportActivator {
 	private static boolean doTermVocabularies = true;
 	private static boolean doHomotypicalGroups = true;
 
-	private String fileName = new String(System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
+	//private String fileName = new String(System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
 
 
 	private void invokeExport() {
 		
 		JaxbExportConfigurator jaxbExportConfigurator = 
-			JaxbExportConfigurator.NewInstance(sourceDb, fileName);
+			JaxbExportConfigurator.NewInstance(sourceDb, exportFileName);
 		
 		CdmDefaultExport<JaxbExportConfigurator> jaxbExport = 
 			new CdmDefaultExport<JaxbExportConfigurator>();
 		
 //		jaxbExportConfigurator.setSource(sourceDb);
-//		jaxbExportConfigurator.setDestination(fileName);
+//		jaxbExportConfigurator.setDestination(exportFileName);
 //		jaxbExportConfigurator.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 
 //		jaxbExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
@@ -133,12 +140,12 @@ public class CdmExportImportActivator {
 	private void invokeImport() {
 
 		JaxbImportConfigurator jaxbImportConfigurator = 
-			JaxbImportConfigurator.NewInstance(fileName, destinationDb);
+			JaxbImportConfigurator.NewInstance(importFileName, destinationDb);
 
 		CdmDefaultImport<JaxbImportConfigurator> jaxbImport = 
 			new CdmDefaultImport<JaxbImportConfigurator>();
 		
-//		jaxbImportConfigurator.setSource(fileName);
+//		jaxbImportConfigurator.setSource(importFileName);
 //		jaxbImportConfigurator.setDestination(destinationDb);
 //		jaxbImportConfigurator.setDbSchemaValidation(DbSchemaValidation.CREATE);
 
