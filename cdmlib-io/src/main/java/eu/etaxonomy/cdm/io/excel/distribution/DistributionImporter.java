@@ -44,21 +44,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class DistributionImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 
     /* used */
-    private static String EDIT_NAME_COLUMN = "EDIT";
-    private static String TDWG_DISTRIBUTION_COLUMN = "TDWG";
-    private static String STATUS_COLUMN = "Status";
-    private static String LITERATURE_NUMBER_COLUMN = "Lit.";
-    private static String LITERATURE_COLUMN = "Literature";
+    private static final String EDIT_NAME_COLUMN = "EDIT";
+    private static final String TDWG_DISTRIBUTION_COLUMN = "TDWG";
+    private static final String STATUS_COLUMN = "Status";
+    private static final String LITERATURE_NUMBER_COLUMN = "Lit.";
+    private static final String LITERATURE_COLUMN = "Literature";
     /* not yet used */
-    private static String VERNACULAR_NAME_COLUMN = "Vernacular";
-    private static String HABITAT_COLUMN = "Habitat";
-    private static String ISO_DISTRIBUTION_COLUMN = "ISO";
-    private static String NOTES_COLUMN = "Notes";
-    private static String PAGE_NUMBER_COLUMN = "Page";
-    private static String INFO_COLUMN = "Info";
+    private static final String VERNACULAR_NAME_COLUMN = "Vernacular";
+    private static final String HABITAT_COLUMN = "Habitat";
+    private static final String ISO_DISTRIBUTION_COLUMN = "ISO";
+    private static final String NOTES_COLUMN = "Notes";
+    private static final String PAGE_NUMBER_COLUMN = "Page";
+    private static final String INFO_COLUMN = "Info";
     
-    private static String SEPARATOR = ",";
-
 	private static final Logger logger = Logger.getLogger(DistributionImporter.class);
 	
 	private CdmApplicationController appCtr = null;
@@ -80,17 +78,17 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			analyzeRecord(config.getDestination(), record);
+    			analyzeRecord(record);
     		}
     		appCtr.commitTransaction(txStatus);
     	}
     	
 		try {
 	    	appCtr.close();
-			logger.debug("End test distribution data import"); 
+			logger.debug("End distribution data import"); 
 				
 		} catch (Exception e) {
-    		logger.error("Error clsing the application context");
+    		logger.error("Error closing the application context");
     		e.printStackTrace();
 		}
     	
@@ -98,7 +96,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 	}
 			
 
-    private void analyzeRecord(ICdmDataSource db, HashMap record) {
+    private void analyzeRecord(HashMap<String,String> record) {
     	/*
     	 * Relevant columns:
     	 * Name (EDIT)
@@ -121,7 +119,6 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     		
     		String value = (String) record.get(key);
     		if (!value.equals("")) {
-//    			logger.debug("Key = " + key);
     			logger.debug(key + ": '" + value + "'");
     		}
     		
@@ -139,6 +136,9 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 				
 			} else if(key.contains(LITERATURE_COLUMN)) {
 				literature = (String) removeDuplicateWhitespace(value.trim());
+				
+			} else {
+				logger.error("Unexpected column header " + key);
 			}
     	}
     	

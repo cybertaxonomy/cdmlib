@@ -583,11 +583,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImporter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmImporter.java -text

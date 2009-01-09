@@ -1,4 +1,4 @@
- package eu.etaxonomy.cdm.io.excel.taxa;
+ package eu.etaxonomy.cdm.io.excel.common;
 
 
 import org.apache.log4j.Logger;
@@ -6,33 +6,19 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
+public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase implements IImportConfigurator{
 
-	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
-	
-//	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
-		ioClassList = new Class[] {
-				NormalExplicitImporter.class
-		};
-	};
-	
-	public static NormalExplicitImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new NormalExplicitImportConfigurator(url, destination);
-	}
-	
+	private static final Logger logger = Logger.getLogger(ExcelImportConfiguratorBase.class);
 	
 	/**
 	 * @param url
 	 * @param destination
 	 */
-	private NormalExplicitImportConfigurator(String url, ICdmDataSource destination) {
-		super(url, destination);
+	protected ExcelImportConfiguratorBase(String url, ICdmDataSource destination) {
+		super();
 		setSource(url);
 		setDestination(destination);
 	}

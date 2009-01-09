@@ -5,10 +5,17 @@ package eu.etaxonomy.cdm.io.excel.common;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.ExcelUtils;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IIoConfigurator;
@@ -16,6 +23,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImporter;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.babadshanjan
@@ -26,11 +34,34 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
-
-	public URI string2Uri() {
-		return null;
-	}
+	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 	
+	ArrayList<HashMap<String, String>> recordList = null;
+	private String taxonName = "";
+	
+	private CdmApplicationController appCtr = null;
+	private ExcelImportConfiguratorBase configurator = null;
+
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores) {
+//		
+//    	logger.debug("Importing excel data");
+//		URI uri = null;
+//		boolean success = true;
+//		ExcelImportConfiguratorBase excelImpConfig = (ExcelImportConfiguratorBase)config;
+//    	String dbName = excelImpConfig.getDestination().getDatabase();
+//    	
+//    	String urlFileName = (String)config.getSource();
+//		logger.debug("urlFileName: " + urlFileName);
+//		uri = CdmUtils.string2Uri(urlFileName);
+//		if (uri == null) {
+//			return false;
+//		}
+//    	
+//    	return success;
+//	}
+
 	
 	/** Reads data from an Excel file and stores them into a CDM DB.
      * 
@@ -41,29 +72,69 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
-		boolean success = true;
-        URI uri = null;
-		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)config;
-    	String dbname = jaxbImpConfig.getDestination().getDatabase();
+    	logger.debug("Importing excel data");
+    	appCtr = config.getCdmAppController();
+    	configurator = (ExcelImportConfiguratorBase) config;
     	
-    	String urlFileName = (String)config.getSource();
-		logger.debug("urlFileName: " + urlFileName);
-    	try {
-    		uri = new URI(urlFileName);
-			logger.debug("uri: " + uri.toString());
-    	} catch (URISyntaxException ex) {
-			logger.error("File name problem");
-			return false;
+		// read and save all rows of the excel worksheet
+    	recordList = ExcelUtils.parseXLS((String)config.getSource());
+    	//ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS((String)config.getSource());
+    	
+    	if (recordList != null) {
+    		HashMap<String,String> record = null;
+    		TransactionStatus txStatus = appCtr.startTransaction();
+
+    		for (int i = 0; i < recordList.size(); i++) {
+    			record = recordList.get(i);
+    			analyzeRecord(record);
+    			saveRecord();
+    		}
+    		appCtr.commitTransaction(txStatus);
     	}
     	
-    	return success;
-	}
-	
+		try {
+	    	appCtr.close();
+			logger.debug("End excel data import"); 
+				
+		} catch (Exception e) {
+    		logger.error("Error closing the application context");
+    		e.printStackTrace();
+		}
     	
+    	return true;
+	}
+
 	@Override
 	protected boolean doCheck(IImportConfigurator config) {
 		boolean result = true;
 		logger.warn("No check implemented for Excel import");
 		return result;
+	}
+	
+	/** 
+	 * 
+	 * 
+	 * @param record
+	 * @return
+	 */
+	protected abstract boolean analyzeRecord(HashMap<String,String> record);
+	
+	protected abstract boolean saveRecord();
+	
+	
+	public ExcelImportConfiguratorBase getConfigurator() {
+		
+		return configurator;
+	}
+	
+	
+	public String getTaxonName() {
+		
+		return this.taxonName;
+	}
+	
+	public void setTaxonName(String taxonNameBase) {
+	
+		this.taxonName = taxonNameBase;
 	}
 }
