@@ -17,10 +17,9 @@ import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
  */
 public class NormalExplicitActivator {
 
-	private static final String dbName = "cdm_test_anahit";
+	private static final String dbName = "cdm_test_jaxb";
 	private static String fileName = 
-		new String( System.getProperty("user.home") + "\\workspaces\\cdmlib\\app-import\\src\\main\\resources\\distribution\\Africa plus x.xls");
-//	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa plus x.xls");
+		new String( System.getProperty("user.home") + "\\Eigene Dateien\\archive\\dbImport\\gbif_test\\NormalExplicit.xls");
 	
 	private static final ICdmDataSource destinationDb = TestDatabase.CDM_DB(dbName);
     private static final Logger logger = Logger.getLogger(NormalExplicitActivator.class);
