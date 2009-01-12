@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 
 
 public class BerlinModelSources {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelSources.class);
 	
 	public static Source euroMed(){
@@ -34,6 +35,16 @@ public class BerlinModelSources {
 		String dbms = Source.SQL_SERVER_2000;
 		String strServer = "BGBM111";
 		String strDB = "EditWP6";
+		int port = 1247;
+		String userName = "webUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
+	public static Source EDIT_Taraxacum(){
+		//	BerlinModel - EditWP6
+		String dbms = Source.SQL_SERVER_2000;
+		String strServer = "BGBM111";
+		String strDB = "Edit_Taraxacum";
 		int port = 1247;
 		String userName = "webUser";
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
