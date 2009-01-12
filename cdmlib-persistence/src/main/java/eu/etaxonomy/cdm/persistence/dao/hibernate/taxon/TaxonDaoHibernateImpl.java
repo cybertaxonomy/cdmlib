@@ -21,6 +21,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -57,8 +58,11 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
  * @version 1.0
  */
 @Repository
+@Qualifier("taxonDaoHibernateImpl")
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
-	static Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+	
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
 		super(TaxonBase.class);

@@ -16,6 +16,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -35,8 +36,11 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
  *
  */
 @Repository
+@Qualifier("taxonNameDaoHibernateImpl")
 public class TaxonNameDaoHibernateImpl 
 			extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
+	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
 
 	public TaxonNameDaoHibernateImpl() {

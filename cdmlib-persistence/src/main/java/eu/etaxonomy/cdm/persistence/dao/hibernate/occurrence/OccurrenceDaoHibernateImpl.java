@@ -27,8 +27,9 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 @Repository
 public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrObservationBase> implements
 		IOccurrenceDao {
-
-	static Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+	
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public OccurrenceDaoHibernateImpl() {
 		super(SpecimenOrObservationBase.class);

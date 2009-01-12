@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 @Repository
 public class AgentDaoImpl extends IdentifiableDaoBase<Agent> implements IAgentDao{
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentDaoImpl.class);
 

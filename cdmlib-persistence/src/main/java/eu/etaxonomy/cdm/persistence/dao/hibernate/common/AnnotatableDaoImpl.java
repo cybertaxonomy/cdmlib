@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  * @version 1.0
  */
 @Repository
+@Qualifier("annotatableDaoImpl")
 public class AnnotatableDaoImpl<T extends AnnotatableEntity> extends CdmEntityDaoBase<T> implements IAnnotatableDao<T> {
 	private static Logger logger = Logger.getLogger(AnnotatableDaoImpl.class);
 	

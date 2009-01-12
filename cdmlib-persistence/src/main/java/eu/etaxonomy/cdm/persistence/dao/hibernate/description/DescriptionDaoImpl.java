@@ -18,6 +18,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -35,7 +36,10 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 
 @Repository
+@Qualifier("descriptionDaoImpl")
 public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> implements IDescriptionDao{
+
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
 
 	public DescriptionDaoImpl() {
