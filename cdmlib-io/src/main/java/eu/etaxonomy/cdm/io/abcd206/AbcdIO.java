@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.io.abcd206;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
