@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -86,7 +88,8 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private IFeatureDao featureDAO;
 	@Autowired
-	private IAnnotatableDao annotatableDao;
+	@Qualifier("annotatableDaoImpl")	
+	private AnnotatableDaoImpl<AnnotatableEntity<?>> annotatableDao;
 	
 	
 	private final int MAXRESULTS = 500;
@@ -343,7 +346,7 @@ public class CdmServiceImpl implements ICdmService {
 			throws CdmObjectNonExisting {
 		List<AnnotationTO> annotationList = new ArrayList<AnnotationTO>();
 		
-		// TODO the cast should be removed, but i don't knwo how at the moment
+		// TODO the cast should be removed, but i don't know how at the moment
 		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
 		
 		
