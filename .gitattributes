@@ -13,6 +13,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/DipteraDistribut
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/ErmsActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
