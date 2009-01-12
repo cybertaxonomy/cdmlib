@@ -42,6 +42,7 @@ public class ExcelUtils {
 
     		int rows; // No of rows
     		rows = sheet.getPhysicalNumberOfRows();
+			if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
 
     		int cols = 0; // No of columns
     		int tmp = 0;
@@ -59,7 +60,12 @@ public class ExcelUtils {
     		row = sheet.getRow(0);
     		for (int c = 0; c < cols; c++){
     			cell = row.getCell(c);
-    			columns.add(cell.toString());
+				if(cell != null) {
+					columns.add(cell.toString());
+					if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+				} else {
+					if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
+				}
     		}
     		for(int r = 1; r < rows; r++) {
     			row = sheet.getRow(r);
@@ -69,6 +75,9 @@ public class ExcelUtils {
     					cell = row.getCell((short)c);
     					if(cell != null) {
     						headers.put(columns.get(c), cell.toString());
+    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+    					} else {
+    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
     					}
     				}
     			}
@@ -76,7 +85,7 @@ public class ExcelUtils {
     		}
 
     	} catch(Exception ioe) {
-    		if (logger.isDebugEnabled()){logger.debug("Exception");}
+    		logger.error("Error reading the Excel file.");
     		ioe.printStackTrace();
     	}
     	return recordList;
