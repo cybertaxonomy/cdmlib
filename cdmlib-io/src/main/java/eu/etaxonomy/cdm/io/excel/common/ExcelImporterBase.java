@@ -3,8 +3,6 @@
  */
 package eu.etaxonomy.cdm.io.excel.common;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +11,12 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.IIoConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImporter;
-import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.babadshanjan
@@ -74,7 +67,9 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		
     	logger.debug("Importing excel data");
     	appCtr = config.getCdmAppController();
+    	
     	configurator = (ExcelImportConfiguratorBase) config;
+    	config.setNomenclaturalCode(NomenclaturalCode.ICBN());
     	
 		// read and save all rows of the excel worksheet
     	recordList = ExcelUtils.parseXLS((String)config.getSource());
@@ -128,6 +123,11 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	}
 	
 	
+	public CdmApplicationController getApplicationController() {
+		
+		return appCtr;
+	}
+
 	public String getTaxonName() {
 		
 		return this.taxonName;

@@ -3,36 +3,10 @@
  */
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+//import org.apache.log4j.Logger;
 
-import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
-
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.IIoConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
-import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImporter;
-import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-
 /**
  * @author a.babadshanjan
  * @created 09.01.2009
@@ -40,7 +14,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 
-	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
+	//private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 
 	/*
 	 * Supported Columns:
@@ -61,7 +35,9 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	protected static final String NAME_STATUS_COLUMN = "NameStatus";
 	protected static final String VERNACULAR_NAME_COLUMN = "VernacularName";
 	protected static final String LANGUAGE_COLUMN = "Language";
+	protected static final String REFERENCE_COLUMN = "Reference";
 	
+    // TODO: This enum is for future use.
 	protected enum Columns { 
 		Id("Id"), 
 		ParentId("ParentId"), 
@@ -128,4 +104,55 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	
 		this.parentId = parentId;
 	}
+	
+	public String getAuthor() {
+		
+		return this.author;
+	}
+	
+	public void setAuthor(String author) {
+	
+		this.author = author;
+	}
+	
+	public String getNameStatus() {
+		
+		return this.nameStatus;
+	}
+	
+	public void setNameStatus(String nameStatus) {
+	
+		this.nameStatus = nameStatus;
+	}
+	
+	public String getCommonName() {
+		
+		return this.commonName;
+	}
+	
+	public void setCommonName(String commonName) {
+	
+		this.commonName = commonName;
+	}
+
+	public String getLanguage() {
+		
+		return this.language;
+	}
+	
+	public void setLanguage(String language) {
+	
+		this.language = language;
+	}
+	
+	public String getReference() {
+		
+		return this.reference;
+	}
+	
+	public void setreference(String reference) {
+	
+		this.reference = reference;
+	}
 }
+

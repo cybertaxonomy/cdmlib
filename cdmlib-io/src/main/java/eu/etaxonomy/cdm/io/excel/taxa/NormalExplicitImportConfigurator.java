@@ -3,9 +3,9 @@
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -35,6 +35,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		super(url, destination);
 		setSource(url);
 		setDestination(destination);
+		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 	
 
