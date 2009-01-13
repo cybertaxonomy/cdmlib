@@ -166,9 +166,11 @@ public class TaraxacumActivator {
 		// invoke import
 		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
 		//bmImport.invoke(bmImportConfigurator);
-		CdmApplicationController appTest = bmImportConfigurator.getCdmAppController();
-		ReferenceBase sec = BookSection.NewInstance();
-		appTest.getReferenceService().save(sec);
+		
+		//for test only
+		//CdmApplicationController appTest = bmImportConfigurator.getCdmAppController();
+		//ReferenceBase sec = BookSection.NewInstance();
+		//appTest.getReferenceService().save(sec);
 		
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
