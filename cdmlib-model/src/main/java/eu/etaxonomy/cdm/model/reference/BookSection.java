@@ -174,6 +174,9 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see 	StrictReferenceBase#getDatePublished()
 	 **/
 	 @Override
+	 @Transient 
+	 // This method overrides StrictReferenceBase.getDatePublished() only to have 
+	 // a specific Javadoc for BookSection.getDatePublished().
 	public TimePeriod getDatePublished(){
 		return super.getDatePublished();
 	}
@@ -210,7 +213,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public BookSection clone(){
+	public Object clone(){
 		BookSection result = (BookSection)super.clone();
 		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
 		//no changes to: inBook
