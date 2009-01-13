@@ -591,6 +591,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImpor
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonLight.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmImporter.java -text

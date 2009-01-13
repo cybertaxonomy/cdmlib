@@ -5,7 +5,9 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 
 //import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 /**
  * @author a.babadshanjan
@@ -37,7 +39,10 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	protected static final String LANGUAGE_COLUMN = "Language";
 	protected static final String REFERENCE_COLUMN = "Reference";
 	
-    // TODO: This enum is for future use.
+	// Stores already processed taxa
+	private HashMap<Integer, TaxonLight> taxa = new HashMap<Integer, TaxonLight>();
+
+	// TODO: This enum is for future use, perhaps.
 	protected enum Columns { 
 		Id("Id"), 
 		ParentId("ParentId"), 
@@ -73,9 +78,8 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	private int id = 0;
 	private int parentId = 0;
 	
-	/* Need already processed records? */
 	
-	public String getRank() {
+  	public String getRank() {
 		
 		return this.rank;
 	}
@@ -150,9 +154,23 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 		return this.reference;
 	}
 	
-	public void setreference(String reference) {
+	public void setReference(String reference) {
 	
 		this.reference = reference;
+	}
+
+	/**
+	 * @return the taxa
+	 */
+	public HashMap<Integer, TaxonLight> getTaxa() {
+		return taxa;
+	}
+
+	/**
+	 * @param taxa the taxa to set
+	 */
+	public void setTaxa(HashMap<Integer, TaxonLight> taxa) {
+		this.taxa = taxa;
 	}
 }
 

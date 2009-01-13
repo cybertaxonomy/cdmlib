@@ -69,8 +69,12 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
     	appCtr = config.getCdmAppController();
     	
     	configurator = (ExcelImportConfiguratorBase) config;
-    	config.setNomenclaturalCode(NomenclaturalCode.ICBN());
-    	
+    	//config.setNomenclaturalCode(NomenclaturalCode.ICBN());
+		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+		if (nc == null) {
+			logger.error("Nomenclatural code could not be determined.");
+			return false;
+		}
 		// read and save all rows of the excel worksheet
     	recordList = ExcelUtils.parseXLS((String)config.getSource());
     	//ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS((String)config.getSource());

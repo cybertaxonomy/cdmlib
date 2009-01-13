@@ -11,9 +11,11 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -147,33 +149,55 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		
 		boolean success = true;
 		Rank rank = null;
+		HashMap<Integer, TaxonLight> taxa = getTaxa();
+		
 		CdmApplicationController appCtr = getApplicationController();
 		
-		// Determine the rank
-		
-		try {
-			rank = Rank.getRankByName(getRank());
-		} catch (UnknownCdmTypeException ex) {
-			success = false;
-			logger.error(getRank() + " is not a valid rank.");
-		}
-		
-		// Depending on the setting of the nomenclatural code in the configurator (botanical code, zoological code, etc.),
-		// create the corresponding taxon name object. 
-		
 		String name = getTaxonName();
-		if (name != "") {
-			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-			if (nc != null) {
-				TaxonNameBase<?,?> taxonName = nc.getNewTaxonNameInstance(rank);
-				taxonName.setTitleCache(name);
-				taxonName.setFullTitleCache(name);
-				appCtr.getNameService().saveTaxonName(taxonName);
+		int parentId = getParentId();
+		
+		if (!name.equals("")) {
+			TaxonLight newTaxon = new TaxonLight(name, parentId);
+
+			// Add the taxon to the processed taxa map
+			if (taxa.containsKey(newTaxon)) {
+				logger.info("Taxon '" + name + "' is already loaded");
+				return true;
 			} else {
-				logger.error("Nomenclatural code is null");
-				success = false;
+				taxa.put(getId(), newTaxon);
 			}
-		}
+
+			// Determine the rank
+
+			try {
+				rank = Rank.getRankByName(getRank());
+			} catch (UnknownCdmTypeException ex) {
+				success = false;
+				logger.error(getRank() + " is not a valid rank.");
+			}
+
+			// Depending on the setting of the nomenclatural code in the configurator (botanical code, zoological code, etc.),
+			// create the corresponding taxon name object. 
+
+			//if (!name.equals("")) {
+			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+//			if (nc != null) {
+			TaxonNameBase<?,?> taxonName = nc.getNewTaxonNameInstance(rank);
+			taxonName.setTitleCache(name);
+			taxonName.setFullTitleCache(name);
+		    appCtr.getNameService().saveTaxonName(taxonName);
+//			} else {
+//				logger.error("Nomenclatural code is null");
+//				success = false;
+//			}
+		    
+		    Taxon taxon = Taxon.NewInstance(taxonName, null);
+		    appCtr.getTaxonService().saveTaxon(taxon);
+			
+		} //else 	
+		  // Name column can be empty if just common name is provided.
+			
+
 		
 		
 		return success;
