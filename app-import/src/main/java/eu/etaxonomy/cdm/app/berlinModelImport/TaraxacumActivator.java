@@ -30,6 +30,9 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -47,8 +50,9 @@ public class TaraxacumActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
 
+	org.h2.jdbc.JdbcSQLException h;
 	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
 	static final int sourceSecId = 7700000;
 	
@@ -161,12 +165,14 @@ public class TaraxacumActivator {
 		
 		// invoke import
 		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		//bmImport.invoke(bmImportConfigurator);
+		CdmApplicationController appTest = bmImportConfigurator.getCdmAppController();
+		ReferenceBase sec = BookSection.NewInstance();
+		appTest.getReferenceService().save(sec);
+		
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImportConfigurator.getCdmAppController();
-			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
-			logger.info(obj);
 			
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
