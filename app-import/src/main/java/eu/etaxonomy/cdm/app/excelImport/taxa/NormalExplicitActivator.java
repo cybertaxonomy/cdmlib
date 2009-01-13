@@ -9,6 +9,7 @@ import eu.etaxonomy.cdm.app.util.TestDatabase;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.excel.taxa.NormalExplicitImportConfigurator;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.babadshanjan
@@ -29,6 +30,8 @@ public class NormalExplicitActivator {
     	NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
     		NormalExplicitImportConfigurator.NewInstance(fileName, destinationDb);
 
+    	normalExplicitImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN());
+    	
 		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
 			new CdmDefaultImport<NormalExplicitImportConfigurator>();
 
