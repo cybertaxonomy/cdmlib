@@ -47,12 +47,54 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 	@Override
 	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
-		logger.warn("Checking for Occurrence not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		result &= checkTaxonIsAccepted(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
-		
+		logger.warn("Checking for Occurrence not yet fully implemented");
 		return result;
 	}
+	
+//******************************** CHECK *************************************************
+	
+	private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status " + 
+						" FROM emOccurrence INNER JOIN " +
+							" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
+			                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
+			                " Status ON PTaxon.StatusFk = Status.StatusId " + 
+						" WHERE (PTaxon.StatusFk <> 1)  ";
+			
+			ResultSet resulSet = source.getResultSet(strQuery);
+			boolean firstRow = true;
+			while (resulSet.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are Occurrences for a taxon that is not accepted!");
+					System.out.println("========================================================");
+				}
+				int occurrenceId = resulSet.getInt("OccurrenceId");
+				int statusFk = resulSet.getInt("StatusFk");
+				String status = resulSet.getString("Status");
+				String fullNameCache = resulSet.getString("FullNameCache");
+				
+				System.out.println("OccurrenceId:" + occurrenceId + "\n  Status: " + status + 
+						"\n  FullNameCache: " + fullNameCache );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
