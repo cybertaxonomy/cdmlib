@@ -226,7 +226,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					}else if(property.equals("port")){
 						result = String.valueOf(dbType.getPortByConnectionString(url));
 					}else{
-						logger.warn("unknown property: " + property);
+						logger.info("unknown property: " + property);
 					}
 				}
 			}
