@@ -65,6 +65,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 	
 	@XmlElement(name = "KindOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private T kindOf;
 	/**
 	 * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects 
@@ -72,9 +74,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
 	@XmlElement(name = "GeneralizationOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private Set<T> generalizationOf = new HashSet<T>();
 	
 	@XmlElement(name = "PartOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private T partOf;
 	
 	/**
