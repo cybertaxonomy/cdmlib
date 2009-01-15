@@ -32,6 +32,8 @@ public class CdmDocumentBuilder {
 	private static final Logger logger = Logger.getLogger(CdmDocumentBuilder.class);
 	
 	private JAXBContext jaxbContext;
+	private boolean formattedOutput = Boolean.TRUE;
+	private String encoding = "UTF-8"; 
 	
 //	public static String CDM_NAMESPACE = "eu.etaxonomy.cdm.model";
 //	public static String[] CDM_SCHEMA_FILES = { "/schema/cdm/common.xsd",
@@ -51,8 +53,16 @@ public class CdmDocumentBuilder {
 //		Schema cdmSchema = schemaFactory.newSchema(sources);
 					
 		jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class});
-		logger.debug(jaxbContext.toString());
+		if (logger.isDebugEnabled()) { logger.debug(jaxbContext.toString()); }
 
+	}
+	
+	public CdmDocumentBuilder(boolean formattedOutput, String encoding) 
+	throws SAXException, JAXBException, IOException {
+		
+		this();
+		this.formattedOutput = formattedOutput;
+		this.encoding = encoding;
 	}
 	
 	public void marshal(DataSet dataSet, Writer writer) throws JAXBException {
@@ -61,9 +71,9 @@ public class CdmDocumentBuilder {
 		marshaller = jaxbContext.createMarshaller();
 		
 		// For test purposes insert newlines to make the XML output readable
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
 		
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
 		
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		marshaller.setListener(marshallerListener);

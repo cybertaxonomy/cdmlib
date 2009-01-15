@@ -21,6 +21,8 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
 
 	private int maxRows = 0;
+	private boolean formattedOutput = Boolean.TRUE;
+	private String encoding = "UTF-8"; 
 
 //	private boolean doAgents = true;
 	private boolean doAgentData = true;
@@ -48,7 +50,22 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 		this.maxRows = maxRows;
 	}
 	
-
+	public boolean isFormattedOutput() {
+		return formattedOutput;
+	}
+	
+	public void setFormattedOutput(boolean formattedOutput) {
+		this.formattedOutput = formattedOutput;
+	}
+	
+	public String getEncoding() {
+		return encoding;
+	}
+	
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+	
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
