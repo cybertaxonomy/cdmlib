@@ -159,12 +159,16 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 					TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId);
 					if (tdwgArea != null){
 						Distribution distribution = Distribution.NewInstance(tdwgArea, status);
-						taxonDescription.addElement(distribution);
-						countDistributions++;
-						if (taxonDescription != oldDescription){
-							taxonStore.add(taxonDescription.getTaxon());
-							oldDescription = taxonDescription;
-							countDescriptions++;
+						if (taxonDescription != null) {
+							taxonDescription.addElement(distribution);
+							countDistributions++;
+							if (taxonDescription != oldDescription){
+								taxonStore.add(taxonDescription.getTaxon());
+								oldDescription = taxonDescription;
+								countDescriptions++;
+							}
+						} else {
+							logger.warn("Distribution " + tdwgArea.toString() + " ignored");
 						}
 					}
 				} catch (UnknownCdmTypeException e) {
@@ -208,8 +212,11 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			Taxon taxon;
 			if ( taxonBase instanceof Taxon ) {
 				taxon = (Taxon) taxonBase;
-			}else{
+			} else if (taxonBase != null) {
 				logger.warn("TaxonBase for Occurrence " + occurrenceId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+				return null;
+			} else {
+				logger.warn("TaxonBase for Occurrence " + occurrenceId + " is null.");
 				return null;
 			}
 			
