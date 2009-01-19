@@ -686,6 +686,48 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+	/**
+	 * Returns the nomenclatural status type identified through its label. 
+	 * 
+	 * @param	statusLabel	the nomenclatural status label
+	 * @return  the nomenclatural status type
+	 * 					
+	 */
+	@Transient
+	public static NomenclaturalStatusType getNomenclaturalStatusTypeByLabel(String statusLabel) throws UnknownCdmTypeException{
+		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
+		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();
+		}else if (statusLabel.equalsIgnoreCase("Doubtful")) { return NomenclaturalStatusType.DOUBTFUL();
+		}else if (statusLabel.equalsIgnoreCase("Confusum")) { return NomenclaturalStatusType.CONFUSUM();
+		}else if (statusLabel.equalsIgnoreCase("Illegitimate")){return NomenclaturalStatusType.ILLEGITIMATE();
+		}else if (statusLabel.equalsIgnoreCase("Superfluous")){ return NomenclaturalStatusType.SUPERFLUOUS();
+		}else if (statusLabel.equalsIgnoreCase("Rejected")) { return NomenclaturalStatusType.REJECTED();
+		}else if (statusLabel.equalsIgnoreCase("Utique Rejected")) { return NomenclaturalStatusType.UTIQUE_REJECTED();
+		}else if (statusLabel.equalsIgnoreCase("Conserved Prop")) { return NomenclaturalStatusType.CONSERVED_PROP();
+		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved Prop")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();
+		}else if (statusLabel.equalsIgnoreCase("Legitimate")) { return NomenclaturalStatusType.LEGITIMATE();
+		}else if (statusLabel.equalsIgnoreCase("Alternative")) { return NomenclaturalStatusType.ALTERNATIVE();
+		}else if (statusLabel.equalsIgnoreCase("Novum")) { return NomenclaturalStatusType.NOVUM();
+		}else if (statusLabel.equalsIgnoreCase("Utique Rejected Prop")) { return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();
+		}else if (statusLabel.equalsIgnoreCase("Orthography Conserved")) { return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();
+		}else if (statusLabel.equalsIgnoreCase("Rejected Prop")) { return NomenclaturalStatusType.REJECTED_PROP();
+		}else if (statusLabel.equalsIgnoreCase("Conserved")) { return NomenclaturalStatusType.CONSERVED();
+		}else if (statusLabel.equalsIgnoreCase("Sanctioned")) { return NomenclaturalStatusType.SANCTIONED();
+		}else if (statusLabel.equalsIgnoreCase("Invalid")) { return NomenclaturalStatusType.INVALID();
+		}else if (statusLabel.equalsIgnoreCase("Nudum")){ return NomenclaturalStatusType.NUDUM();
+		}else if (statusLabel.equalsIgnoreCase("Combination Invalid")){ return NomenclaturalStatusType.COMBINATION_INVALID();
+		}else if (statusLabel.equalsIgnoreCase("Provisional")) { return NomenclaturalStatusType.PROVISIONAL();
+		}else if (statusLabel.equalsIgnoreCase("Valid")) { return NomenclaturalStatusType.VALID();
+		}else if (statusLabel.equalsIgnoreCase("Opus Utique Oppr")) { return NomenclaturalStatusType.OPUS_UTIQUE_OPPR();
+		}else if (statusLabel.equalsIgnoreCase("Subnudum")) { return NomenclaturalStatusType.SUBNUDUM();
+		}else {
+			if (statusLabel == null){
+				statusLabel = "(null)";
+			}
+			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusLabel);
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List, eu.etaxonomy.cdm.model.common.Language)
 	 */
