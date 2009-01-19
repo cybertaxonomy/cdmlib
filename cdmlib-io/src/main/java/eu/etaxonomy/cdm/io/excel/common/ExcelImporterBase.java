@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -15,6 +16,7 @@ import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.excel.taxa.TaxonLight;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -30,7 +32,7 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 	
 	ArrayList<HashMap<String, String>> recordList = null;
-	private String taxonName = "";
+	//private String taxonName = "";
 	
 	private CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
@@ -65,11 +67,13 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
+		boolean success = false;
+		
     	logger.debug("Importing excel data");
     	appCtr = config.getCdmAppController();
     	
     	configurator = (ExcelImportConfiguratorBase) config;
-    	//config.setNomenclaturalCode(NomenclaturalCode.ICBN());
+    	
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		if (nc == null) {
 			logger.error("Nomenclatural code could not be determined.");
@@ -85,8 +89,8 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			analyzeRecord(record);
-    			saveRecord();
+    			success = analyzeRecord(record);
+    			success = saveRecord();
     		}
     		appCtr.commitTransaction(txStatus);
     	}
@@ -100,7 +104,7 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
     		e.printStackTrace();
 		}
     	
-    	return true;
+    	return success;
 	}
 
 	@Override
@@ -120,6 +124,8 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	
 	protected abstract boolean saveRecord();
 	
+	//protected abstract boolean storeRecord();
+	
 	
 	public ExcelImportConfiguratorBase getConfigurator() {
 		
@@ -132,13 +138,13 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		return appCtr;
 	}
 
-	public String getTaxonName() {
-		
-		return this.taxonName;
-	}
-	
-	public void setTaxonName(String taxonNameBase) {
-	
-		this.taxonName = taxonNameBase;
-	}
+//	public String getTaxonName() {
+//		
+//		return this.taxonName;
+//	}
+//	
+//	public void setTaxonName(String taxonNameBase) {
+//	
+//		this.taxonName = taxonNameBase;
+//	}
 }

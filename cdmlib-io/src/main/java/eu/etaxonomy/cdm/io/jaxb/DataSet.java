@@ -152,7 +152,7 @@ public class DataSet {
 	// and the Taxon methods return sets, i.e.
     // Taxon.getTaxonomicChildren() returns Set<Taxon>.
 
-    @XmlElementWrapper(name = "Agents")
+    @XmlElementWrapper(name = "Agents", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
         @XmlElement(name = "Team", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Team.class),
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
@@ -160,7 +160,7 @@ public class DataSet {
     })
     protected List<? extends Agent> agents;
     
-    @XmlElementWrapper(name = "AgentData")
+    @XmlElementWrapper(name = "AgentData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     @XmlElement(name = "Address", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Address.class),
     @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
@@ -168,7 +168,7 @@ public class DataSet {
     })
     protected List<VersionableEntity> agentData;
 
-    @XmlElementWrapper(name = "FeatureData")
+    @XmlElementWrapper(name = "FeatureData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
     @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
@@ -176,14 +176,14 @@ public class DataSet {
 //    protected List<VersionableEntity> featureData;
     protected List<VersionableEntity<?>> featureData;
 
-    @XmlElementWrapper(name = "LanguageData")
+    @XmlElementWrapper(name = "LanguageData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
     @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
     })
     protected List<LanguageStringBase> languageData;
     
-    @XmlElementWrapper(name = "Terms")
+    @XmlElementWrapper(name = "Terms", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "AbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = AbsenceTerm.class),
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
@@ -224,11 +224,11 @@ public class DataSet {
     })
     protected List<DefinedTermBase> terms;
 
-    @XmlElementWrapper(name = "TermVocabularies")
+    @XmlElementWrapper(name = "TermVocabularies", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     protected List<TermVocabulary<DefinedTermBase>> termVocabularies;
 
-    @XmlElementWrapper(name = "Occurrences")
+    @XmlElementWrapper(name = "Occurrences", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
     	@XmlElement(name = "FieldObservation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldObservation.class),
@@ -239,7 +239,7 @@ public class DataSet {
     })
     protected List<SpecimenOrObservationBase> occurrences;
     
-    @XmlElementWrapper(name = "References")
+    @XmlElementWrapper(name = "References", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
     	@XmlElement(name = "Book", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Book.class),
@@ -260,7 +260,7 @@ public class DataSet {
     })
     protected List<ReferenceBase> references;
 
-    @XmlElementWrapper(name = "ReferencedEntities")
+    @XmlElementWrapper(name = "ReferencedEntities", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "NomenclaturalStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalStatus.class),
     	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
@@ -269,7 +269,7 @@ public class DataSet {
     protected List<ReferencedEntityBase> referencedEntities;
 
     	
-    @XmlElementWrapper(name = "TaxonomicNames")
+    @XmlElementWrapper(name = "TaxonomicNames", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "BacterialName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BacterialName.class),
     	@XmlElement(name = "BotanicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BotanicalName.class),
@@ -279,15 +279,15 @@ public class DataSet {
     })
     protected List<TaxonNameBase> taxonomicNames;
 
-    @XmlElementWrapper(name = "Taxa")
+    @XmlElementWrapper(name = "Taxa", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<Taxon> taxa;
 	
-    @XmlElementWrapper(name = "Synonyms")
+    @XmlElementWrapper(name = "Synonyms", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<Synonym> synonyms;
 
-    @XmlElementWrapper(name = "Relationships")
+    @XmlElementWrapper(name = "Relationships", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
     	@XmlElement(name = "TaxonRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = TaxonRelationship.class),
     	@XmlElement(name = "SynonymRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = SynonymRelationship.class),
@@ -296,12 +296,12 @@ public class DataSet {
     })
     protected Set<RelationshipBase> relationships;
 
-    @XmlElementWrapper(name = "Media_")
+    @XmlElementWrapper(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
     protected List<Media> media;
     //protected List<VersionableEntity> media;
     
-    @XmlElementWrapper(name = "HomotypicalGroups")
+    @XmlElementWrapper(name = "HomotypicalGroups", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
     protected List<HomotypicalGroup> homotypicalGroups;
 

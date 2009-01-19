@@ -5,17 +5,24 @@ package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -27,7 +34,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 	
 	private static final Logger logger = Logger.getLogger(NormalExplicitImporter.class);
 	
-//	@Override
+	//	@Override
 //	protected boolean doInvoke(IImportConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores) {
 //		
@@ -66,7 +73,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     				Float fobj = new Float(Float.parseFloat(value));
     				int ivalue = fobj.intValue();
         			logger.debug("ivalue = '" + ivalue + "'");
-    				setId(ivalue);
+        			getTaxonLight().setId(ivalue);
     			} catch (NumberFormatException ex) {
     				success = false;
     				logger.error("Id " + value + " is not an integer");
@@ -77,7 +84,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     				Float fobj = new Float(Float.parseFloat(value));
     				int ivalue = fobj.intValue();
         			logger.debug("ivalue = '" + ivalue + "'");
-    				setParentId(ivalue);
+        			getTaxonLight().setParentId(ivalue);
     			} catch (NumberFormatException ex) {
     				success = false;
     				logger.error("ParentId " + value + " is not an integer");
@@ -85,7 +92,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				
 			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
     			try {
-    				setRank(value);
+    				getTaxonLight().setRank(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting rank " + value);
@@ -93,7 +100,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			
 			} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
     			try {
-    				setTaxonName(value);
+    				getTaxonLight().setScientificName(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting name " + value);
@@ -101,7 +108,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			
 			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
     			try {
-    				setAuthor(value);
+    				getTaxonLight().setAuthor(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting author " + value);
@@ -109,7 +116,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			
 			} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
     			try {
-    				setNameStatus(value);
+    				getTaxonLight().setNameStatus(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting name status " + value);
@@ -117,7 +124,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			
 			} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
     			try {
-    				setCommonName(value);
+    				getTaxonLight().setCommonName(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting vernacular name " + value);
@@ -125,7 +132,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			
 			} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
     			try {
-    				setLanguage(value);
+    				getTaxonLight().setLanguage(value);
     			} catch (Exception ex) {
     				success = false;
     				logger.error("Error setting language " + value);
@@ -136,9 +143,11 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				logger.error("Unexpected column header " + key);
 			}
     	}
+    	//success = saveRecord();
     	return success;
     }
 	
+
 	/** 
 	 *  Stores taxa records in DB
 	 */
@@ -149,57 +158,126 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		
 		boolean success = true;
 		Rank rank = null;
-		HashMap<Integer, TaxonLight> taxa = getTaxa();
 		
 		CdmApplicationController appCtr = getApplicationController();
 		
-		String name = getTaxonName();
-		int parentId = getParentId();
+		int parentId = getTaxonLight().getParentId();
+		String rankStr = getTaxonLight().getRank();
+		String taxonNameStr = getTaxonLight().getScientificName();
+		String authorStr = getTaxonLight().getAuthor();
+		String nameStatus = getTaxonLight().getNameStatus();
+		String commonNameStr = getTaxonLight().getCommonName();
 		
-		if (!name.equals("")) {
-			TaxonLight newTaxon = new TaxonLight(name, parentId);
-
-			// Add the taxon to the processed taxa map
-			if (taxa.containsKey(newTaxon)) {
-				logger.info("Taxon '" + name + "' is already loaded");
-				return true;
-			} else {
-				taxa.put(getId(), newTaxon);
-			}
+		if (!taxonNameStr.equals("")) {
 
 			// Determine the rank
-
 			try {
-				rank = Rank.getRankByName(getRank());
+				rank = Rank.getRankByName(rankStr);
 			} catch (UnknownCdmTypeException ex) {
 				success = false;
-				logger.error(getRank() + " is not a valid rank.");
+				logger.error(rankStr + " is not a valid rank.");
+			}
+			
+            // Create the name
+			// Depending on the setting of the nomenclatural code in the configurator 
+			// (botanical code, zoological code, etc.), create the corresponding taxon name object. 
+			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
+			TaxonNameBase<?,?> taxonNameBase = nc.getNewTaxonNameInstance(rank);
+			taxonNameBase.setTitleCache(taxonNameStr);
+			taxonNameBase.setFullTitleCache(taxonNameStr);
+			//appCtr.getNameService().saveTaxonName(taxonName);
+			
+			// Create the author
+			if (!authorStr.equals("")) {
+				if (getAuthors().contains(authorStr)) {
+					logger.debug("Author '" + authorStr + "' is already loaded");
+				} else {
+					getAuthors().add(authorStr);
+					Person author = Person.NewTitledInstance(authorStr);
+					taxonNameBase.setCreatedBy(author);
+				}
+			}
+			
+			// Create the nomenclatural status
+			try {
+			NomenclaturalStatusType statusType = 
+				NomenclaturalStatusType.getNomenclaturalStatusTypeByLabel(nameStatus);
+			taxonNameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
+			} catch (UnknownCdmTypeException ex) {
+				logger.warn("'" + nameStatus + "' is not a valid nomenclatural status label");
+			}
+			// Create the taxon
+			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
+			if (logger.isDebugEnabled()) { logger.debug("taxon = " + taxon.toString()); }
+		
+			// Add the parent relationship
+			if (getTaxonLight().getParentId() != 0) {
+				Taxon parentTaxon = findParentTaxon(getTaxonLight());
+				if (parentTaxon != null) {
+					parentTaxon.addTaxonomicChild(taxon, null, null);
+				} else {
+					logger.warn("Taxonomic parent not found for '" + taxonNameStr + "'");
+				}
 			}
 
-			// Depending on the setting of the nomenclatural code in the configurator (botanical code, zoological code, etc.),
-			// create the corresponding taxon name object. 
-
-			//if (!name.equals("")) {
-			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-//			if (nc != null) {
-			TaxonNameBase<?,?> taxonName = nc.getNewTaxonNameInstance(rank);
-			taxonName.setTitleCache(name);
-			taxonName.setFullTitleCache(name);
-		    appCtr.getNameService().saveTaxonName(taxonName);
-//			} else {
-//				logger.error("Nomenclatural code is null");
-//				success = false;
-//			}
-		    
-		    Taxon taxon = Taxon.NewInstance(taxonName, null);
-		    appCtr.getTaxonService().saveTaxon(taxon);
+			// Save the taxon
+			UUID taxonUuid = appCtr.getTaxonService().saveTaxon(taxon);
+			if (logger.isDebugEnabled()) { logger.debug("taxonUuid = " + taxonUuid); }
 			
-		} //else 	
-		  // Name column can be empty if just common name is provided.
+			// Add the taxon representation to the processed taxa map
+			if (getTaxaMap().containsKey(getTaxonLight())) {
+				logger.info("Taxon name '" + taxonNameStr + "' is already loaded");
+				return true;
+			} else { 
+				UUID tuuid = getTaxaMap().put(getTaxonLight(), taxonUuid);
+				if (logger.isDebugEnabled()) { 
+					logger.debug(getTaxonLight().getScientificName());
+					logger.debug("tuuid = " + tuuid); 
+					}
+			}
+			//Set the previous taxon
+			setPreviousTaxonUuid(taxonUuid);
 			
-
-		
+			} else 	{ 
+				// add common name to previous taxon
+				
+				UUID taxonUuid = getPreviousTaxonUuid();
+				Language language = appCtr.getTermService().getLanguageByIso(getTaxonLight().getLanguage());
+				CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonNameStr, language);
+				TaxonBase taxonBase = appCtr.getTaxonService().findByUuid(taxonUuid);
+				try {
+					TaxonDescription description = TaxonDescription.NewInstance((Taxon)taxonBase);
+					description.addElement(commonTaxonName);
+					logger.info("Common name '" + commonNameStr + "' added to '" + taxonNameStr + "'");
+				} catch (ClassCastException ex) {
+					logger.error("'" + taxonNameStr + "' is not a taxon instance.");
+				}
+			}
 		
 		return success;
     }
+
+	
+	private Taxon findParentTaxon(TaxonLight taxonLight) {
+		
+		UUID parentTaxonUuid = null;
+		Taxon parentTaxon = null;
+		
+		if (getTaxaMap().containsKey(taxonLight)) {
+			parentTaxonUuid = getTaxaMap().get(taxonLight);
+		} else {
+			logger.warn("Parent taxon of " + taxonLight.getScientificName() + " has not been processed yet." +
+					"Ignoring parent-child relationship.");
+			return null;
+		}
+		
+		TaxonBase parentTaxonBase = getApplicationController().getTaxonService().findByUuid(parentTaxonUuid);
+		try {
+			parentTaxon = (Taxon)parentTaxonBase;
+		} catch (ClassCastException ex) {
+			logger.error("'" + taxonLight.getScientificName() + "' is not a taxon instance.");
+		}
+		return parentTaxon;
+	}
+	
 }

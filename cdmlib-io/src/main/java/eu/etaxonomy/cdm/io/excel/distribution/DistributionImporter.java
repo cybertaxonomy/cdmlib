@@ -107,7 +107,6 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     	*/
     	
         String editName = "";
-        String distribution = "";
         ArrayList<String> distributionList = new ArrayList<String>();
         String status = "";
         String literatureNumber = "";
