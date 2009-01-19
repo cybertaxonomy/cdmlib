@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  */
 public class NormalExplicitActivator {
 
-	private static final String dbName = "cdm_test_jaxb";
+	private static final String dbName = "cdm_test_anahit";
 	private static String fileName = 
 		new String( System.getProperty("user.home") + "\\Eigene Dateien\\archive\\dbImport\\gbif_test\\NormalExplicit.xls");
 	
