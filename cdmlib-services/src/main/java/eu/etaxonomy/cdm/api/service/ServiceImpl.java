@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> implements IService<CdmBase> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServiceImpl.class);
