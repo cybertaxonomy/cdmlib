@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -39,6 +40,19 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		return false;
 	}
 	
+	private int floatString2IntValue(String value) {
+		
+		int intValue = 0;
+		try {
+			Float fobj = new Float(Float.parseFloat(value));
+			intValue = fobj.intValue();
+			if (logger.isDebugEnabled()) { logger.debug("Value formatted: " + intValue); }
+		} catch (NumberFormatException ex) {
+			logger.error(value + " is not an integer");
+		}
+		return intValue;
+	}
+	
 	@Override
     protected boolean analyzeRecord(HashMap<String, String> record) {
 		
@@ -54,79 +68,35 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     		
     		String value = (String) record.get(key);
     		if (!value.equals("")) {
-    			if (logger.isDebugEnabled()) { logger.debug(key + ": '" + value + "'"); }
+    			if (logger.isDebugEnabled()) { logger.debug(key + ": " + value); }
         		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
     		}
     		
     		if (key.equalsIgnoreCase(ID_COLUMN)) {
-    			try {
-    				Float fobj = new Float(Float.parseFloat(value));
-    				int ivalue = fobj.intValue();
-    				if (logger.isDebugEnabled()) { logger.debug("Id formatted: '" + ivalue + "'"); }
-        			getTaxonLight().setId(ivalue);
-    			} catch (NumberFormatException ex) {
-    				success = false;
-    				logger.error("Id " + value + " is not an integer");
-    			}
+    			int ivalue = floatString2IntValue(value);
+    			getTaxonLight().setId(ivalue);
     			
 			} else if(key.equalsIgnoreCase(PARENT_ID_COLUMN)) {
-    			try {
-    				Float fobj = new Float(Float.parseFloat(value));
-    				int ivalue = fobj.intValue();
-    				if (logger.isDebugEnabled()) { logger.debug("ParentId formatted: '" + ivalue + "'"); }
-        			getTaxonLight().setParentId(ivalue);
-    			} catch (NumberFormatException ex) {
-    				success = false;
-    				logger.error("ParentId " + value + " is not an integer");
-    			}
+				int ivalue = floatString2IntValue(value);
+				getTaxonLight().setParentId(ivalue);
 				
 			} else if(key.equalsIgnoreCase(RANK_COLUMN)) {
-    			try {
-    				getTaxonLight().setRank(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting rank " + value);
-    			}
+				getTaxonLight().setRank(value);
     			
 			} else if(key.equalsIgnoreCase(SCIENTIFIC_NAME_COLUMN)) {
-    			try {
-    				getTaxonLight().setScientificName(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting name " + value);
-    			}
+				getTaxonLight().setScientificName(value);
     			
 			} else if(key.equalsIgnoreCase(AUTHOR_COLUMN)) {
-    			try {
-    				getTaxonLight().setAuthor(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting author " + value);
-    			}
-    			
+				getTaxonLight().setAuthor(value);
+   			
 			} else if(key.equalsIgnoreCase(NAME_STATUS_COLUMN)) {
-    			try {
-    				getTaxonLight().setNameStatus(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting name status " + value);
-    			}
+				getTaxonLight().setNameStatus(value);
     			
 			} else if(key.equalsIgnoreCase(VERNACULAR_NAME_COLUMN)) {
-    			try {
-    				getTaxonLight().setCommonName(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting vernacular name " + value);
-    			}
+				getTaxonLight().setCommonName(value);
     			
 			} else if(key.equalsIgnoreCase(LANGUAGE_COLUMN)) {
-    			try {
-    				getTaxonLight().setLanguage(value);
-    			} catch (Exception ex) {
-    				success = false;
-    				logger.error("Error setting language " + value);
-    			}
+				getTaxonLight().setLanguage(value);
     			
 			} else {
 				success = false;
@@ -175,11 +145,17 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 			// Create the author
 			if (!authorStr.equals("")) {
 				if (getAuthors().contains(authorStr)) {
-					if (logger.isDebugEnabled()) { logger.debug("Author '" + authorStr + "' is already loaded"); }
+					if (logger.isDebugEnabled()) { logger.debug("Author " + authorStr + " is already loaded"); }
 				} else {
 					getAuthors().add(authorStr);
 					Person author = Person.NewTitledInstance(authorStr);
-					taxonNameBase.setCreatedBy(author);
+					try {
+						NonViralName<?> nonViralName = (NonViralName<?>)taxonNameBase;
+						nonViralName.setCombinationAuthorTeam(author);
+					} catch (ClassCastException ex) {
+						logger.error(taxonNameBase.getTitleCache() + " is not a  non-viral name." +
+								"Author " + authorStr + " ignored");
+					}
 				}
 			}
 			
@@ -189,7 +165,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				NomenclaturalStatusType.getNomenclaturalStatusTypeByLabel(nameStatus);
 			taxonNameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
 			} catch (UnknownCdmTypeException ex) {
-				logger.warn("'" + nameStatus + "' is not a valid nomenclatural status label");
+				logger.warn(nameStatus + " is not a valid nomenclatural status label");
 			}
 			// Create the taxon
 			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
@@ -201,11 +177,11 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 					parentTaxon.addTaxonomicChild(taxon, null, null);
 					UUID parentUuid = appCtr.getTaxonService().saveTaxon(parentTaxon);
 					if (logger.isDebugEnabled()) { 
-						logger.debug("Child '" + getTaxonLight().getScientificName() + "' added to parent '" 
+						logger.debug("Child " + getTaxonLight().getScientificName() + " added to parent " 
 								+ parentTaxon.getTitleCache() + " (" + parentUuid + ")"); 
 						}
 				} else {
-					logger.warn("Taxonomic parent not found for '" + taxonNameStr + "'");
+					logger.warn("Taxonomic parent not found for " + taxonNameStr);
 				}
 			}
 
@@ -215,7 +191,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 			
 			// Add the taxon representation to the processed taxa map
 			if (getTaxaMap().containsKey(getTaxonLight())) {
-				logger.info("Taxon name '" + taxonNameStr + "' is already loaded");
+				logger.info("Taxon name " + taxonNameStr + " is already loaded");
 				return true;
 			} else { 
 				getTaxaMap().put(getTaxonLight(), taxonUuid);
@@ -233,9 +209,9 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				try {
 					TaxonDescription description = TaxonDescription.NewInstance((Taxon)taxonBase);
 					description.addElement(commonTaxonName);
-					logger.info("Common name '" + commonNameStr + "' added to '" + taxonNameStr + "'");
+					logger.info("Common name " + commonNameStr + " added to " + taxonBase.getTitleCache());
 				} catch (ClassCastException ex) {
-					logger.error("'" + taxonNameStr + "' is not a taxon instance.");
+					logger.error(taxonNameStr + " is not a taxon instance.");
 				}
 			}
 		
@@ -267,7 +243,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		try {
 			parentTaxon = (Taxon)parentTaxonBase;
 		} catch (ClassCastException ex) {
-			logger.error("'" + taxonLight.getScientificName() + "' is not a taxon instance.");
+			logger.error(taxonLight.getScientificName() + " is not a taxon instance.");
 		}
 		return parentTaxon;
 	}
