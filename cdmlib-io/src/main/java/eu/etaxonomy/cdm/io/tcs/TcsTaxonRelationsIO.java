@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -72,8 +70,6 @@ public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implemen
 		Element root = tcsConfig.getSourceRoot();
 		Namespace taxonConceptNamespace = tcsConfig.getTcNamespace();
 
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
-
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
@@ -110,7 +106,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implemen
 			}//hasRelationships
 		}//elTaxonConcept
 		logger.info("Taxa to save: " + taxonStore.size());
-		taxonService.saveTaxonAll(taxonStore);
+		getTaxonService().saveTaxonAll(taxonStore);
 		
 		logger.info("end makeRelTaxa ...");
 		return success;

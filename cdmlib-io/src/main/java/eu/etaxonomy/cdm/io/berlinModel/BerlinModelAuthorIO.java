@@ -9,12 +9,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -53,7 +53,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
-		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<Agent> teamMap = (MapWrapper<Agent>)stores.get(ICdmIO.AUTHOR_STORE);
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
@@ -63,7 +63,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 		logger.info("start makeAuthors ...");
 		boolean success = true ;
 		
-		IAgentService agentService = config.getCdmAppController().getAgentService();
+		
 		
 		//get data from database
 		String strQuery = 
@@ -109,7 +109,7 @@ public class BerlinModelAuthorIO extends BerlinModelIOBase {
 
 			
 		logger.info(i + " authors handled");
-		agentService.saveAgentAll(teamMap.objects());
+		getAgentService().saveAgentAll(teamMap.objects());
 
 		logger.info("end make authors ...");
 		return success;

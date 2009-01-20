@@ -109,7 +109,6 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		logger.info("start make occurrences ...");
 		
@@ -183,7 +182,7 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
 			logger.info("Taxa to save: " + taxonStore.size());
-			taxonService.saveTaxonAll(taxonStore);	
+			getTaxonService().saveTaxonAll(taxonStore);	
 			
 			logger.info("end make occurrences ...");
 			return true;

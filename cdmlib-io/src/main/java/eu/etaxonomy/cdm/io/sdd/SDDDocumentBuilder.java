@@ -537,7 +537,7 @@ public class SDDDocumentBuilder {
 						elCharacters.appendChild(elQuantitativeCharacter);
 					}
 					if (character.isSupportsTextData()) {
-						Set<TermVocabulary> enumerations = character.getSupportedCategoricalEnumerations();
+						Set<TermVocabulary<State>> enumerations = character.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size()>0) {
 								ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);

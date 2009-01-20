@@ -121,7 +121,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		ITaxonService taxonService = getTaxonService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;

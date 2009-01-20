@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.babadshanjan
  * @created 25.09.2008
  */
+@Component
 public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
 // public class CdmExporter extends CdmIoBase implements ICdmIoExport {
 // TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {
@@ -74,12 +75,7 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
 		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
-		//CdmApplicationController appCtr = config.getCdmAppController();
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
-		// TODO: 
-		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
-
-		TransactionStatus txStatus = appCtr.startTransaction(true);
+		TransactionStatus txStatus = startTransaction(true);
 		DataSet dataSet = new DataSet();
 		List<Taxon> taxa = null;
 		List<DefinedTermBase> terms = null;
@@ -112,8 +108,7 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 			logger.error("Marshalling error");
 			e.printStackTrace();
 		} 
-		appCtr.commitTransaction(txStatus);
-		appCtr.close();
+		commitTransaction(txStatus);
 		
 		return true;
 
@@ -125,10 +120,6 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
 		final int MAX_ROWS = 50000;
 		int numberOfRows = jaxbExpConfig.getMaxRows();
-		//CdmApplicationController appCtr = config.getCdmAppController();
-		CdmApplicationController appCtr = config.getCdmAppController(false, true);
-		// TODO: 
-		//CdmApplicationController appCtr = config.getCdmAppController(false, true);
 
 		int agentRows = numberOfRows;
 		int definedTermBaseRows = numberOfRows;
@@ -146,54 +137,54 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		if (jaxbExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
-			dataSet.setTermVocabularies(appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
+			dataSet.setTermVocabularies(getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
 		}
 
 		if (jaxbExpConfig.isDoLanguageData() == true) {
 			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
 			logger.info("# Representation, Language String");
-			dataSet.setLanguageData(appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0));
-			dataSet.addLanguageData(appCtr.getTermService().getAllLanguageStrings(MAX_ROWS, 0));
+			dataSet.setLanguageData(getTermService().getAllRepresentations(MAX_ROWS, 0));
+			dataSet.addLanguageData(getTermService().getAllLanguageStrings(MAX_ROWS, 0));
 		}
 
 		if (jaxbExpConfig.isDoTerms() == true) {
-			if (definedTermBaseRows == 0) { definedTermBaseRows = appCtr.getTermService().count(DefinedTermBase.class); }
+			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
-			dataSet.setTerms(appCtr.getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+			dataSet.setTerms(getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoAuthors() == true) {
-			if (agentRows == 0) { agentRows = appCtr.getAgentService().count(Agent.class); }
+			if (agentRows == 0) { agentRows = getAgentService().count(Agent.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-			dataSet.setAgents(appCtr.getAgentService().getAllAgents(agentRows, 0));
+			dataSet.setAgents(getAgentService().getAllAgents(agentRows, 0));
 		}
 
 		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
-			if (referenceBaseRows == 0) { referenceBaseRows = appCtr.getReferenceService().count(ReferenceBase.class); }
+			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
 			logger.info("# ReferenceBase: " + referenceBaseRows);
-			dataSet.setReferences(appCtr.getReferenceService().getAllReferences(referenceBaseRows, 0));
+			dataSet.setReferences(getReferenceService().getAllReferences(referenceBaseRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoTaxonNames() == true) {
-			if (taxonNameBaseRows == 0) { taxonNameBaseRows = appCtr.getNameService().count(TaxonNameBase.class); }
+			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
 			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
-			//logger.info("    # Taxon: " + appCtr.getNameService().count(BotanicalName.class));
-			dataSet.setTaxonomicNames(appCtr.getNameService().getAllNames(taxonNameBaseRows, 0));
+			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
+			dataSet.setTaxonomicNames(getNameService().getAllNames(taxonNameBaseRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoHomotypicalGroups() == true) {
 			if (homotypicalGroupRows == 0) { homotypicalGroupRows = MAX_ROWS; }
 			logger.info("# Homotypical Groups");
-			dataSet.setHomotypicalGroups(appCtr.getNameService().getAllHomotypicalGroups(homotypicalGroupRows, 0));
+			dataSet.setHomotypicalGroups(getNameService().getAllHomotypicalGroups(homotypicalGroupRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoTaxa() == true) {
-			if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+			if (taxonBaseRows == 0) { taxonBaseRows = getTaxonService().count(TaxonBase.class); }
 			logger.info("# TaxonBase: " + taxonBaseRows);
 //			dataSet.setTaxa(new ArrayList<Taxon>());
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
-			List<TaxonBase> tb = appCtr.getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
+			List<TaxonBase> tb = getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
 			for (TaxonBase taxonBase : tb) {
 				if (taxonBase instanceof Taxon) {
 					dataSet.addTaxon((Taxon)taxonBase);
@@ -208,44 +199,44 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 		// TODO: 
 		// retrieve taxa and synonyms separately
 		// need correct count for taxa and synonyms
-//		if (taxonBaseRows == 0) { taxonBaseRows = appCtr.getTaxonService().count(TaxonBase.class); }
+//		if (taxonBaseRows == 0) { taxonBaseRows = getTaxonService().count(TaxonBase.class); }
 //		logger.info("# Synonym: " + taxonBaseRows);
 //		dataSet.setSynonyms(new ArrayList<Synonym>());
-//		dataSet.setSynonyms(appCtr.getTaxonService().getAllSynonyms(taxonBaseRows, 0));
+//		dataSet.setSynonyms(getTaxonService().getAllSynonyms(taxonBaseRows, 0));
 
 		if (jaxbExpConfig.isDoRelTaxa() == true) {
 			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
 			logger.info("# Relationships");
-			List<RelationshipBase> relationList = appCtr.getTaxonService().getAllRelationships(relationshipRows, 0);
+			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
 			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
 			dataSet.setRelationships(relationSet);
 		}
 
 		if (jaxbExpConfig.isDoReferencedEntities() == true) {
 			logger.info("# Referenced Entities");
-			dataSet.setReferencedEntities(appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
-			dataSet.addReferencedEntities(appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0));
+			dataSet.setReferencedEntities(getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
+			dataSet.addReferencedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
 		}
 
 		if (jaxbExpConfig.isDoOccurrence() == true) {
-			if (occurrencesRows == 0) { occurrencesRows = appCtr.getOccurrenceService().count(SpecimenOrObservationBase.class); }
+			if (occurrencesRows == 0) { occurrencesRows = getOccurrenceService().count(SpecimenOrObservationBase.class); }
 			logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
-			dataSet.setOccurrences(appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+			dataSet.setOccurrences(getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoMedia() == true) {
 			if (mediaRows == 0) { mediaRows = MAX_ROWS; }
 			logger.info("# Media");
-			dataSet.setMedia(appCtr.getMediaService().getAllMedia(mediaRows, 0));
-//			dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentations(mediaRows, 0));
-//			dataSet.addMedia(appCtr.getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
+			dataSet.setMedia(getMediaService().getAllMedia(mediaRows, 0));
+//			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
+//			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
 		}
 
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			dataSet.setFeatureData(appCtr.getDescriptionService().getFeatureNodesAll());
-			dataSet.addFeatureData(appCtr.getDescriptionService().getFeatureTreesAll());
+			dataSet.setFeatureData(getDescriptionService().getFeatureNodesAll());
+			dataSet.addFeatureData(getDescriptionService().getFeatureTreesAll());
 		}
 	}
 

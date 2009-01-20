@@ -14,21 +14,63 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmIoBase<T extends IIoConfigurator> implements ICdmIO<T> {
+public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicationDefaultConfiguration implements ICdmIO<T> {
 	private static Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	protected String ioName = null;
 
+	@Autowired
+	SessionFactory sessionFactory;
+	
+	public void flush() {		
+		sessionFactory.getCurrentSession().flush();
+	}
+	
+	public TransactionStatus startTransaction() {
+		
+		return startTransaction(false);
+	}
+	
+	public TransactionStatus startTransaction(Boolean readOnly) {
+		
+		DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
+		defaultTxDef.setReadOnly(readOnly);
+		TransactionDefinition txDef = defaultTxDef;
+
+		// Log some transaction-related debug information.
+		logger.debug("Transaction name = " + txDef.getName());
+		logger.debug("Transaction facets:");
+		logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+		logger.debug("Isolation level = " + txDef.getIsolationLevel());
+		logger.debug("Timeout = " + txDef.getTimeout());
+		logger.debug("Read Only = " + txDef.isReadOnly());
+		// org.springframework.orm.hibernate3.HibernateTransactionManager
+		// provides more transaction/session-related debug information.
+		
+		TransactionStatus txStatus = super.getTransactionManager().getTransaction(txDef);
+		return txStatus;
+	}
+
+	public void commitTransaction(TransactionStatus txStatus){
+		PlatformTransactionManager txManager = super.getTransactionManager();
+		txManager.commit(txStatus);
+		return;
+	}
 	
 	/**
 	 * 
@@ -58,7 +100,7 @@ public abstract class CdmIoBase<T extends IIoConfigurator> implements ICdmIO<T> 
 	 */
 	public boolean invoke(T config,
 //	public boolean invoke(IIoConfigurator config,
-			Map stores) {
+			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		if (isIgnore(config)){
 			logger.warn("No invoke for " + ioName + " (ignored)");
 			return true;

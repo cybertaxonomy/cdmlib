@@ -69,7 +69,7 @@ public class TcsXmlPublicationsIO extends TcsXmlIoBase implements ICdmIO<IImport
 		boolean obligatory;
 	
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
+		IReferenceService referenceService = getReferenceService();
 		
 		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
 		Element elDataSet = getDataSetElement(tcsConfig);

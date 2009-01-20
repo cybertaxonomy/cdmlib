@@ -45,6 +45,6 @@ public interface IExportConfigurator extends IIoConfigurator {
 	 * If a controller was already created before the last created controller is returned.
 	 * @return
 	 */
-	public CdmApplicationController getCdmAppController();
-	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
+//	public CdmApplicationController getCdmAppController();
+//	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
 }

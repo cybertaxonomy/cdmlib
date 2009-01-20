@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -64,7 +63,6 @@ public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		logger.info("start make Specimens ...");
 		
 		MapWrapper<Specimen> specimenMap = (MapWrapper<Specimen>)stores.get(ICdmIO.SPECIMEN_STORE);
-		IOccurrenceService occurrenceService = config.getCdmAppController().getOccurrenceService();
 
 		boolean success = true;
 		String childName;
@@ -131,7 +129,7 @@ public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		}
 		
 		logger.info("Save bibliographical references (" + i +")");
-		occurrenceService.saveSpecimenOrObservationBaseAll(specimenMap.objects());
+	    getOccurrenceService().saveSpecimenOrObservationBaseAll(specimenMap.objects());
 
 		logger.info("end make Specimens ...");
 		return success;

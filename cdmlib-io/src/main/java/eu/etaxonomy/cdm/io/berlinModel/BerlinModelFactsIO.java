@@ -16,10 +16,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -62,11 +58,10 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		return result;
 	}
 
-	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig, CdmApplicationController cdmApp){
+	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
 		
 //		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
 		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
-		ITermService termService = cdmApp.getTermService();
 
 		Source source = bmiConfig.getSource();
 
@@ -108,7 +103,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 	
 			}
 			Collection<Feature> col = result.getAllValues();
-			termService.saveTermsAll(col);
+			getTermService().saveTermsAll(col);
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -133,12 +128,10 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		CdmApplicationController cdmApp = config.getCdmAppController();
-		ITaxonService taxonService = cdmApp.getTaxonService();
 		
 		logger.info("start makeFacts ...");
 		
-		MapWrapper<Feature> featureMap = invokeFactCategories(bmiConfig, cdmApp);
+		MapWrapper<Feature> featureMap = invokeFactCategories(bmiConfig);
 		
 		//for testing only
 		//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
@@ -247,7 +240,7 @@ public class BerlinModelFactsIO  extends BerlinModelIOBase {
 			}
 			logger.info("Facts handled: " + (i-1));
 			logger.info("Taxa to save: " + taxonStore.size());
-			taxonService.saveTaxonAll(taxonStore);	
+			getTaxonService().saveTaxonAll(taxonStore);	
 			
 			logger.info("end makeFacts ...");
 			return true;

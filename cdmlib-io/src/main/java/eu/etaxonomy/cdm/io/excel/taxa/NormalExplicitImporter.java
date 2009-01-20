@@ -150,7 +150,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 					getAuthors().add(authorStr);
 					Person author = Person.NewTitledInstance(authorStr);
 					try {
-						NonViralName<?> nonViralName = (NonViralName<?>)taxonNameBase;
+						NonViralName nonViralName = (NonViralName)taxonNameBase;
 						nonViralName.setCombinationAuthorTeam(author);
 					} catch (ClassCastException ex) {
 						logger.error(taxonNameBase.getTitleCache() + " is not a  non-viral name." +

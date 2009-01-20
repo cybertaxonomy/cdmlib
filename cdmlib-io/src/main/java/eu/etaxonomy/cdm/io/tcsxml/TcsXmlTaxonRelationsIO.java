@@ -63,7 +63,6 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 
@@ -96,7 +95,7 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 		taxonRelCount += makeTaxonRelationshipAssertion(tcsConfig, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
 		
 		logger.info("Taxa to save: " + taxonStore.size());
-		taxonService.saveTaxonAll(taxonStore);
+		getTaxonService().saveTaxonAll(taxonStore);
 		
 		logger.info("end make taxon relations ...");
 		return success.getValue();

@@ -76,8 +76,6 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 		
 		logger.info("start makeNameStatus ...");
 		
-		INameService nameService = config.getCdmAppController().getNameService();
-		
 		try {
 			//get data from database
 			String strQuery = 
@@ -165,7 +163,7 @@ public class BerlinModelNameStatusIO extends BerlinModelIOBase {
 				}
 			}
 			logger.info("TaxonNames to save: " + nameStore.size());
-			nameService.saveTaxonNameAll(nameStore);
+			getNameService().saveTaxonNameAll(nameStore);
 			
 			logger.info("end makeNameStatus ...");
 			return true;

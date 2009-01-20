@@ -74,7 +74,7 @@ public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<Berli
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		INameService nameService = config.getCdmAppController().getNameService();
+		INameService nameService = getNameService();
 		
 		Map<Integer, Specimen> typeMap = new HashMap<Integer, Specimen>();
 		

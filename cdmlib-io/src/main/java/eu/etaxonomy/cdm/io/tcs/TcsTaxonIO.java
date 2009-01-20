@@ -115,7 +115,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO<IImportConfigurator
 		elementNamespace = tcsConfig.getTcNamespace();
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		ITaxonService taxonService = getTaxonService();
 		
 		int i = 0;
 		//for each taxonConcept

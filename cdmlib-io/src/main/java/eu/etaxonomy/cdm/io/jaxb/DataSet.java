@@ -166,7 +166,7 @@ public class DataSet {
     @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
     @XmlElement(name = "InstitutionalMembership", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionalMembership.class)
     })
-    protected List<VersionableEntity> agentData;
+    protected List<Agent> agentData;
 
     @XmlElementWrapper(name = "FeatureData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
@@ -174,7 +174,7 @@ public class DataSet {
     @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
 //    protected List<VersionableEntity> featureData;
-    protected List<VersionableEntity<?>> featureData;
+    protected List<VersionableEntity> featureData;
 
     @XmlElementWrapper(name = "LanguageData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
@@ -299,7 +299,6 @@ public class DataSet {
     @XmlElementWrapper(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
     protected List<Media> media;
-    //protected List<VersionableEntity> media;
     
     @XmlElementWrapper(name = "HomotypicalGroups", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
@@ -310,9 +309,9 @@ public class DataSet {
 	public DataSet () {
 		
 		agents = new ArrayList<Agent>(); 
-		agentData = new ArrayList<VersionableEntity>();
+		agentData = new ArrayList<Agent>();
 //		featureData = new ArrayList<VersionableEntity>();
-		featureData = new ArrayList<VersionableEntity<?>>();
+		featureData = new ArrayList<VersionableEntity>();
 		languageData = new ArrayList<LanguageStringBase>();
 		terms = new ArrayList<DefinedTermBase>();
 		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
@@ -324,7 +323,6 @@ public class DataSet {
 		synonyms = new ArrayList<Synonym>();
 		relationships = new HashSet<RelationshipBase>();
 		media = new ArrayList<Media>();
-		//media = new ArrayList<VersionableEntity>();
 		homotypicalGroups = new ArrayList<HomotypicalGroup>();
 	}
 
@@ -360,7 +358,7 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public List<VersionableEntity> getAgentData() {
+    public List<Agent> getAgentData() {
         return agentData;
     }
 
@@ -372,7 +370,7 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public void setAgentData(List<VersionableEntity> value) {
+    public void setAgentData(List<Agent> value) {
         this.agentData = value;
     }
 
@@ -562,7 +560,7 @@ public class DataSet {
      *     
      */
 //    public List<VersionableEntity> getFeatureData() {
-    public List<VersionableEntity<?>> getFeatureData() {
+    public List<VersionableEntity> getFeatureData() {
         return featureData;
     }
 
@@ -575,7 +573,7 @@ public class DataSet {
      *     
      */
     public <T extends VersionableEntity> void setFeatureData(List<T> value) {
-        featureData = new ArrayList<VersionableEntity<?>>();
+        featureData = new ArrayList<VersionableEntity>();
     	for (T featureItem: value) {
     		this.featureData.add(featureItem);
     	}
@@ -800,7 +798,6 @@ public class DataSet {
      *     
      */
     public <T extends Media> void addMedia(Collection<T> value) {
-    //public <T extends VersionableEntity> void addMedia(Collection<T> value) {
     	for (T medium: value) {
     		this.media.add(medium);
     	}
@@ -815,7 +812,6 @@ public class DataSet {
      *     
      */
     public List<Media> getMedia() {
-    //public List<VersionableEntity> getMedia() {
         return media;
     }
 
@@ -827,10 +823,8 @@ public class DataSet {
      *     {@link List<ReferencedEntityBase> }
      *     
      */
-    public void setMedia(List<? extends Media> value) {
-    //public void setMedia(List<? extends VersionableEntity> value) {
+    public void setMedia(List<Media> value) {
         this.media = new ArrayList<Media>();
-        //this.media = new ArrayList<VersionableEntity>();
         media.addAll(value);
     }
     

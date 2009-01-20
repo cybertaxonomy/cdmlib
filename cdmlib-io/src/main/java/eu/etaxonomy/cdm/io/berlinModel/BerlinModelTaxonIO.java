@@ -120,7 +120,6 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 		
 		logger.info("start makeTaxa ...");
 		
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		String namespace = "PTaxon";
 		
 		try {
@@ -228,7 +227,7 @@ public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving taxa ...");
-			taxonService.saveTaxonAll(taxonMap.objects());
+			getTaxonService().saveTaxonAll(taxonMap.objects());
 			
 			logger.info("end makeTaxa ...");
 			

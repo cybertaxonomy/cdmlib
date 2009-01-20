@@ -94,7 +94,6 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigur
 		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
-		INameService nameService = config.getCdmAppController().getNameService();
 		
 		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
 		Namespace taxonNameNamespace = tcsConfig.getTnNamespace();
@@ -214,7 +213,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigur
 			}
 		}
 		logger.info(i + " names handled");
-		nameService.saveTaxonNameAll(taxonNameMap.objects());
+		getNameService().saveTaxonNameAll(taxonNameMap.objects());
 //		makeNameSpecificData(nameMap);
 		logger.info("end makeTaxonNames ...");
 		return success;

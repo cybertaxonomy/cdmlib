@@ -95,7 +95,6 @@ public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implemen
 		Namespace nsTaxonx = root.getNamespace();
 		
 		//Object source = config.getSource();
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		logger.info("start make Descriptions ...");
 		
@@ -132,7 +131,7 @@ public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implemen
 		}
 		if (description.size() >0){
 			taxon.addDescription(description);
-			taxonService.saveTaxon(taxon);
+			getTaxonService().saveTaxon(taxon);
 		}
 		return true;
 	}

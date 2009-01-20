@@ -22,7 +22,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.MediaMetaData;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -55,7 +54,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-
 
 public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);
@@ -1101,10 +1099,9 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	 */
 	public boolean start(SpecimenImportConfigurator config){
 		boolean result = true;
-		CdmApplicationController app = null;
+
 		TransactionStatus tx = null;
 
-		app = config.getCdmAppController();
 //		try {
 //		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 //		} catch (DataSourceNotFoundException e1) {
@@ -1115,7 +1112,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 //		logger.info("TermNotFoundException " +e1);
 //		}
 
-		tx = app.startTransaction();
+		tx = startTransaction();
 		try {
 //			ReferenceBase sec = Database.NewInstance();
 //			sec.setTitleCache("XML DATA");
@@ -1222,11 +1219,11 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			/**
 			 * SAVE AND STORE DATA
 			 */			
-			app.getTermService().saveTerm(areaCountry);//save it sooner
+			getTermService().saveTerm(areaCountry);//save it sooner
 			for (int i=0; i<nas.size();i++)
-				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
-			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+				getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
+			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
+			getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 			logger.info("saved ABCD specimen ...");
 
 
@@ -1235,8 +1232,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			e.printStackTrace();
 			result = false;
 		}
-		app.commitTransaction(tx);
-		app.close();
+		commitTransaction(tx);
 
 		return result;
 	}

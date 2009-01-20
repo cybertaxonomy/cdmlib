@@ -197,8 +197,7 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		
 
 	
-	private boolean doPreliminaryRefDetails(IImportConfigurator config, CdmApplicationController cdmApp,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	private boolean doPreliminaryRefDetails(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		MapWrapper<ReferenceBase> refDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REF_DETAIL_STORE);
@@ -208,8 +207,6 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		Source source = bmiConfig.getSource();
 		boolean success = true;
 		logger.info("start makeRefDetails ...");
-		
-		IReferenceService referenceService = cdmApp.getReferenceService();
 		
 		try {
 			//get data from database
@@ -266,9 +263,9 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 			//save and store in map
 			logger.info("Save nomenclatural preliminary references (" + refCounter.nomRefCount + ")");
 			Collection<ReferenceBase> col = nomRefDetailMap.objects();
-			referenceService.saveReferenceAll(col);
+			getReferenceService().saveReferenceAll(col);
 			logger.info("Save bibliographical preliminary references (" + refCounter.referenceCount +")");
-			referenceService.saveReferenceAll(refDetailMap.objects());
+			getReferenceService().saveReferenceAll(refDetailMap.objects());
 			
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -287,16 +284,15 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 				
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-	    CdmApplicationController cdmApp = config.getCdmAppController();
 		boolean success = true;
 		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
 		
 		//preliminary RefDetails  //TODO -> move to own class ?
-		doPreliminaryRefDetails(config, cdmApp, stores);
+		doPreliminaryRefDetails(config, stores);
 		
 		logger.info("start makeReferences ...");
-		IReferenceService referenceService = cdmApp.getReferenceService();
+		IReferenceService referenceService = getReferenceService();
 		
 		try {
 			//get data from database

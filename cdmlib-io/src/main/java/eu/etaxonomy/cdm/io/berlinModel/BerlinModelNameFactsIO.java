@@ -81,7 +81,6 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
-		INameService nameService = config.getCdmAppController().getNameService();
 		
 		logger.info("start makeNameFacts ...");
 
@@ -167,7 +166,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 				logger.warn("ONLY " + bmiConfig.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
 			;};
 			logger.info("Names to save: " + taxonNameStore.size());
-			nameService.saveTaxonNameAll(taxonNameStore);	
+			getNameService().saveTaxonNameAll(taxonNameStore);	
 			
 			logger.info("end makeNameFacts ...");
 			return true;

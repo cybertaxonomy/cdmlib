@@ -56,7 +56,7 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase<IImportConfigurator> impl
 		Element source = tcsConfig.getSourceRoot();
 		
 		logger.info("start makeNameRelationships ...");
-		INameService nameService = config.getCdmAppController().getNameService();
+		INameService nameService = getNameService();
 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
 		

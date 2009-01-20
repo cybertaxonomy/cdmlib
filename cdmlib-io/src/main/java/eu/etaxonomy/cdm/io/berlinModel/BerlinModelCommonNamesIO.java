@@ -11,14 +11,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -73,7 +70,6 @@ public class BerlinModelCommonNamesIO  extends BerlinModelIOBase {
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		Source source = bmiConfig.getSource();
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		String dbAttrName;
 		String cdmAttrName;
@@ -168,7 +164,7 @@ public class BerlinModelCommonNamesIO  extends BerlinModelIOBase {
 				//put
 			}
 			logger.info("Taxa to save: " + taxonStore.size());
-			taxonService.saveTaxonAll(taxonStore);	
+			getTaxonService().saveTaxonAll(taxonStore);	
 			
 			logger.info("end make occurrences ...");
 			return true;

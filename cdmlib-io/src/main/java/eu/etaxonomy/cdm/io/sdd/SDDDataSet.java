@@ -174,7 +174,7 @@ public class SDDDataSet {
     @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
     })
 //    protected List<VersionableEntity> featureData;
-    protected List<VersionableEntity<?>> featureData;
+    protected List<VersionableEntity> featureData;
 
     @XmlElementWrapper(name = "LanguageData")
     @XmlElements({
@@ -311,7 +311,7 @@ public class SDDDataSet {
 		agents = new ArrayList<Agent>(); 
 		agentData = new ArrayList<VersionableEntity>();
 //		featureData = new ArrayList<VersionableEntity>();
-		featureData = new ArrayList<VersionableEntity<?>>();
+		featureData = new ArrayList<VersionableEntity>();
 		languageData = new ArrayList<LanguageStringBase>();
 		terms = new ArrayList<DefinedTermBase>();
 		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
@@ -560,7 +560,7 @@ public class SDDDataSet {
      *     
      */
 //    public List<VersionableEntity> getFeatureData() {
-    public List<VersionableEntity<?>> getFeatureData() {
+    public List<VersionableEntity> getFeatureData() {
         return featureData;
     }
 
@@ -573,7 +573,7 @@ public class SDDDataSet {
      *     
      */
     public <T extends VersionableEntity> void setFeatureData(List<T> value) {
-        featureData = new ArrayList<VersionableEntity<?>>();
+        featureData = new ArrayList<VersionableEntity>();
     	for (T featureItem: value) {
     		this.featureData.add(featureItem);
     	}

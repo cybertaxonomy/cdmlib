@@ -68,23 +68,21 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
     	logger.debug("Importing distribution data");
-    	appCtr = config.getCdmAppController();
     	
 		// read and save all rows of the excel worksheet
     	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
     	if (recordList != null) {
     		HashMap<String,String> record = null;
-    		TransactionStatus txStatus = appCtr.startTransaction();
+    		TransactionStatus txStatus = startTransaction();
 
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
     			analyzeRecord(record);
     		}
-    		appCtr.commitTransaction(txStatus);
+    		commitTransaction(txStatus);
     	}
     	
 		try {
-	    	appCtr.close();
 			logger.debug("End distribution data import"); 
 				
 		} catch (Exception e) {

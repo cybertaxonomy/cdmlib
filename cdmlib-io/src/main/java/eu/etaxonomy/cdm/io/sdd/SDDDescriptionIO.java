@@ -112,7 +112,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 
-		TransactionStatus ts = config.getCdmAppController().startTransaction();
+		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
 
 		logger.info("start Datasets ...");
@@ -134,7 +134,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			if ((++i % modCount) == 0){ logger.info("Datasets handled: " + i);}
 			logger.info(i + " Datasets handled");
 		}
-		config.getCdmAppController().commitTransaction(ts);
+		commitTransaction(ts);
 		return success;
 	}
 
@@ -211,7 +211,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		Language language = null;
 		if (lang != null) {
 			if (!lang.equals("")) {
-				language = config.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
+				language = getTermService().getLanguageByIso(lang.substring(0, 2));
 			} else {
 				language = datasetLanguage;
 			}

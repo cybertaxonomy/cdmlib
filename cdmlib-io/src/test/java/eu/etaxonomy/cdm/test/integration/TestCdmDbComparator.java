@@ -481,7 +481,7 @@ public class TestCdmDbComparator {
 		return tables;
 	}
 	
-    private void compareTables(String tableName, List<CdmBase> tablesDbOne, List<CdmBase> tablesDbTwo) {
+     private void compareTables(String tableName, List<CdmBase> tablesDbOne, List<CdmBase> tablesDbTwo) {
     	
 		int tableOneSize = tablesDbOne.size();
 		int tableTwoSize = tablesDbTwo.size();

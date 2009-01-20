@@ -47,7 +47,6 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		boolean success = false;
 		
     	logger.debug("Importing excel data");
-    	appCtr = config.getCdmAppController();
     	
     	configurator = (ExcelImportConfiguratorBase) config;
     	

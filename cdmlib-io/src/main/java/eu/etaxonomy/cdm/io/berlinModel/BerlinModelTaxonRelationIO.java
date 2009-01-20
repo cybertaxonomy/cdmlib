@@ -141,7 +141,7 @@ public class BerlinModelTaxonRelationIO  extends BerlinModelIOBase  {
 		
 		logger.info("start makeTaxonRelationships ...");
 		
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		ITaxonService taxonService = getTaxonService();
 
 		try {
 			//get data from database

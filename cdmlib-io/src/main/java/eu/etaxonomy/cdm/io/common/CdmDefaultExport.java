@@ -75,7 +75,6 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 	 * Executes the whole 
 	 */
 	protected boolean doExport(IExportConfigurator config){
-		CdmApplicationController cdmApp;
 		boolean result = true;
 		if (config == null){
 			logger.warn("Configuration is null");
@@ -84,16 +83,9 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-//		cdmApp = config.getCdmAppController();
-		// For Jaxb import, omit term loading
-		if (config instanceof JaxbExportConfigurator) {
-			cdmApp = config.getCdmAppController(false, true);
-		} else {
-			cdmApp = config.getCdmAppController();
-		}
+
 		
-		System.out.println("Start export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
-				") to Destination (" + config.getDestinationNameString() + ") ...");
+		System.out.println("Start export from Cdm to Destination (" + config.getDestinationNameString() + ") ...");
 				
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -108,8 +100,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 		}
 		
 		//return
-		System.out.println("End export from Cdm (" + cdmApp.getDatabaseService().getUrl() +
-				") to Destination (" + config.getDestinationNameString() + ") ...");
+		System.out.println("End export from Cdm to Destination (" + config.getDestinationNameString() + ") ...");
 		return true;
 	}
 	

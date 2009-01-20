@@ -150,7 +150,6 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigura
 		String tcsElementName;
 		Namespace tcsNamespace;
 		boolean success = true;
-		IReferenceService referenceService = config.getCdmAppController().getReferenceService();
 		
 		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
 		String prefix = "tpub";
@@ -273,9 +272,9 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigura
 		
 		//save and store in map
 		logger.info("Save nomenclatural references (" + nomRefCount + ")");
-		referenceService.saveReferenceAll(nomRefMap.objects());
+		getReferenceService().saveReferenceAll(nomRefMap.objects());
 		logger.info("Save bibliographical references (" + biblioRefsCount +")");
-		referenceService.saveReferenceAll(referenceMap.objects());
+		getReferenceService().saveReferenceAll(referenceMap.objects());
 		
 		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");

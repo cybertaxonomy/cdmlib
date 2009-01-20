@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -40,10 +40,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.babadshanjan
  * @created 13.11.2008
  */
+@Component
 public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 
 	private static final Logger logger = Logger.getLogger(CdmImporter.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
+	
+	
 
 	
     /** Reads data from an XML file and stores them into a CDM DB.
@@ -58,7 +61,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		boolean success = true;
         URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)config;
-    	String dbname = jaxbImpConfig.getDestination().getDatabase();
+//    	String dbname = jaxbImpConfig.getDestination().getDatabase();
     	
     	String urlFileName = (String)config.getSource();
 		logger.debug("urlFileName: " + urlFileName);
@@ -70,7 +73,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 			return false;
     	}
 
-		logger.info("Deserializing file " + urlFileName + " to DB " + dbname);
+		logger.info("Deserializing file " + urlFileName + " to DB " ); //+ dbname
 
 		DataSet dataSet = new DataSet();
 		
@@ -78,7 +81,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-//			logger.info("Unmarshalling file: " + urlFileName);
+			logger.info("Unmarshalling file: " + urlFileName);
 			File file = new File(uri);
 			logger.debug("Absolute path: " + file.getAbsolutePath());
 			dataSet = cdmDocumentBuilder.unmarshal(dataSet, file);
@@ -89,7 +92,7 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		} 
 		
 		// save data in DB
-		logger.info("Saving data to DB: " + dbname);
+		logger.info("Saving data to DB: " ); //+ dbname
 		success = saveData(jaxbImpConfig, dataSet);
 		
 		return success;
@@ -108,16 +111,16 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		List<DescriptionBase> descriptions;
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
-		List<VersionableEntity<?>> featureData;
+		List<VersionableEntity> featureData;
+//		List<VersionableEntity> featureData;
 		List<Media> media;
-		//List<VersionableEntity> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 
 		// Get an app controller that omits term loading
 		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
-		CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
+//		CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
 		//TransactionStatus txStatus = appCtr.startTransaction();
 		TransactionStatus txStatus = null;
 
@@ -131,181 +134,179 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			txStatus = appCtr.startTransaction();
-			ret &= saveTermVocabularies(termVocabularies, appCtr);
-			appCtr.commitTransaction(txStatus);
+			txStatus = startTransaction();
+			ret &= saveTermVocabularies(termVocabularies);
+			commitTransaction(txStatus);
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
-			txStatus = appCtr.startTransaction();
-			ret &= saveTerms(terms, appCtr);
-			appCtr.commitTransaction(txStatus);
+			txStatus = startTransaction();
+			ret &= saveTerms(terms);
+			commitTransaction(txStatus);
 		}
 		
 		// TODO: Have separate data save methods
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoLanguageData() == true) {
 				if ((languageData = dataSet.getLanguageData()).size() > 0) {
 					logger.info("Language data: " + languageData.size());
-					appCtr.getTermService().saveLanguageDataAll(languageData);
+					getTermService().saveLanguageDataAll(languageData);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving language data");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 		
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
 					logger.info("Agents: " + agents.size());
-					appCtr.getAgentService().saveAgentAll(agents);
+					getAgentService().saveAgentAll(agents);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving agents");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
 					logger.info("References: " + references.size());
-					appCtr.getReferenceService().saveReferenceAll(references);
+					getReferenceService().saveReferenceAll(references);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving references");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 					logger.info("Taxonomic names: " + taxonomicNames.size());
-					appCtr.getNameService().saveTaxonNameAll(taxonomicNames);
+					getNameService().saveTaxonNameAll(taxonomicNames);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving taxon names");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoHomotypicalGroups() == true) {
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 					logger.info("Homotypical groups: " + homotypicalGroups.size());
-					appCtr.getNameService().saveAllHomotypicalGroups(homotypicalGroups);
+					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving homotypical groups");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		// Need to get the taxa and the synonyms here.
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
 					logger.info("Taxon bases: " + taxonBases.size());
-					appCtr.getTaxonService().saveTaxonAll(taxonBases);
+					getTaxonService().saveTaxonAll(taxonBases);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving taxa");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		// NomenclaturalStatus, TypeDesignations
 		try {
 			if (jaxbImpConfig.isDoReferencedEntities() == true) {
 				if ((referencedEntities = dataSet.getReferencedEntities()).size() > 0) {
 					logger.info("Referenced entities: " + referencedEntities.size());
-					appCtr.getNameService().saveReferencedEntitiesAll(referencedEntities);
+					getNameService().saveReferencedEntitiesAll(referencedEntities);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving referenced entities");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
 		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
 //		if ((descriptions = dataSet.getDescriptions()) != null) {
 //		logger.info("Saving " + descriptions.size() + " descriptions");
-//		appCtr.getDescriptionService().saveDescriptionAll(descriptions);
+//		getDescriptionService().saveDescriptionAll(descriptions);
 //		}
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
 					logger.info("Occurrences: " + occurrences.size());
-					appCtr.getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
+					getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving occurrences");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureData = dataSet.getFeatureData()).size() > 0) {
 					logger.info("Feature data: " + featureData.size());
-					appCtr.getDescriptionService().saveFeatureDataAll(featureData);
+					getDescriptionService().saveFeatureDataAll(featureData);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving feature data");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
 
-		txStatus = appCtr.startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
 					logger.info("Media: " + media.size());
-					appCtr.getMediaService().saveMediaAll(media);
+					getMediaService().saveMediaAll(media);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving media");
 			ret = false;
 		}
-		appCtr.commitTransaction(txStatus);
+		commitTransaction(txStatus);
 
-//		appCtr.commitTransaction(txStatus);
+//		commitTransaction(txStatus);
 		logger.info("All data saved");
-
-		appCtr.close();
 
 		return ret;
 
@@ -313,12 +314,12 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 	
 	
 	private boolean saveTermVocabularies(
-			List<TermVocabulary<DefinedTermBase>> termVocabularies, CdmApplicationController appCtr) {
+			List<TermVocabulary<DefinedTermBase>> termVocabularies) {
 
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());
 		try {
-			appCtr.getTermService().saveTermVocabulariesAll(termVocabularies);
+			getTermService().saveTermVocabulariesAll(termVocabularies);
 		} catch (Exception ex) {
 			logger.error("Error saving term vocabularies");
 			success = false;
@@ -326,12 +327,12 @@ public class CdmImporter extends CdmIoBase<IImportConfigurator> implements ICdmI
 		return success;
 	}
 
-	private boolean saveTerms(List<DefinedTermBase> terms, CdmApplicationController appCtr) {
+	private boolean saveTerms(List<DefinedTermBase> terms) {
 
 		boolean success = true;
 		logger.info("Terms: " + terms.size());
 		try {
-			appCtr.getTermService().saveTermsAll(terms);
+			getTermService().saveTermsAll(terms);
 		} catch (Exception ex) {
 			logger.error("Error saving terms");
 			success = false;

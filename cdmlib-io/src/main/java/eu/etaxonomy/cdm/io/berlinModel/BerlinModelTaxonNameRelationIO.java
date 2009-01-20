@@ -76,7 +76,7 @@ public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
 		
 		logger.info("start makeNameRelationships ...");
 		
-		INameService nameService = config.getCdmAppController().getNameService();
+		INameService nameService = getNameService();
 		try {
 			//get data from database
 			String strQuery = 

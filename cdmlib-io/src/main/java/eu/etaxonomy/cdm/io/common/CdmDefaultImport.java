@@ -104,7 +104,6 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 	 * Executes the whole 
 	 */
 	protected boolean doImport(IImportConfigurator config){
-		CdmApplicationController cdmApp;
 		boolean result = true;
 		if (config == null){
 			logger.warn("Configuration is null");
@@ -113,17 +112,11 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-		// For Jaxb import, omit term loading
-		if (config instanceof JaxbImportConfigurator) {
-			cdmApp = config.getCdmAppController(false, true);
-		} else {
-			cdmApp = config.getCdmAppController();
-		}
+		
 		
 		ReferenceBase sourceReference = config.getSourceReference();
 		
-		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
-				+ cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -137,8 +130,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			}
 		}
 		
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm (" 
-				+ cdmApp.getDatabaseService().getUrl() + ") ...");
+		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
 		return result;
 	}
 	

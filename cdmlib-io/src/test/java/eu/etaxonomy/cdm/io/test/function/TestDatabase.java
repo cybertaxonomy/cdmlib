@@ -98,7 +98,7 @@ public class TestDatabase {
 	private static DataSet buildDataSet() {
 
 		List<Agent> agents = new ArrayList<Agent>();
-	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
+	    List<Agent> agentData = new ArrayList<Agent>();
 	    //List<TermBase> terms = new ArrayList<TermBase>();
 	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
@@ -139,8 +139,7 @@ public class TestDatabase {
 		//contact1.setEmail("someone@somewhere.org");
 		InstitutionalMembership membership = new InstitutionalMembership(institute, linne, period, "Biodiversity", "Head");
 		//agentData.add(contact1);
-
-		agentData.add(membership);
+        linne.getInstitutionalMemberships().add(membership);
 
 		// terms
 		// - ranks, keywords

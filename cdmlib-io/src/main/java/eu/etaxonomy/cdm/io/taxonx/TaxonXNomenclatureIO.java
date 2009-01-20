@@ -61,12 +61,10 @@ public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> impleme
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		logger.info("start make Nomenclature ...");
 		
-		TransactionStatus tx = config.getCdmAppController().startTransaction();
+		TransactionStatus tx = startTransaction();
 		TaxonXImportConfigurator txConfig = (TaxonXImportConfigurator)config;
 		Element root = txConfig.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
-				
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
 		
 		//for testing only
 		Taxon taxon = getTaxon(txConfig);
@@ -96,9 +94,9 @@ public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> impleme
 		
 		
 		if (isChanged){
-			taxonService.saveTaxon(taxon);
+			getTaxonService().saveTaxon(taxon);
 		}
-		config.getCdmAppController().commitTransaction(tx);
+		commitTransaction(tx);
 		return true;
 	}
 	
@@ -419,13 +417,13 @@ public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> impleme
 	 * TODO Preliminary to avoid laizy loading errors
 	 */
 	private void unlazySynonym(IImportConfigurator config, Taxon taxon){
-		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
-		ITaxonService taxonService = config.getCdmAppController().getTaxonService();
+		TransactionStatus txStatus = startTransaction();
+		ITaxonService taxonService = getTaxonService();
 		taxonService.saveTaxon(taxon);
 		Set<Synonym> synonyms = taxon.getSynonyms();
 		logger.debug(synonyms.size());
 		//taxonService.saveTaxon(taxon);
-		config.getCdmAppController().commitTransaction(txStatus);
+		commitTransaction(txStatus);
 	}
 
 	

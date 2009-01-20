@@ -48,7 +48,6 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO<I
 		logger.info("start make taxon name relations ...");
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		INameService nameService = config.getCdmAppController().getNameService();
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 
@@ -210,7 +209,7 @@ public class TcsXmlTaxonNameRelationsIO extends TcsXmlIoBase implements ICdmIO<I
 		//TODO
 		
 		logger.info(nameRelCount + " nameRelations handled");
-		nameService.saveTaxonNameAll(nameStore);
+		getNameService().saveTaxonNameAll(nameStore);
 		logger.info("end make taxon name relationships ...");
 		return success.getValue();
 	}

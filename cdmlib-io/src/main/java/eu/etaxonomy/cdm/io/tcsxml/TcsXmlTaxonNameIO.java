@@ -58,9 +58,8 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		
 		logger.info("start make TaxonNames ...");
 		MapWrapper<Person> authorMap = (MapWrapper<Person>)stores.get(ICdmIO.AUTHOR_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap =  (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		INameService nameService = config.getCdmAppController().getNameService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
@@ -175,8 +174,8 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			}
 		}
 		logger.info(i + " names handled");
-		Collection<? extends TaxonNameBase<?,?>> col = taxonNameMap.objects();
-		nameService.saveTaxonNameAll(col);
+		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
+		getNameService().saveTaxonNameAll(col);
 
 		logger.info("end makeTaxonNames ...");
 		return success.getValue();
@@ -235,7 +234,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		return result;
 	}
 
-	private void makeCanonicalName(TaxonNameBase<?,?> name, Element elCanonicalName, MapWrapper<TaxonNameBase<?,?>> taxonNameMap, ResultWrapper<Boolean> success){
+	private void makeCanonicalName(TaxonNameBase name, Element elCanonicalName, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
 		boolean cacheProtected = false;
 		
 		if (elCanonicalName == null){
@@ -342,15 +341,15 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		logger.warn("'makeCultivarName' Not yet implemented");
 	}
 	
-	private void makeGenusReferenceType(TaxonNameBase<?,?> name, Element elGenus, MapWrapper<TaxonNameBase<?,?>> taxonNameMap, ResultWrapper<Boolean> success){
-		if(name instanceof NonViralName<?>){
-			NonViralName<?> nonViralName = (NonViralName<?>)name;
+	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
+		if(name instanceof NonViralName){
+			NonViralName nonViralName = (NonViralName)name;
 			if (elGenus != null && name != null){
-				TaxonNameBase<?,?> genusReferenceName;
+				TaxonNameBase genusReferenceName;
 				//TODO code
 				Class<? extends NonViralName> clazz = NonViralName.class;
 				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
-				NonViralName<?> nvGenusReference = (NonViralName<?>)genusReferenceName;
+				NonViralName nvGenusReference = (NonViralName)genusReferenceName;
 				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)
 				String genus = nvGenusReference.getGenusOrUninomial()!= null ? nvGenusReference.getGenusOrUninomial(): genusReferenceName.getTitleCache();
 				nonViralName.setGenusOrUninomial(genus); 
@@ -416,13 +415,13 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		}
 	}
 	
-	private void makeCanonicalAuthorship(TaxonNameBase<?,?> name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
 		if (elCanonicalAuthorship != null){
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 			boolean cacheProtected = false;
 	
 			if (name instanceof NonViralName){
-				NonViralName<?> nonViralName = (NonViralName<?>)name;
+				NonViralName nonViralName = (NonViralName)name;
 				
 				String childName = "Simple";
 				boolean obligatory = true;
@@ -457,12 +456,12 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 
 	
-	private void makePublishedIn(TaxonNameBase<?,?> name, Element elPublishedIn, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
+	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
 			Class<? extends ReferenceBase> clazz = Generic.class;
 			ReferenceBase ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
-			if (ref instanceof INomenclaturalReference<?>){
-				INomenclaturalReference<?> nomRef = (INomenclaturalReference<?>)ref;
+			if (ref instanceof INomenclaturalReference){
+				INomenclaturalReference nomRef = (INomenclaturalReference)ref;
 				name.setNomenclaturalReference(nomRef);
 			}else{
 				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
@@ -474,7 +473,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 
 	
-	private void makeYear(TaxonNameBase<?,?> name, Element elYear, ResultWrapper<Boolean> success){
+	private void makeYear(TaxonNameBase name, Element elYear, ResultWrapper<Boolean> success){
 		if (elYear != null){
 			String year = elYear.getTextNormalize();
 			if (name instanceof ZoologicalName){
@@ -496,7 +495,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 
 	
-	private void makeMicroReference(TaxonNameBase<?,?> name, Element elMicroReference, ResultWrapper<Boolean> success){
+	private void makeMicroReference(TaxonNameBase name, Element elMicroReference, ResultWrapper<Boolean> success){
 		if (elMicroReference != null){
 			String microReference = elMicroReference.getTextNormalize();
 			name.setNomenclaturalMicroReference(microReference);
@@ -504,7 +503,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 
 	
-	private void makeTypification(TaxonNameBase<?,?> name, Element elTypifiacation, ResultWrapper<Boolean> success){
+	private void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
 			logger.warn("makeTypification not yet implemented");
 			success.setValue(false);
@@ -512,7 +511,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 
 	
-	private void makePublicationStatus(TaxonNameBase<?,?> name, Element elPublicationStatus, ResultWrapper<Boolean> success){
+	private void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
 		//Status
 			
 		if (elPublicationStatus != null){
@@ -521,7 +520,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 		}
 	}
 	
-	private void makeProviderLink(TaxonNameBase<?,?> name, Element elProviderLink, ResultWrapper<Boolean> success){
+	private void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
@@ -529,7 +528,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	}
 	
 
-	private void makeProviderSpecificData(TaxonNameBase<?,?> name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+	private void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
 			logger.warn("makeProviderSpecificData not yet implemented");
 			success.setValue(false);
