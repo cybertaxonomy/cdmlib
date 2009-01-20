@@ -198,7 +198,12 @@
 			<id>ApacheIncubating</id>
 			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
 		</repository>
-
+		<!-- Neccessary for hibernate-envers -->
+<!--        <repository>
+          <id>jboss-repository</id>
+          <name>JBoss Repository</name>
+          <url>http://repository.jboss.com/maven2</url>
+        </repository>-->
 	</repositories>
 
 	<!-- **** PLUGINS **** -->
@@ -416,8 +421,6 @@
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils</artifactId>
-            <version>1.0</version>
-            <!--<scope>test</scope>-->
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -508,11 +511,23 @@
 				<artifactId>log4j</artifactId>
 				<version>1.2.15</version>
 			</dependency>
+                  <!-- hibernate 3.4 uses slf4j -->
+			<!--<dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <version>1.5.2</version>
+                  </dependency>-->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.4</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+			  <groupId>org.unitils</groupId>
+			  <artifactId>unitils</artifactId>
+			  <version>1.0</version>
+			  <scope>test</scope>
 			</dependency>
 		  	<dependency>
 		  		<groupId>org.aspectj</groupId>
@@ -538,6 +553,7 @@
 				<groupId>org.dbunit</groupId>
 				<artifactId>dbunit</artifactId>
 				<version>2.2</version>
+				<scope>test</scope>
 			</dependency>
 		  	<dependency>
 		  		<groupId>org.eclipse</groupId>
@@ -599,7 +615,6 @@
 				<artifactId>sanselan</artifactId>
 				<version>0.94-incubator</version>
 			</dependency>
-			
 		    <!-- joda-time -->
 			<dependency>
 				<groupId>joda-time</groupId>
@@ -619,8 +634,49 @@
                   <groupId>cglib</groupId>
                   <artifactId>cglib-full</artifactId>
                 </exclusion>
+                <exclusion>
+                  <groupId>org.hibernate</groupId>
+                  <artifactId>hibernate</artifactId>
+                </exclusion>
              </exclusions>
            </dependency>
+           <dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId>
+				<version>2.4.0</version>
+		   </dependency>
+		   <dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-spellchecker</artifactId>
+				<version>2.4.0</version>
+		   </dependency>
+		   <dependency>
+				<groupId>org.springmodules</groupId>
+				<artifactId>spring-modules-lucene</artifactId>
+				<version>0.8a</version>
+				<exclusions>
+				 <exclusion>
+				   <groupId>org.apache</groupId>
+				   <artifactId>poi</artifactId>
+				 </exclusion>
+				 <exclusion>
+				   <groupId>org.apache</groupId>
+				   <artifactId>poi-scratchpad</artifactId>
+				 </exclusion>
+				 <exclusion>
+				   <groupId>org.springframework</groupId>
+				   <artifactId>spring-dao</artifactId>
+				 </exclusion>
+				 <exclusion>
+				   <groupId>org.springframework</groupId>
+				   <artifactId>spring-jca</artifactId>
+				 </exclusion>
+				 <exclusion>
+				   <groupId>org.springframework</groupId>
+				   <artifactId>spring-support</artifactId>
+				 </exclusion>
+				</exclusions>
+		   </dependency>
 	
 		  	<!-- ******* XML ******* -->
 			<dependency>
@@ -655,11 +711,17 @@
 			</dependency>
 
 		  	<!-- ******* HIBERNATE / EJB3 ******* -->
-		  	<dependency>
+                  <dependency>
 		  		<groupId>javax.persistence</groupId>
 		  		<artifactId>ejb</artifactId>
 		  		<version>3</version>
 		  	</dependency>
+                  <!-- required for hibernate 3.4 -->
+		  	<!--<dependency>
+		  		<groupId>javax.persistence</groupId>
+		  		<artifactId>persistence-api</artifactId>
+		  		<version>1.0</version>
+		  	</dependency>-->
 		  	<dependency>
 		  		<groupId>org.hibernate</groupId>
 		  		<artifactId>hibernate-annotations</artifactId>
@@ -675,6 +737,39 @@
 		  		<artifactId>hibernate</artifactId>
 		  		<version>3.2.6.ga</version>
 		  	</dependency>
+		  	<dependency>
+		  	  <groupId>org.hibernate</groupId>
+		  	  <artifactId>hibernate-search</artifactId>
+		  	  <version>3.0.1.GA</version>
+		  	</dependency>
+                  <!-- required for envers -->
+		  	<!--<dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-entitymanager</artifactId>
+                    <version>3.4.0-SNAPSHOT</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-envers</artifactId>
+                    <version>3.4.0-SNAPSHOT</version>
+                  </dependency>-->
+                  <!--only needed if using javassist, not cglib-->
+                  <!--<dependency> 
+                    <groupId>javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                    <version>3.4.GA</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-cglib-repack</artifactId>
+                    <version>2.1_3</version>
+                  </dependency>-->
+                  <!-- only needed if using second level caching -->
+                  <!--<dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-ehcache</artifactId>
+                    <version>3.4.0-SNAPSHOT</version>
+                  </dependency>-->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
