@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,6 +40,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Modifier")
 @XmlRootElement(name = "Modifier")
 @Entity
+//@Audited
 public class Modifier extends OrderedTermBase<Modifier> {
 	private static final long serialVersionUID = -2491833848163461951L;
 	@SuppressWarnings("unused")
@@ -76,5 +78,12 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	 */
 	public static Modifier NewInstance(){
 		return new Modifier();
+	}
+
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 }

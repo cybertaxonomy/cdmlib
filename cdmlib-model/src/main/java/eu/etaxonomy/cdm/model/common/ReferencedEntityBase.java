@@ -10,12 +10,9 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,6 +20,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * abstract class for all objects that may have a reference
@@ -87,7 +90,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getCitation(){
 		return this.citation;

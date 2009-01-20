@@ -9,14 +9,21 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -42,6 +49,7 @@ import java.util.UUID;
 @XmlType(name = "TaxonRelationshipType")
 @XmlRootElement(name = "TaxonRelationshipType")
 @Entity
+//@Audited
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	
 	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
@@ -77,9 +85,32 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidCongruentToOrOverlapsOrExcludes = UUID.fromString("6fabef72-5264-44f1-bfc0-8e2e141375f2");
 	private static final UUID uuidIncludesOrOverlapsOrExcludes = UUID.fromString("b7153c89-cc6c-4f8c-bf74-216f10feac46");
 	
-	
-	
-	
+	private static TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN;
+	private static TaxonRelationshipType MISAPPLIED_NAME_FOR;
+	private static TaxonRelationshipType INVALID_DESIGNATION_FOR;
+	private static TaxonRelationshipType CONTRADICTION;
+	private static TaxonRelationshipType CONGRUENT_TO;
+	private static TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_EXCLUDES;
+	private static TaxonRelationshipType OVERLAPS_OR_EXCLUDES;
+	private static TaxonRelationshipType CONGRUENT_OR_OVERLAPS_OR_EXCLUDES;
+	private static TaxonRelationshipType INCLUDES_OR_OVERLAPS_OR_EXCLUDES;
+	private static TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_OVERLAPS;
+	private static TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_OVERLAPS;
+	private static TaxonRelationshipType CONGRUENT_OR_EXCLUDE;
+	private static TaxonRelationshipType INCLUDES_OR_EXCLUDES;
+	private static TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_EXCLUDES;
+	private static TaxonRelationshipType INCLUDES_OR_OVERLAPS;
+	private static TaxonRelationshipType CONGRUENT_OR_OVERLAPS;
+	private static TaxonRelationshipType CONGRUENT_OR_INCLUDED_OR_INCLUDES;
+	private static TaxonRelationshipType INCLUDED_OR_INCLUDES;
+	private static TaxonRelationshipType CONGRUENT_OR_INCLUDES;
+	private static TaxonRelationshipType NOT_CONGRUENT_TO;
+	private static TaxonRelationshipType NOT_INCLUDED_IN;
+	private static TaxonRelationshipType DOES_NOT_OVERLAP;
+	private static TaxonRelationshipType DOES_NOT_EXCLUDE;
+	private static TaxonRelationshipType EXCLUDES;
+	private static TaxonRelationshipType OVERLAPS;
+	private static TaxonRelationshipType INCLUDES;
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -114,17 +145,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 
 	//********* METHODS **************************************/
 
-	/**
-	 * Returns the taxon relationship type identified through its immutable
-	 * universally unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the taxon relationship type corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final TaxonRelationshipType getByUuid(UUID uuid){
-		return (TaxonRelationshipType) findByUuid(uuid);
-	}
 
 
 	/**
@@ -138,7 +158,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN(){
-		return getByUuid(uuidTaxonomicallyIncludedIn);
+		return TAXONOMICALLY_INCLUDED_IN;
 	}
 	/**
 	 * Returns the taxon relationship type "is misapplied name for". This
@@ -149,7 +169,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final TaxonRelationshipType MISAPPLIED_NAME_FOR(){
-		return (TaxonRelationshipType)findByUuid(uuidMisappliedNameFor);
+		return MISAPPLIED_NAME_FOR;
 	}
 	/**
 	 * Returns the taxon relationship type "is invalid designation for". This
@@ -162,7 +182,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final TaxonRelationshipType INVALID_DESIGNATION_FOR(){
-		return (TaxonRelationshipType)findByUuid(uuidInvalidDesignationFor);
+		return INVALID_DESIGNATION_FOR;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "is impossible"
@@ -179,7 +199,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is symmetric but not transitive.
 	 */
 	public static final TaxonRelationshipType CONTRADICTION(){
-		return (TaxonRelationshipType)findByUuid(uuidContradiction);
+		return CONTRADICTION;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "is congruent to".
@@ -195,7 +215,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is symmetric and transitive.
 	 */
 	public static final TaxonRelationshipType CONGRUENT_TO(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentTo);
+		return CONGRUENT_TO;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "includes".
@@ -213,7 +233,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is not symmetric but transitive.
 	 */
 	public static final TaxonRelationshipType INCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludes);
+		return INCLUDES;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "overlaps".
@@ -230,7 +250,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is symmetric but not transitive.
 	 */
 	public static final TaxonRelationshipType OVERLAPS(){
-		return (TaxonRelationshipType)findByUuid(uuidOverlaps);
+		return OVERLAPS;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "excludes".
@@ -245,7 +265,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * This type is symmetric but not transitive.
 	 */
 	public static final TaxonRelationshipType EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidExcludes);
+		return EXCLUDES;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "does not exclude".
@@ -263,7 +283,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see		#EXCLUDES()
 	 */
 	public static final TaxonRelationshipType DOES_NOT_EXCLUDE(){
-		return (TaxonRelationshipType)findByUuid(uuidDoesNotExclude);
+		return DOES_NOT_EXCLUDE;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "does not overlap".
@@ -280,7 +300,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see		#OVERLAPS()
 	 */
 	public static final TaxonRelationshipType DOES_NOT_OVERLAP(){
-		return (TaxonRelationshipType)findByUuid(uuidDoesNotOverlap);
+		return DOES_NOT_OVERLAP;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "is not included in".
@@ -299,7 +319,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see		#INCLUDES()
 	 */
 	public static final TaxonRelationshipType NOT_INCLUDED_IN(){
-		return (TaxonRelationshipType)findByUuid(uuidNotIncludedIn);
+		return NOT_INCLUDED_IN;
 	}
 	/**
 	 * Returns the (concept) taxon relationship type "is not congruent to".
@@ -318,62 +338,95 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see		#CONGRUENT_TO()
 	 */
 	public static final TaxonRelationshipType NOT_CONGRUENT_TO(){
-		return (TaxonRelationshipType)findByUuid(uuidNotCongruentTo);
+		return NOT_CONGRUENT_TO;
 	}
 
 	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludes);
+		return CONGRUENT_OR_INCLUDES;
 	}
 	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludes);
+		return INCLUDED_OR_INCLUDES;
 	}
 	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDED_OR_INCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentIncludedInOrIncludes);
+		return CONGRUENT_OR_INCLUDED_OR_INCLUDES;
 	}
 	public static final TaxonRelationshipType CONGRUENT_OR_OVERLAPS(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrOverlaps);
+		return CONGRUENT_OR_OVERLAPS;
 	}
+	
 	public static final TaxonRelationshipType INCLUDES_OR_OVERLAPS(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludesOrOverlaps);
+		return INCLUDES_OR_OVERLAPS;
 	}
 
 	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludesOrExcludes);
+		return CONGRUENT_OR_INCLUDES_OR_EXCLUDES;
 	}
 	
 	public static final TaxonRelationshipType INCLUDES_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludesOrExcludes);
+		return INCLUDES_OR_EXCLUDES;
 	}
 	
 	public static final TaxonRelationshipType CONGRUENT_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrExcludes);
+		return CONGRUENT_OR_EXCLUDE;
 	}
 	
 	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_OVERLAPS(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludesOrOverlaps);
+		return INCLUDED_OR_INCLUDES_OR_OVERLAPS;
 	}
 	
 	public static final TaxonRelationshipType CONGRUENT_OR_INCLUDES_OR_OVERLAPS(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrIncludesOrOverlaps);
+		return CONGRUENT_OR_INCLUDES_OR_OVERLAPS;
 	}
 	
 	public static final TaxonRelationshipType INCLUDES_OR_OVERLAPS_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludesOrOverlapsOrExcludes);
+		return  INCLUDES_OR_OVERLAPS_OR_EXCLUDES;
 	}
 	
 	public static final TaxonRelationshipType CONGRUENT_OR_OVERLAPS_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidCongruentToOrOverlapsOrExcludes);
+		return CONGRUENT_OR_OVERLAPS_OR_EXCLUDES;
 	}
 	
 	public static final TaxonRelationshipType OVERLAPS_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidOverlapsOrExcludes);
+		return OVERLAPS_OR_EXCLUDES;
 	}
 	
 	public static final TaxonRelationshipType INCLUDED_OR_INCLUDES_OR_EXCLUDES(){
-		return (TaxonRelationshipType)findByUuid(uuidIncludedInOrIncludesOrExcludes);
+		return INCLUDED_OR_INCLUDES_OR_EXCLUDES;
+	}
+	
+	protected void setDefaultTerms(TermVocabulary<TaxonRelationshipType> termVocabulary) {
+		TaxonRelationshipType.CONGRUENT_OR_EXCLUDE = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrExcludes);
+		TaxonRelationshipType.CONGRUENT_OR_INCLUDED_OR_INCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentIncludedInOrIncludes);
+		TaxonRelationshipType.CONGRUENT_OR_INCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrIncludes);
+		TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrIncludesOrExcludes);
+		TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrIncludesOrOverlaps);
+		TaxonRelationshipType.CONGRUENT_OR_OVERLAPS = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrOverlaps);
+		TaxonRelationshipType.CONGRUENT_OR_OVERLAPS_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentToOrOverlapsOrExcludes);
+		TaxonRelationshipType.CONGRUENT_TO = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidCongruentTo);
+		TaxonRelationshipType.CONTRADICTION = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidContradiction);
+		TaxonRelationshipType.DOES_NOT_EXCLUDE = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidDoesNotExclude);
+		TaxonRelationshipType.DOES_NOT_OVERLAP = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidDoesNotOverlap);
+		TaxonRelationshipType.EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidExcludes);
+		TaxonRelationshipType.INCLUDED_OR_INCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludedInOrIncludes);
+		TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludedInOrIncludesOrExcludes);
+		TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludedInOrIncludesOrOverlaps);
+		TaxonRelationshipType.INCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludes);
+		TaxonRelationshipType.INCLUDES_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludesOrExcludes);
+		TaxonRelationshipType.INCLUDES_OR_OVERLAPS = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludesOrOverlaps);
+		TaxonRelationshipType.INCLUDES_OR_OVERLAPS_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidIncludesOrOverlapsOrExcludes);
+		TaxonRelationshipType.INVALID_DESIGNATION_FOR = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidInvalidDesignationFor);
+		TaxonRelationshipType.MISAPPLIED_NAME_FOR = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidMisappliedNameFor);
+		TaxonRelationshipType.NOT_CONGRUENT_TO = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidNotCongruentTo);
+		TaxonRelationshipType.NOT_INCLUDED_IN = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidNotIncludedIn);	
+		TaxonRelationshipType.OVERLAPS = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidOverlaps);
+		TaxonRelationshipType.OVERLAPS_OR_EXCLUDES = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidOverlapsOrExcludes);
+		TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN = termVocabulary.findTermByUuid(TaxonRelationshipType.uuidTaxonomicallyIncludedIn);
 	}
 
-	
 	//TODO ohter relationshipTypes
 
+	@Override
+	public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		return super.readCsvLine(termClass, csvLine, terms);
+	}
 }

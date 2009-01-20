@@ -2,11 +2,13 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,6 +34,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 })
 @XmlRootElement(name = "RelationshipTermBase")
 @Entity
+//@Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
@@ -74,7 +77,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	}
 	
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Representation> getInverseRepresentations() {
@@ -151,32 +154,29 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	}
 	
 	@Override
-	public ILoadableTerm readCsvLine(List csvLine) {
-		RelationshipTermBase result;
-		// read UUID, URI, english label+description
-		List<String> csvLineString = csvLine;
-		result = (RelationshipTermBase)super.readCsvLine(csvLineString);
-		// inverse label + 2 booleans
-		String inverseText = csvLineString.get(5).trim();
-		String inverseLabel = csvLineString.get(4).trim();
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		T newInstance = super.readCsvLine(termClass, csvLine, terms);
+
+		String inverseText = csvLine.get(5).trim();
+		String inverseLabel = csvLine.get(4).trim();
 		String inverseLabelAbbrev = null;
-		result.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.ENGLISH()) );
-		result.setSymmetric(Boolean.parseBoolean(csvLineString.get(6)));
-		result.setTransitive(Boolean.parseBoolean(csvLineString.get(7)));
-		return result;
+		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.ENGLISH()) );
+		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
+		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
+		return newInstance;
 	}
 	
 	@Override
-	public void writeCsvLine(CSVWriter writer) {
+	public void writeCsvLine(CSVWriter writer,T term) {
 		String [] line = new String[8];
-		line[0] = getUuid().toString();
-		line[1] = getUri();
-		line[2] = getLabel();
-		line[3] = getDescription();
-		line[4] = getInverseLabel();
-		line[5] = getInverseDescription();
-		line[6] = String.valueOf(this.isSymmetric());
-		line[7] = String.valueOf(this.isTransitive());
+		line[0] = term.getUuid().toString();
+		line[1] = term.getUri();
+		line[2] = term.getLabel();
+		line[3] = term.getDescription();
+		line[4] = term.getInverseLabel();
+		line[5] = term.getInverseDescription();
+		line[6] = String.valueOf(term.isSymmetric());
+		line[7] = String.valueOf(term.isTransitive());
 		writer.writeNext(line);
 	}
 	

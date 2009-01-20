@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -20,7 +22,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing the categories of {@link NameRelationship taxon name relationships} between
@@ -51,8 +55,29 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationshipType")
 @Entity
+//@Audited
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
+
+	private static NameRelationshipType ORTHOGRAPHIC_VARIANT;
+
+	private static NameRelationshipType LATER_HOMONYM;
+
+	private static NameRelationshipType TREATED_AS_LATER_HOMONYM;
+
+	private static NameRelationshipType ALTERNATIVE_NAME;
+
+	private static NameRelationshipType BASIONYM;
+
+	private static NameRelationshipType REPLACED_SYNONYM;
+
+	private static NameRelationshipType CONSERVED_AGAINST;
+
+	private static NameRelationshipType VALIDATED_BY_NAME;
+
+	private static NameRelationshipType LATER_VALIDATED_BY_NAME;
+
+	private static NameRelationshipType BLOCKING_NAME_FOR;
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 	private static final UUID uuidLaterHomonym = UUID.fromString("80f06f65-58e0-4209-b811-cb40ad7220a6");
@@ -99,18 +124,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 
 
 	//********* METHODS **************************************/
-
-	/**
-	 * Returns the name relationship type identified through its immutable
-	 * universally unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the name relationship type corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final NameRelationshipType getByUuid(UUID uuid){
-		return (NameRelationshipType)findByUuid(uuid);
-	}
 
 	// TODO this method should be moved to consistency proof classes
 	/**
@@ -201,7 +214,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is symmetric and transitive.
 	 */
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
-		  return getByUuid(uuidOrthographicVariant);
+		  return ORTHOGRAPHIC_VARIANT;
 	}
 	/**
 	 * Returns the "later homonym" name relationship type. The first
@@ -222,7 +235,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see	NomenclaturalStatusType#isLegitimateType()
 	 */
 	public static final NameRelationshipType LATER_HOMONYM(){
-	  return getByUuid(uuidLaterHomonym);
+	  return LATER_HOMONYM; 
 	}
 	/**
 	 * Returns the "treated as later homonym" name relationship type. The first
@@ -241,7 +254,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see	NomenclaturalStatusType#isLegitimateType()
 	 */
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
-	  return getByUuid(uuidTreatedAsLaterHomonym);
+	  return TREATED_AS_LATER_HOMONYM; 
 	}
 	/**
 	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
@@ -257,7 +270,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final NameRelationshipType ALTERNATIVE_NAME(){
-	  return getByUuid(uuidAlternativeName);
+	  return ALTERNATIVE_NAME;
 	}
 	/**
 	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name} 
@@ -274,7 +287,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final NameRelationshipType BASIONYM(){
-	  return getByUuid(uuidBasionym);
+	  return BASIONYM;
 	}
 	/**
 	 * Returns the "replaced synonym" name relationship type. The first 
@@ -291,7 +304,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * For instance <i>Spartium biflorum</i> Desf. is the replaced synonym of
 	 * of <i>Cytisus fontanesii</i> Spach ("novum" taxon name) because at the time
 	 * of reclassification a taxon name <i>Cytisus biflorum</i> had been already
-	 * published by L'Hér.<BR>
+	 * published by L'Hï¿½r.<BR>
 	 * This type is neither symmetric nor transitive.
 	 * 
 	 * @see #BASIONYM()
@@ -299,7 +312,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#NOVUM()
 	 */
 	public static final NameRelationshipType REPLACED_SYNONYM(){
-	  return getByUuid(uuidReplacedSynonym);
+	  return REPLACED_SYNONYM;
 	}
 	/**
 	 * Returns the "conserved against" name relationship type. Both {@link TaxonNameBase taxon names}
@@ -318,7 +331,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#isIllegitimateType()
 	 */
 	public static final NameRelationshipType CONSERVED_AGAINST(){
-	  return getByUuid(uuidConservedAgainst);
+	  return CONSERVED_AGAINST;
 	}
 	/**
 	 * Returns the "validated by name" name relationship type. The two
@@ -332,7 +345,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType VALIDATED_BY_NAME(){
-	  return getByUuid(uuidValidatedByName);
+	  return VALIDATED_BY_NAME;
 	}
 	/**
 	 * Returns the "later validated by name" name relationship type. The two
@@ -346,7 +359,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
-	  return getByUuid(uuidLaterValidatedByName);
+	  return LATER_VALIDATED_BY_NAME; 
 	}
 	/**
 	 * Returns the "blocking name" name relationship type. The first 
@@ -357,7 +370,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * reclassification, which makes illegitim (because of homonymy) the use of
 	 * the epithet in the second taxon name originated through a reclassification.
 	 * Therefore a "replaced synonym" name relationship arises.<BR>
-	 * For instance  <i>Cytisus biflorum</i> L'Hér. is the blocking name for
+	 * For instance  <i>Cytisus biflorum</i> L'Hï¿½r. is the blocking name for
 	 * <i>Cytisus fontanesii</i> Spach ("novum" taxon name) when reclassifying
 	 * <i>Spartium biflorum</i> Desf. from <i>Spartium</i> to <i>Cytisus</i>.<BR>
 	 * This type is neither symmetric nor transitive.
@@ -367,7 +380,25 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#NOVUM()
 	 */
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
-	  return getByUuid(uuidBlockingNameFor);
+	  return  BLOCKING_NAME_FOR;
 	}
 
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NameRelationshipType> termVocabulary) {
+		NameRelationshipType.ALTERNATIVE_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidAlternativeName);
+		NameRelationshipType.BASIONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidBasionym);
+		NameRelationshipType.BLOCKING_NAME_FOR = termVocabulary.findTermByUuid(NameRelationshipType.uuidBlockingNameFor);
+		NameRelationshipType.CONSERVED_AGAINST = termVocabulary.findTermByUuid(NameRelationshipType.uuidConservedAgainst);
+		NameRelationshipType.LATER_HOMONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidLaterHomonym);
+		NameRelationshipType.LATER_VALIDATED_BY_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidLaterValidatedByName);
+		NameRelationshipType.ORTHOGRAPHIC_VARIANT = termVocabulary.findTermByUuid(NameRelationshipType.uuidOrthographicVariant);
+		NameRelationshipType.REPLACED_SYNONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidReplacedSynonym);
+		NameRelationshipType.TREATED_AS_LATER_HOMONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidTreatedAsLaterHomonym);
+		NameRelationshipType.VALIDATED_BY_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidValidatedByName);		
+	}
+
+	@Override
+	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		return super.readCsvLine(termClass, csvLine, terms);
+	}
 }

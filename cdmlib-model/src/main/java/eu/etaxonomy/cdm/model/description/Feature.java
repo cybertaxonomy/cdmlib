@@ -12,10 +12,12 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -84,9 +86,32 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "Feature")
 @Entity
+//@Audited
 public class Feature extends DefinedTermBase<Feature> {
 	private static final long serialVersionUID = 6754598791831848704L;
 	private static final Logger logger = Logger.getLogger(Feature.class);
+	private static Feature IMAGE;
+	private static Feature CULTIVATION;
+	private static Feature CONSERVATION;
+	private static Feature USES;
+	private static Feature ADDITIONAL_PUBLICATION;
+	private static Feature CITATION;
+	private static Feature OCCURRENCE;
+	private static Feature PHENOLOGY;
+	private static Feature COMMON_NAME;
+	private static Feature PROTOLOG;
+	private static Feature INTRODUCTION;
+	private static Feature DIAGNOSIS;
+	private static Feature ETYMOLOGY;
+	private static Feature MATERIALS_METHODS;
+	private static Feature MATERIALS_EXAMINED;
+	private static Feature KEY;
+	private static Feature BIOLOGY_ECOLOGY;
+	private static Feature ECOLOGY;
+	private static Feature DISCUSSION;
+	private static Feature DISTRIBUTION;
+	private static Feature DESCRIPTION;
+	private static Feature UNKNOWN;
 
 	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
@@ -110,7 +135,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<TermVocabulary> recommendedModifierEnumeration = new HashSet<TermVocabulary>();
+	private Set<TermVocabulary<Modifier>> recommendedModifierEnumeration = new HashSet<TermVocabulary<Modifier>>();
 	
 	@XmlElementWrapper(name = "RecommendedStatisticalMeasures")
 	@XmlElement(name = "RecommendedStatisticalMeasure")
@@ -122,7 +147,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<TermVocabulary> supportedCategoricalEnumerations = new HashSet<TermVocabulary>();
+	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
@@ -294,12 +319,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
+	 *  
+	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
 	 */
-	@OneToMany
-    @JoinTable(
-            name="DefinedTermBase_RecommendedModifierEnumeration"
-        )
-	public Set<TermVocabulary> getRecommendedModifierEnumeration() {
+	@OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
+	public Set<TermVocabulary<Modifier>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
@@ -307,7 +332,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#getRecommendedModifierEnumeration() 
 	 */
 	protected void setRecommendedModifierEnumeration(
-			Set<TermVocabulary> recommendedModifierEnumeration) {
+			Set<TermVocabulary<Modifier>> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
 
@@ -320,7 +345,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see    	   								#getRecommendedModifierEnumeration()
 	 */
 	public void addRecommendedModifierEnumeration(
-			TermVocabulary recommendedModifierEnumeration) {
+			TermVocabulary<Modifier> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	/** 
@@ -332,7 +357,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
 	 */
 	public void removeRecommendedModifierEnumeration(
-			TermVocabulary recommendedModifierEnumeration) {
+			TermVocabulary<Modifier> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
@@ -340,10 +365,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
 	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
 	 */
-	@ManyToMany
-    @JoinTable(
-            name="DefinedTermBase_StatisticalMeasure"
-        )
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_StatisticalMeasure")
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
@@ -386,12 +409,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the list of
 	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
 	 * with <i>this</i> feature.
+	 * 
+	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique state enums?
 	 */
-	@OneToMany
-    @JoinTable(
-            name="DefinedTermBase_SupportedCategoricalEnumeration"
-        )
-	public Set<TermVocabulary> getSupportedCategoricalEnumerations() {
+	@OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
+	public Set<TermVocabulary<State>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -399,7 +422,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#getSupportedCategoricalEnumerations() 
 	 */
 	protected void setSupportedCategoricalEnumerations(
-			Set<TermVocabulary> supportedCategoricalEnumerations) {
+			Set<TermVocabulary<State>> supportedCategoricalEnumerations) {
 		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
 	}
 	/**
@@ -411,7 +434,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see    	   								#getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-			TermVocabulary supportedCategoricalEnumeration) {
+			TermVocabulary<State> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/** 
@@ -423,7 +446,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     								#addSupportedCategoricalEnumeration(TermVocabulary)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermVocabulary supportedCategoricalEnumeration) {
+			TermVocabulary<State> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
@@ -452,9 +475,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
 	
 	
-	
-	
-	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -479,31 +499,18 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     		#NewInstance(String, String, String)
 	 */
 	@Override
-	public ILoadableTerm readCsvLine(List csvLine, Language lang) {
-		// TODO Auto-generated method stub
-		super.readCsvLine(csvLine, lang);
+	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		Feature newInstance = super.readCsvLine(termClass, csvLine, terms); 
 		String text = (String)csvLine.get(4);
 		if (text != null && text.length() >= 6){
-			if ("1".equals(text.substring(0, 1))){this.setSupportsTextData(true);};
-			if ("1".equals(text.substring(1, 2))){this.setSupportsQuantitativeData(true);};
-			if ("1".equals(text.substring(2, 3))){this.setSupportsDistribution(true);};
-			if ("1".equals(text.substring(3, 4))){this.setSupportsIndividualAssociation(true);};
-			if ("1".equals(text.substring(4, 5))){this.setSupportsTaxonInteraction(true);};
-			if ("1".equals(text.substring(5, 6))){this.setSupportsCommonTaxonName(true);};
+			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);};
+			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);};
+			if ("1".equals(text.substring(2, 3))){newInstance.setSupportsDistribution(true);};
+			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);};
+			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);};
+			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);};
 		}
-		return this;
-	}
-
-	/**
-	 * Returns the feature identified through its immutable universally
-	 * unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the feature corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final Feature getByUuid(UUID uuid){
-		return (Feature)findByUuid(uuid);
+		return newInstance;
 	}
 	
 	/**
@@ -512,7 +519,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * not known what they mean.
 	 */
 	public static final Feature UNKNOWN(){
-		return getByUuid(uuidUnknown);
+		return UNKNOWN;
 	}
 	
 	/**
@@ -521,7 +528,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * The "description" feature is the highest level feature. 
 	 */
 	public static final Feature DESCRIPTION(){
-		return getByUuid(uuidDescription);
+		return DESCRIPTION;
 	}
 
 	/**
@@ -531,7 +538,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsDistribution()
 	 */
 	public static final Feature DISTRIBUTION(){
-		return getByUuid(uuidDistribution);
+		return DISTRIBUTION;
 	}
 
 	/**
@@ -541,7 +548,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature DISCUSSION(){
-		return getByUuid(uuidDiscussion);
+		return DISCUSSION;
 	}
 	
 	/**
@@ -551,7 +558,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * ecological matters.
 	 */
 	public static final Feature ECOLOGY(){
-		return getByUuid(uuidEcology);
+		return ECOLOGY;
 	}	
 	
 	/**
@@ -563,7 +570,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see #ECOLOGY()
 	 */
 	public static final Feature BIOLOGY_ECOLOGY(){
-		return getByUuid(uuidBiologyEcology);
+		return BIOLOGY_ECOLOGY;
 	}
 	
 	/**
@@ -571,7 +578,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * all features being used within an identification key.
 	 */
 	public static final Feature KEY(){
-		return getByUuid(uuidKey);
+		return KEY;
 	}		
 	
 	
@@ -583,7 +590,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature MATERIALS_EXAMINED(){
-		return getByUuid(uuidMaterialsExamined);
+		return MATERIALS_EXAMINED;
 	}
 	
 	/**
@@ -594,7 +601,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature MATERIALS_METHODS(){
-		return getByUuid(uuidMaterialsMethods);
+		return MATERIALS_METHODS;
 	}
 	
 	/**
@@ -604,7 +611,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonNameDescription taxon name descriptions}.
 	 */
 	public static final Feature ETYMOLOGY(){
-		return getByUuid(uuidEtymology);
+		return ETYMOLOGY;
 	}
 		
 	/**
@@ -614,7 +621,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonDescription taxon descriptions}.
 	 */
 	public static final Feature DIAGNOSIS(){
-		return getByUuid(uuidDiagnosis);
+		return DIAGNOSIS;
 	}
 
 	
@@ -625,7 +632,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature INTRODUCTION(){
-		return getByUuid(uuidIntroduction);
+		return INTRODUCTION;
 	}
 
 	/**
@@ -637,7 +644,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature PROTOLOG(){
-		return getByUuid(uuidProtolog);
+		return PROTOLOG;
 	}
 	/**
 	 * Returns the "common_name" feature. This feature allows to handle only
@@ -646,7 +653,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsCommonTaxonName()
 	 */
 	public static final Feature COMMON_NAME(){
-		return getByUuid(uuidCommonName);
+		return COMMON_NAME;
 	}
 	
 	/**
@@ -659,7 +666,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * (such as "first flight of butterflies").
 	 */
 	public static final Feature PHENOLOGY(){
-		return getByUuid(uuidPhenology);
+		return PHENOLOGY;
 	}
 
 	
@@ -667,7 +674,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the "occurrence" feature.
 	 */
 	public static final Feature OCCURRENCE(){
-		return getByUuid(uuidOccurrence);
+		return OCCURRENCE;
 	}
 	
 	/**
@@ -677,7 +684,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature CITATION(){
-		return getByUuid(uuidCitation);
+		return CITATION;
 	}
 	
 	/**
@@ -690,7 +697,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see	#isSupportsTextData()
 	 */
 	public static final Feature ADDITIONAL_PUBLICATION(){
-		return getByUuid(uuidAdditionalPublication);
+		return ADDITIONAL_PUBLICATION;
 	}
 	
 	
@@ -701,7 +708,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * particular uses (for instance "industrial use of seeds").
 	 */
 	public static final Feature USES(){
-		return getByUuid(uuidUses);
+		return USES;
 	}
 	
 	
@@ -711,7 +718,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * methods and conditions for the conservation of {@link Specimen specimens}.<BR>
 	 */
 	public static final Feature CONSERVATION(){
-		return getByUuid(uuidConservation);
+		return CONSERVATION;
 	}
 	
 	
@@ -719,7 +726,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the "cultivation" feature.
 	 */
 	public static final Feature CULTIVATION(){
-		return getByUuid(uuidCultivation);
+		return CULTIVATION;
 	}
 	
 	
@@ -727,7 +734,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the "cultivation" feature.
 	 */
 	public static final Feature IMAGE(){
-		return getByUuid(uuidImage);
+		return IMAGE;
 	}
 	
 	/**
@@ -746,6 +753,32 @@ public class Feature extends DefinedTermBase<Feature> {
 		//TODO
 		logger.warn("HYBRID_PARENT not yet implemented");
 		return null;
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
+		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
+		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
+		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
+		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
+		Feature.CONSERVATION = termVocabulary.findTermByUuid(Feature.uuidConservation);
+		Feature.CULTIVATION = termVocabulary.findTermByUuid(Feature.uuidCultivation);
+		Feature.DESCRIPTION = termVocabulary.findTermByUuid(Feature.uuidDescription);
+		Feature.DIAGNOSIS = termVocabulary.findTermByUuid(Feature.uuidDiagnosis);
+		Feature.DISCUSSION = termVocabulary.findTermByUuid(Feature.uuidDiscussion);
+		Feature.DISTRIBUTION = termVocabulary.findTermByUuid(Feature.uuidDistribution);
+		Feature.ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidEcology);
+		Feature.ETYMOLOGY = termVocabulary.findTermByUuid(Feature.uuidEtymology);
+		Feature.IMAGE = termVocabulary.findTermByUuid(Feature.uuidImage);
+		Feature.INTRODUCTION = termVocabulary.findTermByUuid(Feature.uuidIntroduction);
+		Feature.KEY = termVocabulary.findTermByUuid(Feature.uuidKey);
+		Feature.MATERIALS_EXAMINED = termVocabulary.findTermByUuid(Feature.uuidMaterialsExamined);
+		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
+		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
+		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
+		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
+		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
+		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
 	}
 
 

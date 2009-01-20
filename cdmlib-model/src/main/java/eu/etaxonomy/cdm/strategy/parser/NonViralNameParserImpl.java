@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<?>> {
+public class NonViralNameParserImpl implements INonViralNameParser<NonViralName> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -59,7 +59,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName<?> parseSimpleName(String simpleName, Rank rank){
+	public NonViralName parseSimpleName(String simpleName, Rank rank){
 		//TODO
 		logger.warn("parseSimpleName() not yet implemented. Uses parseFullName() instead");
 		return parseFullName(simpleName, null, rank);
@@ -69,16 +69,16 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericSimpleName(java.lang.String)
 	 */
-	public NonViralName<?> parseSimpleName(String simpleName){
+	public NonViralName parseSimpleName(String simpleName){
 		return parseSimpleName(simpleName, null);
 	}
 	
-	public NonViralName<?> getNonViralNameInstance(String fullString, NomenclaturalCode code){
+	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
 		return getNonViralNameInstance(fullString, code, null);
 	}
 	
-	public NonViralName<?> getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
-		NonViralName<?> result = null;
+	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
+		NonViralName result = null;
 		if (code == null){
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
@@ -119,24 +119,24 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseFullReference(java.lang.String)
 	 */
-	public NonViralName<?> parseReferencedName(String fullReferenceString) {
+	public NonViralName parseReferencedName(String fullReferenceString) {
 		return parseReferencedName(fullReferenceString, null, null);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName<?> parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
+	public NonViralName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullReferenceString == null){
 			return null;
 		}else{
-			NonViralName<?> result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
 			parseReferencedName(result, fullReferenceString, rank, MAKE_EMPTY);
 			return result;
 		}
 	}
 	
-	private String standardize(NonViralName<?> nameToBeFilled, String fullReferenceString, boolean makeEmpty){
+	private String standardize(NonViralName nameToBeFilled, String fullReferenceString, boolean makeEmpty){
 		//Check null and standardize
 		if (fullReferenceString == null){
 			//return null;
@@ -158,7 +158,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalFullName(NonViralName<?> nameToBeFilled){
+	private String getLocalFullName(NonViralName nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
 		}else if (nameToBeFilled instanceof NonViralName) {
@@ -176,7 +176,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalSimpleName(NonViralName<?> nameToBeFilled){
+	private String getLocalSimpleName(NonViralName nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooName;
 		}else if (nameToBeFilled instanceof NonViralName){
@@ -198,7 +198,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullReference(eu.etaxonomy.cdm.model.name.BotanicalName, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, boolean)
 	 */
-	public void parseReferencedName(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
+	public void parseReferencedName(NonViralName nameToBeFilled, String fullReferenceString, Rank rank, boolean makeEmpty) {
 		//standardize
 		fullReferenceString = standardize(nameToBeFilled, fullReferenceString, makeEmpty);
 		if (fullReferenceString == null){
@@ -245,7 +245,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		parsable.setProblemEnds(-1);
 	}
 	
-	private void makeNoFullRefMatch(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank){
+	private void makeNoFullRefMatch(NonViralName nameToBeFilled, String fullReferenceString, Rank rank){
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 		
@@ -276,7 +276,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
 	}
 	
-	private void makeNameWithReference(NonViralName<?> nameToBeFilled, 
+	private void makeNameWithReference(NonViralName nameToBeFilled, 
 			String fullReferenceString, 
 			Matcher nameAndRefSeparatorMatcher,
 			Rank rank,
@@ -296,7 +296,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		parseFullName(nameToBeFilled, name, rank, makeEmpty);
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
 		parseReference(nameToBeFilled, referenceString, isInReference); 
-	    INomenclaturalReference<?> ref = nameToBeFilled.getNomenclaturalReference();
+	    INomenclaturalReference ref = nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
 	    int start = nameToBeFilled.getProblemStarts();
@@ -339,7 +339,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * The nomenclatural status part ist deleted from the reference String.
 	 * @return  String the new (shortend) reference String 
 	 */ 
-	private String parseNomStatus(String fullString, NonViralName<?> nameToBeFilled) {
+	private String parseNomStatus(String fullString, NonViralName nameToBeFilled) {
 		String statusString;
 		Pattern hasStatusPattern = Pattern.compile("(" + pNomStatusPhrase + ")"); 
 		Matcher hasStatusMatcher = hasStatusPattern.matcher(fullString);
@@ -365,8 +365,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	}
 	
 	
-	private void parseReference(NonViralName<?> nameToBeFilled, String strReference, boolean isInReference){
-		INomenclaturalReference<?> ref;
+	private void parseReference(NonViralName nameToBeFilled, String strReference, boolean isInReference){
+		INomenclaturalReference ref;
 		String originalStrReference = strReference;
 		
 		//End (just delete end (e.g. '.', may be ambigous for yearPhrase, but no real information gets lost
@@ -425,8 +425,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * @param year
 	 * @return
 	 */
-	private INomenclaturalReference<?> parseReferenceTitle(String strReference, String year, boolean isInReference){
-		INomenclaturalReference<?> result = null;
+	private INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
+		INomenclaturalReference result = null;
 		
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
 		if (! refSineDetailMatcher.matches()){
@@ -471,7 +471,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 		return result;
 	}
 	
-	private void makeUnparsableRefTitle(INomenclaturalReference<?> result, String reference){
+	private void makeUnparsableRefTitle(INomenclaturalReference result, String reference){
 		result.setTitleCache(reference);
 		result.setHasProblem(true);
 	}
@@ -509,7 +509,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	 * @return If the string is not parsable <code>false</code>
 	 * is returned. <code>True</code> otherwise
 	 */
-	private boolean makeYear(INomenclaturalReference<?> nomRef, String year){
+	private boolean makeYear(INomenclaturalReference nomRef, String year){
 		boolean result = true;
 		if (year == null){
 			return false;
@@ -654,7 +654,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericFullName(java.lang.String)
 	 */
-	public NonViralName<?> parseFullName(String fullNameString){
+	public NonViralName parseFullName(String fullNameString){
 		return parseFullName(fullNameString, null, null);
 	}
 	
@@ -662,18 +662,18 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
-	public NonViralName<?> parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
+	public NonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
 		if (fullNameString == null){
 			return null;
 		}else{
-			NonViralName<?> result = getNonViralNameInstance(fullNameString, nomCode, rank);
+			NonViralName result = getNonViralNameInstance(fullNameString, nomCode, rank);
 			parseFullName(result, fullNameString, rank, false);
 			return result;
 		}
 	}
 		
 	
-	public void parseFullName(NonViralName<?> nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
+	public void parseFullName(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
 		
 		if (nameToBeFilled == null){
@@ -1043,7 +1043,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
 	}
 
 	
-	private void makeEmpty(NonViralName<?> nameToBeFilled){
+	private void makeEmpty(NonViralName nameToBeFilled){
 		nameToBeFilled.setRank(null);
 		nameToBeFilled.setTitleCache(null, false);
 		nameToBeFilled.setFullTitleCache(null, false);
@@ -1116,7 +1116,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
     static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
     
     //Words used in an epethiton for a TaxonName
-    static String nonCapitalEpiWord = "[a-zï\\-]+";   //TODO solve checkin Problem with Unicode character "[a-zï¿½\\-]+";
+    static String nonCapitalEpiWord = "[a-zï¿½\\-]+";   //TODO solve checkin Problem with Unicode character "[a-zï¿½\\-]+";
     static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
      
     
@@ -1184,12 +1184,12 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
     
     
     static String pPage = nr5 + "[a-z]?";
-    static String pStrNo = "n°" + fWs + "(" + nr4 + ")";
+    static String pStrNo = "nï¿½" + fWs + "(" + nr4 + ")";
     
     static String pBracketNr = "\\[" + nr4 + "\\]";
     static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
     
-    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|ß|\\(\\d{1,3}\\)))?";
+    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|ï¿½|\\(\\d{1,3}\\)))?";
     static String pFig = "fig." + fWs + nr4 + "[a-z]?";
     static String pFigs = pFig + "(-" + nr4 + ")?";
     //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
@@ -1206,7 +1206,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName<
     
     static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
     static String pPageSpecial = nr4 + fWs + "(in obs|, Expl\\. Tab)";
-    static String pSpecialGardDict = capitalWord + oWs + "n°" + oWs + "\\d{1,2}";
+    static String pSpecialGardDict = capitalWord + oWs + "nï¿½" + oWs + "\\d{1,2}";
     //TODO
     // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";

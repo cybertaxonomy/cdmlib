@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -55,6 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "SynonymRelationship")
 @Entity
+//@Audited
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
@@ -216,7 +218,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 		return relatedTo;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public SynonymRelationshipType getType() {
 		return type;
 	}

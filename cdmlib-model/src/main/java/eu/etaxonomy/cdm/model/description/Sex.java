@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlType(name = "Sex")
 @XmlRootElement(name = "Sex")
 @Entity
+//@Audited
 public class Sex extends Scope {
 	private static final long serialVersionUID = 3463642992193419657L;
 	@SuppressWarnings("unused")
@@ -45,12 +47,8 @@ public class Sex extends Scope {
 
 	private static final UUID uuidMale = UUID.fromString("600a5212-cc02-431d-8a80-2bf595bd1eab");
 	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
-
-	
-	public static final Sex getByUuid(UUID uuid){
-		return (Sex) findByUuid(uuid);
-	}
-	
+	private static Sex MALE;
+	private static Sex FEMALE;	
 	
 	/** 
 	 * Class constructor: creates a new empty sex instance.
@@ -86,11 +84,17 @@ public class Sex extends Scope {
 	}
 	
 	public static Sex MALE(){
-		return getByUuid(uuidMale);
+		return MALE;
 	}
 
 	public static Sex FEMALE(){
-		return getByUuid(uuidFemale);
+		return FEMALE;
+	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
+		Sex.MALE = (Sex)termVocabulary.findTermByUuid(Sex.uuidMale);
+		Sex.FEMALE = (Sex)termVocabulary.findTermByUuid(Sex.uuidFemale);
 	}
 
 	

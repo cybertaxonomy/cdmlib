@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity
+//@Audited
 public class PhylogeneticTree extends ReferencedMedia {
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
@@ -47,7 +48,7 @@ public class PhylogeneticTree extends ReferencedMedia {
     @XmlSchemaType(name = "IDREF")
 	private Set<Sequence> usedSequences = new HashSet<Sequence>();
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Sequence> getUsedSequences() {
 		logger.debug("getUsedSequences");
 		return usedSequences;

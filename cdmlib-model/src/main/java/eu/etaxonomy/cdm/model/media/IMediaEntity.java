@@ -2,11 +2,6 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.Set;
 
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 /**
  * If a class is implementing this interface a set of <code>media</code> may be added
  * to an instance of this class. The class should also implement the protected method:
@@ -23,8 +18,7 @@ public interface IMediaEntity extends IMediaDocumented{
 	 * Gets all media belonging to this object
 	 * @return
 	 */
-	@OneToMany
-	@Cascade({CascadeType.SAVE_UPDATE})
+	
 	public abstract Set<Media> getMedia();
 
 	//also to be implemented by the implementing class

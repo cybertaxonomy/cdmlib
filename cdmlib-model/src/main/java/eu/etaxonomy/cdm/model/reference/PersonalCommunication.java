@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "PersonalCommunication")
 @XmlRootElement(name = "PersonalCommunication")
 @Entity
+//@Audited
 public class PersonalCommunication extends StrictReferenceBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PersonalCommunication.class);
 

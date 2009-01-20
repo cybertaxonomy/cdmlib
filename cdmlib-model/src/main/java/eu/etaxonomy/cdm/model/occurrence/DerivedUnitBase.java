@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
+//@Audited
 public abstract class DerivedUnitBase extends SpecimenOrObservationBase implements Cloneable{
 
 	@XmlElement(name = "Collection")
@@ -106,7 +108,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	
 	
 	@Deprecated //only for bidirectional and persistence use
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private DerivationEvent getDerivationEvent() {
 		return getDerivedFrom();
@@ -144,7 +146,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Collection getCollection(){
 		return this.collection;
@@ -184,7 +186,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	}
 	
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;

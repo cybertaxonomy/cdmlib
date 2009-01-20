@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -47,7 +48,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
-public class StatisticalMeasurementValue extends VersionableEntity<StatisticalMeasurementValue> {
+//@Audited
+public class StatisticalMeasurementValue extends VersionableEntity {
 	private static final long serialVersionUID = -3576311887760351982L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
@@ -86,7 +88,7 @@ public class StatisticalMeasurementValue extends VersionableEntity<StatisticalMe
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public StatisticalMeasure getType(){
 		return this.type;
 	}
@@ -119,7 +121,7 @@ public class StatisticalMeasurementValue extends VersionableEntity<StatisticalMe
 	 * or probability of <i>this</i> statistical measurement value.
 	 * This is only metainformation.
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Modifier> getModifiers() {
 		return modifiers;
 	}

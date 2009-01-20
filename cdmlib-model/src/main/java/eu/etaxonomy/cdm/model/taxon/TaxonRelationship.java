@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
+//@Audited
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
@@ -159,7 +160,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		return relatedTo;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public TaxonRelationshipType getType() {
 		return type;
 	}

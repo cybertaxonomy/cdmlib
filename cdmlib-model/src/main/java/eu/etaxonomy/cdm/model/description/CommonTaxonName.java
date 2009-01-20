@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
+//@Audited
 public class CommonTaxonName extends DescriptionElementBase {
 	private static final long serialVersionUID = 2643808051976643339L;
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
@@ -101,7 +103,7 @@ public class CommonTaxonName extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link Language language} used for <i>this</i> common name.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Language getLanguage(){
 		return this.language;
 	}

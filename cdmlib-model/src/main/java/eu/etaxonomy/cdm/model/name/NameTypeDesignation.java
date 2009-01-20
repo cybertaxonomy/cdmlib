@@ -9,11 +9,11 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "typeName"
 })
 @Entity
+//@Audited
 public class NameTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
@@ -133,7 +134,7 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
 	 * of the taxon name type must be "species".
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getTypeName(){
 		return this.typeName;

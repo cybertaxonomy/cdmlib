@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -61,6 +62,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
+//@Audited
 public class QuantitativeData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2755806455420051488L;
 	@SuppressWarnings("unused")
@@ -95,7 +97,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * Returns the set of {@link StatisticalMeasurementValue statistical measurement values} describing
 	 * the {@link Feature feature} corresponding to <i>this</i> quantitative data.
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasurementValue> getStatisticalValues() {
 		return statisticalValues;
@@ -138,7 +140,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * Returns the {@link MeasurementUnit measurement unit} used in <i>this</i>
 	 * quantitative data.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public MeasurementUnit getUnit(){
 		return this.unit;
 	}

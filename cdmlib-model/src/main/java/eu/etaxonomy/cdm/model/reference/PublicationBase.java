@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
+//@Audited
 public abstract class PublicationBase extends StrictReferenceBase {
 	
 	static Logger logger = Logger.getLogger(PublicationBase.class);

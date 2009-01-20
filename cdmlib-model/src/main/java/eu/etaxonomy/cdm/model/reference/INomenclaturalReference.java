@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference<T extends ReferenceBase> extends IIdentifiableEntity<T>, IParsable{
+public interface INomenclaturalReference extends IIdentifiableEntity, IParsable{
 
 	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
 	

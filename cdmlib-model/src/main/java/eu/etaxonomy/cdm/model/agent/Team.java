@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 })
 @XmlRootElement
 @Entity
+//@Audited
 public class Team extends TeamOrPersonBase<Team> {
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);

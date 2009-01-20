@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "TaxonInteraction")
 @Entity
+//@Audited
 public class TaxonInteraction extends DescriptionElementBase {
 	private static final long serialVersionUID = -5014025677925668627L;
 	@SuppressWarnings("unused")
@@ -86,7 +88,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 * The first taxon is the taxon described in the corresponding
 	 * {@link TaxonDescription taxon description}.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Taxon getTaxon2(){
 		return this.taxon2;
 	}

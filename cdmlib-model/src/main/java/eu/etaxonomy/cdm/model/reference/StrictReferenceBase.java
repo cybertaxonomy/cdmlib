@@ -45,8 +45,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "StrictReferenceBase")
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class StrictReferenceBase extends ReferenceBase{
+public abstract class StrictReferenceBase extends ReferenceBase {
 	
 	private static final Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	

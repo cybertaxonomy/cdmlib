@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -48,6 +49,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "NamedArea")
 @Entity
+//@Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final long serialVersionUID = 6248434369557403036L;
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
@@ -109,7 +111,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	}
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaType is DefinedTerm -> no Cascade
 	public NamedAreaType getType(){
 		return this.type;
@@ -118,7 +120,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.type = type;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaLevel is DefinedTerm -> no Cascade
 	public NamedAreaLevel getLevel(){
 		return this.level;
@@ -134,7 +136,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.validPeriod = validPeriod;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Media getShape(){
 		return this.shape;
@@ -143,10 +145,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.shape = shape;
 	}
 
-    @ManyToMany
-    @JoinTable(
-        name="DefinedTermBase_WaterbodyOrCountry"
-    )
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;
@@ -176,40 +176,29 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
 	 */
 	@Override
-	public ILoadableTerm readCsvLine(List csvLine) {
-		Language lang = Language.DEFAULT();
-		super.readCsvLine(csvLine, lang);
-		String abbreviatedLabel = (String)csvLine.get(4);
-		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms);
+		
 		String levelString = (String)csvLine.get(6);
 		if(levelString != null && levelString.length() != 0) {
 			UUID levelUuid = UUID.fromString(levelString);
-			NamedAreaLevel level = this.vocabularyStore.getTermByUuid(levelUuid,NamedAreaLevel.class);
-			this.level = level;
+			NamedAreaLevel level = (NamedAreaLevel)terms.get(levelUuid);
+			newInstance.setLevel(level);
 		}
 		
 		String partOfString = (String)csvLine.get(7);
+	
 		if(partOfString != null && partOfString.length() != 0) {
 			UUID partOfUuid = UUID.fromString(partOfString);
-			NamedArea partOf = this.vocabularyStore.getTermByUuid(partOfUuid, NamedArea.class);
+			NamedArea partOf = (NamedArea)terms.get(partOfUuid);
 			partOf.addIncludes(this);
 		}
-		return this;
+		return newInstance;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.OrderedTermBase#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
-	 */
+	
 	@Override
-	public void setVocabulary(TermVocabulary newVocabulary) {
-		super.setVocabulary(newVocabulary);
-		if (newVocabulary.equals(TermVocabulary.TDWG())){
-			TdwgArea.addTdwgArea(this);
-		}
+	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
-
-
-
-	
-	
 }

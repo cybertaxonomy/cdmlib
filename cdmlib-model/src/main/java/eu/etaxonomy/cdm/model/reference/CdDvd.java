@@ -31,7 +31,12 @@ import org.apache.log4j.Logger;
 @XmlType(name = "CdDvd")
 @XmlRootElement(name = "CdDvd")
 @Entity
+//@Audited
 public class CdDvd extends PublicationBase implements Cloneable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
 

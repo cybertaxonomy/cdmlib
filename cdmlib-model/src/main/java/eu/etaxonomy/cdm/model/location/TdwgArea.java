@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 @XmlType(name = "TdwgArea")
 @XmlRootElement(name = "TdwgArea")
 @Entity
+//@Audited
 public class TdwgArea extends NamedArea {
 	private static final long serialVersionUID = 4662215686356109015L;
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
@@ -48,6 +49,12 @@ public class TdwgArea extends NamedArea {
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
 	
+	/**
+	 * FIXME This class should really be refactored into an interface and service implementation,
+	 * relying on TermVocabularyDao / service
+	 * @param tdwgAbbreviation
+	 * @return
+	 */
 	public static NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation){
 		if (abbrevMap == null){
 			initMaps();
@@ -57,9 +64,15 @@ public class TdwgArea extends NamedArea {
 			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
 			return null;
 		}
-		return (NamedArea)DefinedTermBase.findByUuid(uuid);
+		return null; //(NamedArea)DefinedTermBase.findByUuid(uuid);
 	}
 	
+	/**
+	 * FIXME This class should really be refactored into an interface and service implementation,
+	 * relying on TermVocabularyDao / service
+	 * @param tdwgLabel
+	 * @return
+	 */
 	public static NamedArea getAreaByTdwgLabel(String tdwgLabel){
 		if (labelMap == null){
 			initMaps();
@@ -69,7 +82,7 @@ public class TdwgArea extends NamedArea {
 			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
 			return null;
 		}
-		return (NamedArea)DefinedTermBase.findByUuid(uuid);
+		return null;//(NamedArea)DefinedTermBase.findByUuid(uuid);
 	}
 	
 	public static boolean isTdwgAreaLabel(String label){

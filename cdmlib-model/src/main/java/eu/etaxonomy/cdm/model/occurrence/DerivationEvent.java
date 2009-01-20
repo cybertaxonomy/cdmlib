@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
+//@Audited
 public class DerivationEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
@@ -76,7 +78,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		super();
 	}
 	
-	@ManyToMany(mappedBy="derivationEvents")
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SpecimenOrObservationBase> getOriginals() {
 		return originals;
@@ -95,7 +97,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	}
 	
 	
-	@OneToMany(mappedBy="derivationEvent")
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="derivationEvent")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DerivedUnitBase> getDerivatives() {
 		return derivatives;
@@ -115,7 +117,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public DerivationEventType getType() {
 		return type;
 	}

@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "CultivarPlantName")
 @Entity
+//@Audited
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
 	

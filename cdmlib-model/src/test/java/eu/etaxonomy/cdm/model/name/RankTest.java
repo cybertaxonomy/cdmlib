@@ -14,8 +14,10 @@ import static org.junit.Assert.*;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -84,6 +86,11 @@ public class RankTest extends EntityTestBase {
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
 
+	@BeforeClass
+	public static void setUp() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+	}
 	
 	@Test
 	public void testRank() {

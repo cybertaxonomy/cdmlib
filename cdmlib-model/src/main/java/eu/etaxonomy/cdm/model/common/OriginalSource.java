@@ -42,7 +42,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
-public class OriginalSource extends ReferencedEntityBase implements Cloneable{
+//@Audited
+public class OriginalSource extends ReferencedEntityBase implements Cloneable {
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSource.class);
@@ -128,6 +129,7 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable{
 	    	 fetch = FetchType.LAZY,
 	    	 optional = false)
 	@JoinColumn(name = "sourcedObj_id")
+//	@NotAudited
 	public IdentifiableEntity getSourcedObj() {
 		return sourcedObj;
 	}

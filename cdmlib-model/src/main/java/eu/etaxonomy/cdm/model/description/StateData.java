@@ -50,7 +50,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "StateData")
 @Entity
-public class StateData extends VersionableEntity<StateData> {
+//@Audited
+public class StateData extends VersionableEntity {
 	private static final long serialVersionUID = -4380314126624505415L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StateData.class);
@@ -84,7 +85,7 @@ public class StateData extends VersionableEntity<StateData> {
 	/** 
 	 * Returns the {@link State state term} used in <i>this</i> state data.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public State getState(){
 		return this.state;
 	}
@@ -100,7 +101,7 @@ public class StateData extends VersionableEntity<StateData> {
 	 * Returns the set of {@link Modifier modifiers} used to qualify the validity
 	 * of <i>this</i> state data. This is only metainformation.
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}

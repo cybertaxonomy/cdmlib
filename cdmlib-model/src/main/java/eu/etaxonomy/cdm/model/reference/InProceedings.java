@@ -41,7 +41,15 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "InProceedings")
 @Entity
+//@Audited
 public class InProceedings extends SectionBase {
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -286946099144494551L;
+
 	private static final Logger logger = Logger.getLogger(InProceedings.class);
 	
 	@XmlElement(name = "InProceedings")

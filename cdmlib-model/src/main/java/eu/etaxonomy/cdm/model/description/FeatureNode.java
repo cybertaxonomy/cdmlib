@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -55,7 +56,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
-public class FeatureNode extends VersionableEntity<FeatureNode> {
+//@Audited
+public class FeatureNode extends VersionableEntity {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
@@ -131,7 +133,7 @@ public class FeatureNode extends VersionableEntity<FeatureNode> {
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Feature getFeature() {
 		return feature;
 	}
@@ -151,7 +153,7 @@ public class FeatureNode extends VersionableEntity<FeatureNode> {
 	 * 
 	 * @see	#getChildren()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="parent_fk")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getParent() {
@@ -175,7 +177,7 @@ public class FeatureNode extends VersionableEntity<FeatureNode> {
 	 * Returns the (ordered) list of feature nodes which are children nodes of
 	 * <i>this</i> feature node.
 	 */
-	@OneToMany(mappedBy="parent")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<FeatureNode> getChildren() {
 		return children;

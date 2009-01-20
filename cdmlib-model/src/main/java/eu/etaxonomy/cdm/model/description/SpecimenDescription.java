@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlType(name = "SpecimenDescription")
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
+//@Audited
 public class SpecimenDescription extends DescriptionBase {
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")

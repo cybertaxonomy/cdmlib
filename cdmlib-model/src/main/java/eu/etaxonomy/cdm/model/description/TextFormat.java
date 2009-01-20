@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing kinds of formats used for structuring text
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @XmlType(name = "TextFormat")
 @XmlRootElement(name = "TextFormat")
 @Entity
+//@Audited
 public class TextFormat extends DefinedTermBase<TextFormat> {
 	private static final long serialVersionUID = 2063382669537212917L;
 	@SuppressWarnings("unused")
@@ -84,5 +86,11 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	 */
 	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
 		return new TextFormat(term, label, labelAbbrev);
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<TextFormat> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 }

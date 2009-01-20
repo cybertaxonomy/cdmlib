@@ -55,8 +55,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 @XmlRootElement(name = "Media")
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends AnnotatableEntity<Media> {
+public class Media extends AnnotatableEntity {
 	private static final long serialVersionUID = -1927421567263473658L;
 	private static final Logger logger = Logger.getLogger(Media.class);
 
@@ -104,7 +105,7 @@ public class Media extends AnnotatableEntity<Media> {
 		super();
 	}
 
-	@OneToMany(mappedBy="media")
+	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<MediaRepresentation> getRepresentations(){
 		return this.representations;
@@ -129,7 +130,7 @@ public class Media extends AnnotatableEntity<Media> {
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getArtist(){
 		return this.artist;
@@ -139,7 +140,7 @@ public class Media extends AnnotatableEntity<Media> {
 	}
 
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){
 		return this.rights;

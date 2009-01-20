@@ -12,7 +12,10 @@ package eu.etaxonomy.cdm.model.location;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NamedAreaLevel")
 @XmlRootElement(name = "NamedAreaLevel")
 @Entity
+//@Audited
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final long serialVersionUID = -7977901140330659208L;
 	@SuppressWarnings("unused")
@@ -44,6 +48,15 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final UUID uuidProvince = UUID.fromString("401d48b4-9f09-4354-be0f-c2138444f72d");
 	private static final UUID uuidTown = UUID.fromString("f127b4d2-f6bc-4019-9c87-ee3f4de1f094");
 	private static final UUID uuidCountry = UUID.fromString("79db63a4-1563-461e-8e41-48f5722feca4");
+	private static NamedAreaLevel COUNTRY;
+	private static NamedAreaLevel TOWN;
+	private static NamedAreaLevel PROVINCE;
+	private static NamedAreaLevel STATE;
+	private static NamedAreaLevel NATURE_RESERVE;
+	private static NamedAreaLevel TDWG_LEVEL4;
+	private static NamedAreaLevel TDWG_LEVEL3;
+	private static NamedAreaLevel TDWG_LEVEL2;
+	private static NamedAreaLevel TDWG_LEVEL1;
 
 	
 	/**
@@ -75,55 +88,63 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 
 	
 //******************** METHODS ***************************************/
-	
-
-	public static final NamedAreaLevel getByUuid(UUID uuid){
-		return (NamedAreaLevel) findByUuid(uuid);
-	}
-	
-	
+		
 	/**
 	 * continents
 	 */
 	public static final NamedAreaLevel TDWG_LEVEL1(){
-		return getByUuid(uuidTdwgLevel1);
+		return TDWG_LEVEL1;
 	}
 
 	/**
 	 * larger regions
 	 */
 	public static final NamedAreaLevel TDWG_LEVEL2(){
-		return getByUuid(uuidTdwgLevel2);
+		return TDWG_LEVEL2;
 	}
 
 	/**
 	 * mostly countries
 	 */
 	public static final NamedAreaLevel TDWG_LEVEL3(){
-		return getByUuid(uuidTdwgLevel3);
+		return TDWG_LEVEL3;
 	}
 
 	public static final NamedAreaLevel TDWG_LEVEL4(){
-		return getByUuid(uuidTdwgLevel4);
+		return TDWG_LEVEL4;
 	}
 
 	public static final NamedAreaLevel NATURE_RESERVE(){
-		return getByUuid(uuidNatureReserve);
+		return NATURE_RESERVE;
 	}
 
 	public static final NamedAreaLevel STATE(){
-		return getByUuid(uuidState);
+		return STATE;
 	}
 
 	public static final NamedAreaLevel PROVINCE(){
-		return getByUuid(uuidProvince);
+		return PROVINCE;
 	}
 
 	public static final NamedAreaLevel TOWN(){
-		return getByUuid(uuidTown);
+		return TOWN;
 	}
 
 	public static final NamedAreaLevel COUNTRY(){
-		return getByUuid(uuidCountry);
+		return COUNTRY;
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NamedAreaLevel> termVocabulary) {
+		NamedAreaLevel.COUNTRY = termVocabulary.findTermByUuid(NamedAreaLevel.uuidCountry);
+		NamedAreaLevel.NATURE_RESERVE = termVocabulary.findTermByUuid(NamedAreaLevel.uuidNatureReserve);
+		NamedAreaLevel.PROVINCE = termVocabulary.findTermByUuid(NamedAreaLevel.uuidProvince);
+		NamedAreaLevel.STATE = termVocabulary.findTermByUuid(NamedAreaLevel.uuidState);
+		NamedAreaLevel.TDWG_LEVEL1 = termVocabulary.findTermByUuid(NamedAreaLevel.uuidTdwgLevel1);
+		NamedAreaLevel.TDWG_LEVEL2 = termVocabulary.findTermByUuid(NamedAreaLevel.uuidTdwgLevel2);
+		NamedAreaLevel.TDWG_LEVEL3 = termVocabulary.findTermByUuid(NamedAreaLevel.uuidTdwgLevel3);
+		NamedAreaLevel.TDWG_LEVEL4 = termVocabulary.findTermByUuid(NamedAreaLevel.uuidTdwgLevel4);
+		NamedAreaLevel.TOWN = termVocabulary.findTermByUuid(NamedAreaLevel.uuidTown);
+		
 	}
 }

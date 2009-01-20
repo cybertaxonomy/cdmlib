@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExtensionType")
 @Entity
-public class ExtensionType extends DefinedTermBase {
+//@Audited
+public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExtensionType.class);
@@ -47,6 +48,12 @@ public class ExtensionType extends DefinedTermBase {
 
 	public static final ExtensionType RDF_FRAGMENT(){
 		return null;
+	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<ExtensionType> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

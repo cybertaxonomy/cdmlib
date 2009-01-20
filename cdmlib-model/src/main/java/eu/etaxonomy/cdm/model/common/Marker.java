@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Marker")
 @Entity
+//@Audited
 public class Marker extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -7474489691871404610L;
 	@SuppressWarnings("unused")
@@ -92,6 +93,7 @@ public class Marker extends VersionableEntity implements Cloneable{
 		     metaColumn = @Column(name="markedObj_type"),
 		     optional = false)
 	@JoinColumn(name = "markedObj_id")
+//	@NotAudited
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
 	}
@@ -102,7 +104,7 @@ public class Marker extends VersionableEntity implements Cloneable{
 	/**
 	 * @return
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public MarkerType getMarkerType(){
 		return this.markerType;

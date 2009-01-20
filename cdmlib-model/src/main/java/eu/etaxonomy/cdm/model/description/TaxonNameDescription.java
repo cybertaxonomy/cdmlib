@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 })
 @XmlRootElement(name = "TaxonNameDescription")
 @Entity
+//@Audited
 public class TaxonNameDescription extends DescriptionBase {
 	private static final long serialVersionUID = -7349160369642038687L;
 	@SuppressWarnings("unused")
@@ -66,14 +68,14 @@ public class TaxonNameDescription extends DescriptionBase {
 	 * Returns the {@link TaxonNameBase taxon name} to which <i>this</i> taxon name description
 	 * provides additional information not ruled by a {@link NomenclaturalCode nomenclatural code}.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="taxonName_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)
-	public TaxonNameBase getTaxonName() {
+	public TaxonNameBase<?,?> getTaxonName() {
 		return taxonName;
 	}
 	@Deprecated //for hibernate use only, use taxonName.addDescription() instead
-	protected void setTaxonName(TaxonNameBase taxonName) {
+	protected void setTaxonName(TaxonNameBase<?,?> taxonName) {
 		this.taxonName = taxonName;
 	}
 

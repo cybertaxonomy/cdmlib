@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,6 +33,7 @@ import javax.persistence.*;
 })
 @XmlRootElement(name = "OrderedTermBase")
 @Entity
+//@Audited
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
 	private static final long serialVersionUID = 8000797926720467399L;
 	@SuppressWarnings("unused")
@@ -93,36 +98,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	@Transient
 	public boolean isHigher(T orderedTerm){
 		return (this.compareTo(orderedTerm) > 0 );
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
-	 */
-	@Override
-	public void setVocabulary(TermVocabulary newVocabulary) {
-		// Hibernate bidirectional cascade hack: 
-		// http://opensource.atlassian.com/projects/hibernate/browse/HHH-1054
-		if(this.vocabulary == newVocabulary){ return;}
-		if (this.vocabulary != null) { 
-			this.vocabulary.terms.remove(this);
-		}
-		if (newVocabulary != null) { 
-			if (OrderedTermVocabulary.class.isAssignableFrom(newVocabulary.getClass())){
-				OrderedTermVocabulary voc = (OrderedTermVocabulary)newVocabulary;
-			
-				if (this.orderIndex > 0){
-					//don't change orderIndex
-				}else if (voc.getLowestTerm() == null){
-					this.orderIndex = 1;
-				}else{
-					OrderedTermBase otb = voc.getLowestTerm();
-					this.orderIndex = otb.orderIndex + 1;
-				}
-			}
-			newVocabulary.terms.add(this);
-		}
-		this.vocabulary = newVocabulary;		
 	}
 	
 	

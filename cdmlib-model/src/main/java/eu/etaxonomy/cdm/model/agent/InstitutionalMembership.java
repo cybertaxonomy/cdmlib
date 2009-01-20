@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "InstitutionalMembership")
 @Entity
-public class InstitutionalMembership extends VersionableEntity<InstitutionalMembership> {
+//@Audited
+public class InstitutionalMembership extends VersionableEntity {
 	private static final long serialVersionUID = -800814712134999042L;
 	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
 	
@@ -114,7 +115,7 @@ public class InstitutionalMembership extends VersionableEntity<InstitutionalMemb
 	 * @see  Person#institutionalMemberships
 	 * @see  Person#addInstitutionalMembership(Institution, TimePeriod, String, String)
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getPerson() {
 		return person;

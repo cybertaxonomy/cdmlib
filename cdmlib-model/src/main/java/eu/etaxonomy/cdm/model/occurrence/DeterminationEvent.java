@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
  * @created 08-Nov-2007 13:06:21
  */
 @Entity
+//@Audited
 public class DeterminationEvent extends EventBase {
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
 
@@ -61,7 +63,7 @@ public class DeterminationEvent extends EventBase {
 		super();
 	}
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public DeterminationModifier getModifier() {
 		return modifier;
@@ -71,7 +73,7 @@ public class DeterminationEvent extends EventBase {
 		this.modifier = modifier;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Taxon getTaxon(){
 		return this.taxon;
@@ -107,7 +109,7 @@ public class DeterminationEvent extends EventBase {
 		this.setActor(determiner);
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public SpecimenOrObservationBase getIdentifiedUnit() {
 		return identifiedUnit;
@@ -130,7 +132,7 @@ public class DeterminationEvent extends EventBase {
 		return new HashSet<ReferenceBase>();
 	}
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<ReferenceBase> getReferences() {
 		return setOfReferences;

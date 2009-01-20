@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
 import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -60,6 +61,7 @@ import javax.xml.bind.annotation.XmlType;
 	})
 @XmlRootElement(name = "Person")
 @Entity
+//@Audited
 public class Person extends TeamOrPersonBase<Person> {
 	private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
@@ -209,9 +211,7 @@ public class Person extends TeamOrPersonBase<Person> {
 	 *
 	 * @see 	Keyword
 	 */
-	@ManyToMany(fetch=FetchType.LAZY,
-	        targetEntity=eu.etaxonomy.cdm.model.common.Keyword.class
-	    )
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 	        name="Person_Keyword",
 	        joinColumns=@JoinColumn(name="person_fk"),

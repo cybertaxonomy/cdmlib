@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
@@ -53,8 +55,57 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatusType")
 @Entity
+//@Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
+
+	private static NomenclaturalStatusType OPUS_UTIQUE_OPPR;
+
+	private static NomenclaturalStatusType SUBNUDUM;
+
+	private static NomenclaturalStatusType VALID;
+
+	private static NomenclaturalStatusType PROVISIONAL;
+
+	private static NomenclaturalStatusType COMBINATION_INVALID;
+
+	private static NomenclaturalStatusType NUDUM;
+
+	private static NomenclaturalStatusType INVALID;
+
+	private static NomenclaturalStatusType SANCTIONED;
+
+	private static NomenclaturalStatusType CONSERVED;
+
+	private static NomenclaturalStatusType REJECTED_PROP;
+
+	private static NomenclaturalStatusType ORTHOGRAPHY_CONSERVED;
+
+	private static NomenclaturalStatusType UTIQUE_REJECTED_PROP;
+
+	private static NomenclaturalStatusType NOVUM;
+
+	private static NomenclaturalStatusType ALTERNATIVE;
+
+	private static NomenclaturalStatusType LEGITIMATE;
+
+	private static NomenclaturalStatusType ORTHOGRAPHY_CONSERVED_PROP;
+
+	private static NomenclaturalStatusType CONSERVED_PROP;
+
+	private static NomenclaturalStatusType UTIQUE_REJECTED;
+
+	private static NomenclaturalStatusType REJECTED;
+
+	private static NomenclaturalStatusType SUPERFLUOUS;
+
+	private static NomenclaturalStatusType ILLEGITIMATE;
+
+	private static NomenclaturalStatusType CONFUSUM;
+
+	private static NomenclaturalStatusType DOUBTFUL;
+
+	private static NomenclaturalStatusType AMBIGUOUS;
 
 	private static final UUID uuidAmbiguous = UUID.fromString("90f5012b-705b-4488-b4c6-002d2bc5198e");
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
@@ -113,19 +164,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		super(term, label, labelAbbrev);
 	}
 
-	//********* METHODS **************************************/
-
-	/**
-	 * Returns the nomenclatural status type identified through its immutable
-	 * universally unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the nomenclatural status type corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final NomenclaturalStatusType getByUuid(UUID uuid){
-		return (NomenclaturalStatusType) findByUuid(uuid);
-	}
+	//********* METHODS **************************************
 
 
 	/**
@@ -234,7 +273,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 */
 	public static final NomenclaturalStatusType AMBIGUOUS(){
-		return getByUuid(uuidAmbiguous);
+		return AMBIGUOUS;
 	}
 
 	/**
@@ -250,7 +289,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 */
 	public static final NomenclaturalStatusType DOUBTFUL(){
-		return getByUuid(uuidDoubtful);
+		return DOUBTFUL;
 	}
 
 	/**
@@ -265,7 +304,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 */
 	public static final NomenclaturalStatusType CONFUSUM(){
-		return getByUuid(uuidConfusum);
+		return CONFUSUM;
 	}
 
 	/**
@@ -279,7 +318,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #REJECTED()
 	 */
 	public static final NomenclaturalStatusType ILLEGITIMATE(){
-		return getByUuid(uuidIllegitimate);
+		return ILLEGITIMATE;
 	}
 
 	/**
@@ -299,7 +338,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 */
 	public static final NomenclaturalStatusType SUPERFLUOUS(){
-		return getByUuid(uuidSuperfluous);
+		return SUPERFLUOUS;
 	}
 
 	/**
@@ -320,7 +359,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType REJECTED(){
-		return getByUuid(uuidRejected);
+		return REJECTED;
 	}
 
 	/**
@@ -336,7 +375,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #CONSERVED()
 	 */
 	public static final NomenclaturalStatusType UTIQUE_REJECTED(){
-		return getByUuid(uuidUtiqueRejected);
+		return UTIQUE_REJECTED;
 	}
 
 	/**
@@ -357,7 +396,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType CONSERVED_PROP(){
-		return getByUuid(uuidConservedProp);
+		return CONSERVED_PROP;
 	}
 
 	/**
@@ -376,7 +415,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED_PROP(){
-		return getByUuid(uuidOrthographyConservedProp);
+		return ORTHOGRAPHY_CONSERVED_PROP;
 	}
 
 	/**
@@ -390,7 +429,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #CONSERVED()
 	 */
 	public static final NomenclaturalStatusType LEGITIMATE(){
-		return getByUuid(uuidLegitimate);
+		return LEGITIMATE;
 	}
 
 	/**
@@ -408,7 +447,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#ALTERNATIVE_NAME()
 	 */
 	public static final NomenclaturalStatusType ALTERNATIVE(){
-		return getByUuid(uuidAlternative);
+		return ALTERNATIVE;
 	}
 
 	/**
@@ -425,7 +464,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#BLOCKING_NAME_FOR()
 	 */
 	public static final NomenclaturalStatusType NOVUM(){
-		return getByUuid(uuidNovum);
+		return NOVUM;
 	}
 
 	/**
@@ -447,7 +486,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #REJECTED_PROP()
 	 */
 	public static final NomenclaturalStatusType UTIQUE_REJECTED_PROP(){
-		return getByUuid(uuidUtiqueRejectedProp);
+		return UTIQUE_REJECTED_PROP;
 	}
 
 	/**
@@ -464,7 +503,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED(){
-		return getByUuid(uuidOrthographyConserved);
+		return ORTHOGRAPHY_CONSERVED;
 	}
 
 	/**
@@ -487,7 +526,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType REJECTED_PROP(){
-		return getByUuid(uuidRejectedProp);
+		return REJECTED_PROP;
 	}
 
 	/**
@@ -506,7 +545,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType CONSERVED(){
-		return getByUuid(uuidConserved);
+		return CONSERVED;
 	}
 
 	/**
@@ -521,7 +560,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isLegitimateType()
 	 */
 	public static final NomenclaturalStatusType SANCTIONED(){
-		return getByUuid(uuidSanctioned);
+		return SANCTIONED;
 	}
 
 	/**
@@ -542,7 +581,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #ILLEGITIMATE()
 	 */
 	public static final NomenclaturalStatusType INVALID(){
-		return getByUuid(uuidInvalid);
+		return INVALID;
 	}
 
 	/**
@@ -555,7 +594,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType NUDUM(){
-		return getByUuid(uuidNudum);
+		return NUDUM;
 	}
 
 	/**
@@ -569,7 +608,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
-		return getByUuid(uuidCombinationInvalid);
+		return COMBINATION_INVALID;
 	}
 
 	/**
@@ -581,7 +620,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType PROVISIONAL(){
-		return getByUuid(uuidProvisional);
+		return PROVISIONAL;
 	}
 
 	/**
@@ -599,7 +638,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #LEGITIMATE()
 	 */
 	public static final NomenclaturalStatusType VALID(){
-		return getByUuid(uuidValid);
+		return VALID;
 	}
 
 	/**
@@ -613,7 +652,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * 
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
-		return getByUuid(uuidSubnudum);
+		return SUBNUDUM;
 	}
 
 	/**
@@ -630,7 +669,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isInvalidType()
 	 */
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
-		return getByUuid(uuidOpusUtiqueOppr);
+		return OPUS_UTIQUE_OPPR;
 	}
 
 
@@ -727,34 +766,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			throw new eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException("Unknown NomenclaturalStatusType abbreviation: " + statusLabel);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List, eu.etaxonomy.cdm.model.common.Language)
-	 */
-	/** 
-	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri, 
-	 * description text, label and label abbreviation) coming from a csv line.
-	 * This method overrides the method of {@link eu.etaxonomy.cdm.model.common.DefinedTermBase DefinedTermBase}.
-	 * 
-	 * @param	csvLine_ 	the (ordered) list of substrings from a csv string
-	 * 						to be used to fill <i>this</i> nomenclatural status type
-	 * @param	lang		the language in which the description text for <i>this</i>
-	 * 						nomenclatural status type is written
-	 * @see					#NomenclaturalStatusType(String, String, String)
-	 * @see					#readCsvLine(List)
-	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List, Language)
-	 */
-	@Override
-	public ILoadableTerm readCsvLine(List csvLine_, Language lang) {
-		List<String> csvLine = csvLine_;
-		this.setUuid(UUID.fromString(csvLine.get(0)));
-		this.setUri(csvLine.get(1));
-		String label = csvLine.get(2).trim();
-		String abbreviatedLabel = csvLine.get(3);
-		String text = label;
-		this.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
-		return this;
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
@@ -771,29 +782,47 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see					#readCsvLine(List, Language)
 	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
 	 */
-	@Override
-	public ILoadableTerm readCsvLine(List csvLine) {   //TODO should be List<String> but makes error for some strange reason
-		return readCsvLine(csvLine, Language.LATIN());
+
+	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {   //TODO should be List<String> but makes error for some strange reason
+		try {
+			NomenclaturalStatusType newInstance = termClass.newInstance();
+			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN());
+			return newInstance;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null;
+		
 	}
 
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
-//	 */
-//	@Override
-//	public ILoadableTerm readCsvLine(List<String> csvLine) {
-//		return readCsvLine(csvLine, Language.ENGLISH());
-//	}
-//
-//
-//	public ILoadableTerm readCsvLine(List<String> csvLine, Language lang) {
-//		this.setUuid(UUID.fromString(csvLine.get(0)));
-//		this.setUri(csvLine.get(1));
-//		String text = csvLine.get(3);
-//		String label = csvLine.get(2).trim();
-//		String abbreviatedLabel = null;
-//		this.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
-//		return this;
-//	}
-
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NomenclaturalStatusType> termVocabulary) {
+		NomenclaturalStatusType.ALTERNATIVE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidAlternative);
+		NomenclaturalStatusType.AMBIGUOUS = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidAmbiguous);
+		NomenclaturalStatusType.COMBINATION_INVALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidCombinationInvalid);
+		NomenclaturalStatusType.CONFUSUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConfusum);
+		NomenclaturalStatusType.CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConfusum);
+		NomenclaturalStatusType.CONSERVED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConservedProp);
+		NomenclaturalStatusType.DOUBTFUL = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidDoubtful);
+		NomenclaturalStatusType.ILLEGITIMATE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidIllegitimate);
+		NomenclaturalStatusType.INVALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidInvalid);
+		NomenclaturalStatusType.LEGITIMATE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidLegitimate);
+		NomenclaturalStatusType.NOVUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidNovum);
+		NomenclaturalStatusType.NUDUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidNudum);
+		NomenclaturalStatusType.OPUS_UTIQUE_OPPR = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOpusUtiqueOppr);
+		NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOrthographyConserved);
+		NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidOrthographyConservedProp);
+		NomenclaturalStatusType.PROVISIONAL = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidProvisional);
+		NomenclaturalStatusType.REJECTED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidRejected);
+		NomenclaturalStatusType.REJECTED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidRejectedProp);
+		NomenclaturalStatusType.SANCTIONED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSanctioned);
+		NomenclaturalStatusType.SUBNUDUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSubnudum);
+		NomenclaturalStatusType.SUPERFLUOUS = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidSuperfluous);
+		NomenclaturalStatusType.UTIQUE_REJECTED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejected);
+		NomenclaturalStatusType.UTIQUE_REJECTED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejectedProp);
+		NomenclaturalStatusType.VALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidValid);
+		
+		
+	}
 }

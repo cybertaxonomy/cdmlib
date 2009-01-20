@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing types (categories) of {@link BibtexReference BibTeX references}
@@ -38,7 +39,12 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @XmlType(name = "BibtexEntryType")
 @XmlRootElement(name = "BibtexEntryType")
 @Entity
-public class BibtexEntryType extends DefinedTermBase {
+//@Audited
+public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1603469685147239870L;
 	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
 	
@@ -261,6 +267,13 @@ public class BibtexEntryType extends DefinedTermBase {
 	 */
 	public static final BibtexEntryType MISC(){
 		return null;
+	}
+
+	@Override
+	protected void setDefaultTerms(
+			TermVocabulary<BibtexEntryType> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

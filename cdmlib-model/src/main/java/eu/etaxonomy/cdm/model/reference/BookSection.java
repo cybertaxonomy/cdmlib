@@ -48,8 +48,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
 })
 @XmlRootElement(name = "BookSection")
 @Entity
+//@Audited
 public class BookSection extends SectionBase implements INomenclaturalReference, Cloneable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1066199749700092670L;
+
 	private static final Logger logger = Logger.getLogger(BookSection.class);
 	
     @XmlElement(name = "BookSection")

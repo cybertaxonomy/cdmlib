@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Figure")
 @Entity
+//@Audited
 public class Figure extends ReferencedMedia {
 	private static final long serialVersionUID = -1712467725277327725L;
 	@SuppressWarnings("unused")

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
+//@Audited
 public class FeatureTree extends TermBase {
 	/**
 	 * 
@@ -168,7 +170,7 @@ public class FeatureTree extends TermBase {
 	 * recursively point to their child nodes the complete feature tree is
 	 * defined by its root node.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getRoot() {
 		return root;

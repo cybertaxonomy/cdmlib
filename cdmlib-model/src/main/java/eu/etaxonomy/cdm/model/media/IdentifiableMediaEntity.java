@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.model.media;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 })
 @XmlRootElement(name = "IdentifiableMediaEntity")
 @MappedSuperclass
-public abstract class IdentifiableMediaEntity extends IdentifiableEntity<IdentifiableMediaEntity> implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
 
 	private static final long serialVersionUID = 4038647011021908313L;
 
@@ -43,7 +44,7 @@ public abstract class IdentifiableMediaEntity extends IdentifiableEntity<Identif
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia() {
 		return media;

@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
     "typifiedNames"
 })
 @Entity
+//@Audited
 public class HomotypicalGroup extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(HomotypicalGroup.class);
 
@@ -367,7 +368,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
-		for (TaxonNameBase<TaxonNameBase, INameCacheStrategy>n : this.getTypifiedNames()){
+		for (TaxonNameBase<?, ?>n : this.getTypifiedNames()){
 			for (Synonym s:n.getSynonyms()){
 				if ( (s.getSec() == null && sec == null) ||
 						s.getSec().equals(sec)){

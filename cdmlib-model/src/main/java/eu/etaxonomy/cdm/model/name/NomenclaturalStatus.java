@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "type"
 })
 @Entity
+//@Audited
 public class NomenclaturalStatus extends ReferencedEntityBase {
 	private static final long serialVersionUID = -2451270405173131900L;
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
@@ -75,7 +77,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of <i>this</i>
 	 * nomenclatural status.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public NomenclaturalStatusType getType(){
 		return this.type;
 	}

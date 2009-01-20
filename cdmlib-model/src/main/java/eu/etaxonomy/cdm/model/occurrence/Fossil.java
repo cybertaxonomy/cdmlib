@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Fossil")
 @Entity
+//@Audited
 public class Fossil extends Specimen implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Fossil.class);
 	

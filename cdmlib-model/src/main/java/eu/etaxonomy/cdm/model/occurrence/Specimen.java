@@ -9,12 +9,9 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,6 +19,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
 
 /**
  * A specimen is regarded as derived from an field observation, 
@@ -37,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Specimen")
 @Entity
+//@Audited
 public class Specimen extends DerivedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Specimen.class);
 	
@@ -60,7 +60,7 @@ public class Specimen extends DerivedUnitBase implements Cloneable {
 		super();
 	}
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public PreservationMethod getPreservation(){
 		return this.preservation;
 	}

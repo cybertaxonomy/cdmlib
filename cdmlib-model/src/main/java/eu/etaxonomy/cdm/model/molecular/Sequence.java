@@ -52,8 +52,9 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Sequence")
 @Entity
+//@Audited
 @Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Sequence extends IdentifiableEntity<Sequence> implements IReferencedEntity, IMediaDocumented{
+public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	
@@ -105,7 +106,7 @@ public class Sequence extends IdentifiableEntity<Sequence> implements IReference
     @XmlSchemaType(name = "IDREF")
 	private Set<Media> chromatograms = new HashSet<Media>();
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Locus getLocus(){
 		logger.debug("getLocus");
 		return this.locus;
@@ -114,7 +115,7 @@ public class Sequence extends IdentifiableEntity<Sequence> implements IReference
 		this.locus = locus;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public ReferenceBase getPublishedIn(){
 		return this.publishedIn;
 	}
@@ -124,7 +125,7 @@ public class Sequence extends IdentifiableEntity<Sequence> implements IReference
 
 
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<ReferenceBase> getCitations() {
 		return citations;
 	}
@@ -139,7 +140,7 @@ public class Sequence extends IdentifiableEntity<Sequence> implements IReference
 	}
 
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<GenBankAccession> getGenBankAccession() {
 		return genBankAccession;
 	}
@@ -155,7 +156,7 @@ public class Sequence extends IdentifiableEntity<Sequence> implements IReference
 	}
 
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Media> getChromatograms() {
 		return chromatograms;
 	}

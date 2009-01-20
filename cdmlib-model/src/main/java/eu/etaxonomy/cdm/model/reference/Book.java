@@ -46,8 +46,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Book")
 @Entity
+//@Audited
 public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = Logger.getLogger(Book.class);
 	
     @XmlElement(name = "Edition")

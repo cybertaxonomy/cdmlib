@@ -2,58 +2,43 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
 
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 import eu.etaxonomy.cdm.model.media.Rights;
 
-public interface IIdentifiableEntity<T extends IdentifiableEntity> {
+public interface IIdentifiableEntity {
 
-	public abstract String getLsid();
+	public String getLsid();
 
-	public abstract void setLsid(String lsid);
+	public void setLsid(String lsid);
 
-	public abstract String generateTitle();
+	public String generateTitle();
 
-	//@Index(name="titleCacheIndex")
-	public abstract String getTitleCache();
+	public String getTitleCache();
 
-	public abstract void setTitleCache(String titleCache);
+	public void setTitleCache(String titleCache);
 
-	public abstract void setTitleCache(String titleCache, boolean protectCache);
+	public void setTitleCache(String titleCache, boolean protectCache);
 
-	@ManyToMany
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	public abstract Set<Rights> getRights();
+	public Set<Rights> getRights();
 
-	public abstract void addRights(Rights right);
+	public void addRights(Rights right);
 
-	public abstract void removeRights(Rights right);
+	public void removeRights(Rights right);
 
-	@OneToMany
-	//(mappedBy="extendedObj")
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	public abstract Set<Extension> getExtensions();
+	public Set<Extension> getExtensions();
 
-	public abstract void addExtension(Extension extension);
+	public void addExtension(Extension extension);
 
-	public abstract void removeExtension(Extension extension);
+	public void removeExtension(Extension extension);
 
-	public abstract boolean isProtectedTitleCache();
+	public boolean isProtectedTitleCache();
 
-	public abstract void setProtectedTitleCache(boolean protectedTitleCache);
+	public void setProtectedTitleCache(boolean protectedTitleCache);
 
-	@OneToMany
-	//(mappedBy="sourcedObj")		
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	public abstract Set<OriginalSource> getSources();
+	public Set<OriginalSource> getSources();
 
-	public abstract void addSource(OriginalSource source);
+	public void addSource(OriginalSource source);
 
-	public abstract void removeSource(OriginalSource source);
+	public void removeSource(OriginalSource source);
 
 	/**
 	 * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
@@ -65,6 +50,6 @@ public interface IIdentifiableEntity<T extends IdentifiableEntity> {
 	 * For example: Taxon#13<b5938a98-c1de-4dda-b040-d5cc5bfb3bc0>
 	 * @see java.lang.Object#toString()
 	 */
-	public abstract String toString();
+	public String toString();
 
 }

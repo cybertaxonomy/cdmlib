@@ -61,6 +61,12 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		private DerivedOrderedTermBase(String term, String label, String labelAbbrev){
 			super(term, label, labelAbbrev);
 		}
+		@Override
+		protected void setDefaultTerms(
+				TermVocabulary<DerivedOrderedTermBase> termVocabulary) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 		
 	}

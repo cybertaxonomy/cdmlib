@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Stage")
 @XmlRootElement(name = "Stage")
 @Entity
+//@Audited
 public class Stage extends Scope {
 	private static final long serialVersionUID = 2338810516765894760L;
 	@SuppressWarnings("unused")

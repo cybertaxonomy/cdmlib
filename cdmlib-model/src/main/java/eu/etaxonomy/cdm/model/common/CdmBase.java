@@ -7,11 +7,14 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.DocumentId;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
@@ -175,6 +179,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlAttribute(name = "id", required = true)
 	@Id
 	@GeneratedValue(generator = "system-increment")
+	@DocumentId
 	public int getId() {
 		return this.id;
 	}
@@ -191,6 +196,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlElement (name = "Created", type= String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")
+	@Basic(fetch = FetchType.LAZY)
 	public DateTime getCreated() {
 		return created;
 	}

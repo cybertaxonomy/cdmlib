@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.model.description;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "MeasurementUnit")
 @XmlRootElement(name = "MeasurementUnit")
 @Entity
+//@Audited
 public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	private static final long serialVersionUID = 4904519152652248312L;
 	@SuppressWarnings("unused")
@@ -79,5 +82,11 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	 */
 	public static MeasurementUnit NewInstance(String term, String label, String labelAbbrev){
 		return new MeasurementUnit(term, label, labelAbbrev);
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<MeasurementUnit> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 }

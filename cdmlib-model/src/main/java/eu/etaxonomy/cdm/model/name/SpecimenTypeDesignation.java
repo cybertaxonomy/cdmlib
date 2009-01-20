@@ -10,24 +10,25 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing a typification of one or several {@link TaxonNameBase taxon names} by a
@@ -55,6 +56,7 @@ import javax.xml.bind.annotation.XmlType;
     "typeStatus"
 })
 @Entity
+//@Audited
 public class SpecimenTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
@@ -148,7 +150,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 *  
 	 * @see   #getHomotypicalGroup()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public DerivedUnitBase getTypeSpecimen(){
 		return this.typeSpecimen;
@@ -166,7 +168,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
 	 * specimen type designation.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public TypeDesignationStatus getTypeStatus(){
 		return this.typeStatus;
 	}

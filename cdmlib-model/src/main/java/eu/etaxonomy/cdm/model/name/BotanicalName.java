@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 })
 @XmlRootElement(name = "BotanicalName")
 @Entity
+//@Audited
 public class BotanicalName extends NonViralName {
 	
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
@@ -297,7 +299,7 @@ public class BotanicalName extends NonViralName {
 	 * @see    #addHybridRelationship(HybridRelationship)
 	 * @see    #addRelationship(RelationshipBase)
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<HybridRelationship> getHybridRelationships() {
 		return hybridRelationships;

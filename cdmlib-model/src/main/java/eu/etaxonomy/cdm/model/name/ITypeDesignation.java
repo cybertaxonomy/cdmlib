@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
 /**
  * @author a.mueller
  * @created 07.08.2008

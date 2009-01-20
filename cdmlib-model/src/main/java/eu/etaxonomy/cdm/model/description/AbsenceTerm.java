@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -36,9 +37,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AbsenceTerm")
 @XmlRootElement(name = "AbsenceTerm")
 @Entity
+//@Audited
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	private static final long serialVersionUID = -7145360212307512860L;
 	private static final Logger logger = Logger.getLogger(AbsenceTerm.class);
+	private static AbsenceTerm ABSENT;
 	
 	/** 
 	 * Creates a new empty absence term.
@@ -94,12 +97,13 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
 
-	
-
-	public static final AbsenceTerm getByUuid(UUID uuid){
-		return (AbsenceTerm)findByUuid(uuid);
+	public static final AbsenceTerm ABSENT(){
+		return ABSENT;
 	}
-	
-	public static final AbsenceTerm ABSENT(){return getByUuid(uuidAbsence);}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<AbsenceTerm> termVocabulary) {
+		AbsenceTerm.ABSENT = termVocabulary.findTermByUuid(AbsenceTerm.uuidAbsence);
+	}
 
 }

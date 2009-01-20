@@ -9,25 +9,17 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
-import eu.etaxonomy.cdm.model.media.Media;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,6 +28,20 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 
 /**
  * type figures are observations with at least a figure object in media
@@ -55,6 +61,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity {
@@ -120,7 +127,7 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 		this.descriptions.remove(description);
 	}
 	
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DerivationEvent> getDerivationEvents() {
 		return this.derivationEvents;
@@ -158,7 +165,7 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 	}
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Sex getSex() {
 		return sex;
 	}
@@ -167,7 +174,7 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 		this.sex = sex;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Stage getLifeStage() {
 		return lifeStage;
 	}

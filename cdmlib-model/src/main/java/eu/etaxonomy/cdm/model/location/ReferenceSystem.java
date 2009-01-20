@@ -11,7 +11,10 @@ package eu.etaxonomy.cdm.model.location;
 
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReferenceSystem")
 @XmlRootElement(name = "ReferenceSystem")
 @Entity
+//@Audited
 public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	private static final long serialVersionUID = 2704455299046749175L;
 	private static final Logger logger = Logger.getLogger(ReferenceSystem.class);
@@ -68,6 +72,13 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	public static final ReferenceSystem WGS84(){
 		logger.warn("not yet implemented");
 		return null;
+	}
+
+	@Override
+	protected void setDefaultTerms(
+			TermVocabulary<ReferenceSystem> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

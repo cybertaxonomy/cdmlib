@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ReferencedMedia")
 @Entity
+//@Audited
 public abstract class ReferencedMedia extends Media implements IReferencedEntity {
 	
 	static Logger logger = Logger.getLogger(ReferencedMedia.class);
@@ -49,7 +51,7 @@ public abstract class ReferencedMedia extends Media implements IReferencedEntity
 	private ReferenceBase citation;
 	
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getCitation(){
 		return this.citation;

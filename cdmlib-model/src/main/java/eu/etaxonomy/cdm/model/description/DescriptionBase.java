@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -59,8 +60,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
     "descriptionElements"
 })
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase> {
+@Indexed
+public abstract class DescriptionBase extends IdentifiableEntity {
 	private static final long serialVersionUID = 5504218413819040193L;
 	private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 	
@@ -149,7 +152,7 @@ public abstract class DescriptionBase extends IdentifiableEntity<DescriptionBase
 	 * @see    #addDescriptionSource(ReferenceBase)
 	 * @see    #removeDescriptionSource(ReferenceBase)
 	 */
-	@ManyToMany  //FIXME
+	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<ReferenceBase> getDescriptionSources() {
 		return this.descriptionSources;

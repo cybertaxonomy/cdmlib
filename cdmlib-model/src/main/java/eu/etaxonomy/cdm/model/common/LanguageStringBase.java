@@ -9,14 +9,22 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import org.apache.log4j.Logger;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
 
 /**
  * @author a.mueller
@@ -53,7 +61,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		
 	}
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){
 		return this.language;
@@ -63,6 +71,8 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 	}
 
 	@Column(length=4096)
+	@Field(index=Index.TOKENIZED)
+	@FieldBridge(impl=StripHtmlBridge.class)
 	public String getText(){
 		return this.text;
 	}

@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Synonym")
 @Entity
+//@Audited
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	
 	static Logger logger = Logger.getLogger(Synonym.class);

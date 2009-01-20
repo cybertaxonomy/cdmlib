@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 	"nomenclaturalTitle"
 })
 @Entity
+//@Audited
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Agent implements INomenclaturalAuthor {
 	private static final long serialVersionUID = 5216821307314001961L;
 	public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);

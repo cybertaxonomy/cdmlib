@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "MovieFile")
 @Entity
+//@Audited
 public class MovieFile extends MediaRepresentationPart {
 	private static final long serialVersionUID = 8650308822737671731L;
 	private static final Logger logger = Logger.getLogger(MovieFile.class);

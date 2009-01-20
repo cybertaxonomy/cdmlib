@@ -9,20 +9,28 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import eu.etaxonomy.cdm.model.agent.Person;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.Calendar;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * The class keeps track of versions via a full linked list to different version objects, or a simple updated/updatedBy property in the same object.
@@ -42,13 +50,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VersionableEntity", propOrder = {
 //    "updated",
-    "updatedBy",
-    "nextVersion",
-    "previousVersion"
+    "updatedBy"
 })
 @XmlRootElement(name = "VersionableEntity")
 @MappedSuperclass
-public abstract class VersionableEntity<T extends VersionableEntity> extends CdmBase {
+public abstract class VersionableEntity extends CdmBase {
 	private static final long serialVersionUID = 1409299200302758513L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
@@ -61,36 +67,6 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	
 	@XmlElement(name = "UpdatedBy")
 	private Person updatedBy;
-	
-	@XmlElement(name = "NextVersion")
-	private T nextVersion;
-	
-	@XmlElement(name = "PreviousVersion")
-	private T previousVersion;
-
-	
-	/**
-	 * Returns the succeeding version of this object with the same UUID
-	 * @return next, i.e. succeeding version of this object
-	 */
-	//@OneToOne(mappedBy="previousVersion")
-	@Transient
-	public T getNextVersion(){
-		return this.nextVersion;
-	}
-	public void setNextVersion(T nextVersion){
-		this.nextVersion = nextVersion;
-	}
-
-	//@OneToOne
-	@Transient
-	public T getPreviousVersion(){
-		return this.previousVersion;
-	}
-	public void setPreviousVersion(T previousVersion){
-		this.previousVersion = previousVersion;
-	}
-
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
@@ -111,7 +87,6 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	 * @return
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
-	@Version
 	@Basic(fetch = FetchType.LAZY)
 	public Calendar getUpdated(){
 		return this.updated;
@@ -196,9 +171,6 @@ public abstract class VersionableEntity<T extends VersionableEntity> extends Cdm
 	public Object clone() throws CloneNotSupportedException{
 		VersionableEntity result = (VersionableEntity)super.clone();
 		
-		//TODO ?
-		result.setNextVersion(null);
-		result.setPreviousVersion(null);
 		result.setUpdated(null);
 		result.setUpdatedBy(null);
 		

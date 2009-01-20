@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity
+//@Audited
 public class GatheringEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
@@ -114,7 +116,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.exactLocation = exactLocation;
 	}
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<NamedArea> getCollectingAreas(){
 		return this.collectingAreas;
 	}
@@ -135,8 +137,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.collectingAreas.remove(area);
 	}
 
-//  @Embedded
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public LanguageString getLocality(){
 		return this.locality;

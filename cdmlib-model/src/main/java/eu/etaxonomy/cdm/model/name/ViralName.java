@@ -10,16 +10,18 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * The taxon name class for viral taxa. The scientific name will be stored
@@ -42,12 +44,13 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ViralName")
 @Entity
-public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy>  {
+//@Audited
+public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
 	
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
     @XmlTransient
-	protected INameCacheStrategy cacheStrategy;
+	protected INameCacheStrategy<ViralName> cacheStrategy;
 	
 	@XmlElement(name = "Acronym")
 	private String acronym;

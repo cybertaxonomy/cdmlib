@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -30,21 +31,13 @@ public class NonViralNameTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(NonViralNameTest.class);
 
 	
-	NonViralName<NonViralName> nonViralName1;
-	NonViralName<NonViralName> nonViralName2;
+	NonViralName nonViralName1;
+	NonViralName nonViralName2;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	/**
@@ -52,8 +45,8 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		nonViralName1 = new NonViralName<NonViralName>();
-		nonViralName2 = new NonViralName<NonViralName>();
+		nonViralName1 = new BotanicalName();
+		nonViralName2 = new BotanicalName();
 	}
 
 	/**
@@ -111,7 +104,7 @@ public class NonViralNameTest extends EntityTestBase {
 		Team agent = Team.NewInstance();
 		Article article = Article.NewInstance();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		NonViralName nonViralName = new NonViralName<NonViralName>(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
+		NonViralName nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );

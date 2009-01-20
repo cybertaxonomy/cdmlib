@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,6 +39,7 @@ import org.apache.log4j.Logger;
     "extendedObj"
 })
 @Entity
+//@Audited
 public class Extension extends VersionableEntity implements Cloneable {
 	private static final long serialVersionUID = -857207737641432202L;
 	@SuppressWarnings("unused")
@@ -78,7 +80,7 @@ public class Extension extends VersionableEntity implements Cloneable {
 		this.extendedObj = extendedObj;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public ExtensionType getType(){
 		return this.type;
 	}

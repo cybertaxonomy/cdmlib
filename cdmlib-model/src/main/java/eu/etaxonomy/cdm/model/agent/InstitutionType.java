@@ -9,13 +9,15 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
-import org.apache.log4j.Logger;
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * Represents an element of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary} for different kinds of institutions.
@@ -30,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InstitutionType")
 @Entity
+//@Audited
 public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	private static final long serialVersionUID = 8714866112728127219L;
 	public static final Logger logger = Logger.getLogger(InstitutionType.class);
@@ -60,6 +63,12 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	public InstitutionType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<InstitutionType> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

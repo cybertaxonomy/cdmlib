@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
 
 /**
@@ -21,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.Modifier;
 @XmlType(name = "DeterminationModifier")
 @XmlRootElement(name = "DeterminationModifier")
 @Entity
+//@Audited
 public class DeterminationModifier extends Modifier {
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 
@@ -47,7 +50,7 @@ public class DeterminationModifier extends Modifier {
 	/**
 	 * Constructor
 	 */
-	protected DeterminationModifier() {
+	public DeterminationModifier() {
 		super();
 	}
 
@@ -59,10 +62,6 @@ public class DeterminationModifier extends Modifier {
 		super(term, label, labelAbbrev);
 	}
 	
-
-	public static final DeterminationModifier getByUuid(UUID uuid){
-		return (DeterminationModifier)findByUuid(uuid);
-	}
-
-
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {}
 }

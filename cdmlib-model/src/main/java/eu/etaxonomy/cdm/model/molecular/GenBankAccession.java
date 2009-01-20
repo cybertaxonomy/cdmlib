@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "GenBankAccession")
 @Entity
-public class GenBankAccession extends VersionableEntity<GenBankAccession> {
+//@Audited
+public class GenBankAccession extends VersionableEntity {
 	private static final long serialVersionUID = -8179493118062601585L;
 	private static final Logger logger = Logger.getLogger(GenBankAccession.class);
 	

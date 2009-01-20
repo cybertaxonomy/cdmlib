@@ -49,6 +49,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Institution")
 @Entity
+//@Audited
 public class Institution extends Agent {
 	private static final long serialVersionUID = -951321271656955808L;
 	public static final Logger logger = Logger.getLogger(Institution.class);
@@ -113,7 +114,7 @@ public class Institution extends Agent {
 	 * @return	the set of institution types
 	 * @see     InstitutionType
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}

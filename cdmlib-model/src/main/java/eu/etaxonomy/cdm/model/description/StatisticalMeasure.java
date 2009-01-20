@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
 /**
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlType(name = "StatisticalMeasure")
 @XmlRootElement(name = "StatisticalMeasure")
 @Entity
+//@Audited
 public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final long serialVersionUID = 9168097283660941430L;
 	@SuppressWarnings("unused")
@@ -49,6 +51,14 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
+	private static StatisticalMeasure STANDARD_DEVIATION;
+	private static StatisticalMeasure TYPICAL_UPPER_BOUNDARY;
+	private static StatisticalMeasure TYPICAL_LOWER_BOUNDARY;
+	private static StatisticalMeasure VARIANCE;
+	private static StatisticalMeasure SAMPLE_SIZE;
+	private static StatisticalMeasure AVERAGE;
+	private static StatisticalMeasure MAX;
+	private static StatisticalMeasure MIN;
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -86,42 +96,48 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	 */
 	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
 		return new StatisticalMeasure(term, label, labelAbbrev);
-	}
-	
-	public static final StatisticalMeasure getByUuid(UUID uuid){
-		return (StatisticalMeasure) findByUuid(uuid);
 	}	
 
 	public static final StatisticalMeasure MIN(){
-		return getByUuid(uuidMin);
+		return MIN;
 	}
 
 	public static final StatisticalMeasure MAX(){
-		return getByUuid(uuidMax);
+		return MAX;
 	}
 
 	public static final StatisticalMeasure AVERAGE(){
-		return getByUuid(uuidAverage);
+		return AVERAGE;
 	}
 
 	public static final StatisticalMeasure SAMPLE_SIZE(){
-		return getByUuid(uuidSampleSize);
+		return SAMPLE_SIZE;
 	}
 
 	public static final StatisticalMeasure VARIANCE(){
-		return getByUuid(uuidVariance);
+		return VARIANCE;
 	}
 
 	public static final StatisticalMeasure TYPICAL_LOWER_BOUNDARY(){
-		return getByUuid(uuidTypicalLowerBoundary);
+		return TYPICAL_LOWER_BOUNDARY;
 	}
 
 	public static final StatisticalMeasure TYPICAL_UPPER_BOUNDARY(){
-		return getByUuid(uuidTypicalUpperBoundary);
+		return TYPICAL_UPPER_BOUNDARY;
 	}
 
 	public static final StatisticalMeasure STANDARD_DEVIATION(){
-		return getByUuid(uuidStandardDeviation);
+		return STANDARD_DEVIATION;
 	}
-	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<StatisticalMeasure> termVocabulary) {
+		StatisticalMeasure.AVERAGE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidAverage);
+		StatisticalMeasure.MAX = termVocabulary.findTermByUuid(StatisticalMeasure.uuidMax);
+		StatisticalMeasure.MIN = termVocabulary.findTermByUuid(StatisticalMeasure.uuidMin);
+		StatisticalMeasure.SAMPLE_SIZE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidSampleSize);
+		StatisticalMeasure.STANDARD_DEVIATION = termVocabulary.findTermByUuid(StatisticalMeasure.uuidStandardDeviation);
+		StatisticalMeasure.TYPICAL_LOWER_BOUNDARY = termVocabulary.findTermByUuid(StatisticalMeasure.uuidTypicalLowerBoundary);
+		StatisticalMeasure.TYPICAL_UPPER_BOUNDARY = termVocabulary.findTermByUuid(StatisticalMeasure.uuidTypicalUpperBoundary);
+		StatisticalMeasure.VARIANCE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidVariance);
+	}
 }

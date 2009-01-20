@@ -10,16 +10,9 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +20,15 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
+
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 
 /**
  * @author m.doering
@@ -44,6 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Collection")
 @Entity
+//@Audited
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Collection.class);
@@ -87,7 +90,7 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	}
 
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
 		return this.institute;
@@ -154,7 +157,7 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 		return "";
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Collection getSuperCollection() {
 		return superCollection;

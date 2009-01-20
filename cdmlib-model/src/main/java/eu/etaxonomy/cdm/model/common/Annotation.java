@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "linkbackUrl"
 })
 @Entity
+//@Audited
 public class Annotation extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -4484677078599520233L;
 	private static final Logger logger = Logger.getLogger(Annotation.class);
@@ -98,11 +99,16 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@XmlElement(name = "LinkbackURL")
 	private URL linkbackUrl;
 	
+	/**
+	 * Currently envers does not support @Any
+	 * @return
+	 */
 	@Any(metaDef = "CdmBase",
 	    	 metaColumn=@Column(name = "annotatedObj_type"),
 	    	 fetch = FetchType.LAZY,
 	    	 optional = false)
 	@JoinColumn(name = "annotatedObj_id")
+//	@NotAudited
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
@@ -110,7 +116,16 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.annotatedObj = newAnnotatedObj;		
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
+	public AnnotationType getAnnotationType() {
+		return annotationType;
+	}
+
+	public void setAnnotationType(AnnotationType annotationType) {
+		this.annotationType = annotationType;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getCommentator(){
 		return this.commentator;

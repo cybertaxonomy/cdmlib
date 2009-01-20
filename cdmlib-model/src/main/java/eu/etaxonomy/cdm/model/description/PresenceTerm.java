@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -36,9 +37,28 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceTerm")
 @XmlRootElement(name = "PresenceTerm")
 @Entity
+//@Audited
 public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final long serialVersionUID = -2876981902335193596L;
 	private static final Logger logger = Logger.getLogger(PresenceTerm.class);
+	private static PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA;
+	private static PresenceTerm INTRODUCED_REPORTED_IN_ERROR;
+	private static PresenceTerm INTRODUCED_NATURALIZED;
+	private static PresenceTerm INTRODUCED_CULTIVATED;
+	private static PresenceTerm INTRODUCED_ADVENTITIOUS;
+	private static PresenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION;
+	private static PresenceTerm INTRODUCED_DOUBTFULLY_INTRODUCED;
+	private static PresenceTerm INTRODUCED_FORMERLY_INTRODUCED;
+	private static PresenceTerm INTRODUCED_PRESENCE_QUESTIONABLE;
+	private static PresenceTerm INTRODUCED;
+	private static PresenceTerm CULTIVATED_REPORTED_IN_ERROR;
+	private static PresenceTerm CULTIVATED;
+	private static PresenceTerm NATIVE_REPORTED_IN_ERROR;
+	private static PresenceTerm NATIVE_DOUBTFULLY_NATIVE;
+	private static PresenceTerm NATIVE_FORMERLY_NATIVE;
+	private static PresenceTerm NATIVE_PRESENCE_QUESTIONABLE;
+	private static PresenceTerm NATIVE;
+	private static PresenceTerm PRESENT;
 
 	//********* METHODS **************************************/
 	/** 
@@ -110,31 +130,25 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
 	
-
-	public static final PresenceTerm getByUuid(UUID uuid){
-		return (PresenceTerm)findByUuid(uuid);
-	}
-
-	
-	//TODO Marc: Kannst du die noch ein bischen schöner formatieren, wenn du sie dokumentierst? Danke
-	public static final PresenceTerm PRESENT(){return getByUuid(uuidP);}
-	public static final PresenceTerm NATIVE(){return getByUuid(uuidN);}
-	public static final PresenceTerm NATIVE_PRESENCE_QUESTIONABLE(){return getByUuid(uuidNQ);}
-	public static final PresenceTerm NATIVE_FORMERLY_NATIVE(){return getByUuid(uuidNE);}
-	public static final PresenceTerm NATIVE_DOUBTFULLY_NATIVE(){return getByUuid(uuidND);}
-	public static final PresenceTerm NATIVE_REPORTED_IN_ERROR(){return getByUuid(uuidNF);}
-	public static final PresenceTerm CULTIVATED(){return getByUuid(uuidC);}
-	public static final PresenceTerm CULTIVATED_REPORTED_IN_ERROR(){return getByUuid(uuidCF);}
-	public static final PresenceTerm INTRODUCED(){return getByUuid(uuidI);}
-	public static final PresenceTerm INTRODUCED_PRESENCE_QUESTIONABLE(){return getByUuid(uuidIQ);}
-	public static final PresenceTerm INTRODUCED_FORMERLY_INTRODUCED(){return getByUuid(uuidIE);}
-	public static final PresenceTerm INTRODUCED_DOUBTFULLY_INTRODUCED(){return getByUuid(uuidID);}
-	public static final PresenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){return getByUuid(uuidIP);}
-	public static final PresenceTerm INTRODUCED_ADVENTITIOUS(){return getByUuid(uuidIA);}
-	public static final PresenceTerm INTRODUCED_CULTIVATED(){return getByUuid(uuidIC);}
-	public static final PresenceTerm INTRODUCED_NATURALIZED(){return getByUuid(uuidIN);}
-	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return getByUuid(uuidIF);}
-	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return getByUuid(uuidE);}
+	//TODO Marc: Kannst du die noch ein bischen schï¿½ner formatieren, wenn du sie dokumentierst? Danke
+	public static final PresenceTerm PRESENT(){return PRESENT; } 
+	public static final PresenceTerm NATIVE(){return NATIVE; } 
+	public static final PresenceTerm NATIVE_PRESENCE_QUESTIONABLE(){return NATIVE_PRESENCE_QUESTIONABLE; }
+	public static final PresenceTerm NATIVE_FORMERLY_NATIVE(){return NATIVE_FORMERLY_NATIVE; }
+	public static final PresenceTerm NATIVE_DOUBTFULLY_NATIVE(){return NATIVE_DOUBTFULLY_NATIVE; }
+	public static final PresenceTerm NATIVE_REPORTED_IN_ERROR(){return NATIVE_REPORTED_IN_ERROR; }
+	public static final PresenceTerm CULTIVATED(){return CULTIVATED; }
+	public static final PresenceTerm CULTIVATED_REPORTED_IN_ERROR(){return CULTIVATED_REPORTED_IN_ERROR; }
+	public static final PresenceTerm INTRODUCED(){return INTRODUCED; }
+	public static final PresenceTerm INTRODUCED_PRESENCE_QUESTIONABLE(){return INTRODUCED_PRESENCE_QUESTIONABLE; }
+	public static final PresenceTerm INTRODUCED_FORMERLY_INTRODUCED(){return INTRODUCED_FORMERLY_INTRODUCED; }
+	public static final PresenceTerm INTRODUCED_DOUBTFULLY_INTRODUCED(){return INTRODUCED_DOUBTFULLY_INTRODUCED; } 
+	public static final PresenceTerm INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION(){return INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION; }
+	public static final PresenceTerm INTRODUCED_ADVENTITIOUS(){return INTRODUCED_ADVENTITIOUS; } 
+	public static final PresenceTerm INTRODUCED_CULTIVATED(){return INTRODUCED_CULTIVATED; } 
+	public static final PresenceTerm INTRODUCED_NATURALIZED(){return INTRODUCED_NATURALIZED; }
+	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return INTRODUCED_REPORTED_IN_ERROR; } 
+	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return ENDEMIC_FOR_THE_RELEVANT_AREA; } 
 	
 	@Transient
 	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
@@ -162,5 +176,27 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 			logger.warn("Unknown presence status term: " + abbrev);
 			return null;
 		}
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<PresenceTerm> termVocabulary) {
+		PresenceTerm.CULTIVATED = termVocabulary.findTermByUuid(PresenceTerm.uuidC);
+		PresenceTerm.CULTIVATED_REPORTED_IN_ERROR = termVocabulary.findTermByUuid(PresenceTerm.uuidCF);
+		PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA = termVocabulary.findTermByUuid(PresenceTerm.uuidE);
+		PresenceTerm.INTRODUCED = termVocabulary.findTermByUuid(PresenceTerm.uuidI);
+		PresenceTerm.INTRODUCED_ADVENTITIOUS = termVocabulary.findTermByUuid(PresenceTerm.uuidIA);
+		PresenceTerm.INTRODUCED_CULTIVATED = termVocabulary.findTermByUuid(PresenceTerm.uuidIC);
+		PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED = termVocabulary.findTermByUuid(PresenceTerm.uuidID);
+		PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED = termVocabulary.findTermByUuid(PresenceTerm.uuidIE);
+		PresenceTerm.INTRODUCED_NATURALIZED = termVocabulary.findTermByUuid(PresenceTerm.uuidIN);
+		PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE = termVocabulary.findTermByUuid(PresenceTerm.uuidIQ);
+		PresenceTerm.INTRODUCED_REPORTED_IN_ERROR = termVocabulary.findTermByUuid(PresenceTerm.uuidIF);
+		PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION = termVocabulary.findTermByUuid(PresenceTerm.uuidIP);
+		PresenceTerm.NATIVE = termVocabulary.findTermByUuid(PresenceTerm.uuidN);
+		PresenceTerm.NATIVE_DOUBTFULLY_NATIVE = termVocabulary.findTermByUuid(PresenceTerm.uuidND);
+		PresenceTerm.NATIVE_FORMERLY_NATIVE = termVocabulary.findTermByUuid(PresenceTerm.uuidNE);
+		PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE = termVocabulary.findTermByUuid(PresenceTerm.uuidNQ);
+		PresenceTerm.NATIVE_REPORTED_IN_ERROR = termVocabulary.findTermByUuid(PresenceTerm.uuidNF);
+		PresenceTerm.PRESENT = termVocabulary.findTermByUuid(PresenceTerm.uuidP);		
 	}
 }

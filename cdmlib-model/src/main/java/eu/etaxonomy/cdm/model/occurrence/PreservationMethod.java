@@ -12,7 +12,10 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-public class PreservationMethod extends DefinedTermBase {
+//@Audited
+public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	
 	/**
@@ -41,7 +45,7 @@ public class PreservationMethod extends DefinedTermBase {
 	/**
 	 * Constructor
 	 */
-	private PreservationMethod() {
+	public PreservationMethod() {
 		super();
 	}
 	
@@ -59,10 +63,11 @@ public class PreservationMethod extends DefinedTermBase {
 	protected PreservationMethod(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
-	
 
-	public static final PreservationMethod getByUuid(UUID uuid){
-		return (PreservationMethod)findByUuid(uuid);
+	@Override
+	protected void setDefaultTerms(TermVocabulary<PreservationMethod> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

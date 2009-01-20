@@ -33,46 +33,14 @@ public class MarkerTypeTest {
 	private static final UUID uuidIsDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
 	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
+	public static void setUp() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 /* ************ TESTS **********************************/
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.MarkerType#getByUuid(java.util.UUID)}.
-	 */
-	@Test
-	public void testGetByUuid() {
-		String uuidCompleteString = "b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433";
-		UUID uuid = UUID.fromString(uuidCompleteString);
-		assertEquals(MarkerType.COMPLETE(),  MarkerType.getByUuid(uuid));
-	}
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.MarkerType#MarkerType(java.lang.String, java.lang.String)}.
 	 */

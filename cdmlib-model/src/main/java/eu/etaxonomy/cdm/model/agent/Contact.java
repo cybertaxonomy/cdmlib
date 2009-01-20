@@ -52,7 +52,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @XmlRootElement(name = "Contact")
 @Entity
-public class Contact extends VersionableEntity<Contact> {
+//@Audited
+public class Contact extends VersionableEntity {
 	private static final long serialVersionUID = -1851305307069277625L;
 	private static final Logger logger = Logger.getLogger(Contact.class);
 	

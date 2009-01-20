@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 })
 @XmlRootElement(name = "Thesis")
 @Entity
+//@Audited
 public class Thesis extends PublicationBase implements Cloneable{
 	
 	private static final Logger logger = Logger.getLogger(Thesis.class);
@@ -80,7 +82,7 @@ public class Thesis extends PublicationBase implements Cloneable{
 	 * @return  the high school institution
 	 * @see 	agent.Institution
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getSchool(){
 		return this.school;

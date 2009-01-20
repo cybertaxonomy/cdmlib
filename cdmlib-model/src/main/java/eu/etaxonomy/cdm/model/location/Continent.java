@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -20,6 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author m.doering
@@ -30,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 @XmlType(name = "Continent")
 @XmlRootElement(name = "Continent")
 @Entity
+//@Audited
 public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;
 	private static final Logger logger = Logger.getLogger(Continent.class);
@@ -43,6 +48,15 @@ public class Continent extends NamedArea {
 	private static final UUID uuidAustralasia = UUID.fromString("a2afdb9a-04a0-434c-9e75-d07dbeb86526");
 	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
+	private static Continent PACIFIC;
+	private static Continent AUSTRALASIA;
+	private static Continent SOUTH_AMERICA;
+	private static Continent ANTARCTICA;
+	private static Continent NORTH_AMERICA;
+	private static Continent ASIA_TROPICAL;
+	private static Continent ASIA_TEMPERATE;
+	private static Continent AFRICA;
+	private static Continent EUROPE;
 
 	/**
 	 * Factory method
@@ -71,44 +85,67 @@ public class Continent extends NamedArea {
 		super(term, label, labelAbbrev);
 	}
 
-	public static final Continent getByUuid(UUID uuid){
-		return (Continent)findByUuid(uuid);
-	}
-
 	public static final Continent EUROPE(){
-		return getByUuid(uuidEurope);
+		return EUROPE;
 	}
 
 	public static final Continent AFRICA(){
-		return getByUuid(uuidAfrica);
+		return AFRICA;
 	}
 
 	public static final Continent ASIA_TEMPERATE(){
-		return getByUuid(uuidAsiaTemperate);
+		return ASIA_TEMPERATE;
 	}
 
 	public static final Continent ASIA_TROPICAL(){
-		return getByUuid(uuidAsiaTropical);
+		return ASIA_TROPICAL;
 	}
 
 	public static final Continent NORTH_AMERICA(){
-		return getByUuid(uuidNAmerica);
+		return NORTH_AMERICA;
 	}
 
 	public static final Continent ANTARCTICA(){
-		return getByUuid(uuidAntarctica);
+		return ANTARCTICA;
 	}
 
 	public static final Continent SOUTH_AMERICA(){
-		return getByUuid(uuidSAmerica);
+		return SOUTH_AMERICA;
 	}
 
 	public static final Continent AUSTRALASIA(){
-		return getByUuid(uuidAustralasia);
+		return AUSTRALASIA;
 	}
 	
 	public static final Continent PACIFIC(){
-		return getByUuid(uuidPacific);
+		return PACIFIC;
+	}
+	@Override
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		try {
+			Continent newInstance = Continent.class.newInstance();
+		    return DefinedTermBase.readCsvLine(newInstance, csvLine, Language.ENGLISH());
+		} catch (Exception e) {
+			logger.error(e);
+			for(StackTraceElement ste : e.getStackTrace()) {
+				logger.error(ste);
+			}
+		}
+		
+	    return null;
+	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
+		Continent.AFRICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAfrica);
+		Continent.ANTARCTICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAntarctica);
+		Continent.ASIA_TEMPERATE = (Continent)termVocabulary.findTermByUuid(Continent.uuidAsiaTemperate);
+		Continent.ASIA_TROPICAL = (Continent)termVocabulary.findTermByUuid(Continent.uuidAsiaTropical);
+		Continent.AUSTRALASIA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAustralasia);
+		Continent.EUROPE = (Continent)termVocabulary.findTermByUuid(Continent.uuidEurope);
+		Continent.NORTH_AMERICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidNAmerica);
+		Continent.PACIFIC = (Continent)termVocabulary.findTermByUuid(Continent.uuidPacific);
+		Continent.SOUTH_AMERICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidSAmerica);
 	}
 
 }

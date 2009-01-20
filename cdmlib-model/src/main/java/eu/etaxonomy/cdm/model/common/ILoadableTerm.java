@@ -1,15 +1,12 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
-
-import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.Map;
+import java.util.UUID;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public interface ILoadableTerm<T extends DefinedTermBase> extends ICdmBase{
+public interface ILoadableTerm<T extends DefinedTermBase> {
 
 	/**
 	 * Fills the {@link ILoadableTerm term} with contents from a csvLine. If the csvLine represents the default language
@@ -17,14 +14,7 @@ public interface ILoadableTerm<T extends DefinedTermBase> extends ICdmBase{
 	 * @param csvLine
 	 * @return
 	 */
-	public abstract ILoadableTerm readCsvLine(List<String> csvLine);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms);
 
-	public abstract void writeCsvLine(CSVWriter writer);
-
-	@ManyToOne
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	public abstract TermVocabulary<T> getVocabulary();
-
-	public abstract void setVocabulary(TermVocabulary<T> newVocabulary);
-
+	public  void writeCsvLine(CSVWriter writer, T term);
 }

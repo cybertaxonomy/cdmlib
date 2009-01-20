@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
@@ -44,6 +45,7 @@ import javax.persistence.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rank")
 @Entity
+//@Audited
 public class Rank extends OrderedTermBase<Rank> {
 	private static final Logger logger = Logger.getLogger(Rank.class);
 	
@@ -109,6 +111,69 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
 	private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
 	private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
+
+	private static Rank UNKNOWN_RANK;
+	private static Rank CULTIVAR;
+	private static Rank CULTIVARGROUP;
+	private static Rank GRAFTCHIMAERA;
+	private static Rank GREX;
+	private static Rank DENOMINATIONCLASS;
+	private static Rank CANDIDATE;
+	private static Rank INFRASPECIFICTAXON;
+	private static Rank SUBSUBFORM;
+	private static Rank SUBFORM;
+	private static Rank SPECIALFORM;
+	private static Rank FORM;
+	private static Rank CONVAR;
+	private static Rank SUBSUBVARIETY;
+	private static Rank SUBVARIETY;
+	private static Rank PATHOVARIETY;
+	private static Rank BIOVARIETY;
+	private static Rank VARIETY;
+	private static Rank INFRASPECIES;
+	private static Rank SUBSPECIES;
+	private static Rank SUBSPECIFICAGGREGATE;
+	private static Rank SPECIES;
+	private static Rank INFRAGENERICTAXON;
+	private static Rank SPECIESAGGREGATE;
+	private static Rank SUBSERIES;
+	private static Rank SERIES;
+	private static Rank SUBSECTION;
+	private static Rank SECTION;
+	private static Rank INFRAGENUS;
+	private static Rank SUBGENUS;
+	private static Rank GENUS;
+	private static Rank SUPRAGENERICTAXON;
+	private static Rank INFRATRIBE;
+	private static Rank SUBTRIBE;
+	private static Rank TRIBE;
+	private static Rank SUPERTRIBE;
+	private static Rank INFRAFAMILY;
+	private static Rank SUBFAMILY;
+	private static Rank FAMILY;
+	private static Rank SUPERFAMILY;
+	private static Rank INFRAORDER;
+	private static Rank SUBORDER;
+	private static Rank ORDER;
+	private static Rank SUPERORDER;
+	private static Rank INFRACLASS;
+	private static Rank SUBCLASS;
+	private static Rank CLASS;
+	private static Rank SUPERCLASS;
+	private static Rank INFRADIVISION;
+	private static Rank SUBDIVISION;
+	private static Rank DIVISION;
+	private static Rank SUPERDIVISION;
+	private static Rank INFRAPHYLUM;
+	private static Rank SUBPHYLUM;
+	private static Rank PHYLUM;
+	private static Rank SUPERPHYLUM;
+	private static Rank INFRAKINGDOM;
+	private static Rank SUBKINGDOM;
+	private static Rank KINGDOM;
+	private static Rank SUPERKINGDOM;
+	private static Rank DOMAIN;
+	private static Rank EMPIRE;
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -136,208 +201,193 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 
 	//********* METHODS **************************************/
-
-	/**
-	 * Returns the taxonomical rank identified through its immutable universally
-	 * unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the rank corresponding to the given universally unique
-	 * 					identifier
-	 */
-	public static final Rank getByUuid(UUID uuid){
-		return (Rank)   findByUuid(uuid);
-	}
 	
 	public static final Rank EMPIRE(){
-	  return getByUuid(uuidEmpire);
+	  return EMPIRE;
 	}
 	public static final Rank DOMAIN(){
-	  return getByUuid(uuidDomain);
+	  return DOMAIN; 
 	}
 	public static final Rank SUPERKINGDOM(){
-	  return getByUuid(uuidSuperkingdom);
+	  return SUPERKINGDOM; 
 	}
 	public static final Rank KINGDOM(){
-	  return getByUuid(uuidKingdom);
+	  return KINGDOM;
 	}
 	public static final Rank SUBKINGDOM(){
-	  return getByUuid(uuidSubkingdom);
+	  return SUBKINGDOM;
 	}
 	public static final Rank INFRAKINGDOM(){
-	  return getByUuid(uuidInfrakingdom);
+	  return INFRAKINGDOM; 
 	}
 	public static final Rank SUPERPHYLUM(){
-	  return getByUuid(uuidSuperphylum);
+	  return SUPERPHYLUM;
 	}
 	public static final Rank PHYLUM(){
-	  return getByUuid(uuidPhylum);
+	  return PHYLUM;
 	}
 	public static final Rank SUBPHYLUM(){
-	  return getByUuid(uuidSubphylum);
+	  return SUBPHYLUM;
 	}
 	public static final Rank INFRAPHYLUM(){
-	  return getByUuid(uuidInfraphylum);
+	  return INFRAPHYLUM; 
 	}
 	public static final Rank SUPERDIVISION(){
-	  return getByUuid(uuidSuperdivision);
+	  return SUPERDIVISION;
 	}
 	public static final Rank DIVISION(){
-	  return getByUuid(uuidDivision);
+	  return DIVISION;
 	}
 	public static final Rank SUBDIVISION(){
-	  return getByUuid(uuidSubdivision);
+	  return SUBDIVISION;
 	}
 	public static final Rank INFRADIVISION(){
-	  return getByUuid(uuidInfradivision);
+	  return INFRADIVISION; 
 	}
 	public static final Rank SUPERCLASS(){
-	  return getByUuid(uuidSuperclass);
+	  return SUPERCLASS;
 	}
 	public static final Rank CLASS(){
-	  return getByUuid(uuidClass);
+	  return CLASS;
 	}
 	public static final Rank SUBCLASS(){
-	  return getByUuid(uuidSubclass);
+	  return SUBCLASS;
 	}
 	public static final Rank INFRACLASS(){
-	  return getByUuid(uuidInfraclass);
+	  return INFRACLASS;
 	}
 	public static final Rank SUPERORDER(){
-	  return getByUuid(uuidSuperorder);
+	  return SUPERORDER;
 	}
 	public static final Rank ORDER(){
-	  return getByUuid(uuidOrder);
+	  return ORDER;
 	}
 	public static final Rank SUBORDER(){
-	  return getByUuid(uuidSuborder);
+	  return SUBORDER;
 	}
 	public static final Rank INFRAORDER(){
-	  return getByUuid(uuidInfraorder);
+	  return INFRAORDER;
 	}
 	public static final Rank SUPERFAMILY(){
-	  return getByUuid(uuidSuperfamily);
+	  return SUPERFAMILY;
 	}
 	public static final Rank FAMILY(){
-	  return getByUuid(uuidFamily);
+	  return FAMILY;
 	}
 	public static final Rank SUBFAMILY(){
-	  return getByUuid(uuidSubfamily);
+	  return SUBFAMILY;
 	}
 	public static final Rank INFRAFAMILY(){
-	  return getByUuid(uuidInfrafamily);
+	  return INFRAFAMILY;
 	}
 	public static final Rank SUPERTRIBE(){
-	  return getByUuid(uuidSupertribe);
+	  return SUPERTRIBE;
 	}
 	public static final Rank TRIBE(){
-	  return getByUuid(uuidTribe);
+	  return TRIBE;
 	}
 	public static final Rank SUBTRIBE(){
-	  return getByUuid(uuidSubtribe);
+	  return SUBTRIBE;
 	}
 	public static final Rank INFRATRIBE(){
-	  return getByUuid(uuidInfratribe);
+	  return INFRATRIBE;
 	}
 	public static final Rank SUPRAGENERICTAXON(){
-	  return getByUuid(uuidSupragenericTaxon);
+	  return SUPRAGENERICTAXON;
 	}
 	public static final Rank GENUS(){
-	  return getByUuid(uuidGenus);
+	  return GENUS;
 	}
 	public static final Rank SUBGENUS(){
-	  return getByUuid(uuidSubgenus);
+	  return SUBGENUS;
 	}
 	public static final Rank INFRAGENUS(){
-	  return getByUuid(uuidInfragenus);
+	  return INFRAGENUS;
 	}
 	public static final Rank SECTION(){
-	  return getByUuid(uuidSection);
+	  return SECTION;
 	}
 	public static final Rank SUBSECTION(){
-	  return getByUuid(uuidSubsection);
+	  return SUBSECTION;
 	}
 	public static final Rank SERIES(){
-	  return getByUuid(uuidSeries);
+	  return SERIES;
 	}
 	public static final Rank SUBSERIES(){
-	  return getByUuid(uuidSubseries);
+	  return SUBSERIES;
 	}
 	public static final Rank SPECIESAGGREGATE(){
-	  return getByUuid(uuidSpeciesAggregate);
+	  return SPECIESAGGREGATE;
 	}
 	public static final Rank INFRAGENERICTAXON(){
-	  return getByUuid(uuidInfragenericTaxon);
+	  return INFRAGENERICTAXON;
 	}
 	public static final Rank SPECIES(){
-	  return getByUuid(uuidSpecies);
+	  return SPECIES;
 	}
 	public static final Rank SUBSPECIFICAGGREGATE(){
-	  return getByUuid(uuidSubspecificAggregate);
+	  return SUBSPECIFICAGGREGATE; 
 	}
 	public static final Rank SUBSPECIES(){
-	  return getByUuid(uuidSubspecies);
+	  return SUBSPECIES;
 	}
 	public static final Rank INFRASPECIES(){
-	  return getByUuid(uuidInfraspecies);
+	  return INFRASPECIES;
 	}
 	public static final Rank VARIETY(){
-	  return getByUuid(uuidVariety);
+	  return VARIETY;
 	}
 	public static final Rank BIOVARIETY(){
-	  return getByUuid(uuidBioVariety);
+	  return BIOVARIETY;
 	}
 	public static final Rank PATHOVARIETY(){
-	  return getByUuid(uuidPathoVariety);
+	  return PATHOVARIETY;
 	}
 	public static final Rank SUBVARIETY(){
-	  return getByUuid(uuidSubvariety);
+	  return SUBVARIETY;
 	}
 	public static final Rank SUBSUBVARIETY(){
-	  return getByUuid(uuidSubsubvariety);
+	  return SUBSUBVARIETY;
 	}
 	public static final Rank CONVAR(){
-	  return getByUuid(uuidConvar);
+	  return CONVAR;
 	}
 	public static final Rank FORM(){
-	  return getByUuid(uuidForm);
+	  return FORM;
 	}
 	public static final Rank SPECIALFORM(){
-	  return getByUuid(uuidSpecialForm);
+	  return SPECIALFORM;
 	}
 	public static final Rank SUBFORM(){
-	  return getByUuid(uuidSubform);
+	  return SUBFORM;
 	}
 	public static final Rank SUBSUBFORM(){
-	  return getByUuid(uuidSubsubform);
+	  return SUBSUBFORM;
 	}
 	public static final Rank INFRASPECIFICTAXON(){
-	  return getByUuid(uuidInfraspecificTaxon);
+	  return INFRASPECIFICTAXON;
 	}
 	public static final Rank CANDIDATE(){
-	  return getByUuid(uuidCandidate);
+	  return CANDIDATE;
 	}
 	public static final Rank DENOMINATIONCLASS(){
-	  return getByUuid(uuidDenominationClass);
+	  return DENOMINATIONCLASS;
 	}
 	public static final Rank GREX(){
-	  return getByUuid(uuidGrex);
+	  return GREX;
 	}
 	public static final Rank GRAFTCHIMAERA(){
-	  return getByUuid(uuidGraftChimaera);
+	  return GRAFTCHIMAERA;
 	}
 	public static final Rank CULTIVARGROUP(){
-	  return getByUuid(uuidCultivarGroup);
+	  return CULTIVARGROUP;
 	}
 	public static final Rank CULTIVAR(){
-	  return getByUuid(uuidCultivar);
+	  return CULTIVAR;
 	}
 	public static final Rank UNKNOWN_RANK(){
-		  return getByUuid(uuidUnknownRank);
-		}
-	
-	
-
+		  return UNKNOWN_RANK;
+	}
 	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> rank is higher than 
@@ -649,6 +699,72 @@ public class Rank extends OrderedTermBase<Rank> {
 	
 	
 		
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Rank> termVocabulary) {
+		Rank.BIOVARIETY = termVocabulary.findTermByUuid(Rank.uuidBioVariety);
+		Rank.CANDIDATE = termVocabulary.findTermByUuid(Rank.uuidCandidate);
+		Rank.CLASS = termVocabulary.findTermByUuid(Rank.uuidClass);
+		Rank.CONVAR = termVocabulary.findTermByUuid(Rank.uuidConvar);
+		Rank.CULTIVAR = termVocabulary.findTermByUuid(Rank.uuidCultivar);
+		Rank.CULTIVARGROUP = termVocabulary.findTermByUuid(Rank.uuidCultivarGroup);
+		Rank.DENOMINATIONCLASS = termVocabulary.findTermByUuid(Rank.uuidDenominationClass);
+		Rank.DIVISION = termVocabulary.findTermByUuid(Rank.uuidDivision);
+		Rank.DOMAIN = termVocabulary.findTermByUuid(Rank.uuidDomain);
+		Rank.EMPIRE = termVocabulary.findTermByUuid(Rank.uuidEmpire);
+		Rank.FAMILY = termVocabulary.findTermByUuid(Rank.uuidFamily);
+		Rank.FORM = termVocabulary.findTermByUuid(Rank.uuidForm);
+		Rank.GENUS = termVocabulary.findTermByUuid(Rank.uuidGenus);
+		Rank.GRAFTCHIMAERA = termVocabulary.findTermByUuid(Rank.uuidGraftChimaera);
+		Rank.GREX = termVocabulary.findTermByUuid(Rank.uuidGrex);
+		Rank.INFRACLASS = termVocabulary.findTermByUuid(Rank.uuidInfraclass);
+		Rank.INFRADIVISION = termVocabulary.findTermByUuid(Rank.uuidInfradivision);
+		Rank.INFRAFAMILY = termVocabulary.findTermByUuid(Rank.uuidInfrafamily);
+		Rank.INFRAGENERICTAXON = termVocabulary.findTermByUuid(Rank.uuidInfragenericTaxon);
+		Rank.INFRAGENUS = termVocabulary.findTermByUuid(Rank.uuidInfragenus);
+		Rank.INFRAKINGDOM = termVocabulary.findTermByUuid(Rank.uuidInfrakingdom);
+		Rank.INFRAORDER = termVocabulary.findTermByUuid(Rank.uuidInfraorder);
+		Rank.INFRAPHYLUM = termVocabulary.findTermByUuid(Rank.uuidInfraphylum);
+		Rank.INFRASPECIES = termVocabulary.findTermByUuid(Rank.uuidInfraspecies);
+		Rank.INFRASPECIFICTAXON = termVocabulary.findTermByUuid(Rank.uuidInfraspecificTaxon);
+		Rank.INFRATRIBE = termVocabulary.findTermByUuid(Rank.uuidInfratribe);
+		Rank.KINGDOM = termVocabulary.findTermByUuid(Rank.uuidKingdom);
+		Rank.ORDER = termVocabulary.findTermByUuid(Rank.uuidOrder);
+		Rank.PATHOVARIETY = termVocabulary.findTermByUuid(Rank.uuidPathoVariety);
+		Rank.PHYLUM = termVocabulary.findTermByUuid(Rank.uuidPhylum);
+		Rank.SECTION = termVocabulary.findTermByUuid(Rank.uuidSection);
+		Rank.SERIES = termVocabulary.findTermByUuid(Rank.uuidSeries);
+		Rank.SPECIALFORM = termVocabulary.findTermByUuid(Rank.uuidSpecialForm);
+		Rank.SPECIES = termVocabulary.findTermByUuid(Rank.uuidSpecies);
+		Rank.SPECIESAGGREGATE = termVocabulary.findTermByUuid(Rank.uuidSpeciesAggregate);
+		Rank.SUBCLASS = termVocabulary.findTermByUuid(Rank.uuidSubclass);
+		Rank.SUBDIVISION = termVocabulary.findTermByUuid(Rank.uuidSubdivision);
+		Rank.SUBFAMILY = termVocabulary.findTermByUuid(Rank.uuidSubfamily);
+		Rank.SUBFORM = termVocabulary.findTermByUuid(Rank.uuidSubform);
+		Rank.SUBGENUS = termVocabulary.findTermByUuid(Rank.uuidSubgenus);
+		Rank.SUBKINGDOM = termVocabulary.findTermByUuid(Rank.uuidSubkingdom);
+		Rank.SUBORDER = termVocabulary.findTermByUuid(Rank.uuidSuborder);
+		Rank.SUBPHYLUM = termVocabulary.findTermByUuid(Rank.uuidSubphylum);
+		Rank.SUBSECTION = termVocabulary.findTermByUuid(Rank.uuidSubsection);
+		Rank.SUBSERIES = termVocabulary.findTermByUuid(Rank.uuidSubseries);
+		Rank.SUBSPECIES = termVocabulary.findTermByUuid(Rank.uuidSubspecies);
+		Rank.SUBSPECIFICAGGREGATE = termVocabulary.findTermByUuid(Rank.uuidSubspecificAggregate);
+		Rank.SUBSUBFORM = termVocabulary.findTermByUuid(Rank.uuidSubsubform);
+		Rank.SUBSUBVARIETY = termVocabulary.findTermByUuid(Rank.uuidSubsubvariety);
+		Rank.SUBTRIBE = termVocabulary.findTermByUuid(Rank.uuidSubtribe);
+		Rank.SUBVARIETY = termVocabulary.findTermByUuid(Rank.uuidSubvariety);
+		Rank.SUPERCLASS = termVocabulary.findTermByUuid(Rank.uuidSuperclass);
+		Rank.SUPERDIVISION = termVocabulary.findTermByUuid(Rank.uuidSuperdivision);
+		Rank.SUPERFAMILY = termVocabulary.findTermByUuid(Rank.uuidSuperfamily);
+		Rank.SUPERKINGDOM = termVocabulary.findTermByUuid(Rank.uuidSuperkingdom);
+		Rank.SUPERORDER = termVocabulary.findTermByUuid(Rank.uuidSuperorder);
+		Rank.SUPERPHYLUM = termVocabulary.findTermByUuid(Rank.uuidSuperphylum);
+		Rank.SUPERTRIBE = termVocabulary.findTermByUuid(Rank.uuidSupertribe);
+		Rank.SUPRAGENERICTAXON = termVocabulary.findTermByUuid(Rank.uuidSupragenericTaxon);
+		Rank.TRIBE = termVocabulary.findTermByUuid(Rank.uuidTribe);
+		Rank.UNKNOWN_RANK = termVocabulary.findTermByUuid(Rank.uuidUnknownRank);
+		Rank.VARIETY = termVocabulary.findTermByUuid(Rank.uuidVariety);
 	}
 
 	

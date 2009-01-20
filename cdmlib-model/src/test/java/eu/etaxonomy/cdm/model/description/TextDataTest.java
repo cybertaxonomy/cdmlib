@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -31,24 +32,16 @@ public class TextDataTest {
 	private static Logger logger = Logger.getLogger(TextDataTest.class);
 
 	
-	private static TextData textDataLeer;
-	private static TextData textData1; 
-	private static TextFormat format1;
-	private static LanguageString languageString1;
+	private TextData textDataLeer;
+	private TextData textData1; 
+	private TextFormat format1;
+	private LanguageString languageString1;
 	
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	/**
@@ -60,13 +53,6 @@ public class TextDataTest {
 		format1 = TextFormat.NewInstance();
 		textData1 = TextData.NewInstance("testText", Language.DEFAULT(), format1); 
 		languageString1 = LanguageString.NewInstance("langText", Language.GERMAN());
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 /* ************************** TESTS **********************************************************/

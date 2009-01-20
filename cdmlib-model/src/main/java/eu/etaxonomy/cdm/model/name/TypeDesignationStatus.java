@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -50,8 +51,41 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypeDesignationStatus")
 @Entity
+//@Audited
 public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
+
+	private static TypeDesignationStatus PHOTOTYPE;
+
+	private static TypeDesignationStatus ICONOTYPE;
+
+	private static TypeDesignationStatus ISOEPITYPE;
+
+	private static TypeDesignationStatus PARALECTOTYPE;
+
+	private static TypeDesignationStatus SECOND_STEP_NEOTYPE;
+
+	private static TypeDesignationStatus SECOND_STEP_LECTOTYPE;
+
+	private static TypeDesignationStatus PARANEOTYPE;
+
+	private static TypeDesignationStatus ISONEOTYPE;
+
+	private static TypeDesignationStatus ISOLECTOTYPE;
+
+	private static TypeDesignationStatus PARATYPE;
+
+	private static TypeDesignationStatus SYNTYPE;
+
+	private static TypeDesignationStatus ISOTYPE;
+
+	private static TypeDesignationStatus EPITYPE;
+
+	private static TypeDesignationStatus NEOTYPE;
+
+	private static TypeDesignationStatus LECTOTYPE;
+
+	private static TypeDesignationStatus HOLOTYPE;
 
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
 	private static final UUID uuidLectotype = UUID.fromString("05002d46-083e-4b27-8731-2e7c28a8825c");
@@ -99,19 +133,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 		super(term, label, labelAbbrev);
 	}
 
-	//********* METHODS **************************************/
-
-	/**
-	 * Returns the type designation status identified through its immutable
-	 * universally unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the type designation status corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final TypeDesignationStatus getByUuid(UUID uuid){
-		return (TypeDesignationStatus) findByUuid(uuid);
-	}
+	//********* METHODS **************************************
 	
 
 	/**
@@ -151,7 +173,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
 	 */
 	public static final TypeDesignationStatus HOLOTYPE(){
-		return getByUuid(uuidHolotype);
+		return HOLOTYPE;
 	}
 
 	/**
@@ -165,7 +187,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#HOLOTYPE()
 	 */
 	public static final TypeDesignationStatus LECTOTYPE(){
-		return getByUuid(uuidLectotype);
+		return LECTOTYPE;
 	}
 
 	/**
@@ -177,7 +199,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#HOLOTYPE()
 	 */
 	public static final TypeDesignationStatus NEOTYPE(){
-		return getByUuid(uuidNeotype);
+		return NEOTYPE;
 	}
 
 	/**
@@ -195,7 +217,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#NEOTYPE()
 	 */
 	public static final TypeDesignationStatus EPITYPE(){
-		return getByUuid(uuidEpitype);
+		return EPITYPE;
 	}
 
 	/**
@@ -205,7 +227,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#HOLOTYPE()
 	 */
 	public static final TypeDesignationStatus ISOTYPE(){
-		return getByUuid(uuidIsotype);
+		return ISOTYPE;
 	}
 
 	/**
@@ -217,7 +239,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#HOLOTYPE()
 	 */
 	public static final TypeDesignationStatus SYNTYPE(){
-		return getByUuid(uuidSyntype);
+		return SYNTYPE;
 	}
 
 	/**
@@ -232,7 +254,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#SYNTYPE()
 	 */
 	public static final TypeDesignationStatus PARATYPE(){
-		return getByUuid(uuidParatype);
+		return PARATYPE;
 	}
 
 	/**
@@ -242,7 +264,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus ISOLECTOTYPE(){
-		return getByUuid(uuidIsolectotype);
+		return ISOLECTOTYPE;
 	}
 
 	/**
@@ -252,7 +274,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#NEOTYPE()
 	 */
 	public static final TypeDesignationStatus ISONEOTYPE(){
-		return getByUuid(uuidIsoneotype);
+		return ISONEOTYPE;
 	}
 	/**
 	 * Returns the "paraneotype" designation status. A paraneotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},
@@ -262,7 +284,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#NEOTYPE()
 	 */
 	public static final TypeDesignationStatus PARANEOTYPE(){
-		return getByUuid(uuidParaneotype);
+		return PARANEOTYPE;
 	}
 
 	/**
@@ -273,7 +295,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus SECOND_STEP_LECTOTYPE(){
-		return getByUuid(uuidSecondStepLectotype);
+		return SECOND_STEP_LECTOTYPE;
 	}
 
 	/**
@@ -284,7 +306,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus SECOND_STEP_NEOTYPE(){
-		return getByUuid(uuidSecondStepNeotype);
+		return SECOND_STEP_NEOTYPE;
 	}
 
 	/**
@@ -295,7 +317,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus PARALECTOTYPE(){
-		return getByUuid(uuidParalectotype);
+		return PARALECTOTYPE;
 	}
 
 	/**
@@ -305,7 +327,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#EPITYPE()
 	 */
 	public static final TypeDesignationStatus ISOEPITYPE(){
-		return getByUuid(uuidIsoepitype);
+		return ISOEPITYPE;
 	}
 
 	/**
@@ -317,7 +339,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus ICONOTYPE(){
-		return getByUuid(uuidIconotype);
+		return ICONOTYPE;
 	}
 
 	/**
@@ -329,7 +351,27 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 */
 	public static final TypeDesignationStatus PHOTOTYPE(){
-		return getByUuid(uuidPhototype);
+		return PHOTOTYPE;
+	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<TypeDesignationStatus> termVocabulary) {
+		TypeDesignationStatus.EPITYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidEpitype);
+		TypeDesignationStatus.HOLOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidHolotype);
+		TypeDesignationStatus.ICONOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIconotype);
+		TypeDesignationStatus.ISOEPITYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsoepitype);
+		TypeDesignationStatus.ISOLECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsolectotype);
+		TypeDesignationStatus.ISONEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsoneotype);
+		TypeDesignationStatus.ISOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsotype);
+		TypeDesignationStatus.LECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidLectotype);
+		TypeDesignationStatus.NEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidNeotype);
+		TypeDesignationStatus.PARALECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParalectotype);
+		TypeDesignationStatus.PARANEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParaneotype);
+		TypeDesignationStatus.PARATYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParatype);
+		TypeDesignationStatus.PHOTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidPhototype);
+		TypeDesignationStatus.SECOND_STEP_LECTOTYPE= termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSecondStepLectotype);
+		TypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSecondStepNeotype);
+		TypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSyntype);		
 	}
 
 }

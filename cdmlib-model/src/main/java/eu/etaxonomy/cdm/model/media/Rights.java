@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.media;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
@@ -43,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Rights")
 @Entity
+//@Audited
 public class Rights extends LanguageStringBase {
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
@@ -124,7 +126,7 @@ public class Rights extends LanguageStringBase {
 	}
 
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getAgent() {
 		return agent;

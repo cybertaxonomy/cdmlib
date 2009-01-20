@@ -16,9 +16,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -45,9 +47,14 @@ public class TaxonTest extends EntityTestBase {
 	private Taxon misTaxon1;
 	private Taxon misTaxon2;
 	
-
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
+	}
+	
 	@Before
-	public void setUpBeforeClass() throws Exception {
+	public void setUp() throws Exception {
 		Person linne =new Person("Carl", "Linné", "L.");
 		sec= Book.NewInstance();
 		sec.setAuthorTeam(linne);

@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -30,13 +32,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AnnotationType")
 @XmlRootElement(name = "AnnotationType")
 @Entity
-public class AnnotationType extends DefinedTermBase {
+//@Audited
+public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotationType.class);
 
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	private static final UUID uuidEditorial = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");
+	
+	private static AnnotationType TECHNICAL;
+	private static AnnotationType EDITORIAL;
 	
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);
@@ -59,19 +65,17 @@ public class AnnotationType extends DefinedTermBase {
 	protected AnnotationType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
-	
-
-	public static final AnnotationType getByUuid(UUID uuid){
-		return (AnnotationType) findByUuid(uuid);
-	}	
-
 
 	public static final AnnotationType TECHNICAL(){
-		return getByUuid(uuidTechnical);
+		return AnnotationType.TECHNICAL;
 	}
 
 	public static final AnnotationType EDITORIAL(){
-		return getByUuid(uuidEditorial);
+		return AnnotationType.EDITORIAL;
 	}
 
+	protected void setDefaultTerms(TermVocabulary<AnnotationType> termVocabulary) {
+		AnnotationType.TECHNICAL = termVocabulary.findTermByUuid(uuidTechnical);
+		AnnotationType.EDITORIAL = termVocabulary.findTermByUuid(uuidEditorial);	
+	}
 }

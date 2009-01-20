@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -53,6 +55,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
+//@Audited
+@Indexed
 public class TaxonDescription extends DescriptionBase {
 	private static final long serialVersionUID = 8065879180505546803L;
 	@SuppressWarnings("unused")
@@ -104,10 +108,8 @@ public class TaxonDescription extends DescriptionBase {
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
 	 * data where <i>this</i> taxon description is valid.
 	 */
-	@OneToMany
-	@JoinTable(
-			name="DescriptionBase_GeoScope"
-	)
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DescriptionBase_GeoScope")
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
@@ -146,10 +148,8 @@ public class TaxonDescription extends DescriptionBase {
 	 * restricting the validity of <i>this</i> taxon description. This set
 	 * of scopes should contain no more than one "sex" and one "life stage".
 	 */
-	@OneToMany
-	@JoinTable(
-			name="DescriptionBase_Scope"
-	)
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DescriptionBase_Scope")
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
@@ -186,7 +186,7 @@ public class TaxonDescription extends DescriptionBase {
 	/** 
 	 * Returns the {@link Taxon taxon} <i>this</i> taxon description is about.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="taxon_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public Taxon getTaxon() {

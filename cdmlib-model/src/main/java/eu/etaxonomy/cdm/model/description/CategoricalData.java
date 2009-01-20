@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -55,6 +56,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
+//@Audited
 public class CategoricalData extends DescriptionElementBase {
 	private static final long serialVersionUID = -6298361966947668998L;
 	private static final Logger logger = Logger.getLogger(CategoricalData.class);
@@ -89,7 +91,7 @@ public class CategoricalData extends DescriptionElementBase {
 	 * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
 	 * corresponding to <i>this</i> categorical data.
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<StateData> getStates(){
 		return this.states;

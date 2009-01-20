@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * @author m.doering
@@ -26,6 +27,8 @@ import org.apache.log4j.Logger;
 @XmlType(name = "LanguageString")
 @XmlRootElement(name = "LanguageString")
 @Entity
+//@Audited
+@Indexed
 public class LanguageString  extends LanguageStringBase{
 	private static final long serialVersionUID = -1502298496073201104L;
 	@SuppressWarnings("unused")

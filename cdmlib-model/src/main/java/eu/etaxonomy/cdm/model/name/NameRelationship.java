@@ -47,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "ruleConsidered"
 })
 @Entity
+//@Audited
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
 
   static Logger logger = Logger.getLogger(NameRelationship.class);
@@ -174,7 +175,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	}
 
 	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})	
+	@Cascade({CascadeType.SAVE_UPDATE})
 	protected TaxonNameBase getRelatedFrom() {
 		return relatedFrom;
 	}
@@ -185,7 +186,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		return relatedTo;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public NameRelationshipType getType() {
 		return type;
 	}

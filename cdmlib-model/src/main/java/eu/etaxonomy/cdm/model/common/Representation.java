@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Representation")
 @Entity
+//@Audited
 public class Representation extends LanguageStringBase {
 	private static final long serialVersionUID = -4202420199587324532L;
 	@SuppressWarnings("unused")

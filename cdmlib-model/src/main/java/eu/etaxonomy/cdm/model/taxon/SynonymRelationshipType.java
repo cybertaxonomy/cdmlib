@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -18,7 +20,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
@@ -42,9 +47,16 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SynonymRelationshipType")
 @Entity
+//@Audited
 public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
 	
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
+
+	private static SynonymRelationshipType SYNONYM_OF;
+
+	private static SynonymRelationshipType HOMOTYPIC_SYNONYM_OF;
+
+	private static SynonymRelationshipType HETEROTYPIC_SYNONYM_OF;
 
 	private static final UUID uuidSynonymOf = UUID.fromString("1afa5429-095a-48da-8877-836fa4fe709e");
 	private static final UUID uuidHomotypicSynonymOf = UUID.fromString("294313a9-5617-4ed5-ae2d-c57599907cb2");
@@ -80,18 +92,6 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 
 	//********* METHODS **************************************/
-
-	/**
-	 * Returns the synonym relationship type identified through its immutable
-	 * universally unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the synonym relationship type corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final SynonymRelationshipType getByUuid(UUID uuid){
-		return (SynonymRelationshipType) findByUuid(uuid);
-	}
 	
 	/**
 	 * Returns the synonym relationship type "is synonym of". This indicates
@@ -103,7 +103,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#HETEROTYPIC_SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType SYNONYM_OF(){
-		return getByUuid(uuidSynonymOf);
+		return SYNONYM_OF;
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HOMOTYPIC_SYNONYM_OF(){
-		return getByUuid(uuidHomotypicSynonymOf);
+		return HOMOTYPIC_SYNONYM_OF;
 	}
 
 	/**
@@ -133,7 +133,19 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see		#SYNONYM_OF()
 	 */
 	public static final SynonymRelationshipType HETEROTYPIC_SYNONYM_OF(){
-		return getByUuid(uuidHeterotypicSynonymOf);
+		return HETEROTYPIC_SYNONYM_OF;
+	}
+	
+	@Override
+	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		return super.readCsvLine(termClass, csvLine, terms);
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<SynonymRelationshipType> termVocabulary) {
+		SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidHeterotypicSynonymOf);
+		SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidHomotypicSynonymOf);
+		SynonymRelationshipType.SYNONYM_OF = termVocabulary.findTermByUuid(SynonymRelationshipType.uuidSynonymOf);
 	}
 
 }

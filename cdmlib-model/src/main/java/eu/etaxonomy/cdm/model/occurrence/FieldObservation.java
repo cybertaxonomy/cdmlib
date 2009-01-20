@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "FieldObservation")
 @Entity
+//@Audited
 public class FieldObservation extends SpecimenOrObservationBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
@@ -69,7 +70,7 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 	}
 	
 	@Override
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	public GatheringEvent getGatheringEvent() {
 		return this.gatheringEvent;

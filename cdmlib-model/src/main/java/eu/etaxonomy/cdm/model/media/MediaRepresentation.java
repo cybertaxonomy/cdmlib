@@ -53,8 +53,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
     "mediaRepresentationParts"
 })
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaRepresentation extends VersionableEntity<MediaRepresentation> {
+public class MediaRepresentation extends VersionableEntity {
 	private static final long serialVersionUID = -1520078266008619806L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
 	
@@ -133,7 +134,7 @@ public class MediaRepresentation extends VersionableEntity<MediaRepresentation> 
 		this.suffix = suffix;
 	}
 	
-	@ManyToOne	
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Media getMedia() {
 		return media;
 	}

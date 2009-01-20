@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import javax.persistence.Transient;
-
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -22,7 +20,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 public interface IReferencedEntity {
 
-	@Transient
 	public ReferenceBase getCitation();
 
 }

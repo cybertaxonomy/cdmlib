@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlType;
     "ruleConsidered"
 })
 @Entity
+//@Audited
 public class HybridRelationship extends RelationshipBase<BotanicalName, BotanicalName, HybridRelationshipType> {
   
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
@@ -183,24 +184,20 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 		return relatedTo;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public HybridRelationshipType getType() {
 		return type;
 	}
-
 
 	protected void setRelatedFrom(BotanicalName relatedFrom) {
 		this.relatedFrom = relatedFrom;
 	}
 
-
 	protected void setRelatedTo(BotanicalName relatedTo) {
 		this.relatedTo = relatedTo;
 	}
 
-
 	protected void setType(HybridRelationshipType type) {
 		this.type = type;
 	}
-
 }

@@ -33,7 +33,13 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Database")
 @XmlRootElement(name = "Database")
 @Entity
+//@Audited
 public class Database extends PublicationBase implements Cloneable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7077612779393752878L;
 	private static final Logger logger = Logger.getLogger(Database.class);
 
 	/** 

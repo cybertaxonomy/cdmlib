@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -56,18 +57,10 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private INomenclaturalAuthor exBasAuthor;
 	private Book citationRef;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	/**
@@ -95,13 +88,6 @@ public class NonViralNameDefaultCacheStrategyTest {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 		
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //**************************** TESTS **************************************************

@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "BacterialName")
 @Entity
+//@Audited
 public class BacterialName extends NonViralName {
 	
 	static Logger logger = Logger.getLogger(BacterialName.class);

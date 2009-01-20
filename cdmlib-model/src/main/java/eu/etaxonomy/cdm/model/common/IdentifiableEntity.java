@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -28,6 +29,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
@@ -53,7 +57,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
     "sources"
 })
 @MappedSuperclass
-public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extends AnnotatableEntity<T> implements ISourceable, IIdentifiableEntity {
+public abstract class IdentifiableEntity extends AnnotatableEntity implements ISourceable, IIdentifiableEntity {
 	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
@@ -129,6 +133,10 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extend
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
 	@Column(length=255, name="titleCache")
+	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
+	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	})
+	@FieldBridge(impl=StripHtmlBridge.class)
 	@Deprecated //for hibernate use only
 	protected String getPersistentTitleCache(){
 		return getTitleCache();
@@ -155,8 +163,10 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extend
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
+	 * FIXME do we really mean ManyToMany i.e. that objects can share 
+	 * rights statements? This should be made explict
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Rights> getRights(){
 		return this.rights;
@@ -181,7 +191,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extend
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
 	 */
-	@OneToMany//(mappedBy="extendedObj")
+	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Extension> getExtensions(){
 		return this.extensions;
@@ -220,7 +230,7 @@ public abstract class IdentifiableEntity<T extends IdentifiableEntity<?>> extend
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getSources()
 	 */
-	@OneToMany //(mappedBy="sourcedObj")		
+	@OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<OriginalSource> getSources() {
 		return this.sources;		

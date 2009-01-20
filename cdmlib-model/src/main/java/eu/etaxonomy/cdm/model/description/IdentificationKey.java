@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
+
 import java.util.*;
 
 import javax.persistence.*;
@@ -47,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "IdentificationKey")
 @Entity
+//@Audited
 public class IdentificationKey extends Media {
 	private static final long serialVersionUID = -29095811051894471L;
 	@SuppressWarnings("unused")

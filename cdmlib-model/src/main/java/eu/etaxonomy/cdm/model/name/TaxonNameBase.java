@@ -39,6 +39,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Target;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -91,9 +92,11 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<TaxonNameBase> implements IReferencedEntity, IParsable, IRelated {
+@Indexed
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity implements IReferencedEntity, IParsable, IRelated {
 
 	/**
 	 * 
@@ -320,18 +323,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@Transient
-//	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NameRelationship> getNameRelations() {
 		Set<NameRelationship> rels = new HashSet<NameRelationship>();
 		rels.addAll(getRelationsFromThisName());
 		rels.addAll(getRelationsToThisName());
 		return rels;
 	}
-	
-//	protected void setNameRelations(Set<NameRelationship> nameRelations) {
-//		this.nameRelations = nameRelations;
-//	}
 	
 	/**
 	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
@@ -656,7 +653,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 *
 	 * @see 	Rank
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Rank getRank(){
 		return this.rank;
@@ -966,7 +963,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 *
 	 * @see 	HomotypicalGroup
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;

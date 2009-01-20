@@ -57,7 +57,12 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 @XmlRootElement(name = "Generic")
 @Entity
 public class Generic extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2547067957118035042L;
+
 	static Logger logger = Logger.getLogger(Generic.class);
 	
     @XmlElement(name = "Publisher")

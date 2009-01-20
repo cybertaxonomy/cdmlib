@@ -9,11 +9,18 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -46,9 +53,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "HybridRelationshipType")
 @XmlRootElement(name = "HybridRelationshipType")
 @Entity
+//@Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
   
 	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
+
+	private static HybridRelationshipType FIRST_PARENT;
+	private static HybridRelationshipType SECOND_PARENT;
+	private static HybridRelationshipType FEMALE_PARENT;
+	private static HybridRelationshipType MALE_PARENT;
 
 	private static final UUID uuidFirstParent = UUID.fromString("83ae9e56-18f2-46b6-b211-45cdee775bf3");
 	private static final UUID uuidSecondParent = UUID.fromString("0485fc3d-4755-4f53-8832-b82774484c43");
@@ -87,18 +100,6 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	//********* METHODS **************************************/
 
 	/**
-	 * Returns the hybrid relationship type identified through its immutable universally
-	 * unique identifier (UUID).
-	 * 
-	 * @param	uuid	the universally unique identifier
-	 * @return  		the hybrid relationship type corresponding to the given
-	 * 					universally unique identifier
-	 */
-	public static final HybridRelationshipType getbyUuid(UUID uuid){
-		return (HybridRelationshipType) findByUuid(uuid);
-	}
-
-	/**
 	 * Returns the "first parent" hybrid relationship type. The elements of the
 	 * {@link BotanicalName botanical taxon name} used as "first parent" affect the
 	 * taxon name string of the hybrid (see Appendix I of the ICBN).
@@ -106,7 +107,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType FIRST_PARENT(){
-		return getbyUuid(uuidFirstParent);
+		return FIRST_PARENT;
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType SECOND_PARENT(){
-		return getbyUuid(uuidSecondParent);
+		return SECOND_PARENT;
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#FIRST_PARENT()
 	 */
 	public static final HybridRelationshipType FEMALE_PARENT(){
-		return getbyUuid(uuidFemaleParent);
+		return FEMALE_PARENT;
 	}
 
 	/**
@@ -143,7 +144,20 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see	#SECOND_PARENT()
 	 */
 	public static final HybridRelationshipType MALE_PARENT(){
-		return getbyUuid(uuidMaleParent);
+		return MALE_PARENT;
+	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<HybridRelationshipType> termVocabulary) {
+		HybridRelationshipType.FEMALE_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidFemaleParent);
+		HybridRelationshipType.FIRST_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidFirstParent);
+		HybridRelationshipType.MALE_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidMaleParent);
+		HybridRelationshipType.SECOND_PARENT = termVocabulary.findTermByUuid(HybridRelationshipType.uuidSecondParent);
+	}
+	
+	@Override
+	public HybridRelationshipType readCsvLine(Class<HybridRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		return super.readCsvLine(termClass, csvLine, terms);
 	}
 
 }

@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -54,6 +56,8 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
 })
 @XmlRootElement(name = "TextData")
 @Entity
+//@Audited
+@Indexed
 public class TextData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2165015581278282615L;
 	@SuppressWarnings("unused")
@@ -142,7 +146,8 @@ public class TextData extends DescriptionElementBase {
 	@OneToMany (fetch= FetchType.LAZY)
 	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
-	public Map<Language, LanguageString> getMultilanguageText() {
+    @IndexedEmbedded
+    public Map<Language, LanguageString> getMultilanguageText() {
     //public MultilanguageText getMultilanguageText() {
 		initTextSet();
 		return multiLanguageText;
@@ -252,7 +257,7 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @see	#getMultilanguageText()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public TextFormat getFormat() {
 		return format;
 	}

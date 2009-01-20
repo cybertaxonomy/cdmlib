@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Map")
 @XmlRootElement(name = "Map")
 @Entity
+//@Audited
 public class Map extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Map.class);
 

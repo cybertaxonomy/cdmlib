@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.common;
 
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -57,7 +58,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getActor()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Agent getActor() {
 		return actor;

@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -60,9 +62,16 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 })
 @XmlRootElement(name = "RelationshipBase")
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+//@Audited
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase extends IdentifiableMediaEntity implements IParsable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2034764545042691295L;
+
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
 	//URIs like DOIs, LSIDs or Handles for this reference

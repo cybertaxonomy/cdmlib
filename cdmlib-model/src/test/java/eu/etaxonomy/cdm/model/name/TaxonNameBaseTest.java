@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
@@ -31,18 +32,10 @@ public class TaxonNameBaseTest {
 	private TaxonNameBaseTestClass nameBase1;
 	private TaxonNameBaseTestClass nameBase2;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	/**
@@ -54,12 +47,6 @@ public class TaxonNameBaseTest {
 		nameBase2 = new TaxonNameBaseTestClass(Rank.GENUS());
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 	
 	private class TaxonNameBaseTestClass extends TaxonNameBase{
 		public TaxonNameBaseTestClass(){super();};

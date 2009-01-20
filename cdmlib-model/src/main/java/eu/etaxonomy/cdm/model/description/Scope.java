@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing restrictions for the validity of
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlType(name = "Scope")
 @XmlRootElement(name = "Scope")
 @Entity
+//@Audited
 public class Scope extends Modifier {
 	private static final long serialVersionUID = 4479960075363470677L;
 	@SuppressWarnings("unused")
@@ -90,4 +92,7 @@ public class Scope extends Modifier {
 	public static Scope NewInstance(String term, String label, String labelAbbrev){
 		return new Scope(term, label, labelAbbrev);
 	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {}
 }

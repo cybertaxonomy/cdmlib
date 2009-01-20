@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Journal")
 @Entity
+//@Audited
 public class Journal extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Journal.class);
 	

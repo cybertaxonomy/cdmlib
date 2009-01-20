@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
+//@Audited
 public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -56,7 +58,7 @@ public class DnaSample extends Specimen implements Cloneable {
     @XmlSchemaType(name = "IDREF")
 	private Set<Sequence> sequences = getNewSequenceSet();
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}

@@ -9,18 +9,22 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.FetchType;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.
@@ -34,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
     "annotations"
 })
 @MappedSuperclass
-public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends VersionableEntity<T> {
+public abstract class AnnotatableEntity extends VersionableEntity {
 	private static final long serialVersionUID = 9151211842542443102L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotatableEntity.class);
@@ -74,7 +78,7 @@ public abstract class AnnotatableEntity<T extends AnnotatableEntity> extends Ver
 
 //*************** ANNOTATIONS **********************************************
 	
-	@OneToMany(fetch=FetchType.LAZY) //(mappedBy="AnnotatedObj")
+	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;

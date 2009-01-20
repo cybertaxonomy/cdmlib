@@ -2,15 +2,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
-import javax.persistence.Basic;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -21,8 +12,6 @@ public interface ICdmBase {
 	 * Returns local unique identifier for the concrete subclass
 	 * @return
 	 */
-	@Id
-	@GeneratedValue(generator = "system-increment")
 	public abstract int getId();
 
 	/**
@@ -37,8 +26,6 @@ public interface ICdmBase {
 
 	public abstract void setUuid(UUID uuid);
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Basic(fetch = FetchType.LAZY)
 	public abstract DateTime getCreated();
 
 	/**
@@ -51,8 +38,6 @@ public interface ICdmBase {
 	 */
 	public abstract void setCreated(DateTime created);
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public abstract Person getCreatedBy();
 
 	public abstract void setCreatedBy(Person createdBy);

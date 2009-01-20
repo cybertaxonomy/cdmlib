@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * This class represents terms describing different states (like "oval" or
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 @XmlType(name = "State")
 @XmlRootElement(name = "State")
 @Entity
+//@Audited
 public class State extends OrderedTermBase<State> {
 	private static final long serialVersionUID = -4816292463790262516L;
 	@SuppressWarnings("unused")
@@ -87,6 +89,12 @@ public class State extends OrderedTermBase<State> {
 	 */
 	public static State NewInstance(String term, String label, String labelAbbrev){
 		return new State(term, label, labelAbbrev);
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<State> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

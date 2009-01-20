@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "Proceedings")
 @Entity
+//@Audited
 public class Proceedings extends PrintedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Proceedings.class);
 	

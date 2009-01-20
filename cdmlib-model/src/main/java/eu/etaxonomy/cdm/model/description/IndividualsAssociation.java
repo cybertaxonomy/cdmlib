@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 })
 @XmlRootElement(name = "IndividualsAssociation")
 @Entity
+//@Audited
 public class IndividualsAssociation extends DescriptionElementBase {
 	private static final long serialVersionUID = -4117554860254531809L;
 	@SuppressWarnings("unused")
@@ -82,7 +84,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	 * The first specimen or observation is the specimen or observation
 	 * described in the corresponding {@link SpecimenDescription specimen description}.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public SpecimenOrObservationBase getAssociatedSpecimenOrObservation() {
 		return associatedSpecimenOrObservation;
 	}

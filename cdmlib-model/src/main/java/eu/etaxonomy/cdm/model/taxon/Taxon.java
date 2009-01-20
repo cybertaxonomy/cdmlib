@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -57,6 +58,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Taxon")
 @Entity
+//@Audited
+@Indexed
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
 
 	static Logger logger = Logger.getLogger(Taxon.class);

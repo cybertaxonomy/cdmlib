@@ -35,14 +35,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	private OrderedTermVocabulary<OrderedTermBase> oVoc2;
 	private OrderedTermVocabulary<OrderedTermBase> oVoc3;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		otb1 = new DerivedOrderedTermBase("otb1", "high", null);
@@ -65,6 +57,12 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		}
 		private DerivedOrderedTermBase(String term, String label, String labelAbbrev){
 			super(term, label, labelAbbrev);
+		}
+		@Override
+		protected void setDefaultTerms(
+				TermVocabulary<DerivedOrderedTermBase> termVocabulary) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 
@@ -91,7 +89,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTerms() {
 		assertEquals(3, oVoc1.getTerms().size());
-		//assertNotSame(oVoc1.terms, oVoc1.getTerms());
+//		assertNotSame(oVoc1.terms, oVoc1.getTerms());
 		assertTrue( oVoc1.terms.getClass().isAssignableFrom(oVoc1.getTerms().getClass()));
 	}
 	
@@ -99,11 +97,8 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	public final void testAddTerm() {
 		assertEquals(3, oVoc1.size());
 		assertEquals(otb3, oVoc1.getLowestTerm());
-		try {
-			oVoc1.addTerm(otbFree);
-		} catch (WrongTermTypeException e) {
-			fail();
-		}
+		oVoc1.addTerm(otbFree);
+		
 		assertEquals(4, oVoc1.size());
 		assertEquals(otbFree, oVoc1.getLowestTerm());
 	}
@@ -201,19 +196,21 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertEquals(otbFree.getLabel(), oVoc1.getNextLowerTerm(otb2).getLabel());
 		assertEquals(otbFree.getLabel(), oVoc1.getNextHigherTerm(otb3).getLabel());
 	}
-//
-//	@Test
-//	public final void testAddTermEqualLevel() {
-//		try {
-//			oVoc1.addTermEqualLevel(otbFree, otb2);
-//		} catch (WrongTermTypeException e) {
-//			fail();
-//		}
-//		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
-//		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
-//		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
-//		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
-//	}
+
+	@Test
+	@Ignore // FIXME This doesn't seem to work now
+	public final void testAddTermEqualLevel() {
+		try {
+			System.out.println(otb2.orderIndex);
+			oVoc1.addTermEqualLevel(otbFree, otb2);
+		} catch (WrongTermTypeException e) {
+			fail();
+		}
+		assertEquals(1, oVoc1.getLowerTerms(otbFree).size());
+		assertEquals(2, oVoc1.getLowerAndEqualTerms(otbFree).size());
+		assertEquals(otb1.getLabel(), oVoc1.getNextHigherTerm(otbFree).getLabel());
+		assertEquals(otb3.getLabel(), oVoc1.getNextLowerTerm(otbFree).getLabel());
+	}
 	
 	@Test
 	public final void testIndexChangeAllowed() {

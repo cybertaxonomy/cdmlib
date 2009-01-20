@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -36,21 +37,15 @@ public class BotanicalNameTest extends EntityTestBase{
 	private BotanicalName botanicalName2;
 	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		botanicalName1 = new BotanicalName();
 		botanicalName2 = new BotanicalName();
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 	
 /****** TESTS *******************************/

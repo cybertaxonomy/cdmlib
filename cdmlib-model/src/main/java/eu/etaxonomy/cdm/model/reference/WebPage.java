@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "WebPage")
 @XmlRootElement(name = "WebPage")
 @Entity
+//@Audited
 public class WebPage extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(WebPage.class);
 

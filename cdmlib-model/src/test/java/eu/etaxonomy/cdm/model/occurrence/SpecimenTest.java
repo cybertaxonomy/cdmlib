@@ -167,9 +167,7 @@ public class SpecimenTest {
 		specimen.setIndividualCount(individualCount);
 		specimen.setLifeStage(lifeStage);
 		specimen.setLsid(lsid);
-		specimen.setNextVersion(nextVersion);
 		specimen.setPreservation(preservation);
-		specimen.setPreviousVersion(previousVersion);
 		specimen.setProtectedTitleCache(protectedTitleCache);
 		specimen.setSex(sex);
 		specimen.setStoredUnder(storedUnder);
@@ -199,10 +197,6 @@ public class SpecimenTest {
 		assertFalse(updatedBy.equals(specimenClone.getUpdatedBy()));
 		assertNull(specimenClone.getUpdatedBy());
 		assertNull(specimenClone.getCreatedBy());
-		assertFalse(nextVersion.equals(specimenClone.getNextVersion()));
-		assertFalse(previousVersion.equals(specimenClone.getPreviousVersion()));
-		assertNull(specimenClone.getNextVersion());
-		assertNull(specimenClone.getPreviousVersion());
 		assertFalse(uuid.equals(specimenClone.getUuid()));
 		
 		

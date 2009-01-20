@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,7 +53,8 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 })
 @XmlRootElement(name = "Address")
 @Entity
-public class Address extends VersionableEntity<Address> {
+//@Audited
+public class Address extends VersionableEntity {
 	
 	/**
 	 * 
@@ -127,7 +129,7 @@ public class Address extends VersionableEntity<Address> {
 	 * 
 	 * @return	the country 
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public WaterbodyOrCountry getCountry(){
 		return this.country;
 	}

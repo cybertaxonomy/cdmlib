@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "isNotDesignated"
 })
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase extends ReferencedEntityBase implements ITypeDesignation {
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
@@ -119,7 +120,7 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 *  
 	 * @see   #getTypifiedNames()
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;

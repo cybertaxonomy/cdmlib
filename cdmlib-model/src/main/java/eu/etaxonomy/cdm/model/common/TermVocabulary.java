@@ -10,17 +10,20 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.init.DefaultVocabularyStore;
-import eu.etaxonomy.cdm.model.common.init.IVocabularyStore;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +32,11 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -41,42 +49,28 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
     "termSourceUri",
-    "termClass",
     "terms"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	private static final long serialVersionUID = 1925052321596648672L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
-	
-	static protected IVocabularyStore vocabularyStore = new DefaultVocabularyStore();
-
-	public static void setVocabularyStore(IVocabularyStore vocabularyStore){
-		DefinedTermBase.vocabularyStore = vocabularyStore;
-	}
-	
-	private static final UUID uuidLanguage = UUID.fromString("17ba1c02-256d-47cf-bed0-2964ec1108ba");
-	private static final UUID uuidRank = UUID.fromString("b17451eb-4278-4179-af68-44f27aa3d151");
-	private static final UUID uuidContinent = UUID.fromString("ed4e5948-172a-424c-83d6-6fc7c7da70ed");
-	private static final UUID uuidTdwg = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
 
 	
-	public static TermVocabulary findByUuid(UUID uuid){
-		TermVocabulary<?> voc = vocabularyStore.getVocabularyByUuid(uuid);
-		return voc;
+	public T findTermByUuid(UUID uuid){
+		for(T t : terms) {
+			if(t.getUuid().equals(uuid)) {
+				return t;
+			}
+		}
+		return null;
 	}
-	public static final TermVocabulary getUUID(UUID uuid){
-		return findByUuid(uuid);
-	}
-	public static final TermVocabulary LANGUAGE(){
-		return getUUID(uuidLanguage);
-	}
-	public static final TermVocabulary TDWG(){
-		return getUUID(uuidTdwg);
-	}
+	
+	
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
@@ -84,62 +78,45 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@XmlElement(name = "TermSourceURI")
 	private String termSourceUri;
 	
-	@XmlElement(name = "TermClass")
-	protected Class termClass;
 
 	//TODO Changed
 	@XmlElementWrapper(name = "Terms")
 	@XmlElement(name = "Term")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	public Set<T> terms = getNewTermSet();
-	
-	//to be overriden by subclasses, e.g. OrderedTermVocabulary
-	@Transient
-	protected Set<T> getNewTermSet(){
-		return new HashSet<T>();
-	}
-	
-	public TermVocabulary() {
-		super();
-	}
+	protected Set<T> terms = getNewTermSet();
+
 	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
 		super(term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
 	
+	public TermVocabulary() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Transient
+	Set<T> getNewTermSet() {
+		return new HashSet<T>();
+	}
+
+	@OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
+	@Type(type="DefinedTermBase")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getTerms() {
-		//Set<T> result = getNewTermSet();
-		//result.addAll(terms);
-		//return result;
 		return terms;
 	}
 	protected void setTerms(Set<T> terms) {
 		this.terms = terms;
 	}
 	
-	@OneToMany(mappedBy="persistentVocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Type(type="DefinedTermBase")
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<T> getPersistentTerms() {
-		return terms;
-	}
-	protected void setPersistentTerms(Set<T> terms) {
-		this.terms = terms;
-	}
-	public void addTerm(T term) throws WrongTermTypeException {
-		if (terms.size()<1){
-			// no term yet in the list. First term defines the vocabulary kind
-			termClass=term.getClass();
-		}else if (term.getClass()!=termClass){
-				// check if new term in this vocabulary matches the previous ones
-				throw new WrongTermTypeException(term.getClass().getCanonicalName());
-		}
+	public void addTerm(T term) {
 		term.setVocabulary(this);
+		this.terms.add(term);
 	}
 	public void removeTerm(T term) {
 		term.setVocabulary(null);
+		this.terms.remove(term);
 	}
 
 	public String getTermSourceUri() {
@@ -148,14 +125,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public void setTermSourceUri(String vocabularyUri) {
 		this.termSourceUri = vocabularyUri;
 	}
-	
-	
-	public Class getTermClass() {
-		return termClass;
-	}
-	private void setTermClass(Class termClass) {
-		this.termClass = termClass;
-	} 
 	
 	
 //	// inner iterator class for the iterable interface
@@ -205,10 +174,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
 	 */
-	public TermVocabulary readCsvLine(List<String> csvLine) {
+	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.ENGLISH());
 	}
-	public TermVocabulary readCsvLine(List<String> csvLine, Language lang) {
+	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));
 		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );

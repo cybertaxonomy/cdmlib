@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Observation")
 @Entity
+//@Audited
 public class Observation extends DerivedUnitBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Observation.class);
 	

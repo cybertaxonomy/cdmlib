@@ -11,11 +11,13 @@ package eu.etaxonomy.cdm.model.location;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,8 +33,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -49,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 })
 @XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
+//@Audited
 public class WaterbodyOrCountry extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
@@ -571,12 +576,7 @@ uuidPersianGulf
 	 */
 
 	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
-		return getByUuid(uuidArgentinaArgentineRepublic);
-	}
-	
-	
-	public static final WaterbodyOrCountry getByUuid(UUID uuid){
-		return (WaterbodyOrCountry) findByUuid(uuid);
+		return null; // FIXME(uuidArgentinaArgentineRepublic);
 	}
 	
 	/**
@@ -604,10 +604,8 @@ uuidPersianGulf
 		super(term, label, labelAbbrev);
 	}
 
-	@ManyToMany
-    @JoinTable(
-        name="DefinedTermBase_Continent"
-    )
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DefinedTermBase_Continent")
 //	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Continent> getContinents() {
 		return continents;
@@ -653,32 +651,31 @@ uuidPersianGulf
 //		this.validPeriod = validPeriod;
 //	}
 
-	
-	@Override 
-	public ILoadableTerm readCsvLine(List csvLine) {
-	//public ILoadableTerm readCsvLine(List<String> csvLine) {
-		ILoadableTerm result;
-		// read UUID, URI, english label+description
-		result = super.readCsvLine(csvLine);
-		// iso codes extra
-		this.iso3166_A2 = ((String)csvLine.get(4)).trim().toCharArray();
-		//this.iso3166_A2=csvLine.get(4).trim().toCharArray();
-		String[] continentList;
-		String tmp = ((String)csvLine.get(5)).trim().toString();
-		//String tmp = csvLine.get(5).trim().toString();
-		if (tmp.length()>2){
-			tmp=tmp.substring(1, tmp.length()-1);
+	@Override
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		try {
+			WaterbodyOrCountry newInstance = WaterbodyOrCountry.class.newInstance();
+			super.readCsvLine(newInstance, csvLine, Language.DEFAULT());
+			// iso codes extra
+			newInstance.setIso3166_A2(csvLine.get(4).trim());
+			
+			String[] continentList;
+			String tmp = csvLine.get(5).trim();
+			if (tmp.length()>2){
+				tmp=tmp.substring(1, tmp.length()-1);
 
-			continentList=tmp.split(",");
-			for (int i=0;i<continentList.length;i++){
-				// 3b69f979-408c-4080-b573-0ad78a315610
-				logger.debug("continent: "+continentList[i]);
-//				System.out.println("continent: "+continentList[i]);
-				Continent conti = new Continent();
-				this.addContinents(conti.getByUuid(UUID.fromString(continentList[i])));
+				continentList=tmp.split(",");
+				for (String continent : continentList){
+					logger.debug("continent: "+ continent);
+					newInstance.addContinents((Continent)terms.get(UUID.fromString(continent)));
+				}
 			}
-		}
-		return result;
+			return newInstance;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null;
 	}
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];

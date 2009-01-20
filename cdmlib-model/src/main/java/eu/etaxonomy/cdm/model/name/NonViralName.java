@@ -26,6 +26,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -68,7 +72,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
-public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViralName, INonViralNameCacheStrategy> {
+//@Audited
+@Indexed
+public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
@@ -273,8 +279,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
 	}
-	
-	
 
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that published <i>this</i> non viral
@@ -394,6 +398,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string containing the suprageneric name, the genus name or the genus part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
+	@Field(index=Index.TOKENIZED)
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}
@@ -414,6 +419,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string containing the infrageneric part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
+	@Field(index=Index.TOKENIZED)
 	public String getInfraGenericEpithet(){
 		return this.infraGenericEpithet;
 	}
@@ -433,6 +439,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string containing the species epithet of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
+	@Field(index=Index.TOKENIZED)
 	public String getSpecificEpithet(){
 		return this.specificEpithet;
 	}
@@ -453,6 +460,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string containing the infraspecific part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
+	@Field(index=Index.TOKENIZED)
 	public String getInfraSpecificEpithet(){
 		return this.infraSpecificEpithet;
 	}
@@ -528,6 +536,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string which identifies <i>this</i> non viral taxon name (without authors or year)
 	 * @see 	#generateNameCache()
 	 */
+	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
+    	 @Field(name = "name_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    })
 	public String getNameCache() {
 		if (protectedNameCache){
 			return this.nameCache;			
@@ -614,6 +625,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<NonViral
 	 * @return  the string with the concatenated and formated authorteams for <i>this</i> non viral taxon name
 	 * @see 	#generateAuthorship()
 	 */
+	@Field(index=Index.TOKENIZED)
 	public String getAuthorshipCache() {
 		if (protectedAuthorshipCache){
 			return this.authorshipCache;			

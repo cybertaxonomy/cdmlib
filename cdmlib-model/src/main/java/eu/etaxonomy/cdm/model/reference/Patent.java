@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-
 /**
  * This class represents patents. A patent is a document containing the set of
  * exclusive rights granted by a state to an inventor or his assignee for a
@@ -34,6 +33,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Patent")
 @XmlRootElement(name = "Patent")
 @Entity
+//@Audited
 public class Patent extends StrictReferenceBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Patent.class);
 	

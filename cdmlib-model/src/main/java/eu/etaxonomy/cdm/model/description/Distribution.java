@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "Distribution")
 @Entity
+//@Audited
 public class Distribution extends DescriptionElementBase {
 	private static final long serialVersionUID = 8366462435651559730L;
 	@SuppressWarnings("unused")
@@ -119,7 +121,7 @@ public class Distribution extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link NamedArea named area} <i>this</i> distribution applies to.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedArea getArea(){
 		return this.area;
@@ -134,7 +136,7 @@ public class Distribution extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public PresenceAbsenceTermBase<?> getStatus(){
 		return this.status;
 	}

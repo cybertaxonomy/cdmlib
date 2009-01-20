@@ -10,18 +10,21 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-import au.com.bytecode.opencsv.CSVWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * list of languages according to current internet best practices as given by IANA
@@ -35,8 +38,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Language")
 @XmlRootElement(name = "Language")
 @Entity
-@Component
-public class Language extends DefinedTermBase {
+//@Audited
+public class Language extends DefinedTermBase<Language> {
 	private static final long serialVersionUID = -5030610079904074217L;
 	private static final Logger logger = Logger.getLogger(Language.class);
 
@@ -54,6 +57,20 @@ public class Language extends DefinedTermBase {
 	private static final UUID uuidDutch = UUID.fromString("9965d79a-acf9-4921-a2c0-863b8c16c056");
 	private static final UUID uuidPolish = UUID.fromString("3fdca387-f1b0-4ec1-808f-1bc3dc482194");
 	private static final UUID uuidLatin = UUID.fromString("160a5b6c-87f5-4422-9bda-78cd404c179e");
+	private static Language ENGLISH;
+	private static Language LATIN;
+	private static Language POLISH;
+	private static Language DUTCH;
+	private static Language ITALIAN;
+	private static Language FRENCH;
+	private static Language GERMAN;
+	private static Language JAPANESE;
+	private static Language PORTUGUESE;
+	private static Language RUSSIAN;
+	private static Language ARABIC;
+	private static Language HINDI;
+	private static Language SPANISH;
+	private static Language CHINESE;
 	
 	public static Language NewInstance(){
 		return new Language();
@@ -99,71 +116,65 @@ public class Language extends DefinedTermBase {
 	public Language(String label, String text, String labelAbbrev) {
 		this(label,text,labelAbbrev, DEFAULT());
 	}
-
-	public static final Language getByUuid(UUID uuid){
-		return (Language)findByUuid(uuid);
-	}
-
 	
 	public static final Language DEFAULT(){
-		return ENGLISH();
+		return ENGLISH;
 	}
-	
 
 	public static final Language CHINESE(){
-		return getByUuid(uuidChinese);
+		return CHINESE;
 	}
 
 	public static final Language ENGLISH(){
-		return getByUuid(uuidEnglish);
+		return ENGLISH;
 	}
 
 	public static final Language SPANISH(){
-		return getByUuid(uuidSpanish);
+		return SPANISH;
 	}
 
 	public static final Language HINDI(){
-		return getByUuid(uuidHindi);
+		return HINDI;
 	}
 
 	public static final Language ARABIC(){
-		return getByUuid(uuidArabic);
+		return ARABIC;
 	}
 
 	public static final Language RUSSIAN(){
-		return getByUuid(uuidRussian);
+		return RUSSIAN;
 	}
 
 	public static final Language PORTUGUESE(){
-		return getByUuid(uuidPortuguese);
+		return PORTUGUESE;
 	}
 
 	public static final Language JAPANESE(){
-		return getByUuid(uuidJapanese);
+		return JAPANESE;
 	}
 
 	public static final Language GERMAN(){
-		return getByUuid(uuidGerman);
+		return GERMAN;
 	}
 	
 	public static final Language FRENCH(){
-		return getByUuid(uuidFrench);
+		return FRENCH;
 	}
 
 	public static final Language ITALIAN(){
-		return getByUuid(uuidItalian);
+		return ITALIAN;
 	}
 
 	public static final Language DUTCH(){
-		return getByUuid(uuidDutch);
+		return DUTCH;
 	}
 
 	public static final Language POLISH(){
-		return getByUuid(uuidPolish);
+		return POLISH;
 	}
 	
 	public static final Language LATIN(){
-		return getByUuid(uuidLatin);
+		return LATIN;
 	}
 	
 	/**
@@ -208,38 +219,41 @@ public class Language extends DefinedTermBase {
 	}
  
 	@Override 
-	public ILoadableTerm readCsvLine(List csvLine) {
-		ILoadableTerm result;
-		if ( UUID.fromString(csvLine.get(0).toString()).equals(DEFAULT().getUuid()) && this != DEFAULT() ){
-			result = DEFAULT();
-			result.readCsvLine(csvLine);
-		}else{
-			// read UUID, URI, english label+description
-			List<String> csvLineString = csvLine;
-			result = this;
-			super.readCsvLine(csvLine);
-			// iso codes extra
-			this.iso639_1=csvLineString.get(5).trim().toCharArray();
-			this.iso639_2=csvLineString.get(4).trim().toCharArray();
-			if(iso639_1.length > 2){
-				logger.warn("Iso639-1: "+iso639_1.toString()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
-			}
-			if(iso639_2.length > 3 ){
-				logger.warn("Iso639-2: "+iso639_2.toString()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
-			}
-		}
-		return result;
+	public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		try {
+		    Language newInstance =  Language.class.newInstance();
+		    if ( UUID.fromString(csvLine.get(0).toString()).equals(Language.uuidEnglish)){
+			    DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance);
+		    }else{
+			    DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish));
+		    }
+		
+		    newInstance.setIso639_1(csvLine.get(5).trim());
+		    newInstance.setIso639_2(csvLine.get(4).trim());
+		    //TODO could replace with generic validation
+		    if(iso639_1.length > 2){
+			    logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
+		    }
+		    if(iso639_2.length > 3 ){
+			    logger.warn("Iso639-2: "+newInstance.getIso639_2()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
+		    }
+		
+		    return newInstance;
+		} catch (Exception e) {
+			logger.error(e);
+			return null;
+		} 
 	}
 	
 	@Override
-	public void writeCsvLine(CSVWriter writer) {
+	public void writeCsvLine(CSVWriter writer, Language language) {
 		String [] line = new String[6];
-		line[0] = getUuid().toString();
-		line[1] = getUri();
-		line[2] = getLabel(Language.ENGLISH());
-		line[3] = getDescription(Language.ENGLISH());
-		line[4] = String.valueOf(this.iso639_1);
-		line[5] = String.valueOf(this.iso639_2);
+		line[0] = language.getUuid().toString();
+		line[1] = language.getUri();
+		line[2] = language.getLabel(Language.ENGLISH());
+		line[3] = language.getDescription(Language.ENGLISH());
+		line[4] = language.getIso639_1();
+		line[5] = language.getIso639_2();
 		writer.writeNext(line);
 	}
 
@@ -253,6 +267,24 @@ public class Language extends DefinedTermBase {
 		}else{
 			return super.toString();
 		}
+	}
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Language> termVocabulary) {
+		Language.ARABIC = termVocabulary.findTermByUuid(Language.uuidArabic);
+		Language.CHINESE = termVocabulary.findTermByUuid(Language.uuidChinese);
+		Language.DUTCH = termVocabulary.findTermByUuid(Language.uuidDutch);
+		Language.ENGLISH = termVocabulary.findTermByUuid(Language.uuidEnglish);
+		Language.FRENCH = termVocabulary.findTermByUuid(Language.uuidFrench);
+		Language.GERMAN = termVocabulary.findTermByUuid(Language.uuidGerman);
+		Language.HINDI = termVocabulary.findTermByUuid(Language.uuidHindi);
+		Language.ITALIAN = termVocabulary.findTermByUuid(Language.uuidItalian);
+		Language.JAPANESE = termVocabulary.findTermByUuid(Language.uuidJapanese);
+		Language.LATIN = termVocabulary.findTermByUuid(Language.uuidLatin);
+		Language.POLISH = termVocabulary.findTermByUuid(Language.uuidPolish);
+		Language.PORTUGUESE = termVocabulary.findTermByUuid(Language.uuidPortuguese);
+		Language.RUSSIAN = termVocabulary.findTermByUuid(Language.uuidRussian);
+		Language.SPANISH = termVocabulary.findTermByUuid(Language.uuidSpanish);
 	}
 	
 	

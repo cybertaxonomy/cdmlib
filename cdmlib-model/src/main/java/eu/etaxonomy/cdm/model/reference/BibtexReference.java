@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -74,8 +73,13 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 })
 @XmlRootElement(name = "BibtexReference")
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+//@Audited
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference, Cloneable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2313713431383650655L;
+
 	private static final Logger logger = Logger.getLogger(BibtexReference.class);
 	
 	@XmlElement(name = "BibtexEntryType")
@@ -652,7 +656,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * 
 	 * @return  the BibTeX entry type of <i>this</i> BibTeX reference
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	public BibtexEntryType getType() {
 		return type;
 	}

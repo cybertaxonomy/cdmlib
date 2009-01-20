@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -46,7 +47,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceAbsenceTermBase")
 @XmlRootElement(name = "PresenceAbsenceTermBase")
 @Entity
-public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase> extends OrderedTermBase<PresenceAbsenceTermBase> {
+//@Audited
+public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<?>> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 1596291470042068880L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
@@ -82,26 +84,25 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase>
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
 	 */
 	@Override
-	public ILoadableTerm readCsvLine(List csvLine) {
-		Language lang = Language.DEFAULT();
-		super.readCsvLine(csvLine, lang);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+		T newInstance = super.readCsvLine(termClass, csvLine, terms);
 		String abbreviatedLabel = (String)csvLine.get(4);
-		String uuid = (String)csvLine.get(0);
-		map.put(abbreviatedLabel, UUID.fromString(uuid));
+//		String uuid = (String)csvLine.get(0);
+//		map.put(abbreviatedLabel, UUID.fromString(uuid));
 		String color = (String)csvLine.get(5);
-		this.setDefaultColor(color);
-		this.getRepresentation(lang).setAbbreviatedLabel(abbreviatedLabel);
-		return this;
+		newInstance.setDefaultColor(color);
+		newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
+		return newInstance;
 	}
 	
-	public static PresenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev){
-		UUID uuid = map.get(abbrev);
-		if (uuid == null){
-			logger.warn("Unknown Abbreviation for PresenceAbsenceTerm: " + CdmUtils.Nz(abbrev));
-			return null;
-		}
-		return (PresenceTerm)DefinedTermBase.findByUuid(uuid);
-	}
+//	public PresenceTerm getPresenceAbsenceTermByAbbreviation(String abbrev){
+//		UUID uuid = map.get(abbrev);
+//		if (uuid == null){
+//			logger.warn("Unknown Abbreviation for PresenceAbsenceTerm: " + CdmUtils.Nz(abbrev));
+//			return null;
+//		}
+//		return (uuid);
+//	}
 
 	
 	/**

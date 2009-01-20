@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import java.util.*;
 
@@ -66,7 +68,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 	    "inDescription"
 })
 @Entity
+//@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Indexed
 public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
@@ -126,7 +130,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * Returns the set of {@link Media media} (that is pictures, movies,
 	 * recorded sounds ...) <i>this</i> description element is based on.
 	 */
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
@@ -166,7 +170,8 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	protected DescriptionBase getInDescription() {
+	@IndexedEmbedded
+	public DescriptionBase getInDescription() {
 		return this.inDescription;
 	}
 	
@@ -207,8 +212,9 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * A feature is a property that can be described or measured but not the
 	 * description or the measurement itself.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
 	public Feature getFeature(){
 		return this.feature;
 	}
@@ -224,10 +230,8 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * Returns the set of {@link Modifier modifiers} used to qualify the validity of
 	 * <i>this</i> description element. This is only metainformation.
 	 */
-	@OneToMany
-    @JoinTable(
-            name="DescriptionElementBase_Modifier"
-        )
+	@OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DescriptionElementBase_Modifier")
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}

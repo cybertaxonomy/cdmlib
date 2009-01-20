@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Keyword")
 @Entity
+//@Audited
 public class Keyword extends OrderedTermBase<Keyword> {
 	private static final long serialVersionUID = -4907208557010483263L;
 	@SuppressWarnings("unused")
@@ -47,6 +48,13 @@ public class Keyword extends OrderedTermBase<Keyword> {
 
 	public Keyword(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
+	}
+
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Keyword> termVocabulary) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

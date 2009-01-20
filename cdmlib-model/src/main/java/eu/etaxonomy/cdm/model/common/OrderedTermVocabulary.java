@@ -26,17 +26,11 @@ import org.apache.log4j.Logger;
 @XmlType(name = "OrderedTermVocabulary")
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
+//@Audited
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
-	
-	/**
-	 * 
-	 */
-	public OrderedTermVocabulary() {
-		super();
-	}
 
 	/**
 	 * @param term
@@ -46,10 +40,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	public OrderedTermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
 		super(term, label, labelAbbrev, termSourceUri);
 	}
+
+	public OrderedTermVocabulary() {
+		super();
+	}
 	
-	@Override
 	@Transient
-	protected Set<T> getNewTermSet(){
+	@Override
+	public Set<T> getNewTermSet() {
 		return new TreeSet<T>();
 	}
 
@@ -152,14 +150,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	}
 	
 	@Override
-	public void addTerm(T term) throws WrongTermTypeException {
-		SortedSet sortedTerms = ((SortedSet<T>)terms);
+	public void addTerm(T term) {
+		SortedSet<T> sortedTerms = (SortedSet<T>)terms;
 		int lowestOrderIndex;
 		if (sortedTerms.size() == 0){
 			lowestOrderIndex = 0;
 		}else{
-			Object first = sortedTerms.first();
-			lowestOrderIndex = ((T)first).orderIndex;
+			T first = sortedTerms.first();
+			lowestOrderIndex = first.orderIndex;
 		}
 		term.orderIndex = lowestOrderIndex + 1;
 		super.addTerm(term);	
@@ -193,11 +191,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.addTerm(termToBeAdded);
 	}
 	
-//	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
-//		int orderInd = equalLevelTerm.orderIndex;
-//		termToBeAdded.orderIndex = orderInd;
-//		super.addTerm(termToBeAdded);
-//	}
+	public void addTermEqualLevel(T termToBeAdded, T equalLevelTerm) throws WrongTermTypeException {
+		int orderInd = equalLevelTerm.orderIndex;
+		termToBeAdded.orderIndex = orderInd;
+		super.addTerm(termToBeAdded);
+	}
 	
 	@Override
 	public void removeTerm(T term) {
@@ -213,7 +211,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 				toBeChangedByObject = null;
 			}
 		}
-		term.setVocabulary(null);
+		super.removeTerm(term);
 	}
 	
 	private T toBeChangedByObject;

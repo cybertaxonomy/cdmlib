@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -27,6 +28,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -57,6 +60,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "sec"
 })
 @Entity
+//@Audited
+@Indexed
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
 	
@@ -158,6 +163,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	@ManyToOne
 	@JoinColumn(name="taxonName_fk")
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
 	public TaxonNameBase getName(){
 		return this.name;
 	}
@@ -201,7 +207,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
 	 * in <i>this</i> (abstract) taxon.
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	public ReferenceBase getSec() {
 		return sec;
