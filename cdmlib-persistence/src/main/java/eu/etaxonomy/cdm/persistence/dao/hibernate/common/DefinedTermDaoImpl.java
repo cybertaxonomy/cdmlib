@@ -252,6 +252,12 @@ public class DefinedTermDaoImpl extends CdmEntityDaoBase<DefinedTermBase> implem
 		return (List<T>)query.list();
 	}
 
+	public DefinedTermBase findByUri(String uri) {
+		Query query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri");
+		query.setParameter("uri", uri);
+		return (DefinedTermBase)query.uniqueResult();
+	}
+
 
 //	@Override
 //	public List<DefinedTermBase> list(int limit, int start) {

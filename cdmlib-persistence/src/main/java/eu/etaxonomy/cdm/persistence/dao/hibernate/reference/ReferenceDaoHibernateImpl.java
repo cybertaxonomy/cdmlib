@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;

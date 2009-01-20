@@ -61,22 +61,22 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	/**
 	 * Returns a sublist of CdmBase instances stored in the database.
 	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
-	 * @param limit
+	 * @param limit the maximum number of entities returned (can be null to return all entities)
 	 * @param start
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<T> list(int limit, int start) throws DataAccessException;
+	public List<T> list(Integer limit, Integer start) throws DataAccessException;
 	
 	/**
 	 * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
 	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
-	 * @param limit
+	 * @param limit the maximum number of entities returned (can be null to return all entities)
 	 * @param start
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit, int start) throws DataAccessException;
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) throws DataAccessException;
 
 	public List<T> rows(String tableName, int limit, int start) throws DataAccessException;
 

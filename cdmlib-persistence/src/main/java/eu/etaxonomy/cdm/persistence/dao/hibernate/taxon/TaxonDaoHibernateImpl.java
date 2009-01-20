@@ -14,13 +14,25 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.SimpleAnalyzer;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.SearchFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -38,7 +50,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
@@ -59,13 +73,20 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
  */
 @Repository
 @Qualifier("taxonDaoHibernateImpl")
-public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {
+public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {	
+	private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
+	
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
 		super(TaxonBase.class);
+	}
+	
+	@Autowired
+	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
+		this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
 	}
 
 	/* (non-Javadoc)
@@ -286,7 +307,30 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public int countTaxa(String queryString, Boolean accepted) {
-		throw new UnsupportedOperationException("Free text searching isn't implemented yet, sorry!");
+        QueryParser queryParser = new QueryParser("name.persistentTitleCache", new SimpleAnalyzer());
+		
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+			
+			FullTextSession fullTextSession = Search.createFullTextSession(this.getSession());
+			org.hibernate.search.FullTextQuery fullTextQuery = null;
+			
+			if(accepted == null) {
+				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonBase.class);
+			} else {
+				if(accepted) {
+					fullTextQuery = fullTextSession.createFullTextQuery(query, Taxon.class);
+				} else {
+					fullTextQuery = fullTextSession.createFullTextQuery(query, Synonym.class);
+				}
+			}
+			
+		    Integer  result = fullTextQuery.getResultSize();
+		    return result;
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
 	}
 
 	public int countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
@@ -429,7 +473,86 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
-		throw new UnsupportedOperationException("Free text searching isn't implemented yet, sorry!");
+		QueryParser queryParser = new QueryParser("name.persistentTitleCache", new SimpleAnalyzer());
+		List<TaxonBase> results = new ArrayList<TaxonBase>();
+		 
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+			
+			FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+			org.hibernate.search.FullTextQuery fullTextQuery = null;
+			Criteria criteria = null;
+			
+			if(accepted == null) {
+				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonBase.class);
+				criteria =  getSession().createCriteria( TaxonBase.class );
+			} else {
+				if(accepted) {
+					fullTextQuery = fullTextSession.createFullTextQuery(query, Taxon.class);
+					criteria =  getSession().createCriteria( Taxon.class );
+				} else {
+					fullTextQuery = fullTextSession.createFullTextQuery(query, Synonym.class);
+					criteria =  getSession().createCriteria( Synonym.class );
+				}
+			}
+			
+			org.apache.lucene.search.Sort sort = new Sort(new SortField("name.titleCache_forSort"));
+			fullTextQuery.setSort(sort);
+			
+			criteria.setFetchMode( "name", FetchMode.JOIN );
+		    fullTextQuery.setCriteriaQuery(criteria);
+		    
+		    if(pageSize != null) {
+		    	fullTextQuery.setMaxResults(pageSize);
+			    if(pageNumber != null) {
+			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
+			    } else {
+			    	fullTextQuery.setFirstResult(0);
+			    }
+			}
+		    
+		    return (List<TaxonBase>)fullTextQuery.list();
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
+	}
+	
+	public void purgeIndex() {
+		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		
+		fullTextSession.purgeAll(type); // remove all taxon base from indexes
+		// fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
 	}
 
+	public void rebuildIndex() {
+		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		
+		for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
+			Hibernate.initialize(taxonBase.getName());
+			fullTextSession.index(taxonBase);
+		}
+		// fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+	}
+	
+	public void optimizeIndex() {
+		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		SearchFactory searchFactory = fullTextSession.getSearchFactory();
+	    searchFactory.optimize(type); // optimize the indices ()
+	    // fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+	}
+
+	public String suggestQuery(String queryString) {
+		try {
+			String alternativeQueryString = null;
+			alternativeSpellingSuggestionParser.parse(queryString);
+			org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
+			if(alternativeQuery != null) {
+				alternativeQueryString = alternativeQuery.toString("name.persistentTitleCache");
+			}
+			return alternativeQueryString;
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
+	}
 }

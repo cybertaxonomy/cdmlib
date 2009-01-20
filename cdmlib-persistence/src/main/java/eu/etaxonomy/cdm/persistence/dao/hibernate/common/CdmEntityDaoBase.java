@@ -166,17 +166,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return nbrRows.intValue();
 	}
 
-	public List<T> list(int limit, int start) {
+	public List<T> list(Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(type); 
-		crit.setFirstResult(start);
-		crit.setMaxResults(limit);
+		if(limit != null) {
+		    crit.setFirstResult(start);
+		    crit.setMaxResults(limit);
+		}
 		return crit.list(); 
 	}
 	
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit, int start) {
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(type); 
-		crit.setFirstResult(start);
-		crit.setMaxResults(limit);
+		if(limit != null) {
+		    crit.setFirstResult(start);
+		    crit.setMaxResults(limit);
+		}
 		return crit.list(); 
 	}
 

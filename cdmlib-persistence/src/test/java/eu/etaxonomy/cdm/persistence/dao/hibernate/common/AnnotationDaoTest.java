@@ -24,16 +24,11 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	IAnnotationDao annotationDao;
 	
-	@SpringBeanByType
-	IDefinedTermDao definedTermDao;
-	
 	UUID uuid;
-	UUID markerTypeUuid;
 	
 	@Before
 	public void setUp() {
 		uuid = UUID.fromString("97097410-a112-4dde-a2c6-0096754076b5");
-		markerTypeUuid = UUID.fromString("b71a6c96-1097-47d5-8e36-5cbf24050b34");
 	}
 	
 	@Test
@@ -59,7 +54,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	@Test
 	public void testCountAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
-		MarkerType markerType = (MarkerType)definedTermDao.findByUuid(markerTypeUuid);
+		MarkerType markerType = MarkerType.TO_BE_CHECKED();
 		assert annotatedObj != null : "annotatedObj must exist";
 		assert markerType != null : "markerType must exist";
 		
@@ -70,7 +65,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	@Test
 	public void testGetAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
-		MarkerType markerType = (MarkerType)definedTermDao.findByUuid(markerTypeUuid);
+		MarkerType markerType = MarkerType.TO_BE_CHECKED();
 		assert annotatedObj != null : "annotatedObj must exist";
 		assert markerType != null : "markerType must exist";
 		

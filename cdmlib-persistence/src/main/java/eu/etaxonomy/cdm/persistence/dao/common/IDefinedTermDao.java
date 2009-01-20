@@ -133,4 +133,6 @@ public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitled
 	 * @return a count of DefinedTerms
 	 */
 	public <T extends DefinedTermBase> int countIncludes(Set<T> definedTerms);
+
+	public DefinedTermBase findByUri(String uri);
 }

@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.test.integration;
 
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
@@ -10,6 +11,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
@@ -66,6 +68,31 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 			connection = getConnection();
 			IDataSet actualDataSet = connection.createDataSet();
 			FlatXmlDataSet.write(actualDataSet, out);
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException sqle) {
+				logger.error(sqle);
+			}
+		}
+	}
+	
+	/**
+	 * Prints a dtd to an output stream, using dbunit's
+	 * {@link org.dbunit.dataset.xml.FlatDtdDataSet}. 
+	 *  
+	 * @param out The OutputStream to write to.
+	 * @see org.dbunit.dataset.xml.FlatDtdDataSet
+	 */
+	public void printDtd(OutputStream out) {
+		IDatabaseConnection connection = null;
+
+		try {
+			connection = getConnection();
+			IDataSet actualDataSet = connection.createDataSet();
+			FlatDtdDataSet.write(actualDataSet, out);
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {

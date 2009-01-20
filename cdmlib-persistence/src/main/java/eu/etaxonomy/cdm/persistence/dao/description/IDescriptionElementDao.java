@@ -23,7 +23,7 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
 	 * specimens are hydrated
 	 * 
 	 * HOWEVER, until hibernate search changes the way it handles subclasses
-	 * (i.e. indexing the properties of subclasses when the entitiy is only
+	 * (i.e. indexing the properties of subclasses when the entity is only
 	 * typed as a superclass), we'll not be able to sort by a property of the TaxonDescription without 
 	 * a pretty nasty performance penalty (remember, we're potentially searching
 	 * all of the textual content here, so sorting this one-to-n by description.taxon or description.
@@ -62,4 +62,21 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
      * @return a count of media instances
      */
 	public int countMedia(DescriptionElementBase descriptionElement);
+	
+	/**
+	 * Removes all DescriptionElementBase entities from the index
+	 */
+	public void purgeIndex();
+
+	/**
+	 * Index all DescriptionElementBase entities currenly in the database (useful in concert with purgeIndex() to (re-)create
+	 * indexes or in the  case of corrupt indexes / mismatch between 
+	 * the database and the free-text indices) 
+	 */
+	public void rebuildIndex();
+	
+	/**
+	 * Calls optimize on the relevant index (useful periodically to increase response times on the free-text search)
+	 */
+	public void optimizeIndex();
 }

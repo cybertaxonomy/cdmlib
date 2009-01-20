@@ -42,7 +42,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@Before
 	public void setUp() throws Exception {	
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
-		cdmBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		cdmBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);;
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
 	}
 	
@@ -51,9 +51,10 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testCdmEntityDaoBase() {
+	public void testCdmEntityDaoBase() throws Exception {
 		assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
 	}
 
