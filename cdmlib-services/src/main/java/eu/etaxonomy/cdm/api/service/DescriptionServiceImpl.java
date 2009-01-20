@@ -135,12 +135,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	}
 	
 	@Transactional(readOnly = false)
-	public void saveFeatureDataAll(Collection<VersionableEntity<?>> featureData) {
+	public void saveFeatureDataAll(Collection<VersionableEntity> featureData) {
 
 		List<FeatureTree> trees = new ArrayList<FeatureTree>();
 		List<FeatureNode> nodes = new ArrayList<FeatureNode>();
 		
-		for ( VersionableEntity<?> featureItem : featureData) {
+		for ( VersionableEntity featureItem : featureData) {
 			if (featureItem instanceof FeatureTree) {
 				trees.add((FeatureTree)featureItem);
 			} else if (featureItem instanceof FeatureNode) {

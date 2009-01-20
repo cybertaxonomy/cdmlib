@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
-import eu.etaxonomy.cdm.database.CdmTermInitializer;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -154,7 +153,8 @@ public class CdmApplicationController {
 			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/persistence.xml"));		 
 			
             //TODO: This is a workaround to omit term loading for JAXB serializing/deserializing.
-			CdmTermInitializer.omit = omitTermLoading;
+			/* should be able to omit defined terms loading using a */
+//			CdmTermInitializer.omit = omitTermLoading;
 			
 			appContext.refresh();
 			appContext.start();
@@ -177,13 +177,13 @@ public class CdmApplicationController {
 		setApplicationContext(appContext);
 		// load defined terms if necessary 
 		//TODO not necessary any more
-		if (CdmTermInitializer.omit == false) {
-			if (testDefinedTermsAreMissing()){
-				throw new TermNotFoundException("Some needed Terms are Missing.");
-			}
-		}
-		
-		CdmTermInitializer.omit = false;
+//		if (CdmTermInitializer.omit == false) {
+//			if (testDefinedTermsAreMissing()){
+//				throw new TermNotFoundException("Some needed Terms are Missing.");
+//			}
+//		}
+//		
+//		CdmTermInitializer.omit = false;
 		return true;
 	}
 	

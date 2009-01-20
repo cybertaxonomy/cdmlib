@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 
 
@@ -61,7 +60,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<Agent,IAgentDao> i
 	}
 
 	
-	public List<? extends Agent> getAllAgents(int limit, int start){
+	public List<Agent> getAllAgents(int limit, int start){
 		return dao.list(limit, start);
 	}
 	

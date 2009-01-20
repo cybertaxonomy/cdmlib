@@ -170,7 +170,7 @@ public class TestTaxonServices {
 //		DefinedTermBase dtb = 
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("dbcedb8b-ae38-45b0-a400-840babf68f9c"));
 		logger.debug("NamedArea: " + dtb.toString());
-		dtb = TdwgArea.getAreaByTdwgAbbreviation("AGE-LP");
+//		dtb = TdwgArea.getAreaByTdwgAbbreviation("AGE-LP");
 		//logger.debug("TdwgArea: " + dtb.toString());
 		dtb = appCtr.getTermService().getTermByUuid(wocid);
 //		dtb = 

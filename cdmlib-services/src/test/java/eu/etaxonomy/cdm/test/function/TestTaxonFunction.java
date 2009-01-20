@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -48,31 +49,31 @@ public class TestTaxonFunction {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
-		INonViralNameParser<NonViralName<?>> parser = NonViralNameParserImpl.NewInstance();
+		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
 		ReferenceBase sec = Book.NewInstance();
 		sec.setTitleCache("ConceptRef");
 		
 		//root
 		String rootName = "Hieracium L.";
-		NonViralName<?> botanicalName= parser.parseFullName(rootName);
+		TaxonNameBase botanicalName= parser.parseFullName(rootName);
 		sec.setUuid(getRefUuid());
 		Taxon genusTaxon = Taxon.NewInstance(botanicalName, sec);
 				
 		//child1
 		String child1Name = "Hieracium asturianum Pau";
-		NonViralName<?> botSpecies= parser.parseFullName(child1Name);
+		TaxonNameBase botSpecies= parser.parseFullName(child1Name);
 		Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
 		childTaxon.setTaxonomicParent(genusTaxon, null, null);
 
 		//child2
 		String child2Name = "Hieracium wolffii Zahn";
-		NonViralName<?> botSpecies2= parser.parseFullName(child2Name);
+		TaxonNameBase botSpecies2= parser.parseFullName(child2Name);
 		Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
 		childTaxon2.setTaxonomicParent(childTaxon, null, null);
 
 		//synonym
 		String synonymName = "Acacium wolffii Syn.";
-		NonViralName<?> botSynName= parser.parseFullName(synonymName);
+		TaxonNameBase botSynName= parser.parseFullName(synonymName);
 		
 		Synonym synTaxon = Synonym.NewInstance(botSynName, sec);
 		childTaxon2.addSynonym(synTaxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());

@@ -54,7 +54,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @return
 	 */
 	public abstract UUID saveFeatureTree(FeatureTree tree);
-	public abstract void saveFeatureDataAll(Collection<VersionableEntity<?>> featureData);
+	// FIXME could you handle the feature data elements using @Cascade?
+	public abstract void saveFeatureDataAll(Collection<VersionableEntity> featureData);
 	public abstract Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
 	public abstract Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
 	

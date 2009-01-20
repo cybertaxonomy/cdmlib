@@ -15,6 +15,8 @@ import org.springframework.security.providers.UsernamePasswordAuthenticationToke
 import org.springframework.security.providers.dao.SaltSource;
 import org.springframework.security.providers.dao.UserCache;
 import org.springframework.security.providers.dao.cache.NullUserCache;
+import org.springframework.security.providers.dao.salt.ReflectionSaltSource;
+import org.springframework.security.providers.encoding.Md5PasswordEncoder;
 import org.springframework.security.providers.encoding.PasswordEncoder;
 import org.springframework.security.userdetails.GroupManager;
 import org.springframework.security.userdetails.UserDetails;
@@ -37,9 +39,9 @@ public class UserService implements UserDetailsManager, GroupManager {
 	
 	protected IGroupDao groupDao;
 	
-	private SaltSource saltSource;
+	private SaltSource saltSource = new ReflectionSaltSource();
 	
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
 	
 	private AuthenticationManager authenticationManager;
 	
@@ -51,27 +53,28 @@ public class UserService implements UserDetailsManager, GroupManager {
 		this.userCache = userCache;
 	}
 	
-	//@Autowired
+	@Autowired(required = false)
 	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	//@Autowired
+	@Autowired
 	public void setSaltSource(SaltSource saltSource) {
 		this.saltSource = saltSource;
 	}
 	
-	//@Autowired
+	@Autowired
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
 	
-	//@Autowired
+	@Autowired
 	public void setUserDao(IUserDao userDao) {
 		this.userDao = userDao;
 	}
 	
-	//@Autowired
+	@Autowired
 	public void setGroupDao(IGroupDao groupDao) {
 		this.groupDao = groupDao;
 	}

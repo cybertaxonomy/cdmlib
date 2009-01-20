@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import sun.print.resources.serviceui;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -58,14 +60,14 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 	 */
 	public DefinedTermBase getTermByUri(String uri) {
 		//FIXME transformation from URI to UUID
-		return DefinedTermBase.findByUuid(UUID.fromString(uri));  
+		return dao.findByUri(uri);
 	}
 	
-	/* (non-Javadoc)
+	/* FIXME candidate for harmonization(non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUuid(java.util.UUID)
 	 */
 	public DefinedTermBase getTermByUuid(UUID uuid) {
-		return DefinedTermBase.findByUuid(uuid);  
+		return dao.findByUuid(uuid);  
 	}
 	
 	public List<DefinedTermBase> getAllDefinedTerms(int limit, int start){

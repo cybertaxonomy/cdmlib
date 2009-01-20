@@ -36,7 +36,7 @@ public interface IAgentService extends IIdentifiableEntityService<Agent> {
 	public abstract List<Agent> findAgentsByTitle(String title);
 
 	// FIXME Candidate for harmonization
-	public abstract List<? extends Agent> getAllAgents(int limit, int start);
+	public abstract List<Agent> getAllAgents(int limit, int start);
 	
 	public abstract List<Institution> searchInstitutionByCode(String code);
 	
