@@ -34,17 +34,6 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 	
 	private static final Logger logger = Logger.getLogger(NormalExplicitImporter.class);
 	
-	//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-//		
-//		boolean success = true;
-//		
-//		success = super.doInvoke(config, stores); 
-//		
-//    	return success;
-//	}
-
 	@Override
 	protected boolean isIgnore(IImportConfigurator config) {
 		return false;
@@ -53,10 +42,11 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 	@Override
     protected boolean analyzeRecord(HashMap<String, String> record) {
 		
-		if (logger.isDebugEnabled()) { logger.debug("analyzeRecord() entered"); }
-
 		boolean success = true;
     	Set<String> keys = record.keySet();
+    	
+    	TaxonLight taxonLight = new TaxonLight();
+    	setTaxonLight(taxonLight);
     	
     	for (String key: keys) {
     		
@@ -64,7 +54,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     		
     		String value = (String) record.get(key);
     		if (!value.equals("")) {
-    			logger.debug(key + ": '" + value + "'");
+    			if (logger.isDebugEnabled()) { logger.debug(key + ": '" + value + "'"); }
         		value = CdmUtils.removeDuplicateWhitespace(value.trim()).toString();
     		}
     		
@@ -72,7 +62,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			try {
     				Float fobj = new Float(Float.parseFloat(value));
     				int ivalue = fobj.intValue();
-        			logger.debug("ivalue = '" + ivalue + "'");
+    				if (logger.isDebugEnabled()) { logger.debug("Id formatted: '" + ivalue + "'"); }
         			getTaxonLight().setId(ivalue);
     			} catch (NumberFormatException ex) {
     				success = false;
@@ -83,7 +73,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     			try {
     				Float fobj = new Float(Float.parseFloat(value));
     				int ivalue = fobj.intValue();
-        			logger.debug("ivalue = '" + ivalue + "'");
+    				if (logger.isDebugEnabled()) { logger.debug("ParentId formatted: '" + ivalue + "'"); }
         			getTaxonLight().setParentId(ivalue);
     			} catch (NumberFormatException ex) {
     				success = false;
@@ -143,7 +133,6 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				logger.error("Unexpected column header " + key);
 			}
     	}
-    	//success = saveRecord();
     	return success;
     }
 	
@@ -154,14 +143,11 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 	@Override
     protected boolean saveRecord() {
 		
-		if (logger.isDebugEnabled()) { logger.debug("saveRecord() entered"); }
-		
 		boolean success = true;
 		Rank rank = null;
 		
 		CdmApplicationController appCtr = getApplicationController();
 		
-		int parentId = getTaxonLight().getParentId();
 		String rankStr = getTaxonLight().getRank();
 		String taxonNameStr = getTaxonLight().getScientificName();
 		String authorStr = getTaxonLight().getAuthor();
@@ -185,12 +171,11 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 			TaxonNameBase<?,?> taxonNameBase = nc.getNewTaxonNameInstance(rank);
 			taxonNameBase.setTitleCache(taxonNameStr);
 			taxonNameBase.setFullTitleCache(taxonNameStr);
-			//appCtr.getNameService().saveTaxonName(taxonName);
 			
 			// Create the author
 			if (!authorStr.equals("")) {
 				if (getAuthors().contains(authorStr)) {
-					logger.debug("Author '" + authorStr + "' is already loaded");
+					if (logger.isDebugEnabled()) { logger.debug("Author '" + authorStr + "' is already loaded"); }
 				} else {
 					getAuthors().add(authorStr);
 					Person author = Person.NewTitledInstance(authorStr);
@@ -208,13 +193,17 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 			}
 			// Create the taxon
 			Taxon taxon = Taxon.NewInstance(taxonNameBase, null);
-			if (logger.isDebugEnabled()) { logger.debug("taxon = " + taxon.toString()); }
 		
 			// Add the parent relationship
 			if (getTaxonLight().getParentId() != 0) {
 				Taxon parentTaxon = findParentTaxon(getTaxonLight());
 				if (parentTaxon != null) {
 					parentTaxon.addTaxonomicChild(taxon, null, null);
+					UUID parentUuid = appCtr.getTaxonService().saveTaxon(parentTaxon);
+					if (logger.isDebugEnabled()) { 
+						logger.debug("Child '" + getTaxonLight().getScientificName() + "' added to parent '" 
+								+ parentTaxon.getTitleCache() + " (" + parentUuid + ")"); 
+						}
 				} else {
 					logger.warn("Taxonomic parent not found for '" + taxonNameStr + "'");
 				}
@@ -222,18 +211,14 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 
 			// Save the taxon
 			UUID taxonUuid = appCtr.getTaxonService().saveTaxon(taxon);
-			if (logger.isDebugEnabled()) { logger.debug("taxonUuid = " + taxonUuid); }
+//			if (logger.isDebugEnabled()) { logger.debug("taxonUuid = " + taxonUuid); }
 			
 			// Add the taxon representation to the processed taxa map
 			if (getTaxaMap().containsKey(getTaxonLight())) {
 				logger.info("Taxon name '" + taxonNameStr + "' is already loaded");
 				return true;
 			} else { 
-				UUID tuuid = getTaxaMap().put(getTaxonLight(), taxonUuid);
-				if (logger.isDebugEnabled()) { 
-					logger.debug(getTaxonLight().getScientificName());
-					logger.debug("tuuid = " + tuuid); 
-					}
+				getTaxaMap().put(getTaxonLight(), taxonUuid);
 			}
 			//Set the previous taxon
 			setPreviousTaxonUuid(taxonUuid);
@@ -263,11 +248,18 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		UUID parentTaxonUuid = null;
 		Taxon parentTaxon = null;
 		
-		if (getTaxaMap().containsKey(taxonLight)) {
-			parentTaxonUuid = getTaxaMap().get(taxonLight);
-		} else {
-			logger.warn("Parent taxon of " + taxonLight.getScientificName() + " has not been processed yet." +
-					"Ignoring parent-child relationship.");
+		for (TaxonLight tLight : getTaxaMap().keySet()) {
+//			logger.debug("tLight.getId() = " + tLight.getId());
+//			logger.debug("taxonLight.getParentId() = " + taxonLight.getParentId());
+			if (tLight.getId() == taxonLight.getParentId()) {
+				parentTaxonUuid = getTaxaMap().get(tLight);
+				break;
+			}
+		}
+		
+		if (parentTaxonUuid == null) {
+			logger.warn("Parent taxon of " + taxonLight.getScientificName() + " unknown." +
+			" Ignoring parent-child relationship.");
 			return null;
 		}
 		

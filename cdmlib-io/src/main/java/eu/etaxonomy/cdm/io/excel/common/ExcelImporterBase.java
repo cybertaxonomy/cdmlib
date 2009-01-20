@@ -6,7 +6,6 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -16,7 +15,6 @@ import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.excel.taxa.TaxonLight;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -32,30 +30,9 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
 	
 	ArrayList<HashMap<String, String>> recordList = null;
-	//private String taxonName = "";
 	
 	private CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
-
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-//		
-//    	logger.debug("Importing excel data");
-//		URI uri = null;
-//		boolean success = true;
-//		ExcelImportConfiguratorBase excelImpConfig = (ExcelImportConfiguratorBase)config;
-//    	String dbName = excelImpConfig.getDestination().getDatabase();
-//    	
-//    	String urlFileName = (String)config.getSource();
-//		logger.debug("urlFileName: " + urlFileName);
-//		uri = CdmUtils.string2Uri(urlFileName);
-//		if (uri == null) {
-//			return false;
-//		}
-//    	
-//    	return success;
-//	}
 
 	
 	/** Reads data from an Excel file and stores them into a CDM DB.
@@ -81,7 +58,6 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		}
 		// read and save all rows of the excel worksheet
     	recordList = ExcelUtils.parseXLS((String)config.getSource());
-    	//ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS((String)config.getSource());
     	
     	if (recordList != null) {
     		HashMap<String,String> record = null;
@@ -124,8 +100,6 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	
 	protected abstract boolean saveRecord();
 	
-	//protected abstract boolean storeRecord();
-	
 	
 	public ExcelImportConfiguratorBase getConfigurator() {
 		
@@ -138,13 +112,4 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		return appCtr;
 	}
 
-//	public String getTaxonName() {
-//		
-//		return this.taxonName;
-//	}
-//	
-//	public void setTaxonName(String taxonNameBase) {
-//	
-//		this.taxonName = taxonNameBase;
-//	}
 }

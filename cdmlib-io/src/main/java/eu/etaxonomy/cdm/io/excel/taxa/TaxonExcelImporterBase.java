@@ -31,6 +31,10 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	 * NameStatus
 	 * VernacularName
 	 * Language
+	 */
+	/*
+	 * Not yet supported columns:
+	 * --------------------------
 	 * Reference
 	 */
 
@@ -45,24 +49,15 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	
 	/** Already processed taxa */
 	private HashMap<TaxonLight, UUID> taxaMap = new HashMap<TaxonLight, UUID>();
-	//private HashMap<Integer, TaxonLight> taxa = new HashMap<Integer, TaxonLight>();
-	/** Already processed authors */
+    /** Already processed authors */
 	private HashSet<String> authors = new HashSet<String>();
 	/** Previous taxon */
 	private UUID previousTaxonUuid = null;
     /** Taxon "light" containing all string info from columns */
-	private TaxonLight taxonLight = new TaxonLight();
+	private TaxonLight taxonLight = null;
 	
-//	private String rank = "";
-//	private String nameStatus = "";
-//	private String commonName = "";
-//	private String author = "";
-//	private String language = "";
-//	private String reference = "";
-//	private int id = 0;
-//	private int parentId = 0;
 	
-	// TODO: This enum is for future use, perhaps.
+	// TODO: This enum is for future use (perhaps).
 	protected enum Columns { 
 		Id("Id"), 
 		ParentId("ParentId"), 
@@ -89,85 +84,6 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	}
 	}
 	
-//  	public String getRank() {
-//		
-//		return this.rank;
-//	}
-//	
-//	public void setRank(String rank) {
-//	
-//		this.rank = rank;
-//	}
-//	
-//	public int getId() {
-//		
-//		return this.id;
-//	}
-//	
-//	public void setId(int id) {
-//	
-//		this.id = id;
-//	}
-//	
-//	public int getParentId() {
-//		
-//		return this.parentId;
-//	}
-//	
-//	public void setParentId(int parentId) {
-//	
-//		this.parentId = parentId;
-//	}
-//	
-//	public String getAuthor() {
-//		
-//		return this.author;
-//	}
-//	
-//	public void setAuthor(String author) {
-//	
-//		this.author = author;
-//	}
-//	
-//	public String getNameStatus() {
-//		
-//		return this.nameStatus;
-//	}
-//	
-//	public void setNameStatus(String nameStatus) {
-//	
-//		this.nameStatus = nameStatus;
-//	}
-//	
-//	public String getCommonName() {
-//		
-//		return this.commonName;
-//	}
-//	
-//	public void setCommonName(String commonName) {
-//	
-//		this.commonName = commonName;
-//	}
-//
-//	public String getLanguage() {
-//		
-//		return this.language;
-//	}
-//	
-//	public void setLanguage(String language) {
-//	
-//		this.language = language;
-//	}
-//	
-//	public String getReference() {
-//		
-//		return this.reference;
-//	}
-//	
-//	public void setReference(String reference) {
-//	
-//		this.reference = reference;
-//	}
 
 	/**
 	 * @return the taxa
