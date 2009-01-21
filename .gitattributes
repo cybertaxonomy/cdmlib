@@ -1241,6 +1241,11 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/DateTimeJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/JsonView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/processor/CalendarJSONValueProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/processor/DateTimeJSONValueProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/processor/InitializedHibernatePropertyFilter.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/processor/PartialJSONValueProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/processor/UUIDJSONValueProcessor.java -text
 cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/resources/spy.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text

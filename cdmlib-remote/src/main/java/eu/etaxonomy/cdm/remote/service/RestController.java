@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
 import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
@@ -95,7 +96,7 @@ public class RestController extends AbstractController
 					TaxonTO t = service.getTaxon(taxonUuid, featureTreeUuid, locales);
 					mv.addObject(t);
 				}else if(dto.equalsIgnoreCase("ref")){
-					ReferenceTO r = service.getReference(getUuid(uuid), locales);
+					ReferenceBase r = service.getReference(getUuid(uuid), locales);
 					mv.addObject(r);
 				}else if(dto.equalsIgnoreCase("whatis")){
 					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??

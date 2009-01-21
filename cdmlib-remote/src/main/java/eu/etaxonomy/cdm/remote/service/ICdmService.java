@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
@@ -111,7 +112,7 @@ public interface ICdmService {
 	 * @return
 	 * @throws CdmObjectNonExisting 
 	 */
-	public ReferenceTO getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	public ReferenceBase getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
 	
 	public ReferenceSTO getSimpleReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -90,6 +91,10 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	@Qualifier("annotatableDaoImpl")	
 	private AnnotatableDaoImpl<AnnotatableEntity<?>> annotatableDao;
+	
+	//--------------------------
+	@Autowired
+	private IReferenceService referenceService;
 	
 	
 	private final int MAXRESULTS = 500;
@@ -254,9 +259,11 @@ public class CdmServiceImpl implements ICdmService {
 		return result;
 	}
 
-	public ReferenceTO getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
-		ReferenceBase ref = getCdmReferenceBase(uuid);
-		ReferenceTO r =  refAssembler.getTO(ref, locales);
+	public ReferenceBase getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{
+		/*ReferenceBase ref = getCdmReferenceBase(uuid);
+		ReferenceTO r =  refAssembler.getTO(ref, locales); */
+		ReferenceBase r = referenceService.getReferenceByUuid(uuid);
+		/* Initialise required collections .. */
 		return r;
 	}
 	public ReferenceSTO getSimpleReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting{

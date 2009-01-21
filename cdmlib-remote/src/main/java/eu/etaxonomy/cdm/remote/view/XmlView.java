@@ -91,7 +91,7 @@ public class XmlView extends BaseView implements View {
 		// TODO determine preferred charset from HTTP Accept-Charset header
 		Writer out = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "UTF-8"));
 		out.append("<?xml version='1.0'?>");
-		xstream.toXML(dto, out);		
+		xstream.toXML(dto, out);
 	}
 
 }
