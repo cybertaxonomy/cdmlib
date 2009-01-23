@@ -134,9 +134,8 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 				logger.error(rankStr + " is not a valid rank.");
 			}
 			
-            // Create the name
-			// Depending on the setting of the nomenclatural code in the configurator 
-			// (botanical code, zoological code, etc.), create the corresponding taxon name object. 
+            // Create the taxon name object depending on the setting of the nomenclatural code 
+			// in the configurator (botanical code, zoological code, etc.) 
 			NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 			TaxonNameBase<?,?> taxonNameBase = nc.getNewTaxonNameInstance(rank);
 			taxonNameBase.setTitleCache(taxonNameStr);
@@ -161,9 +160,9 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 			
 			// Create the nomenclatural status
 			try {
-			NomenclaturalStatusType statusType = 
-				NomenclaturalStatusType.getNomenclaturalStatusTypeByLabel(nameStatus);
-			taxonNameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
+				NomenclaturalStatusType statusType = 
+					NomenclaturalStatusType.getNomenclaturalStatusTypeByLabel(nameStatus);
+				taxonNameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));
 			} catch (UnknownCdmTypeException ex) {
 				logger.warn(nameStatus + " is not a valid nomenclatural status label");
 			}

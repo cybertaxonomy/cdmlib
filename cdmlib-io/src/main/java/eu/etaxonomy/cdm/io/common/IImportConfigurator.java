@@ -171,28 +171,4 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public UUID getSecUuid();
 	public void setSecUuid(UUID secUuid);
 	
-	/* 
-	 * For Jaxb Import
-	 */
-//	public boolean isDoTerms();
-//	public void setDoTerms(boolean doTerms);
-//	
-//	public boolean isDoTermVocabularies();
-//	public void setDoTermVocabularies(boolean doTermVocabularies);
-//	
-//	public boolean isDoHomotypicalGroups();
-//	public void setDoHomotypicalGroups(boolean doHomotypicalGroups);
-//	
-//	public boolean isDoReferencedEntities();
-//	public void setDoReferencedEntities(boolean doReferencedEntities);
-//	
-//	public boolean isDoFeatureData();
-//	public void setDoFeatureData(boolean doFeatureData);
-//	
-//	public boolean isDoMedia();
-//	public void setDoMedia(boolean doMedia);
-//	
-//	public boolean isDoLanguageData();
-//	public void setDoLanguageData(boolean doLanguageData);
-		
 }

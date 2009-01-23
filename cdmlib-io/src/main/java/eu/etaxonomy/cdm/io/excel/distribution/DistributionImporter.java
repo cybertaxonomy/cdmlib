@@ -1,28 +1,17 @@
 package eu.etaxonomy.cdm.io.excel.distribution;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -36,10 +25,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class DistributionImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 
@@ -50,12 +36,14 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     private static final String LITERATURE_NUMBER_COLUMN = "Lit.";
     private static final String LITERATURE_COLUMN = "Literature";
     /* not yet used */
-    private static final String VERNACULAR_NAME_COLUMN = "Vernacular";
-    private static final String HABITAT_COLUMN = "Habitat";
-    private static final String ISO_DISTRIBUTION_COLUMN = "ISO";
-    private static final String NOTES_COLUMN = "Notes";
-    private static final String PAGE_NUMBER_COLUMN = "Page";
-    private static final String INFO_COLUMN = "Info";
+//    private static final String VERNACULAR_NAME_COLUMN = "Vernacular";
+//    private static final String HABITAT_COLUMN = "Habitat";
+//    private static final String CONTROL_COLUMN = "Control";
+//    private static final String TRANSLATED_COLUMN = "Translated";
+//    private static final String ISO_DISTRIBUTION_COLUMN = "ISO";
+//    private static final String NOTES_COLUMN = "Notes";
+//    private static final String PAGE_NUMBER_COLUMN = "Page";
+//    private static final String INFO_COLUMN = "Info";
     
 	private static final Logger logger = Logger.getLogger(DistributionImporter.class);
 	
@@ -94,6 +82,9 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 	}
 			
 
+	/** 
+	 *  Reads the data of one Excel sheet row
+	 */
     private void analyzeRecord(HashMap<String,String> record) {
     	/*
     	 * Relevant columns:
@@ -120,22 +111,22 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     		}
     		
     		if (key.contains(EDIT_NAME_COLUMN)) {
-    			editName = (String) removeDuplicateWhitespace(value.trim());
+    			editName = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
     			
 			} else if(key.contains(TDWG_DISTRIBUTION_COLUMN)) {
-				distributionList =  buildList(value);
+				distributionList =  CdmUtils.buildList(value);
 				
 			} else if(key.contains(STATUS_COLUMN)) {
-				status = (String) removeDuplicateWhitespace(value.trim());
+				status = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
 			} else if(key.contains(LITERATURE_NUMBER_COLUMN)) {
-				literatureNumber = (String) removeDuplicateWhitespace(value.trim());
+				literatureNumber = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
 			} else if(key.contains(LITERATURE_COLUMN)) {
-				literature = (String) removeDuplicateWhitespace(value.trim());
+				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
 			} else {
-				logger.error("Unexpected column header " + key);
+				logger.warn("Column " + key + " ignored");
 			}
     	}
     	
@@ -147,7 +138,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     
     
 	/** 
-	 *  Stores distribution data in the DB
+	 *  Stores the data of one Excel sheet row in the database
 	 */
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
@@ -193,7 +184,8 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     				} else {
     					presenceAbsenceStatus = PresenceTerm.getPresenceTermByAbbreviation(status);
     				}
-    				// TODO: Handle absence case
+    				// TODO: Handle absence case. 
+    				// This case has not yet occurred in the excel input file, though.
 					
     				/* Set to true if taxon needs to be saved if at least one new distribution exists */
     				boolean save = false;
@@ -242,37 +234,6 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     }
     
     
-    /** Returns a version of the input where all contiguous
-     * whitespace characters are replaced with a single
-     * space. Line terminators are treated like whitespace.
-     * 
-     * @param inputStr
-     * @return
-     */
-    private static CharSequence removeDuplicateWhitespace(CharSequence inputStr) {
-    	
-        String patternStr = "\\s+";
-        String replaceStr = " ";
-        Pattern pattern = Pattern.compile(patternStr);
-        Matcher matcher = pattern.matcher(inputStr);
-        return matcher.replaceAll(replaceStr);
-    }
-    
-
-    /** Builds a list of strings by splitting an input string
-     * with delimiters whitespace, comma, or semicolon
-     * @param value
-     * @return
-     */
-    private ArrayList<String> buildList(String value) {
-
-    	ArrayList<String> resultList = new ArrayList<String>();
-    	for (String tag : value.split("[\\s,;]+")) {
-    		resultList.add(tag);
-    	}
-        return resultList;
-    }
-
 	@Override
 	protected boolean doCheck(IImportConfigurator config) {
 		boolean result = true;
