@@ -119,4 +119,21 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public int countNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank);
 
+	/**
+	 * Returns a List of TaxonNameBase instances which nameCache matches the query string
+	 * 
+	 * @param queryString
+	 * @param pageSize The maximum number of names returned (can be null for all names)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of TaxonNameBase instances
+	 */
+	public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber);
+
+	/**
+	 * Returns a count of TaxonNameBase instances which nameCache matches the String queryString
+	 * 
+	 * @param queryString
+	 * @return a count of TaxonNameBase instances
+	 */
+	public int countNames(String queryString);
 }

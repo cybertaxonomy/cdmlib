@@ -59,15 +59,6 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 /**
  * @author a.mueller
- *
- */
-/**
- * @author a.mueller
- * @created 24.11.2008
- * @version 1.0
- */
-/**
- * @author a.mueller
  * @created 24.11.2008
  * @version 1.0
  */
@@ -150,16 +141,33 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 
-	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
-		Criteria crit = getSession().createCriteria(Taxon.class);
+	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
+		
+		return getTaxaByName(queryString, true, sec);
+	}
+
+	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
+		
+		Criteria criteria = null;
+		if (accepted == true) {
+			criteria = getSession().createCriteria(Taxon.class);
+		} else {
+			criteria = getSession().createCriteria(Synonym.class);
+		}
+
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+
 		if (sec != null){
 			if(sec.getId() == 0){
 				getSession().save(sec);
 			}
-			crit.add(Restrictions.eq("sec", sec ) );
+			criteria.add(Restrictions.eq("sec", sec ) );
 		}
-		crit.createCriteria("name").add(Restrictions.like("nameCache", name));
-		List<TaxonBase> results = crit.list();
+		if (queryString != null) {
+			criteria.add(Restrictions.ilike("name.nameCache", queryString));
+		}
+		List<TaxonBase> results = criteria.list();
 		return results;
 	}
 
@@ -332,8 +340,35 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			throw new QueryParseException(e, queryString);
 		}
 	}
+	
+	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
+		
+		Criteria criteria = null;
+		
+		if (accepted == true) {
+			criteria = getSession().createCriteria(Taxon.class);
+		} else {
+			criteria = getSession().createCriteria(Synonym.class);
+		}
+		
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
 
-	public int countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+		if (sec != null){
+			if(sec.getId() == 0){
+				getSession().save(sec);
+			}
+			criteria.add(Restrictions.eq("sec", sec ) );
+		}
+		if (queryString != null) {
+			criteria.add(Restrictions.ilike("name.nameCache", queryString));
+		}
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		
+		return (Integer)criteria.uniqueResult();
+	}
+
+	public int countTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
         Criteria criteria = null;
 		
 		if(accepted == null) {

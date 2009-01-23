@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 
@@ -57,6 +59,18 @@ public class TaxonNameDaoHibernateImpl
 		}
 		query.setParameter("name",name);
 		return ((Long)query.uniqueResult()).intValue();
+	}
+	
+	public int countNames(String queryString) {
+		
+        Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
+        
+		if (queryString != null) {
+			criteria.add(Restrictions.ilike("nameCache", queryString));
+		}
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		
+		return (Integer)criteria.uniqueResult();
 	}
 
 	public int countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
@@ -182,6 +196,27 @@ public class TaxonNameDaoHibernateImpl
 		return (List<TypeDesignationBase>)query.list();
 	}
 
+	
+	public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
+		
+		Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
+
+		if (queryString != null) {
+			criteria.add(Restrictions.ilike("nameCache", queryString));
+		}
+		if(pageSize != null) {
+	    	criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	criteria.setFirstResult(0);
+		    }
+		}
+		List<TaxonNameBase<?,?>> results = criteria.list();
+		return results;
+	}
+
+	
 	public List<TaxonNameBase> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
        Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
 		
@@ -222,8 +257,7 @@ public class TaxonNameDaoHibernateImpl
 		    	criteria.setFirstResult(0);
 		    }
 		}
-		
-		
+
 		return (List<TaxonNameBase>)criteria.list();
 	}
 

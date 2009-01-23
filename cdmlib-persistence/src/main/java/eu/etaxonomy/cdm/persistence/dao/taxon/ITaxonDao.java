@@ -33,8 +33,35 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
  */
 public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase> {
 	
+	/**
+	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
+	 * where the taxonBase.name.nameCache property matches the String queryString
+	 * 
+	 * @param queryString
+	 * @param accepted
+	 * @param sec
+	 * @return a count of the matching taxa
+	 */
+	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
+
+	/** 
+	 * Returns a list of TaxonBase instances where the taxon.titleCache property matches the name parameter, 
+	 * and taxon.sec matches the sec parameter.
+	 * @param name
+	 * @param sec
+	 * @return
+	 */
 	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec);
 	
+	/** 
+	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
+	 * where the taxonBase.name.nameCache property matches the String queryString, and taxon.sec matches the sec parameter.
+	 * @param name
+	 * @param sec
+	 * @return
+	 */
+	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
+
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
