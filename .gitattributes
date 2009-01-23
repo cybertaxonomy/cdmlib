@@ -1393,6 +1393,7 @@ eclipse-plugin/msutil-2000.3.jar -text
 eclipse-plugin/mysql-connector-java-3.1.14-bin.jar -text
 eclipse-plugin/opencsv-1.8.jar -text
 eclipse-plugin/plugin.xml -text
+eclipse-plugin/poi-3.1-FINAL.jar -text
 eclipse-plugin/pom.xml -text
 eclipse-plugin/postgresql-8.2-504.jdbc4.jar -text
 eclipse-plugin/sanselan-0.94-incubator.jar -text
@@ -1409,6 +1410,8 @@ eclipse-plugin/spring-jdbc-2.5.jar -text
 eclipse-plugin/spring-jdbc-2.5src.zip -text
 eclipse-plugin/spring-orm-2.5.jar -text
 eclipse-plugin/spring-orm-2.5src.zip -text
+eclipse-plugin/spring-security-core-2.0.4-sources.jar -text
+eclipse-plugin/spring-security-core-2.0.4.jar -text
 eclipse-plugin/spring-test-2.5.jar -text
 eclipse-plugin/spring-test-2.5src.zip -text
 eclipse-plugin/spring-tx-2.5.jar -text

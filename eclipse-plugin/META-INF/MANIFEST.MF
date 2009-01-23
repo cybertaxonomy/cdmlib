@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.00.00.00
+Bundle-Version: 2.00.00.08
 Bundle-ClassPath: aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
  asm-attrs.jar,
@@ -55,10 +55,18 @@ Bundle-ClassPath: aspectjrt-1.5.4.jar,
  cdmlib-model-2.0.jar,
  cdmlib-persistence-2.0.jar,
  cdmlib-services-2.0.jar,
- sanselan-0.94-incubator.jar
-Export-Package: eu.etaxonomy.cdm.api.application,
+ sanselan-0.94-incubator.jar,
+ poi-3.1-FINAL.jar,
+ spring-security-core-2.0.4.jar,
+ spring-security-core-2.0.4-sources.jar
+Export-Package: eu.etaxonomy.cdm,
+ eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.application.eclipse,
  eu.etaxonomy.cdm.api.service,
+ eu.etaxonomy.cdm.api.service.config,
+ eu.etaxonomy.cdm.api.service.config.impl,
+ eu.etaxonomy.cdm.api.service.pager,
+ eu.etaxonomy.cdm.api.service.pager.impl,
  eu.etaxonomy.cdm.aspectj,
  eu.etaxonomy.cdm.common,
  eu.etaxonomy.cdm.database,
@@ -67,7 +75,9 @@ Export-Package: eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.io.abcd206,
  eu.etaxonomy.cdm.io.berlinModel,
  eu.etaxonomy.cdm.io.common,
+ eu.etaxonomy.cdm.io.excel.common,
  eu.etaxonomy.cdm.io.excel.distribution,
+ eu.etaxonomy.cdm.io.excel.taxa,
  eu.etaxonomy.cdm.io.jaxb,
  eu.etaxonomy.cdm.io.sdd,
  eu.etaxonomy.cdm.io.synthesys,
