@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_jaxb";
-	private static final String destinationDbName = "cdm_test_jaxb2";
+	private static final String sourceDbName = "cdm_test_anahit";
+	private static final String destinationDbName = "cdm_test_anahit2";
 
 	// Import:
 	private static String importFileName = 
