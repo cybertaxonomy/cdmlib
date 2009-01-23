@@ -1297,6 +1297,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/INameServiceConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/NameServiceConfiguratorImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text

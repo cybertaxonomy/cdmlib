@@ -23,11 +23,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -38,6 +43,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
@@ -47,6 +55,11 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService {
 	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
+	@Autowired
+	private ITaxonNameDao nameDao;
+	@Autowired
+	private IOrderedTermVocabularyDao orderedVocabularyDao;
+	
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}
@@ -120,6 +133,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllRelationships(limit, start);
 	}
 	
+	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary() {
+		
+		String taxonRelTypeVocabularyId = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
+		UUID uuid = UUID.fromString(taxonRelTypeVocabularyId);
+		OrderedTermVocabulary<TaxonRelationshipType> taxonRelTypeVocabulary = 
+			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
+		return taxonRelTypeVocabulary;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
@@ -276,4 +298,60 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	
+	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator) {
+		
+		List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
+		int numberOfResults = 0;
+
+		if(configurator.isDoTaxa()) {
+			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), true, configurator.getSec());
+			if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " taxa counted"); }
+			if (numberTaxaResults > 0) {
+				List<TaxonBase> taxa = 
+					dao.getTaxaByName(configurator.getSearchString(), true, configurator.getSec());
+				if (!results.addAll(taxa)) {
+					logger.warn("Problem adding taxa to result");
+				}
+				numberOfResults += numberTaxaResults;
+			}
+		}
+
+		if(configurator.isDoSynonyms()) {
+			int numberSynonymResults = dao.countTaxaByName(configurator.getSearchString(), false, configurator.getSec());
+			if (logger.isDebugEnabled()) { logger.debug(numberSynonymResults + " synonyms counted"); }
+			if (numberSynonymResults > 0) {
+				List<TaxonBase> synonyms = 
+					dao.getTaxaByName(configurator.getSearchString(), false, configurator.getSec());
+				if (!results.addAll(synonyms)) {
+					logger.warn("Problem adding synonyms to result");
+				}
+				numberOfResults += numberSynonymResults;
+			}
+		}
+
+		if (configurator.isDoNamesWithoutTaxa()) {
+			int numberNameResults = nameDao.countNames(configurator.getSearchString());
+			// TODO: Implement and use a count-method that counts names without taxa
+			if (logger.isDebugEnabled()) { logger.debug(numberNameResults + " names counted"); }
+			if (numberNameResults > 0) {
+				List<TaxonNameBase<?,?>> names = 
+					nameDao.searchNames(configurator.getSearchString(), null, null);
+				for (TaxonNameBase<?,?> taxonName : names) {
+					if (taxonName.getTaxonBases().size() == 0) {
+						if (!results.add(taxonName)) {
+							logger.warn("Problem adding taxon name " + taxonName.getTitleCache() + " to result");
+						} else {
+							numberNameResults++;
+						}
+					}
+				}
+				numberOfResults += numberNameResults;
+			}
+		}
+		return new DefaultPagerImpl<IdentifiableEntity>
+			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
+	}
+	
 }

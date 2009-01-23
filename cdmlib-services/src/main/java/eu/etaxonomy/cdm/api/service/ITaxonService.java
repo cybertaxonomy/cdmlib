@@ -16,8 +16,13 @@ import java.util.UUID;
 
 //import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -124,7 +129,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
     public abstract List<RelationshipBase> getAllRelationships(int limit, int start);
 
-    /** */
+	/**
+	 * Returns TaxonRelationshipType vocabulary
+	 * @return
+	 */
+	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
+
+	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
@@ -181,4 +192,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return a Pager of TaxonBase instances
 	 */
 	public Pager<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+
+	/**
+	 * Returns a list of IdentifiableEntity instances (in particular, TaxonNameBase and TaxonBase instances)
+	 * that match the properties specified in the configurator.
+	 * @param configurator
+	 * @return
+	 */
+	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator);
 }
