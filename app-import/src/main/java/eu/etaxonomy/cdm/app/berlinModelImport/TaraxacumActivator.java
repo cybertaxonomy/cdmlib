@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -33,6 +34,8 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 /**
@@ -48,9 +51,9 @@ public class TaraxacumActivator {
 	private static final Logger logger = Logger.getLogger(TaraxacumActivator.class);
 
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
 
 	org.h2.jdbc.JdbcSQLException h;
 	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
@@ -70,6 +73,7 @@ public class TaraxacumActivator {
 	
 	
 	//check - import
+	//static final CHECK check = CHECK.CHECK_ONLY;
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
 	//NomeclaturalCode
@@ -81,41 +85,41 @@ public class TaraxacumActivator {
 
 // **************** ALL *********************	
 	//authors
-	static final boolean doAuthors = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
-	static final boolean doNameStatus = true;
-	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
-	
-	//taxa
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = true;
+//	static final boolean doAuthors = true;
+//	//references
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	//names
+//	static final boolean doTaxonNames = true;
+//	static final boolean doRelNames = true;
+//	static final boolean doNameStatus = true;
+//	static final boolean doTypes = true;
+//	static final boolean doNameFacts = true;
+//	
+//	//taxa
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = true;
+//	static final boolean doFacts = true;
+//	static final boolean doOccurences = true;
 
 	
 // **************** SELECTED *********************
 
-//	//authors
-//	static final boolean doAuthors = false;
-//	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-//	//names
-//	static final boolean doTaxonNames = false;
-//	static final boolean doRelNames = false;
-//	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
-//	static final boolean doNameFacts = false;
-//	
-//	//taxa 
-//	static final boolean doTaxa = false;
-//	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
-//	static final boolean doOccurences = false;
+	//authors
+	static final boolean doAuthors = false;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	//names
+	static final boolean doTaxonNames = false;
+	static final boolean doRelNames = false;
+	static final boolean doNameStatus = false;
+	static final boolean doTypes = false;
+	static final boolean doNameFacts = false;
+	
+	//taxa 
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = false;
+	static final boolean doFacts = false;
+	static final boolean doOccurences = true;
 	
 	/**
 	 * @param args
@@ -169,7 +173,7 @@ public class TaraxacumActivator {
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImportConfigurator.getCdmAppController();
-			
+			TransactionStatus tx = app.startTransaction();
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
 			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
@@ -177,9 +181,31 @@ public class TaraxacumActivator {
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode);
 			app.getDescriptionService().saveFeatureTree(tree);
+			mergeIntoCichorieae(app);
+			app.commitTransaction(tx);
 		}
 		
 		logger.info("End import from BerlinModel ("+ source.getDatabase() + ")...");
+	}
+	
+	public void mergeIntoCichorieae(CdmApplicationController app){
+		String taraxTaraxacum = "2fd3283f-44e3-4ffd-9d15-bc5f7f0058cb";
+		String cichTaraxacum = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
+		UUID taraxacumCichUUID = UUID.fromString(cichTaraxacum);
+		Taxon taraxacumInCich = (Taxon)app.getTaxonService().findByUuid(taraxacumCichUUID);
+		if (taraxacumInCich != null){
+			logger.info("Merge Taraxacum");
+			Taxon parent = taraxacumInCich.getTaxonomicParent();
+			UUID taraxacumTaraxUUID = UUID.fromString(taraxTaraxacum);
+			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().findByUuid(taraxacumTaraxUUID);
+			//TODO reference
+			ReferenceBase citation = null;
+			String microcitation =null;
+			parent.addTaxonomicChild(taraxacumInTarax, citation, microcitation);
+			app.getTaxonService().save(parent);
+			parent.removeTaxonomicChild(taraxacumInCich);
+			app.getTaxonService().delete(taraxacumInCich);
+		}
 	}
 	
 	public static void main(String[] args) {
