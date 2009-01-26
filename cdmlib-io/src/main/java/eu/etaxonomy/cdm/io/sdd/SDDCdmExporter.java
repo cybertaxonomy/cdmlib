@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author h.fradin (from a.babadshanjan)
  * @created 10.12.2008
  */
+@Component
 public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
 // public class CdmExporter extends CdmIoBase implements ICdmIoExport {
 // TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {

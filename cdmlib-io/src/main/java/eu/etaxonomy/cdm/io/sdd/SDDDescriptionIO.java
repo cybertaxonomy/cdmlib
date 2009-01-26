@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -63,7 +64,7 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
-
+@Component
 public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
