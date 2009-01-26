@@ -506,6 +506,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 //	}
 	
 	/** 
+	 * TODO update documentation 
 	 * Removes one {@link TaxonRelationship taxon relationship} with {@link TaxonRelationshipType taxon relationship type}
 	 * taxonRelType and with the given child taxon playing the
 	 * source role from the set of {@link #getRelationsToThisTaxon() "taxon relationships to"} belonging
@@ -518,11 +519,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param taxonRelType	the taxon relationship type
 	 */
 	@Transient
-	public void removeTaxon(Taxon taxon, TaxonRelationshipType taxonRelType){
+	public void removeTaxon(Taxon toTaxon, TaxonRelationshipType taxonRelType){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 		for (TaxonRelationship taxRel : taxRels ){
 			if (taxRel.getType().equals(taxonRelType) 
-				&& taxRel.getFromTaxon().equals(taxon)){
+				&& taxRel.getToTaxon().equals(toTaxon)){
 				this.removeTaxonRelation(taxRel);
 			}
 		}
