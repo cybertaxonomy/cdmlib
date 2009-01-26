@@ -73,7 +73,7 @@ public abstract class BerlinModelIOBase extends CdmIoBase<IImportConfigurator> i
 		try {
 			ResultSetMetaData metaData = rs.getMetaData();
 			for (int i = 0; i < metaData.getColumnCount(); i++){
-				if (metaData.getColumnName(i).equalsIgnoreCase(columnName)){
+				if (metaData.getColumnName(i + 1).equalsIgnoreCase(columnName)){
 					return true;
 				}
 			}
