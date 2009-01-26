@@ -5,7 +5,9 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -134,51 +136,60 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 			int countDescriptions = 0;
 			int countDistributions = 0;
 			//for each reference
-			while (rs.next()){
-				
-				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
-				
-				int occurrenceId = rs.getInt("OccurrenceId");
-				int newTaxonId = rs.getInt("RIdentifier");
-				String tdwgCode = rs.getString("TDWGCode");
-				Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
-				
-				try {
-				
-					PresenceAbsenceTermBase<?> status = null;
-					if (emStatusId != null){
-							status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
-					}
-					
-					NamedArea tdwgArea = null;
-					if (tdwgCode != null){
-						tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
-					}
-					
-					TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId);
-					if (tdwgArea != null){
-						Distribution distribution = Distribution.NewInstance(tdwgArea, status);
-						if (taxonDescription != null) {
-							taxonDescription.addElement(distribution);
-							countDistributions++;
-							if (taxonDescription != oldDescription){
-								taxonStore.add(taxonDescription.getTaxon());
-								oldDescription = taxonDescription;
-								countDescriptions++;
-							}
-						} else {
-							logger.warn("Distribution " + tdwgArea.toString() + " ignored");
-						}
-					}
-				} catch (UnknownCdmTypeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+            while (rs.next()){
+                
+                if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("Facts handled: " + (i-1));}
+                
+                int occurrenceId = rs.getInt("OccurrenceId");
+                int newTaxonId = rs.getInt("RIdentifier");
+                String tdwgCodeString = rs.getString("TDWGCode");
+                Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
+                
+                try {
+                    //status
+                     PresenceAbsenceTermBase<?> status = null;
+                     if (emStatusId != null){
+                                 status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+                     }
+                     
+                     //Create area list
+                     List<NamedArea> tdwgAreas = new ArrayList<NamedArea>();
+                     if (tdwgCodeString != null){
+                           String[] tdwgCodes = tdwgCodeString.split(";");
+                           for (String tdwgCode : tdwgCodes){
+                                 NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode.trim());
+                                 if (tdwgArea != null){
+                                       tdwgAreas.add(tdwgArea);
+                                 }
+                           }
+                     }
+                     
+                     //create description(elements)
+                     TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId);
+                     for (NamedArea tdwgArea : tdwgAreas){
+                           Distribution distribution = Distribution.NewInstance(tdwgArea, status);
+                           if (taxonDescription != null) { 
+                               taxonDescription.addElement(distribution); 
+                               countDistributions++; 
+                               if (taxonDescription != oldDescription){ 
+                                       taxonStore.add(taxonDescription.getTaxon()); 
+                                       oldDescription = taxonDescription; 
+                                       countDescriptions++; 
+                               } 
+	                       } else { 
+	                               logger.warn("Distribution " + tdwgArea.toString() + " ignored"); 
+	                     }
+                     }
+                } catch (UnknownCdmTypeException e) {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                }
 
-//				TODO
-//				sources
-//				references
-			}
+//              TODO
+//              sources
+//              references
+            }
+
 			logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
 			logger.info("Taxa to save: " + taxonStore.size());
