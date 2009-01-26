@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -199,6 +200,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		//getSession().update(taxonBase); doesn't work with lazy collections
+		if (taxonBase == null){
+			logger.warn("TaxonBase was 'null'");
+			return null;
+		}
 		//annotations
 		try {
 			Set<Annotation> annotations = taxonBase.getAnnotations();
@@ -227,7 +232,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			logger.warn("LazyInitializationException: " + e);
 		}
 		//is Taxon
-		taxonBase.getName().removeTaxonBase(taxonBase);
+		TaxonNameBase taxonNameBase =taxonBase.getName();
+		if (taxonNameBase != null){
+			taxonNameBase.removeTaxonBase(taxonBase);
+		}
 		if (taxonBase instanceof Taxon){
 			//taxonRelationships
 			Taxon taxon = (Taxon)taxonBase;
