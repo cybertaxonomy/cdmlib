@@ -9,16 +9,22 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.net.URL;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Test;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.sdd.SDDDescriptionIO;
 import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
 
 /**
@@ -89,7 +95,13 @@ public class ViolaActivator {
 		// invoke import
 		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
 
-		sddImport.invoke(sddImportConfigurator);
+		SDDDescriptionIO sddDescriptionIo = new SDDDescriptionIO();
+//		IImportConfigurator configurator;	
+//		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml");
+//		configurator = SDDImportConfigurator.NewInstance(url.toString(), null);
+		sddDescriptionIo.doInvoke(sddImportConfigurator, null);
+		
+//		sddImport.invoke(sddImportConfigurator);
 		System.out.println("End import from SDD ("+ source.toString() + ")...");
 	}
 
