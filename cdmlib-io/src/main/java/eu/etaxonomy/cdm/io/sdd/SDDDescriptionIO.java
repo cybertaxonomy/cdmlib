@@ -375,7 +375,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		sddConfig.setSourceReference(sourceReference);
 		
 		//saving of all imported data into the CDM db
-		ITermService termService = sddConfig.getCdmAppController().getTermService();
+		ITermService termService = getTermService();
 		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
 			StateData sd = k.next();
 			termService.saveTerm(sd.getState()); 
@@ -397,7 +397,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			termService.saveTerm(sm); 
 		}
 
-		IReferenceService referenceService = sddConfig.getCdmAppController().getReferenceService();
+		IReferenceService referenceService = getReferenceService();
 		// referenceService.saveReference(sourceReference); 
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
 			Article publication = (Article) k.next();
@@ -405,7 +405,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		}
 
 		// Returns a CdmApplicationController created by the values of this configuration.
-		IDescriptionService descriptionService = sddConfig.getCdmAppController().getDescriptionService();
+		IDescriptionService descriptionService = getDescriptionService();
 
 		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
 			TaxonDescription taxonDescription = k.next();
@@ -420,7 +420,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 
 		if (!nameLang.equals("")) {
 			String iso = nameLang.substring(0, 2);
-			datasetLanguage = sddConfig.getCdmAppController().getTermService().getLanguageByIso(iso);
+			datasetLanguage = getTermService().getLanguageByIso(iso);
 		} else {
 			datasetLanguage = Language.ENGLISH();
 		}
@@ -511,7 +511,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 					Language iprLanguage = null;
 					if (lang != null) {
 						if (!lang.equals("")) {
-							iprLanguage = sddConfig.getCdmAppController().getTermService().getLanguageByIso(lang.substring(0, 2));
+							iprLanguage = getTermService().getLanguageByIso(lang.substring(0, 2));
 							//iprLanguage = datasetLanguage;
 						} else {
 							iprLanguage = datasetLanguage;
