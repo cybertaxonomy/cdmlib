@@ -646,6 +646,7 @@ cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest2.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
 cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
