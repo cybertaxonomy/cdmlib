@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -203,8 +204,12 @@ public abstract class TermBase extends VersionableEntity {
 
 	@Override
 	public String toString() {
-		//FIXME make toString save as explained in CdmBase.toString
-		return super.toString()+" "+this.getLabel();
+		//TODO eliminate nasty LazyInitializationException loggings
+		try {
+			return super.toString()+" "+this.getLabel();
+		} catch (LazyInitializationException e) {
+			return super.toString()+" "+this.getUuid();
+		}
 	}
 
 }
