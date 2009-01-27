@@ -656,6 +656,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.testImport-result.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
