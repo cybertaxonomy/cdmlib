@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -51,6 +52,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@Ignore //TODO set to ignore because test result depends on java VM version at the moment
 	public void testCountAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();
@@ -62,6 +64,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 	
 	@Test
+	@Ignore //TODO set to ignore because test result depends on java VM version at the moment
 	public void testGetAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();
