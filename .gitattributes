@@ -39,6 +39,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ValRosandraFRIDAKeyUpdateActiv
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ViolaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ViolaExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ViolaUpdateActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/applicationContext.xml -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SpecimenImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/synthesysImport/SynthesysCacheActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/tcs/PalmaeActivator.java -text
