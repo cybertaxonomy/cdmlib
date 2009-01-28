@@ -631,6 +631,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonNameRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTaxonRelationsIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcs/TcsTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/DefaultTcsXmlPlaceholders.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/ITcsXmlPlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfigurator.java -text
@@ -648,6 +649,7 @@ cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest2.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/test/function/TestDatabase.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/test/integration/TestCdmDbComparator.java -text
 cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
@@ -660,6 +662,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.testImport
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/CdmTcsXmlImportTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTest.xml -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text
