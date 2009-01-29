@@ -37,6 +37,10 @@ public class CdmUtils {
 	//folder seperator
 	static String folderSeperator;
 
+	
+	public static String getHomeDir(){
+		return System.getProperty("user.home");
+	}
 
 	/**
 	 * Returns the an InputStream for a read-only source

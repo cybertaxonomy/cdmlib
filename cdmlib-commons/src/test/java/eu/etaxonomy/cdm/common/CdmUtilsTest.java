@@ -53,6 +53,11 @@ public class CdmUtilsTest {
 	}
 
 	@Test
+	public void testGetHomeDir() {
+		//Assert.assertEquals("", CdmUtils.getHomeDir());
+	}
+	
+	@Test
 	public void testFindLibrary() {
 		if (logger.isEnabledFor(Level.DEBUG)) {logger.debug(CdmUtils.findLibrary(CdmUtils.class));}
 		
