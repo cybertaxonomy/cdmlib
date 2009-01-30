@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  * @author a.mueller
  *
  */
+@Component
 public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlSpecimensIO.class);
 
@@ -128,7 +130,7 @@ public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			specimenMap.put(strId, specimen);
 		}
 		
-		logger.info("Save bibliographical references (" + i +")");
+		logger.info("Save specimen (" + i +")");
 	    getOccurrenceService().saveSpecimenOrObservationBaseAll(specimenMap.objects());
 
 		logger.info("end make Specimens ...");
@@ -148,7 +150,7 @@ public class TcsXmlSpecimensIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			institution = Institution.NewInstance();
 
 			String childName = "InstitutionName";
-			boolean obligatory = true;
+			boolean obligatory = false;
 			DoubleResult<Element, Boolean> doubleResult = XmlHelp.getSingleChildElement(elInstitution, childName, ns, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elInstitutionName = doubleResult.getFirstResult();

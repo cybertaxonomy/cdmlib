@@ -1,7 +1,13 @@
 /**
- * 
- */
-package eu.etaxonomy.cdm.io.tcs;
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -31,14 +38,16 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- *
+ * @created 29.05.2008
+ * @version 1.0
  */
-public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsTaxonRelationsIO.class);
+@Component
+public class TcsRdfTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsIO.class);
 
 	private static int modCount = 30000;
 
-	public TcsTaxonRelationsIO(){
+	public TcsRdfTaxonRelationsIO(){
 		super();
 	}
 	
@@ -66,7 +75,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implemen
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
+		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		Namespace taxonConceptNamespace = tcsConfig.getTcNamespace();
 
@@ -117,7 +126,7 @@ public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implemen
 				Element elRelationship, 
 				String strTaxonAbout,
 				MapWrapper<TaxonBase> taxonMap,
-				TcsImportConfigurator tcsConfig,
+				TcsRdfImportConfigurator tcsConfig,
 				Set<TaxonBase> taxonStore){
 		boolean result = true;
 		String xmlElementName;
@@ -131,8 +140,8 @@ public class TcsTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implemen
 		attributeNamespace = tcsConfig.getRdfNamespace();
 		String strRelCategory = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
 		try {
-			RelationshipTermBase relType = TcsTransformer.tcsRelationshipCategory2Relationship(strRelCategory);
-			boolean isReverse = TcsTransformer.isReverseRelationshipCategory(strRelCategory);
+			RelationshipTermBase relType = TcsRdfTransformer.tcsRelationshipCategory2Relationship(strRelCategory);
+			boolean isReverse = TcsRdfTransformer.isReverseRelationshipCategory(strRelCategory);
 			//toTaxon
 			xmlElementName = "toTaxon";
 			elementNamespace = tcsConfig.getTcNamespace();

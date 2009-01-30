@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 
 /**
  * This class was created just as a test class to implement the according integration test. 
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
  * @version 1.0
  */
 @Component
-public class CdmTcsXmlImport extends CdmDefaultImport<TcsXmlImportConfigurator> {
+public class CdmTcsXmlImport extends CdmApplicationAwareDefaultImport<TcsXmlImportConfigurator> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmTcsXmlImport.class);
 

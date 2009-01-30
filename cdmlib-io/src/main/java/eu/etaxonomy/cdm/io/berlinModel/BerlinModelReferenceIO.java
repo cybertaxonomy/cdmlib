@@ -1,20 +1,25 @@
 /**
- * 
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_ARTICLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_BOOK;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_CONFERENCE_PROCEEDINGS;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_DATABASE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_INFORMAL;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL_VOLUME;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PART_OF_OTHER_TITLE;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PRINT_SERIES;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_UNKNOWN;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_PRINT_SERIES;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_CONFERENCE_PROCEEDINGS;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_JOURNAL_VOLUME;
-
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
@@ -34,9 +39,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmIoMapping;
@@ -65,8 +69,10 @@ import eu.etaxonomy.cdm.model.reference.WebPage;
 
 /**
  * @author a.mueller
- *
+ * @created 20.03.2008
+ * @version 1.0
  */
+@Component
 public class BerlinModelReferenceIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceIO.class);
 
@@ -292,7 +298,6 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 		doPreliminaryRefDetails(config, stores);
 		
 		logger.info("start makeReferences ...");
-		IReferenceService referenceService = getReferenceService();
 		
 		try {
 			//get data from database
@@ -426,9 +431,9 @@ public class BerlinModelReferenceIO extends BerlinModelIOBase {
 				
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				referenceService.saveReferenceAll(nomRefStore.objects());
+				getReferenceService().saveReferenceAll(nomRefStore.objects());
 				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				referenceService.saveReferenceAll(referenceStore.objects());
+				getReferenceService().saveReferenceAll(referenceStore.objects());
 				j++;
 			}//end resultSetList	
 

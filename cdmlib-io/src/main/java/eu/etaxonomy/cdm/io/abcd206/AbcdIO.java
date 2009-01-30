@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.abcd206;
 
 import java.io.IOException;
@@ -15,6 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,6 +65,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
+
+/**
+ * @author p.kelbert
+ * @created 20.10.2008
+ * @version 1.0
+ */
+@Component
 public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);
 
@@ -790,7 +807,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		List<Institution> institutions;
 		try{
 			logger.info(this.institutionCode);
-			institutions= config.getCdmAppController().getAgentService().searchInstitutionByCode(this.institutionCode);
+			institutions = getAgentService().searchInstitutionByCode(this.institutionCode);
 		}catch(Exception e){
 			institutions=new ArrayList<Institution>();
 		}
@@ -818,7 +835,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = config.getCdmAppController().getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = getOccurrenceService().searchCollectionByCode(this.collectionCode);
 		}catch(Exception e){
 			collections=new ArrayList<Collection>();
 		}
@@ -895,7 +912,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			}
 			if (config.getDoReUseTaxon()){
 				try{
-					names = config.getCdmAppController().getTaxonService().searchTaxaByName(scientificName, sec);
+					names = getTaxonService().searchTaxaByName(scientificName, sec);
 					taxon = (Taxon)names.get(0);
 				}
 				catch(Exception e){taxon=null;}
@@ -904,7 +921,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 //			taxonName.setFullTitleCache(scientificName);
 
 			if (!config.getDoReUseTaxon() || taxon == null){
-				config.getCdmAppController().getNameService().saveTaxonName(taxonName);
+				getNameService().saveTaxonName(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
 			determinationEvent = DeterminationEvent.NewInstance();
@@ -1171,9 +1188,9 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			 * GATHERING EVENT
 			 */
 
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(config, this.locality, this.languageIso, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(this, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, config);
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, this);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			unitsGatheringArea = new UnitsGatheringArea(this.namedAreaList);
@@ -1322,7 +1339,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 
 
 	public boolean invoke(IImportConfigurator config, Map stores) {
-		logger.info("invoke de AbcdIo");
+		logger.info("invoke AbcdIO");
 		return invoke((SpecimenImportConfigurator)config);
 	}
 

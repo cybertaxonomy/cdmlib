@@ -26,6 +26,11 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 
+/**
+ * @author a.mueller
+ * @created 20.03.2008
+ * @version 1.0
+ */
 public class BerlinModelImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
@@ -79,7 +84,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getSourceReference()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
 	public ReferenceBase getSourceReference() {
 		if (sourceReference == null){

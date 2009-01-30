@@ -1,7 +1,12 @@
 /**
- * 
- */
-package eu.etaxonomy.cdm.io.tcs;
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.log4j.Logger;
 import org.jdom.Content;
@@ -10,10 +15,13 @@ import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
 
+
 /**
  * @author a.mueller
- *
+ * @created 29.07.2008
+ * @version 1.0
  */
+
 public abstract class CdmIoXmlMapperBase extends CdmIoMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmIoXmlMapperBase.class);
 	

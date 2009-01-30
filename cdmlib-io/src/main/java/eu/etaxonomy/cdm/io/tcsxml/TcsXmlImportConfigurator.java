@@ -8,6 +8,8 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -16,6 +18,7 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
+@Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
@@ -30,9 +33,33 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	Namespace tcsXmlNamespace;
 
 	protected static Namespace nsTcsXml = Namespace.getNamespace("http://www.tdwg.org/schemas/tcs/1.01");
-
-		
+	
+	@Autowired
+	TcsXmlMetaDataIO tcsXmlMetaDataIO;
+	@Autowired
+	TcsXmlSpecimensIO tcsXmlSpecimensIO;
+	@Autowired
+	TcsXmlPublicationsIO tcsXmlPublicationsIO;
+	@Autowired
+	TcsXmlTaxonNameIO tcsXmlTaxonNameIO;
+	@Autowired
+	TcsXmlTaxonNameRelationsIO tcsXmlTaxonNameRelationsIO;
+	@Autowired
+	TcsXmlTaxonIO tcsXmlTaxonIO;
+	@Autowired
+	TcsXmlTaxonRelationsIO tcsXmlTaxonRelationsIO;
+	
 	protected void makeIoClassList(){
+//		ioBeans = new String[]{
+//				"tcsXmlMetaDataIO"
+//				, "tcsXmlSpecimensIO"
+//				, "tcsXmlPublicationsIO"
+//				, "tcsXmlTaxonNameIO"
+//				, "tcsXmlTaxonNameRelationsIO"
+//				, "tcsXmlTaxonIO"
+//				, "tcsXmlTaxonRelationsIO"	
+//		};
+		
 		ioClassList = new Class[]{
 			TcsXmlMetaDataIO.class
 			, TcsXmlSpecimensIO.class
@@ -49,6 +76,16 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 		return new TcsXmlImportConfigurator(url, destination);
 	}
 	
+	/**
+	 * @param berlinModelSource
+	 * @param sourceReference
+	 * @param destination
+	 */
+	private TcsXmlImportConfigurator() {
+		super();
+//		setSource(url);
+//		setDestination(destination);
+	}
 	
 	/**
 	 * @param berlinModelSource

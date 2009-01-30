@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.synthesys;
 
 import java.net.URL;
@@ -8,9 +17,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.MediaMetaData;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
@@ -38,8 +47,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
+/**
+ * @author p.kelbert
+ * @created 29.10.2008
+ * @version 1.0
+ */
+@Component
 public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfigurator> {
-
 
 	private static final Logger logger = Logger.getLogger(SynthesysIO.class);
 
@@ -141,7 +155,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 		Institution institution;
 		List<Institution> institutions;
 		try{
-			institutions= config.getCdmAppController().getAgentService().searchInstitutionByCode(this.institutionCode);
+			institutions= getAgentService().searchInstitutionByCode(this.institutionCode);
 		}catch(Exception e){
 			institutions=new ArrayList<Institution>();
 		}
@@ -169,7 +183,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = config.getCdmAppController().getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = getOccurrenceService().searchCollectionByCode(this.collectionCode);
 		}catch(Exception e){
 			collections=new ArrayList<Collection>();
 		}
@@ -239,13 +253,13 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 
 			if (config.getDoReUseTaxon()){
 				try{
-					names = config.getCdmAppController().getTaxonService().searchTaxaByName(scientificName, sec);
+					names = getTaxonService().searchTaxaByName(scientificName, sec);
 					taxon = (Taxon)names.get(0);
 				}
 				catch(Exception e){taxon=null;}
 			}
 			if (!config.getDoReUseTaxon() || taxon == null){
-				config.getCdmAppController().getNameService().saveTaxonName(taxonName);
+				getNameService().saveTaxonName(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
 
@@ -316,11 +330,10 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 	 */
 	public boolean start(SpecimenImportConfigurator config){
 		boolean result = true;
-		boolean withCdm = true;
-		CdmApplicationController app = null;
+//		CdmApplicationController app2 = null;
 		TransactionStatus tx = null;
 
-		app=config.getCdmAppController();
+//		app = config.getCdmAppController();
 //		try {
 //		app = CdmApplicationController.NewInstance(config.getDestination(), config.getDbSchemaValidation());
 //		} catch (DataSourceNotFoundException e1) {
@@ -330,8 +343,8 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 //		e1.printStackTrace();
 //		System.out.println("TermNotFoundException " +e1);
 //		}
-
-		tx = app.startTransaction();
+		
+		tx = startTransaction();
 		try {
 			ReferenceBase sec = config.getTaxonReference();
 
@@ -387,9 +400,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 			 * GATHERING EVENT
 			 */
 
-			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(config, this.locality, this.languageIso, this.longitude, 
+			UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(this, this.locality, this.languageIso, this.longitude, 
 					this.latitude, this.gatheringAgentList);
-			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country,config);
+			UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea(this.isocountry, this.country, this);
 			NamedArea areaCountry = unitsGatheringArea.getArea();
 			unitsGatheringEvent.addArea(areaCountry);
 			//Only for ABCD XML data
@@ -440,12 +453,12 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 			 * SAVE AND STORE DATA
 			 */			
 
-			app.getTermService().saveTerm(areaCountry);//save it sooner
+			getTermService().saveTerm(areaCountry);//save it sooner
 			//ONLY FOR ABCD XML DATA
 //			for (int i=0; i<nas.size();i++)
 //				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
-			app.getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-			app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
+			getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
 
 			logger.info("saved new specimen ...");
 
@@ -455,9 +468,9 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 			e.printStackTrace();
 			result = false;
 		}
-		app.commitTransaction(tx);
+		commitTransaction(tx);
 		System.out.println("commit done");
-		app.close();
+		//app.close();
 		return result;
 	}
 

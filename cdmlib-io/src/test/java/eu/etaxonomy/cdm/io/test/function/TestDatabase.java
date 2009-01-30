@@ -98,7 +98,7 @@ public class TestDatabase {
 	private static DataSet buildDataSet() {
 
 		List<Agent> agents = new ArrayList<Agent>();
-	    List<Agent> agentData = new ArrayList<Agent>();
+	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
 	    //List<TermBase> terms = new ArrayList<TermBase>();
 	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();

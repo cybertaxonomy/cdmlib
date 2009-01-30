@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.abcd206;
 
 
@@ -7,6 +16,7 @@ import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -16,6 +26,11 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
+/**
+ * @author p.kelbert
+ * @created 20.10.2008
+ * @version 1.0
+ */
 public class UnitsGatheringEvent {
 
 	private static final Logger logger = Logger.getLogger(UnitsGatheringEvent.class);
@@ -31,7 +46,7 @@ public class UnitsGatheringEvent {
 	 * @param latitude
 	 * @param collectorNames
 	 */
-	public UnitsGatheringEvent(SpecimenImportConfigurator config, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
+	public UnitsGatheringEvent(ICdmApplicationConfiguration config, String locality, String languageIso, Double longitude, Double latitude, ArrayList<String> collectorNames){
 		this.setLocality(config, locality, languageIso);
 		this.setCoordinates(longitude, latitude);
 		this.setCollector(collectorNames);
@@ -46,15 +61,15 @@ public class UnitsGatheringEvent {
 	 * @param locality
 	 * @param langageIso
 	 */
-	public void setLocality(SpecimenImportConfigurator config, String locality, String languageIso){
+	public void setLocality(ICdmApplicationConfiguration config, String locality, String languageIso){
 		LanguageString loc;
-		if (languageIso == null || config.getCdmAppController().getTermService().getLanguageByIso(languageIso) == null){
-			if (languageIso != null && config.getCdmAppController().getTermService().getLanguageByIso(languageIso) == null )
+		if (languageIso == null || config.getTermService().getLanguageByIso(languageIso) == null){
+			if (languageIso != null && config.getTermService().getLanguageByIso(languageIso) == null )
 				logger.info("unknown iso used for the locality: "+languageIso);
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
 		}
 		else
-			loc = LanguageString.NewInstance(locality,config.getCdmAppController().getTermService().getLanguageByIso(languageIso));
+			loc = LanguageString.NewInstance(locality, config.getTermService().getLanguageByIso(languageIso));
 		this.gatheringEvent.setLocality(loc);
 	}
 
@@ -97,7 +112,7 @@ public class UnitsGatheringEvent {
 	 * if not, create a new collector
 	 * NOT USED
 	 */
-	public void setCollector(SpecimenImportConfigurator config, ArrayList<String> collectorNames,boolean getExisting){
+	public void setCollector(ICdmApplicationConfiguration config, ArrayList<String> collectorNames,boolean getExisting){
 		//create collector
 		Agent collector;
 		ListIterator<String> collectors = collectorNames.listIterator();
@@ -107,7 +122,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<Agent> col = config.getCdmAppController().getAgentService().findAgentsByTitle(collName);
+				List<Agent> col = config.getAgentService().findAgentsByTitle(collName);
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();

@@ -1,7 +1,13 @@
 /**
- * 
- */
-package eu.etaxonomy.cdm.io.tcs;
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
@@ -14,8 +20,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -37,14 +43,16 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- *
+ * @created 29.05.2008
+ * @version 1.0
  */
-public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsReferenceIO.class);
+@Component
+public class TcsRdfReferenceIO extends TcsRdfIoBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfReferenceIO.class);
 
 	private static int modCount = 1000;
 	
-	public TcsReferenceIO(){
+	public TcsRdfReferenceIO(){
 		super();
 	}
 	
@@ -143,7 +151,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigura
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
 		
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
+		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		logger.info("start makeReferences ...");
 		
@@ -178,7 +186,7 @@ public class TcsReferenceIO extends TcsIoBase implements ICdmIO<IImportConfigura
 			String strPubType = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 			
 			try {
-				StrictReferenceBase ref = TcsTransformer.pubTypeStr2PubType(strPubType);
+				StrictReferenceBase ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
 				if (ref==null){
 					ref = Generic.NewInstance();
 				}

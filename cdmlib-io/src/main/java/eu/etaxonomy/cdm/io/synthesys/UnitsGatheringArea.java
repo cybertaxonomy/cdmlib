@@ -1,12 +1,27 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.synthesys;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 
+/**
+ * @author p.kelbert
+ * @created 29.10.2008
+ * @version 1.0
+ */
 public class UnitsGatheringArea {
 
 	private NamedArea area = NamedArea.NewInstance();
@@ -20,7 +35,7 @@ public class UnitsGatheringArea {
 	 * @param country
 	 * @param app
 	 */
-	public UnitsGatheringArea(String isoCountry, String country, SpecimenImportConfigurator config){
+	public UnitsGatheringArea(String isoCountry, String country, ICdmApplicationConfiguration config){
 		this.setCountry(isoCountry, country, config);
 	}
 	
@@ -67,18 +82,18 @@ public class UnitsGatheringArea {
 	 * @param fullName: the country's full name
 	 * @param app: the CDM application controller
 	 */
-	public void setCountry(String iso, String fullName, SpecimenImportConfigurator config){
+	public void setCountry(String iso, String fullName, ICdmApplicationConfiguration config){
 		WaterbodyOrCountry country=null;
 		List<WaterbodyOrCountry>countries = new ArrayList<WaterbodyOrCountry>();
 //		if (iso != null && iso !="")
 		if (iso != null)
-			country = config.getCdmAppController().getOccurrenceService().getCountryByIso(iso);
+			country = config.getOccurrenceService().getCountryByIso(iso);
 		if (country != null)
 			this.area.addWaterbodyOrCountry(country);
 
 		else{
 			if (fullName != "")
-			countries = config.getCdmAppController().getOccurrenceService().getWaterbodyOrCountryByName(fullName);
+			countries = config.getOccurrenceService().getWaterbodyOrCountryByName(fullName);
 			if (countries.size() >0)
 				this.area.addWaterbodyOrCountry(countries.get(0));
 			else{

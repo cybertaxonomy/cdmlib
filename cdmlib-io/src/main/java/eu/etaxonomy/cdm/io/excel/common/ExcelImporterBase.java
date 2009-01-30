@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @version 1.0
  */
 public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
-
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";

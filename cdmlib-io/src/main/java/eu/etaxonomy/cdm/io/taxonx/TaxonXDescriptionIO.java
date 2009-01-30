@@ -1,6 +1,12 @@
 /**
- * 
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.HashMap;
@@ -16,13 +22,10 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -34,8 +37,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -43,8 +44,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
- *
+ * @created 29.07.2008
+ * @version 1.0
  */
+@Component
 public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TaxonXDescriptionIO.class);
 
@@ -101,6 +104,10 @@ public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implemen
 		
 		//for testing only
 		Taxon taxon = getTaxon(txConfig);
+		if (taxon == null){
+			logger.warn("Taxon could not be found");
+			return false;
+		}
 		unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
 		
@@ -151,7 +158,9 @@ public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implemen
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		ICommonService commonService = config.getCdmAppController().getCommonService();
+		//ICommonService commonService = config.getCdmAppController().getCommonService();
+		ICommonService commonService = getCommonService();
+		
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
 		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);

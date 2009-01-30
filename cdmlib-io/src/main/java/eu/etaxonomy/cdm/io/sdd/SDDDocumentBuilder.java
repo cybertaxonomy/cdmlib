@@ -1,8 +1,11 @@
 /**
- * Copyright (C) 2008 EDIT
- * European Distributed Institute of Taxonomy 
- * http://www.e-taxonomy.eu
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 
 package eu.etaxonomy.cdm.io.sdd;
 
@@ -25,12 +28,15 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-import com.sun.org.apache.xerces.internal.dom.ElementImpl;
+import org.apache.xerces.dom.DocumentImpl;
+//import com.sun.org.apache.xerces.internal.dom.ElementImpl;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import com.sun.org.apache.xml.internal.serialize.DOMSerializer;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+
+import org.apache.xerces.dom.ElementImpl;
+
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -56,7 +62,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * Writes the SDD XML file. 
  * 
  * @author h.fradin
- * 10.12.2008
+ * @created 10.12.2008
+ * @version 1.0
  */
 
 public class SDDDocumentBuilder {
@@ -298,6 +305,7 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < rm.size(); i++) {
 				mediaObject = new ElementImpl(document, MEDIA_OBJECT);
+				//mediaObject = org.apache.xerces.dom.ElementImpl(document, MEDIA_OBJECT);
 				mediasCount = buildReference((Media) rm.toArray()[i], medias, REF, mediaObject, "m", mediasCount);
 				representation.appendChild(mediaObject);
 			}

@@ -1,4 +1,13 @@
- package eu.etaxonomy.cdm.io.tcs;
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -15,8 +24,13 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public class TcsImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
-	private static final Logger logger = Logger.getLogger(TcsImportConfigurator.class);
+/**
+ * @author a.mueller
+ * @created 29.05.2008
+ * @version 1.0
+ */
+public class TcsRdfImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
 	
 	//rdfNamespace
 	Namespace rdfNamespace;
@@ -39,20 +53,24 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 
-		
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-			TcsReferenceIO.class
-			, TcsTaxonNameIO.class
-			, TcsTaxonNameRelationsIO.class
-			, TcsTaxonIO.class
-			, TcsTaxonRelationsIO.class
+			TcsRdfReferenceIO.class
+			, TcsRdfTaxonNameIO.class
+			, TcsRdfTaxonNameRelationsIO.class
+			, TcsRdfTaxonIO.class
+			, TcsRdfTaxonRelationsIO.class
 		};
 	};
 	
-	public static TcsImportConfigurator NewInstance(String url,
+	public static TcsRdfImportConfigurator NewInstance(String url,
 			ICdmDataSource destination){
-		return new TcsImportConfigurator(url, destination);
+		return new TcsRdfImportConfigurator(url, destination);
+	}
+	
+	//TODO for spring use only 
+	private TcsRdfImportConfigurator(){
+		
 	}
 	
 	
@@ -61,7 +79,7 @@ public class TcsImportConfigurator extends ImportConfiguratorBase implements IIm
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private TcsImportConfigurator(String url, ICdmDataSource destination) {
+	private TcsRdfImportConfigurator(String url, ICdmDataSource destination) {
 		super();
 		setSource(url);
 		setDestination(destination);

@@ -1,6 +1,11 @@
 /**
- * 
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.ArrayList;
@@ -12,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -37,8 +43,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
- *
+ * @created 29.07.2008
+ * @version 1.0
  */
+@Component
 public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureIO.class);
 
@@ -116,7 +124,8 @@ public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> impleme
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		ICommonService commonService =config.getCdmAppController().getCommonService();
+		//ICommonService commonService =config.getCdmAppController().getCommonService();
+		ICommonService commonService = getCommonService();
 		String originalSourceId = config.getOriginalSourceId();
 		String namespace = config.getOriginalSourceTaxonNamespace();
 		result = (Taxon)commonService.getSourcedObjectByIdInSource(Taxon.class, originalSourceId , namespace);
@@ -402,15 +411,17 @@ public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> impleme
 	 * TODO Preliminary to avoid laizy loading errors
 	 */
 	private void unlazyTypeDesignation(TaxonXImportConfigurator config, TaxonNameBase taxonNameBase){
-		TransactionStatus txStatus = config.getCdmAppController().startTransaction();
-		INameService taxonNameService = config.getCdmAppController().getNameService();
+		TransactionStatus txStatus = startTransaction();
+		//INameService taxonNameService = config.getCdmAppController().getNameService();
+		INameService taxonNameService = getNameService();
+		
 		taxonNameService.saveTaxonName(taxonNameBase);
 		Set<TaxonNameBase> typifiedNames = taxonNameBase.getHomotypicalGroup().getTypifiedNames();
 		for(TaxonNameBase typifiedName: typifiedNames){
 			typifiedName.getTypeDesignations().size();	
 		}
 		//taxonNameService.saveTaxonName(taxonNameBase);
-		config.getCdmAppController().commitTransaction(txStatus);
+		commitTransaction(txStatus);
 	}
 	
 	/**

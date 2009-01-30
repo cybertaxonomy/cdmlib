@@ -1,8 +1,11 @@
 /**
- * Copyright (C) 2008 EDIT
- * European Distributed Institute of Taxonomy 
- * http://www.e-taxonomy.eu
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 
 package eu.etaxonomy.cdm.io.sdd;
 
@@ -19,14 +22,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.sdd.SDDDocumentBuilder;
-import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.model.agent.Agent;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author h.fradin (from a.babadshanjan)
  * @created 10.12.2008
+ * @versoin 1.0
  */
 @Component
 public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {

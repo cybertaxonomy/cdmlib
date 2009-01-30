@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.tcsxml;
 
 import java.util.ArrayList;
@@ -8,8 +17,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -31,7 +40,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
+@Component("tcsXmlTaxonNameIO")
 public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameIO.class);
 
@@ -373,7 +382,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			Namespace ns = elNameCitation.getNamespace();
 			
 			childName = "Authors";
-			obligatory = true;
+			obligatory = false;
 			Element elAuthors = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
 			testNoMoreElements();
 
@@ -418,8 +427,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
 		if (elCanonicalAuthorship != null){
 			Namespace ns = elCanonicalAuthorship.getNamespace();
-			boolean cacheProtected = false;
-	
+			
 			if (name instanceof NonViralName){
 				NonViralName nonViralName = (NonViralName)name;
 				
@@ -432,25 +440,30 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 				//nonViralName.setAuthorshipCache(simple, cacheProtected);
 
 				childName = "Authorship";
-				obligatory = true;
+				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				INomenclaturalAuthor author = makeNameCitation(elAuthorship, authorMap, success); 
 				nonViralName.setCombinationAuthorTeam(author);
 				testNoMoreElements();
 				
 				childName = "BasionymAuthorship";
-				obligatory = true;
+				obligatory = false;
 				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				INomenclaturalAuthor basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
 				nonViralName.setBasionymAuthorTeam(basionymAuthor);
 				testNoMoreElements();
 				
 				childName = "CombinationAuthorship";
-				obligatory = true;
+				obligatory = false;
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				INomenclaturalAuthor combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
 				nonViralName.setCombinationAuthorTeam(combinationAuthor);
-				testNoMoreElements();		
+				testNoMoreElements();
+				
+				if (elAuthorship != null && (elBasionymAuthorship != null || elCombinationAuthorship != null) ){
+					logger.warn("Authorship and (BasionymAuthorship or CombinationAuthorship) must not exist at the same time in CanonicalAuthorship");
+					success.setValue(false);
+				}
 			}	
 		}
 	}
@@ -466,8 +479,8 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			}else{
 				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
 			}
-		}else{
-			logger.warn("Missing information!");
+		}else if (name == null){
+			logger.warn("TaxonName must not be 'null'");
 			success.setValue(false);
 		}
 	}
@@ -506,7 +519,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	private void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
 			logger.warn("makeTypification not yet implemented");
-			success.setValue(false);
+			//success.setValue(false);
 		}
 	}
 
@@ -516,14 +529,14 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 			
 		if (elPublicationStatus != null){
 			logger.warn("makePublicationStatus not yet implemented");
-			success.setValue(false);
+			//success.setValue(false);
 		}
 	}
 	
 	private void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			logger.warn("makeProviderLink not yet implemented");
-			success.setValue(false);
+			//success.setValue(false);
 		}
 	}
 	
@@ -531,7 +544,7 @@ public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportCon
 	private void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
 			logger.warn("makeProviderSpecificData not yet implemented");
-			success.setValue(false);
+			//success.setValue(false);
 		}
 	}
 	

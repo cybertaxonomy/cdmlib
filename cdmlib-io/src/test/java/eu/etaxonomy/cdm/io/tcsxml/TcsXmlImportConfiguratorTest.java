@@ -8,17 +8,19 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
+public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 	
-	@SpringBeanByType
-	CdmTcsXmlImport cdmTcsXmlImport;
+	@SpringBeanByName
+	CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
 	INameService nameService;
@@ -36,13 +38,13 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	public void testInit() {
-		assertNotNull("cdmTcsXmlImport should not be null", cdmTcsXmlImport);
+		assertNotNull("cdmTcsXmlImport should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
 	
 	@Test
 	public void testDoInvoke() {
-		boolean result = cdmTcsXmlImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 16", 16, nameService.count());
 	}

@@ -36,11 +36,9 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -61,11 +59,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -166,7 +161,7 @@ public class DataSet {
     @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
     @XmlElement(name = "InstitutionalMembership", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionalMembership.class)
     })
-    protected List<Agent> agentData;
+    protected List<VersionableEntity> agentData;
 
     @XmlElementWrapper(name = "FeatureData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
     @XmlElements({
@@ -309,7 +304,7 @@ public class DataSet {
 	public DataSet () {
 		
 		agents = new ArrayList<Agent>(); 
-		agentData = new ArrayList<Agent>();
+		agentData = new ArrayList<VersionableEntity>();
 //		featureData = new ArrayList<VersionableEntity>();
 		featureData = new ArrayList<VersionableEntity>();
 		languageData = new ArrayList<LanguageStringBase>();
@@ -358,7 +353,7 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public List<Agent> getAgentData() {
+    public List<VersionableEntity> getAgentData() {
         return agentData;
     }
 
@@ -370,7 +365,7 @@ public class DataSet {
      *     {@link List<VersionableEntity> }
      *     
      */
-    public void setAgentData(List<Agent> value) {
+    public void setAgentData(List<VersionableEntity> value) {
         this.agentData = value;
     }
 

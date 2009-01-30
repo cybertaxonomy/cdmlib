@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.tcs;
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
@@ -40,8 +40,8 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsIoBase  extends CdmIoBase<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsIoBase.class);
+public abstract class TcsRdfIoBase  extends CdmIoBase<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfIoBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
 	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");

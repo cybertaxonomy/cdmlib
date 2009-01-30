@@ -32,7 +32,7 @@ public class ImportWrapper {
 	
 	private String label;
 	
-	private Class<? extends ICdmImport> importClass = CdmDefaultImport.class;
+	private Class<? extends ICdmImport> importClass = CdmApplicationAwareDefaultImport.class;
 	
 	private IImportConfigurator configuration;
 	
@@ -51,7 +51,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper Abcd206WrapperInstance(){
 		String label = "ABCD 2.06";
-		Class<? extends ICdmImport> clazz = CdmDefaultImport.class;
+		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = SpecimenImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
@@ -63,7 +63,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper TcsXml101WrapperInstance(){
 		String label = "TcsXML 1.1";
-		Class<? extends ICdmImport> clazz = CdmDefaultImport.class;
+		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = TcsXmlImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
@@ -75,7 +75,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper Jaxb10WrapperInstance(){
 		String label = "CDM 1.0 XML";
-		Class<? extends ICdmImport> clazz = CdmDefaultImport.class;
+		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = JaxbImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);

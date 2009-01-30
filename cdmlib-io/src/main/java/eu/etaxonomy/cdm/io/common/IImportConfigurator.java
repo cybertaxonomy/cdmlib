@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -10,6 +9,11 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
+/**
+ * @author a.mueller
+ * @created 29.01.2009
+ * @version 1.0
+ */
 public interface IImportConfigurator extends IIoConfigurator {
 
 	public static enum CHECK{
@@ -109,8 +113,12 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 * @param doOccurrence the doOccurrence to set
 	 */
 	public abstract void setDoOccurrence(boolean doOccurrence);
-
 	
+	/**
+	 * The destination data source for the import 
+	 * Don't use when using a spring data source
+	 * @return
+	 */
 	public abstract ICdmDataSource getDestination();
 
 	public abstract void setDestination(ICdmDataSource destination);
@@ -158,6 +166,9 @@ public interface IImportConfigurator extends IIoConfigurator {
 	
 	public Class<ICdmIO>[] getIoClassList();
 	
+//	public String[] getIoBeans();
+//	public void setIoBeans(String[] ioBeans);
+	
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 	 * If a controller was already created before the last created controller is returned.
@@ -170,5 +181,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 
 	public UUID getSecUuid();
 	public void setSecUuid(UUID secUuid);
+
 	
 }

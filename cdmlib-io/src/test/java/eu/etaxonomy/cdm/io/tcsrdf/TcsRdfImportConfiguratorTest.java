@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,17 +8,18 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
+public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 	
-	@SpringBeanByType
-	CdmTcsXmlImport cdmTcsXmlImport;
+	@SpringBeanByName
+	CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
 	INameService nameService;
@@ -27,24 +28,24 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 	
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
+		String inputFile = "/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsXmlImportConfigurator.NewInstance(url.toString(), null);
+		configurator = TcsRdfImportConfigurator.NewInstance(url.toString(), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 	
 	@Test
 	public void testInit() {
-		assertNotNull("cdmTcsXmlImport should not be null", cdmTcsXmlImport);
+		assertNotNull("cdmTcsXmlImport should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 	}
 	
 	@Test
 	public void testDoInvoke() {
-		boolean result = cdmTcsXmlImport.invoke(configurator);
+		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 16", 16, nameService.count());
+		assertEquals("Number of TaxonNames should be 5", 5, nameService.count());
 	}
 
 }

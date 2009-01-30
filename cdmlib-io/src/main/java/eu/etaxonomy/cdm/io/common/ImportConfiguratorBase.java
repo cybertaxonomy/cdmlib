@@ -14,15 +14,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -32,8 +30,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 20.06.2008
  * @version 1.0
  */
-public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
-	
+@Component
+public abstract class ImportConfiguratorBase extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	//check
@@ -63,12 +61,16 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	private CdmApplicationController cdmApp = null;
 	protected Class<ICdmIO>[] ioClassList;
 	
+	protected ICdmIO[] ioList;
+	
+	protected String[] ioBeans;
+	
+	
 /* *****************CONSTRUCTOR *****************************/
 	
 	public ImportConfiguratorBase(){
 		super();
 		setDbSchemaValidation(DbSchemaValidation.UPDATE);
-		makeIoClassList();
 	}
 	
 	abstract protected void makeIoClassList();
@@ -90,7 +92,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isValid()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isValid()
 	 */
 	public boolean isValid(){
 		boolean result = true;
@@ -98,10 +100,10 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 			logger.warn("Connection to BerlinModel could not be established");
 			result = false;
 		}
-		if (destination == null){
-			logger.warn("Connection to Cdm could not be established");
-			result = false;
-		}
+//		if (destination == null){
+//			logger.warn("Connection to Cdm could not be established");
+//			result = false;
+//		}
 		
 		return result;
 	}
@@ -109,31 +111,47 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	
 	
 /* ****************** GETTER/SETTER **************************/	
+
+	public void setIoClassList(ICdmIO[] ioList){
+		this.ioList = ioList;
+	}
+	
+	public Class<ICdmIO>[] getIoClassList(){
+		if (ioClassList == null){
+			makeIoClassList();
+		}
+		return ioClassList;
+	}
+
+	public void setIoClassList(Class<ICdmIO>[] ioClassList){
+		this.ioClassList = ioClassList;
+	}
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDeleteAll()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDeleteAll()
 	 */
 	public boolean isDeleteAll() {
 		return deleteAll;
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDeleteAll(boolean)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDeleteAll(boolean)
 	 */
 	public void setDeleteAll(boolean deleteAll) {
 		this.deleteAll = deleteAll;
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isDoAuthors()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoAuthors()
 	 */
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getCheck()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
 	 */
 	public CHECK getCheck() {
 		return this.check;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator.CHECK)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.CHECK)
 	 */
 	public void setCheck(CHECK check) {
 		this.check = check;
@@ -158,13 +176,13 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getDestination()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getDestination()
 	 */
 	public ICdmDataSource getDestination() {
 		return destination;
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setDestination(eu.etaxonomy.cdm.database.ICdmDataSource)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDestination(eu.etaxonomy.cdm.database.ICdmDataSource)
 	 */
 	public void setDestination(ICdmDataSource destination) {
 		this.destination = destination;
@@ -172,23 +190,23 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getSourceReference()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
 	public abstract ReferenceBase getSourceReference();
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
 	public void setSourceReference(ReferenceBase sourceReference) {
 		this.sourceReference = sourceReference;
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getSourceReferenceTitle()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReferenceTitle()
 	 */
 	public String getSourceReferenceTitle() {
 		return getSourceReference().getTitleCache();
 	}
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setSourceReferenceTitle(java.lang.String)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReferenceTitle(java.lang.String)
 	 */
 	public void setSourceReferenceTitle(String sourceReferenceTitle) {
 		getSourceReference().setTitleCache(sourceReferenceTitle);
@@ -196,14 +214,14 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getCommentator()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCommentator()
 	 */
 	public Person getCommentator() {
 		return commentator;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setCommentator(eu.etaxonomy.cdm.model.agent.Person)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCommentator(eu.etaxonomy.cdm.model.agent.Person)
 	 */
 	public void setCommentator(Person commentator) {
 		this.commentator = commentator;
@@ -211,7 +229,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getFactLanguage()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getFactLanguage()
 	 */
 	public Language getFactLanguage() {
 		return factLanguage;
@@ -219,7 +237,7 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setFactLanguage(eu.etaxonomy.cdm.model.common.Language)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setFactLanguage(eu.etaxonomy.cdm.model.common.Language)
 	 */
 	public void setFactLanguage(Language factLanguage) {
 		this.factLanguage = factLanguage;
@@ -271,10 +289,6 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 		this.sourceSecId = sourceSecId;
 	}
 	
-	public Class<ICdmIO>[] getIoClassList(){
-		return ioClassList;
-	}
-	
 
 	/**
 	 * @return the featureMap
@@ -296,17 +310,17 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	 * If a controller was already created before the last created controller is returned.
 	 * @return
 	 */
-	public CdmApplicationController getCdmAppController(){
-		return getCdmAppController(false);
-	}
+//	public CdmApplicationController getCdmAppController(){
+//		return getCdmAppController(false);
+//	}
 	
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
 	 * @return
 	 */
-	public CdmApplicationController getNewCdmAppController(){
-		return getCdmAppController(true, false);
-	}
+//	public CdmApplicationController getNewCdmAppController(){
+//		return getCdmAppController(true, false);
+//	}
 	
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
@@ -314,9 +328,9 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	 * been created before a new controller is returned.
 	 * @return
 	 */
-	public CdmApplicationController getCdmAppController(boolean createNew){
-		return getCdmAppController(createNew, false);
-	}
+//	public CdmApplicationController getCdmAppController(boolean createNew){
+//		return getCdmAppController(createNew, false);
+//	}
 	
 	
 	/**
@@ -325,20 +339,20 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase {
 	 * been created before a new controller is returned.
 	 * @return
 	 */
-	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
-		if (cdmApp == null || createNew == true){
-			try {
-				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation(), omitTermLoading);
-			} catch (DataSourceNotFoundException e) {
-				logger.error("could not connect to destination database");
-				return null;
-			}catch (TermNotFoundException e) {
-				logger.error("could not find needed term in destination datasource");
-				return null;
-			}
-		}
-		return cdmApp;
-	}
+//	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading){
+//		if (cdmApp == null || createNew == true){
+//			try {
+//				cdmApp = CdmApplicationController.NewInstance(this.getDestination(), this.getDbSchemaValidation(), omitTermLoading);
+//			} catch (DataSourceNotFoundException e) {
+//				logger.error("could not connect to destination database");
+//				return null;
+//			}catch (TermNotFoundException e) {
+//				logger.error("could not find needed term in destination datasource");
+//				return null;
+//			}
+//		}
+//		return cdmApp;
+//	}
 	
 	
 	protected static Method getDefaultFunction(Class<?> clazz, String methodName){

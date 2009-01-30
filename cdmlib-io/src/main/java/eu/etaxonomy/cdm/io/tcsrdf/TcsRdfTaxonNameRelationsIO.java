@@ -1,4 +1,13 @@
-package eu.etaxonomy.cdm.io.tcs;
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -20,13 +30,18 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-
-public class TcsTaxonNameRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsTaxonNameRelationsIO.class);
+/**
+ * @author a.mueller
+ * @created 29.05.2008
+ * @version 1.0
+ */
+@Component
+public class TcsRdfTaxonNameRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsIO.class);
 
 	private static int modCount = 5000;
 	
-	public TcsTaxonNameRelationsIO(){
+	public TcsRdfTaxonNameRelationsIO(){
 		super();
 	}
 	
@@ -52,7 +67,7 @@ public class TcsTaxonNameRelationsIO extends CdmIoBase<IImportConfigurator> impl
 		String value;
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
+		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
 		Element source = tcsConfig.getSourceRoot();
 		
 		logger.info("start makeNameRelationships ...");

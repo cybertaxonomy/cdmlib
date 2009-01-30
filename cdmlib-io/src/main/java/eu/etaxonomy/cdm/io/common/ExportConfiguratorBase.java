@@ -84,21 +84,21 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#getCheck()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
 	 */
 	public CHECK getCheck() {
 		return this.check;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator.CHECK)
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.CHECK)
 	 */
 	public void setCheck(CHECK check) {
 		this.check = check;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IExportConfigurator#getDbSchemaValidation()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IExportConfigurator#getDbSchemaValidation()
 	 */
 //	public DbSchemaValidation getDbSchemaValidation() {
 //		return dbSchemaValidation;
@@ -155,7 +155,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcs.IImportConfigurator#isValid()
+	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isValid()
 	 */
 	public boolean isValid(){
 		boolean result = true;

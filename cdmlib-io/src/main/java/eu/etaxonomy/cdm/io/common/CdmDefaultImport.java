@@ -9,131 +9,88 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * @author a.mueller
- * @created 20.06.2008
+ * @created 29.01.2009
  * @version 1.0
  */
-
 public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImport<T> {
 	private static final Logger logger = Logger.getLogger(CdmDefaultImport.class);
 	
-	//Constants
-	final boolean OBLIGATORY = true; 
-	final boolean FACULTATIVE = false; 
-	final int modCount = 1000;
-
-	IService service = null;
+	private CdmApplicationController cdmApp = null;
 	
-	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
-
-	public CdmDefaultImport(){
-		stores.put(ICdmIO.AUTHOR_STORE, new MapWrapper<TeamOrPersonBase>(service));
-		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
-		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+	public boolean invoke(T config){
+		ICdmDataSource destination = config.getDestination();
+		boolean omitTermLoading = false;
+		return invoke(config, destination, omitTermLoading);
 	}
+
 	
-	public boolean invoke(IImportConfigurator config){
-		if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-			return doCheck(config);
-		}else if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_AND_IMPORT)){
-			doCheck(config);
-			return doImport(config);
-		}else if (config.getCheck().equals(IImportConfigurator.CHECK.IMPORT_WITHOUT_CHECK)){
-			return doImport(config);
+	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
+		destination = destination;
+		omitTermLoading = omitTermLoading;
+		boolean createNew = false;
+		
+		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
+			return false;
 		}else{
-			logger.error("Unknown CHECK type");
-			return false;
+			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)cdmApp.applicationContext.getBean("defaultImport");
+			return defaultImport.invoke(config);
 		}
 	}
-	
-	
-	protected boolean doCheck(IImportConfigurator config){
-		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getSourceNameString() + ") ...");
-		
-		//check
-		if (config == null){
-			logger.warn("CdmImportConfiguration is null");
-			return false;
-		}else if (! config.isValid()){
-			logger.warn("CdmImportConfiguration is not valid");
-			return false;
-		}
-		
-		//do check for each class
-		for (Class<ICdmIO> ioClass: config.getIoClassList()){
-			ICdmIO cdmIo = null;
-			try {
-				cdmIo = ioClass.newInstance();
-				result &= cdmIo.check(config);
-			} catch (Exception e) {
-				logger.error(e);
-				e.printStackTrace();
-			}
-		}
-		
-		//return
-		System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");
-		return result;
 
+	/**
+	 * Creates a new {@link CdmApplicationController} if it does not exist yet or if createNew is <ocde>true</code>
+	 * @param config
+	 * @param destination
+	 * @param omitTermLoading
+	 * @param createNew
+	 * @return
+	 */
+	private boolean startApplicationController(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading, boolean createNew){
+		try {
+			if ( createNew == true || cdmApp == null){
+				cdmApp = CdmApplicationController.NewInstance(destination, config.getDbSchemaValidation(), omitTermLoading);
+				if (cdmApp != null){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			return true;
+		} catch (DataSourceNotFoundException  e) {
+			logger.error("could not connect to destination database");
+			return false;
+		}catch (TermNotFoundException e) {
+			logger.error("could not find needed term in destination datasource");
+			return false;
+		}
 	}
 	
 	
 	/**
-	 * Executes the whole 
+	 * Returns the {@link CdmApplicationController}. This is null if invoke() has not been called yet and if the controller
+	 * has not been set manually by setCdmApp() yet. 
+	 * @return the cdmApp
 	 */
-	protected boolean doImport(IImportConfigurator config){
-		boolean result = true;
-		if (config == null){
-			logger.warn("Configuration is null");
-			return false;
-		}else if (! config.isValid()){
-			logger.warn("Configuration is not valid");
-			return false;
-		}
-		
-		
-		ReferenceBase sourceReference = config.getSourceReference();
-		
-		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
-		
-		//do invoke for each class
-		for (Class<ICdmIO> ioClass: config.getIoClassList()){
-			ICdmIO cdmIo = null;
-			try {
-				cdmIo = ioClass.newInstance();
-				result &= cdmIo.invoke(config, stores);
-			} catch (Exception e) {
-				logger.error(e);
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
-		return result;
+	public CdmApplicationController getCdmApp() {
+		return cdmApp;
+	}
+
+
+	/**
+	 * @param cdmApp the cdmApp to set
+	 */
+	public void setCdmApp(CdmApplicationController cdmApp) {
+		this.cdmApp = cdmApp;
 	}
 	
-
 	
 }

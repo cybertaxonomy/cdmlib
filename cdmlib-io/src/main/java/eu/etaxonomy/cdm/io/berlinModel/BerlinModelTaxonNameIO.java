@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
@@ -5,9 +14,8 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -28,7 +36,12 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
+/**
+ * @author a.mueller
+ * @created 20.03.2008
+ * @version 1.0
+ */
+@Component
 public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameIO.class);
 
@@ -68,7 +81,6 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 		boolean success = true ;
 		
 		logger.info("start makeTaxonNames ...");
-		INameService nameService = getNameService();
 		
 		try {
 			String facultativCols = "";
@@ -215,7 +227,7 @@ public class BerlinModelTaxonNameIO extends BerlinModelIOBase {
 				
 			} //while rs.hasNext()
 			logger.info(i + " names handled");
-			nameService.saveTaxonNameAll(taxonNameMap.objects());
+			getNameService().saveTaxonNameAll(taxonNameMap.objects());
 			
 //			makeNameSpecificData(nameMap);
 

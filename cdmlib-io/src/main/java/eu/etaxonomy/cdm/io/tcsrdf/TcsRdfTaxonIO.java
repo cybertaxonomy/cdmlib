@@ -1,7 +1,12 @@
 /**
- * 
- */
-package eu.etaxonomy.cdm.io.tcs;
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +20,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -39,17 +45,18 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
-
 /**
  * @author a.mueller
- *
+ * @created 29.05.2008
+ * @version 1.0
  */
-public class TcsTaxonIO  extends TcsIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsTaxonIO.class);
+@Component
+public class TcsRdfTaxonIO  extends TcsRdfIoBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonIO.class);
 
 	private static int modCount = 30000;
 	
-	public TcsTaxonIO(){
+	public TcsRdfTaxonIO(){
 		super();
 	}
 	
@@ -104,7 +111,7 @@ public class TcsTaxonIO  extends TcsIoBase implements ICdmIO<IImportConfigurator
 		
 		logger.info("start makeTaxa ...");
 		
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
+		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
 		

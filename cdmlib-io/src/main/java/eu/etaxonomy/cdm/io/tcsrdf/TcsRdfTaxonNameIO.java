@@ -1,4 +1,13 @@
-package eu.etaxonomy.cdm.io.tcs;
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.List;
 import java.util.Map;
@@ -8,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -30,13 +40,18 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
-public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsTaxonNameIO.class);
+/**
+ * @author a.mueller
+ * @created 29.05.2008
+ * @version 1.0
+ */
+@Component
+public class TcsRdfTaxonNameIO  extends TcsRdfIoBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameIO.class);
 
 	private static int modCount = 5000;
 	
-	public TcsTaxonNameIO(){
+	public TcsRdfTaxonNameIO(){
 		super();
 	}
 
@@ -91,7 +106,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigur
 		String value;
 		
 		logger.info("start makeTaxonNames ...");
-		TcsImportConfigurator tcsConfig = (TcsImportConfigurator)config;
+		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
 		Element root = tcsConfig.getSourceRoot();
 		boolean success =true;
 		
@@ -116,8 +131,8 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigur
 			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonNameNamespace, "resource", rdfNamespace);
 			
 			try {
-				Rank rank = TcsTransformer.rankString2Rank(strRank);
-				NomenclaturalCode nomCode = TcsTransformer.nomCodeString2NomCode(strNomenclaturalCode);
+				Rank rank = TcsRdfTransformer.rankString2Rank(strRank);
+				NomenclaturalCode nomCode = TcsRdfTransformer.nomCodeString2NomCode(strNomenclaturalCode);
 				TaxonNameBase nameBase = nomCode.getNewTaxonNameInstance(rank);
 				
 				Set<String> omitAttributes = null;
@@ -160,7 +175,7 @@ public class TcsTaxonNameIO  extends TcsIoBase implements ICdmIO<IImportConfigur
 						String tdwgType = "http://rs.tdwg.org/ontology/voc/TaxonName#PublicationStatus";
 						if (tdwgType.equalsIgnoreCase(type)){
 							try {
-								NomenclaturalStatusType statusType = TcsTransformer.nomStatusString2NomStatus(statusValue);
+								NomenclaturalStatusType statusType = TcsRdfTransformer.nomStatusString2NomStatus(statusValue);
 								//NomenclaturalStatusType statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusValue);
 								if (statusType != null){
 									nameBase.addStatus(NomenclaturalStatus.NewInstance(statusType));

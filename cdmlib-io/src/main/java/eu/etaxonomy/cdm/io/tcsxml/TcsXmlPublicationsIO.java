@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author a.mueller
  *
  */
+@Component
 public class TcsXmlPublicationsIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsXmlPublicationsIO.class);
 
