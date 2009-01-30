@@ -201,9 +201,11 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		String mimeTypeTif = "image/tiff";
 		String mimeTypeJpg = "image/jpeg";
 		String mimeTypePng = "image/png";
+		String mimeTypePdf = "application/pdf";
 		String suffixTif = "tif";
 		String suffixJpg = "jpg";
 		String suffixPng = "png";
+		String suffixPdf = "pdf";
 		String sep = File.separator;
 		Integer size = null;
 		
@@ -261,6 +263,29 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		} 
 		media.addRepresentation(representationPng);
 		//end png
+		//pdf
+		String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf;
+		file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf);
+		MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf);
+		if (file.exists()){ 
+			representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file));
+		}else{
+			fileExists = true;
+			int pdfCount = 0;
+			while (fileExists){
+				pdfCount++;
+				urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf;
+				file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf);
+				
+				if (file.exists()){ 
+					representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file));
+				}else{
+					fileExists = false;
+				}
+			}
+		} 
+		media.addRepresentation(representationPdf);
+		//end pdf
 		
 		if(logger.isDebugEnabled()){
 			for (MediaRepresentation rep : media.getRepresentations()){
