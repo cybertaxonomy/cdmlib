@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.taxonx;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +25,11 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
+/**
+ * @author a.mueller
+ * @created 29.01.2008
+ * @version 1.0
+ */
 public class TaxonXImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByName
