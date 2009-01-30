@@ -92,6 +92,7 @@ public abstract class BerlinModelIOBase extends CdmIoBase<IImportConfigurator> i
 			}
 			return false;
 		} catch (SQLException e) {
+			logger.warn("Exception in resultSetHasColumn");
 			return false;
 		}
 	}

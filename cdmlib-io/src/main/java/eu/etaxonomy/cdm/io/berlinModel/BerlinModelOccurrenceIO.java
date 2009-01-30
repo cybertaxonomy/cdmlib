@@ -124,17 +124,17 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 		
 		try {
 			//get data from database
-			String strQuery = 
-					" SELECT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " + 
-                    	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " + 
-                    	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " +
-                    " FROM emOccurrence INNER JOIN " + 
-                      	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " +
-                      	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " +
-                        " emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " + 
-                        " emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " + 
-                    " WHERE (1=1)" + 
-                    " ORDER BY PTaxon.RIdentifier";
+			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution
+				" SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " + 
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " + 
+                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " +
+                " FROM emOccurrence INNER JOIN " + 
+                  	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " +
+                  	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " +
+                    " emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " + 
+                    " emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " + 
+                " WHERE (1=1)" + 
+                " ORDER BY PTaxon.RIdentifier";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			
