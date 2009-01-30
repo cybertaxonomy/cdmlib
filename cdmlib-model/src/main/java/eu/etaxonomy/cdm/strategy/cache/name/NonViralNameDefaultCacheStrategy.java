@@ -175,9 +175,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				authorPart = "("+ basAuthorPart +")" + authorPart;
 			}
 			String infraSpeciesPart = (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()));
-			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesPart});
+
+			String infraSpeciesSeparator = "";
+			if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
+				//TODO handle exception
+				logger.warn("Rank for autonym does not exist or is not lower than species !!");
+			}else{
+				infraSpeciesSeparator = nonViralName.getRank().getAbbreviation();
+			}
+			
+			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
 			result = result.trim().replace("null", "");
-		}else{
+		}else{ //not Autonym
 			String nameCache = CdmUtils.Nz(getNameCache(nonViralName));
 			String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
 			result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
