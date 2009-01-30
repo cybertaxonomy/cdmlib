@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import java.net.URL;
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -19,66 +22,54 @@ import org.apache.log4j.Logger;
 public class SDDSources {
 	private static final Logger logger = Logger.getLogger(SDDSources.class);
 	
-/*	public static String arecaceae(){
-		//	Monocots rdf
-		String sourceUrl = "http://dev.e-taxonomy.eu/trac/attachment/wiki/SampleDataConversion/Monocotyledonae/arecaceae.rdf?format=raw";
-		return sourceUrl;
-		
-	}
-*/
-	
 	public static String viola_local(){
 		//		SDD XML example from the SDD v1.1 package
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/SDD-Test-Simple.xml";
+		URL url = new SDDSources().getClass().getResource("/sdd/SDD-Test-Simple.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 	
 	public static String LIAS_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/LIAS_Main.sdd11/LIAS_Main.sdd11.xml";
+		//String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/LIAS_Main.sdd11/LIAS_Main.sdd11.xml";
+		URL url = new SDDSources().getClass().getResource("/sdd/LIAS_Main.sdd11.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 	
 	public static String Erythroneura_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Erythroneura.sdd11/Erythroneura.sdd11.xml";
+		//String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Erythroneura.sdd11/Erythroneura.sdd11.xml";
+		URL url = new SDDSources().getClass().getResource("/sdd/Erythroneura.sdd11.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 	
 	public static String Cicad_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Cicad.sdd11/Cicad.sdd11.xml";
+		//String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Cicad.sdd11/Cicad.sdd11.xml";
+		URL url = new SDDSources().getClass().getResource("/sdd/Cicad.sdd11.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 	
 	public static String ValRosandraFRIDAKey_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
-		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Val-Rosandra-FRIDA-Key.sdd11/Val-Rosandra-FRIDA-Key.sdd11.xml";
+		//String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Val-Rosandra-FRIDA-Key.sdd11/Val-Rosandra-FRIDA-Key.sdd11.xml";
+		URL url = new SDDSources().getClass().getResource("/sdd/Val-Rosandra-FRIDA-Key.sdd11.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 	
 	public static String FreshwaterAquaticInsects_local(){
-		//		SDD export from an Xper² application
+		//		SDD export from an Xperï¿½ application
 		String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/Freshwater aquatic insects/test v2.sdd.xml";
 		return sourceUrl;
 	}
 	
-	public static String viola_local_andreas(){
-		//		SDD xml examples from the SDD v1.1 package
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/SDD-Test-Simple.xml";
-		return sourceUrl;
-		
-	}
-
-	public static String arecaceae_pub(){
-		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
-		return sourceUrl;
-	}
-
 }
