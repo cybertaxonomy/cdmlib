@@ -13,9 +13,5 @@ package eu.etaxonomy.cdm.api.service.config;
  * @version 1.0
  */
 public interface INameServiceConfigurator {
-	
-	public boolean isOmitNamesWithTaxa();
-	
-	public void setOmitNamesWithTaxa(boolean omitNamesWithTaxa);
-
+	//TODO: For future use	
 }

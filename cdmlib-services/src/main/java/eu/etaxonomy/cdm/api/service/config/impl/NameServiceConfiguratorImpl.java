@@ -15,16 +15,5 @@ import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
  * @version 1.0
  */
 public class NameServiceConfiguratorImpl implements INameServiceConfigurator {
-	
-	private boolean omitNamesWithTaxa = false;
-	
-	public boolean isOmitNamesWithTaxa() {
-		return omitNamesWithTaxa;
-	}
-	
-	public void setOmitNamesWithTaxa(boolean omitNamesWithTaxa) {
-		this.omitNamesWithTaxa = omitNamesWithTaxa;
-	}
-	
-
+//	TODO: For future use	
 }
