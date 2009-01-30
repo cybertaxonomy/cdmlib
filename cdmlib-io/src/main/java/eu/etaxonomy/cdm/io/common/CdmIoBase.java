@@ -113,6 +113,12 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 			Map<String, MapWrapper<? extends CdmBase>> stores);
 
 	
+	/**
+	 * Returns true if this (IO-)class should be ignored during the import/export process.
+	 * This information is usually stored in the configuration
+	 * @param config
+	 * @return
+	 */
 	protected abstract boolean isIgnore(T config);
 
 	protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){

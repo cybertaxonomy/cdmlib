@@ -37,8 +37,10 @@ import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -107,6 +109,13 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 
 	public AbcdIO() {
 		super();
+	}
+
+	
+	@Override
+	protected boolean doCheck(IImportConfigurator config) {
+		logger.warn("Checking not yet implemented for AbcdIO.class");
+		return true;
 	}
 
 	/*
@@ -1312,21 +1321,29 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	}
 
 
-	public boolean invoke(SpecimenImportConfigurator config){
+	@Override
+	protected boolean doInvoke(IImportConfigurator config,
+			Map<String, MapWrapper<? extends CdmBase>> stores) {
+		return invokeMe((SpecimenImportConfigurator)config);
+	}
+
+	
+	
+	public boolean invokeMe(SpecimenImportConfigurator config){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		boolean result = true;
-		AbcdIO test = new AbcdIO();
+		//AbcdIO test = new AbcdIO();
 		String sourceName = config.getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null)
 		{
 			logger.info("nb units to insert: "+unitsList.getLength());
 			for (int i=0;i<unitsList.getLength();i++){
-				test.setUnitPropertiesXML((Element)unitsList.item(i));
-				result &= test.start(config);
+				this.setUnitPropertiesXML((Element)unitsList.item(i));
+				result &= this.start(config);
 				config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
-				compareABCDtoCDM(sourceName,test.knownABCDelements);
+				compareABCDtoCDM(sourceName,this.knownABCDelements);
 				//reset the ABCD elements added in CDM
 				//knownABCDelements = new ArrayList<String>();
 				allABCDelements = new HashMap<String,String>();
@@ -1338,11 +1355,17 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	}
 
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		logger.info("invoke AbcdIO");
-		return invoke((SpecimenImportConfigurator)config);
-	}
+//	public boolean invoke(IImportConfigurator config, Map stores) {
+//		logger.info("invoke AbcdIO");
+//		return invoke((SpecimenImportConfigurator)config);
+//	}
 
+
+	@Override
+	protected boolean isIgnore(IImportConfigurator config) {
+		//return ! config.isDoNameFacts();
+		return false;
+	}
 
 
 

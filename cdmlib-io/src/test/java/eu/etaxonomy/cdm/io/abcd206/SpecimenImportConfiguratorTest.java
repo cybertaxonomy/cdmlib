@@ -59,7 +59,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 5", 5, nameService.count());
+		assertEquals("Number of TaxonNames should be 10", 10, nameService.count());
 	}
 
 }
