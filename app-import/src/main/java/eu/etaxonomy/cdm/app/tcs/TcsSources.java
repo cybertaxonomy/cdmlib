@@ -10,8 +10,11 @@
 package eu.etaxonomy.cdm.app.tcs;
 
 import java.io.File;
+import java.net.URL;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.app.sdd.SDDSources;
 
 /**
  * @author a.mueller
@@ -31,7 +34,9 @@ public class TcsSources {
 	
 	public static String taxonX_local(){
 		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/palm_tn_29336.xml";
+		//String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/palm_tn_29336.xml";
+		URL url = new SDDSources().getClass().getResource("/taxonX/palm_tn_29336.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 	}
 
@@ -43,26 +48,25 @@ public class TcsSources {
 	
 	public static String arecaceae_local(){
 		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae.rdf";
+		//String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae.rdf";
+		URL url = new SDDSources().getClass().getResource("/arecaceae.rdf");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}
 
-	public static String arecaceae_pub(){
-		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_pub.rdf";
-		return sourceUrl;
-	}
 	
 	public static String arecaceae_short(){
 		//		Monocots rdf
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/arecaceae_short.rdf";
+		URL url = new SDDSources().getClass().getResource("/arecaceae_short.rdf");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 	}
 
 	public static String tcsXmlTest_local(){
 		//		tcsXmlTest.xml
-		String sourceUrl = "file:C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/tcsXmlTest.xml";
+		URL url = new SDDSources().getClass().getResource("/tcsXmlTest.xml");
+		String sourceUrl = url.toString();
 		return sourceUrl;
 		
 	}	
