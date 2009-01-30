@@ -24,11 +24,9 @@ import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -68,15 +66,13 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {	
 	private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
 	
-	
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
 		super(TaxonBase.class);
 	}
 	
-	@Autowired
+//	@Autowired   //TODO switched of because it caused problems when starting CdmApplicationController
 	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
 		this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
 	}

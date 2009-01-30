@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -248,8 +249,19 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		
 		inner.setProjection(Projections.distinct(Projections.id()));
 		
+//		Criteria outer = getSession().createCriteria(type);
+//		outer.add(Restrictions.in("id", (List<Integer>)inner.list()));
+		
+		List<Integer> ids = (List<Integer>)inner.list();
+
+		if(ids.isEmpty()) {
+		        return new ArrayList<TYPE>();
+		}
+
 		Criteria outer = getSession().createCriteria(type);
-		outer.add(Restrictions.in("id", (List<Integer>)inner.list()));
+		outer.add(Restrictions.in("id", ids));
+		
+		
 		
 		if(pageSize != null) {
 			outer.setMaxResults(pageSize);

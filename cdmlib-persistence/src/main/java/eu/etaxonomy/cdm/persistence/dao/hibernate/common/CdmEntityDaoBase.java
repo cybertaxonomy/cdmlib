@@ -49,6 +49,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
 	}
 	
+	//TODO this method should be moved to a concrete class (not typed)
 	public UUID saveCdmObj(CdmBase cdmObj) throws DataAccessException  {
 		getSession().saveOrUpdate(cdmObj);
 		return cdmObj.getUuid();
