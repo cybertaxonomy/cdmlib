@@ -62,8 +62,8 @@ public class PalmaeProtologueActivator extends AbstractImageImporter {
 		
 		ArrayList<HashMap<String, String>> contents =  ExcelUtils.parseXLS(config.getSource().toString());
 				
-		ICommonService commonService = config.getCdmAppController().getCommonService();
-		INameService nameService = config.getCdmAppController().getNameService();
+//		ICommonService commonService = getCommonService();
+//		INameService nameService = getNameService();
 		
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		
@@ -80,7 +80,7 @@ public class PalmaeProtologueActivator extends AbstractImageImporter {
 			
 			//logger.info(species + ",  " + taxonId + ",  " + accOrSyn + ",  " + reference + ",  " + linkProto);
 			
-			TaxonNameBase taxonNameBase = (TaxonNameBase)commonService.getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
+			TaxonNameBase taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
 			
 			if(taxonNameBase == null){
 				logger.warn("no taxon with this name found: " + species + ", idInSource: " + taxonId);
@@ -107,7 +107,7 @@ public class PalmaeProtologueActivator extends AbstractImageImporter {
 		}
 		
 		
-		nameService.saveTaxonNameAll(taxonNameStore);
+		getNameService().saveTaxonNameAll(taxonNameStore);
 		logger.info(count + " protologues imported to CDM store.");
 		
 		return true;

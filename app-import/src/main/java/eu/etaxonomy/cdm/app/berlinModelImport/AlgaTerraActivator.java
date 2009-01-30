@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
@@ -127,7 +127,7 @@ public class AlgaTerraActivator {
 		bmImportConfigurator.setCheck(check);
 		
 		// invoke import
-		CdmDefaultImport<TcsImportConfigurator> bmImport = new CdmDefaultImport<TcsImportConfigurator>();
+		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
 
 		

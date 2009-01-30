@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.tcs.TcsImportConfigurator;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -75,7 +75,7 @@ public class PalmaeActivator {
 		String source = tcsSource;
 		ICdmDataSource destination = cdmDestination;
 		
-		TcsImportConfigurator tcsImportConfigurator = TcsImportConfigurator.NewInstance(source,  destination);
+		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
 		
 		tcsImportConfigurator.setSecUuid(secUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
@@ -96,14 +96,14 @@ public class PalmaeActivator {
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		CdmDefaultImport<TcsImportConfigurator> tcsImport = new CdmDefaultImport<TcsImportConfigurator>();
+		CdmDefaultImport<TcsRdfImportConfigurator> tcsImport = new CdmDefaultImport<TcsRdfImportConfigurator>();
 		//new Test().invoke(tcsImportConfigurator);
 		success &= tcsImport.invoke(tcsImportConfigurator);
 		
 		
 		//make feature tree
 		logger.info("Make feature tree");
-		CdmApplicationController app = tcsImportConfigurator.getCdmAppController();
+		CdmApplicationController app = tcsImport.getCdmApp();
 		
 
 		

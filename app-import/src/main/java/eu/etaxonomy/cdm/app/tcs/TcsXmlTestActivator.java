@@ -86,12 +86,12 @@ public class TcsXmlTestActivator {
 		tcsImport.invoke(tcsImportConfigurator);
 		
 		
-		IReferenceService refService = tcsImportConfigurator.getCdmAppController().getReferenceService();
+		IReferenceService refService = tcsImport.getCdmApp().getReferenceService();
 		Book book = Book.NewInstance();
 		//book.setDatePublished(TimePeriod.NewInstance(1945));
 		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
 		refService.saveReference(book);
-		tcsImportConfigurator.getCdmAppController().close();
+		tcsImport.getCdmApp().close();
 		logger.info("End");
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 	}

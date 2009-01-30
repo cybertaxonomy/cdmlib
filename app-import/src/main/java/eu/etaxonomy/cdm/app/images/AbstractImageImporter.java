@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public abstract class AbstractImageImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static Logger logger = Logger.getLogger(AbstractImageImporter.class);
+	private static final Logger logger = Logger.getLogger(AbstractImageImporter.class);
 	
 	protected CdmApplicationController appCtr;
 	
@@ -45,9 +45,9 @@ public abstract class AbstractImageImporter extends CdmIoBase<IImportConfigurato
 	 */
 	@Override
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores) {
-		cdmApp = config.getCdmAppController();
+		//cdmApp = config.getCdmAppController();
 		
-		TransactionStatus status = cdmApp.startTransaction();
+		TransactionStatus status = startTransaction();
 		
 		taxonService = cdmApp.getTaxonService();
 

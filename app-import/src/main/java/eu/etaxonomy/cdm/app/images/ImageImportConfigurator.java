@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -25,8 +26,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public class ImageImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
-	private static Logger logger = Logger
-			.getLogger(ImageImportConfigurator.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(ImageImportConfigurator.class);
 
 	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination){
 		return new ImageImportConfigurator(source, destination);		
@@ -41,15 +42,13 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
-	@Override
+//	@Override
 	public ReferenceBase getSourceReference() {
-		//TODO
+	//TODO
 		if (this.sourceReference == null){
-			
-			IReferenceService referenceService = getCdmAppController().getReferenceService();
-			
-			sourceReference = referenceService.getReferenceByUuid(this.getSecUuid());
-			
+			logger.warn("getSource Reference not yet fully implemented");
+			sourceReference = Database.NewInstance();
+			sourceReference.setTitleCache("XXX");
 		}
 		return sourceReference;
 	}
@@ -75,7 +74,6 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
 	public String getSourceNameString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Image file " + getSource();
 	}
 }

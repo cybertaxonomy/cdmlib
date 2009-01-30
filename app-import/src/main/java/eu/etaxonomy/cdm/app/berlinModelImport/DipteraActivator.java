@@ -137,7 +137,7 @@ public class DipteraActivator {
 		bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
-			CdmApplicationController app = bmImportConfigurator.getCdmAppController();
+			CdmApplicationController app = bmImport.getCdmApp();
 			
 			//parse distributions
 			if (doDistributionParser){
@@ -146,7 +146,7 @@ public class DipteraActivator {
 			}
 						
 			//make feature tree
-			app = bmImportConfigurator.getCdmAppController();
+			app = bmImport.getCdmApp();
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode);

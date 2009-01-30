@@ -30,7 +30,8 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @version 1.0
  */
 public class ViolaActivator {
-	private static Logger logger = Logger.getLogger(ViolaActivator.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(ViolaActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
@@ -90,19 +91,9 @@ public class ViolaActivator {
 		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// invoke import
-		
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("/eu/etaxonomy/cdm/app/sdd/applicationContext.xml");
-		SDDDescriptionIO sddImport = (SDDDescriptionIO)applicationContext.getBean("sddDescriptionIo", SDDDescriptionIO.class);
-		
-//		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
+		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
+		sddImport.invoke(sddImportConfigurator);
 
-//		SDDDescriptionIO sddDescriptionIo = new SDDDescriptionIO();
-//		IImportConfigurator configurator;	
-//		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml");
-//		configurator = SDDImportConfigurator.NewInstance(url.toString(), null);
-		sddImport.doInvoke(sddImportConfigurator, null);
-		
-//		sddImport.invoke(sddImportConfigurator);
 		System.out.println("End import from SDD ("+ source.toString() + ")...");
 	}
 

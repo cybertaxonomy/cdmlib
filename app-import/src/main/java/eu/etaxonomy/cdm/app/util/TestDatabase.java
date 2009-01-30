@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -99,6 +100,8 @@ public class TestDatabase {
 
 		List<Agent> agents = new ArrayList<Agent>();
 	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
+	    //List<Agent> agentData = new ArrayList<Agent>();
+	    
 	    //List<TermBase> terms = new ArrayList<TermBase>();
 	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();

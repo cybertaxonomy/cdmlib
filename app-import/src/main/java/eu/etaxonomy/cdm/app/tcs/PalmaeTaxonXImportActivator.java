@@ -54,7 +54,7 @@ public class PalmaeTaxonXImportActivator {
 		
 		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance("", destination);
 		// invoke import
-		ICdmImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
+		CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 		
 		taxonXImportConfigurator.setSecUuid(secUuid);
 		
@@ -63,7 +63,7 @@ public class PalmaeTaxonXImportActivator {
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
-		TransactionStatus tx = taxonXImportConfigurator.getCdmAppController().startTransaction();
+		TransactionStatus tx = cdmImport.getCdmApp().startTransaction();
 				
 		//new Test().invoke(tcsImportConfigurator);
 		if (source.isDirectory()){
@@ -86,7 +86,7 @@ public class PalmaeTaxonXImportActivator {
 		}else{
 			success &= cdmImport.invoke(taxonXImportConfigurator);
 		}
-		taxonXImportConfigurator.getCdmAppController().commitTransaction(tx);		
+		cdmImport.getCdmApp().commitTransaction(tx);		
 		return success;
 	}
 	
