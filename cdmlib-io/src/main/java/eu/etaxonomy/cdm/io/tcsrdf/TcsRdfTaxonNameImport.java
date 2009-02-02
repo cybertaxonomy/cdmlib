@@ -46,12 +46,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonNameIO  extends TcsRdfIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameIO.class);
+public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
 
 	private static int modCount = 5000;
 	
-	public TcsRdfTaxonNameIO(){
+	public TcsRdfTaxonNameImport(){
 		super();
 	}
 

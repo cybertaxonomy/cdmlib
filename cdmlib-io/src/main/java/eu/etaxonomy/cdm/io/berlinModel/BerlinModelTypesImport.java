@@ -39,12 +39,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class BerlinModelTypesIO extends BerlinModelIOBase /*implements IIO<BerlinModelImportConfigurator>*/ {
-	private static final Logger logger = Logger.getLogger(BerlinModelTypesIO.class);
+public class BerlinModelTypesImport extends BerlinModelImportBase /*implements IIO<BerlinModelImportConfigurator>*/ {
+	private static final Logger logger = Logger.getLogger(BerlinModelTypesImport.class);
 
 	private static int modCount = 10000;
 	
-	public BerlinModelTypesIO(){
+	public BerlinModelTypesImport(){
 		super();
 	}
 	

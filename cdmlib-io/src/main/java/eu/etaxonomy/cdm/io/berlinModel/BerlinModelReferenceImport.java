@@ -73,12 +73,12 @@ import eu.etaxonomy.cdm.model.reference.WebPage;
  * @version 1.0
  */
 @Component
-public class BerlinModelReferenceIO extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelReferenceIO.class);
+public class BerlinModelReferenceImport extends BerlinModelImportBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelReferenceImport.class);
 
 	private int modCount = 1000;
 	
-	public BerlinModelReferenceIO(){
+	public BerlinModelReferenceImport(){
 		super();
 	}
 	

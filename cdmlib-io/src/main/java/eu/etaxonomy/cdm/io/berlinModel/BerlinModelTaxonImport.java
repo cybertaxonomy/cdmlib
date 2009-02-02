@@ -42,12 +42,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonIO  extends BerlinModelIOBase  {
-	private static final Logger logger = Logger.getLogger(BerlinModelTaxonIO.class);
+public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
+	private static final Logger logger = Logger.getLogger(BerlinModelTaxonImport.class);
 
 	private int modCount = 10000;
 	
-	public BerlinModelTaxonIO(){
+	public BerlinModelTaxonImport(){
 		super();
 	}
 	

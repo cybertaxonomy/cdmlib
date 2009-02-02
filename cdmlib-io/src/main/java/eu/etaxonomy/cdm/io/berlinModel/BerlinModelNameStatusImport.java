@@ -55,12 +55,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelNameStatusIO extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelNameStatusIO.class);
+public class BerlinModelNameStatusImport extends BerlinModelImportBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelNameStatusImport.class);
 
 	private int modCount = 5000;
 	
-	public BerlinModelNameStatusIO(){
+	public BerlinModelNameStatusImport(){
 		super();
 	}
 

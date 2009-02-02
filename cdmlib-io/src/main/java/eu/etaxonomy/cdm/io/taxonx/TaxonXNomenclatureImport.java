@@ -47,12 +47,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class TaxonXNomenclatureIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureIO.class);
+public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
 
 	private static int modCount = 10000;
 
-	public TaxonXNomenclatureIO(){
+	public TaxonXNomenclatureImport(){
 		super();
 	}
 	

@@ -8,7 +8,6 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -34,24 +33,24 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 
 	protected static Namespace nsTcsXml = Namespace.getNamespace("http://www.tdwg.org/schemas/tcs/1.01");
 	
-	@Autowired
-	TcsXmlMetaDataIO tcsXmlMetaDataIO;
-	@Autowired
-	TcsXmlSpecimensIO tcsXmlSpecimensIO;
-	@Autowired
-	TcsXmlPublicationsIO tcsXmlPublicationsIO;
-	@Autowired
-	TcsXmlTaxonNameIO tcsXmlTaxonNameIO;
-	@Autowired
-	TcsXmlTaxonNameRelationsIO tcsXmlTaxonNameRelationsIO;
-	@Autowired
-	TcsXmlTaxonIO tcsXmlTaxonIO;
-	@Autowired
-	TcsXmlTaxonRelationsIO tcsXmlTaxonRelationsIO;
+//	@Autowired
+//	TcsXmlMetaDataImport tcsXmlMetaDataImport;
+//	@Autowired
+//	TcsXmlSpecimensImport tcsXmlSpecimensIO;
+//	@Autowired
+//	TcsXmlPublicationsImport tcsXmlPublicationsIO;
+//	@Autowired
+//	TcsXmlTaxonNameImport tcsXmlTaxonNameIO;
+//	@Autowired
+//	TcsXmlTaxonNameRelationsImport tcsXmlTaxonNameRelationsIO;
+//	@Autowired
+//	TcsXmlTaxonImport tcsXmlTaxonIO;
+//	@Autowired
+//	TcsXmlTaxonRelationsImport tcsXmlTaxonRelationsIO;
 	
 	protected void makeIoClassList(){
 //		ioBeans = new String[]{
-//				"tcsXmlMetaDataIO"
+//				"tcsXmlMetaDataImport"
 //				, "tcsXmlSpecimensIO"
 //				, "tcsXmlPublicationsIO"
 //				, "tcsXmlTaxonNameIO"
@@ -61,13 +60,13 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 //		};
 		
 		ioClassList = new Class[]{
-			TcsXmlMetaDataIO.class
-			, TcsXmlSpecimensIO.class
-			, TcsXmlPublicationsIO.class
-			, TcsXmlTaxonNameIO.class
-			, TcsXmlTaxonNameRelationsIO.class
-			, TcsXmlTaxonIO.class
-			, TcsXmlTaxonRelationsIO.class
+			TcsXmlMetaDataImport.class
+			, TcsXmlSpecimensImport.class
+			, TcsXmlPublicationsImport.class
+			, TcsXmlTaxonNameImport.class
+			, TcsXmlTaxonNameRelationsImport.class
+			, TcsXmlTaxonImport.class
+			, TcsXmlTaxonRelationsImport.class
 		};
 	};
 	
@@ -189,7 +188,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 	 */
 	public Method getFunctionMetaDataDetailed() {
 		if (functionMetaDataDetailed == null){
-			functionMetaDataDetailed = getDefaultFunction(TcsXmlMetaDataIO.class, "defaultMetaDataDetailedFunction");
+			functionMetaDataDetailed = getDefaultFunction(TcsXmlMetaDataImport.class, "defaultMetaDataDetailedFunction");
 		}
 		return functionMetaDataDetailed;
 		

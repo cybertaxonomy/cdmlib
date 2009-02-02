@@ -55,11 +55,11 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase implements 
 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-			TcsRdfReferenceIO.class
-			, TcsRdfTaxonNameIO.class
-			, TcsRdfTaxonNameRelationsIO.class
-			, TcsRdfTaxonIO.class
-			, TcsRdfTaxonRelationsIO.class
+			TcsRdfReferenceImport.class
+			, TcsRdfTaxonNameImport.class
+			, TcsRdfTaxonNameRelationsImport.class
+			, TcsRdfTaxonImport.class
+			, TcsRdfTaxonRelationsImport.class
 		};
 	};
 	

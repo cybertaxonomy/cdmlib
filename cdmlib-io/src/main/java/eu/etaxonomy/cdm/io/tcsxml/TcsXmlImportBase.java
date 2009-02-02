@@ -43,8 +43,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsXmlIoBase  extends CdmIoBase<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsXmlIoBase.class);
+public abstract class TcsXmlImportBase  extends CdmIoBase<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsXmlImportBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
 	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");

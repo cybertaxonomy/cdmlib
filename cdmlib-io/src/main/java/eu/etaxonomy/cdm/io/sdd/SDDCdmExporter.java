@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 10.12.2008
  * @versoin 1.0
  */
-@Component
+@Component("sddCdmExporter")
 public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
 // public class CdmExporter extends CdmIoBase implements ICdmIoExport {
 // TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {

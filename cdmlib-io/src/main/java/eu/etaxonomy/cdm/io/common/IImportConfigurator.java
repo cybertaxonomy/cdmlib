@@ -29,36 +29,36 @@ public interface IImportConfigurator extends IIoConfigurator {
 		ALL
 	}
 	
-	public abstract boolean isValid();
+	public boolean isValid();
 
 	/* ****************** GETTER/SETTER **************************/
-	public abstract boolean isDeleteAll();
+	public boolean isDeleteAll();
 
-	public abstract void setDeleteAll(boolean deleteAll);
+	public void setDeleteAll(boolean deleteAll);
 
-	public abstract boolean isDoAuthors();
+	public boolean isDoAuthors();
 
-	public abstract void setDoAuthors(boolean doAuthors);
-
-	/**
-	 * @return the doReferences
-	 */
-	public abstract DO_REFERENCES getDoReferences();
-
-	/**
-	 * @param doReferences the doReferences to set
-	 */
-	public abstract void setDoReferences(DO_REFERENCES doReferences);
+	public void setDoAuthors(boolean doAuthors);
 
 	/**
 	 * @return the doReferences
 	 */
-	public abstract CHECK getCheck();
+	public DO_REFERENCES getDoReferences();
 
 	/**
 	 * @param doReferences the doReferences to set
 	 */
-	public abstract void setCheck(CHECK check);
+	public void setDoReferences(DO_REFERENCES doReferences);
+
+	/**
+	 * @return the doReferences
+	 */
+	public CHECK getCheck();
+
+	/**
+	 * @param doReferences the doReferences to set
+	 */
+	public void setCheck(CHECK check);
 
 	/**
 	 * If true, no errors occurs if objects are not found that should exist. This may
@@ -72,97 +72,91 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 */
 	public void setIgnoreNull(boolean ignoreNull);
 	
-	public abstract boolean isDoTaxonNames();
+	public boolean isDoTaxonNames();
 
-	public abstract void setDoTaxonNames(boolean doTaxonNames);
+	public void setDoTaxonNames(boolean doTaxonNames);
 
-	public abstract boolean isDoRelNames();
+	public boolean isDoRelNames();
 
-	public abstract void setDoRelNames(boolean doRelNames);
+	public void setDoRelNames(boolean doRelNames);
 
-	public abstract boolean isDoNameStatus();
+	public boolean isDoNameStatus();
 
-	public abstract void setDoNameStatus(boolean doNameStatus);
+	public void setDoNameStatus(boolean doNameStatus);
 
-	public abstract boolean isDoNameFacts();
+	public boolean isDoNameFacts();
 
-	public abstract void setDoNameFacts(boolean doNameFacts);
+	public void setDoNameFacts(boolean doNameFacts);
 
-	public abstract boolean isDoTypes();
+	public boolean isDoTypes();
 
-	public abstract void setDoTypes(boolean doTypes);
+	public void setDoTypes(boolean doTypes);
 
-	public abstract boolean isDoTaxa();
+	public boolean isDoTaxa();
 
-	public abstract void setDoTaxa(boolean doTaxa);
+	public void setDoTaxa(boolean doTaxa);
 
-	public abstract boolean isDoRelTaxa();
+	public boolean isDoRelTaxa();
 
-	public abstract void setDoRelTaxa(boolean doRelTaxa);
+	public void setDoRelTaxa(boolean doRelTaxa);
 
-	public abstract boolean isDoFacts();
+	public boolean isDoFacts();
 
-	public abstract void setDoFacts(boolean doFacts);
+	public void setDoFacts(boolean doFacts);
 
 	/**
 	 * @return the doOccurrence
 	 */
-	public abstract boolean isDoOccurrence();
+	public boolean isDoOccurrence();
 
 	/**
 	 * @param doOccurrence the doOccurrence to set
 	 */
-	public abstract void setDoOccurrence(boolean doOccurrence);
+	public void setDoOccurrence(boolean doOccurrence);
 	
 	/**
 	 * The destination data source for the import 
 	 * Don't use when using a spring data source
 	 * @return
 	 */
-	public abstract ICdmDataSource getDestination();
+	public ICdmDataSource getDestination();
 
-	public abstract void setDestination(ICdmDataSource destination);
+	public void setDestination(ICdmDataSource destination);
 
-	public abstract DbSchemaValidation getDbSchemaValidation();
+	public DbSchemaValidation getDbSchemaValidation();
 
-	public abstract void setDbSchemaValidation(
+	public void setDbSchemaValidation(
 			DbSchemaValidation dbSchemaValidation);
 
-	public abstract ReferenceBase getSourceReference();
+	public ReferenceBase getSourceReference();
 
-	
-	/**
-	 * A String representation of the used source (e.g. BerlinModel Cichorieae Database)
-	 * @return
-	 */
-	public abstract String getSourceNameString();
 	
 	/**
 	 * Any object that represents the Source. The implementing class must cast this to 
 	 * the correct class type
 	 * @return
 	 */
-	public abstract Object getSource();
+	public Object getSource();
 
 	//public abstract void setSource(Object url);
 
-	public abstract void setSourceReference(ReferenceBase sourceReference);
+	public void setSourceReference(ReferenceBase sourceReference);
 
-	public abstract String getSourceReferenceTitle();
+	public String getSourceReferenceTitle();
 
-	public abstract void setSourceReferenceTitle(String sourceReferenceTitle);
+	public void setSourceReferenceTitle(String sourceReferenceTitle);
 
-	public abstract Person getCommentator();
+	public Person getCommentator();
 
-	public abstract void setCommentator(Person commentator);
+	public void setCommentator(Person commentator);
 
-	public abstract Language getFactLanguage();
+	public Language getFactLanguage();
 
-	public abstract void setFactLanguage(Language factLanguage);
+	public void setFactLanguage(Language factLanguage);
 	
-	public abstract NomenclaturalCode getNomenclaturalCode();
+	public NomenclaturalCode getNomenclaturalCode();
 	
-	public abstract void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
+	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 	
 	public Class<ICdmIO>[] getIoClassList();
 	

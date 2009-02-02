@@ -44,12 +44,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class BerlinModelFactsIO  extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelFactsIO.class);
+public class BerlinModelFactsImport  extends BerlinModelImportBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelFactsImport.class);
 
 	private int modCount = 10000;
 	
-	public BerlinModelFactsIO(){
+	public BerlinModelFactsImport(){
 		super();
 	}
 

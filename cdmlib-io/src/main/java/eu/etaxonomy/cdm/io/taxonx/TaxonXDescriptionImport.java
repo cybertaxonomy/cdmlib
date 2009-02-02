@@ -48,12 +48,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TaxonXDescriptionIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TaxonXDescriptionIO.class);
+public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
 
 	private static int modCount = 10000;
 
-	public TaxonXDescriptionIO(){
+	public TaxonXDescriptionImport(){
 		super();
 	}
 	

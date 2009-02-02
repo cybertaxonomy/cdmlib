@@ -42,12 +42,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsIO.class);
+public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 
-	public TcsRdfTaxonRelationsIO(){
+	public TcsRdfTaxonRelationsImport(){
 		super();
 	}
 	

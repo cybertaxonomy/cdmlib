@@ -1324,23 +1324,18 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 	@Override
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
-		return invokeMe((SpecimenImportConfigurator)config);
-	}
-
-	
-	
-	public boolean invokeMe(SpecimenImportConfigurator config){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		boolean result = true;
+		SpecimenImportConfigurator specimenImportConfig = (SpecimenImportConfigurator)config;
 		//AbcdIO test = new AbcdIO();
-		String sourceName = config.getSource();
+		String sourceName = specimenImportConfig.getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null)
 		{
 			logger.info("nb units to insert: "+unitsList.getLength());
 			for (int i=0;i<unitsList.getLength();i++){
 				this.setUnitPropertiesXML((Element)unitsList.item(i));
-				result &= this.start(config);
+				result &= this.start(specimenImportConfig);
 				config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName,this.knownABCDelements);

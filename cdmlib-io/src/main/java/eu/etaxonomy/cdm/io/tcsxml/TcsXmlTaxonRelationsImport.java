@@ -36,12 +36,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  *
  */
 @Component
-public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsIO.class);
+public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
 
-	public TcsXmlTaxonRelationsIO(){
+	public TcsXmlTaxonRelationsImport(){
 		super();
 	}
 	
@@ -304,9 +304,9 @@ public class TcsXmlTaxonRelationsIO extends TcsXmlIoBase implements ICdmIO<IImpo
 					taxonName.setTitleCache(title);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
-						result = Synonym.NewInstance(taxonName, TcsXmlTaxonIO.unknownSec());
+						result = Synonym.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());
 					}else{
-						result = Taxon.NewInstance(taxonName, TcsXmlTaxonIO.unknownSec());	
+						result = Taxon.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());	
 					}
 					result.setTitleCache(title);
 				}

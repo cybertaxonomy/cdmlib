@@ -171,4 +171,12 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 		return result;
 	}
 	
+	public String getSourceNameString() {
+		if (this.getSource() == null) {
+			return null;
+		} else {
+			return (String)this.getSource().getName();
+		}
+	}
+	
 }

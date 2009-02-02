@@ -6,14 +6,15 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * @author a.babadshanjan
@@ -21,60 +22,35 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExport<T> {
 	
-	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
 
-	public boolean invoke(IExportConfigurator config){
-		if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_ONLY)){
-			return doCheck(config);
-		}else if (config.getCheck().equals(IExportConfigurator.CHECK.CHECK_AND_EXPORT)){
-			doCheck(config);
-			return doExport(config);
-		}else if (config.getCheck().equals(IExportConfigurator.CHECK.EXPORT_WITHOUT_CHECK)){
-			return doExport(config);
-		}else{
-			logger.error("Unknown CHECK type");
-			return false;
-		}
+	private CdmApplicationController cdmApp = null;
+	
+	public boolean invoke(T config){
+		ICdmDataSource source = config.getSource();
+		return invoke(config, source);
 	}
-	
-	
-	protected boolean doCheck(IExportConfigurator config){
-		boolean result = true;
-		System.out.println("Start checking Source ("+ config.getDestinationNameString() + ") ...");
-		
-		//check
-		if (config == null){
-			logger.warn("CdmExportConfiguration is null");
-			return false;
-		}else if (!config.isValid()){
-			logger.warn("CdmExportConfiguration is not valid");
-			return false;
-		}
-		
-		//do check for each class
-		for (Class<ICdmIO> ioClass: config.getIoClassList()){
-			ICdmIO cdmIo = null;
-			try {
-				cdmIo = ioClass.newInstance();
-				result &= cdmIo.check(config);
-			} catch (Exception e) {
-				logger.error(e);
-				e.printStackTrace();
-			}
-		}
-		
-		//return
-		System.out.println("End checking Source ("+ config.getDestinationNameString() + ") for Export to CDM");
-		return result;
 
-	}
 	
+	public boolean invoke(IExportConfigurator config, ICdmDataSource source){
+		source = source;
+		boolean omitTermLoading = false;
+		boolean createNew = false;
+		
+		if (startApplicationController(config, source, omitTermLoading, createNew) == false){
+			return false;
+		}else{
+			CdmApplicationAwareDefaultExport<?> defaultExport = 
+				(CdmApplicationAwareDefaultExport<?>)cdmApp.applicationContext.getBean("defaultExport");
+			return defaultExport.invoke(config);
+		}
+	}
 	
 	/**
 	 * Executes the whole 
 	 */
 	protected boolean doExport(IExportConfigurator config){
+		Map stores = null;  //TODO 
 		boolean result = true;
 		if (config == null){
 			logger.warn("Configuration is null");
@@ -102,6 +78,53 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 		//return
 		System.out.println("End export from Cdm to Destination (" + config.getDestinationNameString() + ") ...");
 		return true;
+	}
+	
+
+	/**
+	 * Creates a new {@link CdmApplicationController} if it does not exist yet or if createNew is <ocde>true</code>
+	 * @param config
+	 * @param destination
+	 * @param omitTermLoading
+	 * @param createNew
+	 * @return
+	 */
+	private boolean startApplicationController(IExportConfigurator config, ICdmDataSource source, boolean omitTermLoading, boolean createNew){
+		try {
+			if ( createNew == true || cdmApp == null){
+				cdmApp = CdmApplicationController.NewInstance(source, DbSchemaValidation.VALIDATE);
+				if (cdmApp != null){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			return true;
+		} catch (DataSourceNotFoundException  e) {
+			logger.error("could not connect to destination database");
+			return false;
+		}catch (TermNotFoundException e) {
+			logger.error("could not find needed term in destination datasource");
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Returns the {@link CdmApplicationController}. This is null if invoke() has not been called yet and if the controller
+	 * has not been set manually by setCdmApp() yet. 
+	 * @return the cdmApp
+	 */
+	public CdmApplicationController getCdmApp() {
+		return cdmApp;
+	}
+
+
+	/**
+	 * @param cdmApp the cdmApp to set
+	 */
+	public void setCdmApp(CdmApplicationController cdmApp) {
+		this.cdmApp = cdmApp;
 	}
 	
 

@@ -49,8 +49,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
-	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsIO.class);
+public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
+	private static final Logger logger = Logger.getLogger(BerlinModelNameFactsImport.class);
 
 	/**
 	 * write info message after modCount iterations
@@ -58,7 +58,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	private int modCount = 50;
 
 	
-	public BerlinModelNameFactsIO(){
+	public BerlinModelNameFactsImport(){
 		super();
 	}
 	
@@ -201,11 +201,12 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		String mimeTypeTif = "image/tiff";
 		String mimeTypeJpg = "image/jpeg";
 		String mimeTypePng = "image/png";
-		String mimeTypePdf = "application/pdf";
+		String mimeTypePdf = "application/pdf"; 
 		String suffixTif = "tif";
 		String suffixJpg = "jpg";
 		String suffixPng = "png";
-		String suffixPdf = "pdf";
+		String suffixPdf = "pdf"; 
+		
 		String sep = File.separator;
 		Integer size = null;
 		
@@ -263,29 +264,29 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 		} 
 		media.addRepresentation(representationPng);
 		//end png
-		//pdf
-		String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf;
-		file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf);
-		MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf);
-		if (file.exists()){ 
-			representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file));
-		}else{
-			fileExists = true;
-			int pdfCount = 0;
-			while (fileExists){
-				pdfCount++;
-				urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf;
-				file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf);
-				
-				if (file.exists()){ 
-					representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file));
-				}else{
-					fileExists = false;
-				}
-			}
-		} 
-		media.addRepresentation(representationPdf);
-		//end pdf
+        //pdf 
+        String urlStringPdf = mediaUrlString + "pdf/" + nameFact + "." + suffixPdf; 
+        file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
+        MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
+        if (file.exists()){  
+                representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file)); 
+        }else{ 
+                fileExists = true; 
+                int pdfCount = 0; 
+                while (fileExists){ 
+                        pdfCount++; 
+                        urlStringPdf = mediaUrlString + "pdf/" + nameFact + "00" + pdfCount + "." + suffixPdf; 
+                        file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
+                         
+                        if (file.exists()){  
+                                representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file)); 
+                        }else{ 
+                                fileExists = false; 
+                        } 
+                } 
+        }  
+        media.addRepresentation(representationPdf); 
+        //end pdf 
 		
 		if(logger.isDebugEnabled()){
 			for (MediaRepresentation rep : media.getRepresentations()){
@@ -309,7 +310,7 @@ public class BerlinModelNameFactsIO  extends BerlinModelIOBase  {
 	//for testing only
 	public static void main(String[] args) {
 		
-		BerlinModelNameFactsIO nf = new BerlinModelNameFactsIO();
+		BerlinModelNameFactsImport nf = new BerlinModelNameFactsImport();
 		
 		URL url;
 		try {

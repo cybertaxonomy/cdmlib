@@ -41,12 +41,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component("tcsXmlTaxonNameIO")
-public class TcsXmlTaxonNameIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameIO.class);
+public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameImport.class);
 
 	private static int modCount = 5000;
 	
-	public TcsXmlTaxonNameIO(){
+	public TcsXmlTaxonNameImport(){
 		super();
 	}
 

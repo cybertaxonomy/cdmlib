@@ -29,11 +29,11 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class BerlinModelIOBase extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(BerlinModelIOBase.class);
+	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
-	public BerlinModelIOBase() {
+	public BerlinModelImportBase() {
 		super();
 	}
 	
@@ -92,8 +92,8 @@ public abstract class BerlinModelIOBase extends CdmIoBase<IImportConfigurator> i
 			}
 			return false;
 		} catch (SQLException e) {
-			logger.warn("Exception in resultSetHasColumn");
-			return false;
+            logger.warn("Exception in resultSetHasColumn");
+            return false;
 		}
 	}
 	

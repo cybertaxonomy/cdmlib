@@ -51,12 +51,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonIO  extends TcsRdfIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonIO.class);
+public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonImport.class);
 
 	private static int modCount = 30000;
 	
-	public TcsRdfTaxonIO(){
+	public TcsRdfTaxonImport(){
 		super();
 	}
 	

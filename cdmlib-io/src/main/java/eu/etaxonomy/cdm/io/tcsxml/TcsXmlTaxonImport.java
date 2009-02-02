@@ -43,12 +43,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Component
-public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonIO.class);
+public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsXmlTaxonImport.class);
 
 	private static int modCount = 30000;
 	
-	public TcsXmlTaxonIO(){
+	public TcsXmlTaxonImport(){
 		super();
 	}
 	
@@ -168,7 +168,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 			childName = "Rank";
 			obligatory = false;
 			Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-			Rank rank = TcsXmlTaxonNameIO.makeRank(elRank);
+			Rank rank = TcsXmlTaxonNameImport.makeRank(elRank);
 			if (rank != null){
 				logger.warn("Rank in TaxonIO not yet implemented");
 			}
@@ -302,7 +302,7 @@ public class TcsXmlTaxonIO  extends TcsXmlIoBase implements ICdmIO<IImportConfig
 	 * @param success
 	 */
 	private void makeTaxonRelationships(TaxonBase name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
-		//TaxonRelationships are handled in TcsXmlTaxonRelationsIO
+		//TaxonRelationships are handled in TcsXmlTaxonRelationsImport
 		return;
 	}
 	

@@ -6,12 +6,13 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+
 
 /**
  * @author a.babadshanjan
  * @created 16.11.2008
+ * @version 1.0
  */
 public interface IExportConfigurator extends IIoConfigurator {
 
@@ -28,23 +29,21 @@ public interface IExportConfigurator extends IIoConfigurator {
 		ALL
 	}
 
-	public abstract boolean isValid();
+	public boolean isValid();
 
-	/**
-	 * A String representation of the destination (e.g. CDM JAXB XML)
-	 * @return
-	 */
-	public abstract String getDestinationNameString();
 
-	public abstract CHECK getCheck();
+	public CHECK getCheck();
 	
 	public Class<ICdmIO>[] getIoClassList();
 
+	
 	/**
-	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
-	 * If a controller was already created before the last created controller is returned.
+	 * The CDM data source for the export 
+	 * Don't use when using a spring data source
 	 * @return
 	 */
-//	public CdmApplicationController getCdmAppController();
-//	public CdmApplicationController getCdmAppController(boolean createNew, boolean omitTermLoading);
+	public ICdmDataSource getSource();
+
+	public void setSource(ICdmDataSource source);
+	
 }

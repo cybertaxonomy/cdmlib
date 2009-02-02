@@ -367,6 +367,18 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase implemen
 		}
 		return null;
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
+	 */
+	public String getDestinationNameString() {
+		if (this.getDestination() == null) {
+			return null;
+		} else {
+			return (String)this.getDestination().getName();
+		}
+	}
 
 
 }

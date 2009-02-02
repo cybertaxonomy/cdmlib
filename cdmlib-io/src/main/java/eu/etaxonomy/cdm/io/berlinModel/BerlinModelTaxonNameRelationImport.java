@@ -51,12 +51,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonNameRelationIO extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameRelationIO.class);
+public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameRelationImport.class);
 
 	private static int modCount = 5000;
 	
-	public BerlinModelTaxonNameRelationIO(){
+	public BerlinModelTaxonNameRelationImport(){
 		super();
 	}
 	

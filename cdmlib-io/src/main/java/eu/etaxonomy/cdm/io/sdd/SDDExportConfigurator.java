@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.sdd.SDDCdmExporter;
  */
 public class SDDExportConfigurator extends ExportConfiguratorBase implements IExportConfigurator {
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDExportConfigurator.class);
 
 	private int maxRows = 0;
@@ -45,6 +46,11 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
+	
+	
+	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
+		return new SDDExportConfigurator(source, url);
+	}
 	
 	
 	public int getMaxRows() {
@@ -146,10 +152,7 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 		};
 	};
 
-	
-	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
-		return new SDDExportConfigurator(source, url);
-	}
+
 	
 	
 	/**
@@ -189,5 +192,6 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 			return this.getDestination().toString();
 		}
 	}
+	
 		
 }

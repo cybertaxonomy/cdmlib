@@ -36,12 +36,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonNameRelationsIO extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsIO.class);
+public class TcsRdfTaxonNameRelationsImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
 	
-	public TcsRdfTaxonNameRelationsIO(){
+	public TcsRdfTaxonNameRelationsImport(){
 		super();
 	}
 	

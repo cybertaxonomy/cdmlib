@@ -27,12 +27,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  *
  */
 @Component
-public class TcsXmlPublicationsIO extends TcsXmlIoBase implements ICdmIO<IImportConfigurator> {
-	private static final Logger logger = Logger.getLogger(TcsXmlPublicationsIO.class);
+public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+	private static final Logger logger = Logger.getLogger(TcsXmlPublicationsImport.class);
 
 	private static int modCount = 1000;
 	
-	public TcsXmlPublicationsIO(){
+	public TcsXmlPublicationsImport(){
 		super();
 	}
 	

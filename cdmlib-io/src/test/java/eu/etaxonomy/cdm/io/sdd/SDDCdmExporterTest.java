@@ -7,11 +7,10 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.sdd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -20,44 +19,43 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-
 /**
  * @author a.mueller
- * @created 29.01.2009
+ * @created 02.02.2009
  * @version 1.0
  */
-public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
+public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
 	
 	@SpringBeanByType
-	CdmTcsXmlImport cdmTcsXmlImport;
-
+	SDDCdmExporter sddCdmExporter;
+	
 	@SpringBeanByType
 	INameService nameService;
-
-	private IImportConfigurator configurator;
+	
+	private IExportConfigurator exportConfigurator;
 	
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
-		URL url = this.getClass().getResource(inputFile);
-		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsXmlImportConfigurator.NewInstance(url.toString(), null);
-		assertNotNull("Configurator could not be created", configurator);
+		String url ="";
+		//FIXME
+		ICdmDataSource source = null;
+		//exportConfigurator = SDDExportConfigurator.NewInstance(source, url, null);
 	}
 	
 	@Test
 	public void testInit() {
-		assertNotNull("cdmTcsXmlImport should not be null", cdmTcsXmlImport);
+		assertNotNull("sddCdmExporter should not be null", sddCdmExporter);
 		assertNotNull("nameService should not be null", nameService);
 	}
 	
 	@Test
 	public void testDoInvoke() {
-		boolean result = cdmTcsXmlImport.invoke(configurator);
-		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 16", 16, nameService.count());
+		//sddCdmExporter.doInvoke(exportConfigurator, null);
+		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
 	}
 
 }

@@ -42,12 +42,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
-	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceIO.class);
+public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
+	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceImport.class);
 
 	private static int modCount = 10000;
 
-	public BerlinModelOccurrenceIO(){
+	public BerlinModelOccurrenceImport(){
 		super();
 	}
 	
@@ -124,19 +124,18 @@ public class BerlinModelOccurrenceIO  extends BerlinModelIOBase {
 		
 		try {
 			//get data from database
-			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution
-				" SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " + 
-                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " + 
-                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " +
-                " FROM emOccurrence INNER JOIN " + 
-                  	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " +
-                  	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " +
-                    " emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " + 
-                    " emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " + 
-                " WHERE (1=1)" + 
+			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
+                " SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
+                	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
+                	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
+                " FROM emOccurrence INNER JOIN " +  
+                	" emArea ON emOccurrence.AreaFk = emArea.AreaId INNER JOIN " + 
+                	" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk LEFT OUTER JOIN " + 
+                	" emOccurSumCat ON emOccurrence.SummaryStatus = emOccurSumCat.emOccurSumCatId LEFT OUTER JOIN " +  
+                	" emOccurrenceSource ON emOccurrence.OccurrenceId = emOccurrenceSource.OccurrenceFk " +  
+                " WHERE (1=1)" +  
                 " ORDER BY PTaxon.RIdentifier";
 			ResultSet rs = source.getResultSet(strQuery) ;
-
 			
 			int oldTaxonId = -1;
 			TaxonDescription oldDescription = null;
