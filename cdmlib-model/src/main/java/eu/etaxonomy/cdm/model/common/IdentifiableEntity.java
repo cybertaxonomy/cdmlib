@@ -34,6 +34,8 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -57,7 +59,8 @@ import eu.etaxonomy.cdm.model.media.Rights;
     "sources"
 })
 @MappedSuperclass
-public abstract class IdentifiableEntity extends AnnotatableEntity implements ISourceable, IIdentifiableEntity {
+public abstract class IdentifiableEntity extends AnnotatableEntity 
+implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
@@ -271,6 +274,35 @@ public abstract class IdentifiableEntity extends AnnotatableEntity implements IS
 		}
 		return result;	
 	}
+	 
+	 public int compareTo(IdentifiableEntity identifiableEntity) {
+
+		 int result = 0;
+		 
+		 if (identifiableEntity == null) {
+			 throw new NullPointerException("Cannot compare to null.");
+		 }
+
+		 // First, compare the name cache.
+		 // TODO: Avoid using instanceof operator
+		 // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
+
+		 if ((identifiableEntity instanceof NonViralName) && (this instanceof NonViralName)) {
+
+			 String thisNameCache = ((NonViralName<?>)this).getNameCache();
+			 String specifiedNameCache = ((NonViralName<?>)identifiableEntity).getNameCache();
+			 result = thisNameCache.compareTo(specifiedNameCache);
+		 }
+		 
+		 // Compare the title cache if name cache is equal
+		 if (result == 0) {
+			 String thisTitleCache = getTitleCache();
+			 String specifiedTitleCache = identifiableEntity.getTitleCache();
+			 result = thisTitleCache.compareTo(specifiedTitleCache);
+			 
+		 }
+		 return result;
+	 }
 	 
 //****************** CLONE ************************************************/
 	 

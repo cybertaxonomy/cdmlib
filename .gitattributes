@@ -957,6 +957,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipT
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/IdentifiableEntityTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/MarkerTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java -text
