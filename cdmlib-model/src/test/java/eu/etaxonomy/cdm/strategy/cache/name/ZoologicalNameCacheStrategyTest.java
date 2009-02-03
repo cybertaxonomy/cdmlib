@@ -141,7 +141,7 @@ public class ZoologicalNameCacheStrategyTest {
 		subSpeciesName.setExCombinationAuthorTeam(null);
 		subSpeciesName.setExBasionymAuthorTeam(null);
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba L. alba", strategy.getTitleCache(subSpeciesName));
+		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class ZoologicalNameCacheStrategyTest {
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
-		assertEquals("Abies alba L. alba", strategy.getTitleCache(subSpeciesName));
+		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
 	
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
