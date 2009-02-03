@@ -45,8 +45,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component("sddCdmExporter")
 public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
-// public class CdmExporter extends CdmIoBase implements ICdmIoExport {
-// TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {
+// public class JaxbExport extends CdmIoBase implements ICdmIoExport {
+// TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
 	private static final Logger logger = Logger.getLogger(SDDCdmExporter.class);
 	private SDDDocumentBuilder sddDocumentBuilder = null;
