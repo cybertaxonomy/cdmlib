@@ -17,7 +17,7 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 //	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				NormalExplicitImporter.class
+				NormalExplicitImport.class
 		};
 	};
 	

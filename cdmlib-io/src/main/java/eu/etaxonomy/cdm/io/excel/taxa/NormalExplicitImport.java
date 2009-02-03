@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -31,9 +32,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @created 08.01.2009
  * @version 1.0
  */
-public class NormalExplicitImporter extends TaxonExcelImporterBase {
-	
-	private static final Logger logger = Logger.getLogger(NormalExplicitImporter.class);
+
+@Component
+public class NormalExplicitImport extends TaxonExcelImporterBase {
+	private static final Logger logger = Logger.getLogger(NormalExplicitImport.class);
 	
 	@Override
 	protected boolean isIgnore(IImportConfigurator config) {
@@ -59,8 +61,8 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		boolean success = true;
     	Set<String> keys = record.keySet();
     	
-    	TaxonLight taxonLight = new TaxonLight();
-    	setTaxonLight(taxonLight);
+    	NormalExplicitRow normalExplicitRow = new NormalExplicitRow();
+    	setTaxonLight(normalExplicitRow);
     	
     	for (String key: keys) {
     		
@@ -218,22 +220,22 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
     }
 
 	
-	private Taxon findParentTaxon(TaxonLight taxonLight) {
+	private Taxon findParentTaxon(NormalExplicitRow normalExplicitRow) {
 		
 		UUID parentTaxonUuid = null;
 		Taxon parentTaxon = null;
 		
-		for (TaxonLight tLight : getTaxaMap().keySet()) {
+		for (NormalExplicitRow tLight : getTaxaMap().keySet()) {
 //			logger.debug("tLight.getId() = " + tLight.getId());
 //			logger.debug("taxonLight.getParentId() = " + taxonLight.getParentId());
-			if (tLight.getId() == taxonLight.getParentId()) {
+			if (tLight.getId() == normalExplicitRow.getParentId()) {
 				parentTaxonUuid = getTaxaMap().get(tLight);
 				break;
 			}
 		}
 		
 		if (parentTaxonUuid == null) {
-			logger.warn("Parent taxon of " + taxonLight.getScientificName() + " unknown." +
+			logger.warn("Parent taxon of " + normalExplicitRow.getScientificName() + " unknown." +
 			" Ignoring parent-child relationship.");
 			return null;
 		}
@@ -242,7 +244,7 @@ public class NormalExplicitImporter extends TaxonExcelImporterBase {
 		try {
 			parentTaxon = (Taxon)parentTaxonBase;
 		} catch (ClassCastException ex) {
-			logger.error(taxonLight.getScientificName() + " is not a taxon instance.");
+			logger.error(normalExplicitRow.getScientificName() + " is not a taxon instance.");
 		}
 		return parentTaxon;
 	}

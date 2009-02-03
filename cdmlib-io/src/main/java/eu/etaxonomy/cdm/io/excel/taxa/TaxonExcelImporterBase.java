@@ -48,13 +48,13 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	protected static final String REFERENCE_COLUMN = "Reference";
 	
 	/** Already processed taxa */
-	private HashMap<TaxonLight, UUID> taxaMap = new HashMap<TaxonLight, UUID>();
+	private HashMap<NormalExplicitRow, UUID> taxaMap = new HashMap<NormalExplicitRow, UUID>();
     /** Already processed authors */
 	private HashSet<String> authors = new HashSet<String>();
 	/** Previous taxon */
 	private UUID previousTaxonUuid = null;
     /** Taxon "light" containing all string info from columns */
-	private TaxonLight taxonLight = null;
+	private NormalExplicitRow normalExplicitRow = null;
 	
 	
 	// TODO: This enum is for future use (perhaps).
@@ -88,14 +88,14 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	/**
 	 * @return the taxa
 	 */
-	public HashMap<TaxonLight, UUID> getTaxaMap() {
+	public HashMap<NormalExplicitRow, UUID> getTaxaMap() {
 		return taxaMap;
 	}
 
 	/**
 	 * @param taxa the taxa to set
 	 */
-	public void setTaxaMap(HashMap<TaxonLight, UUID> taxaMap) {
+	public void setTaxaMap(HashMap<NormalExplicitRow, UUID> taxaMap) {
 		this.taxaMap = taxaMap;
 	}
 
@@ -114,17 +114,17 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 	}
 
 	/**
-	 * @return the taxonLight
+	 * @return the normalExplicitRow
 	 */
-	public TaxonLight getTaxonLight() {
-		return taxonLight;
+	public NormalExplicitRow getTaxonLight() {
+		return normalExplicitRow;
 	}
 
 	/**
-	 * @param taxonLight the taxonLight to set
+	 * @param normalExplicitRow the normalExplicitRow to set
 	 */
-	public void setTaxonLight(TaxonLight taxonLight) {
-		this.taxonLight = taxonLight;
+	public void setTaxonLight(NormalExplicitRow normalExplicitRow) {
+		this.normalExplicitRow = normalExplicitRow;
 	}
 
 	/**

@@ -10,7 +10,6 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase implements IImportConfigurator{
-
 	private static final Logger logger = Logger.getLogger(ExcelImportConfiguratorBase.class);
 	
 	/**

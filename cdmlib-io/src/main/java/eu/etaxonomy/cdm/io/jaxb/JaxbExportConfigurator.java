@@ -152,7 +152,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 //	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				CdmExporter.class,
+				JaxbExport.class,
 		};
 	};
 

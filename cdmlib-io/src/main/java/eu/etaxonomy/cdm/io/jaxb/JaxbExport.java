@@ -39,11 +39,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 25.09.2008
  */
 @Component
-public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
-// public class CdmExporter extends CdmIoBase implements ICdmIoExport {
-// TODO: public class CdmExporter extends CdmIoBase implements ICdmIO {
+public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
+// public class JaxbExport extends CdmIoBase implements ICdmIoExport {
+// TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
-	private static final Logger logger = Logger.getLogger(CdmExporter.class);
+	private static final Logger logger = Logger.getLogger(JaxbExport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 
 	private String ioName = null;
@@ -52,7 +52,7 @@ public class CdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmI
 	/**
 	 * 
 	 */
-	public CdmExporter() {
+	public JaxbExport() {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}

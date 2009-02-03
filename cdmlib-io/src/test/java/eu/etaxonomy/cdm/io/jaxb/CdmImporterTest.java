@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
-	CdmImporter cdmImporter;
+	JaxbImport jaxbImport;
 	
 	private IImportConfigurator configurator;
 	
@@ -43,13 +43,13 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	public void testInit() {
-		assertNotNull("cdmImporter should not be null",cdmImporter);
+		assertNotNull("jaxbImport should not be null",jaxbImport);
 	}
 	
 	@Test
 	@DataSet
 	public void testImport() throws Exception {
-		cdmImporter.doInvoke(configurator, null);
+		jaxbImport.doInvoke(configurator, null);
 		testExpectedDataSet(this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.testImport-result.xml"));
 	}
 

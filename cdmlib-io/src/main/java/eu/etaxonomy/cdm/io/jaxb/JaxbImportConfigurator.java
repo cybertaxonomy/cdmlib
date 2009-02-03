@@ -138,7 +138,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 //	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				CdmImporter.class,
+				JaxbImport.class,
 		};
 	};
 

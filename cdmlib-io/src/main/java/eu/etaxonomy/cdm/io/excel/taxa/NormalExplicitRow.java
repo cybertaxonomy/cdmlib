@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.io.excel.taxa;
  * @created 13.01.2009
  * @version 1.0
  */
-public class TaxonLight {
+public class NormalExplicitRow {
 	
 	private int id;
 	private int parentId;
@@ -26,7 +26,7 @@ public class TaxonLight {
 	private String language;
 	private String reference;
 	
-	public TaxonLight() {
+	public NormalExplicitRow() {
 		this.id = 0;
 		this.parentId = 0;
 		this.rank = new String("");
@@ -38,11 +38,11 @@ public class TaxonLight {
 		this.reference = new String("");
 	}
 	
-	public TaxonLight(String name, int parentId) {
+	public NormalExplicitRow(String name, int parentId) {
 		this(name, parentId, null);
 	}
 	
-	public TaxonLight(String scientificName, int parentId, String reference) {
+	public NormalExplicitRow(String scientificName, int parentId, String reference) {
 		this.parentId = parentId;
 		this.scientificName = scientificName;
 		this.reference = reference;
