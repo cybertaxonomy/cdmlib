@@ -6,12 +6,7 @@
 
 package eu.etaxonomy.cdm.app.jaxb;
 
-import java.io.File;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.util.TestDatabase;
@@ -21,23 +16,9 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.jaxb.CdmExporter;
-import eu.etaxonomy.cdm.io.jaxb.CdmImporter;
 import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.babadshanjan
