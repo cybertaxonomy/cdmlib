@@ -75,6 +75,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	private Set<T> generalizationOf = new HashSet<T>();
 	
 	@XmlElement(name = "PartOf")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private T partOf;
 	
 	/**
@@ -84,7 +86,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 */
 	@XmlElementWrapper(name = "Includes")
 	@XmlElement(name = "Include")
-	private Set<T> includes = new HashSet<T>();
+    private Set<T> includes = new HashSet<T>();
 	
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
