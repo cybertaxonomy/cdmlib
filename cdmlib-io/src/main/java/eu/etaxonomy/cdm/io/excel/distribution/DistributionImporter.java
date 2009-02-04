@@ -49,7 +49,6 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     
 	private static final Logger logger = Logger.getLogger(DistributionImporter.class);
 	
-	private CdmApplicationController appCtr = null;
 	// Stores already processed descriptions
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
@@ -57,7 +56,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores) {
 		
-    	logger.debug("Importing distribution data");
+		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	
 		// read and save all rows of the excel worksheet
     	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
@@ -73,7 +72,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     	}
     	
 		try {
-			logger.debug("End distribution data import"); 
+			if (logger.isDebugEnabled()) { logger.debug("End distribution data import"); }
 				
 		} catch (Exception e) {
     		logger.error("Error closing the application context");
@@ -109,7 +108,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     		
     		String value = (String) record.get(key);
     		if (!value.equals("")) {
-    			logger.debug(key + ": '" + value + "'");
+    			if (logger.isDebugEnabled()) { logger.debug(key + ": '" + value + "'"); }
     		}
     		
     		if (key.contains(EDIT_NAME_COLUMN)) {
@@ -147,15 +146,15 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 
 		try {
     		// get the matching names from the DB
-    		List<TaxonNameBase<?,?>> taxonNameBases = appCtr.getNameService().findNamesByTitle(taxonName);
+    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
-    			logger.debug("Taxon found");
+    			if (logger.isDebugEnabled()) { logger.debug("Taxon found"); }
     		}
 
     		// get the taxa for the matching names
-    		for(TaxonNameBase dbTaxonName: taxonNameBases) {
+    		for(TaxonNameBase<?,?> dbTaxonName: taxonNameBases) {
 
     			Set<Taxon> taxa = dbTaxonName.getTaxa();
     			if (taxa.isEmpty()) {
@@ -208,7 +207,9 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     	    						if (descriptionElement instanceof Distribution) {
     	    							if (namedArea == ((Distribution)descriptionElement).getArea()) {
     	    								ignore = true;
-    	    	    						logger.debug("Distribution ignored: " + distribution);
+    	    								if (logger.isDebugEnabled()) { 
+    	    									logger.debug("Distribution ignored: " + distribution); 
+    	    								}
     	    		    					break;
      	    							}
     	    						}
@@ -218,14 +219,16 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     	    						save = true;
     	    						Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
     	    						myDescription.addElement(newDistribution);
-    	    						logger.debug("Distribution created: " + newDistribution.toString());
+    	    						if (logger.isDebugEnabled()) { 
+    	    							logger.debug("Distribution created: " + newDistribution.toString());
+    	    						}
     	    					}
     						}
     					}
     				}
     				if (save == true) {
-    					appCtr.getTaxonService().saveTaxon(taxon);
-    					logger.debug("Taxon saved");
+    					getTaxonService().saveTaxon(taxon);
+    					if (logger.isDebugEnabled()) { logger.debug("Taxon saved"); }
     				}
     			}
     		} 
