@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 /**
  * The class representing categories of {@link SynonymRelationship synonym relationships}
