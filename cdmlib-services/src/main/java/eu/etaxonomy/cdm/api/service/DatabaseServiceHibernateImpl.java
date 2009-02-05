@@ -113,20 +113,21 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		return connectToDatasource(dataSource);
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDatabaseTypeName()
-	 */
-	public DatabaseTypeEnum getDatabaseEnum() {
-		return DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDataSource().getDriverClassName());
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDriverClassName()
-	 */
-	public String getDriverClassName() {
-		return getDataSource().getDriverClassName();
-	}
+//TODO removed 04.02.2009 as spring 2.5.6 does not support DriverManagerDataSource.getDriverClassName anymore
+//Let's see if this is not needed by any other application
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDatabaseTypeName()
+//	 */
+//	public DatabaseTypeEnum getDatabaseEnum() {
+//		return DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDataSource().getDriverClassName());
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDriverClassName()
+//	 */
+//	public String getDriverClassName() {
+//		return ( getDataSource()).getDriverClassName();
+//	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getUrl()

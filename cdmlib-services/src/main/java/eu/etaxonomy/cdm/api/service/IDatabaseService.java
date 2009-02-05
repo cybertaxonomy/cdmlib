@@ -20,18 +20,20 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  */
 public interface IDatabaseService {
 
-	/**
-	 * Returns the databaseTypeEnum
-	 * @return
-	 */
-	public DatabaseTypeEnum getDatabaseEnum();
-	
-	
-	/**
-	 * Returns the database driver class name
-	 * @return
-	 */
-	public String getDriverClassName();
+//TODO removed 04.02.2009 as spring 2.5.6 does not support DriverManagerDataSource.getDriverClassName anymore
+//Let's see if this is not needed by any other application1
+//	/**
+//	 * Returns the databaseTypeEnum
+//	 * @return
+//	 */
+//	public DatabaseTypeEnum getDatabaseEnum();
+//	
+//	
+//	/**
+//	 * Returns the database driver class name
+//	 * @return
+//	 */
+//	public String getDriverClassName();
 	
 	/**
 	 * Returns the database URL
