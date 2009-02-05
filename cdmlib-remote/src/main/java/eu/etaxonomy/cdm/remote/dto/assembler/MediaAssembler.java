@@ -45,7 +45,7 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 		if (media !=null){
 			mediaSTO = new MediaSTO();
 			setVersionableEntity(media, mediaSTO);
-			mediaSTO.setTitle(media.getTitle().getPreferredLanguageString(languages));
+			mediaSTO.setTitle(media.getTitle().get(languages));
 			mediaSTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		return mediaSTO;
@@ -58,8 +58,8 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 		if (media !=null){
 			mediaTO = new MediaTO();
 			setVersionableEntity(media, mediaTO);
-			mediaTO.setTitle(media.getTitle().getPreferredLanguageString(languages));
-			mediaTO.setDescription(media.getDescription().getPreferredLanguageString(languages));
+			mediaTO.setTitle(media.getTitle().get(languages));
+			mediaTO.setDescription(media.getDescription().get(languages));
 			mediaTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		
